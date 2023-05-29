@@ -33,6 +33,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -2366,6 +2368,11 @@ public class MainActivity extends UploadDocumentActivity implements MainActivity
         dialogUpdateDocuments.setImgPath(path, name);
         dialogUpdateDocuments.setIsFileImage(isImage);
         dialogUpdateDocuments.setData();
+    }
+
+    public void onSessionExpired(String msg) {
+        Toast.makeText(this,msg,Toast.LENGTH_LONG).show();
+        EotApp.getAppinstance().sessionExpired();
     }
 
 }

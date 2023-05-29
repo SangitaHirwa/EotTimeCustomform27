@@ -427,7 +427,7 @@ public class FormQueAns_Activity extends UploadDocumentActivity implements View.
                             setFormDraft(pid,childanswerArrayList);
                         }*/
                         List<Fragment> fragments = getSupportFragmentManager().getFragments();
-                        if (fragments.isEmpty()||(fragments.size()<=1||(fragments.get(0)instanceof CustomFormFragment)))
+                        if (fragments.isEmpty()||(fragments.size()<1||!(fragments.get(0)instanceof CustomFormFragment)))
                         {
                             setFormDraft("-1",answerArrayList);
                         }else{

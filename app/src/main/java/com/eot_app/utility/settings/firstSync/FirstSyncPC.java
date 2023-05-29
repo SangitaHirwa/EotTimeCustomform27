@@ -2,13 +2,18 @@ package com.eot_app.utility.settings.firstSync;
 
 import android.content.Context;
 import android.content.pm.PackageInfo;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.util.Log;
 import com.eot_app.BuildConfig;
 import com.eot_app.login_next.login_next_model.MobileDefaultSettings;
 import com.eot_app.login_next.login_next_model.ResLoginData;
 import com.eot_app.nav_menu.jobs.job_detail.detail.jobdetial_model.JobStatusModelNew;
+import com.eot_app.nav_menu.jobs.job_detail.job_status_pkg.JobStatus_Controller;
 import com.eot_app.services.ApiClient;
 import com.eot_app.services.Service_apis;
+import com.eot_app.services.SyncDataJobService;
 import com.eot_app.utility.AppCenterLogs;
 import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.AppUtility;
@@ -26,7 +31,10 @@ import com.google.gson.reflect.TypeToken;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Type;
+import java.net.URL;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -103,7 +111,7 @@ public class FirstSyncPC implements FirstSyncPi {
                                 for (JobStatusModelNew jobStatus: statusList) {
                                     if(jobStatus.getIsDefault().equalsIgnoreCase("0"))
                                     {
-                                        //  new SyncDataJobService.LoadImage().execute(App_preference.getSharedprefInstance().getBaseURL()+jobStatus.getUrl(),jobStatus.getStatus_no());
+                                        new LoadImage().execute(App_preference.getSharedprefInstance().getBaseURL()+jobStatus.getUrl(),jobStatus.getStatus_no());
                                     }
                                 }
                                 AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobStatusModelNew().insertJobstatusList(statusList);
@@ -423,5 +431,41 @@ public class FirstSyncPC implements FirstSyncPi {
 
     public interface CallBackFirstSync {
         void getCallBackOfComplete(int success_no, String msg); // if -1 server call fail , 0 means
+    }
+
+}
+  class LoadImage extends AsyncTask<String, Void, Bitmap> {
+
+    String statusNo="0";
+    @Override
+    protected Bitmap doInBackground(String... strings) {
+        Bitmap bitmap = null;
+        try {
+            statusNo=strings[1];
+            InputStream inputStream = new URL(strings[0]).openStream();
+            bitmap = BitmapFactory.decodeStream(inputStream);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return bitmap;
+    }
+
+    @Override
+    protected void onPostExecute(Bitmap bitmap) {
+        try
+        {
+            Log.e("StatusNo:: ",statusNo);
+            Log.e("BitmapImage:: ",AppUtility.BitMapToString(bitmap));
+            AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobStatusModelNew().upadteBitmapUrl(statusNo,AppUtility.BitMapToString(bitmap));
+            Log.e("JobStatusListSecond::",new Gson().toJson(AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobStatusModelNew().getAllStatusList()));
+            // to set the updated list in the job status controller
+            JobStatus_Controller.getInstance().setDynamicStatusList();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
+//            imageView.setImageBitmap(bitmap);
     }
 }

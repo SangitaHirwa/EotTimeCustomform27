@@ -7,11 +7,9 @@ import android.annotation.SuppressLint;
 import android.app.job.JobParameters;
 import android.app.job.JobService;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.util.Log;
+import androidx.annotation.RequiresApi;
 import com.eot_app.activitylog.ActivityLogController;
 import com.eot_app.nav_menu.admin_fw_chat_pkg.sonam_user_user_chat_pkg.usertouser_model.UserChatListModelReq;
 import com.eot_app.nav_menu.admin_fw_chat_pkg.sonam_user_user_chat_pkg.usertouser_model.UserChatModel;
@@ -26,15 +24,12 @@ import com.eot_app.nav_menu.client.clientlist.client_detail.site.sitelist.Site_m
 import com.eot_app.nav_menu.jobs.job_db.Job;
 import com.eot_app.nav_menu.jobs.job_db.JobListRequestModel;
 import com.eot_app.nav_menu.jobs.job_detail.customform.cstm_form_model.CustomFormListOffline;
-import com.eot_app.nav_menu.jobs.job_detail.customform.cstm_form_model.CustomFormList_Res;
-import com.eot_app.nav_menu.jobs.job_detail.detail.jobdetial_model.JobStatusModelNew;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.inventry_pkg.Inventry_ReQ_Model;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.inventry_pkg.Inventry_ReS_Model;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_db.location_tax_dao.TaxReqModel;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_db.location_tax_dao.TaxesLocation;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_detail_pkg.inv_detail_model.Tax;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_model_pkg.TaxList_ReQ_Model;
-import com.eot_app.nav_menu.jobs.job_detail.job_status_pkg.JobStatus_Controller;
 import com.eot_app.time_shift_pkg.ShiftTimeReSModel;
 import com.eot_app.time_shift_pkg.ShiftTimeReqModel;
 import com.eot_app.utility.AppCenterLogs;
@@ -48,22 +43,21 @@ import com.eot_app.utility.settings.contractdb.ContractReq;
 import com.eot_app.utility.settings.contractdb.ContractRes;
 import com.eot_app.utility.settings.equipmentdb.Equipment;
 import com.eot_app.utility.settings.equipmentdb.EquipmentListReq;
+import com.eot_app.utility.util_interfaces.FIrstSyncPreference;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 import com.hypertrack.hyperlog.HyperLog;
-import java.io.IOException;
-import java.io.InputStream;
+
+import org.jetbrains.annotations.NotNull;
+
 import java.lang.reflect.Type;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-import androidx.annotation.RequiresApi;
-import org.jetbrains.annotations.NotNull;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -122,54 +116,51 @@ public class SyncDataJobService extends JobService {
         int status_no = App_preference.getSharedprefInstance().getFirstSyncState();
         switch (status_no) {
             case 0:
-                getJobStatusList();// get job status list
-                break;
-            case 1:
                 startJobSyncTime=AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT);
                 App_preference.getSharedprefInstance().setJobStartSyncTime(startJobSyncTime);
                 Log.v("MainSync","startJobSyncTime"+" --" +startJobSyncTime);
                 getJobSyncService();//get job list
                 break;
-            case 2:
+            case 1:
                 getClientSyncService();//sync client list
                 break;
-            case 3:
+            case 2:
                 getContactSyncService();//sync contact list
                 break;
-            case 4:
+            case 3:
                 getSiteSyncService();//get Site list
                 break;
-            case 5:
+            case 4:
                 getChatgrpUserSyncService();//get chat user list
                 break;
-            case 6:
+            case 5:
                 getAppointmentSyncService();//get appointment  list
                 break;
-            case 7:
+            case 6:
                 getInvoiceItemList();//get inventory item's
                 break;
-            case 8:
+            case 7:
                 getInvoiceTaxesList();//get taxes for invoice item's
                 break;
-            case 9:
+            case 8:
                 getAuditList();
                 break;
-            case 10:
+            case 9:
                 getContractList();
                 break;
-            case 11:
+            case 10:
                 getEquipmentList();
                 break;
-            case 12:
+            case 11:
                 getTaxLocations();
                 break;
-            case 13:
+            case 12:
                 getJobTimeShiftList();
                 break;
-            case 14:
+            case 13:
                 getCustomForm();
                 break;
-            case 15:
+            case 14:
                 goHomePage();
                 App_preference.getSharedprefInstance().setFirstSyncState(0);
                 stopSelf();
@@ -196,9 +187,17 @@ public class SyncDataJobService extends JobService {
                     ActivityLogController.LOGIN_JOB_SYNC,
                     ActivityLogController.LOGIN_MODULE
             );
+            if (FIrstSyncPreference.getSharedprefInstance().getJobIndexValue()!=0)
+            {
+                updateIndex=FIrstSyncPreference.getSharedprefInstance().getJobIndexValue();
+                FIrstSyncPreference.getSharedprefInstance().setJobIndexValue(0);
+            }
+
             JobListRequestModel jobListRequestModel = new JobListRequestModel(Integer.parseInt(App_preference.getSharedprefInstance().getLoginRes().getUsrId()),
                     updateLimit, updateIndex, App_preference.getSharedprefInstance().getJobSyncTime());
             String data = new Gson().toJson(jobListRequestModel);
+            Log.d("Apitimetracking","getUserJobList:-"+data);
+            Log.d("Apitimetracking","time:-"+AppUtility.getCurrentDateByFormat("yyyy-MM-dd kk:mm:ss"));
             ApiClient.getservices().eotServiceCall(Service_apis.getUserJobList, AppUtility.getApiHeaders(), getJsonObject(data))
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -222,8 +221,9 @@ public class SyncDataJobService extends JobService {
                         @Override
                         public void onError(@NotNull Throwable e) {
                             Log.e("Network Error :", e.toString());
-                            AppCenterLogs.addLogToAppCenterOnAPIFail("Api","getUserJobList",e.getMessage(),"SyncDataJobService","");
+                    //        AppCenterLogs.addLogToAppCenterOnAPIFail("Api","getUserJobList",e.getMessage(),"SyncDataJobService","");
                             errorMsg(e.toString());
+                            FIrstSyncPreference.getSharedprefInstance().setJobIndexValue(updateIndex);
                         }
                         @Override
                         public void onComplete() {
@@ -249,7 +249,7 @@ public class SyncDataJobService extends JobService {
 //                                AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().deleteJobStatusNot(
 //                                        "1","2","3","4","5","6","7","8","9","10","11","12"
 //                                );
-                                App_preference.getSharedprefInstance().setFirstSyncState(2);
+                                App_preference.getSharedprefInstance().setFirstSyncState(1);
                                 startSyncFromStatus();
                                 Log.v("MainSync","startJobSyncTimeCR"+" --" +App_preference.getSharedprefInstance().getJobSyncTime());
                                 Log.v("MainSync","Sync completed "+" --" +"JobSync Done");
@@ -266,6 +266,11 @@ public class SyncDataJobService extends JobService {
     private void getAppointmentSyncService() {
         int userId = Integer.parseInt(App_preference.getSharedprefInstance().getLoginRes().getUsrId());
 
+        if (FIrstSyncPreference.getSharedprefInstance().getAppoinmentIndexValue()!=0)
+        {
+            updateIndex=FIrstSyncPreference.getSharedprefInstance().getAppoinmentIndexValue();
+            FIrstSyncPreference.getSharedprefInstance().setAppoinmentIndexValue(0);
+        }
         AppointmentListReq model = new AppointmentListReq(
                 userId,
                 updateLimit, updateIndex
@@ -273,7 +278,8 @@ public class SyncDataJobService extends JobService {
         String data = new Gson().toJson(model);
         Log.d("Data error", "error" + data);
         HyperLog.i("TAG", "Data error" + data);
-
+        Log.d("Apitimetracking","getAppointmentUserList:-"+data);
+        Log.d("Apitimetracking","time:-"+AppUtility.getCurrentDateByFormat("yyyy-MM-dd kk:mm:ss"));
         ApiClient.getservices().eotServiceCall(Service_apis.getAppointmentUserList, AppUtility.getApiHeaders(), getJsonObject(data))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -299,10 +305,11 @@ public class SyncDataJobService extends JobService {
                     @Override
                     public void onError(@NotNull Throwable e) {
                         Log.d("error", e.getMessage());
-                        AppCenterLogs.addLogToAppCenterOnAPIFail("Api","getAppointmentUserList",e.getMessage(),"SyncDataJobService","");
+                  //      AppCenterLogs.addLogToAppCenterOnAPIFail("Api","getAppointmentUserList",e.getMessage(),"SyncDataJobService","");
                         HyperLog.i("TAG", "Data error" + e.getMessage());
                         Log.e("Network Error :", e.toString());
                         Log.e("Network Error :", e.getLocalizedMessage());
+                        FIrstSyncPreference.getSharedprefInstance().setAppoinmentIndexValue(0);
                         errorMsg(e.toString());
                     }
 
@@ -318,7 +325,7 @@ public class SyncDataJobService extends JobService {
                             updateIndex = 0;
                             count = 0;
                             AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).appointmentModel().deleteAppointmentByIsDelete();
-                            App_preference.getSharedprefInstance().setFirstSyncState(7);
+                            App_preference.getSharedprefInstance().setFirstSyncState(6);
                             startSyncFromStatus();
                             Log.v("MainSync","Sync completed "+" --" +"appointment Sync Done");
                         }
@@ -334,13 +341,19 @@ public class SyncDataJobService extends JobService {
     private void getInvoiceItemList() {
         Log.e("data--->>>", "data--->>>");
         if (AppUtility.isInternetConnected()) {
+            if (FIrstSyncPreference.getSharedprefInstance().getInvoiceItemIndexValue()!=0)
+            {
+                updateIndex=FIrstSyncPreference.getSharedprefInstance().getInvoiceItemIndexValue();
+                FIrstSyncPreference.getSharedprefInstance().setInvoiceItemIndexValue(0);
+            }
             Inventry_ReQ_Model inventry_model = new Inventry_ReQ_Model(Integer.parseInt(App_preference.getSharedprefInstance().getLoginRes().getCompId()),
                     "",
 
                     updateLimit, updateIndex, App_preference.getSharedprefInstance().getInventryItemSyncTime());//
 
             String data = new Gson().toJson(inventry_model);
-
+            Log.d("Apitimetracking","getItemList:-"+data);
+            Log.d("Apitimetracking","time:-"+AppUtility.getCurrentDateByFormat("yyyy-MM-dd kk:mm:ss"));
             ApiClient.getservices().eotServiceCall(Service_apis.getItemList, AppUtility.getApiHeaders(), getJsonObject(data))
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -370,8 +383,9 @@ public class SyncDataJobService extends JobService {
                         @Override
                         public void onError(@NotNull Throwable e) {
                             Log.e("Network Error :", e.toString());
-                            AppCenterLogs.addLogToAppCenterOnAPIFail("Api","getItemList",e.getMessage(),"SyncDataJobService","");
+                   //         AppCenterLogs.addLogToAppCenterOnAPIFail("Api","getItemList",e.getMessage(),"SyncDataJobService","");
                             Log.e("TAG : error----", e.getMessage());
+                            FIrstSyncPreference.getSharedprefInstance().setInvoiceItemIndexValue(0);
                             errorMsg(e.toString());
                         }
 
@@ -389,7 +403,7 @@ public class SyncDataJobService extends JobService {
                                 }
                                 updateIndex = 0;
                                 count = 0;
-                                App_preference.getSharedprefInstance().setFirstSyncState(8);
+                                App_preference.getSharedprefInstance().setFirstSyncState(7);
                                 startSyncFromStatus();
                                 Log.v("MainSync","Sync completed "+" --" +"Invoice Sync Done");
                             }
@@ -415,10 +429,17 @@ public class SyncDataJobService extends JobService {
                     ActivityLogController.LOGIN_SYNC_USER_LIST_CHAT,
                     ActivityLogController.LOGIN_MODULE
             );
+            if (FIrstSyncPreference.getSharedprefInstance().getChatgroupIndexValue()!=0)
+            {
+                updateIndex=FIrstSyncPreference.getSharedprefInstance().getChatgroupIndexValue();
+                FIrstSyncPreference.getSharedprefInstance().setChatGroupIndexValue(0);
+            }
             UserChatListModelReq model = new UserChatListModelReq(Integer.parseInt(App_preference.getSharedprefInstance().getLoginRes().getCompId()),
                     updateLimit, updateIndex
                     , App_preference.getSharedprefInstance().getUsersSyncTime());
             String data = new Gson().toJson(model);
+            Log.d("Apitimetracking","groupUserListForChat:-"+data);
+            Log.d("Apitimetracking","time:-"+AppUtility.getCurrentDateByFormat("yyyy-MM-dd kk:mm:ss"));
             ApiClient.getservices().eotServiceCall(Service_apis.groupUserListForChat,
                     AppUtility.getApiHeaders(), getJsonObject(data))
                     .subscribeOn(Schedulers.io())
@@ -446,7 +467,8 @@ public class SyncDataJobService extends JobService {
                         @Override
                         public void onError(@NotNull Throwable e) {
                             Log.e("Network Error :", e.toString());
-                            AppCenterLogs.addLogToAppCenterOnAPIFail("Api","groupUserListForChat",e.getMessage(),"SyncDataJobService","");
+                        //    AppCenterLogs.addLogToAppCenterOnAPIFail("Api","groupUserListForChat",e.getMessage(),"SyncDataJobService","");
+                          FIrstSyncPreference.getSharedprefInstance().setChatGroupIndexValue(0);
                             errorMsg(e.toString());
                         }
 
@@ -461,7 +483,7 @@ public class SyncDataJobService extends JobService {
                                 }
                                 updateIndex = 0;
                                 count = 0;
-                                App_preference.getSharedprefInstance().setFirstSyncState(6);
+                                App_preference.getSharedprefInstance().setFirstSyncState(5);
                                 startSyncFromStatus();
                                 Log.v("MainSync","Sync completed "+" --" +"Chat Grup Sync Done");
 
@@ -478,13 +500,19 @@ public class SyncDataJobService extends JobService {
                     ActivityLogController.LOGIN_CLIENT_SITE_SYN,
                     ActivityLogController.LOGIN_MODULE
             );
+            if (FIrstSyncPreference.getSharedprefInstance().getSiteIndexValue()!=0)
+            {
+                updateIndex=FIrstSyncPreference.getSharedprefInstance().getSiteIndexValue();
+                FIrstSyncPreference.getSharedprefInstance().setSiteIndexValue(0);
+            }
             Client_Request_model client_request_model = new Client_Request_model(Integer.parseInt(App_preference.getSharedprefInstance().getLoginRes().getCompId()),
                     updateLimit, updateIndex, App_preference.getSharedprefInstance().getSiteSyncTime());
 //            Client_Request_model client_request_model = new Client_Request_model(Integer.parseInt(App_preference.getSharedprefInstance().getLoginRes().getCompId()),
 //                    5000, 0, App_preference.getSharedprefInstance().getSiteSyncTime());
 
             String data = new Gson().toJson(client_request_model);
-
+            Log.d("Apitimetracking","getClientSiteSink:-"+data);
+            Log.d("Apitimetracking","time:-"+AppUtility.getCurrentDateByFormat("yyyy-MM-dd kk:mm:ss"));
             ApiClient.getservices().eotServiceCall(Service_apis.getClientSiteSink, AppUtility.getApiHeaders(), getJsonObject(data))
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -511,7 +539,8 @@ public class SyncDataJobService extends JobService {
                         @Override
                         public void onError(@NotNull Throwable e) {
                             Log.e("Network Error :", e.toString());
-                            AppCenterLogs.addLogToAppCenterOnAPIFail("Api","getClientSiteSink",e.getMessage(),"SyncDataJobService","");
+                       //     AppCenterLogs.addLogToAppCenterOnAPIFail("Api","getClientSiteSink",e.getMessage(),"SyncDataJobService","");
+                          FIrstSyncPreference.getSharedprefInstance().setSiteIndexValue(0);
                             errorMsg(e.toString());
                         }
 
@@ -530,7 +559,7 @@ public class SyncDataJobService extends JobService {
                                 AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).sitemodel().deleteSiteByIsDelete();
 
 
-                                App_preference.getSharedprefInstance().setFirstSyncState(5);
+                                App_preference.getSharedprefInstance().setFirstSyncState(4);
                                 startSyncFromStatus();
                                 Log.v("MainSync","Sync completed "+" --" +"site Sync Done");
 
@@ -555,11 +584,17 @@ public class SyncDataJobService extends JobService {
                     ActivityLogController.LOGIN_CLIENT_CONTACT_SYN,
                     ActivityLogController.LOGIN_MODULE
             );
+            if (FIrstSyncPreference.getSharedprefInstance().getContactIndexValue()!=0)
+            {
+                updateIndex=FIrstSyncPreference.getSharedprefInstance().getContactIndexValue();
+                FIrstSyncPreference.getSharedprefInstance().setContactIndexValue(0);
+            }
             Client_Request_model client_request_model = new Client_Request_model(Integer.parseInt(App_preference.getSharedprefInstance().getLoginRes().getCompId()),
                     updateLimit, updateIndex, App_preference.getSharedprefInstance().getContactSyncTime());
 
             String data = new Gson().toJson(client_request_model);
-
+            Log.d("Apitimetracking","getClientContactSink"+data);
+            Log.d("Apitimetracking","time:-"+AppUtility.getCurrentDateByFormat("yyyy-MM-dd kk:mm:ss"));
             ApiClient.getservices().eotServiceCall(Service_apis.getClientContactSink, AppUtility.getApiHeaders(), getJsonObject(data))
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -585,7 +620,8 @@ public class SyncDataJobService extends JobService {
                         @Override
                         public void onError(@NotNull Throwable e) {
                             Log.e("Network Error :", e.toString());
-                            AppCenterLogs.addLogToAppCenterOnAPIFail("Api","getClientContactSink",e.getMessage(),"SyncDataJobService","");
+                        //    AppCenterLogs.addLogToAppCenterOnAPIFail("Api","getClientContactSink",e.getMessage(),"SyncDataJobService","");
+                            FIrstSyncPreference.getSharedprefInstance().setContactIndexValue(0);
                             errorMsg(e.toString());
                         }
 
@@ -601,7 +637,7 @@ public class SyncDataJobService extends JobService {
                                 updateIndex = 0;
                                 count = 0;
                                 AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).contactModel().deleteContactByIsDelete();
-                                App_preference.getSharedprefInstance().setFirstSyncState(4);
+                                App_preference.getSharedprefInstance().setFirstSyncState(3);
                                 startSyncFromStatus();
                                 Log.v("MainSync","Sync completed "+" --" +"Contact Sync Done");
 
@@ -622,12 +658,18 @@ public class SyncDataJobService extends JobService {
                     ActivityLogController.LOGIN_CLIENT_SYNC,
                     ActivityLogController.LOGIN_MODULE
             );
+            if (FIrstSyncPreference.getSharedprefInstance().getclilentIndexValue()!=0)
+            {
+                updateIndex=FIrstSyncPreference.getSharedprefInstance().getclilentIndexValue();
+                FIrstSyncPreference.getSharedprefInstance().setclientIndexValue(0);
+            }
             Client_Request_model client_request_model = new Client_Request_model(
                     Integer.parseInt(App_preference.getSharedprefInstance().getLoginRes().getCompId()),
                     updateLimit, updateIndex, App_preference.getSharedprefInstance().getClientSyncTime());
 
             String data = new Gson().toJson(client_request_model);
-
+            Log.d("Apitimetracking","getClientSink:-"+data);
+            Log.d("Apitimetracking","time:-"+AppUtility.getCurrentDateByFormat("yyyy-MM-dd kk:mm:ss"));
             ApiClient.getservices().eotServiceCall(Service_apis.getClientSink, AppUtility.getApiHeaders(), getJsonObject(data))
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -653,7 +695,8 @@ public class SyncDataJobService extends JobService {
                         @Override
                         public void onError(@NotNull Throwable e) {
                             Log.e("Network Error :", e.toString());
-                            AppCenterLogs.addLogToAppCenterOnAPIFail("Api","getClientSink",e.getMessage(),"SyncDataJobService","");
+                         //   AppCenterLogs.addLogToAppCenterOnAPIFail("Api","getClientSink",e.getMessage(),"SyncDataJobService","");
+                            FIrstSyncPreference.getSharedprefInstance().setclientIndexValue(0);
                             errorMsg(e.toString());
                         }
 
@@ -669,7 +712,7 @@ public class SyncDataJobService extends JobService {
                                 updateIndex = 0;
                                 count = 0;
                                 AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).clientModel().deleteClientByIsDelete();
-                                App_preference.getSharedprefInstance().setFirstSyncState(3);
+                                App_preference.getSharedprefInstance().setFirstSyncState(2);
                                 startSyncFromStatus();
                                 Log.v("MainSync","Sync completed "+" --" +"Client Sync Done");
                             }
@@ -683,9 +726,16 @@ public class SyncDataJobService extends JobService {
     }
 
     private void getInvoiceTaxesList() {
+        if (FIrstSyncPreference.getSharedprefInstance().getInvoiceTextIndexValue()!=0)
+        {
+            updateIndex=FIrstSyncPreference.getSharedprefInstance().getInvoiceTextIndexValue();
+            FIrstSyncPreference.getSharedprefInstance().setInvoiceTextIndexValue(0);
+        }
         TaxList_ReQ_Model model = new TaxList_ReQ_Model(App_preference.getSharedprefInstance().getLoginRes().getCompId()
                 , updateLimit, updateIndex, App_preference.getSharedprefInstance().getInventryTaxesSyncTime());
         String data = new Gson().toJson(model);
+        Log.d("Apitimetracking","getTaxList:-"+data);
+        Log.d("Apitimetracking","time:-"+AppUtility.getCurrentDateByFormat("yyyy-MM-dd kk:mm:ss"));
         ApiClient.getservices().eotServiceCall(Service_apis.getTaxList, AppUtility.getApiHeaders(), getJsonObject(data))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -711,8 +761,9 @@ public class SyncDataJobService extends JobService {
                     @Override
                     public void onError(@NotNull Throwable e) {
                         Log.e("Network Error :", e.toString());
-                        AppCenterLogs.addLogToAppCenterOnAPIFail("Api","getTaxList",e.getMessage(),"SyncDataJobService","");
+                     //   AppCenterLogs.addLogToAppCenterOnAPIFail("Api","getTaxList",e.getMessage(),"SyncDataJobService","");
                         Log.e("ERROR", e.getMessage());
+                        FIrstSyncPreference.getSharedprefInstance().setInvoiceTextIndexValue(0);
                         errorMsg(e.toString());
                     }
 
@@ -728,7 +779,7 @@ public class SyncDataJobService extends JobService {
                             }
                             updateIndex = 0;
                             count = 0;
-                            App_preference.getSharedprefInstance().setFirstSyncState(9);
+                            App_preference.getSharedprefInstance().setFirstSyncState(8);
                             startSyncFromStatus();
                         }
                     }
@@ -737,11 +788,19 @@ public class SyncDataJobService extends JobService {
 
     private void getCustomForm()
     {
+        if (FIrstSyncPreference.getSharedprefInstance().getCustomIndexValue()!=0)
+        {
+            updateIndex=FIrstSyncPreference.getSharedprefInstance().getCustomIndexValue();
+            FIrstSyncPreference.getSharedprefInstance().setCustomIndexValue(0);
+        }
          JsonObject jsonObject=new JsonObject();
          jsonObject.addProperty("updateIndex",updateIndex);
          jsonObject.addProperty("updateLimit",updateLimit);
+         jsonObject.addProperty("datetime",App_preference.getSharedprefInstance().getShiftTimeSyncTime());
 
         String data = new Gson().toJson(jsonObject);
+        Log.d("Apitimetracking","getFormList:-"+data);
+        Log.d("time",AppUtility.getCurrentDateByFormat("yyyy-MM-dd kk:mm:ss"));
        ApiClient.getservices().eotServiceCall(Service_apis.getFormList,AppUtility.getApiHeaders(),AppUtility.getJsonObject(data))
                .subscribeOn(Schedulers.io())
                .observeOn(AndroidSchedulers.mainThread())
@@ -763,7 +822,7 @@ public class SyncDataJobService extends JobService {
                                executors.execute(new Runnable() {
                                    @Override
                                    public void run() {
-                                       AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).customFormListOfflineDao().delete();
+                                    //   AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).customFormListOfflineDao().delete();
                                        for (int i=0;i<formList.size();i++)
                                        {
                                            String jtId = formList.get(i).getJtId();
@@ -791,6 +850,7 @@ public class SyncDataJobService extends JobService {
                    @Override
                    public void onError(@NotNull Throwable e) {
                        Log.e("Network Error :", e.toString());
+                       FIrstSyncPreference.getSharedprefInstance().setCustomIndexValue(0);
                        errorMsg(e.toString());
                    }
 
@@ -805,7 +865,7 @@ public class SyncDataJobService extends JobService {
                            }
                            updateIndex = 0;
                            count = 0;
-                           App_preference.getSharedprefInstance().setFirstSyncState(15);
+                           App_preference.getSharedprefInstance().setFirstSyncState(14);
                            startSyncFromStatus();
                            Log.v("MainSync","Sync completed "+" --" +"job time Sync Done");
                        }
@@ -817,6 +877,8 @@ public class SyncDataJobService extends JobService {
         ShiftTimeReqModel equipmentListReq = new ShiftTimeReqModel(
                 App_preference.getSharedprefInstance().getShiftTimeSyncTime(), updateLimit, updateIndex);
         String data = new Gson().toJson(equipmentListReq);
+        Log.d("Apitimetracking","getShiftList:- "+data);
+        Log.d("Apitimetracking","time:-"+AppUtility.getCurrentDateByFormat("yyyy-MM-dd kk:mm:ss"));
         ApiClient.getservices().eotServiceCall(Service_apis.getShiftList, AppUtility.getApiHeaders(), AppUtility.getJsonObject(data))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -844,7 +906,7 @@ public class SyncDataJobService extends JobService {
                     @Override
                     public void onError(@NotNull Throwable e) {
                         Log.e("Network Error :", e.toString());
-                        AppCenterLogs.addLogToAppCenterOnAPIFail("Api","getShiftList",e.getMessage(),"SyncDataJobService","");
+                 //       AppCenterLogs.addLogToAppCenterOnAPIFail("Api","getShiftList",e.getMessage(),"SyncDataJobService","");
                         /* *****/
                         errorMsg(e.toString());
 
@@ -861,7 +923,7 @@ public class SyncDataJobService extends JobService {
                             }
                             updateIndex = 0;
                             count = 0;
-                            App_preference.getSharedprefInstance().setFirstSyncState(14);
+                            App_preference.getSharedprefInstance().setFirstSyncState(13);
                             startSyncFromStatus();
                             Log.v("MainSync","Sync completed "+" --" +"job time Sync Done");
 
@@ -872,81 +934,13 @@ public class SyncDataJobService extends JobService {
 
     }
 
-    // for fetching the job status json
-    private void getJobStatusList() {
-        JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("index",updateIndex);
-        jsonObject.addProperty("limit",updateLimit);
-        jsonObject.addProperty("search","");
-        String data = new Gson().toJson(jsonObject);
-        ApiClient.getservices().eotServiceCall(Service_apis.getJobStatus,
-                AppUtility.getApiHeaders(), AppUtility.getJsonObject(data))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<JsonObject>() {
-                    @Override
-                    public void onSubscribe(@NotNull Disposable d) {
-
-                    }
-
-                    @Override
-                    public void onNext(@NotNull JsonObject jsonObject) {
-                        AppCenterLogs.addLogToAppCenterOnAPIFail("Api","getJobStatus","","SyncDataJobService",String.valueOf(jsonObject.get("success").getAsBoolean()));
-                        Log.e("TaxLOcationList:", jsonObject.toString());
-                        if (jsonObject.get("success").getAsBoolean()) {
-                            count = jsonObject.get("count").getAsInt();
-                            String convert = new Gson().toJson(jsonObject.get("data").getAsJsonArray());
-                            Type listType = new TypeToken<List<JobStatusModelNew>>() {
-                            }.getType();
-                            List<JobStatusModelNew> statusList = new Gson().fromJson(convert, listType);
-
-                            if (statusList != null){
-                                AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobStatusModelNew().insertJobstatusList(statusList);
-
-                                for (JobStatusModelNew jobStatus: statusList) {
-                                    if(jobStatus.getIsDefault().equalsIgnoreCase("0"))
-                                    {
-                                        new LoadImage().execute(App_preference.getSharedprefInstance().getBaseURL()+jobStatus.getUrl(),jobStatus.getStatus_no());
-                                    }
-                                }
-                                AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobStatusModelNew().insertJobstatusList(statusList);
-                                Log.e("JobStatusListFirst::",new Gson().toJson(AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobStatusModelNew().getAllStatusList()));
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onError(@NotNull Throwable e) {
-                        Log.e("Network Error :", e.toString());
-                        AppCenterLogs.addLogToAppCenterOnAPIFail("Api","getJobStatus",e.getMessage(),"SyncDataJobService",String.valueOf(jsonObject.get("success").getAsBoolean()));
-                        /* *****/
-                        errorMsg(e.toString());
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        if ((updateIndex + updateLimit) <= count) {
-                            updateIndex += updateLimit;
-                            getJobStatusList();
-                        } else {
-                            JobStatus_Controller.getInstance().setDynamicStatusList();
-                            updateIndex = 0;
-                            count = 0;
-                            App_preference.getSharedprefInstance().setFirstSyncState(1);
-                            startSyncFromStatus();
-                            Log.v("MainSync","Sync completed "+" --" +"job time Sync Done");
-                        }
-                    }
-                });
-
-
-    }
 
     private void getTaxLocations() {
         TaxReqModel equipmentListReq = new TaxReqModel(
                 App_preference.getSharedprefInstance().getTaxLocationSyncTime());
         String data = new Gson().toJson(equipmentListReq);
+        Log.d("Apitimetracking:- ","getAllEquipments"+data);
+        Log.d("Apitimetracking","time:-"+AppUtility.getCurrentDateByFormat("yyyy-MM-dd kk:mm:ss"));
         ApiClient.getservices().eotServiceCall(Service_apis.getLocationList, AppUtility.getApiHeaders(), AppUtility.getJsonObject(data))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -974,7 +968,7 @@ public class SyncDataJobService extends JobService {
                     @Override
                     public void onError(@NotNull Throwable e) {
                         Log.e("Network Error :", e.toString());
-                        AppCenterLogs.addLogToAppCenterOnAPIFail("Api","getLocationList",e.getMessage(),"SyncDataJobService","");
+                     //   AppCenterLogs.addLogToAppCenterOnAPIFail("Api","getLocationList",e.getMessage(),"SyncDataJobService","");
                         /* *****/
                         errorMsg(e.toString());
 
@@ -991,7 +985,7 @@ public class SyncDataJobService extends JobService {
                             }
                             updateIndex = 0;
                             count = 0;
-                            App_preference.getSharedprefInstance().setFirstSyncState(13);
+                            App_preference.getSharedprefInstance().setFirstSyncState(12);
                             startSyncFromStatus();
                             Log.v("MainSync","Sync completed "+" --" +"tax location Sync Done");
 
@@ -1001,9 +995,16 @@ public class SyncDataJobService extends JobService {
     }
 
     private void getEquipmentList() {
+        if (FIrstSyncPreference.getSharedprefInstance().getEquipmentIndexValue()!=0)
+        {
+            updateIndex=FIrstSyncPreference.getSharedprefInstance().getEquipmentIndexValue();
+            FIrstSyncPreference.getSharedprefInstance().setEquipmentIndexValue(0);
+        }
         EquipmentListReq equipmentListReq = new EquipmentListReq(
                 updateLimit, updateIndex, "", App_preference.getSharedprefInstance().getAllEquipmentSyncTime());
         String data = new Gson().toJson(equipmentListReq);
+        Log.d("Apitimetracking","getAllEquipments:-"+data);
+        Log.d("Apitimetracking","time:-"+AppUtility.getCurrentDateByFormat("yyyy-MM-dd kk:mm:ss"));
         ApiClient.getservices().eotServiceCall(Service_apis.getAllEquipments, AppUtility.getApiHeaders(), AppUtility.getJsonObject(data))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -1033,8 +1034,9 @@ public class SyncDataJobService extends JobService {
                     @Override
                     public void onError(@NotNull Throwable e) {
                         Log.e("Network Error :", e.toString());
-                        AppCenterLogs.addLogToAppCenterOnAPIFail("Api","getAllEquipments",e.getMessage(),"SyncDataJobService","");
+                     //   AppCenterLogs.addLogToAppCenterOnAPIFail("Api","getAllEquipments",e.getMessage(),"SyncDataJobService","");
                         /* *****/
+                        FIrstSyncPreference.getSharedprefInstance().setEquipmentIndexValue(0);
                         errorMsg(e.toString());
 
                     }
@@ -1051,7 +1053,7 @@ public class SyncDataJobService extends JobService {
                             updateIndex = 0;
                             count = 0;
                             AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).equipmentDao().deleteEquipmentByIsDelete();
-                            App_preference.getSharedprefInstance().setFirstSyncState(12);
+                            App_preference.getSharedprefInstance().setFirstSyncState(11);
                             startSyncFromStatus();
                             Log.v("MainSync","Sync completed "+" --" +"quipment Sync Done");
 
@@ -1062,9 +1064,16 @@ public class SyncDataJobService extends JobService {
 
     /***get Contract List****/
     private void getContractList() {
+        if (FIrstSyncPreference.getSharedprefInstance().getContractIndexValue()!=0)
+        {
+            updateIndex=FIrstSyncPreference.getSharedprefInstance().getContractIndexValue();
+            FIrstSyncPreference.getSharedprefInstance().setContractIndexValue(0);
+        }
         ContractReq contractReq = new ContractReq(
                 updateLimit, updateIndex, "", App_preference.getSharedprefInstance().getContractSyncTime());
         String data = new Gson().toJson(contractReq);
+        Log.d("Apitimetracking","getContractList:-"+data);
+        Log.d("Apitimetracking","time"+AppUtility.getCurrentDateByFormat("yyyy-MM-dd kk:mm:ss"));
         ApiClient.getservices().eotServiceCall(Service_apis.getContractList, AppUtility.getApiHeaders(), AppUtility.getJsonObject(data))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -1093,7 +1102,8 @@ public class SyncDataJobService extends JobService {
                     public void onError(@NotNull Throwable e) {
                         Log.e("Network Error :", e.toString());
                         /* *****/
-                        AppCenterLogs.addLogToAppCenterOnAPIFail("Api","getContractList",e.getMessage(),"SyncDataJobService","");
+                  //      AppCenterLogs.addLogToAppCenterOnAPIFail("Api","getContractList",e.getMessage(),"SyncDataJobService","");
+                        FIrstSyncPreference.getSharedprefInstance().setContractIndexValue(0);
                         errorMsg(e.toString());
                     }
 
@@ -1109,7 +1119,7 @@ public class SyncDataJobService extends JobService {
                             updateIndex = 0;
                             count = 0;
                             AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).contractDao().deleteContractByIsDelete();
-                            App_preference.getSharedprefInstance().setFirstSyncState(11);
+                            App_preference.getSharedprefInstance().setFirstSyncState(10);
                             startSyncFromStatus();
                             Log.v("MainSync","Sync completed "+" --" +"contract Sync Done");
 
@@ -1119,9 +1129,16 @@ public class SyncDataJobService extends JobService {
     }
 
     private void getAuditList() {
+        if (FIrstSyncPreference.getSharedprefInstance().getAuditIndexValue()!=0)
+        {
+            updateIndex=FIrstSyncPreference.getSharedprefInstance().getAuditIndexValue();
+            FIrstSyncPreference.getSharedprefInstance().setAuditIndexValue(0);
+        }
         AuditListRequestModel auditListRequestModel = new AuditListRequestModel(Integer.parseInt(App_preference.getSharedprefInstance().getLoginRes().getUsrId()),
                 updateLimit, updateIndex, App_preference.getSharedprefInstance().getAuditSyncTime());
         String data = new Gson().toJson(auditListRequestModel);
+        Log.d("Apitimetracking","getAuditList:-"+data);
+        Log.d("Apitimetracking","time:-"+AppUtility.getCurrentDateByFormat("yyyy-MM-dd kk:mm:ss"));
         ApiClient.getservices().eotServiceCall(Service_apis.getAuditList, AppUtility.getApiHeaders(), AppUtility.getJsonObject(data))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -1149,7 +1166,8 @@ public class SyncDataJobService extends JobService {
                     @Override
                     public void onError(@NotNull Throwable e) {
                         Log.e("Network Error :", e.toString());
-                        AppCenterLogs.addLogToAppCenterOnAPIFail("Api","getAuditList",e.getMessage(),"SyncDataJobService","");
+               //         AppCenterLogs.addLogToAppCenterOnAPIFail("Api","getAuditList",e.getMessage(),"SyncDataJobService","");
+                        FIrstSyncPreference.getSharedprefInstance().setAuditIndexValue(0);
                         errorMsg(e.toString());
                     }
 
@@ -1167,7 +1185,7 @@ public class SyncDataJobService extends JobService {
                             count = 0;
                             AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).auditDao().deleteJobByIsDelete();
                             //     AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).auditDao().deleteAuditStatusNot();
-                            App_preference.getSharedprefInstance().setFirstSyncState(10);
+                            App_preference.getSharedprefInstance().setFirstSyncState(9);
                             startSyncFromStatus();
                             Log.v("MainSync","Sync completed "+" --" +"Audit List Sync Done");
                         }
@@ -1199,40 +1217,5 @@ public class SyncDataJobService extends JobService {
         OfflineDataController.getInstance().fromFirstTimeSyncCall((success_no, msg) -> startSyncFromStatus());
     }
 
-    private static class LoadImage extends AsyncTask<String, Void, Bitmap> {
-
-        String statusNo="0";
-        @Override
-        protected Bitmap doInBackground(String... strings) {
-            Bitmap bitmap = null;
-            try {
-                statusNo=strings[1];
-                InputStream inputStream = new URL(strings[0]).openStream();
-                bitmap = BitmapFactory.decodeStream(inputStream);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return bitmap;
-        }
-
-        @Override
-        protected void onPostExecute(Bitmap bitmap) {
-            try
-            {
-                Log.e("StatusNo:: ",statusNo);
-                Log.e("BitmapImage:: ",AppUtility.BitMapToString(bitmap));
-                AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobStatusModelNew().upadteBitmapUrl(statusNo,AppUtility.BitMapToString(bitmap));
-                Log.e("JobStatusListSecond::",new Gson().toJson(AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobStatusModelNew().getAllStatusList()));
-                // to set the updated list in the job status controller
-                JobStatus_Controller.getInstance().setDynamicStatusList();
-            }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-            }
-
-//            imageView.setImageBitmap(bitmap);
-        }
-    }
 
 }

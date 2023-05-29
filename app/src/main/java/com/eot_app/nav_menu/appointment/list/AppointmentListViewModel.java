@@ -35,6 +35,7 @@ import com.eot_app.utility.AppUtility;
 import com.eot_app.utility.App_preference;
 import com.eot_app.utility.EotApp;
 import com.eot_app.utility.db.AppDataBase;
+import com.eot_app.utility.language_support.LanguageController;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
@@ -113,7 +114,7 @@ public class AppointmentListViewModel extends AndroidViewModel implements Server
     }
 
     public void refreshAppoiListFromServer() {
-        loadList();
+       loadList();
     }
 
     public void refreshListFromServer() {
@@ -149,8 +150,8 @@ public class AppointmentListViewModel extends AndroidViewModel implements Server
                         LocalBroadcastManager.getInstance(EotApp.getAppinstance()).sendBroadcast(new Intent("appointment_details_refresh"));
                     }
                 } else {
-                    if (jsonObject.get("statusCode") != null) {
-                        jsonObject.get("statusCode").getAsString();
+                    if (jsonObject.get("statusCode") != null && jsonObject.get("statusCode").getAsString().equals(AppConstant.SESSION_EXPIRE)) {
+                        mainActivity.onSessionExpired(LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
                     }
                     //   expenseListView.onSessionExpire(LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
                 }
@@ -176,7 +177,7 @@ public class AppointmentListViewModel extends AndroidViewModel implements Server
                             loadList();
                         }
                     } else if (jsonObject.get("statusCode") != null && jsonObject.get("statusCode").getAsString().equals(AppConstant.SESSION_EXPIRE)) {
-                        //  auditListView.onSessionExpired(LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
+                        mainActivity.onSessionExpired(LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -225,6 +226,10 @@ public class AppointmentListViewModel extends AndroidViewModel implements Server
                         count = 0;
                         AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().deleteJobByIsDelete();
                         loadAudit();
+                    }
+                }else{
+                    if (jsonObject.get("statusCode") != null && jsonObject.get("statusCode").getAsString().equals(AppConstant.SESSION_EXPIRE)) {
+                        mainActivity.onSessionExpired(LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
                     }
                 }
                 break;
@@ -349,7 +354,7 @@ public class AppointmentListViewModel extends AndroidViewModel implements Server
 
     /*load update jobs from server*/
     private void loadJob() {
-        String dateByFormatsync = AppUtility.getDateByFormatsync(App_preference.getSharedprefInstance().getJobSyncTime(), App_preference.getSharedprefInstance().getJobSyncTime());
+        String dateByFormatsync = App_preference.getSharedprefInstance().getJobSyncTime();
         JobListRequestModel jobListRequestModel = new JobListRequestModel(Integer.parseInt(App_preference.getSharedprefInstance().getLoginRes().getUsrId()),
                 updatelimit, updateindex, dateByFormatsync);
 
@@ -372,7 +377,7 @@ public class AppointmentListViewModel extends AndroidViewModel implements Server
     //load more appointment list with index
     private void loadList() {
         isRefresh.setValue(true);
-        String dateByFormatsync = AppUtility.getDateByFormatsync(App_preference.getSharedprefInstance().getAppointmentSyncTime(), App_preference.getSharedprefInstance().getAppointmentSyncTime());
+        String dateByFormatsync = App_preference.getSharedprefInstance().getAppointmentSyncTime();
         int userId = Integer.parseInt(App_preference.getSharedprefInstance().getLoginRes().getUsrId());
 
         AppointmentListReq model = new AppointmentListReq(

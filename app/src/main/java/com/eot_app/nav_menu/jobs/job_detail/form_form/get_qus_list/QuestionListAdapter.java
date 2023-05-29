@@ -482,6 +482,7 @@ public class QuestionListAdapter extends RecyclerView.Adapter<QuestionListAdapte
                 } else {
                     holder.add_sign.setVisibility(View.VISIBLE);
                     holder.delete_sign.setVisibility(View.GONE);
+                    holder.signature_set.setVisibility(View.GONE);
                 }
                 holder.signature_set.setOnClickListener(new View.OnClickListener() {
                     @Override
