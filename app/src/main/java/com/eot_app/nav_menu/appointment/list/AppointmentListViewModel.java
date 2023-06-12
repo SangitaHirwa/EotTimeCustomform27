@@ -354,7 +354,8 @@ public class AppointmentListViewModel extends AndroidViewModel implements Server
 
     /*load update jobs from server*/
     private void loadJob() {
-        String dateByFormatsync = App_preference.getSharedprefInstance().getJobSyncTime();
+        String dateByFormatsync = AppUtility.dateByFormeteNew(App_preference.getSharedprefInstance().getJobSyncTime());
+
         JobListRequestModel jobListRequestModel = new JobListRequestModel(Integer.parseInt(App_preference.getSharedprefInstance().getLoginRes().getUsrId()),
                 updatelimit, updateindex, dateByFormatsync);
 
@@ -366,7 +367,7 @@ public class AppointmentListViewModel extends AndroidViewModel implements Server
 
     /*load updated audit from server*/
     private void loadAudit() {
-        String dateByFormatsync = AppUtility.getDateByFormatsync(App_preference.getSharedprefInstance().getAuditSyncTime(), App_preference.getSharedprefInstance().getAuditSyncTime());
+        String dateByFormatsync = AppUtility.dateByFormeteNew(App_preference.getSharedprefInstance().getAuditSyncTime());
         int userId = Integer.parseInt(App_preference.getSharedprefInstance().getLoginRes().getUsrId());
         AuditListRequestModel auditListRequestModel = new AuditListRequestModel(userId,
                 updatelimit, updateindex, dateByFormatsync);
@@ -377,7 +378,7 @@ public class AppointmentListViewModel extends AndroidViewModel implements Server
     //load more appointment list with index
     private void loadList() {
         isRefresh.setValue(true);
-        String dateByFormatsync = App_preference.getSharedprefInstance().getAppointmentSyncTime();
+        String dateByFormatsync = AppUtility.dateByFormeteNew(App_preference.getSharedprefInstance().getAppointmentSyncTime());
         int userId = Integer.parseInt(App_preference.getSharedprefInstance().getLoginRes().getUsrId());
 
         AppointmentListReq model = new AppointmentListReq(

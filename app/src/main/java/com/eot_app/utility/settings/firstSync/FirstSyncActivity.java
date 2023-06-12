@@ -98,8 +98,8 @@ public class FirstSyncActivity extends AppCompatActivity implements FirstSyncVie
 
             App_preference.getSharedprefInstance().setContactSiteSynced(true);
 
-            App_preference.getSharedprefInstance().setContactSyncTime("");
-            App_preference.getSharedprefInstance().setSiteSyncTime("");
+        //    App_preference.getSharedprefInstance().setContactSyncTime("");
+       //     App_preference.getSharedprefInstance().setSiteSyncTime("");
         }
 
     }
