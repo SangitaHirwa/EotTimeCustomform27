@@ -17,7 +17,7 @@ public class AppConstant {
     public static final String REGISTER_UK = BuildConfig.REGISTER_UK;
 
 
-    public static final String DATE_TIME_FORMAT = "yyyy-MM-dd kk:mm:ss";// 2021-12-09 23:00:00
+    public static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";// 2021-12-09 23:00:00
     public static final String DATE_TIME_FORMAT_new = "dd-MMM-yyyy hh:mm:ss a";
     public static final int LIMIT_MID = 50;
     public static final int LIMIT_HIGH = 120;

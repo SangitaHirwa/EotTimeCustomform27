@@ -1756,14 +1756,14 @@ public class AddAuditActivity extends UploadDocumentActivity implements Add_Adui
                                 if (!TextUtils.isEmpty(questionList.get(i).getAns().get(0).getValue())) {
                                     long l = Long.parseLong(questionList.get(i).getAns().get(0).getValue());
                                     String formate = AppUtility.dateTimeByAmPmFormate(
-                                            "hh:mm a", "kk:mm");
+                                            "hh:mm a", "HH:mm");
                                     ans = AppUtility.getDates(l, formate);
                                 }
                                 break;
                             case "7":
                                 if (!TextUtils.isEmpty(questionList.get(i).getAns().get(0).getValue())) {
                                     long l = Long.parseLong(questionList.get(i).getAns().get(0).getValue());
-                                    String formate = AppUtility.dateTimeByAmPmFormate("dd-MMM-yyyy hh:mm a", "dd-MMM-yyyy kk:mm");
+                                    String formate = AppUtility.dateTimeByAmPmFormate("dd-MMM-yyyy hh:mm a", "dd-MMM-yyyy HH:mm");
                                     ans = AppUtility.getDates(l, formate);
                                 }
                                 break;
@@ -1815,7 +1815,7 @@ public class AddAuditActivity extends UploadDocumentActivity implements Add_Adui
         Locale.getDefault().getDisplayLanguage();
         try {
             SimpleDateFormat gettingfmt = new SimpleDateFormat(AppUtility.dateTimeByAmPmFormate(
-                    "dd-MM-yyyy hh:mm a", "dd-MM-yyyy kk:mm"), Locale.US);//, Locale.US
+                    "dd-MM-yyyy hh:mm a", "dd-MM-yyyy HH:mm"), Locale.US);//, Locale.US
             Date date = gettingfmt.parse(schdlStart);
             assert date != null;
             date.getTime();

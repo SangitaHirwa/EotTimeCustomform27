@@ -137,7 +137,7 @@ public class AddLead_pc implements Add_lead_pi {
     @Override
     public void getCurrentdateTime(@NonNull FieldListAdapter.ViewHolder holder) {
         String dateTime = AppUtility.getDateByFormat(AppUtility.dateTimeByAmPmFormate("dd-MM-yyyy hh:mm:ss a"
-                , "dd-MM-yyyy kk:mm:ss"));
+                , "dd-MM-yyyy HH:mm:ss"));
         String[] date_Time = dateTime.split(" ");
         String datestr = date_Time[0];
 
@@ -194,7 +194,7 @@ public class AddLead_pc implements Add_lead_pi {
                     TimeUnit.MINUTES.toSeconds(Integer.parseInt(time_dur[1])));
 
             SimpleDateFormat simpleDate = new SimpleDateFormat(
-                    AppUtility.dateTimeByAmPmFormate("dd-MM-yyyy hh:mm a", "dd-MM-yyyy kk:mm"), Locale.US);
+                    AppUtility.dateTimeByAmPmFormate("dd-MM-yyyy hh:mm a", "dd-MM-yyyy HH:mm"), Locale.US);
             Date past = null;
             long milisce = 0;
             try {
@@ -246,7 +246,7 @@ public class AddLead_pc implements Add_lead_pi {
     private void end_Date_Time(FieldListAdapter.ViewHolder holder) {
         String date_time = date_str + " " + time_str;
         SimpleDateFormat simpleDate = new SimpleDateFormat(
-                AppUtility.dateTimeByAmPmFormate("dd-MM-yyyy hh:mm a", "dd-MM-yyyy kk:mm"), Locale.US);
+                AppUtility.dateTimeByAmPmFormate("dd-MM-yyyy hh:mm a", "dd-MM-yyyy HH:mm"), Locale.US);
         Date past = null;
         long milisce = 0;
         try {

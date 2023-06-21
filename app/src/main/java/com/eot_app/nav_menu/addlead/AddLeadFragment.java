@@ -1742,10 +1742,10 @@ public class AddLeadFragment extends androidx.fragment.app.Fragment
                         try {
                             @SuppressLint("SimpleDateFormat") String s = new SimpleDateFormat(
                                     AppUtility.dateTimeByAmPmFormate("dd-MMM-yyyy hh:mm a",
-                                            "dd-MMM-yyyy kk:mm")).format(
+                                            "dd-MMM-yyyy HH:mm")).format(
                                     Objects.requireNonNull(new SimpleDateFormat(
                                             AppUtility.dateTimeByAmPmFormate(
-                                                    "dd-MM-yyyy hh:mm a", "dd-MM-yyyy kk:mm")).parse(newdateTime)));
+                                                    "dd-MM-yyyy hh:mm a", "dd-MM-yyyy HH:mm")).parse(newdateTime)));
                             textView.setText(s);
                         } catch (ParseException e) {
                             e.printStackTrace();
@@ -1767,7 +1767,7 @@ public class AddLeadFragment extends androidx.fragment.app.Fragment
             date_str = dateTime;
             if (time_str != null && time_str.equals("")) {
                 Date date = new Date(System.currentTimeMillis());
-                String formate = AppUtility.dateTimeByAmPmFormate("hh:mm aa", "kk:mm");
+                String formate = AppUtility.dateTimeByAmPmFormate("hh:mm aa", "HH:mm");
                 SimpleDateFormat dateFormat = new SimpleDateFormat(formate,
                         Locale.getDefault());
                 time_str = dateFormat.format(date);
@@ -1834,7 +1834,7 @@ public class AddLeadFragment extends androidx.fragment.app.Fragment
 
             if (time_en != null && time_en.equals("")) {
                 Date date = new Date(System.currentTimeMillis());
-                String formate = AppUtility.dateTimeByAmPmFormate("hh:mm aa", "kk:mm");
+                String formate = AppUtility.dateTimeByAmPmFormate("hh:mm aa", "HH:mm");
                 SimpleDateFormat dateFormat = new SimpleDateFormat(formate,
                         Locale.getDefault());
                 time_en = dateFormat.format(date);
@@ -2038,7 +2038,7 @@ public class AddLeadFragment extends androidx.fragment.app.Fragment
                     date_en = date_str = dateTime;
                     if (time_str != null && time_str.equals("")) {
                         Date date = new Date(System.currentTimeMillis());
-                        String formate = AppUtility.dateTimeByAmPmFormate("hh:mm aa", "kk:mm");
+                        String formate = AppUtility.dateTimeByAmPmFormate("hh:mm aa", "HH:mm");
                         SimpleDateFormat dateFormat = new SimpleDateFormat(formate,
                                 Locale.getDefault());
                         time_str = dateFormat.format(date);
@@ -2073,7 +2073,7 @@ public class AddLeadFragment extends androidx.fragment.app.Fragment
 
                     if (time_en != null && time_en.equals("")) {
                         Date date = new Date(System.currentTimeMillis());
-                        String formate = AppUtility.dateTimeByAmPmFormate("hh:mm aa", "kk:mm");
+                        String formate = AppUtility.dateTimeByAmPmFormate("hh:mm aa", "HH:mm");
                         SimpleDateFormat dateFormat = new SimpleDateFormat(formate,
                                 Locale.getDefault());
                         time_en = dateFormat.format(date);

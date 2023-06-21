@@ -130,7 +130,7 @@ public class AddQuotes_Activity extends UploadDocumentActivity implements View.O
                 e.printStackTrace();
             }
             DateFormat dateFormat = new SimpleDateFormat(
-                    AppUtility.dateTimeByAmPmFormate("hh:mm:ss a", "kk:mm:ss"), Locale.US);//append current time
+                    AppUtility.dateTimeByAmPmFormate("hh:mm:ss a", "HH:mm:ss"), Locale.US);//append current time
             dateFormat.format(new Date());
             String tag = ((String) view.getTag());
             if (tag.equals(Start_Date)) {
@@ -421,10 +421,10 @@ public class AddQuotes_Activity extends UploadDocumentActivity implements View.O
             invDate = AppUtility.getDateWithFormate
                     (Long.parseLong(quotesDetails.getInvData().getInvDate()),
                             AppUtility.dateTimeByAmPmFormate("dd-MM-yyyy hh:mm:ss a",
-                                    "dd-MM-yyyy kk:mm:ss"));
+                                    "dd-MM-yyyy HH:mm:ss"));
             dueDate = AppUtility.getDateWithFormate(Long.parseLong(quotesDetails.getInvData().getDuedate()),
                     AppUtility.dateTimeByAmPmFormate("dd-MM-yyyy hh:mm:ss a"
-                            , "dd-MM-yyyy kk:mm:ss"));
+                            , "dd-MM-yyyy HH:mm:ss"));
             date_start.setText(AppUtility.getDateWithFormate
                     (Long.parseLong(quotesDetails.getInvData().getInvDate()), "dd-MM-yyyy"));
             date_end.setText(AppUtility.getDateWithFormate(Long.parseLong(quotesDetails.getInvData().getDuedate()), "dd-MM-yyyy"));
@@ -763,7 +763,7 @@ public class AddQuotes_Activity extends UploadDocumentActivity implements View.O
 
     private void getCurrentdate() {
         String datetime = AppUtility.getDateByFormat(
-                AppUtility.dateTimeByAmPmFormate("dd-MM-yyyy hh:mm:ss a", "dd-MM-yyyy kk:mm:ss"));//get current date time
+                AppUtility.dateTimeByAmPmFormate("dd-MM-yyyy hh:mm:ss a", "dd-MM-yyyy HH:mm:ss"));//get current date time
         dueDate = invDate = datetime;
         String crrntDate = getDate(datetime);
         date_start.setText(crrntDate);

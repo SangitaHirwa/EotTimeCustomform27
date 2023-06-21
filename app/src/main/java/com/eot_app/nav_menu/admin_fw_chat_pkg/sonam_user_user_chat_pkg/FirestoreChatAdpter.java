@@ -41,7 +41,7 @@ public class FirestoreChatAdpter extends FirestoreRecyclerAdapter<ChatMsgDataMod
 
     @Override
     protected void onBindViewHolder(final FirestoreChatAdpter.MyViewHodels holder, int position, final ChatMsgDataModel model) {
-        String today_date = AppUtility.getDateByFormat(AppUtility.dateTimeByAmPmFormate("dd/MMM/yyyy hh:mm a","dd/MMM/yyyy kk:mm a"));
+        String today_date = AppUtility.getDateByFormat(AppUtility.dateTimeByAmPmFormate("dd/MMM/yyyy hh:mm a","dd/MMM/yyyy HH:mm a"));
         String[] today_Date = today_date.split(" ");
 
         /**get msg Sender name By id***/

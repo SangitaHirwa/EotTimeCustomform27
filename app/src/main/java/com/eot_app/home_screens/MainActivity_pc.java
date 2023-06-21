@@ -214,7 +214,7 @@ public class MainActivity_pc implements MainActivity_pi {
                                                 data.setLastCheckIn(lastCheckIn);
                                                 App_preference.getSharedprefInstance().setLoginResponse(new Gson().toJson(data));
                                                 HyperLog.i("TAG","Check In check out lastCheckIn "+App_preference.getSharedprefInstance().getLoginRes().getLastCheckIn());
-                                                HyperLog.i("TAG","Check In check out lastCheckIn date time "+AppUtility.getDateWithFormate(Long.parseLong(App_preference.getSharedprefInstance().getLoginRes().getLastCheckIn()), "dd-MM-yyyy kk:mm"));
+                                                HyperLog.i("TAG","Check In check out lastCheckIn date time "+AppUtility.getDateWithFormate(Long.parseLong(App_preference.getSharedprefInstance().getLoginRes().getLastCheckIn()), "dd-MM-yyyy HH:mm"));
                                             }
                                         }
                                         catch (Exception e){

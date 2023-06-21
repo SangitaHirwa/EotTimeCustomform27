@@ -277,7 +277,7 @@ public class AddAppointmentActivity extends UploadDocumentActivity implements Te
         try {
             long longStartTime = Long.parseLong(appointment.getSchdlStart());
             String timeFormat = AppUtility.getDateWithFormates(longStartTime, AppUtility.dateTimeByAmPmFormate("hh:mm a",
-                    "kk:mm"));
+                    "HH:mm"));
             binding.timeStart.setText(timeFormat);
             time_str = timeFormat;
 
@@ -287,7 +287,7 @@ public class AddAppointmentActivity extends UploadDocumentActivity implements Te
 
             long endTime = Long.parseLong(appointment.getSchdlFinish());
             timeFormat = AppUtility.getDateWithFormates(endTime, AppUtility
-                    .dateTimeByAmPmFormate("hh:mm a", "kk:mm"));
+                    .dateTimeByAmPmFormate("hh:mm a", "HH:mm"));
             binding.timeEnd.setText(timeFormat);
             time_en = timeFormat;
 
@@ -641,7 +641,7 @@ public class AddAppointmentActivity extends UploadDocumentActivity implements Te
 
     private String getLongTimeStamp(String schdlStart) {
         SimpleDateFormat gettingfmt = new SimpleDateFormat(AppUtility.dateTimeByAmPmFormate(
-                "dd-MM-yyyy hh:mm a", "dd-MM-yyyy kk:mm"), Locale.US);
+                "dd-MM-yyyy hh:mm a", "dd-MM-yyyy HH:mm"), Locale.US);
         try {
             Date formated = gettingfmt.parse(schdlStart);
             long l = formated.getTime() / 1000;
@@ -961,7 +961,7 @@ public class AddAppointmentActivity extends UploadDocumentActivity implements Te
 
     public void getCurrentdateTime(String calenderDate) {
         String dateTime = AppUtility.getDateByFormats(AppUtility.dateTimeByAmPmFormate(
-                "dd-MM-yyyy hh:mm:ss a", "dd-MM-yyyy kk:mm:ss"));
+                "dd-MM-yyyy hh:mm:ss a", "dd-MM-yyyy HH:mm:ss"));
         String[] date_Time = dateTime.split(" ");
         String datestr = date_Time[0];
 
@@ -1012,7 +1012,7 @@ public class AddAppointmentActivity extends UploadDocumentActivity implements Te
                     TimeUnit.MINUTES.toSeconds(Integer.parseInt(time_dur[1])));
 
             SimpleDateFormat simpleDate = new SimpleDateFormat(AppUtility.dateTimeByAmPmFormate(
-                    "dd-MM-yyyy hh:mm a", "dd-MM-yyyy kk:mm"), Locale.US);
+                    "dd-MM-yyyy hh:mm a", "dd-MM-yyyy HH:mm"), Locale.US);
             Date past = null;
             long milisce = 0;
             try {
@@ -1086,7 +1086,7 @@ public class AddAppointmentActivity extends UploadDocumentActivity implements Te
     private void end_Date_Time() {
         String date_time = date_str + " " + time_str;
         SimpleDateFormat simpleDate = new SimpleDateFormat(AppUtility.dateTimeByAmPmFormate(
-                "dd-MM-yyyy hh:mm a", "dd-MM-yyyy kk:mm"), Locale.US);
+                "dd-MM-yyyy hh:mm a", "dd-MM-yyyy HH:mm"), Locale.US);
         Date past = null;
         long milisce = 0;
         try {
@@ -1662,7 +1662,7 @@ public class AddAppointmentActivity extends UploadDocumentActivity implements Te
                     if (!TextUtils.isEmpty(schdlStart)) {
                         SimpleDateFormat format = new SimpleDateFormat(
                                 //"dd-MM-yyyy hh:mm a"
-                                AppUtility.dateTimeByAmPmFormate("dd-MM-yyyy hh:mm a", "dd-MM-yyyy kk:mm")
+                                AppUtility.dateTimeByAmPmFormate("dd-MM-yyyy hh:mm a", "dd-MM-yyyy HH:mm")
                                 , Locale.US);
                         try {
                             Date start = format.parse(schdlStart);

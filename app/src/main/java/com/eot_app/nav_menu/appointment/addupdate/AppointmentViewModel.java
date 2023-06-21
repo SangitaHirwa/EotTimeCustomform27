@@ -122,7 +122,7 @@ public class AppointmentViewModel extends AndroidViewModel implements ServerResp
 
     private String getTimeStampFromFormatedDate(String schdlStart) {
         SimpleDateFormat gettingfmt = new SimpleDateFormat(AppUtility.dateTimeByAmPmFormate(
-                "yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd kk:mm:ss"), Locale.US);
+                "yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss"), Locale.US);
         try {
             Date formated = gettingfmt.parse(schdlStart);
             return String.valueOf(formated.getTime() / 1000);

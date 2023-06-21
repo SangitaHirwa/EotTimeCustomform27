@@ -77,7 +77,7 @@ public class QuotesFilter_Activity extends AppCompatActivity implements View.OnC
                 e.printStackTrace();
             }
             DateFormat dateFormat = new SimpleDateFormat(
-                    AppUtility.dateTimeByAmPmFormate("hh:mm:ss a","kk:mm:ss "), Locale.US);//append current time
+                    AppUtility.dateTimeByAmPmFormate("hh:mm:ss a","HH:mm:ss "), Locale.US);//append current time
             dateFormat.format(new Date());
             String tag = ((String) view.getTag());
             if (tag.equals(Start_Date)) {

@@ -49,7 +49,7 @@ public class Reschedule_PC implements Reschedule_PI {
 
     private String getTimeStampFromFormatedDate(String schdlStart) {
         SimpleDateFormat gettingfmt = new SimpleDateFormat(
-                AppUtility.dateTimeByAmPmFormate("dd-MM-yyyy hh:mm a","dd-MM-yyyy kk:mm"), Locale.US);
+                AppUtility.dateTimeByAmPmFormate("dd-MM-yyyy hh:mm a","dd-MM-yyyy HH:mm"), Locale.US);
         if (App_preference.getSharedprefInstance().getLoginRes().getIsAutoTimeZone().equals("1")) {
             gettingfmt.setTimeZone(TimeZone.getTimeZone(App_preference.getSharedprefInstance().getLoginRes().getLoginUsrTz()));
         } else {

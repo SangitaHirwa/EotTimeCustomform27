@@ -108,7 +108,7 @@ public class FieldListAdapter extends RecyclerView.Adapter<FieldListAdapter.View
         this.addLead_pc = addLead_pc;
         this.addLeadFragment = addLeadFragment;
         String currentDateTime = AppUtility.getDateByFormat(AppUtility.dateTimeByAmPmFormate(
-                "dd-MMM-yyyy hh:mm a", "dd-MMM-yyyy kk:mm"));
+                "dd-MMM-yyyy hh:mm a", "dd-MMM-yyyy HH:mm"));
         String[] currentDateTimeArry = currentDateTime.split(" ");
         date = currentDateTimeArry[0];
 
@@ -592,13 +592,13 @@ public class FieldListAdapter extends RecyclerView.Adapter<FieldListAdapter.View
                     date = (dayOfMonth + "-" + monthString + "-" + year + " ");
                     String newDateTime = date + " " + time;
                     @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat(
-                            AppUtility.dateTimeByAmPmFormate("dd-MM-yyyy hh:mm a", "dd-MM-yyyy kk:mm"));
+                            AppUtility.dateTimeByAmPmFormate("dd-MM-yyyy hh:mm a", "dd-MM-yyyy HH:mm"));
                     try {
                         Date parseDate = sdf.parse(newDateTime);
                         assert parseDate != null;
                         holder.tvTimeDate.setText(new SimpleDateFormat(AppUtility.dateTimeByAmPmFormate(
                                 "dd-MMM-yyyy hh:mm a",
-                                "dd-MMM-yyyy kk:mm")).format(parseDate));
+                                "dd-MMM-yyyy HH:mm")).format(parseDate));
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
@@ -799,7 +799,7 @@ public class FieldListAdapter extends RecyclerView.Adapter<FieldListAdapter.View
                                     long startDate = 10;
                                     try {
                                         SimpleDateFormat sdf = new SimpleDateFormat(
-                                                AppUtility.dateTimeByAmPmFormate("hh:mm a", "kk:mm"), Locale.US);
+                                                AppUtility.dateTimeByAmPmFormate("hh:mm a", "HH:mm"), Locale.US);
                                         Date date = sdf.parse(s.toString());
                                         assert date != null;
                                         startDate = date.getTime() / 1000;
@@ -839,7 +839,7 @@ public class FieldListAdapter extends RecyclerView.Adapter<FieldListAdapter.View
                                                 getAns().get(0).
                                                 getValue()) * 1000),
                                         AppUtility.dateTimeByAmPmFormate(
-                                                "hh:mm a", "kk:mm"));
+                                                "hh:mm a", "HH:mm"));
                                 holder.tvTime.setText(time);
                             }
                         } catch (Exception ex) {
@@ -866,7 +866,7 @@ public class FieldListAdapter extends RecyclerView.Adapter<FieldListAdapter.View
                                     try {
                                         SimpleDateFormat sdf = new SimpleDateFormat(
                                                 AppUtility.dateTimeByAmPmFormate("dd-MMM-yyyy hh:mm a",
-                                                        "dd-MMM-yyyy kk:mm"), Locale.US);
+                                                        "dd-MMM-yyyy HH:mm"), Locale.US);
                                         Date date = sdf.parse(s.toString());
                                         assert date != null;
                                         startDate = date.getTime() / 1000;
@@ -906,7 +906,7 @@ public class FieldListAdapter extends RecyclerView.Adapter<FieldListAdapter.View
                             if (!typeList.get(position).getAns().get(0).getValue().equals("")) {
                                 long dateLong = Long.parseLong(typeList.get(position).getAns().get(0).getValue());
                                 String dateConvert = AppUtility.getDate(dateLong,
-                                        AppUtility.dateTimeByAmPmFormate("dd-MMM-yyyy hh:mm a", "dd-MMM-yyyy kk:mm"));
+                                        AppUtility.dateTimeByAmPmFormate("dd-MMM-yyyy hh:mm a", "dd-MMM-yyyy HH:mm"));
                                 holder.tvTimeDate.setText(dateConvert);
                             }
                         } catch (NumberFormatException e) {

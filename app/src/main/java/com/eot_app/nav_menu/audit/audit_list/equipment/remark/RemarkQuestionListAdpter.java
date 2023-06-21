@@ -94,7 +94,7 @@ public class RemarkQuestionListAdpter extends RecyclerView.Adapter<RemarkQuestio
         this.isLoadtoBottom = false;
 
         String currentDateTime = AppUtility.getDateByFormat(AppUtility.dateTimeByAmPmFormate("dd-MMM-yyyy hh:mm a",
-                "dd-MMM-yyyy kk:mm"));
+                "dd-MMM-yyyy HH:mm"));
         String[] currentDateTimeArry = currentDateTime.split(" ");
         date = currentDateTimeArry[0];
         time = currentDateTimeArry[1] + " " + currentDateTimeArry[2];
@@ -112,7 +112,7 @@ public class RemarkQuestionListAdpter extends RecyclerView.Adapter<RemarkQuestio
         this.myFormInterFace = myFormInterFace;
         this.isLoadtoBottom = false;
         String currentDateTime = AppUtility.getDateByFormat(AppUtility.dateTimeByAmPmFormate("dd-MMM-yyyy hh:mm a",
-                "dd-MMM-yyyy kk:mm"));
+                "dd-MMM-yyyy HH:mm"));
         String[] currentDateTimeArry = currentDateTime.split(" ");
         date = currentDateTimeArry[0];
 
@@ -140,7 +140,7 @@ public class RemarkQuestionListAdpter extends RecyclerView.Adapter<RemarkQuestio
         this.myFormInterFace = myFormInterFace;
         this.isLoadtoBottom = false;
         String currentDateTime = AppUtility.getDateByFormat(AppUtility.dateTimeByAmPmFormate("dd-MMM-yyyy hh:mm a",
-                "dd-MMM-yyyy kk:mm"));
+                "dd-MMM-yyyy HH:mm"));
         String[] currentDateTimeArry = currentDateTime.split(" ");
         date = currentDateTimeArry[0];
 
@@ -338,7 +338,7 @@ public class RemarkQuestionListAdpter extends RecyclerView.Adapter<RemarkQuestio
                             String time = AppUtility.getDateWithFormate2((Long.parseLong(typeList.get(position).
                                             getAns().get(0).
                                             getValue()) * 1000),
-                                    AppUtility.dateTimeByAmPmFormate("hh:mm a", "kk:mm"));
+                                    AppUtility.dateTimeByAmPmFormate("hh:mm a", "HH:mm"));
                             holder.tvTime.setText(time);
                         }
                     } catch (Exception ex) {
@@ -367,7 +367,7 @@ public class RemarkQuestionListAdpter extends RecyclerView.Adapter<RemarkQuestio
                         if (!typeList.get(position).getAns().get(0).getValue().equals("")) {
                             Long dateLong = Long.parseLong(typeList.get(position).getAns().get(0).getValue());
                             String dateConvert = AppUtility.getDate(dateLong,
-                                    AppUtility.dateTimeByAmPmFormate("dd-MMM-yyyy hh:mm a", "dd-MMM-yyyy kk:mm"));
+                                    AppUtility.dateTimeByAmPmFormate("dd-MMM-yyyy hh:mm a", "dd-MMM-yyyy HH:mm"));
                             holder.tvTimeDate.setText(dateConvert);
                         }
                     } catch (NumberFormatException e) {
@@ -725,11 +725,11 @@ public class RemarkQuestionListAdpter extends RecyclerView.Adapter<RemarkQuestio
                                     //Unparseable date: "02-Jul-2021 22:31"
                                     String s = new SimpleDateFormat(
                                             AppUtility.dateTimeByAmPmFormate("dd-MMM-yyyy hh:mm a"
-                                                    , "dd-MMM-yyyy kk:mm")).
+                                                    , "dd-MMM-yyyy HH:mm")).
                                             format(new SimpleDateFormat(
                                                     AppUtility.dateTimeByAmPmFormate(
                                                             "dd-MM-yyyy hh:mm a"
-                                                            , "dd-MM-yyyy kk:mm")).parse(newdateTime));
+                                                            , "dd-MM-yyyy HH:mm")).parse(newdateTime));
                                     textView.setText(s);
                                 } catch (ParseException e) {
                                     textView.setText(newdateTime);
@@ -1194,11 +1194,11 @@ public class RemarkQuestionListAdpter extends RecyclerView.Adapter<RemarkQuestio
                         date = (dayOfMonth + "-" + monthString + "-" + year + " ");
                         String newDateTime = date + " " + time;
                         SimpleDateFormat sdf = new SimpleDateFormat(AppUtility.dateTimeByAmPmFormate(
-                                "dd-MM-yyyy hh:mm a", "dd-MM-yyyy kk:mm"));
+                                "dd-MM-yyyy hh:mm a", "dd-MM-yyyy HH:mm"));
                         try {
                             Date parseDate = sdf.parse(newDateTime);
                             tvTimeDate.setText(new SimpleDateFormat(
-                                    AppUtility.dateTimeByAmPmFormate("dd-MMM-yyyy hh:mm a", "dd-MMM-yyyy kk:mm")).format(parseDate));
+                                    AppUtility.dateTimeByAmPmFormate("dd-MMM-yyyy hh:mm a", "dd-MMM-yyyy HH:mm")).format(parseDate));
                         } catch (ParseException e) {
                             e.printStackTrace();
                         }
@@ -1241,7 +1241,7 @@ public class RemarkQuestionListAdpter extends RecyclerView.Adapter<RemarkQuestio
                             long startDate = 10;
                             try {
                                 SimpleDateFormat sdf = new SimpleDateFormat(AppUtility.dateTimeByAmPmFormate(
-                                        "hh:mm a", "kk:mm"), Locale.US);
+                                        "hh:mm a", "HH:mm"), Locale.US);
                                 Date date = sdf.parse(s.toString());
                                 startDate = date.getTime() / 1000;
                             } catch (ParseException e) {
@@ -1293,7 +1293,7 @@ public class RemarkQuestionListAdpter extends RecyclerView.Adapter<RemarkQuestio
                             try {
                                 SimpleDateFormat sdf = new SimpleDateFormat(
                                         AppUtility.dateTimeByAmPmFormate(
-                                                "dd-MMM-yyyy hh:mm a", "dd-MMM-yyyy kk:mm"), Locale.US);
+                                                "dd-MMM-yyyy hh:mm a", "dd-MMM-yyyy HH:mm"), Locale.US);
                                 Date date = sdf.parse(s.toString());
                                 startDate = date.getTime() / 1000;
                             } catch (ParseException e) {

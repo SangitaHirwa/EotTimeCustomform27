@@ -360,7 +360,7 @@ public class AuditDetailsFragment extends Fragment implements View.OnClickListen
                                                                 getValue()) * 1000),
 
                                                         AppUtility.dateTimeByAmPmFormate(
-                                                                "hh:mm a", "kk:mm"));
+                                                                "hh:mm a", "HH:mm"));
                                                 textView.append(time);
                                             }
                                         } catch (Exception ex) {
@@ -374,7 +374,7 @@ public class AuditDetailsFragment extends Fragment implements View.OnClickListen
                                                 String dateConvert = AppUtility.getDate(dateLong,
                                                         AppUtility.dateTimeByAmPmFormate(
                                                                 "dd-MMM-yyyy hh:mm a",
-                                                                "dd-MMM-yyyy kk:mm"));
+                                                                "dd-MMM-yyyy HH:mm"));
                                                 textView.append(dateConvert);
                                             }
                                         } catch (NumberFormatException e) {
@@ -496,7 +496,7 @@ public class AuditDetailsFragment extends Fragment implements View.OnClickListen
             updateStatusButtons(this.audit.getStatus());
 
             String dateFormat = "dd MMM yyyy";
-            String timeFormat = AppUtility.dateTimeByAmPmFormate("hh:mm a", "kk:mm");
+            String timeFormat = AppUtility.dateTimeByAmPmFormate("hh:mm a", "HH:mm");
 
             if (!TextUtils.isEmpty(this.audit.getSchdlStart())) {
                 long startDateLong = Long.parseLong(this.audit.getSchdlStart());

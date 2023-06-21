@@ -197,7 +197,7 @@ public class SyncDataJobService extends JobService {
                     updateLimit, updateIndex, App_preference.getSharedprefInstance().getJobSyncTime());
             String data = new Gson().toJson(jobListRequestModel);
             Log.d("Apitimetracking","getUserJobList:-"+data);
-            Log.d("Apitimetracking","time:-"+AppUtility.getCurrentDateByFormat("yyyy-MM-dd kk:mm:ss"));
+            Log.d("Apitimetracking","time:-"+AppUtility.getCurrentDateByFormat("yyyy-MM-dd HH:mm:ss"));
             ApiClient.getservices().eotServiceCall(Service_apis.getUserJobList, AppUtility.getApiHeaders(), getJsonObject(data))
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -279,7 +279,7 @@ public class SyncDataJobService extends JobService {
         Log.d("Data error", "error" + data);
         HyperLog.i("TAG", "Data error" + data);
         Log.d("Apitimetracking","getAppointmentUserList:-"+data);
-        Log.d("Apitimetracking","time:-"+AppUtility.getCurrentDateByFormat("yyyy-MM-dd kk:mm:ss"));
+        Log.d("Apitimetracking","time:-"+AppUtility.getCurrentDateByFormat("yyyy-MM-dd HH:mm:ss"));
         ApiClient.getservices().eotServiceCall(Service_apis.getAppointmentUserList, AppUtility.getApiHeaders(), getJsonObject(data))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -353,7 +353,7 @@ public class SyncDataJobService extends JobService {
 
             String data = new Gson().toJson(inventry_model);
             Log.d("Apitimetracking","getItemList:-"+data);
-            Log.d("Apitimetracking","time:-"+AppUtility.getCurrentDateByFormat("yyyy-MM-dd kk:mm:ss"));
+            Log.d("Apitimetracking","time:-"+AppUtility.getCurrentDateByFormat("yyyy-MM-dd HH:mm:ss"));
             ApiClient.getservices().eotServiceCall(Service_apis.getItemList, AppUtility.getApiHeaders(), getJsonObject(data))
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -439,7 +439,7 @@ public class SyncDataJobService extends JobService {
                     , App_preference.getSharedprefInstance().getUsersSyncTime());
             String data = new Gson().toJson(model);
             Log.d("Apitimetracking","groupUserListForChat:-"+data);
-            Log.d("Apitimetracking","time:-"+AppUtility.getCurrentDateByFormat("yyyy-MM-dd kk:mm:ss"));
+            Log.d("Apitimetracking","time:-"+AppUtility.getCurrentDateByFormat("yyyy-MM-dd HH:mm:ss"));
             ApiClient.getservices().eotServiceCall(Service_apis.groupUserListForChat,
                     AppUtility.getApiHeaders(), getJsonObject(data))
                     .subscribeOn(Schedulers.io())
@@ -512,7 +512,7 @@ public class SyncDataJobService extends JobService {
 
             String data = new Gson().toJson(client_request_model);
             Log.d("Apitimetracking","getClientSiteSink:-"+data);
-            Log.d("Apitimetracking","time:-"+AppUtility.getCurrentDateByFormat("yyyy-MM-dd kk:mm:ss"));
+            Log.d("Apitimetracking","time:-"+AppUtility.getCurrentDateByFormat("yyyy-MM-dd HH:mm:ss"));
             ApiClient.getservices().eotServiceCall(Service_apis.getClientSiteSink, AppUtility.getApiHeaders(), getJsonObject(data))
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -594,7 +594,7 @@ public class SyncDataJobService extends JobService {
 
             String data = new Gson().toJson(client_request_model);
             Log.d("Apitimetracking","getClientContactSink"+data);
-            Log.d("Apitimetracking","time:-"+AppUtility.getCurrentDateByFormat("yyyy-MM-dd kk:mm:ss"));
+            Log.d("Apitimetracking","time:-"+AppUtility.getCurrentDateByFormat("yyyy-MM-dd HH:mm:ss"));
             ApiClient.getservices().eotServiceCall(Service_apis.getClientContactSink, AppUtility.getApiHeaders(), getJsonObject(data))
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -669,7 +669,7 @@ public class SyncDataJobService extends JobService {
 
             String data = new Gson().toJson(client_request_model);
             Log.d("Apitimetracking","getClientSink:-"+data);
-            Log.d("Apitimetracking","time:-"+AppUtility.getCurrentDateByFormat("yyyy-MM-dd kk:mm:ss"));
+            Log.d("Apitimetracking","time:-"+AppUtility.getCurrentDateByFormat("yyyy-MM-dd HH:mm:ss"));
             ApiClient.getservices().eotServiceCall(Service_apis.getClientSink, AppUtility.getApiHeaders(), getJsonObject(data))
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -735,7 +735,7 @@ public class SyncDataJobService extends JobService {
                 , updateLimit, updateIndex, App_preference.getSharedprefInstance().getInventryTaxesSyncTime());
         String data = new Gson().toJson(model);
         Log.d("Apitimetracking","getTaxList:-"+data);
-        Log.d("Apitimetracking","time:-"+AppUtility.getCurrentDateByFormat("yyyy-MM-dd kk:mm:ss"));
+        Log.d("Apitimetracking","time:-"+AppUtility.getCurrentDateByFormat("yyyy-MM-dd HH:mm:ss"));
         ApiClient.getservices().eotServiceCall(Service_apis.getTaxList, AppUtility.getApiHeaders(), getJsonObject(data))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -800,7 +800,7 @@ public class SyncDataJobService extends JobService {
 
         String data = new Gson().toJson(jsonObject);
         Log.d("Apitimetracking","getFormList:-"+data);
-        Log.d("time",AppUtility.getCurrentDateByFormat("yyyy-MM-dd kk:mm:ss"));
+        Log.d("time",AppUtility.getCurrentDateByFormat("yyyy-MM-dd HH:mm:ss"));
        ApiClient.getservices().eotServiceCall(Service_apis.getFormList,AppUtility.getApiHeaders(),AppUtility.getJsonObject(data))
                .subscribeOn(Schedulers.io())
                .observeOn(AndroidSchedulers.mainThread())
@@ -878,7 +878,7 @@ public class SyncDataJobService extends JobService {
                 App_preference.getSharedprefInstance().getShiftTimeSyncTime(), updateLimit, updateIndex);
         String data = new Gson().toJson(equipmentListReq);
         Log.d("Apitimetracking","getShiftList:- "+data);
-        Log.d("Apitimetracking","time:-"+AppUtility.getCurrentDateByFormat("yyyy-MM-dd kk:mm:ss"));
+        Log.d("Apitimetracking","time:-"+AppUtility.getCurrentDateByFormat("yyyy-MM-dd HH:mm:ss"));
         ApiClient.getservices().eotServiceCall(Service_apis.getShiftList, AppUtility.getApiHeaders(), AppUtility.getJsonObject(data))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -940,7 +940,7 @@ public class SyncDataJobService extends JobService {
                 App_preference.getSharedprefInstance().getTaxLocationSyncTime());
         String data = new Gson().toJson(equipmentListReq);
         Log.d("Apitimetracking:- ","getAllEquipments"+data);
-        Log.d("Apitimetracking","time:-"+AppUtility.getCurrentDateByFormat("yyyy-MM-dd kk:mm:ss"));
+        Log.d("Apitimetracking","time:-"+AppUtility.getCurrentDateByFormat("yyyy-MM-dd HH:mm:ss"));
         ApiClient.getservices().eotServiceCall(Service_apis.getLocationList, AppUtility.getApiHeaders(), AppUtility.getJsonObject(data))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -1004,7 +1004,7 @@ public class SyncDataJobService extends JobService {
                 updateLimit, updateIndex, "", App_preference.getSharedprefInstance().getAllEquipmentSyncTime());
         String data = new Gson().toJson(equipmentListReq);
         Log.d("Apitimetracking","getAllEquipments:-"+data);
-        Log.d("Apitimetracking","time:-"+AppUtility.getCurrentDateByFormat("yyyy-MM-dd kk:mm:ss"));
+        Log.d("Apitimetracking","time:-"+AppUtility.getCurrentDateByFormat("yyyy-MM-dd HH:mm:ss"));
         ApiClient.getservices().eotServiceCall(Service_apis.getAllEquipments, AppUtility.getApiHeaders(), AppUtility.getJsonObject(data))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -1073,7 +1073,7 @@ public class SyncDataJobService extends JobService {
                 updateLimit, updateIndex, "", App_preference.getSharedprefInstance().getContractSyncTime());
         String data = new Gson().toJson(contractReq);
         Log.d("Apitimetracking","getContractList:-"+data);
-        Log.d("Apitimetracking","time"+AppUtility.getCurrentDateByFormat("yyyy-MM-dd kk:mm:ss"));
+        Log.d("Apitimetracking","time"+AppUtility.getCurrentDateByFormat("yyyy-MM-dd HH:mm:ss"));
         ApiClient.getservices().eotServiceCall(Service_apis.getContractList, AppUtility.getApiHeaders(), AppUtility.getJsonObject(data))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -1138,7 +1138,7 @@ public class SyncDataJobService extends JobService {
                 updateLimit, updateIndex, App_preference.getSharedprefInstance().getAuditSyncTime());
         String data = new Gson().toJson(auditListRequestModel);
         Log.d("Apitimetracking","getAuditList:-"+data);
-        Log.d("Apitimetracking","time:-"+AppUtility.getCurrentDateByFormat("yyyy-MM-dd kk:mm:ss"));
+        Log.d("Apitimetracking","time:-"+AppUtility.getCurrentDateByFormat("yyyy-MM-dd HH:mm:ss"));
         ApiClient.getservices().eotServiceCall(Service_apis.getAuditList, AppUtility.getApiHeaders(), AppUtility.getJsonObject(data))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

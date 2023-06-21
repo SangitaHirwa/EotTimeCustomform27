@@ -211,7 +211,7 @@ public class AppUtility {
         Locale.getDefault().getDisplayLanguage();
         try {
             SimpleDateFormat gettingfmt = new SimpleDateFormat(
-                    AppUtility.dateTimeByAmPmFormate("dd-MM-yyyy hh:mm a", "dd-MM-yyyy kk:mm"), Locale.US);//, Locale.US
+                    AppUtility.dateTimeByAmPmFormate("dd-MM-yyyy hh:mm a", "dd-MM-yyyy HH:mm"), Locale.US);//, Locale.US
             if (App_preference.getSharedprefInstance().getLoginRes().getIsAutoTimeZone().equals("1")) {
                 gettingfmt.setTimeZone(TimeZone.getTimeZone(App_preference.getSharedprefInstance().getLoginRes().getLoginUsrTz()));
             }else{
@@ -321,7 +321,7 @@ public class AppUtility {
     public static String getDate(long milliSeconds) { //Convert milisecond to Date time for chat
         try {
             SimpleDateFormat formatter = new SimpleDateFormat(
-                    AppUtility.dateTimeByAmPmFormate("dd/MMM/yyyy hh:mm a", "dd/MMM/yyyy kk:mm"), Locale.US);
+                    AppUtility.dateTimeByAmPmFormate("dd/MMM/yyyy hh:mm a", "dd/MMM/yyyy HH:mm"), Locale.US);
             if (App_preference.getSharedprefInstance().getLoginRes().getIsAutoTimeZone().equals("1")) {
                 formatter.setTimeZone(TimeZone.getTimeZone(App_preference.getSharedprefInstance().getLoginRes().getLoginUsrTz()));
             }else{
@@ -516,7 +516,7 @@ public class AppUtility {
     public static String[] getFormatedTime(String updateDate) {
         try {
             String timeFormate =
-                    AppUtility.dateTimeByAmPmFormate("EEE, d MMM yyyy/hh:mm/a", "EEE, d MMM yyyy/kk:mm");
+                    AppUtility.dateTimeByAmPmFormate("EEE, d MMM yyyy/hh:mm/a", "EEE, d MMM yyyy/HH:mm");
             // Create a DateFormatter object for displaying date in specified format.
 //            SimpleDateFormat formatter = new SimpleDateFormat(timeFormate, Locale.US);
             SimpleDateFormat formatter = new SimpleDateFormat(timeFormate, Locale.getDefault());
@@ -541,7 +541,7 @@ public class AppUtility {
     public static String[] getFormatedTime2(String updateDate) {
         try {
             String timeFormate =
-                    AppUtility.dateTimeByAmPmFormate("EEE, d MMM yyyy/hh:mm/a", "EEE, d MMM yyyy/kk:mm");
+                    AppUtility.dateTimeByAmPmFormate("EEE, d MMM yyyy/hh:mm/a", "EEE, d MMM yyyy/HH:mm");
             // Create a DateFormatter object for displaying date in specified format.
             SimpleDateFormat formatter = new SimpleDateFormat(timeFormate, Locale.getDefault());
             if (App_preference.getSharedprefInstance().getLoginRes().getIsAutoTimeZone().equals("1")) {
@@ -589,7 +589,7 @@ public class AppUtility {
     }
 
     public static String convertSecondToHHMMString(int secondtTime) {
-        @SuppressLint("SimpleDateFormat") SimpleDateFormat df = new SimpleDateFormat("kk:mm");
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat df = new SimpleDateFormat("HH:mm");
         if (App_preference.getSharedprefInstance().getLoginRes().getIsAutoTimeZone().equals("1")) {
             df.setTimeZone(TimeZone.getTimeZone(App_preference.getSharedprefInstance().getLoginRes().getLoginUsrTz()));
         }else{
@@ -1763,7 +1763,7 @@ public class AppUtility {
         try {
             SimpleDateFormat gettingfmt = new SimpleDateFormat(
                     //"dd-MM-yyyy hh:mm a"
-                    AppUtility.dateTimeByAmPmFormate("dd-MM-yyyy hh:mm a", "dd-MM-yyyy kk:mm")
+                    AppUtility.dateTimeByAmPmFormate("dd-MM-yyyy hh:mm a", "dd-MM-yyyy HH:mm")
                     , Locale.US);
             if (App_preference.getSharedprefInstance().getLoginRes().getIsAutoTimeZone().equals("1")) {
                 gettingfmt.setTimeZone(TimeZone.getTimeZone(App_preference.getSharedprefInstance().getLoginRes().getLoginUsrTz()));
@@ -1969,7 +1969,7 @@ public class AppUtility {
     public static String[] getFormatedTimes(String updateDate) {
         try {
             String timeFormate =
-                    AppUtility.dateTimeByAmPmFormate("EEE, d MMM yyyy/hh:mm/a", "EEE, d MMM yyyy/kk:mm");
+                    AppUtility.dateTimeByAmPmFormate("EEE, d MMM yyyy/hh:mm/a", "EEE, d MMM yyyy/HH:mm");
             // Create a DateFormatter object for displaying date in specified format.
 //            SimpleDateFormat formatter = new SimpleDateFormat(timeFormate, Locale.US);
             SimpleDateFormat formatter = new SimpleDateFormat(timeFormate, Locale.getDefault());

@@ -129,7 +129,7 @@ public class AdapterAppointments extends RecyclerView.Adapter<AdapterAppointment
 
 
         try {
-            String formate = AppUtility.dateTimeByAmPmFormate("hh:mm a", "kk:mm");
+            String formate = AppUtility.dateTimeByAmPmFormate("hh:mm a", "HH:mm");
             String time =
                     AppUtility.getDateWithFormate(Long.parseLong(appointment.getStartDateTime()), formate);
             holder.tv_start_time.setText(time);

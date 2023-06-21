@@ -57,7 +57,7 @@ public class UserChatMsgsAdpter extends RecyclerView.Adapter<UserChatMsgsAdpter.
     @Override
     public void onBindViewHolder(@NonNull final MyViewHolder holder, int i) {
         final MsgModel model = msgList.get(i);
-        String today_date = AppUtility.getDateByFormat(AppUtility.dateTimeByAmPmFormate("dd/MMM/yyyy hh:mm a", "dd/MMM/yyyy kk:mm"));
+        String today_date = AppUtility.getDateByFormat(AppUtility.dateTimeByAmPmFormate("dd/MMM/yyyy hh:mm a", "dd/MMM/yyyy HH:mm"));
         String[] today_Date = today_date.split(" ");
         String str = "", usrIDs = "", stringDate = "";
 
