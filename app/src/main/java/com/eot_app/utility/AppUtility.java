@@ -1308,7 +1308,7 @@ public class AppUtility {
                 double itemTotal = totalPrice + ((totalPrice * total_tax) / 100);
                 double discount = 0;
                 if (getDisCalculationType.equals("0"))
-                    discount = ((totalPrice * dis) / 100);
+                    discount = ((itemTotal * dis) / 100);
                 else if (getDisCalculationType.equals("1"))
                     discount = dis;
 
