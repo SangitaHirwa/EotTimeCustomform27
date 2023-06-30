@@ -268,6 +268,7 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
             binding.editor.setBackgroundColor(Color.TRANSPARENT);
             binding.editor.focusEditor();
             binding.editor.setInputEnabled(false);
+            binding.editor.getSettings().setAllowFileAccess(true);
 
             if (!TextUtils.isEmpty(model.getDes())) {
                 // binding.tvDes.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.description));

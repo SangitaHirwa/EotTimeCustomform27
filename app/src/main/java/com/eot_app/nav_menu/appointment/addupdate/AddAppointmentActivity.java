@@ -1610,7 +1610,7 @@ public class AddAppointmentActivity extends UploadDocumentActivity implements Te
         newAppointment.setNm(appointment.getNm());
         newAppointment.setEmail(binding.email.getText().toString());
         newAppointment.setMob1(binding.mobNo.getText().toString());
-        newAppointment.setDes(binding.jobDesc.getText().toString());
+        newAppointment.setDes(binding.editor.getHtml());
         newAppointment.setCtry(ctry_id);
         newAppointment.setState(state_id);
         newAppointment.setAdr(binding.adderes.getText().toString());
