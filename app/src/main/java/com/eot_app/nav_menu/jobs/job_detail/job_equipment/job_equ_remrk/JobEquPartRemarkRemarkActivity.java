@@ -596,10 +596,11 @@ public class JobEquPartRemarkRemarkActivity extends UploadDocumentActivity imple
     @Override
     public void onClickContinuarEvent(Uri uri) {
         String path = "";
+        String imageName="";
         path = PathUtils.getRealPath(this, uri);
         if (!path.isEmpty()) {
             if (type == 1) {
-                uploadRemarkAttchment(path);
+                uploadRemarkAttchment(path,imageName);
             } else if (type == 2) {
                 questionListAdapter.showAttchmentView(position, path, attchmentView, deleteAttchment, addAttchment);
             }
@@ -655,13 +656,14 @@ public class JobEquPartRemarkRemarkActivity extends UploadDocumentActivity imple
     }
 
 
-    private void uploadRemarkAttchment(String path) {
+    private void uploadRemarkAttchment(String path,String imageName) {
         if (jobId != null && equipment.getEquId() != null) {
             JobAuditSingleAttchReqModel model = new JobAuditSingleAttchReqModel(jobId, equipment.getEquId(),
                     button_submit.getText().toString(), titleNm, path, "1");
             String str = new Gson().toJson(model);
             Intent intent = new Intent(this, SelectedImageActivity.class);
             intent.putExtra("attchment", str);
+            intent.putExtra("image_name",imageName);
             startActivityForResult(intent, SINGLEATTCHMENT);
         }
 
@@ -1288,6 +1290,7 @@ public class JobEquPartRemarkRemarkActivity extends UploadDocumentActivity imple
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        String fileNameExt="";
         if (requestCode == SINGLEATTCHMENT) {
             if (Objects.requireNonNull(data).getSerializableExtra("code") != null) {
                 JobAuditSingleAttchReqModel myObject = (JobAuditSingleAttchReqModel) data.getSerializableExtra("code");
@@ -1299,7 +1302,8 @@ public class JobEquPartRemarkRemarkActivity extends UploadDocumentActivity imple
                             Bitmap bitmap = AppUtility.getBitmapFromPath(myObject.getPath());
                             bitmapString = AppUtility.BitMapToString(bitmap);
                         }
-                        String fileNameExt = AppUtility.getFileNameWithExtension(myObject.getPath());
+                       /* String fileNameExt = AppUtility.getFileNameWithExtension(myObject.getPath());*/
+                        fileNameExt=data.getStringExtra("image_name");
                         GetFileList_Res obj = new GetFileList_Res("0", fileNameExt, fileNameExt, bitmapString);
                         ArrayList<GetFileList_Res> updateList = new ArrayList<>();
                         updateList.add(obj);
@@ -1311,7 +1315,7 @@ public class JobEquPartRemarkRemarkActivity extends UploadDocumentActivity imple
                     e.printStackTrace();
                 }
                 // api call for uploading attachments
-                jobAuditPi.uploadAttchmentOnserverForJobAudit(myObject);
+                jobAuditPi.uploadAttchmentOnserverForJobAudit(myObject,fileNameExt);
             }
         }  else if (requestCode == ADD_ITEM_DATA) {
             if (data.hasExtra("AddInvoiceItem")) {
@@ -1466,7 +1470,7 @@ public class JobEquPartRemarkRemarkActivity extends UploadDocumentActivity imple
     public void onDocumentSelected(String path, String name, boolean isImage) {
         super.onDocumentSelected(path, name, isImage);
         if (type == 1) {
-            uploadRemarkAttchment(path);
+            uploadRemarkAttchment(path,name);
         } else if (type == 2) {
             if (questionListAdapter != null)
                 questionListAdapter.showAttchmentView(position, path, attchmentView, deleteAttchment, addAttchment);

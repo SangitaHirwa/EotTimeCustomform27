@@ -197,10 +197,11 @@ public class ActivityEditImageDialog extends AppCompatActivity implements View.O
         try {
             file.createNewFile();
             String fname = file.getName();
-            if (fname.contains(".")) {
+            defaultFileName = fname;
+           /* if (fname.contains(".")) {
                 fname = fname.substring(0, fname.lastIndexOf("."));
                 defaultFileName = fname;
-            }
+            }*/
         } catch (Exception e) {
             e.printStackTrace();
         }

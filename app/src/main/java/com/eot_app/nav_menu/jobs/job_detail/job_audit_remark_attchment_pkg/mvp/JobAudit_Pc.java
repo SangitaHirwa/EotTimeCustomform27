@@ -43,7 +43,7 @@ public class JobAudit_Pc implements JobAudit_PI {
     }
 
     @Override
-    public void uploadAttchmentOnserverForJobAudit(JobAuditSingleAttchReqModel model) {
+    public void uploadAttchmentOnserverForJobAudit(JobAuditSingleAttchReqModel model,String imageName) {
         if (AppUtility.isInternetConnected()) {
             HyperLog.i("", "JobEquRemark_PC: " + "addNewRemark:::: Start");
             String mimeType = "";
@@ -51,13 +51,13 @@ public class JobAudit_Pc implements JobAudit_PI {
             if (!TextUtils.isEmpty(model.getPath())) {
                 File file1 = new File(model.getPath());
                 if (file1 != null) {
-                    mimeType = URLConnection.guessContentTypeFromName(file1.getName());
+                    mimeType = URLConnection.guessContentTypeFromName(imageName);
                     if (mimeType == null) {
-                        mimeType = file1.getName();
+                        mimeType = imageName;
                     }
                     RequestBody requestFile = RequestBody.create(file1,MediaType.parse(mimeType));
                     // MultipartBody.Part is used to send also the actual file name
-                    body = MultipartBody.Part.createFormData("ja", file1.getName()
+                    body = MultipartBody.Part.createFormData("ja", imageName
                             , requestFile);
                 }
             }
