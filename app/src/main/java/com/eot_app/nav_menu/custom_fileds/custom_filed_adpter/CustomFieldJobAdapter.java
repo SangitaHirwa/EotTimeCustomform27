@@ -66,7 +66,7 @@ public class CustomFieldJobAdapter extends RecyclerView.Adapter<CustomFieldJobAd
         this.context = context;
         this.questionList = typeList;
         String currentDateTime = AppUtility.getDateByFormat(AppUtility.dateTimeByAmPmFormate(
-                "dd-MMM-yyyy hh:mm a", "dd-MMM-yyyy kk:mm"));
+                "dd-MMM-yyyy hh:mm a", "dd-MMM-yyyy HH:mm"));
         String[] currentDateTimeArry = currentDateTime.split(" ");
         date = currentDateTimeArry[0];
         try {
@@ -228,7 +228,7 @@ public class CustomFieldJobAdapter extends RecyclerView.Adapter<CustomFieldJobAd
                             String time = AppUtility.getDateWithFormate2((Long.parseLong(questionList.get(position).
                                             getAns().get(0).
                                             getValue()) * 1000),
-                                    AppUtility.dateTimeByAmPmFormate("hh:mm a", "kk:mm"));
+                                    AppUtility.dateTimeByAmPmFormate("hh:mm a", "HH:mm"));
                             holder.tvTime.setText(time);
                         }
                     } catch (Exception ex) {
@@ -465,10 +465,10 @@ public class CustomFieldJobAdapter extends RecyclerView.Adapter<CustomFieldJobAd
                             try {
                                 @SuppressLint("SimpleDateFormat") String s = new SimpleDateFormat(
                                         AppUtility.dateTimeByAmPmFormate("dd-MMM-yyyy hh:mm a"
-                                                , "dd-MMM-yyyy kk:mm"))
+                                                , "dd-MMM-yyyy HH:mm"))
                                         .format(Objects.requireNonNull(new SimpleDateFormat(
                                                 AppUtility.dateTimeByAmPmFormate(
-                                                        "dd-MM-yyyy hh:mm a", "dd-MM-yyyy kk:mm"
+                                                        "dd-MM-yyyy hh:mm a", "dd-MM-yyyy HH:mm"
                                                 )).parse(newdateTime)));
                                 textView.setText(s);
                             } catch (ParseException e) {
@@ -658,11 +658,11 @@ public class CustomFieldJobAdapter extends RecyclerView.Adapter<CustomFieldJobAd
                     date = (dayOfMonth + "-" + monthString + "-" + year + " ");
                     String newDateTime = date + " " + time;
                     SimpleDateFormat sdf = new SimpleDateFormat(
-                            AppUtility.dateTimeByAmPmFormate("dd-MM-yyyy hh:mm a", "dd-MM-yyyy kk:mm"));
+                            AppUtility.dateTimeByAmPmFormate("dd-MM-yyyy hh:mm a", "dd-MM-yyyy HH:mm"));
                     try {
                         Date parseDate = sdf.parse(newDateTime);
                         tvTimeDate.setText(new SimpleDateFormat(AppUtility.dateTimeByAmPmFormate
-                                ("dd-MMM-yyyy hh:mm a", "dd-MMM-yyyy kk:mm")).format(parseDate));
+                                ("dd-MMM-yyyy hh:mm a", "dd-MMM-yyyy HH:mm")).format(parseDate));
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
@@ -701,7 +701,7 @@ public class CustomFieldJobAdapter extends RecyclerView.Adapter<CustomFieldJobAd
                             long startDate = 10;
                             try {
                                 SimpleDateFormat sdf = new SimpleDateFormat(AppUtility.dateTimeByAmPmFormate(
-                                        "hh:mm a", "kk:mm"), Locale.US);
+                                        "hh:mm a", "HH:mm"), Locale.US);
                                 Date date = sdf.parse(s.toString());
                                 startDate = date.getTime() / 1000;
                             } catch (ParseException e) {
@@ -747,7 +747,7 @@ public class CustomFieldJobAdapter extends RecyclerView.Adapter<CustomFieldJobAd
                             try {
                                 SimpleDateFormat sdf = new SimpleDateFormat(
                                         AppUtility.dateTimeByAmPmFormate(
-                                                "dd-MMM-yyyy hh:mm a", "dd-MMM-yyyy kk:mm"), Locale.US);
+                                                "dd-MMM-yyyy hh:mm a", "dd-MMM-yyyy HH:mm"), Locale.US);
                                 Date date = sdf.parse(s.toString());
                                 startDate = date.getTime() / 1000;
                             } catch (ParseException e) {

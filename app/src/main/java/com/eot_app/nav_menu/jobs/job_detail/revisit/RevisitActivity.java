@@ -419,7 +419,7 @@ public class RevisitActivity extends AppCompatActivity implements View.OnClickLi
                 instance.setTimeInMillis(longStartTime * 1000);
                 instance.add(Calendar.DATE, 1);
                 String timeFormat = AppUtility.getDateWithFormate(instance.getTimeInMillis() / 1000,
-                        AppUtility.dateTimeByAmPmFormate("hh:mm a", "kk:mm"));
+                        AppUtility.dateTimeByAmPmFormate("hh:mm a", "HH:mm"));
                 time_start.setText(timeFormat);
                 time_str = timeFormat;
 
@@ -431,7 +431,7 @@ public class RevisitActivity extends AppCompatActivity implements View.OnClickLi
                 instance.setTimeInMillis(endTime * 1000);
                 instance.add(Calendar.DATE, 1);
                 timeFormat = AppUtility.getDateWithFormate(instance.getTimeInMillis() / 1000,
-                        AppUtility.dateTimeByAmPmFormate("hh:mm a", "kk:mm"));
+                        AppUtility.dateTimeByAmPmFormate("hh:mm a", "HH:mm"));
                 time_end.setText(timeFormat);
                 time_en = timeFormat;
 
@@ -571,7 +571,7 @@ public class RevisitActivity extends AppCompatActivity implements View.OnClickLi
         Locale.getDefault().getDisplayLanguage();
         try {
             SimpleDateFormat gettingfmt = new SimpleDateFormat(AppUtility.dateTimeByAmPmFormate(
-                    "dd-MM-yyyy hh:mm a", "dd-MM-yyyy kk:mm"), Locale.US);//, Locale.US
+                    "dd-MM-yyyy hh:mm a", "dd-MM-yyyy HH:mm"), Locale.US);//, Locale.US
             Date date = gettingfmt.parse(schdlStart);
             date.getTime();
 

@@ -48,7 +48,7 @@ public class ChatUserListAdpter extends FirestoreRecyclerAdapter<SingleChatModel
     @Override
     protected void onBindViewHolder(@NonNull final MyViewHolder holder, int position, final SingleChatModel model) {
         String today_date = AppUtility.getDateByFormat(AppUtility.dateTimeByAmPmFormate("dd/MMM/yyyy hh:mm a",
-                "dd/MMM/yyyy kk:mm"));
+                "dd/MMM/yyyy HH:mm"));
         String[] today_Date = today_date.split(" ");
 
 

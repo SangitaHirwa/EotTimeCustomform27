@@ -2534,8 +2534,8 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
                     post_code.getText().toString(),
                     member_type,
                     listwork,
-                    schdlStart,
-                    schdlFinish,
+                    AppUtility.get24HoursTimeFormate(schdlStart),
+                    AppUtility.get24HoursTimeFormate(schdlFinish),
                     status,
                     tagArray,
                     App_preference.getSharedprefInstance().getLoginRes().getUsrId(),
@@ -2771,7 +2771,7 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
         try {
             SimpleDateFormat gettingfmt = new SimpleDateFormat(
                     //"dd-MM-yyyy hh:mm a"
-                    AppUtility.dateTimeByAmPmFormate("dd-MM-yyyy hh:mm a", "dd-MM-yyyy kk:mm")
+                    AppUtility.dateTimeByAmPmFormate("dd-MM-yyyy hh:mm a", "dd-MM-yyyy HH:mm")
                     , Locale.US);
             Date date = gettingfmt.parse(schdlStart);
             assert date != null;
@@ -2890,7 +2890,7 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
                     date_en = date_str = dateTime;
                     if (time_str != null && time_str.equals("")) {
                         Date date = new Date(System.currentTimeMillis());
-                        String formate = AppUtility.dateTimeByAmPmFormate("hh:mm aa", "kk:mm");
+                        String formate = AppUtility.dateTimeByAmPmFormate("hh:mm aa", "HH:mm");
                         SimpleDateFormat dateFormat = new SimpleDateFormat(formate,
                                 Locale.getDefault());
                         time_str = dateFormat.format(date);
@@ -2924,7 +2924,7 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
 
                     if (time_en != null && time_en.equals("")) {
                         Date date = new Date(System.currentTimeMillis());
-                        String formate = AppUtility.dateTimeByAmPmFormate("hh:mm aa", "kk:mm");
+                        String formate = AppUtility.dateTimeByAmPmFormate("hh:mm aa", "HH:mm");
                         SimpleDateFormat dateFormat = new SimpleDateFormat(formate,
                                 Locale.getDefault());
                         time_en = dateFormat.format(date);

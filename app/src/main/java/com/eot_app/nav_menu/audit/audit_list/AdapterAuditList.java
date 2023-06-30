@@ -74,7 +74,7 @@ public class AdapterAuditList extends RecyclerView.Adapter<AdapterAuditList.MyVi
 
 
         String today_date = AppUtility.getDateByFormat(AppUtility.dateTimeByAmPmFormate(
-                "EEE, dd MMM yyyy ,hh:mm ,a", "EEE, dd MMM yyyy ,kk:mm"));
+                "EEE, dd MMM yyyy ,hh:mm ,a", "EEE, dd MMM yyyy ,HH:mm"));
         String[] today_dt = today_date.split(",");
         String to_day = today_dt[1];
 

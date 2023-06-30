@@ -41,7 +41,7 @@ public class MyChatAdapter extends FirestoreRecyclerAdapter<Chat_Send_Msg_Model,
 
     @Override
     protected void onBindViewHolder(final MyViewHolder holder, int position, final Chat_Send_Msg_Model model) {
-        String timeFormate = AppUtility.dateTimeByAmPmFormate("dd/MMM/yyyy hh:mm a", "dd/MMM/yyyy kk:mm");
+        String timeFormate = AppUtility.dateTimeByAmPmFormate("dd/MMM/yyyy hh:mm a", "dd/MMM/yyyy HH:mm");
 
         String today_date = AppUtility.getDateByFormat(timeFormate);
         String[] today_Date = today_date.split(" ");

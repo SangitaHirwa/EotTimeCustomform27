@@ -55,7 +55,7 @@ public class QuoteList_Adpter extends RecyclerView.Adapter<QuoteList_Adpter.MyVi
     public void onBindViewHolder(QuoteList_Adpter.MyViewHolder holder, final int position) {
 
         String today_date = AppUtility.getDateByFormat(
-                AppUtility.dateTimeByAmPmFormate("EEE, dd MMM yyyy ,hh:mm ,a", "EEE, dd MMM yyyy ,kk:mm"));
+                AppUtility.dateTimeByAmPmFormate("EEE, dd MMM yyyy ,hh:mm ,a", "EEE, dd MMM yyyy ,HH:mm"));
         String[] today_dt = today_date.split(",");
         String to_day = today_dt[1];
 

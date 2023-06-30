@@ -148,7 +148,7 @@ public class DialogCheckInUploadDocuments extends DialogFragment implements View
     }
 
     public void setLastCheckInDate() {
-        String format=AppUtility.dateTimeByAmPmFormate("dd-MM-yyyy hh:mm a", "dd-MM-yyyy kk:mm");
+        String format=AppUtility.dateTimeByAmPmFormate("dd-MM-yyyy hh:mm a", "dd-MM-yyyy HH:mm");
 
         lastCheckInTime = AppUtility.getDateWithFormate(Long.parseLong(App_preference.getSharedprefInstance().getLoginRes().getLastCheckIn()), format);
 
@@ -175,7 +175,7 @@ public class DialogCheckInUploadDocuments extends DialogFragment implements View
 
         binding.tvDateTimeLabel.setText(builder);
         binding.tvLabelDate.setText(AppUtility.getCurrentDateByFormat("dd-MM-yyyy"));
-        binding.tvTime.setText(AppUtility.getCurrentDateByFormat(AppUtility.dateTimeByAmPmFormate("hh:mm a", "kk:mm")));
+        binding.tvTime.setText(AppUtility.getCurrentDateByFormat(AppUtility.dateTimeByAmPmFormate("hh:mm a", "HH:mm")));
     }
 
 
@@ -227,7 +227,7 @@ public class DialogCheckInUploadDocuments extends DialogFragment implements View
                 if(isShowDate){
                     String date = binding.tvLabelDate.getText().toString() + " " + binding.tvTime.getText().toString();
                     // to check the current user time format
-                    String format=AppUtility.dateTimeByAmPmFormate("dd-MM-yyyy hh:mm a", "dd-MM-yyyy kk:mm");
+                    String format=AppUtility.dateTimeByAmPmFormate("dd-MM-yyyy hh:mm a", "dd-MM-yyyy HH:mm");
                     if (!AppUtility.conditionCheck(date, lastCheckInTime, format)
                     ) {
                         EotApp.getAppinstance().

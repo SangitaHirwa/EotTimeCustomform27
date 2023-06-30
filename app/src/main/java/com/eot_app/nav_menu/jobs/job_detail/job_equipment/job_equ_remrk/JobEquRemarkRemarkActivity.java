@@ -978,13 +978,13 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
                             if (!TextUtils.isEmpty(quesRspncModelList.get(i).getAns().get(0).getValue())) {
                                 long l = Long.parseLong(quesRspncModelList.get(i).getAns().get(0).getValue());
                                 ans = AppUtility.getDate(l,
-                                        AppUtility.dateTimeByAmPmFormate("hh:mm a", "kk:mm"));
+                                        AppUtility.dateTimeByAmPmFormate("hh:mm a", "HH:mm"));
                             }
                         } else if (quesRspncModelList.get(i).getType().equals("7")) {
                             if (!TextUtils.isEmpty(quesRspncModelList.get(i).getAns().get(0).getValue())) {
                                 long l = Long.parseLong(quesRspncModelList.get(i).getAns().get(0).getValue());
                                 ans = AppUtility.getDate(l, AppUtility.dateTimeByAmPmFormate(
-                                        "dd-MMM-yyyy hh:mm a", "dd-MMM-yyyy kk:mm"));
+                                        "dd-MMM-yyyy hh:mm a", "dd-MMM-yyyy HH:mm"));
                             }
                         } else
                             ans = quesRspncModelList.get(i).getAns().get(0).getValue();
@@ -1244,9 +1244,11 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
                 }
             }
             if (equipment != null && equipment.getAttachments() != null) {
-                setAttachments(equipment.getAttachments());
-                button_submit.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.update_btn));
-                REMARK_SUBMIT = true;
+                if (equipment.getAttachments().size() > 0 || equipment.getEquComponent().size() > 0 || !equipment.getIsPart().equals("0") || !equipment.getRemark().equals("")) {
+                    setAttachments(equipment.getAttachments());
+                    button_submit.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.update_btn));
+                    REMARK_SUBMIT = true;
+                }
             }
         }
     }

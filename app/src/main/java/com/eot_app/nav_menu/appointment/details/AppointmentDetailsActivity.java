@@ -360,7 +360,7 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
                 long longStartTime = Long.parseLong(model.getSchdlStart());
                 String timeFormat = AppUtility.getDateWithFormate(longStartTime,
                         //"hh:mm a"
-                        AppUtility.dateTimeByAmPmFormate("hh:mm a", "kk:mm")
+                        AppUtility.dateTimeByAmPmFormate("hh:mm a", "HH:mm")
                 );
                 binding.tvStartTime.setText(timeFormat);
 
@@ -370,7 +370,7 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
                 long endTime = Long.parseLong(model.getSchdlFinish());
                 timeFormat = AppUtility.getDateWithFormate(endTime,
                         //"hh:mm a"
-                        AppUtility.dateTimeByAmPmFormate("hh:mm a", "kk:mm"));
+                        AppUtility.dateTimeByAmPmFormate("hh:mm a", "HH:mm"));
                 binding.tvEndTime.setText(timeFormat);
 
                 dateFormat = AppUtility.getDateWithFormate(endTime, "dd-MMM-yyyy");

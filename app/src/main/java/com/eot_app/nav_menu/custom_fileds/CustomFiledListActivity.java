@@ -218,14 +218,14 @@ public class CustomFiledListActivity extends AppCompatActivity implements Custom
                             if (!TextUtils.isEmpty(questionList.get(i).getAns().get(0).getValue())) {
                                 long l = Long.parseLong(questionList.get(i).getAns().get(0).getValue());
                                 String date = AppUtility.getDates(l, AppUtility.dateTimeByAmPmFormate(
-                                        "hh:mm a", "kk:mm"));
+                                        "hh:mm a", "HH:mm"));
                                 ans = date;
                             }
                         } else if (questionList.get(i).getType().equals("7")) {
                             if (!TextUtils.isEmpty(questionList.get(i).getAns().get(0).getValue())) {
                                 long l = Long.parseLong(questionList.get(i).getAns().get(0).getValue());
                                 String date = AppUtility.getDates(l, AppUtility.dateTimeByAmPmFormate(
-                                        "dd-MMM-yyyy hh:mm a", "dd-MMM-yyyy kk:mm"));
+                                        "dd-MMM-yyyy hh:mm a", "dd-MMM-yyyy HH:mm"));
                                 ans = date;
                             }
                         } else

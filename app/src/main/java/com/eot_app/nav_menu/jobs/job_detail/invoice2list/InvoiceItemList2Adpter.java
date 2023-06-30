@@ -126,7 +126,7 @@ public class InvoiceItemList2Adpter extends RecyclerView.Adapter<InvoiceItemList
 
         if (!App_preference.getSharedprefInstance().getLoginRes().getIsJobItemQuantityFormEnable().equals("1")) {
 
-            if (!invoiceItemList.get(position).getInm().equals(""))
+            if (invoiceItemList.get(position).getInm()!=null)
                 myViewHolder.item_nm_invoice.setText(invoiceItemList.get(position).getInm());
             else myViewHolder.item_nm_invoice.setText(invoiceItemList.get(position).getTempNm());
 

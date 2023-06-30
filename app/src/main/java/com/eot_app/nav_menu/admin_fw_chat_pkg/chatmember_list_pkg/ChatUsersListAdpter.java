@@ -145,14 +145,14 @@ public class ChatUsersListAdpter extends RecyclerView.Adapter<ChatUsersListAdpte
         /*last MSG's time***/
         if (memberModel.getMsgModel().getCreatedAt() != null && !memberModel.getMsgModel().getCreatedAt().equals("")) {
             String todaydatetime = AppUtility.getDateByFormat(AppUtility.dateTimeByAmPmFormate("dd/MM/yyyy hh:mm a",
-                    "dd/MM/yyyy kk:mm"));
+                    "dd/MM/yyyy HH:mm"));
             String[] todayDateTime = todaydatetime.split(" ");
             String yesterdaydatetime = AppUtility.getYesterDayDate(
-                    AppUtility.dateTimeByAmPmFormate("dd/MM/yyyy hh:mm a", "dd/MM/yyyy kk:mm"), -1);
+                    AppUtility.dateTimeByAmPmFormate("dd/MM/yyyy hh:mm a", "dd/MM/yyyy HH:mm"), -1);
             String[] yesterDayDateTime = yesterdaydatetime.split(" ");
             String msgdatetime = AppUtility.getDate(Long.parseLong(memberModel.getMsgModel().getCreatedAt()),
                     AppUtility.dateTimeByAmPmFormate("dd/MM/yyyy hh:mm a",
-                            "dd/MM/yyyy kk:mm"));
+                            "dd/MM/yyyy HH:mm"));
             String[] msgDateTime = msgdatetime.split(" ");
             if (todayDateTime[0].equals(msgDateTime[0])) {
                 try {

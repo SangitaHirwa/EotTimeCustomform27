@@ -716,7 +716,7 @@ public class RemarkActivity extends UploadDocumentActivity implements JobAudit_V
                             if (!TextUtils.isEmpty(quesRspncModelList.get(i).getAns().get(0).getValue())) {
                                 long l = Long.parseLong(quesRspncModelList.get(i).getAns().get(0).getValue());
                                 String date = AppUtility.getDate(l,
-                                        AppUtility.dateTimeByAmPmFormate("hh:mm a", "kk:mm"));
+                                        AppUtility.dateTimeByAmPmFormate("hh:mm a", "HH:mm"));
                                 ans = date;
                             }
                         } else if (quesRspncModelList.get(i).getType().equals("7")) {
@@ -724,7 +724,7 @@ public class RemarkActivity extends UploadDocumentActivity implements JobAudit_V
                                 long l = Long.parseLong(quesRspncModelList.get(i).getAns().get(0).getValue());
                                 String date = AppUtility.getDate(l, AppUtility.dateTimeByAmPmFormate(
 
-                                        "dd-MMM-yyyy hh:mm a", "dd-MMM-yyyy kk:mm"));
+                                        "dd-MMM-yyyy hh:mm a", "dd-MMM-yyyy HH:mm"));
                                 ans = date;
                             }
                         } else
