@@ -75,6 +75,7 @@ public class InvoiceItemList2Adpter extends RecyclerView.Adapter<InvoiceItemList
         nm_list = new HashSet<>();
         ids_list = new HashSet<>();
         chk_pos = new HashSet<>();
+        this.taxCalculationType = App_preference.getSharedprefInstance().getLoginRes().getTaxCalculationType();
         this.is_hide_checkBox = is_hide_checkBox;
         this.getDisCalculationType=getDisCalculationType;
     }
@@ -88,6 +89,7 @@ public class InvoiceItemList2Adpter extends RecyclerView.Adapter<InvoiceItemList
         ids_list = new HashSet<>();
         chk_pos = new HashSet<>();
         this.is_hide_checkBox = is_hide_checkBox;
+        this.taxCalculationType = App_preference.getSharedprefInstance().getLoginRes().getTaxCalculationType();
         this.is_click_disable = is_click_disable;
         this.getDisCalculationType=getDisCalculationType;
     }
