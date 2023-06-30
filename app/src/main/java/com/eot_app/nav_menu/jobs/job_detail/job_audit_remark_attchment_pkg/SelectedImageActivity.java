@@ -12,10 +12,13 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -52,10 +55,13 @@ public class SelectedImageActivity extends UploadDocumentActivity implements
     private TextView image_txt, chip_txt;//, remove_txt;
     ImageView deleteChip;
     private View chip_layout;
-    private ImageView img_attachment;
+    private EditText ed_doc_title;
+    private ImageView img_attachment,et_doc_title_cancel;
     private Button button_submit;
     boolean isImage=false;
-
+    private String  image_name="";
+    private String nameExt="";
+    private String nameWithoutExt="";
 
 
     @Override
@@ -69,6 +75,10 @@ public class SelectedImageActivity extends UploadDocumentActivity implements
         Intent intent = getIntent();
         if (intent.hasExtra("attchment")) {
             String str = intent.getExtras().getString("attchment");
+            image_name = intent.getExtras().getString("image_name");
+            String[] split = image_name.split("\\.");
+            nameWithoutExt=split[0];
+            nameExt=split[1];
             model = new Gson().fromJson(str, JobAuditSingleAttchReqModel.class);
 
             setImageView();
@@ -80,6 +90,9 @@ public class SelectedImageActivity extends UploadDocumentActivity implements
         img_attachment = findViewById(R.id.img_attachment);
         image_with_tag = findViewById(R.id.image_with_tag);
         image_txt = findViewById(R.id.image_txt);
+        ed_doc_title=findViewById(R.id.et_doc_title);
+        et_doc_title_cancel=findViewById(R.id.et_doc_title_cancel);
+        et_doc_title_cancel.setOnClickListener(this);
 
         radio_before = findViewById(R.id.radio_before);
         radio_before.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.before));
@@ -111,6 +124,23 @@ public class SelectedImageActivity extends UploadDocumentActivity implements
         setTitle(model.getSetTile());
         img_attachment.setVisibility(View.VISIBLE);
 //        img_attachment.setImageURI(Uri.fromFile(new File(model.getPath())));
+        ed_doc_title.setText(nameWithoutExt);
+        ed_doc_title.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                et_doc_title_cancel.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
 
         imageShowInView();
 
@@ -238,9 +268,13 @@ public class SelectedImageActivity extends UploadDocumentActivity implements
     private void processImageAndUpload() {
         model.setPath(saveBitMap(image_with_tag));
         try {
+
             Intent intent = new Intent();
             intent.putExtra("code", model);
             intent.putExtra("isImage", isImage);
+            if(!ed_doc_title.getText().toString().equals(""))
+            intent.putExtra("image_name",ed_doc_title.getText().toString()+"."+nameExt);
+            else intent.putExtra("image_name",image_name);
             setResult(SINGLEATTCHMENT, intent);
             this.finish();
         } catch (Exception e) {
@@ -255,15 +289,31 @@ public class SelectedImageActivity extends UploadDocumentActivity implements
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.button_submit:
-                if (isTagSet) {
-                    processImageAndUpload();
-                } else {
+                if(!ed_doc_title.getText().toString().equals("")) {
+                    if (isTagSet) {
+                        processImageAndUpload();
+                    } else  {
                         Intent intent = new Intent();
                         intent.putExtra("code", model);
                         intent.putExtra("isImage", isImage);
+                        intent.putExtra("image_name",ed_doc_title.getText().toString()+"."+nameExt);
                         setResult(SINGLEATTCHMENT, intent);
                         this.finish();
+                    }
+
+                }else{
+                    if (isTagSet) {
+                        processImageAndUpload();
+                    } else  {
+                        Intent intent = new Intent();
+                        intent.putExtra("code", model);
+                        intent.putExtra("isImage", isImage);
+                        intent.putExtra("image_name",image_name);
+                        setResult(SINGLEATTCHMENT, intent);
+                        this.finish();
+                    }
                 }
+
                 break;
             case R.id.deleteChip:
                 isTagSet = false;
@@ -273,6 +323,10 @@ public class SelectedImageActivity extends UploadDocumentActivity implements
                 rediogrp.setVisibility(View.VISIBLE);
                 radio_after.setChecked(false);
                 radio_before.setChecked(false);
+                break;
+            case R.id.et_doc_title_cancel:
+                ed_doc_title.setText("");
+                et_doc_title_cancel.setVisibility(View.GONE);
                 break;
         }
     }
