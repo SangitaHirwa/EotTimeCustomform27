@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -175,7 +176,7 @@ public class InvoiceItemList2Adpter extends RecyclerView.Adapter<InvoiceItemList
             if (App_preference.getSharedprefInstance().getLoginRes().getIsItemDeleteEnable().equals("0") || is_hide_checkBox) {
                 myViewHolder.checkbox_invoice.setVisibility(View.GONE);
                 RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                params.setMargins(-10, 0, 0, 0);
+                params.setMargins(-10, 0, 300, 0);
                 myViewHolder.relativeLayout.setLayoutParams(params);
             } else {
                 myViewHolder.checkbox_invoice.setVisibility(View.VISIBLE);
@@ -226,7 +227,7 @@ public class InvoiceItemList2Adpter extends RecyclerView.Adapter<InvoiceItemList
         } else {
             /****This for FORM - 2 Update QTY Form **/
 
-            if (!invoiceItemList.get(position).getInm().equals(""))
+            if (invoiceItemList.get(position).getInm()!=null)
                 myViewHolder.item_nm.setText(invoiceItemList.get(position).getInm());
             else myViewHolder.item_nm.setText(invoiceItemList.get(position).getTempNm());
 
@@ -365,6 +366,8 @@ public class InvoiceItemList2Adpter extends RecyclerView.Adapter<InvoiceItemList
 
             if (!App_preference.getSharedprefInstance().getLoginRes().getIsJobItemQuantityFormEnable().equals("1")) {
                 item_nm_invoice = itemView.findViewById(R.id.item_nm_invoice);
+                item_nm_invoice.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
+                item_nm_invoice.setSingleLine(false);
                 qty_invoice = itemView.findViewById(R.id.qty_invoice);
                 item_price_invoice = itemView.findViewById(R.id.item_price_invoice);
 
