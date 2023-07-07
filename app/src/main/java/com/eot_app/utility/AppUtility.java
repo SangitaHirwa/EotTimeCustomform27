@@ -1293,11 +1293,11 @@ public class AppUtility {
                 else if (getDisCalculationType.equals("1"))
                     calculaterateDis = dis;
 
-
-                double newRate = rate - calculaterateDis;
+                double totalRate = rate * qty;
+                double newRate = totalRate - calculaterateDis;
                 double newAmt = (newRate * total_tax) / 100;
                 amount = newAmt + newRate;
-                amount = amount * qty;
+
             } else if (taxCalculationType.equals("1")) {
 
 
