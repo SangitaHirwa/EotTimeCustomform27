@@ -1160,11 +1160,11 @@ public class AuditDetailsFragment extends Fragment implements View.OnClickListen
                     ll_status.setBackgroundResource(R.color.in_progress);
                     switchDefaultColor(EotApp.getAppinstance().getResources().getColor(R.color.white));
                 }
-            } else {
+            }/* else {
                 if (audit != null && audit.getAudId() != null)
                     AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).auditDao().deletAuditById(audit.getAudId());
                 return;
-            }
+            }*/
         } catch (Exception e) {
             e.printStackTrace();
         }

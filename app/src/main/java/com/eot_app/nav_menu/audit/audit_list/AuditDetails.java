@@ -82,7 +82,7 @@ public class AuditDetails extends AppCompatActivity implements BottomNavigationV
             position = getIntent().getIntExtra("position", -1);
 
 
-        try {
+      /*  try {
             if (auditList_res == null) {
                 return;
             }
@@ -95,7 +95,7 @@ public class AuditDetails extends AppCompatActivity implements BottomNavigationV
 
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
 
 
         documentsFragment = DocumentsFragment.newInstance("", this.auditList_res.getAudId() + "");
