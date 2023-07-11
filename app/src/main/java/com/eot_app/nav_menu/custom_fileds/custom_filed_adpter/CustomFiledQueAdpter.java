@@ -156,6 +156,7 @@ public class CustomFiledQueAdpter extends RecyclerView.Adapter<CustomFiledQueAdp
                 holder.linearDateTime.setVisibility(View.GONE);
                 // holder.txt_lable.setVisibility(View.GONE);
                 holder.checkbox_single.setVisibility(View.GONE);
+                holder.type_Number.setVisibility(View.GONE);
 
                 holder.type_text.setTag(position);
                 if (questionList.get(position).getAns().isEmpty())
@@ -174,6 +175,7 @@ public class CustomFiledQueAdpter extends RecyclerView.Adapter<CustomFiledQueAdp
                 //  holder.txt_lable.setVisibility(View.GONE);
                 holder.type_text_area.setTag(position);
                 holder.checkbox_single.setVisibility(View.GONE);
+                holder.type_Number.setVisibility(View.GONE);
 
                 if (questionList.get(position).getAns().isEmpty())
                     holder.type_text_area.setText("");
@@ -190,6 +192,7 @@ public class CustomFiledQueAdpter extends RecyclerView.Adapter<CustomFiledQueAdp
                 holder.linearDateTime.setVisibility(View.GONE);
                 //holder.txt_lable.setVisibility(View.GONE);
                 holder.checkbox_single.setVisibility(View.GONE);
+                holder.type_Number.setVisibility(View.GONE);
 
                 setCheckBoxOption(holder, position);
                 break;
@@ -203,6 +206,7 @@ public class CustomFiledQueAdpter extends RecyclerView.Adapter<CustomFiledQueAdp
                 holder.linearDateTime.setVisibility(View.GONE);
                 //  holder.txt_lable.setVisibility(View.GONE);
                 holder.checkbox_single.setVisibility(View.GONE);
+                holder.type_Number.setVisibility(View.GONE);
 
                 setDropDownOptions(holder, position);
                 break;
@@ -215,6 +219,7 @@ public class CustomFiledQueAdpter extends RecyclerView.Adapter<CustomFiledQueAdp
                 holder.linearTime.setVisibility(View.GONE);
                 holder.linearDateTime.setVisibility(View.GONE);
                 // holder.txt_lable.setVisibility(View.GONE);
+                holder.type_Number.setVisibility(View.GONE);
                 holder.checkbox_single.setVisibility(View.GONE);
 
 
@@ -245,6 +250,7 @@ public class CustomFiledQueAdpter extends RecyclerView.Adapter<CustomFiledQueAdp
                 holder.linearTime.setVisibility(View.VISIBLE);
                 holder.linearDateTime.setVisibility(View.GONE);
                 // holder.txt_lable.setVisibility(View.GONE);
+                holder.type_Number.setVisibility(View.GONE);
                 holder.checkbox_single.setVisibility(View.GONE);
 
                 holder.tvTime.setTag(position);
@@ -274,6 +280,7 @@ public class CustomFiledQueAdpter extends RecyclerView.Adapter<CustomFiledQueAdp
                 holder.linearDate.setVisibility(View.GONE);
                 holder.linearTime.setVisibility(View.GONE);
                 holder.linearDateTime.setVisibility(View.VISIBLE);
+                holder.type_Number.setVisibility(View.GONE);
                 // holder.txt_lable.setVisibility(View.GONE);
                 holder.checkbox_single.setVisibility(View.GONE);
 
@@ -301,6 +308,7 @@ public class CustomFiledQueAdpter extends RecyclerView.Adapter<CustomFiledQueAdp
                 holder.linearDate.setVisibility(View.GONE);
                 holder.linearTime.setVisibility(View.GONE);
                 holder.linearDateTime.setVisibility(View.GONE);
+                holder.type_Number.setVisibility(View.GONE);
                 //  holder.txt_lable.setVisibility(View.GONE);
                 holder.checkbox_single.setVisibility(View.VISIBLE);
 
@@ -333,6 +341,7 @@ public class CustomFiledQueAdpter extends RecyclerView.Adapter<CustomFiledQueAdp
                 holder.linearDate.setVisibility(View.GONE);
                 holder.linearTime.setVisibility(View.GONE);
                 holder.linearDateTime.setVisibility(View.GONE);
+                holder.type_Number.setVisibility(View.GONE);
                 try {
                     holder.tvQuestion.setTypeface(holder.tvQuestion.getTypeface(), Typeface.BOLD);
                 } catch (Exception exception) {
@@ -340,6 +349,24 @@ public class CustomFiledQueAdpter extends RecyclerView.Adapter<CustomFiledQueAdp
                 }
                 holder.tvQuestion.setVisibility(View.VISIBLE);
                 holder.checkbox_single.setVisibility(View.GONE);
+
+                break;
+            case "12":
+                holder.type_text.setVisibility(View.GONE);
+                holder.type_text_area.setVisibility(View.GONE);
+                holder.linearCheck.setVisibility(View.GONE);
+                holder.linearSpinner.setVisibility(View.GONE);
+                holder.linearDate.setVisibility(View.GONE);
+                holder.linearTime.setVisibility(View.GONE);
+                holder.linearDateTime.setVisibility(View.GONE);
+                holder.tvQuestion.setVisibility(View.VISIBLE);
+                holder.checkbox_single.setVisibility(View.GONE);
+                holder.type_Number.setVisibility(View.VISIBLE);
+                holder.type_Number.setTag(position);
+                if (questionList.get(position).getAns().isEmpty())
+                    holder.type_Number.setText("");
+                else if (questionList.get(position).getAns().size() > 0)
+                    holder.type_Number.setText(questionList.get(position).getAns().get(0).getValue());
 
                 break;
             default: {
@@ -352,6 +379,7 @@ public class CustomFiledQueAdpter extends RecyclerView.Adapter<CustomFiledQueAdp
                 holder.linearDateTime.setVisibility(View.GONE);
                 //   holder.txt_lable.setVisibility(View.GONE);
                 holder.checkbox_single.setVisibility(View.GONE);
+                holder.type_Number.setVisibility(View.GONE);
             }
         }
 
@@ -512,7 +540,7 @@ public class CustomFiledQueAdpter extends RecyclerView.Adapter<CustomFiledQueAdp
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnTouchListener {
         TextView tvQuestion, tvDate, que_no, spinner_text, tvTime, tvTimeDate;//, txt_lable;//, textView1;
-        EditText type_text, type_text_area;
+        EditText type_text, type_text_area,type_Number;
         LinearLayout linearCheck, linearDate, linearTime, linearDateTime;
         RelativeLayout linearSpinner;
         NoDefaultSpinner spinner;
@@ -525,7 +553,7 @@ public class CustomFiledQueAdpter extends RecyclerView.Adapter<CustomFiledQueAdp
             super(itemView);
             tvQuestion = itemView.findViewById(R.id.tvQuestion);
             tvDate = itemView.findViewById(R.id.tvDate);
-
+            type_Number=itemView.findViewById(R.id.type_Number);
 
 //            lay = itemView.findViewById(R.id.lay);
 //            textView1 = itemView.findViewById(R.id.textView1);
@@ -584,6 +612,35 @@ public class CustomFiledQueAdpter extends RecyclerView.Adapter<CustomFiledQueAdp
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
                     if (type_text.getTag() != null) {
                         String pos = type_text.getTag().toString();
+                        int position = Integer.parseInt(pos);
+                        List<AnswerModel> ans = questionList.get(position).getAns();
+                        if (ans != null && ans.size() > 0) {
+                            ans.set(0, new AnswerModel(ans.get(0).getKey(), s.toString()));
+                            questionList.get(position).setAns(ans);
+                        } else {
+                            List<AnswerModel> answerModels = new ArrayList<>();
+                            answerModels.add(new AnswerModel("0", s.toString()));
+                            questionList.get(position).setAns(answerModels);
+                        }
+
+                    }
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+
+                }
+            });
+            type_Number.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    if (type_Number.getTag() != null) {
+                        String pos = type_Number.getTag().toString();
                         int position = Integer.parseInt(pos);
                         List<AnswerModel> ans = questionList.get(position).getAns();
                         if (ans != null && ans.size() > 0) {
