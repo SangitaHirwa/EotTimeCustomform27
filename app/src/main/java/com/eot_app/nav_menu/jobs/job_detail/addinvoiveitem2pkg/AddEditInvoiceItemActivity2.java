@@ -881,7 +881,7 @@ public class AddEditInvoiceItemActivity2 extends
                     Log.e("selection", "0 For no selection");
                 }
         itemId = itemselected.getItemId();
-        inm = "";
+        inm = itemselected.getInm();
         itemId = itemselected.getItemId();
         dataType = "1";
         itemType = "0";
