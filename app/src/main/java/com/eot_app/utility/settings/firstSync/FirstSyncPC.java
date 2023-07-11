@@ -9,6 +9,8 @@ import android.util.Log;
 import com.eot_app.BuildConfig;
 import com.eot_app.login_next.login_next_model.MobileDefaultSettings;
 import com.eot_app.login_next.login_next_model.ResLoginData;
+import com.eot_app.nav_menu.appointment.appointment_model.AppointmentStatusModel;
+import com.eot_app.nav_menu.audit.audit_model.AuditStatusModel;
 import com.eot_app.nav_menu.jobs.job_detail.detail.jobdetial_model.JobStatusModelNew;
 import com.eot_app.nav_menu.jobs.job_detail.job_status_pkg.JobStatus_Controller;
 import com.eot_app.services.ApiClient;
@@ -81,7 +83,8 @@ public class FirstSyncPC implements FirstSyncPi {
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("index",updateIndex);
         jsonObject.addProperty("limit",updateLimit);
-        jsonObject.addProperty("search","");
+        jsonObject.addProperty("moduleType","");
+        jsonObject.addProperty("minAppVer","1");
         String data = new Gson().toJson(jsonObject);
         ApiClient.getservices().eotServiceCall(Service_apis.getJobStatus,
                 AppUtility.getApiHeaders(), AppUtility.getJsonObject(data))
@@ -99,10 +102,21 @@ public class FirstSyncPC implements FirstSyncPi {
                         Log.d("firstsync", jsonObject.toString());
                         if (jsonObject.get("success").getAsBoolean()) {
                             count = jsonObject.get("count").getAsInt();
-                            String convert = new Gson().toJson(jsonObject.get("data").getAsJsonArray());
+                            String convert = new Gson().toJson(jsonObject.get("jobStatus").getAsJsonArray());
                             Type listType = new TypeToken<List<JobStatusModelNew>>() {
                             }.getType();
                             List<JobStatusModelNew> statusList = new Gson().fromJson(convert, listType);
+
+                            String convertaudit = new Gson().toJson(jsonObject.get("auditStatus").getAsJsonArray());
+                            Type listTypeaudit = new TypeToken<List<AuditStatusModel>>() {
+                            }.getType();
+                            List<AuditStatusModel> auditstatusList = new Gson().fromJson(convertaudit, listTypeaudit);
+
+
+                            String convertAppointment = new Gson().toJson(jsonObject.get("appointmentStatus").getAsJsonArray());
+                            Type listTypeAppointment = new TypeToken<List<AppointmentStatusModel>>() {
+                            }.getType();
+                            List<AppointmentStatusModel> appointmentStatusList = new Gson().fromJson(convertAppointment, listTypeAppointment);
 
                             Log.d("firstsync", String.valueOf(statusList.size())+"apiresponse");
                             if (statusList != null){
@@ -116,6 +130,13 @@ public class FirstSyncPC implements FirstSyncPi {
                                 }
                                 AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobStatusModelNew().insertJobstatusList(statusList);
                                 Log.d("firstsync",new Gson().toJson(AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobStatusModelNew().getAllStatusList()));
+                            }
+                            if(auditstatusList!=null){
+                                AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).auditStatusDao().insert(auditstatusList);
+                            }
+
+                            if(appointmentStatusList!=null){
+                                AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).appointmentStatusDao().insert(appointmentStatusList);
                             }
                         }
                     }

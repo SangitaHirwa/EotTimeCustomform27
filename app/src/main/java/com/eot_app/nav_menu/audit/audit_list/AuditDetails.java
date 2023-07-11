@@ -81,21 +81,19 @@ public class AuditDetails extends AppCompatActivity implements BottomNavigationV
         if (intent.hasExtra("position"))
             position = getIntent().getIntExtra("position", -1);
 
-
+/*
         try {
             if (auditList_res == null) {
                 return;
             }
-
-            if (auditList_res.getStatus() != null && !AppUtility.auditStatusList().contains(auditList_res.getStatus())
+            if (auditList_res.getStatus() != null
                     && auditList_res.getAudId() != null) {
-                AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).auditDao().deletAuditById(auditList_res.getAudId());
-                this.finish();
+                AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).auditDao().updateAuditStatus(auditList_res.getAudId(),auditList_res.getStatus());
             }
 
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
 
 
         documentsFragment = DocumentsFragment.newInstance("", this.auditList_res.getAudId() + "");

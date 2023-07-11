@@ -515,6 +515,24 @@ public class AddQutesItem_Activity extends AppCompatActivity implements TextWatc
                     taxamount_value_txt.setText(tax_Amount);
 
                 }
+                else if (quotesDetails.getInvData().getTaxCalculationType().equals("2")) {
+
+
+                    double totalPrice  = qty * rate;
+                    double itemTotal   = totalPrice + ((totalPrice* total_tax)/100);
+                    double discount=0;
+                    if(App_preference.getSharedprefInstance().getLoginRes().getDisCalculationType().equals("0"))
+                        discount =  ((itemTotal*dis)/100);
+                    else if(App_preference.getSharedprefInstance().getLoginRes().getDisCalculationType().equals("1"))
+                        discount = dis;
+
+                    amount  = totalPrice -discount;
+
+                    taxAmount = ((total_tax * rate * qty) / 100);
+                    String tax_Amount = AppUtility.getRoundoff_amount(String.valueOf(taxAmount));
+                    taxamount_value_txt.setText(tax_Amount);
+
+                }
             }
             // roundOff = Math.round(amount * 100.0) / 100.0;
             String amountString = AppUtility.getRoundoff_amount(String.valueOf(amount));

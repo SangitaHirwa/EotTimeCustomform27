@@ -1092,7 +1092,7 @@ public class RemarkActivity extends UploadDocumentActivity implements JobAudit_V
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-
+        String fileNameExt="";
         if (requestCode == SINGLEATTCHMENT) {
             if (Objects.requireNonNull(data).getSerializableExtra("code") != null) {
                 JobAuditSingleAttchReqModel myObject = (JobAuditSingleAttchReqModel) data.getSerializableExtra("code");
@@ -1104,7 +1104,8 @@ public class RemarkActivity extends UploadDocumentActivity implements JobAudit_V
                             Bitmap bitmap = AppUtility.getBitmapFromPath(myObject.getPath());
                             bitmapString = AppUtility.BitMapToString(bitmap);
                         }
-                        String fileNameExt = AppUtility.getFileNameWithExtension(myObject.getPath());
+                       /* String fileNameExt = AppUtility.getFileNameWithExtension(myObject.getPath());*/
+                        fileNameExt = data.getStringExtra("image_name");
                         GetFileList_Res obj = new GetFileList_Res("0", fileNameExt, fileNameExt, bitmapString);
                         ArrayList<GetFileList_Res> updateList = new ArrayList<>();
                         updateList.add(obj);
@@ -1116,7 +1117,7 @@ public class RemarkActivity extends UploadDocumentActivity implements JobAudit_V
                     e.printStackTrace();
                 }
                 // api call for uploading attachments
-                jobAuditPi.uploadAttchmentOnserverForJobAudit(myObject);
+                jobAuditPi.uploadAttchmentOnserverForJobAudit(myObject,fileNameExt);
             }
                /* if (data.hasExtra("code")) {
                     String barcode = data.getStringExtra("code");
@@ -1144,10 +1145,11 @@ public class RemarkActivity extends UploadDocumentActivity implements JobAudit_V
     @Override
     public void onClickContinuarEvent(Uri uri) {
         String path = "";
+        String imageName="";
         path = PathUtils.getRealPath(this, uri);
         if (!path.isEmpty()) {
             if (type == 1) {
-                uploadRemarkAttchment(path);
+                uploadRemarkAttchment(path,imageName);
             } else if (type == 2) {
                 questionListAdapter.showAttchmentView(position, path, attchmentView, deleteAttchment, addAttchment);
             }
@@ -1180,13 +1182,14 @@ public class RemarkActivity extends UploadDocumentActivity implements JobAudit_V
         selectFile(false);
     }
 
-    private void uploadRemarkAttchment(String path) {
+    private void uploadRemarkAttchment(String path, String imageName) {
         if (equipment != null && equipment.getAudId() != null && equipment.getEquId() != null) {
             JobAuditSingleAttchReqModel model = new JobAuditSingleAttchReqModel(equipment.getAudId(), equipment.getEquId(),
                     button_submit.getText().toString(), titleNm, path, "2");
             String str = new Gson().toJson(model);
             Intent intent = new Intent(this, SelectedImageActivity.class);
             intent.putExtra("attchment", str);
+            intent.putExtra("image_name",imageName);
             startActivityForResult(intent, SINGLEATTCHMENT);
         }
 
@@ -1199,7 +1202,7 @@ public class RemarkActivity extends UploadDocumentActivity implements JobAudit_V
 //        if (questionListAdapter != null)
 //            questionListAdapter.showAttchmentView(position, path, attchmentView, deleteAttchment, addAttchment);
         if (type == 1) {
-            uploadRemarkAttchment(path);
+            uploadRemarkAttchment(path,name);
         } else if (type == 2) {
             if (questionListAdapter != null)
                 questionListAdapter.showAttchmentView(position, path, attchmentView, deleteAttchment, addAttchment);
