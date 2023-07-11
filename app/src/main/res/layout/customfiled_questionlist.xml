@@ -241,6 +241,24 @@
                 tools:ignore="ContentDescription" />
 
         </LinearLayout>
+    <EditText
+        android:id="@+id/type_Number"
+        style="@style/subtext_style"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/edittext_shap_qus"
+        android:fontFamily="@font/arimo_regular"
+        android:gravity="center_vertical"
+        android:maxHeight="@dimen/send_msg_layout"
+        android:overScrollMode="always"
+        android:padding="8dp"
+        android:scrollbars="vertical"
+        android:inputType="number"
+        android:textStyle="normal"
+        android:hint="Add Number"
+        tools:ignore="Autofill,LabelFor,TextFields" />
 
-    </LinearLayout>
+
+</LinearLayout>
 
