@@ -8,7 +8,7 @@ import com.eot_app.utility.db.OfflineDataController;
 import com.google.gson.Gson;
 
 // To manage the logs
-public class ActivityLogController implements LogContants {
+public class  ActivityLogController implements LogContants {
 
     public static String getStringModuleCode(String code) {
         String name = "";
