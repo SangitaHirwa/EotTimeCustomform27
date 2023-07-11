@@ -481,12 +481,12 @@ public class FormQueAns_Activity extends UploadDocumentActivity implements View.
 
 
     public void ansAnsQuesRspncModel() {
-        signAns.clear();
+       /* signAns.clear();
         docAns.clear();
         dosanspath.clear();
         signanspath.clear();
         signQueIdArray.clear();
-        docQueIdArray.clear();
+        docQueIdArray.clear();*/
         for (int i = 0; i < quesRspncModelList.size(); i++) {
             String key = "";
             String ans = "";
