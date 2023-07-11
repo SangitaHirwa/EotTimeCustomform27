@@ -502,8 +502,8 @@ public class AuditDetailsFragment extends Fragment implements View.OnClickListen
             else
                 textViewJobCode.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.audit_code) + "");
             if(this.audit.getStatus()!=null)
-                status_label.setText(audit.getStatus());
-                status.setText(audit.getStatus());
+                status_label.setText(this.audit.getStatus());
+                status.setText(this.audit.getStatus());
             updateStatusButtons(this.audit.getStatus());
 
             String dateFormat = "dd MMM yyyy";
