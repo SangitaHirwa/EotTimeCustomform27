@@ -332,7 +332,7 @@ public class FragmentAuditList extends Fragment implements AuditList_View, Adapt
 
         disableSwipeRefresh();
 
-        try {
+       /* try {
             for (AuditList_Res dataList : data) {
                 if (dataList.getStatus() != null && !(AppUtility.auditStatusList().contains(dataList.getStatus()))) {
                     data.remove(dataList);
@@ -341,7 +341,7 @@ public class FragmentAuditList extends Fragment implements AuditList_View, Adapt
         } catch (Exception exception) {
             exception.printStackTrace();
             adapterAuditList.setList(data);
-        }
+        }*/
 
         adapterAuditList.setList(data);
         if (adapterAuditList.getItemCount() == 0)

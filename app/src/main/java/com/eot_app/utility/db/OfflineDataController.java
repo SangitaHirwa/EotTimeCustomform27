@@ -261,6 +261,10 @@ public class OfflineDataController {
                     exception.printStackTrace();
                 }
                 break;
+            case Service_apis.updateAuditStatus:
+               AuditList_Res auditList_res1= gson.fromJson(data.getParams(), AuditList_Res.class);
+               AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).auditDao().updateAuditStatus(auditList_res1.getAudId(),auditList_res1.getStatus());
+               break;
             case Service_apis.setCompletionNotes:
                 // for resolving the issue of completion notes not updating on client side for some clients
                 try

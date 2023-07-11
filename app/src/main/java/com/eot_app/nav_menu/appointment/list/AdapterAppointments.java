@@ -82,7 +82,7 @@ public class AdapterAppointments extends RecyclerView.Adapter<AdapterAppointment
         if (appointment.getType() == APPOINT_VIEW) {
             holder.tv_type.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.appointment));
             /**appointment complete flat with tick option*/
-            if (!TextUtils.isEmpty(appointment.getStatus()) && appointment.getStatus().equals("9"))
+            if (!TextUtils.isEmpty(appointment.getStatus()) && appointment.getStatus().equals("2"))
                 holder.img_appointment_status.setVisibility(View.VISIBLE);
             else holder.img_appointment_status.setVisibility(View.GONE);
 
