@@ -256,7 +256,7 @@ public class LinkEquipmentPC implements LinkEquipmentPI {
                         @Override
                         public void onNext(@NonNull JsonObject jsonObject) {
                             if (jsonObject.get("success").getAsBoolean()) {
-                                view.refreshEquipmentList();
+                                view.refreshEquipmentList(true);
                             } else if (jsonObject.get("statusCode") != null && jsonObject.get("statusCode").getAsString().equals(AppConstant.SESSION_EXPIRE)) {
                                 view.onSessionExpired(LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
                             }
