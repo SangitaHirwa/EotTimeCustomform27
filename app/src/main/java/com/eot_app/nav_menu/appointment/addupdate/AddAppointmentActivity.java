@@ -33,6 +33,7 @@ import com.eot_app.databinding.ActivityAddAppointmentBinding;
 import com.eot_app.nav_menu.appointment.Keepar;
 import com.eot_app.nav_menu.appointment.addupdate.model.AppointmentAddReq;
 import com.eot_app.nav_menu.appointment.addupdate.model.AppointmentUpdateReq;
+import com.eot_app.nav_menu.appointment.appointment_model.AppointmentStatusModel;
 import com.eot_app.nav_menu.appointment.dbappointment.Appointment;
 import com.eot_app.nav_menu.appointment.dbappointment.ClientCompleteAddress;
 import com.eot_app.nav_menu.appointment.details.AppointmentAttachment;
@@ -58,6 +59,7 @@ import com.eot_app.utility.language_support.Language_Preference;
 import com.eot_app.utility.settings.setting_db.FieldWorker;
 import com.eot_app.utility.settings.setting_db.Offlinetable;
 import com.eot_app.utility.util_interfaces.Callback_AlertDialog;
+import com.eot_app.utility.util_interfaces.MySpinnerAdapter;
 import com.google.gson.Gson;
 import com.hypertrack.hyperlog.HyperLog;
 import org.jsoup.Jsoup;
@@ -71,8 +73,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.Callable;
@@ -98,7 +102,10 @@ public class AddAppointmentActivity extends UploadDocumentActivity implements Te
     private boolean isInEditMode;
     private String new_cnm = "";
     private String cltId = "";
-
+    String statusByValue="";
+    private final LinkedHashMap<String, String> arraystatus = new LinkedHashMap<>();
+    private  String[] statusArray = new String[arraystatus.size()];
+    List<AppointmentStatusModel> allAppointmentStatusList =new ArrayList<>();
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -124,6 +131,23 @@ public class AddAppointmentActivity extends UploadDocumentActivity implements Te
 
         initializelables();
 
+        setAppointmentStatusList();
+        AppUtility.spinnerPopUpWindow(binding.statusSpinner);
+        binding.statusSpinner.setSelected(false);
+        binding.statusSpinner.setAdapter(new MySpinnerAdapter(getApplicationContext(), statusArray));
+        binding.statusSpinner.post(() -> binding.statusSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, final int position, long id) {
+
+                binding.statusLabel.setText(statusArray[position]);
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        }));
 
         binding.editor.setPlaceholder(LanguageController.getInstance().getMobileMsgByKey(AppConstant.description));
         binding.editor.setTextColor(Color.parseColor("#8C9293"));
@@ -238,6 +262,7 @@ public class AddAppointmentActivity extends UploadDocumentActivity implements Te
             setClientName(appointment);
         else
             binding.autoClient.setText(appointment.getNm());
+        binding.statusLabel.setText(arraystatus.get(appointment.getStatus()));
         binding.autoCountry.setText(SpinnerCountrySite.getCountryNameById(appointment.getCtry()));
         binding.autoStates.setText(SpinnerCountrySite.getStatenameById(appointment.getCtry(), appointment.getState()));
         binding.adderes.setText(appointment.getAdr());
@@ -416,7 +441,7 @@ public class AddAppointmentActivity extends UploadDocumentActivity implements Te
         binding.llDateEnd.setOnClickListener(this);
         binding.assigntoLinear.setOnClickListener(this);
         // binding.appointmentAttachment.setOnClickListener(this);
-
+        binding.auditStatusRelative.setOnClickListener(this);
         binding.submitBtn.setOnClickListener(this);
 
         binding.inputLayoutClient.setHintEnabled(true);
@@ -437,7 +462,10 @@ public class AddAppointmentActivity extends UploadDocumentActivity implements Te
                 }
             }
         });
-
+        if(getIntent().getBooleanExtra("editView",false))
+        {
+            binding.auditStatusRelative.setVisibility(View.VISIBLE);
+        }
 
         setCountryList();
         getCurrentdateTime(calenderDate);
@@ -1227,7 +1255,12 @@ public class AddAppointmentActivity extends UploadDocumentActivity implements Te
 
     private void sendUpdateRequest() {
         HyperLog.i("", "sendUpdateRequest(M) start");
-
+        for (Map.Entry mapElement : arraystatus.entrySet()) {
+            if (mapElement.getValue().equals(binding.statusLabel.getText().toString())) {
+             statusByValue = String.valueOf(mapElement.getKey());
+                break;
+            }
+        }
         if (appointment != null && !appointment.getTempId().equals(appointment.getAppId())) {
             HyperLog.i("", "sendUpdateRequest(M) on synced appointment");
 
@@ -1285,7 +1318,7 @@ public class AddAppointmentActivity extends UploadDocumentActivity implements Te
             updateReq.setMemIds(listwork);
             updateReq.setCtry(ctry_id);
             updateReq.setState(state_id);
-            updateReq.setStatus(appointment.getStatus());
+            updateReq.setStatus(statusByValue);
             updateReq.setCity(binding.city.getText().toString());
             updateReq.setAdr(binding.adderes.getText().toString());
             updateReq.setZip(binding.postCode.getText().toString());
@@ -1423,6 +1456,7 @@ public class AddAppointmentActivity extends UploadDocumentActivity implements Te
                         appointmentAddReq.setSiteId(siteId);
                         appointmentAddReq.setConId(conId);
                         appointmentAddReq.setNm(appointment.getNm());
+                        appointmentAddReq.setStatus(statusByValue);
                         appointmentAddReq.setEmail(binding.email.getText().toString());
                         appointmentAddReq.setMob1(binding.mobNo.getText().toString());
                         appointmentAddReq.setDes(binding.jobDesc.getText().toString());
@@ -1563,6 +1597,7 @@ public class AddAppointmentActivity extends UploadDocumentActivity implements Te
         newAppointment.setTempId(appointment.getTempId());
         newAppointment.setAppId(appointment.getAppId());
         newAppointment.setCltId(cltId);
+        newAppointment.setStatus(appointmentAddReq.getStatus());
         newAppointment.setSiteId(siteId);
         newAppointment.setConId(conId);
         newAppointment.setIsdelete("1");
@@ -1605,12 +1640,12 @@ public class AddAppointmentActivity extends UploadDocumentActivity implements Te
         newAppointment.setCltId(cltId);
         newAppointment.setSiteId(siteId);
         newAppointment.setConId(conId);
-        newAppointment.setStatus(appointment.getStatus());
+        newAppointment.setStatus(updateReq.getStatus());
         newAppointment.setIsdelete("1");
         newAppointment.setNm(appointment.getNm());
         newAppointment.setEmail(binding.email.getText().toString());
         newAppointment.setMob1(binding.mobNo.getText().toString());
-        newAppointment.setDes(binding.jobDesc.getText().toString());
+        newAppointment.setDes(binding.editor.getHtml());
         newAppointment.setCtry(ctry_id);
         newAppointment.setState(state_id);
         newAppointment.setAdr(binding.adderes.getText().toString());
@@ -1707,6 +1742,9 @@ public class AddAppointmentActivity extends UploadDocumentActivity implements Te
                 binding.members.showDropDown();
                 break;
 
+            case R.id.audit_status_relative:
+                binding.statusSpinner.performClick();
+                break;
           /*  case R.id.appointment_attachment:
                 sendImageForChat();
                 break;
@@ -1750,5 +1788,19 @@ public class AddAppointmentActivity extends UploadDocumentActivity implements Te
                     e.printStackTrace();
                 }
             }
+    }
+    public void setAppointmentStatusList(){
+        allAppointmentStatusList = AppDataBase.getInMemoryDatabase(this).appointmentStatusDao().getAllAppointmentStatusList();
+        for (AppointmentStatusModel statusModel:allAppointmentStatusList)
+        {
+            arraystatus.put(statusModel.getKey(),statusModel.getName());
+        }
+        int i=0;
+        statusArray = new String[arraystatus.size()];
+        for (Map.Entry mapElement : arraystatus.entrySet()) {
+            statusArray[i] = ((String) mapElement.getValue());
+            i++;
+        }
+
     }
 }

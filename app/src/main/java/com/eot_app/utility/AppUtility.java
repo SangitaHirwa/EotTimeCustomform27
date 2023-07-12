@@ -1293,11 +1293,11 @@ public class AppUtility {
                 else if (getDisCalculationType.equals("1"))
                     calculaterateDis = dis;
 
-
-                double newRate = rate - calculaterateDis;
+                double totalRate = rate * qty;
+                double newRate = totalRate - calculaterateDis;
                 double newAmt = (newRate * total_tax) / 100;
                 amount = newAmt + newRate;
-                amount = amount * qty;
+
             } else if (taxCalculationType.equals("1")) {
 
 
@@ -1309,6 +1309,20 @@ public class AppUtility {
                 double discount = 0;
                 if (getDisCalculationType.equals("0"))
                     discount = ((itemTotal * dis) / 100);
+                else if (getDisCalculationType.equals("1"))
+                    discount = dis;
+
+                amount = itemTotal - discount;
+
+            }
+            else if (taxCalculationType.equals("2")) {
+                //** based on the type of calculation , direct or percentage  **//
+
+                double totalPrice = qty * rate;
+                double itemTotal = totalPrice + ((totalPrice * total_tax) / 100);
+                double discount = 0;
+                if (getDisCalculationType.equals("0"))
+                    discount = ((totalPrice * dis) / 100);
                 else if (getDisCalculationType.equals("1"))
                     discount = dis;
 
@@ -1378,6 +1392,18 @@ public class AppUtility {
                     discount = dis;
 
                 amount = itemTotal - discount;
+            }
+            else if (taxCalculationType.equals("2")) {
+
+                double totalPrice = qty * rate;
+                double itemTotal = totalPrice + ((totalPrice * total_tax) / 100);
+                double discount = 0;
+                if (App_preference.getSharedprefInstance().getLoginRes().getDisCalculationType().equals("0"))
+                    discount = ((itemTotal * dis) / 100);
+                else if (App_preference.getSharedprefInstance().getLoginRes().getDisCalculationType().equals("1"))
+                    discount = dis;
+
+                amount = totalPrice - discount;
             }
             result = String.valueOf(amount);
         } catch (Exception ex) {

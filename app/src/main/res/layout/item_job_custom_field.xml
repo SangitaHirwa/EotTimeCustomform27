@@ -249,7 +249,25 @@
             tools:ignore="ContentDescription" />
 
     </LinearLayout>
-
+    <EditText
+        android:id="@+id/type_text_number"
+        style="@style/style_sec_sec"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:background="@android:color/transparent"
+        android:fontFamily="@font/arimo_regular"
+        android:gravity="center_vertical"
+        android:maxHeight="@dimen/send_msg_layout"
+        android:overScrollMode="always"
+        android:paddingStart="3dp"
+        android:paddingTop="8dp"
+        android:paddingEnd="8dp"
+        android:inputType="number"
+        android:paddingBottom="8dp"
+        android:scrollbars="vertical"
+        android:textStyle="normal"
+        tools:ignore="Autofill,LabelFor" />
     <!--start end date -->
     <LinearLayout
         android:visibility="gone"

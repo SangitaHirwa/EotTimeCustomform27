@@ -253,6 +253,24 @@
                 tools:ignore="ContentDescription" />
 
         </LinearLayout>
+        <EditText
+            android:id="@+id/type_Number"
+            style="@style/subtext_style"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/edittext_shap_qus"
+            android:fontFamily="@font/arimo_regular"
+            android:gravity="center_vertical"
+            android:maxHeight="@dimen/send_msg_layout"
+            android:nestedScrollingEnabled="true"
+            android:overScrollMode="always"
+            android:padding="8dp"
+            android:scrollbars="vertical"
+            android:textStyle="normal"
+            android:inputType="number"
+            tools:ignore="Autofill,LabelFor,TextFields" />
 
         <!--Add View For Signature -->
         <LinearLayout
