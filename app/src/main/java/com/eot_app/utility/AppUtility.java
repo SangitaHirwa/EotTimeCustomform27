@@ -1393,6 +1393,18 @@ public class AppUtility {
 
                 amount = itemTotal - discount;
             }
+            else if (taxCalculationType.equals("2")) {
+
+                double totalPrice = qty * rate;
+                double itemTotal = totalPrice + ((totalPrice * total_tax) / 100);
+                double discount = 0;
+                if (App_preference.getSharedprefInstance().getLoginRes().getDisCalculationType().equals("0"))
+                    discount = ((itemTotal * dis) / 100);
+                else if (App_preference.getSharedprefInstance().getLoginRes().getDisCalculationType().equals("1"))
+                    discount = dis;
+
+                amount = totalPrice - discount;
+            }
             result = String.valueOf(amount);
         } catch (Exception ex) {
             ex.printStackTrace();
