@@ -49,16 +49,18 @@
                             android:id="@+id/linear_arraw_layout"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-
+                           android:background="@drawable/bg_mark_as_done"
+                            android:paddingStart="10dp"
                             >
                             <TextView
                                 android:id="@+id/status_label"
                                 style="@style/subtext_style"
                                 android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
+                                android:layout_height="match_parent"
                                 android:gravity="center|start"
+                                android:layout_marginEnd="3dp"
                                 android:text="@string/status"
-                                android:textColor="@color/heading_green" />
+                                android:textColor="@color/white" />
                             <ImageView
                                 android:id="@+id/arrow_dp_icon"
                                 android:layout_width="wrap_content"
@@ -71,7 +73,7 @@
                                 android:padding="1dp"
                                 android:paddingTop="5dp"
                                 android:paddingBottom="5dp"
-                                android:src="@drawable/ic_arrow_drop_down_black_24dp"
+                                android:src="@drawable/ic_baseline_arrow_drop_down_24"
                                 tools:ignore="ContentDescription" />
                         </LinearLayout>
 
