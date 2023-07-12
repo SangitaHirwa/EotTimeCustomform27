@@ -441,7 +441,7 @@ public class AddAppointmentActivity extends UploadDocumentActivity implements Te
         binding.llDateEnd.setOnClickListener(this);
         binding.assigntoLinear.setOnClickListener(this);
         // binding.appointmentAttachment.setOnClickListener(this);
-
+        binding.auditStatusRelative.setOnClickListener(this);
         binding.submitBtn.setOnClickListener(this);
 
         binding.inputLayoutClient.setHintEnabled(true);
