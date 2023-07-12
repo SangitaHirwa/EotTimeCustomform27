@@ -2338,6 +2338,11 @@ public class AddEditInvoiceItemActivity2 extends
                     String tax_Amount = AppUtility.getRoundoff_amount(String.valueOf(newRate));
                     edt_item_tax_rate.setText(tax_Amount);
                 }
+                else if (App_preference.getSharedprefInstance().getLoginRes().getTaxCalculationType().equals("2")) {
+                    double newRate = Double.parseDouble((taxamount_value_txt.getText().toString())) + rate;
+                    String tax_Amount = AppUtility.getRoundoff_amount(String.valueOf(newRate));
+                    edt_item_tax_rate.setText(tax_Amount);
+                }
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
