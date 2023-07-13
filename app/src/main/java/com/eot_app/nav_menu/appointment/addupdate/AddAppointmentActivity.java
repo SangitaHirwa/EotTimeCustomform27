@@ -1793,7 +1793,9 @@ public class AddAppointmentActivity extends UploadDocumentActivity implements Te
         allAppointmentStatusList = AppDataBase.getInMemoryDatabase(this).appointmentStatusDao().getAllAppointmentStatusList();
         for (AppointmentStatusModel statusModel:allAppointmentStatusList)
         {
-            arraystatus.put(statusModel.getKey(),statusModel.getName());
+            if(statusModel.getIsStatusShow().equals("1")) {
+                arraystatus.put(statusModel.getKey(), statusModel.getName());
+            }
         }
         int i=0;
         statusArray = new String[arraystatus.size()];
