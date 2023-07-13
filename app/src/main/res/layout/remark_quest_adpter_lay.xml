@@ -401,8 +401,6 @@
                 android:padding="5dp"
                 tools:ignore="ContentDescription" />
         </LinearLayout>
-
-
     </LinearLayout>
 </androidx.cardview.widget.CardView>
 

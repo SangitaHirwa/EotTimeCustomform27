@@ -222,8 +222,7 @@ public class RemarkQuestionListAdpter extends RecyclerView.Adapter<RemarkQuestio
                 holder.checkbox_single.setVisibility(View.GONE);
                 holder.signature_layout.setVisibility(View.GONE);
                 holder.Attchment_layout.setVisibility(View.GONE);
-                holder.type_text_number.setVisibility(View.GONE);
-
+                holder.type_text_num.setVisibility(View.GONE);
 
 
                 holder.type_text.setTag(position);
@@ -246,8 +245,7 @@ public class RemarkQuestionListAdpter extends RecyclerView.Adapter<RemarkQuestio
                 holder.checkbox_single.setVisibility(View.GONE);
                 holder.signature_layout.setVisibility(View.GONE);
                 holder.Attchment_layout.setVisibility(View.GONE);
-                holder.type_text_number.setVisibility(View.GONE);
-
+                holder.type_text_num.setVisibility(View.GONE);
                 holder.type_text_area.setTag(position);
 
 
@@ -269,7 +267,7 @@ public class RemarkQuestionListAdpter extends RecyclerView.Adapter<RemarkQuestio
                 holder.checkbox_single.setVisibility(View.GONE);
                 holder.signature_layout.setVisibility(View.GONE);
                 holder.Attchment_layout.setVisibility(View.GONE);
-                holder.type_text_number.setVisibility(View.GONE);
+                holder.type_text_num.setVisibility(View.GONE);
 
 
                 setCheckBoxOption(holder, position);
@@ -287,8 +285,7 @@ public class RemarkQuestionListAdpter extends RecyclerView.Adapter<RemarkQuestio
                 holder.checkbox_single.setVisibility(View.GONE);
                 holder.signature_layout.setVisibility(View.GONE);
                 holder.Attchment_layout.setVisibility(View.GONE);
-                holder.type_text_number.setVisibility(View.GONE);
-
+                holder.type_text_num.setVisibility(View.GONE);
 
                 setDropDownOptions(holder, position);
                 break;
@@ -304,8 +301,7 @@ public class RemarkQuestionListAdpter extends RecyclerView.Adapter<RemarkQuestio
                 holder.checkbox_single.setVisibility(View.GONE);
                 holder.signature_layout.setVisibility(View.GONE);
                 holder.Attchment_layout.setVisibility(View.GONE);
-                holder.type_text_number.setVisibility(View.GONE);
-
+                holder.type_text_num.setVisibility(View.GONE);
 
 
                 holder.tvDate.setTag(position);
@@ -337,8 +333,7 @@ public class RemarkQuestionListAdpter extends RecyclerView.Adapter<RemarkQuestio
                 holder.checkbox_single.setVisibility(View.GONE);
                 holder.signature_layout.setVisibility(View.GONE);
                 holder.Attchment_layout.setVisibility(View.GONE);
-                holder.type_text_number.setVisibility(View.GONE);
-
+                holder.type_text_num.setVisibility(View.GONE);
 
                 holder.tvTime.setTag(position);
                 if (typeList.get(position).getAns().isEmpty())
@@ -370,8 +365,7 @@ public class RemarkQuestionListAdpter extends RecyclerView.Adapter<RemarkQuestio
                 holder.checkbox_single.setVisibility(View.GONE);
                 holder.signature_layout.setVisibility(View.GONE);
                 holder.Attchment_layout.setVisibility(View.GONE);
-                holder.type_text_number.setVisibility(View.GONE);
-
+                holder.type_text_num.setVisibility(View.GONE);
 
                 holder.tvTimeDate.setTag(position);
                 if (typeList.get(position).getAns().isEmpty())
@@ -401,8 +395,7 @@ public class RemarkQuestionListAdpter extends RecyclerView.Adapter<RemarkQuestio
                 holder.checkbox_single.setVisibility(View.VISIBLE);
                 holder.signature_layout.setVisibility(View.GONE);
                 holder.Attchment_layout.setVisibility(View.GONE);
-                holder.type_text_number.setVisibility(View.GONE);
-
+                holder.type_text_num.setVisibility(View.GONE);
 
 
                 holder.tvQuestion.setVisibility(View.GONE);
@@ -438,10 +431,9 @@ public class RemarkQuestionListAdpter extends RecyclerView.Adapter<RemarkQuestio
                 holder.linearCheck.setVisibility(View.GONE);
                 holder.linearSpinner.setVisibility(View.GONE);
                 holder.linearDate.setVisibility(View.GONE);
-                holder.type_text_number.setVisibility(View.GONE);
-
                 holder.linearTime.setVisibility(View.GONE);
                 holder.linearDateTime.setVisibility(View.GONE);
+                holder.type_text_num.setVisibility(View.GONE);
                 try {
                     holder.tvQuestion.setTypeface(holder.tvQuestion.getTypeface(), Typeface.BOLD);
                 } catch (Exception exception) {
@@ -464,13 +456,12 @@ public class RemarkQuestionListAdpter extends RecyclerView.Adapter<RemarkQuestio
                 holder.checkbox_single.setVisibility(View.GONE);
                 holder.signature_layout.setVisibility(View.VISIBLE);
                 holder.Attchment_layout.setVisibility(View.GONE);
-                holder.type_text_number.setVisibility(View.GONE);
-
                 holder.add_sign_lable.setText(holder.que_no.getText().toString() + " " + holder.tvQuestion.getText().toString());
                 holder.que_no.setText("");
                 holder.tvQuestion.setText("");
                 holder.add_sign.setTag(position);
                 holder.delete_sign.setTag(position);
+                holder.type_text_num.setVisibility(View.GONE);
 
 
                 if (typeList.get(position).getAns().size() > 0 && !typeList.get(position).getAns().get(0).getValue().isEmpty()) {
@@ -521,12 +512,12 @@ public class RemarkQuestionListAdpter extends RecyclerView.Adapter<RemarkQuestio
                 holder.checkbox_single.setVisibility(View.GONE);
                 holder.signature_layout.setVisibility(View.GONE);
                 holder.Attchment_layout.setVisibility(View.VISIBLE);
-                holder.type_text_number.setVisibility(View.GONE);
                 holder.Attchment_lable.setText(holder.que_no.getText().toString() + " " + holder.tvQuestion.getText().toString());
                 holder.que_no.setText("");
                 holder.tvQuestion.setText("");
                 holder.buttonAttchment.setTag(position);
                 holder.delete_attchment.setTag(position);
+                holder.type_text_num.setVisibility(View.GONE);
 
                 if (typeList.get(position).getAns().size() > 0 && !typeList.get(position).getAns().get(0).getValue().isEmpty()) {
                     final String ext = typeList.get(position).getAns().get(0).getValue().
@@ -589,6 +580,7 @@ public class RemarkQuestionListAdpter extends RecyclerView.Adapter<RemarkQuestio
 
                 break;
 
+            /*****type 12 for text type quest*/
             case "12":
                 holder.type_text.setVisibility(View.GONE);
                 holder.type_text_area.setVisibility(View.GONE);
@@ -600,18 +592,17 @@ public class RemarkQuestionListAdpter extends RecyclerView.Adapter<RemarkQuestio
                 holder.checkbox_single.setVisibility(View.GONE);
                 holder.signature_layout.setVisibility(View.GONE);
                 holder.Attchment_layout.setVisibility(View.GONE);
-                holder.type_text_number.setVisibility(View.VISIBLE);
+                holder.type_text_num.setVisibility(View.VISIBLE);
 
 
-                holder.type_text_number.setTag(position);
+                holder.type_text_num.setTag(position);
                 if (typeList.get(position).getAns().isEmpty())
-                    holder.type_text_number.setText("");
+                    holder.type_text_num.setText("");
                 else if (typeList.get(position).getAns().size() > 0)
-                    holder.type_text_number.setText(typeList.get(position).getAns().get(0).getValue());
+                    holder.type_text_num.setText(typeList.get(position).getAns().get(0).getValue());
 
 
                 break;
-
             default: {
                 holder.type_text.setVisibility(View.GONE);
                 holder.type_text_area.setVisibility(View.GONE);
@@ -623,7 +614,7 @@ public class RemarkQuestionListAdpter extends RecyclerView.Adapter<RemarkQuestio
                 holder.checkbox_single.setVisibility(View.GONE);
                 holder.signature_layout.setVisibility(View.GONE);
                 holder.Attchment_layout.setVisibility(View.GONE);
-                holder.type_text_number.setVisibility(View.GONE);
+                holder.type_text_num.setVisibility(View.GONE);
             }
         }
 
@@ -983,7 +974,7 @@ public class RemarkQuestionListAdpter extends RecyclerView.Adapter<RemarkQuestio
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnTouchListener, View.OnClickListener {
         // private final ClientChat_View mlistener;
         TextView tvQuestion, tvDate, que_no, spinner_text, tvTime, tvTimeDate;//, txt_lable;//, textView1;
-        EditText type_text, type_text_area,type_text_number;
+        EditText type_text, type_text_area, type_text_num;
         LinearLayout linearCheck, linearDate, linearTime, linearDateTime;
         RelativeLayout linearSpinner;
         NoDefaultSpinner spinner;
@@ -1006,6 +997,7 @@ public class RemarkQuestionListAdpter extends RecyclerView.Adapter<RemarkQuestio
             buttonAttchment = itemView.findViewById(R.id.buttonAttchment);
             attchment_set = itemView.findViewById(R.id.attchment_set);
             delete_attchment = itemView.findViewById(R.id.delete_attchment);
+            type_text_num = itemView.findViewById(R.id.type_text_num);
             buttonAttchment.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -1117,40 +1109,6 @@ public class RemarkQuestionListAdpter extends RecyclerView.Adapter<RemarkQuestio
             });
 
 
-            type_text_number = itemView.findViewById(R.id.type_text_num);
-            type_text_number.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_your_ans));
-
-            type_text_number.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-                }
-
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    if (type_text_number.getTag() != null) {
-                        String pos = type_text_number.getTag().toString();
-                        int position = Integer.parseInt(pos);
-                        List<AnswerModel> ans = typeList.get(position).getAns();
-                        if (ans != null && ans.size() > 0) {
-                            ans.set(0, new AnswerModel(ans.get(0).getKey(), s.toString()));
-                            typeList.get(position).setAns(ans);
-                        } else {
-                            List<AnswerModel> answerModels = new ArrayList<>();
-                            answerModels.add(new AnswerModel("0", s.toString()));
-                            typeList.get(position).setAns(answerModels);
-                        }
-
-                    }
-                }
-
-                @Override
-                public void afterTextChanged(Editable s) {
-
-                }
-            });
-
-
             type_text = itemView.findViewById(R.id.type_text);
             type_text.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_your_ans));
 
@@ -1184,6 +1142,38 @@ public class RemarkQuestionListAdpter extends RecyclerView.Adapter<RemarkQuestio
                 }
             });
 
+            type_text_num = itemView.findViewById(R.id.type_text_num);
+            type_text_num.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_your_ans));
+
+            type_text_num.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    if (type_text_num.getTag() != null) {
+                        String pos = type_text_num.getTag().toString();
+                        int position = Integer.parseInt(pos);
+                        List<AnswerModel> ans = typeList.get(position).getAns();
+                        if (ans != null && ans.size() > 0) {
+                            ans.set(0, new AnswerModel(ans.get(0).getKey(), s.toString()));
+                            typeList.get(position).setAns(ans);
+                        } else {
+                            List<AnswerModel> answerModels = new ArrayList<>();
+                            answerModels.add(new AnswerModel("0", s.toString()));
+                            typeList.get(position).setAns(answerModels);
+                        }
+
+                    }
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+
+                }
+            });
 
             type_text_area = itemView.findViewById(R.id.type_text_area);
             type_text_area.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_your_ans));

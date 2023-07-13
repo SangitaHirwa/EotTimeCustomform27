@@ -1211,7 +1211,9 @@ public class AuditDetailsFragment extends Fragment implements View.OnClickListen
         allAuditStatus = AppDataBase.getInMemoryDatabase(getActivity()).auditStatusDao().getAllAuditStatus();
         for (AuditStatusModel statusModel:allAuditStatus)
         {
-            arraystatus.put(statusModel.getKey(),statusModel.getName());
+            if(statusModel.getIsStatusShow().equals("1")) {
+                arraystatus.put(statusModel.getKey(), statusModel.getName());
+            }
         }
         int i=0;
         statusArray = new String[arraystatus.size()];

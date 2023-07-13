@@ -2,8 +2,13 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/PlayStoreRelese_2.87.iml" filepath="$PROJECT_DIR$/.idea/modules/PlayStoreRelese_2.87.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/PlayStoreRelese_2.87.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/PlayStoreRelese_2.87.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/GitEyeOnTask.iml" filepath="$PROJECT_DIR$/.idea/modules/GitEyeOnTask.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/GitEyeOnTask.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/GitEyeOnTask.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/GitEyeOnTask.app.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/GitEyeOnTask.app.androidTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/GitEyeOnTask.app.main.iml" filepath="$PROJECT_DIR$/.idea/modules/app/GitEyeOnTask.app.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/GitEyeOnTask.app.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/GitEyeOnTask.app.unitTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/CustomFiled.iml" filepath="$PROJECT_DIR$/.idea/CustomFiled.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/CustomFiled.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/CustomFiled.app.iml" />
     </modules>
   </component>
 </project>

@@ -1348,8 +1348,10 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
         String remark_msg = !REMARK_SUBMIT ? LanguageController.getInstance().getMobileMsgByKey(AppConstant.euipment_remark_submit) : LanguageController.getInstance().getMobileMsgByKey(AppConstant.euipment_remark_update);
         EotApp.getAppinstance().getNotifyForEquipmentStatusList();
         // for not showing the toast when we are automatically updating remark on replace click with dialog
-        if (!isAutoUpdatedRemark)
+        if (!isAutoUpdatedRemark) {
             EotApp.getAppinstance().showToastmsg(remark_msg);
+            onBackPressed();
+        }
 
     }
 
