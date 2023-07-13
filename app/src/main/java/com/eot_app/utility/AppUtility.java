@@ -1399,11 +1399,11 @@ public class AppUtility {
                 double itemTotal = totalPrice + ((totalPrice * total_tax) / 100);
                 double discount = 0;
                 if (App_preference.getSharedprefInstance().getLoginRes().getDisCalculationType().equals("0"))
-                    discount = ((itemTotal * dis) / 100);
+                    discount = ((totalPrice * dis) / 100);
                 else if (App_preference.getSharedprefInstance().getLoginRes().getDisCalculationType().equals("1"))
                     discount = dis;
 
-                amount = totalPrice - discount;
+                amount = itemTotal - discount;
             }
             result = String.valueOf(amount);
         } catch (Exception ex) {
