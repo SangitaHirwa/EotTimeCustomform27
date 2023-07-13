@@ -1006,24 +1006,6 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
                         isMandatoryNotFill = true;
                     }
                     break;
-                    case "12":
-                    if (quesRspncModelList.get(i).getAns() != null && quesRspncModelList.get(i).getAns().size() > 0) {
-                        ans = quesRspncModelList.get(i).getAns().get(0).getValue();
-                        if (quesRspncModelList.get(i).getMandatory().equals("1"))
-                            if (TextUtils.isEmpty(ans))
-                                isMandatoryNotFill = true;
-
-                        AnswerModel answerModel = new AnswerModel(key, ans);
-                        ansArrayList.add(answerModel);
-                        answer = new Answer(this.quesRspncModelList.get(i).getQueId(),
-                                this.quesRspncModelList.get(i).getType(), ansArrayList,
-                                customFormLists.get(0).getFrmId());
-                        answerArrayList.add(answer);
-
-                    } else if (quesRspncModelList.get(i).getMandatory().equals("1")) {
-                        isMandatoryNotFill = true;
-                    }
-                    break;
                 case "4":
                 case "3":
                     if (quesRspncModelList.get(i).getAns() != null && quesRspncModelList.get(i).getAns().size() > 0) {
