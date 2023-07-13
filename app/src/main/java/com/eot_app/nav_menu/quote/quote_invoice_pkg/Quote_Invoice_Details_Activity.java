@@ -246,7 +246,7 @@ public class Quote_Invoice_Details_Activity extends AppCompatActivity implements
                     quote_due_dt.setText(AppUtility.getDateWithFormate(Long.parseLong(quotes_Details_Inv.getDuedate()), "dd-MMM-yyyy"));
                 quote_total_amount.setText(AppUtility.getRoundoff_amount(quotes_Details_Inv.getTotal()));
                 if (quotesDetails.getInvData() != null && quotesDetails.getInvData().getItemData() != null) {
-                    quotes_item_Adpter = new Quote_Details_Adpter(this, quotesDetails.getInvData().getItemData(), this, this, App_preference.getSharedprefInstance().getLoginRes().getTaxCalculationType());
+                    quotes_item_Adpter = new Quote_Details_Adpter(this, quotesDetails.getInvData().getItemData(), this, this, quotes_Details_Inv.getTaxCalculationType());
                     recyclerView_quote.setAdapter(quotes_item_Adpter);
                 }
 
