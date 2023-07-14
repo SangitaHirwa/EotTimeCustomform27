@@ -27,6 +27,7 @@ import com.eot_app.utility.App_preference;
 import com.eot_app.utility.EotApp;
 import com.eot_app.utility.db.AppDataBase;
 import com.eot_app.utility.language_support.LanguageController;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -209,9 +210,10 @@ public class AdapterAuditList extends RecyclerView.Adapter<AdapterAuditList.MyVi
 
                 holder.status.setText(imageForStatus.getText());
 
-                if(imageForStatus.getImg()!=null){
-                    int id = mContext.getResources().getIdentifier(imageForStatus.getImg(), "drawable", mContext.getPackageName());
-                    holder.status_img.setImageResource(id);
+                if(imageForStatus.getUrl()!=null){
+                    Picasso.with(EotApp.getAppinstance()).load(App_preference.getSharedprefInstance().getBaseURL() +
+                            imageForStatus.getUrl())
+                            .into(holder.status_img);
                     holder.status_constraints.setBackgroundResource(R.color.white);
                 } else{
                     holder.status_img.setVisibility(View.INVISIBLE);

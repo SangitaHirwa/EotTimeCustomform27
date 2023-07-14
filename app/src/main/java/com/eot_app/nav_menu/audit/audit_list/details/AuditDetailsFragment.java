@@ -68,6 +68,7 @@ import com.eot_app.utility.language_support.LanguageController;
 import com.eot_app.utility.settings.setting_db.FieldWorker;
 import com.eot_app.utility.util_interfaces.Callback_AlertDialog;
 import com.eot_app.utility.util_interfaces.MySpinnerAdapter;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -1188,9 +1189,10 @@ public class AuditDetailsFragment extends Fragment implements View.OnClickListen
                  status_label.setText(imageForStatus.getText());
                     ll_status.setBackgroundResource(R.color.white);
 
-                    if(imageForStatus.getImg()!=null){
-                        int id = EotApp.getAppinstance().getResources().getIdentifier(imageForStatus.getImg(), "drawable", EotApp.getAppinstance().getPackageName());
-                      status_img.setImageResource(id);
+                    if(imageForStatus.getUrl()!=null){
+                        Picasso.with(EotApp.getAppinstance()).load(App_preference.getSharedprefInstance().getBaseURL() +
+                                imageForStatus.getUrl())
+                                .into(status_img);
                     } else{
                         status_img.setVisibility(View.INVISIBLE);
                     }
