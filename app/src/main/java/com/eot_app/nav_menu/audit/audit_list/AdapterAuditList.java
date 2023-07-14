@@ -190,10 +190,12 @@ public class AdapterAuditList extends RecyclerView.Adapter<AdapterAuditList.MyVi
             if (status == 8) {
                 holder.status.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.new_on_hold));
                 holder.status_img.setImageDrawable(mContext.getDrawable(R.drawable.ic_pendng_task));
+                holder.status_img.setVisibility(View.VISIBLE);
             } else {
                 holder.status.setText(jobStatusObject.getStatus_name());
                 int id = mContext.getResources().getIdentifier(jobStatusObject.getImg(), "drawable", mContext.getPackageName());
                 holder.status_img.setImageResource(id);
+                holder.status_img.setVisibility(View.VISIBLE);
             }
             if (jobStatusObject.getStatus_no().equals("7")) {
                 holder.status_constraints.setBackgroundResource(R.color.in_progress);
@@ -206,11 +208,14 @@ public class AdapterAuditList extends RecyclerView.Adapter<AdapterAuditList.MyVi
             if(imageForStatus!=null) {
 
                 holder.status.setText(imageForStatus.getText());
+
                 if(imageForStatus.getImg()!=null){
                     int id = mContext.getResources().getIdentifier(imageForStatus.getImg(), "drawable", mContext.getPackageName());
                     holder.status_img.setImageResource(id);
+                    holder.status_constraints.setBackgroundResource(R.color.white);
                 } else{
                     holder.status_img.setVisibility(View.INVISIBLE);
+                    holder.status_constraints.setBackgroundResource(R.color.white);
                 }
             }
         }
