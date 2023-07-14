@@ -19,11 +19,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.eot_app.R;
 import com.eot_app.nav_menu.audit.AuditStatusController;
 import com.eot_app.nav_menu.audit.audit_list.audit_mvp.model.AuditList_Res;
+import com.eot_app.nav_menu.audit.audit_model.AuditStatusModel;
 import com.eot_app.nav_menu.jobs.job_detail.detail.jobdetial_model.JobStatusModel;
 import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.AppUtility;
 import com.eot_app.utility.App_preference;
 import com.eot_app.utility.EotApp;
+import com.eot_app.utility.db.AppDataBase;
 import com.eot_app.utility.language_support.LanguageController;
 
 import java.util.ArrayList;
@@ -184,15 +186,12 @@ public class AdapterAuditList extends RecyclerView.Adapter<AdapterAuditList.MyVi
         JobStatusModel jobStatusObject = AuditStatusController.getInstance().getStatusObjectById(String.valueOf(status));
         if (jobStatusObject != null) {
             /*for this prod*/
-            if (status == 8) {
-                holder.status.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.new_on_hold));
-            } else {
-                holder.status.setText(jobStatusObject.getStatus_name());
-            }
             holder.status_constraints.setBackgroundResource(R.color.white);
             if (status == 8) {
+                holder.status.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.new_on_hold));
                 holder.status_img.setImageDrawable(mContext.getDrawable(R.drawable.ic_pendng_task));
             } else {
+                holder.status.setText(jobStatusObject.getStatus_name());
                 int id = mContext.getResources().getIdentifier(jobStatusObject.getImg(), "drawable", mContext.getPackageName());
                 holder.status_img.setImageResource(id);
             }
@@ -201,6 +200,18 @@ public class AdapterAuditList extends RecyclerView.Adapter<AdapterAuditList.MyVi
                 switchDefaultColor(holder, EotApp.getAppinstance().getResources().getColor(R.color.white));
             } else {
                 switchDefaultColor(holder, EotApp.getAppinstance().getResources().getColor(R.color.txt_color));
+            }
+        }else if(jobStatusObject==null){
+            AuditStatusModel imageForStatus = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).auditStatusDao().getImageForStatus(String.valueOf(status));
+            if(imageForStatus!=null) {
+
+                holder.status.setText(imageForStatus.getText());
+                if(imageForStatus.getImg()!=null){
+                    int id = mContext.getResources().getIdentifier(imageForStatus.getImg(), "drawable", mContext.getPackageName());
+                    holder.status_img.setImageResource(id);
+                } else{
+                    holder.status_img.setVisibility(View.INVISIBLE);
+                }
             }
         }
     }
