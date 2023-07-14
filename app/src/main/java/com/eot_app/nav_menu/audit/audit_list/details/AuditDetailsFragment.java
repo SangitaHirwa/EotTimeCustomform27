@@ -1165,11 +1165,13 @@ public class AuditDetailsFragment extends Fragment implements View.OnClickListen
                     status.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.new_on_hold));
                     status_img.setImageDrawable(getActivity().getDrawable(R.drawable.ic_pendng_task));
                     status_label.setText(jobStatusObject.getStatus_name());
+                    status_img.setVisibility(View.VISIBLE);
                 } else {
                     status.setText(jobStatusObject.getStatus_name());
                     int id = getResources().getIdentifier(jobStatusObject.getImg(), "drawable", getActivity().getPackageName());
                     status_img.setImageResource(id);
                     status_label.setText(jobStatusObject.getStatus_name());
+                    status_img.setVisibility(View.VISIBLE);
                 }
                 ll_status.setBackgroundResource(R.color.white);
                 switchDefaultColor(EotApp.getAppinstance().getResources().getColor(R.color.txt_color));
@@ -1179,14 +1181,19 @@ public class AuditDetailsFragment extends Fragment implements View.OnClickListen
                     ll_status.setBackgroundResource(R.color.in_progress);
                     switchDefaultColor(EotApp.getAppinstance().getResources().getColor(R.color.white));
                 }
-            }
-            else {
-                if (!statusValue.equals("")) {
-                    String statusName = arraystatus.get(statusValue);
-                    status_label.setText(statusName);
-                    status.setText(statusName);
-                    status_img.setImageDrawable(null);
+            }else if(jobStatusObject == null){
+                AuditStatusModel imageForStatus = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).auditStatusDao().getImageForStatus(String.valueOf(statusValue));
+                if(imageForStatus!=null) {
+                 status.setText(imageForStatus.getText());
+                 status_label.setText(imageForStatus.getText());
                     ll_status.setBackgroundResource(R.color.white);
+
+                    if(imageForStatus.getImg()!=null){
+                        int id = EotApp.getAppinstance().getResources().getIdentifier(imageForStatus.getImg(), "drawable", EotApp.getAppinstance().getPackageName());
+                      status_img.setImageResource(id);
+                    } else{
+                        status_img.setVisibility(View.INVISIBLE);
+                    }
                 }
             }
                 /* else {
