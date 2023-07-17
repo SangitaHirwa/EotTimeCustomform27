@@ -197,7 +197,7 @@ public class ActivityLinkEquipment extends AppCompatActivity implements View.OnC
                     contrId = tempContrId;
                 }
                 setContractMsg(contractMsg);
-                refreshEquipmentList();
+                refreshEquipmentList(false);
             }
 
             @Override
@@ -341,12 +341,14 @@ public class ActivityLinkEquipment extends AppCompatActivity implements View.OnC
     }
 
     @Override
-    public void refreshEquipmentList() {
+    public void refreshEquipmentList(boolean isReturn) {
         if (TextUtils.isEmpty(contrId))
             linkEquipmentPI.getEquipmentList(type, cltId, id);
         else linkEquipmentPI.getContractList(new ContractEquipmentReq(type, id, contrId));
 
-        onBackPressed();
+        if(isReturn) {
+            onBackPressed();
+        }
     }
 
     @Override

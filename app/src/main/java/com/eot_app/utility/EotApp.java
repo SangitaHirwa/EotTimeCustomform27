@@ -86,7 +86,7 @@ public class EotApp extends Application implements Application.ActivityLifecycle
         App_preference.getSharedprefInstance().setBlankTokenOnSessionExpire();
 
         Intent intent = new Intent(this, Login2Activity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
 
 //        sign out from firebse

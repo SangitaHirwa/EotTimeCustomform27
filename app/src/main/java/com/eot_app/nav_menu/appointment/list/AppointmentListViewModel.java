@@ -559,10 +559,7 @@ public class AppointmentListViewModel extends AndroidViewModel implements Server
                         if (auditList != null)
                             for (AuditList_Res audit : auditList) {
                                 try {
-                                    if (audit != null && audit.getStatus() != null && !AppUtility.auditStatusList().contains(audit.getStatus())
-                                            && audit.getAudId() != null) {
-                                        AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).auditDao().deletAuditById(audit.getAudId());
-                                    } else {
+
                                         CommonAppointmentModel cm = new CommonAppointmentModel();
                                         cm.setStartDateTime(audit.getSchdlStart());
                                         cm.setType(2);
@@ -606,7 +603,7 @@ public class AppointmentListViewModel extends AndroidViewModel implements Server
 
                                         commonList.add(cm);
 
-                                    }
+
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }

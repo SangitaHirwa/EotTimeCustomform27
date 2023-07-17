@@ -881,7 +881,7 @@ public class AddEditInvoiceItemActivity2 extends
                     Log.e("selection", "0 For no selection");
                 }
         itemId = itemselected.getItemId();
-        inm = "";
+        inm = itemselected.getInm();
         itemId = itemselected.getItemId();
         dataType = "1";
         itemType = "0";
@@ -2253,12 +2253,13 @@ public class AddEditInvoiceItemActivity2 extends
                 else if (getDisCalculationType.equals("1"))
                     calculaterateDis = dis;
 
-                double newRate = rate - calculaterateDis;
+                double rate1 = rate * qty;
+                double newRate = rate1 - calculaterateDis;
                 double newAmt = (newRate * total_tax) / 100;
                 amount = newAmt + newRate;
 
-                amount = amount * qty;
-                taxAmount = newAmt * qty;
+
+                taxAmount = ((total_tax * rate * qty) / 100);
 
                 String tax_Amount = AppUtility.getRoundoff_amount(String.valueOf(taxAmount));
                 taxamount_value_txt.setText(tax_Amount);
@@ -2273,6 +2274,21 @@ public class AddEditInvoiceItemActivity2 extends
             double discount = 0;
             if (getDisCalculationType.equals("0"))
                 discount = ((itemTotal * dis) / 100);
+            else if (getDisCalculationType.equals("1"))
+                discount = dis;
+
+            amount = itemTotal - discount;
+
+            taxAmount = ((total_tax * rate * qty) / 100);
+            String tax_Amount = AppUtility.getRoundoff_amount(String.valueOf(taxAmount));
+            taxamount_value_txt.setText(tax_Amount);
+        }
+        else if (App_preference.getSharedprefInstance().getLoginRes().getTaxCalculationType().equals("2")) {
+            double totalPrice = qty * rate;
+            double itemTotal = totalPrice + ((totalPrice * total_tax) / 100);
+            double discount = 0;
+            if (getDisCalculationType.equals("0"))
+                discount = ((totalPrice * dis) / 100);
             else if (getDisCalculationType.equals("1"))
                 discount = dis;
 
@@ -2306,22 +2322,25 @@ public class AddEditInvoiceItemActivity2 extends
                 }
 
                 if (App_preference.getSharedprefInstance().getLoginRes().getTaxCalculationType().equals("0")) {
-                    double calculaterateDis = 0;
-                    //** based on the type of calculation , direct or percentage  **//
-                    if (getDisCalculationType.equals("0"))
-                        calculaterateDis = (rate * dis) / 100;
-                    else if (getDisCalculationType.equals("1"))
-                        calculaterateDis = dis;
 
-                    double newRate = rate - calculaterateDis;
-                    double newAmt = (newRate * total_tax) / 100;
+                    double newAmt = (rate * total_tax) / 100;
                     double d = rate + newAmt;
                     String tax_Amount = AppUtility.getRoundoff_amount(String.valueOf(d));
                     edt_item_tax_rate.setText(tax_Amount);
                 } else if (App_preference.getSharedprefInstance().getLoginRes().getTaxCalculationType().equals("1")) {
-                    double newRate = Double.parseDouble((taxamount_value_txt.getText().toString())) + rate;
-                    String tax_Amount = AppUtility.getRoundoff_amount(String.valueOf(newRate));
+
+                    double newAmt = (rate * total_tax) / 100;
+                    double d = rate + newAmt;
+                    String tax_Amount = AppUtility.getRoundoff_amount(String.valueOf(d));
                     edt_item_tax_rate.setText(tax_Amount);
+                }
+                else if (App_preference.getSharedprefInstance().getLoginRes().getTaxCalculationType().equals("2")) {
+
+                    double newAmt = (rate * total_tax) / 100;
+                    double d = rate + newAmt;
+                    String tax_Amount = AppUtility.getRoundoff_amount(String.valueOf(d));
+                    edt_item_tax_rate.setText(tax_Amount);
+
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
