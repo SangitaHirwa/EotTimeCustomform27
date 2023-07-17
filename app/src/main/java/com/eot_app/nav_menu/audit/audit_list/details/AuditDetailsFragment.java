@@ -1158,6 +1158,7 @@ public class AuditDetailsFragment extends Fragment implements View.OnClickListen
     }
 
 
+    @SuppressLint("ResourceAsColor")
     private void setViewByAuditStatus(String statusValue) {
         try {
             JobStatusModel jobStatusObject = AuditStatusController.getInstance().getStatusObjectById(String.valueOf(statusValue));
@@ -1188,6 +1189,7 @@ public class AuditDetailsFragment extends Fragment implements View.OnClickListen
                  status.setText(imageForStatus.getText());
                  status_label.setText(imageForStatus.getText());
                     ll_status.setBackgroundResource(R.color.white);
+                    status.setTextColor(R.color.black);
 
                     if(imageForStatus.getUrl()!=null){
                         Picasso.with(EotApp.getAppinstance()).load(App_preference.getSharedprefInstance().getBaseURL() +
