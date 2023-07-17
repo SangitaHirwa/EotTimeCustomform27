@@ -1188,6 +1188,7 @@ public class AuditDetailsFragment extends Fragment implements View.OnClickListen
                  status.setText(imageForStatus.getText());
                  status_label.setText(imageForStatus.getText());
                     ll_status.setBackgroundResource(R.color.white);
+                    switchDefaultColor(EotApp.getAppinstance().getResources().getColor(R.color.txt_color));
 
                     if(imageForStatus.getUrl()!=null){
                         Picasso.with(EotApp.getAppinstance()).load(App_preference.getSharedprefInstance().getBaseURL() +
