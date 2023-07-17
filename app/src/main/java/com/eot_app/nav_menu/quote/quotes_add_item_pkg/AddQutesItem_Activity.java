@@ -488,11 +488,9 @@ public class AddQutesItem_Activity extends AppCompatActivity implements TextWatc
 
 
                         amount=amount*qty;
-                        taxAmount = newAmt * qty;
-
+                        taxAmount = ((total_tax * rate * qty) / 100);
                         String tax_Amount = AppUtility.getRoundoff_amount(String.valueOf(taxAmount));
                         taxamount_value_txt.setText(tax_Amount);
-
 
                     } catch (Exception exception) {
                         exception.printStackTrace();
@@ -509,7 +507,22 @@ public class AddQutesItem_Activity extends AppCompatActivity implements TextWatc
                         discount = dis;
 
                     amount  = itemTotal -discount;
+                    taxAmount = ((total_tax * rate * qty) / 100);
+                    String tax_Amount = AppUtility.getRoundoff_amount(String.valueOf(taxAmount));
+                    taxamount_value_txt.setText(tax_Amount);
+                }
+                else if (quotesDetails.getInvData().getTaxCalculationType().equals("2")) {
 
+
+                    double totalPrice  = qty * rate;
+                    double itemTotal   = totalPrice + ((totalPrice* total_tax)/100);
+                    double discount=0;
+                    if(App_preference.getSharedprefInstance().getLoginRes().getDisCalculationType().equals("0"))
+                        discount =  ((totalPrice*dis)/100);
+                    else if(App_preference.getSharedprefInstance().getLoginRes().getDisCalculationType().equals("1"))
+                        discount = dis;
+
+                    amount  = itemTotal -discount;
                     taxAmount = ((total_tax * rate * qty) / 100);
                     String tax_Amount = AppUtility.getRoundoff_amount(String.valueOf(taxAmount));
                     taxamount_value_txt.setText(tax_Amount);
@@ -1482,29 +1495,27 @@ public class AddQutesItem_Activity extends AppCompatActivity implements TextWatc
                 }
 
 
-                if (App_preference.getSharedprefInstance().getLoginRes().getTaxCalculationType().equals("0")) {
-//                    double calculaterateDis = (rate * dis) / 100;
-
-                    double calculaterateDis=0;
-                    //TODO calculation part
-                    //** based on the type of calculation , direct or percentage  **//
-                    if(App_preference.getSharedprefInstance().getLoginRes().getDisCalculationType().equals("0"))
-                        calculaterateDis = (rate * dis) / 100;
-                    else if(App_preference.getSharedprefInstance().getLoginRes().getDisCalculationType().equals("1"))
-                        calculaterateDis = dis;
-
-                    double newRate = rate - calculaterateDis;
-                    double newAmt = (newRate * total_tax) / 100;
+                if (quotesDetails.getInvData().getTaxCalculationType().equals("0")) {
+//
+                    double newAmt = (rate * total_tax) / 100;
                     double d = rate + newAmt;
                     String tax_Amount = AppUtility.getRoundoff_amount(String.valueOf(d));
                     edt_item_tax_rate.setText(tax_Amount);
-                } else if (App_preference.getSharedprefInstance().getLoginRes().getTaxCalculationType().equals("1")) {
+                } else if (quotesDetails.getInvData().getTaxCalculationType().equals("1")) {
                     //TODO calculation part
-                    double newRate = Double.parseDouble((taxamount_value_txt.getText().toString())) + rate;
-                    String tax_Amount = AppUtility.getRoundoff_amount(String.valueOf(newRate));
+                    double newAmt = (rate * total_tax) / 100;
+                    double d = rate + newAmt;
+                    String tax_Amount = AppUtility.getRoundoff_amount(String.valueOf(d));
                     edt_item_tax_rate.setText(tax_Amount);
                 }
+                else if (quotesDetails.getInvData().getTaxCalculationType().equals("2")) {
+                    //TODO calculation part
+                    double newAmt = (rate * total_tax) / 100;
+                    double d = rate + newAmt;
+                    String tax_Amount = AppUtility.getRoundoff_amount(String.valueOf(d));
+                    edt_item_tax_rate.setText(tax_Amount);
 
+            }
             } catch (Exception ex) {
                 ex.getMessage();
             }

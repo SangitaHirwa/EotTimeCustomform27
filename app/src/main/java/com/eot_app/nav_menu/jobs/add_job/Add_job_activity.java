@@ -2692,6 +2692,7 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
                 case "6":
                 case "7":
                 case "1":
+                case "12":
                     if (questionList.get(i).getAns() != null && questionList.get(i).getAns().size() > 0) {
                         switch (questionList.get(i).getType()) {
                             case "5":

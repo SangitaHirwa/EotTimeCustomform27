@@ -32,8 +32,8 @@
                 android:id="@+id/relativeLayout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentEnd="false"
-                android:layout_marginStart="30dp"
+                android:layout_toEndOf="@+id/checkbox_invoice"
+                android:layout_toStartOf="@+id/linear_lay_billable"
                 android:layout_marginEnd="20dp"
                 android:gravity="start|center"
                 android:padding="10dp">
@@ -95,9 +95,8 @@
                 android:id="@+id/linear_lay_billable"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignEnd="@+id/relativeLayout"
-                android:layout_alignParentEnd="true"
                 android:layout_marginEnd="8dp"
+                android:layout_alignParentEnd="true"
                 android:gravity="center"
                 android:orientation="vertical"
                 android:padding="10dp">

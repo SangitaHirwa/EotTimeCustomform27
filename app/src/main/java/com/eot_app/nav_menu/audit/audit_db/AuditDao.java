@@ -72,6 +72,9 @@ public interface AuditDao {
     @Query("update AuditList_Res set cltId = :cltId  where audId = :audId ")
     void updateAuditCltID(String audId, String cltId);
 
+
+    @Query("update AuditList_Res set status = :status  where audId = :audId ")
+    void updateAuditStatus(String audId, String status);
 //    @Query("delete from AuditList_Res where status !='1' or status !='7'  or status !='8'  or status !='9'")
 //    void deleteAuditStatusNot();
 }

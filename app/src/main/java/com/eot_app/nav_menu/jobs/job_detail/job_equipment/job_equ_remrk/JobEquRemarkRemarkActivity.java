@@ -592,10 +592,11 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
     @Override
     public void onClickContinuarEvent(Uri uri) {
         String path = "";
+        String image_name="";
         path = PathUtils.getRealPath(this, uri);
         if (!path.isEmpty()) {
             if (type == 1) {
-                uploadRemarkAttchment(path);
+                uploadRemarkAttchment(path,image_name);
             } else if (type == 2) {
                 questionListAdapter.showAttchmentView(position, path, attchmentView, deleteAttchment, addAttchment);
             }
@@ -650,13 +651,14 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
     }
 
 
-    private void uploadRemarkAttchment(String path) {
+    private void uploadRemarkAttchment(String path, String imageName) {
         if (jobId != null && equipment.getEquId() != null) {
             JobAuditSingleAttchReqModel model = new JobAuditSingleAttchReqModel(jobId, equipment.getEquId(),
                     button_submit.getText().toString(), titleNm, path, "1");
             String str = new Gson().toJson(model);
             Intent intent = new Intent(this, SelectedImageActivity.class);
             intent.putExtra("attchment", str);
+            intent.putExtra("image_name",imageName);
             startActivityForResult(intent, SINGLEATTCHMENT);
         }
     }
@@ -968,6 +970,7 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
                 case "6":
                 case "7":
                 case "1":
+                case "12":
                     if (quesRspncModelList.get(i).getAns() != null && quesRspncModelList.get(i).getAns().size() > 0) {
                         if (quesRspncModelList.get(i).getType().equals("5")) {
                             if (!TextUtils.isEmpty(quesRspncModelList.get(i).getAns().get(0).getValue())) {
@@ -1287,6 +1290,7 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        String fileNameExt="";
         if (requestCode == SINGLEATTCHMENT) {
             if (Objects.requireNonNull(data).getSerializableExtra("code") != null) {
                 JobAuditSingleAttchReqModel myObject = (JobAuditSingleAttchReqModel) data.getSerializableExtra("code");
@@ -1298,7 +1302,8 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
                             Bitmap bitmap = AppUtility.getBitmapFromPath(myObject.getPath());
                             bitmapString = AppUtility.BitMapToString(bitmap);
                         }
-                        String fileNameExt = AppUtility.getFileNameWithExtension(myObject.getPath());
+                       /* String fileNameExt = AppUtility.getFileNameWithExtension(myObject.getPath());*/
+                        fileNameExt=data.getStringExtra("image_name");
                         GetFileList_Res obj = new GetFileList_Res("0", fileNameExt, fileNameExt, bitmapString);
                         ArrayList<GetFileList_Res> updateList = new ArrayList<>();
                         updateList.add(obj);
@@ -1310,7 +1315,7 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
                     e.printStackTrace();
                 }
                 // api call for uploading attachments
-                jobAuditPi.uploadAttchmentOnserverForJobAudit(myObject);
+                jobAuditPi.uploadAttchmentOnserverForJobAudit(myObject,fileNameExt);
             }
         } else if (requestCode == ADD_ITEM_DATA) {
             if (data != null && data.hasExtra("AddInvoiceItem")) {
@@ -1343,8 +1348,10 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
         String remark_msg = !REMARK_SUBMIT ? LanguageController.getInstance().getMobileMsgByKey(AppConstant.euipment_remark_submit) : LanguageController.getInstance().getMobileMsgByKey(AppConstant.euipment_remark_update);
         EotApp.getAppinstance().getNotifyForEquipmentStatusList();
         // for not showing the toast when we are automatically updating remark on replace click with dialog
-        if (!isAutoUpdatedRemark)
+        if (!isAutoUpdatedRemark) {
             EotApp.getAppinstance().showToastmsg(remark_msg);
+            onBackPressed();
+        }
 
     }
 
@@ -1466,7 +1473,7 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
     public void onDocumentSelected(String path, String name, boolean isImage) {
         super.onDocumentSelected(path, name, isImage);
         if (type == 1) {
-            uploadRemarkAttchment(path);
+            uploadRemarkAttchment(path,name);
         } else if (type == 2) {
             if (questionListAdapter != null)
                 questionListAdapter.showAttchmentView(position, path, attchmentView, deleteAttchment, addAttchment);

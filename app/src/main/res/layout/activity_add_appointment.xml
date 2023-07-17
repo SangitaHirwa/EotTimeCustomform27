@@ -317,6 +317,43 @@
                     android:layout_height="1dp"
                     android:layout_marginTop="5dp"
                     android:background="@color/border_font_color" />
+                <LinearLayout
+                    android:id="@+id/audit_status_relative"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/edt_cntct_brdr"
+                    android:orientation="horizontal"
+                    android:padding="5dp"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/status_label"
+                        style="@style/subtext_style"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center|start"
+                        android:text=""
+                        android:textColor="@color/heading_green" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/ic_arrow_drop_down_black_24dp"
+                        tools:ignore="ContentDescription,ObsoleteLayoutParam" />
+                </LinearLayout>
+
+
+                <com.eot_app.utility.util_interfaces.NoDefaultSpinner
+                    android:id="@+id/status_spinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:background="@android:color/transparent"
+                    android:popupBackground="@drawable/popupbg"
+                    android:visibility="invisible" />
+
 
                 <RelativeLayout
                     android:layout_width="match_parent"

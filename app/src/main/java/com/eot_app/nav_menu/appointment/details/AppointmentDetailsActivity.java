@@ -27,6 +27,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
@@ -43,6 +44,7 @@ import com.eot_app.databinding.ActivityAppointmentDetailsBinding;
 import com.eot_app.nav_menu.appointment.Keepar;
 import com.eot_app.nav_menu.appointment.addupdate.AddAppointmentActivity;
 import com.eot_app.nav_menu.appointment.addupdate.model.AppointmentUpdateReq;
+import com.eot_app.nav_menu.appointment.appointment_model.AppointmentStatusModel;
 import com.eot_app.nav_menu.appointment.dbappointment.Appointment;
 import com.eot_app.nav_menu.appointment.details.documents.ActivityDocumentUpload;
 import com.eot_app.nav_menu.appointment.details.documents.DocumentExportReq;
@@ -64,13 +66,17 @@ import com.eot_app.utility.EotApp;
 import com.eot_app.utility.db.AppDataBase;
 import com.eot_app.utility.db.OfflineDataController;
 import com.eot_app.utility.language_support.LanguageController;
+import com.eot_app.utility.util_interfaces.Callback_AlertDialog;
+import com.eot_app.utility.util_interfaces.MySpinnerAdapter;
 import com.google.gson.Gson;
 import com.hypertrack.hyperlog.HyperLog;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.Callable;
@@ -82,7 +88,11 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
     private static final int EDIT_APPOINTMENT_CODE = 10;
     private static final int UPLOADED_NEW_LIST = 148;
     private final int ADD_QUOTE_RESULT = 123;
-
+    private String statusByValue=null;
+    long check = System.currentTimeMillis();
+    private final LinkedHashMap<String, String> arraystatus = new LinkedHashMap<>();
+    private  String[] statusArray = new String[arraystatus.size()];
+    List<AppointmentStatusModel> allAppointmentStatusList =new ArrayList<>();
     ArrayList<AppointmentAttachment> allAttachmentList=new ArrayList<>();
     ActivityAppointmentDetailsBinding binding;
     AppointmentDetailsViewModel detailsViewModel;
@@ -124,8 +134,8 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
         binding.tvExportAll.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.export_document));
         binding.tvLabelQuotation.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.quotation_label));
         binding.tvRecentQuote.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.recent_quote));
-        binding.btnAppointmentDone.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.mark_as_done));
-        binding.btnAppointmentCompleted.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.completed));
+       /* binding.btnAppointmentDone.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.mark_as_done));
+        binding.btnAppointmentCompleted.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.completed));*/
 
 
         if (AppUtility.isInternetConnected()) {
@@ -193,8 +203,8 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
         binding.linearFabQuote.setOnClickListener(this);
         binding.linearFabJob.setOnClickListener(this);
         binding.tvExportAll.setOnClickListener(this);
-
-        binding.btnAppointmentDone.setOnClickListener(v -> {
+        binding.linearArrawLayout.setOnClickListener(this);
+        /*binding.btnAppointmentDone.setOnClickListener(v -> {
             if (model != null && !model.getTempId().equals(model.getAppId())) {
                 sendUpdateRequest();
                 TransitionManager.beginDelayedTransition(binding.parentLayout);
@@ -203,7 +213,7 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
             } else
                 showDialogs(LanguageController.getInstance().getMobileMsgByKey(AppConstant.appointment_not_sync));
 
-        });
+        });*/
 
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
                 new IntentFilter("appointment_details_refresh"));
@@ -219,25 +229,14 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
     private void setDataInUI(final Appointment model) {
         HyperLog.i("", "setDataInUI(M) start");
         if (model != null) {
-            if (!TextUtils.isEmpty(model.getStatus())) {
-                if (model.getStatus().equals("9")) {
-                    TransitionManager.beginDelayedTransition(binding.parentLayout);
-                    binding.btnAppointmentDone.setVisibility(View.GONE);
-                    binding.btnAppointmentCompleted.setVisibility(View.VISIBLE);
-                } else {
-                    TransitionManager.beginDelayedTransition(binding.parentLayout);
-                    binding.btnAppointmentCompleted.setVisibility(View.GONE);
-                    binding.btnAppointmentDone.setVisibility(View.VISIBLE);
-                }
 
-
-            }
 
             setClientName(model);
-
+            setAppointmentStatusList();
             setQuotationDetails();
             setJobDetails();
-
+            if(!TextUtils.isEmpty(model.getStatus()))
+                binding.statusLabel.setText(arraystatus.get(model.getStatus()));
             if (!TextUtils.isEmpty(model.getNm()))
                 binding.tvClientName.setText(model.getNm());
             setcompleteAddress(model);
@@ -246,6 +245,41 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
             setScheduleDates(model);
 
             appoinmentAttchment(model);
+
+            AppUtility.spinnerPopUpWindow(binding.statusSpinner);
+            binding.statusSpinner.setSelected(false);
+            binding.statusSpinner.setAdapter(new MySpinnerAdapter(AppointmentDetailsActivity.this, statusArray));
+            binding.statusSpinner.post(() -> binding.statusSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, final int position, long id) {
+                    if (System.currentTimeMillis() - check < 1000) {
+                        return;
+                    }
+                    AppUtility.alertDialog2(AppointmentDetailsActivity.this, LanguageController.getInstance().getMobileMsgByKey(AppConstant.status_dialog), LanguageController.getInstance().getMobileMsgByKey(AppConstant.audit_status_change), LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), LanguageController.getInstance().getMobileMsgByKey(AppConstant.cancel), new Callback_AlertDialog() {
+                        @Override
+                        public void onPossitiveCall() {
+                            binding.statusLabel.setText(statusArray[position]);
+                            for (Map.Entry mapElement : arraystatus.entrySet()) {
+                                if (mapElement.getValue().equals(binding.statusLabel.getText().toString())) {
+                                    statusByValue=String.valueOf(mapElement.getKey());
+                                    break;
+                                }
+                            }
+                            model.setStatus(statusByValue);
+                            sendUpdateRequest();
+                        }
+
+                        @Override
+                        public void onNegativeCall() {
+
+                        }
+                    });
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+                }
+            }));
 
 
             binding.imgCall.setOnClickListener(this);
@@ -268,6 +302,7 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
             binding.editor.setBackgroundColor(Color.TRANSPARENT);
             binding.editor.focusEditor();
             binding.editor.setInputEnabled(false);
+            binding.editor.getSettings().setAllowFileAccess(true);
 
             if (!TextUtils.isEmpty(model.getDes())) {
                 // binding.tvDes.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.description));
@@ -564,6 +599,7 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
             Intent intent = new Intent(this, AddAppointmentActivity.class);
             intent.putExtra(AddAppointmentActivity.ISINEDITMODE, true);
             intent.putExtra("appointment", model);
+            intent.putExtra("editView",true);
             intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
             startActivityForResult(intent, EDIT_APPOINTMENT_CODE);
         }
@@ -639,6 +675,10 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
                 break;
             case R.id.tv_export_all:
                 exportDocument();
+                break;
+
+            case R.id.linear_arraw_layout:
+                binding.statusSpinner.performClick();
                 break;
         }
 
@@ -887,7 +927,7 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
         updateReq.setCltId(model.getCltId());
         updateReq.setSiteId(model.getSiteId());
         updateReq.setConId(model.getConId());
-        updateReq.setStatus("9");
+        updateReq.setStatus(model.getStatus());
         updateReq.setDes(model.getDes());
 
         try {
@@ -921,7 +961,7 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
         String dateTime = AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT);
 
         //update in local DB
-        model.setStatus("9");
+        model.setStatus(statusByValue);
         AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).appointmentModel().insertSingleAppointment(model);
         OfflineDataController.getInstance().addInOfflineDB(Service_apis.updateAppointment, s, dateTime);
         Intent intent = new Intent();
@@ -990,6 +1030,23 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
 
     @Override
     public void onDocumentUpdate(String msg, boolean isSuccess) {
+
+    }
+    public void setAppointmentStatusList(){
+
+        allAppointmentStatusList = AppDataBase.getInMemoryDatabase(this).appointmentStatusDao().getAllAppointmentStatusList();
+        for (AppointmentStatusModel statusModel:allAppointmentStatusList)
+        {
+            if(statusModel.getIsStatusShow().equals("1")) {
+                arraystatus.put(statusModel.getKey(), statusModel.getName());
+            }
+        }
+        int i=0;
+        statusArray = new String[arraystatus.size()];
+        for (Map.Entry mapElement : arraystatus.entrySet()) {
+            statusArray[i] = ((String) mapElement.getValue());
+            i++;
+        }
 
     }
 }
