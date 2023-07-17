@@ -37,7 +37,7 @@ public class AppointmentAddReq {
     String clientForFuture = "0";
     String contactForFuture = "";
     String siteForFuture = "";
-
+    String status="";
     List<String> appDoc = new ArrayList<>();
     List<String> fileNames = new ArrayList<>();
 
@@ -246,4 +246,11 @@ public class AppointmentAddReq {
         return memIds;
     }
 
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
 }

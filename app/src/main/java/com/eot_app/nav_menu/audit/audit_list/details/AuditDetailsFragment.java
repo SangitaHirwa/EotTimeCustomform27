@@ -51,6 +51,7 @@ import com.eot_app.nav_menu.audit.audit_list.audit_mvp.model.AuditList_Res;
 import com.eot_app.nav_menu.audit.audit_list.audit_mvp.model.AuditStatusRequest;
 import com.eot_app.nav_menu.audit.audit_list.details.audit_detail_mvp.AuditDetail_PC;
 import com.eot_app.nav_menu.audit.audit_list.details.audit_detail_mvp.AuditDetails_View;
+import com.eot_app.nav_menu.audit.audit_model.AuditStatusModel;
 import com.eot_app.nav_menu.client.clientlist.client_detail.site.sitelist.editsite.editsitedb.SpinnerCountrySite;
 import com.eot_app.nav_menu.custom_fileds.CustomFiledListActivity;
 import com.eot_app.nav_menu.custom_fileds.custom_model.CustOmFormQuestionsRes;
@@ -67,9 +68,12 @@ import com.eot_app.utility.language_support.LanguageController;
 import com.eot_app.utility.settings.setting_db.FieldWorker;
 import com.eot_app.utility.util_interfaces.Callback_AlertDialog;
 import com.eot_app.utility.util_interfaces.MySpinnerAdapter;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 
 import static com.eot_app.nav_menu.jobs.job_detail.detail.DetailFragment.MY_PERMISSIONS_REQUEST_CALL_PHONE;
@@ -112,6 +116,10 @@ public class AuditDetailsFragment extends Fragment implements View.OnClickListen
     private Boolean SAVEANS = false;
     private ArrayList<CustOmFormQuestionsRes> questionList = new ArrayList<>();
 
+    private final LinkedHashMap<String, String> arraystatus = new LinkedHashMap<>();
+    private  String[] statusArray = new String[arraystatus.size()];
+    private List<AuditStatusModel> allAuditStatus=new ArrayList<>();
+
     public static AuditDetailsFragment getInstance(AuditList_Res audit, int position) {
         Bundle bundle = new Bundle();
         bundle.putInt("position", position);
@@ -127,6 +135,7 @@ public class AuditDetailsFragment extends Fragment implements View.OnClickListen
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         layout = inflater.inflate(R.layout.fragment_audit_details, container, false);
         initializelables();
+        setAuditStatusList();
         setDataToView();
         EotApp.getAppinstance().setJobFlagObserver(this);
         return layout;
@@ -493,6 +502,9 @@ public class AuditDetailsFragment extends Fragment implements View.OnClickListen
                 textViewJobCode.setText(getSpannebleFormat(LanguageController.getInstance().getMobileMsgByKey(AppConstant.audit_code), this.audit.getLabel()), TextView.BufferType.SPANNABLE);
             else
                 textViewJobCode.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.audit_code) + "");
+            if(this.audit.getStatus()!=null)
+                status_label.setText(this.audit.getStatus());
+                status.setText(this.audit.getStatus());
             updateStatusButtons(this.audit.getStatus());
 
             String dateFormat = "dd MMM yyyy";
@@ -522,23 +534,19 @@ public class AuditDetailsFragment extends Fragment implements View.OnClickListen
 
             // Changed by shivani , added inputs according to language
 
-            String[] arraystatus = {
-                 LanguageController.getInstance().getMobileMsgByKey(AppConstant.In_progress)  ,
-                 LanguageController.getInstance().getMobileMsgByKey(AppConstant.on_hold)  ,
-                 LanguageController.getInstance().getMobileMsgByKey(AppConstant.completed)
-            };
-            status_spinner.setAdapter(new MySpinnerAdapter(getActivity(), arraystatus));
+
+            status_spinner.setAdapter(new MySpinnerAdapter(getActivity(), statusArray));
             status_spinner.post(() -> status_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, final int position, long id) {
                     if (System.currentTimeMillis() - check < 1000) {
                         return;
                     }
-                    if (position == 1) {
-                        if (audit.getStatus() != null && audit.getStatus().equals("8"))
+                    if (position == 4) {
+                        if (audit.getStatus() != null && audit.getStatus().equals("11"))
                             return;
                     }
-                    AppUtility.alertDialog2(getActivity(), LanguageController.getInstance().getMobileMsgByKey(AppConstant.status_dialog), LanguageController.getInstance().getMobileMsgByKey(AppConstant.audit_status_change), LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), LanguageController.getInstance().getMobileMsgByKey(AppConstant.cancel), new Callback_AlertDialog() {
+                    else AppUtility.alertDialog2(getActivity(), LanguageController.getInstance().getMobileMsgByKey(AppConstant.status_dialog), LanguageController.getInstance().getMobileMsgByKey(AppConstant.audit_status_change), LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), LanguageController.getInstance().getMobileMsgByKey(AppConstant.cancel), new Callback_AlertDialog() {
                         @Override
                         public void onPossitiveCall() {
                             createStatusChangeRequest(position);
@@ -646,7 +654,7 @@ public class AuditDetailsFragment extends Fragment implements View.OnClickListen
 //
 //            }
 
-            setViewByAuditStatus(Integer.parseInt(status));
+            setViewByAuditStatus(status);
 
 
         }
@@ -693,10 +701,20 @@ public class AuditDetailsFragment extends Fragment implements View.OnClickListen
             request.setStatus("7");
         else if (position == 1)
             //  request.setStatus("12");
-            request.setStatus("8");
+            request.setStatus("7");
         else if (position == 2)
+            request.setStatus("8");
+        else if(position == 3)
             request.setStatus("9");
-
+        else if(position >3) {
+            for (Map.Entry mapElement : arraystatus.entrySet()) {
+                if (mapElement.getValue().equals(statusArray[position])) {
+                    String statusByValue = String.valueOf(mapElement.getKey());
+                    request.setStatus(statusByValue);
+                    break;
+                }
+            }
+        }
         //device type
         request.setDevice_Type("1");
 
@@ -727,10 +745,10 @@ public class AuditDetailsFragment extends Fragment implements View.OnClickListen
                 break;
 
             case R.id.button_start:
-//                createStatusChangeRequest(0);
-//                break;
+                 createStatusChangeRequest(0);
+                 break;
             case R.id.button_resume:
-                createStatusChangeRequest(0);
+                createStatusChangeRequest(1);
                 break;
 
             case R.id.button_on_hold:
@@ -738,11 +756,11 @@ public class AuditDetailsFragment extends Fragment implements View.OnClickListen
 //                    createStatusChangeRequest(2);
 //                    break;
 //                } else {
-                createStatusChangeRequest(1);
+                createStatusChangeRequest(2);
                 break;
             //}
             case R.id.button_completed:
-                createStatusChangeRequest(2);
+                createStatusChangeRequest(3);
                 break;
             case R.id.audit_status_relative:
                 status_spinner.performClick();
@@ -1140,17 +1158,22 @@ public class AuditDetailsFragment extends Fragment implements View.OnClickListen
     }
 
 
-    private void setViewByAuditStatus(int statusValue) {
+    @SuppressLint("ResourceAsColor")
+    private void setViewByAuditStatus(String statusValue) {
         try {
             JobStatusModel jobStatusObject = AuditStatusController.getInstance().getStatusObjectById(String.valueOf(statusValue));
             if (jobStatusObject != null) {
-                if (statusValue == 8) {
+                if (statusValue.equals("8")) {
                     status.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.new_on_hold));
                     status_img.setImageDrawable(getActivity().getDrawable(R.drawable.ic_pendng_task));
+                    status_label.setText(jobStatusObject.getStatus_name());
+                    status_img.setVisibility(View.VISIBLE);
                 } else {
                     status.setText(jobStatusObject.getStatus_name());
                     int id = getResources().getIdentifier(jobStatusObject.getImg(), "drawable", getActivity().getPackageName());
                     status_img.setImageResource(id);
+                    status_label.setText(jobStatusObject.getStatus_name());
+                    status_img.setVisibility(View.VISIBLE);
                 }
                 ll_status.setBackgroundResource(R.color.white);
                 switchDefaultColor(EotApp.getAppinstance().getResources().getColor(R.color.txt_color));
@@ -1160,11 +1183,29 @@ public class AuditDetailsFragment extends Fragment implements View.OnClickListen
                     ll_status.setBackgroundResource(R.color.in_progress);
                     switchDefaultColor(EotApp.getAppinstance().getResources().getColor(R.color.white));
                 }
-            } else {
+            }else if(jobStatusObject == null){
+                AuditStatusModel imageForStatus = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).auditStatusDao().getImageForStatus(String.valueOf(statusValue));
+                if(imageForStatus!=null) {
+                 status.setText(imageForStatus.getText());
+                 status_label.setText(imageForStatus.getText());
+                    ll_status.setBackgroundResource(R.color.white);
+                    switchDefaultColor(EotApp.getAppinstance().getResources().getColor(R.color.txt_color));
+
+                    if(imageForStatus.getUrl()!=null){
+                        Picasso.with(EotApp.getAppinstance()).load(App_preference.getSharedprefInstance().getBaseURL() +
+                                imageForStatus.getUrl())
+                                .into(status_img);
+                    } else{
+                        status_img.setVisibility(View.INVISIBLE);
+                    }
+                }
+            }
+                /* else {
                 if (audit != null && audit.getAudId() != null)
                     AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).auditDao().deletAuditById(audit.getAudId());
                 return;
-            }
+            }*/
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1177,5 +1218,20 @@ public class AuditDetailsFragment extends Fragment implements View.OnClickListen
         status.setTextColor(color);
     }
 
+    public void setAuditStatusList(){
+        allAuditStatus = AppDataBase.getInMemoryDatabase(getActivity()).auditStatusDao().getAllAuditStatus();
+        for (AuditStatusModel statusModel:allAuditStatus)
+        {
+            if(statusModel.getIsStatusShow().equals("1")) {
+                arraystatus.put(statusModel.getKey(), statusModel.getName());
+            }
+        }
+        int i=0;
+        statusArray = new String[arraystatus.size()];
+        for (Map.Entry mapElement : arraystatus.entrySet()) {
+            statusArray[i] = ((String) mapElement.getValue());
+            i++;
+        }
 
+    }
 }

@@ -1981,6 +1981,23 @@ public class ReplaceItemEquipmentActivity extends
             taxamount_value_txt.setText(tax_Amount);
         }
 
+        else if (App_preference.getSharedprefInstance().getLoginRes().getTaxCalculationType().equals("2")) {
+
+            double totalPrice  = qty * rate;
+            double itemTotal   = totalPrice + ((totalPrice* total_tax)/100);
+            double discount=0;
+            if(getDisCalculationType.equals("0"))
+                discount =  ((itemTotal*dis)/100);
+            else if(getDisCalculationType.equals("1"))
+                discount = dis;
+
+            amount  = totalPrice -discount;
+
+            taxAmount = ((total_tax * rate * qty) / 100);
+            String tax_Amount = AppUtility.getRoundoff_amount(String.valueOf(taxAmount));
+            taxamount_value_txt.setText(tax_Amount);
+        }
+
         String amountString = AppUtility.getRoundoff_amount(String.valueOf(amount));
         amount_value_txt.setText(amountString);
 
@@ -2024,6 +2041,11 @@ public class ReplaceItemEquipmentActivity extends
                     String tax_Amount = AppUtility.getRoundoff_amount(String.valueOf(d));
                     edt_item_tax_rate.setText(tax_Amount);
                 } else if (App_preference.getSharedprefInstance().getLoginRes().getTaxCalculationType().equals("1")) {
+                    double newRate = Double.parseDouble((taxamount_value_txt.getText().toString())) + rate;
+                    String tax_Amount = AppUtility.getRoundoff_amount(String.valueOf(newRate));
+                    edt_item_tax_rate.setText(tax_Amount);
+                }
+                else if (App_preference.getSharedprefInstance().getLoginRes().getTaxCalculationType().equals("2")) {
                     double newRate = Double.parseDouble((taxamount_value_txt.getText().toString())) + rate;
                     String tax_Amount = AppUtility.getRoundoff_amount(String.valueOf(newRate));
                     edt_item_tax_rate.setText(tax_Amount);

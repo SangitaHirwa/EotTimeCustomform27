@@ -12,12 +12,16 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 import com.eot_app.nav_menu.admin_fw_chat_pkg.sonam_user_user_chat_pkg.usertouser_model.TeamMemrConverter;
 import com.eot_app.nav_menu.admin_fw_chat_pkg.sonam_user_user_chat_pkg.usertouser_model.UserChatModel;
 import com.eot_app.nav_menu.admin_fw_chat_pkg.userchat_db.UserChatDao;
+import com.eot_app.nav_menu.appointment.appointment_model.AppointmentStatusModel;
 import com.eot_app.nav_menu.appointment.dbappointment.Appointment;
 import com.eot_app.nav_menu.appointment.dbappointment.AppointmentDao;
+import com.eot_app.nav_menu.appointment.dbappointment.AppointmentStatusDao;
 import com.eot_app.nav_menu.audit.audit_db.AuditDao;
+import com.eot_app.nav_menu.audit.audit_db.AuditStatusDao;
 import com.eot_app.nav_menu.audit.audit_list.audit_mvp.model.AuditList_Res;
 import com.eot_app.nav_menu.audit.audit_list.equipment.model.EquCategoryConvrtr;
 import com.eot_app.nav_menu.audit.audit_list.equipment.model.EquipmentTypeConverter;
+import com.eot_app.nav_menu.audit.audit_model.AuditStatusModel;
 import com.eot_app.nav_menu.client.client_db.Client;
 import com.eot_app.nav_menu.client.client_db.ClientDao;
 import com.eot_app.nav_menu.client.clientlist.client_detail.contact.client_dao.ContactDao;
@@ -90,8 +94,8 @@ import com.eot_app.utility.settings.setting_db.TagData;
         Inventry_ReS_Model.class, JobOfflineDataModel.class
         , AuditList_Res.class, ContractRes.class, Equipment.class, JobStatusModelNew.class,
         TaxesLocation.class, ClientRefrenceModel.class, ShiftTimeReSModel.class, CustomForm.class, CustomFormQue.class,
-        CustomFormSubmited.class, CustomFormListOffline.class},
-        version = 40, exportSchema = false)
+        CustomFormSubmited.class, CustomFormListOffline.class, AuditStatusModel.class, AppointmentStatusModel.class},
+        version = 41, exportSchema = false)
 @TypeConverters({TaxDataConverter.class, TagDataConverter.class, InvoiceItemDataModelConverter.class, TaxConverter.class
         , EquipmentTypeConverter.class, EquArrayConvrtr.class, EquCategoryConvrtr.class
         , SiteCustomFieldConverter.class, JobRecurTypeConvert.class, SelecetedDaysConverter.class
@@ -585,6 +589,31 @@ public abstract class AppDataBase extends RoomDatabase {
         }
     };
 
+    static final Migration MIGRATION_40_41 = new Migration(40, 41) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            /* **CREATE Table for status List**/
+            database.execSQL("CREATE TABLE IF NOT EXISTS `AuditStatusTable` (`id` TEXT NOT NULL UNIQUE," +
+                    "'text' TEXT," +
+                    "'url' TEXT,"+
+                    "'urlBitmap' TEXT,"+
+                    "'img' TEXT,"+
+                    "'isDefault' TEXT,"+
+                    "'isStatusShow' TEXT,"+
+                    "'isFwSelect' TEXT,"+
+                    " PRIMARY KEY(`id`))");
+
+            database.execSQL("CREATE TABLE IF NOT EXISTS `AppointmentStatusTable` (`id` TEXT NOT NULL UNIQUE," +
+                    "'text' TEXT," +
+                    "'url' TEXT,"+
+                    "'urlBitmap' TEXT,"+
+                    "'img' TEXT,"+
+                    "'isDefault' TEXT,"+
+                    "'isStatusShow' TEXT,"+
+                    "'isFwSelect' TEXT,"+
+                    " PRIMARY KEY(`id`))");
+        }
+    };
     private static final String DB_NAME = "eot_db";
 
     private static AppDataBase INSTANCE;
@@ -639,6 +668,7 @@ public abstract class AppDataBase extends RoomDatabase {
                     .addMigrations(MIGRATION_37_38)
                     .addMigrations(MIGRATION_38_39)
                     .addMigrations(MIGRATION_39_40)
+                    .addMigrations(MIGRATION_40_41)
                     .fallbackToDestructiveMigration()
                     .build();
         }
@@ -697,4 +727,8 @@ public abstract class AppDataBase extends RoomDatabase {
     public abstract CustomFormListOfflineDao customFormListOfflineDao();
 
     public abstract CustomFormSubmitedDao customFormSubmitedDao();
+
+    public abstract AuditStatusDao auditStatusDao();
+
+    public abstract AppointmentStatusDao appointmentStatusDao();
 }

@@ -207,6 +207,7 @@ public class CustomFiledListActivity extends AppCompatActivity implements Custom
                 case "6":
                 case "7":
                 case "1":
+                case "12":
                     if (questionList.get(i).getAns() != null && questionList.get(i).getAns().size() > 0) {
                         if (questionList.get(i).getType().equals("5")) {
                             if (!TextUtils.isEmpty(questionList.get(i).getAns().get(0).getValue())) {
