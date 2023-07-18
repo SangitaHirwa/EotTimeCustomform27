@@ -104,7 +104,7 @@ public class AddExpenseActivity extends UploadDocumentActivity implements TextWa
             try {
                 DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy", Locale.US);//hh:mm:ss a
                 Date startDate = formatter.parse(selectedDay + "-" + (selectedMonth + 1) + "-" + selectedYear);
-                dateselect = formatter.format(startDate);
+                dateselect = new SimpleDateFormat(AppConstant.DATE_FORMAT, Locale.US).format(startDate);
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -197,7 +197,7 @@ public class AddExpenseActivity extends UploadDocumentActivity implements TextWa
             params.setMargins(0, 5, 0, 0);
             txt_date.setLayoutParams(params);
             edt_expense_date.setText(AppUtility.getDateWithFormate
-                    (Long.parseLong(expenseDetails.getDateTime()), "dd-MM-yyyy"));
+                    (Long.parseLong(expenseDetails.getDateTime()), AppConstant.DATE_FORMAT));
         }
 
         if (!expenseDetails.getCategoryName().equals("")) {
@@ -219,10 +219,10 @@ public class AddExpenseActivity extends UploadDocumentActivity implements TextWa
         cltId = expenseDetails.getCltId();
         try {
             if (expenseDetails.getDateTime() != null && !expenseDetails.getDateTime().equals("")) {
-                exDate = AppUtility.getDate(Long.parseLong(expenseDetails.getDateTime()), "dd-MM-yyyy");
+                exDate = AppUtility.getDate(Long.parseLong(expenseDetails.getDateTime()), AppConstant.DATE_FORMAT);
                 edt_expense_date.setText(exDate);
             } else {
-                edt_expense_date.setText(AppUtility.getDateByFormat("dd-MMM-yyyy"));
+                edt_expense_date.setText(AppUtility.getDateByFormat(AppConstant.DATE_FORMAT));
             }
         } catch (Exception e) {
             e.getMessage();
@@ -376,8 +376,8 @@ public class AddExpenseActivity extends UploadDocumentActivity implements TextWa
         tv_spinner_category.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.expense_category));
 
 
-        edt_expense_date.setText(AppUtility.getDateByFormat("dd-MMM-yyyy"));
-        exDate = AppUtility.getDateByFormat("dd-MM-yyyy hh:mm:ss a");
+        edt_expense_date.setText(AppUtility.getDateByFormat(AppConstant.DATE_FORMAT));
+        exDate = AppUtility.getDateByFormat(AppConstant.DATE_FORMAT+" hh:mm:ss a");
 
         clickListners();
 

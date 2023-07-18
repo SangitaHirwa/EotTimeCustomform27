@@ -221,7 +221,7 @@ public class AuditDetailEquActivity extends AppCompatActivity implements View.On
         if (this.audit.getLabel() != null)
             textViewJobCode.setText(getSpannebleFormat(LanguageController.getInstance().getMobileMsgByKey(AppConstant.audit_code), this.audit.getLabel()), TextView.BufferType.SPANNABLE);
 
-        String dateFormat = "dd MMM yyyy";
+        String dateFormat = AppConstant.DATE_FORMAT;
         String timeFormat = "hh:mm a";
 
         if (!TextUtils.isEmpty(this.audit.getSchdlStart())) {

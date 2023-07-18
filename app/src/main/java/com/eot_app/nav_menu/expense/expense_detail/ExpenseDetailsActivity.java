@@ -108,7 +108,7 @@ public class ExpenseDetailsActivity extends AppCompatActivity implements Expense
     public void setExpenseDetails(ExpenseRes expenseDetails) {
         this.expenseDetails = expenseDetails;
         if (expenseDetails.getDateTime() != null && !expenseDetails.getDateTime().equals("")) {
-            expense_date_txt.setText(AppUtility.getDateWithFormate(Long.parseLong(expenseDetails.getDateTime()), "dd-MMM-yyyy"));
+            expense_date_txt.setText(AppUtility.getDateWithFormate(Long.parseLong(expenseDetails.getDateTime()), AppConstant.DATE_FORMAT));
         } else {
             expense_date_txt.setText("");
         }

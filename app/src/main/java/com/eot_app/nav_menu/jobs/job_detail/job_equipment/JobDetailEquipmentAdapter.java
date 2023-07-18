@@ -129,7 +129,7 @@ public class JobDetailEquipmentAdapter extends RecyclerView.Adapter<JobDetailEqu
                     holder.tv_status.setText(getCurrentStatusNameById(equArrayModel.getEquStatus()));
 
                     if(equArrayModel.getStatusUpdateDate() != null&&!equArrayModel.getStatusUpdateDate().isEmpty()){
-                        holder.tv_date.setText(AppUtility.getDate(Long.parseLong(equArrayModel.getStatusUpdateDate()), "dd MMM yyyy"));
+                        holder.tv_date.setText(AppUtility.getDate(Long.parseLong(equArrayModel.getStatusUpdateDate()), AppConstant.DATE_FORMAT));
                         holder.tv_date.setVisibility(View.VISIBLE);
                     }
                     else

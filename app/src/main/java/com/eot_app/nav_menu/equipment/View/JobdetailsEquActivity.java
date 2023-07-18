@@ -681,7 +681,7 @@ public class JobdetailsEquActivity extends AppCompatActivity implements
                                         try {
                                             if (!model.getValue().equals("")) {
                                                 Long dateLong = Long.parseLong(model.getValue());
-                                                String dateConvert = AppUtility.getDate(dateLong, "dd-MMM-yyyy hh:mm a");
+                                                String dateConvert = AppUtility.getDate(dateLong, AppConstant.DATE_FORMAT+" hh:mm a");
                                                 textView.append(dateConvert);
                                             }
                                         } catch (NumberFormatException e) {

@@ -507,7 +507,7 @@ public class AuditDetailsFragment extends Fragment implements View.OnClickListen
                 status.setText(this.audit.getStatus());
             updateStatusButtons(this.audit.getStatus());
 
-            String dateFormat = "dd MMM yyyy";
+            String dateFormat = AppConstant.DATE_FORMAT;
             String timeFormat = AppUtility.dateTimeByAmPmFormate("hh:mm a", "HH:mm");
 
             if (!TextUtils.isEmpty(this.audit.getSchdlStart())) {

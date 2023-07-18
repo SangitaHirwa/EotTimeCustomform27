@@ -155,8 +155,12 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
     private final DatePickerDialog.OnDateSetListener datePickerListener = (view, selectedYear, selectedMonth, selectedDay) -> {
         String dateselect;
         try {
-            DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy", Locale.US);//hh:mm:ss a
-            Date startDate = formatter.parse(selectedDay + "-" + (selectedMonth + 1) + "-" + selectedYear);
+            DateFormat formatter = new SimpleDateFormat(AppConstant.DATE_FORMAT, Locale.US);//hh:mm:ss a
+//            Date startDate = formatter.parse(selectedDay + "-" + (selectedMonth + 1) + "-" + selectedYear);
+            Calendar cal = Calendar.getInstance();
+            cal.setTimeInMillis(0);
+            cal.set(selectedYear, selectedMonth+1, selectedDay);
+            Date startDate = cal.getTime();
             assert startDate != null;
             dateselect = formatter.format(startDate);
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -178,7 +182,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
                 Log.e("", "");
                 setInstalledViews(dateselect, params);
             }
-        } catch (ParseException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     };
@@ -235,7 +239,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
                 updateItemDataModel.getWarrantyValue() != null &&
                 !updateItemDataModel.getWarrantyValue().isEmpty() &&
                 !updateItemDataModel.getWarrantyType().isEmpty()) {
-            String date = AppUtility.addDaysInDate(dateselect, Integer.parseInt(updateItemDataModel.getWarrantyValue()), updateItemDataModel.getWarrantyType(), "dd-MM-yyyy");
+            String date = AppUtility.addDaysInDate(dateselect, Integer.parseInt(updateItemDataModel.getWarrantyValue()), updateItemDataModel.getWarrantyType(), AppConstant.DATE_FORMAT);
             setWarrntyViews(date, params);
         }
     }
@@ -587,7 +591,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
 
 
         // To set the current date as warranty start date
-        setWarrntyStartViews(AppUtility.getCurrentDateByFormat("dd-MM-yyyy"));
+        setWarrntyStartViews(AppUtility.getCurrentDateByFormat(AppConstant.DATE_FORMAT));
 
         //get equipment list
         addJobEqu_pi.getEquipmentList(jobId);

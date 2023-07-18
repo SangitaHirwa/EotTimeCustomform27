@@ -104,7 +104,7 @@ public class MyExpenseRecyclerViewAdapter extends RecyclerView.Adapter<MyExpense
                 String[] date_separated = cr_date.split(",");
                 Spannable txtFrst;
 
-                String today_date = AppUtility.getDateByFormat("EEE,dd MMM yyyy ,hh:mm ,a");
+                String today_date = AppUtility.getDateByFormat("EEE,"+AppConstant.DATE_FORMAT+" ,hh:mm ,a");
                 String[] today_dt = today_date.split(",");
                 String to_day = today_dt[1];
 

@@ -155,7 +155,7 @@ public class AddAuditActivity extends UploadDocumentActivity implements Add_Adui
         initializeView();
         textInputLayoutHint();
 
-        dateTime = AppUtility.getDateByFormats("dd-MM-yyyy hh:mm:ss a");
+        dateTime = AppUtility.getDateByFormats(AppConstant.DATE_FORMAT+" hh:mm:ss a");
 
         mEditor.setPlaceholder(LanguageController.getInstance().getMobileMsgByKey(AppConstant.audit_desc));
         mEditor.setTextColor(Color.parseColor("#8C9293"));
@@ -1763,7 +1763,7 @@ public class AddAuditActivity extends UploadDocumentActivity implements Add_Adui
                             case "7":
                                 if (!TextUtils.isEmpty(questionList.get(i).getAns().get(0).getValue())) {
                                     long l = Long.parseLong(questionList.get(i).getAns().get(0).getValue());
-                                    String formate = AppUtility.dateTimeByAmPmFormate("dd-MMM-yyyy hh:mm a", "dd-MMM-yyyy HH:mm");
+                                    String formate = AppUtility.dateTimeByAmPmFormate(AppConstant.DATE_FORMAT+" hh:mm a", AppConstant.DATE_FORMAT+" HH:mm");
                                     ans = AppUtility.getDates(l, formate);
                                 }
                                 break;
@@ -1815,7 +1815,7 @@ public class AddAuditActivity extends UploadDocumentActivity implements Add_Adui
         Locale.getDefault().getDisplayLanguage();
         try {
             SimpleDateFormat gettingfmt = new SimpleDateFormat(AppUtility.dateTimeByAmPmFormate(
-                    "dd-MM-yyyy hh:mm a", "dd-MM-yyyy HH:mm"), Locale.US);//, Locale.US
+                    AppConstant.DATE_FORMAT+" hh:mm a", AppConstant.DATE_FORMAT+" HH:mm"), Locale.US);//, Locale.US
             Date date = gettingfmt.parse(schdlStart);
             assert date != null;
             date.getTime();

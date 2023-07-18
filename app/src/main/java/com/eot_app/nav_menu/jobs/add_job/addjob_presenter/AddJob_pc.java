@@ -145,8 +145,8 @@ public class AddJob_pc implements Add_job_pi {
 
     @Override
     public void getCurrentdateTime(String calenderDate) {
-        String dateTime = AppUtility.getDateByFormats(AppUtility.dateTimeByAmPmFormate("dd-MM-yyyy hh:mm:ss a"
-                , "dd-MM-yyyy HH:mm:ss"));
+        String dateTime = AppUtility.getDateByFormats(AppUtility.dateTimeByAmPmFormate(AppConstant.DATE_FORMAT+" hh:mm:ss a"
+                , AppConstant.DATE_FORMAT+" HH:mm:ss"));
         String[] date_Time = dateTime.split(" ");
         String datestr = date_Time[0];
 
@@ -204,7 +204,7 @@ public class AddJob_pc implements Add_job_pi {
                     TimeUnit.MINUTES.toSeconds(Integer.parseInt(time_dur[1])));
 
             SimpleDateFormat simpleDate = new SimpleDateFormat(
-                    AppUtility.dateTimeByAmPmFormate("dd-MM-yyyy hh:mm a", "dd-MM-yyyy HH:mm"), Locale.US);
+                    AppUtility.dateTimeByAmPmFormate(AppConstant.DATE_FORMAT+" hh:mm a", AppConstant.DATE_FORMAT+" HH:mm"), Locale.US);
             Date past = null;
             long milisce = 0;
             try {
@@ -255,7 +255,7 @@ public class AddJob_pc implements Add_job_pi {
     private void end_Date_Time() {
         String date_time = date_str + " " + time_str;
         SimpleDateFormat simpleDate = new SimpleDateFormat(
-                AppUtility.dateTimeByAmPmFormate("dd-MM-yyyy hh:mm a", "dd-MM-yyyy HH:mm"), Locale.US);
+                AppUtility.dateTimeByAmPmFormate(AppConstant.DATE_FORMAT+" hh:mm a", AppConstant.DATE_FORMAT+" HH:mm"), Locale.US);
         Date past = null;
         long milisce = 0;
         try {

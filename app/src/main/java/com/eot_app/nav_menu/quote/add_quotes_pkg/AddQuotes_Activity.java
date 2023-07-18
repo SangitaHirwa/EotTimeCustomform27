@@ -125,7 +125,7 @@ public class AddQuotes_Activity extends UploadDocumentActivity implements View.O
                 //                (Long.parseLong(quotesDetails.getInvData().getInvDate()), "dd-MM-yyyy hh:mm:ss a");
                 DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy", Locale.US);//hh:mm:ss a
                 Date startDate = formatter.parse(selectedDay + "-" + (selectedMonth + 1) + "-" + selectedYear);
-                dateselect = formatter.format(startDate);
+                dateselect = new SimpleDateFormat(AppConstant.DATE_FORMAT, Locale.US).format(startDate);
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -426,8 +426,8 @@ public class AddQuotes_Activity extends UploadDocumentActivity implements View.O
                     AppUtility.dateTimeByAmPmFormate("dd-MM-yyyy hh:mm:ss a"
                             , "dd-MM-yyyy HH:mm:ss"));
             date_start.setText(AppUtility.getDateWithFormate
-                    (Long.parseLong(quotesDetails.getInvData().getInvDate()), "dd-MM-yyyy"));
-            date_end.setText(AppUtility.getDateWithFormate(Long.parseLong(quotesDetails.getInvData().getDuedate()), "dd-MM-yyyy"));
+                    (Long.parseLong(quotesDetails.getInvData().getInvDate()), AppConstant.DATE_FORMAT));
+            date_end.setText(AppUtility.getDateWithFormate(Long.parseLong(quotesDetails.getInvData().getDuedate()), AppConstant.DATE_FORMAT));
 
             quote_notes_edt.setText(quotesDetails.getInvData().getNote());
             quote_status_notes_edt.setText(quotesDetails.getInvData().getCommets());
@@ -763,7 +763,7 @@ public class AddQuotes_Activity extends UploadDocumentActivity implements View.O
 
     private void getCurrentdate() {
         String datetime = AppUtility.getDateByFormat(
-                AppUtility.dateTimeByAmPmFormate("dd-MM-yyyy hh:mm:ss a", "dd-MM-yyyy HH:mm:ss"));//get current date time
+                AppUtility.dateTimeByAmPmFormate(AppConstant.DATE_FORMAT+" hh:mm:ss a", AppConstant.DATE_FORMAT+" HH:mm:ss"));//get current date time
         dueDate = invDate = datetime;
         String crrntDate = getDate(datetime);
         date_start.setText(crrntDate);

@@ -754,8 +754,8 @@ public class DetailFragment extends Fragment
 
 
         completionDetails = completionDetailsList.get(0);
-        String timeFormate = AppUtility.dateTimeByAmPmFormate("dd-MMM-yyyy, hh:mm a", "dd-MMM-yyyy, HH:mm");
-        String timeFormate1 = AppUtility.dateTimeByAmPmFormate("dd-MM-yyyy hh:mm a", "dd-MM-yyyy HH:mm");
+        String timeFormate = AppUtility.dateTimeByAmPmFormate(AppConstant.DATE_FORMAT+", hh:mm a", AppConstant.DATE_FORMAT+", HH:mm");
+        String timeFormate1 = AppUtility.dateTimeByAmPmFormate(AppConstant.DATE_FORMAT+" hh:mm a", AppConstant.DATE_FORMAT+" HH:mm");
 
         if (completionDetailsList.get(0).getLoginTime() != null && !completionDetailsList.get(0).getLoginTime().isEmpty()&& !completionDetailsList.get(0).getLoginTime().equals("0")) {
             date_ac_start.setText("Start : " + AppUtility.getDate(Long.parseLong(completionDetailsList.get(0).getLoginTime()), timeFormate));
@@ -1656,7 +1656,7 @@ public class DetailFragment extends Fragment
             String endtime = "", startDatTime = "";
             if (mParam2.getSchdlStart() != null && !mParam2.getSchdlStart().equals("")) {
                 try {
-                    String timeFormate = AppUtility.dateTimeByAmPmFormate("dd-MMM-yyyy, hh:mm a", "dd-MMM-yyyy, HH:mm");
+                    String timeFormate = AppUtility.dateTimeByAmPmFormate(AppConstant.DATE_FORMAT+", hh:mm a", AppConstant.DATE_FORMAT+", HH:mm");
                     startDatTime = "Start : " + (AppUtility.getDateWithFormate2((Long.parseLong(mParam2.
                                     getSchdlStart()) * 1000),
                             timeFormate));
@@ -1666,7 +1666,7 @@ public class DetailFragment extends Fragment
             }
             if (mParam2.getSchdlFinish() != null && !mParam2.getSchdlFinish().equals("")) {
                 try {
-                    String timeFormate = AppUtility.dateTimeByAmPmFormate("dd-MMM-yyyy, hh:mm a", "dd-MMM-yyyy, HH:mm");
+                    String timeFormate = AppUtility.dateTimeByAmPmFormate(AppConstant.DATE_FORMAT+", hh:mm a", AppConstant.DATE_FORMAT+", HH:mm");
                     endtime = "\n" + "End  : " + (AppUtility.getDateWithFormate2((Long.parseLong(mParam2.
                                     getSchdlFinish()) * 1000),
                             timeFormate));//+" - "
@@ -2478,7 +2478,7 @@ public class DetailFragment extends Fragment
         try {
             SimpleDateFormat gettingfmt = new SimpleDateFormat(
                     //"dd-MM-yyyy hh:mm a"
-                    AppUtility.dateTimeByAmPmFormate("dd-MM-yyyy hh:mm a", "dd-MM-yyyy HH:mm")
+                    AppUtility.dateTimeByAmPmFormate(AppConstant.DATE_FORMAT+" hh:mm a", AppConstant.DATE_FORMAT+" HH:mm")
                     , Locale.US);
             Date date = gettingfmt.parse(schdlStart);
             date.getTime();
@@ -2634,7 +2634,7 @@ public class DetailFragment extends Fragment
                         textViewTime.setText(formated_date[1] + formated_date[2]);*/
 
                         // change for after reschedule job time and date show proper
-                        String timeFormate = AppUtility.dateTimeByAmPmFormate("dd-MMM-yyyy, hh:mm a", "dd-MMM-yyyy, HH:mm");
+                        String timeFormate = AppUtility.dateTimeByAmPmFormate(AppConstant.DATE_FORMAT+", hh:mm a", AppConstant.DATE_FORMAT+", HH:mm");
                         String startDatTime = "Start : " + (AppUtility.getDateWithFormate2((Long.parseLong(mParam2.
                                         getSchdlStart()) * 1000),
                                 timeFormate));
@@ -2718,7 +2718,7 @@ public class DetailFragment extends Fragment
                                         try {
                                             if (!model.getValue().equals("")) {
                                                 Long dateLong = Long.parseLong(model.getValue());
-                                                String dateConvert = AppUtility.getDate(dateLong, AppUtility.dateTimeByAmPmFormate("dd-MMM-yyyy hh:mm a", "dd-MMM-yyyy HH:mm"));
+                                                String dateConvert = AppUtility.getDate(dateLong, AppUtility.dateTimeByAmPmFormate(AppConstant.DATE_FORMAT+" hh:mm a", AppConstant.DATE_FORMAT+" HH:mm"));
                                                 textView.append(dateConvert);
                                             }
                                         } catch (NumberFormatException e) {

@@ -241,9 +241,9 @@ public class Quote_Invoice_Details_Activity extends AppCompatActivity implements
                 }
 
                 if (!quotes_Details_Inv.getInvDate().equals(""))
-                    quote_cre_dt.setText(AppUtility.getDateWithFormate(Long.parseLong(quotes_Details_Inv.getInvDate()), "dd-MMM-yyyy"));
+                    quote_cre_dt.setText(AppUtility.getDateWithFormate(Long.parseLong(quotes_Details_Inv.getInvDate()), AppConstant.DATE_FORMAT));
                 if (!quotes_Details_Inv.getDuedate().equals(""))
-                    quote_due_dt.setText(AppUtility.getDateWithFormate(Long.parseLong(quotes_Details_Inv.getDuedate()), "dd-MMM-yyyy"));
+                    quote_due_dt.setText(AppUtility.getDateWithFormate(Long.parseLong(quotes_Details_Inv.getDuedate()), AppConstant.DATE_FORMAT));
                 quote_total_amount.setText(AppUtility.getRoundoff_amount(quotes_Details_Inv.getTotal()));
                 if (quotesDetails.getInvData() != null && quotesDetails.getInvData().getItemData() != null) {
                     quotes_item_Adpter = new Quote_Details_Adpter(this, quotesDetails.getInvData().getItemData(), this, this, quotes_Details_Inv.getTaxCalculationType());

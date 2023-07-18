@@ -58,7 +58,7 @@ public class AdpterJobHistory extends RecyclerView.Adapter<AdpterJobHistory.MyVi
         String nm = list.get(position).getNm();
         if (!TextUtils.isEmpty(this.list.get(position).getSchdlStart())) {
             long strtDateLong = Long.parseLong(this.list.get(position).getSchdlStart());
-            String dateFormat = "dd MMM yyyy";
+            String dateFormat = AppConstant.DATE_FORMAT;
             String strtdate = AppUtility.getDateWithFormate2(strtDateLong * 1000, dateFormat);
             holder.date.setText(strtdate);
         }

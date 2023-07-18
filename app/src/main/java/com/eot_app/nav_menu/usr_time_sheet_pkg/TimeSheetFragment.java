@@ -177,7 +177,7 @@ public class TimeSheetFragment extends Fragment implements View.OnClickListener 
                     showAlertDialog(LanguageController.getInstance().getMobileMsgByKey(AppConstant.from_date_error));
                 } else if (binding.timeTo.getText().toString().trim().equals("")) {
                     showAlertDialog(LanguageController.getInstance().getMobileMsgByKey(AppConstant.to_date_error));
-                } else if (!AppUtility.compareTwoDatesForTimeSheet(binding.timeFrom.getText().toString().trim(), binding.timeTo.getText().toString().trim(), "dd-MMM-yyyy")) {
+                } else if (!AppUtility.compareTwoDatesForTimeSheet(binding.timeFrom.getText().toString().trim(), binding.timeTo.getText().toString().trim(), AppConstant.DATE_FORMAT)) {
                     showAlertDialog(LanguageController.getInstance().getMobileMsgByKey(AppConstant.time_sheet_date_error));
                 } else {
                     if (SHEETPERMMISSIONALLOW)

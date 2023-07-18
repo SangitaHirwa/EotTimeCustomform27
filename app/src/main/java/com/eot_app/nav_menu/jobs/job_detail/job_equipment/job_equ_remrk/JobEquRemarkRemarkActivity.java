@@ -970,7 +970,6 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
                 case "6":
                 case "7":
                 case "1":
-                case "12":
                     if (quesRspncModelList.get(i).getAns() != null && quesRspncModelList.get(i).getAns().size() > 0) {
                         if (quesRspncModelList.get(i).getType().equals("5")) {
                             if (!TextUtils.isEmpty(quesRspncModelList.get(i).getAns().get(0).getValue())) {

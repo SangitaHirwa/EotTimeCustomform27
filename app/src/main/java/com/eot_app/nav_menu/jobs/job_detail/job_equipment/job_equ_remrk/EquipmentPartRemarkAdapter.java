@@ -131,10 +131,10 @@ public class EquipmentPartRemarkAdapter extends RecyclerView.Adapter<EquipmentPa
 
         if(equArrayModel.getExpiryDate()!=null&&!equArrayModel.getExpiryDate().isEmpty()){
             try {
-                String expiryDate = AppUtility.getDate(Long.parseLong(equArrayModel.getExpiryDate()),"dd/MM/yyyy");
+                String expiryDate = AppUtility.getDate(Long.parseLong(equArrayModel.getExpiryDate()),AppConstant.DATE_FORMAT);
                 Log.e("Equipment",expiryDate);
-                Log.e("Equipment",AppUtility.getCurrentDateByFormat("dd/MM/yyyy"));
-                if(!AppUtility.compareTwoDatesWarranty(AppUtility.getCurrentDateByFormat("dd/MM/yyyy"),expiryDate,"dd/MM/yyyy")){
+                Log.e("Equipment",AppUtility.getCurrentDateByFormat(AppConstant.DATE_FORMAT));
+                if(!AppUtility.compareTwoDatesWarranty(AppUtility.getCurrentDateByFormat(AppConstant.DATE_FORMAT),expiryDate,AppConstant.DATE_FORMAT)){
                     holder.tvWarranty.setTextColor(ContextCompat.getColor(mContext,R.color.red_color));
                     holder.ivAlert.setVisibility(View.VISIBLE);
                 }
@@ -177,7 +177,7 @@ public class EquipmentPartRemarkAdapter extends RecyclerView.Adapter<EquipmentPa
                     holder.tv_status.setText(getCurrentStatusNameById(equArrayModel.getEquStatus()));
 
                     if(equArrayModel.getStatusUpdateDate() != null&&!equArrayModel.getStatusUpdateDate().isEmpty()){
-                        holder.tv_date.setText(AppUtility.getDate(Long.parseLong(equArrayModel.getStatusUpdateDate()), "dd MMM yyyy"));
+                        holder.tv_date.setText(AppUtility.getDate(Long.parseLong(equArrayModel.getStatusUpdateDate()), AppConstant.DATE_FORMAT));
                         holder.tv_date.setVisibility(View.VISIBLE);
                     }
                     else

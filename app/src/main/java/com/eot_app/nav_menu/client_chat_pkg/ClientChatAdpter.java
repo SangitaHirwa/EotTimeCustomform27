@@ -22,6 +22,7 @@ import com.bumptech.glide.request.target.Target;
 import com.eot_app.R;
 import com.eot_app.nav_menu.client_chat_pkg.client_chat_model.ClientChatReqModel;
 import com.eot_app.nav_menu.client_chat_pkg.client_chat_mvp.ClientChat_View;
+import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.AppUtility;
 import com.eot_app.utility.App_preference;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
@@ -63,7 +64,7 @@ public class ClientChatAdpter extends FirestoreRecyclerAdapter<ClientChatReqMode
     @Override
     protected void onBindViewHolder(@NotNull final ClientChatAdpter.MyViewHolder holder, int position,
                                     final ClientChatReqModel model) {
-        String today_date = AppUtility.getDateByFormat("dd/MMM/yyyy hh:mm a");
+        String today_date = AppUtility.getDateByFormat(AppConstant.DATE_FORMAT+" hh:mm a");
         String[] today_Date = today_date.split(" ");
         String str = "", usrIDs = "", stringDate = "";
 

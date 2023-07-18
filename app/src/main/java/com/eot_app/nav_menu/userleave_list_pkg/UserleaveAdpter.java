@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.eot_app.R;
 import com.eot_app.nav_menu.audit.AuditStatusController;
 import com.eot_app.nav_menu.jobs.job_detail.detail.jobdetial_model.JobStatusModel;
+import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.AppUtility;
 import com.eot_app.utility.EotApp;
 
@@ -96,9 +97,9 @@ public class UserleaveAdpter extends RecyclerView.Adapter<UserleaveAdpter.ViewHo
         UserLeaveResModel model = filterList.get(position);
 
         String statDate = AppUtility.getDateWithFormate(Long.parseLong(model.getStartDateTime()),
-                "dd MMM yyyy");
+                AppConstant.DATE_FORMAT);
         String endDate = AppUtility.getDateWithFormate(Long.parseLong(model.getFinishDateTime()),
-                "dd MMM yyyy");
+                AppConstant.DATE_FORMAT);
 
         String statTime = AppUtility.getDateWithFormate(Long.parseLong(model.getStartDateTime()), AppUtility.dateTimeByAmPmFormate(
                 "hh:mm a",

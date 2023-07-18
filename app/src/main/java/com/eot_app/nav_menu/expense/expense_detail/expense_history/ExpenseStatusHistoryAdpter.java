@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.eot_app.R;
 import com.eot_app.nav_menu.expense.ExpenseStatus_Controller;
 import com.eot_app.nav_menu.jobs.job_detail.detail.jobdetial_model.JobStatusModel;
+import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.AppUtility;
 import com.eot_app.utility.EotApp;
 
@@ -56,7 +57,7 @@ public class ExpenseStatusHistoryAdpter extends
         String date = null;
         if (mValues.get(position).getDateTime() != null && !mValues.get(position).getDateTime().equals("")) {
             date = AppUtility.getDateWithFormate((Long.parseLong(mValues.get(position).getDateTime()))
-                    , "dd-MMM-yyyy");
+                    , AppConstant.DATE_FORMAT);
         }
         holder.expense_status.setText(mValues.get(position).getStatus());
         try {

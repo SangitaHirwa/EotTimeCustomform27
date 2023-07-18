@@ -52,7 +52,7 @@ public class AddLeaveFragment extends AppCompatActivity implements View.OnClickL
                     Date startDate = formatter.parse(selectedDay + "-" + (selectedMonth + 1) + "-" + selectedYear);
                     STARTSELCTEDATE = "";
                     assert startDate != null;
-                    STARTSELCTEDATE = " " + formatter.format(startDate);
+                    STARTSELCTEDATE = " " + new SimpleDateFormat(AppConstant.DATE_FORMAT, Locale.US).format(startDate);
                     binding.timeFrom.setText("");
                     binding.timeFrom.setText(STARTSELCTEDATE.concat(STARTSELCTETIME));
                     selectStartTime("START");
@@ -63,7 +63,7 @@ public class AddLeaveFragment extends AppCompatActivity implements View.OnClickL
                     Date startDate = formatter.parse(selectedDay + "-" + (selectedMonth + 1) + "-" + selectedYear);
                     ENDSELCTEDATE = "";
                     assert startDate != null;
-                    ENDSELCTEDATE = " " + formatter.format(startDate);
+                    ENDSELCTEDATE = " " + new SimpleDateFormat(AppConstant.DATE_FORMAT, Locale.US).format(startDate);
                     binding.timeTo.setText("");
                     binding.timeTo.setText(ENDSELCTEDATE.concat(ENDSELCTETIME));
                     selectStartTime("END");
@@ -226,8 +226,8 @@ public class AddLeaveFragment extends AppCompatActivity implements View.OnClickL
     }
 
     private void initilaleDateTimeset() {
-        binding.timeFrom.setText(AppUtility.getDateByFormat("dd-MM-yyyy").concat(STARTSELCTETIME));
-        binding.timeTo.setText(AppUtility.getDateByFormat("dd-MM-yyyy").concat(ENDSELCTETIME));
+        binding.timeFrom.setText(AppUtility.getDateByFormat(AppConstant.DATE_FORMAT).concat(STARTSELCTETIME));
+        binding.timeTo.setText(AppUtility.getDateByFormat(AppConstant.DATE_FORMAT).concat(ENDSELCTETIME));
         listuser=new ArrayList<>();
         emptyfields();
     }

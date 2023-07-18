@@ -88,8 +88,8 @@ public class JobListAdapter extends RecyclerView.Adapter<JobListAdapter.MyViewHo
         if (onListScrolling != null) onListScrolling.currentVisiblePos(position);
         if (position == getItemCount() - 1) holder.blank_view.setVisibility(View.VISIBLE);
         else holder.blank_view.setVisibility(View.GONE);
-        String today_date = AppUtility.getDateByFormat(AppUtility.dateTimeByAmPmFormate("EEE, dd MMM yyyy ,hh:mm",
-                "EEE, dd MMM yyyy ,HH:mm"));// ,a
+        String today_date = AppUtility.getDateByFormat(AppUtility.dateTimeByAmPmFormate("EEE, "+AppConstant.DATE_FORMAT+" ,hh:mm",
+                "EEE, "+AppConstant.DATE_FORMAT+" ,HH:mm"));// ,a
         String[] today_dt = today_date.split(",");
         String to_day = today_dt[1];
 

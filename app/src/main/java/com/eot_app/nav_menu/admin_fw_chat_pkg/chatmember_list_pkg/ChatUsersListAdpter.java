@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.eot_app.R;
 import com.eot_app.nav_menu.admin_fw_chat_pkg.sonam_user_user_chat_pkg.user_chat_controller.UserToUserChatController;
 import com.eot_app.nav_menu.admin_fw_chat_pkg.sonam_user_user_chat_pkg.usertouser_model.ChatMsgDataModel;
+import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.AppUtility;
 import com.eot_app.utility.App_preference;
 import com.squareup.picasso.Picasso;
@@ -144,15 +145,15 @@ public class ChatUsersListAdpter extends RecyclerView.Adapter<ChatUsersListAdpte
 
         /*last MSG's time***/
         if (memberModel.getMsgModel().getCreatedAt() != null && !memberModel.getMsgModel().getCreatedAt().equals("")) {
-            String todaydatetime = AppUtility.getDateByFormat(AppUtility.dateTimeByAmPmFormate("dd/MM/yyyy hh:mm a",
-                    "dd/MM/yyyy HH:mm"));
+            String todaydatetime = AppUtility.getDateByFormat(AppUtility.dateTimeByAmPmFormate(AppConstant.DATE_FORMAT+" hh:mm a",
+                    AppConstant.DATE_FORMAT+" HH:mm"));
             String[] todayDateTime = todaydatetime.split(" ");
             String yesterdaydatetime = AppUtility.getYesterDayDate(
-                    AppUtility.dateTimeByAmPmFormate("dd/MM/yyyy hh:mm a", "dd/MM/yyyy HH:mm"), -1);
+                    AppUtility.dateTimeByAmPmFormate(AppConstant.DATE_FORMAT+" hh:mm a", AppConstant.DATE_FORMAT+" HH:mm"), -1);
             String[] yesterDayDateTime = yesterdaydatetime.split(" ");
             String msgdatetime = AppUtility.getDate(Long.parseLong(memberModel.getMsgModel().getCreatedAt()),
-                    AppUtility.dateTimeByAmPmFormate("dd/MM/yyyy hh:mm a",
-                            "dd/MM/yyyy HH:mm"));
+                    AppUtility.dateTimeByAmPmFormate(AppConstant.DATE_FORMAT+" hh:mm a",
+                            AppConstant.DATE_FORMAT+" HH:mm"));
             String[] msgDateTime = msgdatetime.split(" ");
             if (todayDateTime[0].equals(msgDateTime[0])) {
                 try {

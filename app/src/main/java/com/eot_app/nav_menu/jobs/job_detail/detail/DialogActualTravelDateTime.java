@@ -102,7 +102,7 @@ public class DialogActualTravelDateTime extends DialogFragment implements View.O
             binding.llTravelDateTime.setVisibility(View.VISIBLE);
             binding.header.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.modifdy_reavel));
         }
-        String timeFormate1 = AppUtility.dateTimeByAmPmFormate("dd-MM-yyyy hh:mm a", "dd-MM-yyyy HH:mm");
+        String timeFormate1 = AppUtility.dateTimeByAmPmFormate(AppConstant.DATE_FORMAT+" hh:mm a", AppConstant.DATE_FORMAT+" HH:mm");
 
         if (completionDetails!=null&&completionDetails.getLoginTime() != null && !completionDetails.getLoginTime().isEmpty()&& !completionDetails.getLoginTime().equals("0")) {
             if (LanguageController.getInstance().getMobileMsgByKey(AppConstant.select_start_date).equals("Başlangıç \u200B\u200BTarihini Seç")){
@@ -160,7 +160,7 @@ public class DialogActualTravelDateTime extends DialogFragment implements View.O
         String timeFormate = "yyyy-MM-dd HH:mm";
 //        String timeFormateInput = "dd-MM-yyyy HH:mm";
 
-        String timeFormateInput = AppUtility.dateTimeByAmPmFormate("dd-MM-yyyy hh:mm a", "dd-MM-yyyy HH:mm");
+        String timeFormateInput = AppUtility.dateTimeByAmPmFormate(AppConstant.DATE_FORMAT+" hh:mm a", AppConstant.DATE_FORMAT+" HH:mm");
 
         // set values
         String schdlFinish = "", schdlStart = "", tlogEnd = "", tlogStart = "";
@@ -340,7 +340,7 @@ public class DialogActualTravelDateTime extends DialogFragment implements View.O
         try {
             SimpleDateFormat gettingfmt = new SimpleDateFormat(
                     //"dd-MM-yyyy hh:mm a"
-                    AppUtility.dateTimeByAmPmFormate("dd-MM-yyyy hh:mm a", "dd-MM-yyyy HH:mm")
+                    AppUtility.dateTimeByAmPmFormate(AppConstant.DATE_FORMAT+" hh:mm a", AppConstant.DATE_FORMAT+" HH:mm")
                     , Locale.US);
 
             Date dateJobStart=null;
@@ -416,7 +416,7 @@ public class DialogActualTravelDateTime extends DialogFragment implements View.O
         try {
             SimpleDateFormat gettingfmt = new SimpleDateFormat(
                     //"dd-MM-yyyy hh:mm a"
-                    AppUtility.dateTimeByAmPmFormate("dd-MM-yyyy hh:mm a", "dd-MM-yyyy HH:mm")
+                    AppUtility.dateTimeByAmPmFormate(AppConstant.DATE_FORMAT+" hh:mm a", AppConstant.DATE_FORMAT+" HH:mm")
                     , Locale.US);
             Date date = gettingfmt.parse(schdlStart);
             date.getTime();
