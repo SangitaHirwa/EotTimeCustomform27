@@ -1158,6 +1158,7 @@ public class AuditDetailsFragment extends Fragment implements View.OnClickListen
     }
 
 
+    @SuppressLint("ResourceAsColor")
     private void setViewByAuditStatus(String statusValue) {
         try {
             JobStatusModel jobStatusObject = AuditStatusController.getInstance().getStatusObjectById(String.valueOf(statusValue));
