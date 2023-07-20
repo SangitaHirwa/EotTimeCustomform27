@@ -851,7 +851,7 @@ public class AddQuotes_Activity extends UploadDocumentActivity implements View.O
 
     private boolean conditionCheck(String schdlStart, String schdlFinish) {
         try {
-            SimpleDateFormat gettingfmt = new SimpleDateFormat("dd-MM-yyyy", Locale.US);//hh:mm:s a
+            SimpleDateFormat gettingfmt = new SimpleDateFormat(AppConstant.DATE_FORMAT, Locale.US);//hh:mm:s a
             Date date = gettingfmt.parse(schdlStart);
             Objects.requireNonNull(date).getTime();
             Date date1 = gettingfmt.parse(schdlFinish);

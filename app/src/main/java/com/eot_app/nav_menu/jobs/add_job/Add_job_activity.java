@@ -2772,7 +2772,7 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
         try {
             SimpleDateFormat gettingfmt = new SimpleDateFormat(
                     //"dd-MM-yyyy hh:mm a"
-                    AppUtility.dateTimeByAmPmFormate("dd-MM-yyyy hh:mm a", "dd-MM-yyyy HH:mm")
+                    AppUtility.dateTimeByAmPmFormate(AppConstant.DATE_FORMAT+" hh:mm a", AppConstant.DATE_FORMAT+" HH:mm")
                     , Locale.US);
             Date date = gettingfmt.parse(schdlStart);
             assert date != null;
