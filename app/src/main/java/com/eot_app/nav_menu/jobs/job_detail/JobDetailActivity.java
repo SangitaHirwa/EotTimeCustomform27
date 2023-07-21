@@ -40,6 +40,8 @@ import androidx.viewpager.widget.ViewPager;
 import com.eot_app.R;
 import com.eot_app.home_screens.MainActivity;
 import com.eot_app.login_next.FooterMenu;
+import com.eot_app.login_next.login_next_model.CompPermission;
+import com.eot_app.nav_menu.client.clientlist.client_detail.work_history.WorkHistoryFragment;
 import com.eot_app.nav_menu.client_chat_pkg.ClientChatFragment;
 import com.eot_app.nav_menu.jobs.job_controller.ChatController;
 import com.eot_app.nav_menu.jobs.job_controller.ChatListnersContainer;
@@ -1386,7 +1388,14 @@ public class JobDetailActivity extends AppCompatActivity implements
                 case 3:
                     return FeedbackFragment.newInstance("No", dataJob.getJobId());
                 case 4:
-                    return HistoryFragment.newInstance("No", dataJob.getJobId());
+                    CompPermission compPermission = App_preference.getSharedprefInstance().getLoginRes().getCompPermission().get(0);
+                    if (compPermission.getCltWorkHistory() != null) {
+                        if (compPermission.getCltWorkHistory().equals("0"))
+                            return  WorkHistoryFragment.newInstance(dataJob.getCltId(),dataJob.getJobId());
+                        else
+                            return HistoryFragment.newInstance("No", dataJob.getJobId());
+                    }
+
                 case 5:
                     return ClientChatFragment.newInstance("NO", dataJob.getJobId());
                 case 6:

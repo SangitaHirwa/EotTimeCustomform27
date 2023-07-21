@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 import com.eot_app.R;
 import com.eot_app.nav_menu.jobs.add_job.add_job_recr.SampleFragmentPagerAdapter;
+import com.eot_app.nav_menu.jobs.job_detail.history.HistoryFragment;
 import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.language_support.LanguageController;
 import com.google.android.material.tabs.TabLayout;
@@ -20,12 +21,19 @@ import com.google.android.material.tabs.TabLayout;
  */
 public class WorkHistoryFragment extends Fragment {
 
-    String cltId;
+    String cltId, jobId;
 
     public static WorkHistoryFragment newInstance(String cltId) {
         WorkHistoryFragment fragment = new WorkHistoryFragment();
         Bundle args = new Bundle();
         args.putString("cltId", cltId);
+        fragment.setArguments(args);
+        return fragment;
+    } public static WorkHistoryFragment newInstance(String cltId,String jobId) {
+        WorkHistoryFragment fragment = new WorkHistoryFragment();
+        Bundle args = new Bundle();
+        args.putString("cltId", cltId);
+        args.putString("jobId",jobId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -39,10 +47,12 @@ public class WorkHistoryFragment extends Fragment {
         Bundle bundle = getArguments();
         if (bundle != null) {
             this.cltId = bundle.getString("cltId");
+            this.jobId = bundle.getString("jobId");
         }
         ViewPager viewPager = view.findViewById(R.id.viewpager);
         viewPager.setOffscreenPageLimit(3);
-        if(cltId!=null)
+
+        if(cltId!=null || jobId!=null)
         setupViewPager(viewPager,cltId);
 
         // Give the TabLayout the ViewPager
@@ -57,11 +67,18 @@ public class WorkHistoryFragment extends Fragment {
         ClientWorkHistoryList fragmentForJob = ClientWorkHistoryList.newInstance(ClientWorkHistoryList.FragmentTypes.JOB,cltId);
         ClientWorkHistoryList fragmentForAudit =ClientWorkHistoryList.newInstance(ClientWorkHistoryList.FragmentTypes.AUDIT,cltId);
         ClientWorkHistoryList fragmentForAppointment = ClientWorkHistoryList.newInstance(ClientWorkHistoryList.FragmentTypes.APPOINTMENT,cltId);
+        ClientWorkHistoryList fragmentForJobHistory = ClientWorkHistoryList.newInstance(ClientWorkHistoryList.FragmentTypes.History,jobId);
         SampleFragmentPagerAdapter pagerAdapter =
                 new SampleFragmentPagerAdapter(getChildFragmentManager(), getActivity());
-        pagerAdapter.addFragment(fragmentForJob, LanguageController.getInstance().getMobileMsgByKey(AppConstant.job));
-        pagerAdapter.addFragment(fragmentForAudit, LanguageController.getInstance().getMobileMsgByKey(AppConstant.audit_nav));
-        pagerAdapter.addFragment(fragmentForAppointment, LanguageController.getInstance().getMobileMsgByKey(AppConstant.appointment));
+        if(jobId!=null){
+            pagerAdapter.addFragment(fragmentForJobHistory, LanguageController.getInstance().getMobileMsgByKey(AppConstant.title_history));
+            pagerAdapter.addFragment(fragmentForJob, LanguageController.getInstance().getMobileMsgByKey(AppConstant.job));
+        }
+        else {
+            pagerAdapter.addFragment(fragmentForJob, LanguageController.getInstance().getMobileMsgByKey(AppConstant.job));
+            pagerAdapter.addFragment(fragmentForAudit, LanguageController.getInstance().getMobileMsgByKey(AppConstant.audit_nav));
+            pagerAdapter.addFragment(fragmentForAppointment, LanguageController.getInstance().getMobileMsgByKey(AppConstant.appointment));
+        }
         viewPager.setAdapter(pagerAdapter);
     }
 

@@ -4,22 +4,30 @@ import android.util.Log;
 
 import androidx.fragment.app.Fragment;
 
+import com.eot_app.activitylog.ActivityLogController;
 import com.eot_app.nav_menu.appointment.dbappointment.Appointment;
 import com.eot_app.nav_menu.audit.audit_list.audit_mvp.model.AuditList_Res;
 import com.eot_app.nav_menu.client.clientlist.client_detail.work_history.ClientWorkHistoryList;
 import com.eot_app.nav_menu.client.clientlist.client_detail.work_history.model.AduitAppointmentHistoryReq;
 import com.eot_app.nav_menu.client.clientlist.client_detail.work_history.model.JobHistoryReq;
 import com.eot_app.nav_menu.jobs.job_db.Job;
+import com.eot_app.nav_menu.jobs.job_detail.history.History;
+import com.eot_app.nav_menu.jobs.job_detail.history.History_Request_model;
+import com.eot_app.nav_menu.jobs.job_detail.history.history_listview;
 import com.eot_app.services.ApiClient;
 import com.eot_app.services.Service_apis;
 import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.AppUtility;
+import com.eot_app.utility.App_preference;
+import com.eot_app.utility.EotApp;
+import com.eot_app.utility.db.AppDataBase;
 import com.eot_app.utility.language_support.LanguageController;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,6 +50,9 @@ public class WorkHistoryPC implements WorkHistoryPI {
     private int updateJobindex;
     private int updateAuditindex;
     private int updateAppointmentindex;
+    private int updateHistoryindex;
+    private int count;
+    List<History> historyList = new ArrayList<>();
     int updatelimit;
     WorkHistoryView workHistoryView;
     private Appointment app_details;
@@ -290,6 +301,85 @@ public class WorkHistoryPC implements WorkHistoryPI {
         }
     }
 
+    @Override
+    public void getHistoryList(String jobId) {
+       loadHsitoryFromServer(jobId);
+    }
+
+    public void loadHsitoryFromServer (String jobId){
+        if (AppUtility.isInternetConnected()) {
+            ActivityLogController.saveActivity(ActivityLogController.JOB_MODULE, ActivityLogController.JOB_HISTORY, ActivityLogController.JOB_MODULE);
+
+
+            History_Request_model history_request_model = new History_Request_model(
+                    App_preference.getSharedprefInstance().getLoginRes().getCompId(),
+                    App_preference.getSharedprefInstance().getLoginRes().getUsrId(),
+                    AppConstant.LIMIT_MID, updateHistoryindex, jobId);
+
+            String data = new Gson().toJson(history_request_model);
+            //AppUtility.progressBarShow(((android.support.v4.app.Fragment) history_listview).getActivity());
+            ApiClient.getservices().eotServiceCall(Service_apis.getJobStatusHistoryMobile, AppUtility.getApiHeaders(), AppUtility.getJsonObject(data))
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<JsonObject>() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
+
+                        }
+
+                        @Override
+                        public void onNext(JsonObject jsonObject) {
+                            if (jsonObject.get("success").getAsBoolean()) {
+//                                 first confirm field worker is remove or not
+                                if (jsonObject.get("data").getAsJsonArray().size() > 0) {
+                                    if (jsonObject.get("data").getAsJsonArray().get(0).getAsJsonObject().get("status_code") != null &&
+                                            jsonObject.get("data").getAsJsonArray().get(0).getAsJsonObject().get("status_code").getAsString()
+                                                    .equals("1")) {
+                                        String jobId = jsonObject.get("data").getAsJsonArray().get(0).getAsJsonObject().get("jobid").getAsString();
+                                        AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().deleteJobById(jobId);
+//                                    for alert msg to remove job
+                                        EotApp.getAppinstance().notifyObserver("removeFW", jobId, LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
+                                    } else {
+                                        count = jsonObject.get("count").getAsInt();
+                                        String convert = new Gson().toJson(jsonObject.get("data").getAsJsonArray());
+                                        Type listType = new TypeToken<List<History>>() {
+                                        }.getType();
+                                        List<History> data = new Gson().fromJson(convert, listType);
+                                        historyList.addAll(data);
+//                                addRecordsToDB(data);
+                                    }
+                                } else {
+                                    workHistoryView.setHistoryList(historyList);
+                                }
+                            } else if (jsonObject.get("statusCode") != null && jsonObject.get("statusCode").getAsString().equals(AppConstant.SESSION_EXPIRE)) {
+                                workHistoryView.sessionExpire(LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
+                            }
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            Log.e("TAG: ", "error");
+                            //AppUtility.progressBarDissMiss();
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            //AppUtility.progressBarDissMiss();
+                            if ((updateHistoryindex + updatelimit) <= count) {
+                                updateHistoryindex += updatelimit;
+                                loadHsitoryFromServer(jobId);
+                            } else {
+                                updateHistoryindex = 0;
+                                count = 0;
+                                workHistoryView.setHistoryList(historyList);
+                            }
+                        }
+                    });
+        } else {
+            // history_listview.netwrkDialog();
+            networkError();
+        }
+    }
 
     @Override
     public void getAduitDetails(String audId) {

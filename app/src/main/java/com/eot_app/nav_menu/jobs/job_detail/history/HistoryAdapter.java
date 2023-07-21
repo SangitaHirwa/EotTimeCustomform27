@@ -2,6 +2,7 @@ package com.eot_app.nav_menu.jobs.job_detail.history;
 
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,19 +14,28 @@ import com.eot_app.R;
 import com.eot_app.utility.AppUtility;
 import com.eot_app.utility.App_preference;
 import com.eot_app.utility.util_interfaces.MyListItemSelected;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyViewHolder> {
     final MyListItemSelected<History> mListner;
     private List<History> hisData;
-
+    private Context context;
     public HistoryAdapter(List<History> hisData, MyListItemSelected<History> mListner) {
         this.hisData = hisData;
         this.mListner = mListner;
     }
+    public HistoryAdapter(MyListItemSelected<History> mListner) {
+        this.mListner = mListner;
+        this.hisData = new ArrayList<>();
+    }
+
+
 
     public void updateRecords(List<History> hisData) {
-        this.hisData = hisData;
+        this.hisData = new ArrayList<>();
+        this.hisData.addAll(hisData);
         notifyDataSetChanged();
     }
 
