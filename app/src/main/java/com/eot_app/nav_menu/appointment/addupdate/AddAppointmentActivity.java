@@ -306,7 +306,7 @@ public class AddAppointmentActivity extends UploadDocumentActivity implements Te
             binding.timeStart.setText(timeFormat);
             time_str = timeFormat;
 
-            String dateFormat = AppUtility.getDateWithFormates(longStartTime, "dd-MM-yyyy");
+            String dateFormat = AppUtility.getDateWithFormates(longStartTime, AppConstant.DATE_FORMAT);
             binding.dateStart.setText(dateFormat);
             date_str = dateFormat;
 
@@ -316,7 +316,7 @@ public class AddAppointmentActivity extends UploadDocumentActivity implements Te
             binding.timeEnd.setText(timeFormat);
             time_en = timeFormat;
 
-            dateFormat = AppUtility.getDateWithFormates(endTime, "dd-MM-yyyy");
+            dateFormat = AppUtility.getDateWithFormates(endTime, AppConstant.DATE_FORMAT);
             binding.dateEnd.setText(dateFormat);
             date_en = dateFormat;
 
@@ -989,7 +989,7 @@ public class AddAppointmentActivity extends UploadDocumentActivity implements Te
 
     public void getCurrentdateTime(String calenderDate) {
         String dateTime = AppUtility.getDateByFormats(AppUtility.dateTimeByAmPmFormate(
-                "dd-MM-yyyy hh:mm:ss a", "dd-MM-yyyy HH:mm:ss"));
+                AppConstant.DATE_FORMAT+" hh:mm:ss a", AppConstant.DATE_FORMAT+" HH:mm:ss"));
         String[] date_Time = dateTime.split(" ");
         String datestr = date_Time[0];
 
@@ -1040,7 +1040,7 @@ public class AddAppointmentActivity extends UploadDocumentActivity implements Te
                     TimeUnit.MINUTES.toSeconds(Integer.parseInt(time_dur[1])));
 
             SimpleDateFormat simpleDate = new SimpleDateFormat(AppUtility.dateTimeByAmPmFormate(
-                    "dd-MM-yyyy hh:mm a", "dd-MM-yyyy HH:mm"), Locale.US);
+                    AppConstant.DATE_FORMAT+" hh:mm a", AppConstant.DATE_FORMAT+" HH:mm"), Locale.US);
             Date past = null;
             long milisce = 0;
             try {
@@ -1114,7 +1114,7 @@ public class AddAppointmentActivity extends UploadDocumentActivity implements Te
     private void end_Date_Time() {
         String date_time = date_str + " " + time_str;
         SimpleDateFormat simpleDate = new SimpleDateFormat(AppUtility.dateTimeByAmPmFormate(
-                "dd-MM-yyyy hh:mm a", "dd-MM-yyyy HH:mm"), Locale.US);
+                AppConstant.DATE_FORMAT+" hh:mm a", AppConstant.DATE_FORMAT+" HH:mm"), Locale.US);
         Date past = null;
         long milisce = 0;
         try {

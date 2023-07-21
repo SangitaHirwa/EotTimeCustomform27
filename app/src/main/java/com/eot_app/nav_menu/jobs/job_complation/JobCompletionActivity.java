@@ -741,7 +741,7 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
              s=AppUtility.html2text(jobData.getDes());
              stringBuffer.append(" " + s);
         } else if (type==4)
-            stringBuffer.append(" "+AppUtility.getCurrentDateByFormats("dd-MM-yyyy hh:mm a"));
+            stringBuffer.append(" "+AppUtility.getCurrentDateByFormats(AppConstant.DATE_FORMAT+" hh:mm a"));
 
             StringBuffer finalstring = stringBuffer.append(cursorToEnd);
             compedt.setText(finalstring);
@@ -757,7 +757,7 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
              compedt.setSelection(cursorpostion+s.length()+1);
         }else if (type==4)
         {
-            String time=AppUtility.getCurrentDateByFormats("dd/MM/yyyy-hh:mm a");
+            String time=AppUtility.getCurrentDateByFormats(AppConstant.DATE_FORMAT+" hh:mm a");
             compedt.setSelection(cursorpostion+time.length()+1);
         }
         stringBuffer.setLength(0);
