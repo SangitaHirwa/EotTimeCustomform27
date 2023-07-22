@@ -2083,8 +2083,8 @@ public class AppUtility {
     public static String get24HoursTimeFormate(String timeS){
         String time=null;
         try {
-            Date date = new SimpleDateFormat("dd-MM-yyyy hh:mm a", Locale.getDefault()).parse(timeS);
-            time= new SimpleDateFormat("dd-MM-yyyy HH:mm", Locale.getDefault()).format(date);
+            Date date = new SimpleDateFormat(AppConstant.DATE_FORMAT+" hh:mm a", Locale.getDefault()).parse(timeS);
+            time= new SimpleDateFormat(AppConstant.DATE_FORMAT+" HH:mm", Locale.getDefault()).format(date);
         } catch (ParseException e) {
             e.printStackTrace();
         }

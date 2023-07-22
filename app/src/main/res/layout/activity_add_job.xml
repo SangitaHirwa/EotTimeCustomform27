@@ -1396,19 +1396,22 @@
 
     </ScrollView>
 
-    <Button
-        android:id="@+id/submit_btn"
-        style="@style/style_sec"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/button_field_height"
-        android:layout_alignParentBottom="true"
-        android:layout_margin="5dp"
-        android:background="@drawable/submit_btn"
-        android:textAllCaps="false"
-        android:textColor="@color/white"
-        android:textStyle="bold">
+        <Button
+            android:id="@+id/submit_btn"
+            style="@style/style_sec"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/button_field_height"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="5dp"
+            android:background="@drawable/submit_btn"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textStyle="bold">
 
-    </Button>
+        </Button>
 </RelativeLayout>
 
 </layout>

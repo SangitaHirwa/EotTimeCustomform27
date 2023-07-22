@@ -394,7 +394,7 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
 
     private void setDataInDateTimeField(ShiftTimeReSModel shiftTimeReSModel) {
         try {
-            date_str = AppUtility.getDateByFormats("dd-MM-yyyy");
+            date_str = AppUtility.getDateByFormats(AppConstant.DATE_FORMAT);
             date_start.setText(date_str);
 
             String[] startTime = shiftTimeReSModel.getShiftStartTime().split(":");
@@ -406,7 +406,7 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
 
             time_start.setText(time_str);
 
-            date_en = AppUtility.getDateByFormats("dd-MM-yyyy");
+            date_en = AppUtility.getDateByFormats(AppConstant.DATE_FORMAT);
             String[] endTime = shiftTimeReSModel.getShiftEndTime().split(":");
             String temptime_en = AppUtility.updateTime(Integer.parseInt(endTime[0]), Integer.parseInt(endTime[1]));
 

@@ -348,7 +348,8 @@ public class AddAudit_pc implements AddAduit_pi {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            end_Date_Time();
+            schdul_Start_Date_Time(time_duration,datestr);
+//            end_Date_Time();
         } catch (NumberFormatException e) {
             e.printStackTrace();
         }

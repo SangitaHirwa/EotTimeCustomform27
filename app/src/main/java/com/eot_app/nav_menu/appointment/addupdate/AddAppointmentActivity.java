@@ -654,7 +654,7 @@ public class AddAppointmentActivity extends UploadDocumentActivity implements Te
     }
 
     private String getTimeStampFromFormatedDate(String schdlStart) {
-        SimpleDateFormat gettingfmt = new SimpleDateFormat("dd-MM-yyyy hh:mm a"
+        SimpleDateFormat gettingfmt = new SimpleDateFormat(AppConstant.DATE_FORMAT+" hh:mm a"
                 , Locale.US);
         try {
             Date formated = gettingfmt.parse(schdlStart);
@@ -669,7 +669,7 @@ public class AddAppointmentActivity extends UploadDocumentActivity implements Te
 
     private String getLongTimeStamp(String schdlStart) {
         SimpleDateFormat gettingfmt = new SimpleDateFormat(AppUtility.dateTimeByAmPmFormate(
-                "dd-MM-yyyy hh:mm a", "dd-MM-yyyy HH:mm"), Locale.US);
+                AppConstant.DATE_FORMAT+" hh:mm a", AppConstant.DATE_FORMAT+" HH:mm"), Locale.US);
         try {
             Date formated = gettingfmt.parse(schdlStart);
             long l = formated.getTime() / 1000;
@@ -1630,7 +1630,7 @@ public class AddAppointmentActivity extends UploadDocumentActivity implements Te
 
     private void updateSyncAppoinemnt(AppointmentUpdateReq updateReq) {
         String s = new Gson().toJson(updateReq);
-        String dateTime = AppUtility.getDateByFormats("dd-MM-yyyy hh:mm:ss a");
+        String dateTime = AppUtility.getDateByFormats(AppConstant.DATE_FORMAT+" hh:mm:ss a");
 
         //update in local DB
         Appointment newAppointment = new Appointment();
@@ -1697,7 +1697,7 @@ public class AddAppointmentActivity extends UploadDocumentActivity implements Te
                     if (!TextUtils.isEmpty(schdlStart)) {
                         SimpleDateFormat format = new SimpleDateFormat(
                                 //"dd-MM-yyyy hh:mm a"
-                                AppUtility.dateTimeByAmPmFormate("dd-MM-yyyy hh:mm a", "dd-MM-yyyy HH:mm")
+                                AppUtility.dateTimeByAmPmFormate(AppConstant.DATE_FORMAT+" hh:mm a", AppConstant.DATE_FORMAT+" HH:mm")
                                 , Locale.US);
                         try {
                             Date start = format.parse(schdlStart);
