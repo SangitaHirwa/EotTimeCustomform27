@@ -99,6 +99,8 @@ public class FormQueAns_Activity extends UploadDocumentActivity implements View.
     private List<Answer> answer;
     private List<Answer> answerfinal;
 
+    private boolean customSaveForm = false;
+
 
     @Override
     public void onSessionExpire(String msg) {
@@ -409,13 +411,15 @@ public class FormQueAns_Activity extends UploadDocumentActivity implements View.
     @Override
     public void onBackPressed() {
         closeKeyboard();
-        AppUtility.alertDialog2(this,
-                "",
-                LanguageController.getInstance().getMobileMsgByKey(AppConstant.save_to_draft),
-                LanguageController.getInstance().getMobileMsgByKey(AppConstant.yes),
-                LanguageController.getInstance().getMobileMsgByKey(AppConstant.no), new Callback_AlertDialog() {
-                    @Override
-                    public void onPossitiveCall() {
+        List<Fragment> fragments = getSupportFragmentManager().getFragments();
+        if (fragments.isEmpty()||(fragments.size()<1||!(fragments.get(0)instanceof CustomFormFragment))) {
+            AppUtility.alertDialog2(this,
+                    "",
+                    LanguageController.getInstance().getMobileMsgByKey(AppConstant.save_to_draft),
+                    LanguageController.getInstance().getMobileMsgByKey(AppConstant.yes),
+                    LanguageController.getInstance().getMobileMsgByKey(AppConstant.no), new Callback_AlertDialog() {
+                        @Override
+                        public void onPossitiveCall() {
                        /* List<Fragment> fragments = getSupportFragmentManager().getFragments();
                         if (fragments.isEmpty())
                         {
@@ -426,30 +430,45 @@ public class FormQueAns_Activity extends UploadDocumentActivity implements View.
                             ArrayList<Answer> childanswerArrayList = ((CustomFormFragment) fragments.get(0)).answerArrayList;
                             setFormDraft(pid,childanswerArrayList);
                         }*/
-                        List<Fragment> fragments = getSupportFragmentManager().getFragments();
-                        if (fragments.isEmpty()||(fragments.size()<1||!(fragments.get(0)instanceof CustomFormFragment)))
-                        {
-                            setFormDraft("-1",answerArrayList);
-                        }else{
-                            for (int i=0;i<fragments.size();i++) {
-                                if (fragments.get(i) instanceof CustomFormFragment) {
-                                    String pid = ((CustomFormFragment) fragments.get(i)).optionid;
-                                    ((CustomFormFragment) fragments.get(i)).getAnsListSaveBtn();
-                                    ArrayList<Answer> childanswerArrayList = ((CustomFormFragment) fragments.get(i)).answerArrayList;
-                                    setFormDraft(pid, childanswerArrayList);
-                                }else{
-                                    continue;
-                                }
-                            }
+//                            List<Fragment> fragments = getSupportFragmentManager().getFragments();
+//                            if (fragments.isEmpty() || (fragments.size() < 1 || !(fragments.get(0) instanceof CustomFormFragment))) {
+                                setFormDraft("-1", answerArrayList);
+//                            } else {
+//                                for (int i = 0; i < fragments.size(); i++) {
+//                                    if (fragments.get(i) instanceof CustomFormFragment) {
+//                                        String pid = ((CustomFormFragment) fragments.get(i)).optionid;
+//                                        ((CustomFormFragment) fragments.get(i)).getAnsListSaveBtn();
+//                                        ArrayList<Answer> childanswerArrayList = ((CustomFormFragment) fragments.get(i)).answerArrayList;
+//                                        setFormDraft(pid, childanswerArrayList);
+//                                    } else {
+//                                        continue;
+//                                    }
+//                                }
+//                            }
+                            backprassed(true);
                         }
-                        backprassed(true);
-                    }
 
-                    @Override
-                    public void onNegativeCall() {
-                        backprassed(false);
+                        @Override
+                        public void onNegativeCall() {
+                            backprassed(false);
+                        }
+                    });
+        }else {
+            if(customSaveForm) {
+                for (int i = 0; i < fragments.size(); i++) {
+                    if (fragments.get(i) instanceof CustomFormFragment) {
+                        String pid = ((CustomFormFragment) fragments.get(i)).optionid;
+                        ((CustomFormFragment) fragments.get(i)).getAnsListSaveBtn();
+                        ArrayList<Answer> childanswerArrayList = ((CustomFormFragment) fragments.get(i)).answerArrayList;
+                        setFormDraft(pid, childanswerArrayList);
+                    } else {
+                        continue;
                     }
-                });
+                    customSaveForm = false;
+                }
+            }
+            backprassed(true);
+        }
     }
 
     private void backprassed(Boolean msg){
@@ -681,6 +700,7 @@ public class FormQueAns_Activity extends UploadDocumentActivity implements View.
     public void getAnsList(ArrayList<Answer> answerArray, List<MultipartBody.Part> signAns,
                            List<MultipartBody.Part> docAns, ArrayList<String> signQueIdArray, ArrayList<String> docQueIdArray,List<String> dosanspath,List<String> signanspath) {
         Log.e("Size--->>", ">>>>>" + answerArray.size());
+        customSaveForm = true;
         linearLayout2.setVisibility(View.VISIBLE);
         this.signQueIdArray.addAll(signQueIdArray);
         this.docQueIdArray.addAll(docQueIdArray);
