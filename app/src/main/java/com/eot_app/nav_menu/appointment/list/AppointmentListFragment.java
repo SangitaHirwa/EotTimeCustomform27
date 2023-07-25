@@ -9,6 +9,7 @@ import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -50,6 +51,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 public class AppointmentListFragment extends
@@ -270,7 +272,7 @@ public class AppointmentListFragment extends
                 Appointment appointment = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).appointmentModel().getAppointmentById(cpm.getId());
                 if (appointment != null) {
                     Intent intent = new Intent(getActivity(), AppointmentDetailsActivity.class);
-                    intent.putExtra("data", appointment);
+                    intent.putExtra("appointmentData", appointment);
                     intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                     startActivityForResult(intent, APPOINTMENT_INTENT_CODE);
                 }

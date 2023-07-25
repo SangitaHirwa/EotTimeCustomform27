@@ -95,7 +95,7 @@ import com.eot_app.utility.settings.setting_db.TagData;
         , AuditList_Res.class, ContractRes.class, Equipment.class, JobStatusModelNew.class,
         TaxesLocation.class, ClientRefrenceModel.class, ShiftTimeReSModel.class, CustomForm.class, CustomFormQue.class,
         CustomFormSubmited.class, CustomFormListOffline.class, AuditStatusModel.class, AppointmentStatusModel.class},
-        version = 41, exportSchema = false)
+        version = 42, exportSchema = false)
 @TypeConverters({TaxDataConverter.class, TagDataConverter.class, InvoiceItemDataModelConverter.class, TaxConverter.class
         , EquipmentTypeConverter.class, EquArrayConvrtr.class, EquCategoryConvrtr.class
         , SiteCustomFieldConverter.class, JobRecurTypeConvert.class, SelecetedDaysConverter.class
@@ -614,6 +614,18 @@ public abstract class AppDataBase extends RoomDatabase {
                     " PRIMARY KEY(`id`))");
         }
     };
+    /**Add some filed in Appointment for Item add in Requirement Gathering **/
+
+    static final Migration MIGRATION_41_42 = new Migration(41, 42) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            database.execSQL("ALTER TABLE Appointment ADD COLUMN parentId TEXT");
+            database.execSQL("ALTER TABLE Appointment ADD COLUMN leadId TEXT");
+            database.execSQL("ALTER TABLE Appointment ADD COLUMN isStatusShow TEXT");
+            database.execSQL("ALTER TABLE Appointment ADD COLUMN itemData TEXT");
+
+        }
+    };
     private static final String DB_NAME = "eot_db";
 
     private static AppDataBase INSTANCE;
@@ -669,6 +681,7 @@ public abstract class AppDataBase extends RoomDatabase {
                     .addMigrations(MIGRATION_38_39)
                     .addMigrations(MIGRATION_39_40)
                     .addMigrations(MIGRATION_40_41)
+                    .addMigrations(MIGRATION_41_42)
                     .fallbackToDestructiveMigration()
                     .build();
         }

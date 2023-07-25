@@ -1,18 +1,32 @@
 package com.eot_app.nav_menu.appointment.dbappointment;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
+import com.eot_app.nav_menu.appointment.AppointmetItemDataModelConverter;
 import com.eot_app.nav_menu.appointment.Keepar;
 import com.eot_app.nav_menu.appointment.KeeparConverter;
+import com.eot_app.nav_menu.appointment.appointment_model.AppintmentItemDataModel;
+import com.eot_app.nav_menu.appointment.details.documents.AppointmentTaxConverter;
+import com.eot_app.nav_menu.equipment.model.Keeper;
+import com.eot_app.nav_menu.jobs.job_db.Job;
+import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.model.InvoiceItemDataModel;
+import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.typeconver_pkg.InvoiceItemDataModelConverter;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Entity(tableName = "Appointment")
-public class Appointment implements Serializable {
+public class Appointment implements Parcelable  {
+
     private String tempId;
     @PrimaryKey
     @NonNull
@@ -52,10 +66,72 @@ public class Appointment implements Serializable {
     private String jobId;
     private String jobLabel;
     private String attachCount;
+    private String parentId;
+    private String leadId;
+    private String isStatusShow;
+    @TypeConverters(AppointmetItemDataModelConverter.class)
+    private Map<String ,AppintmentItemDataModel> itemData;
+   // private String itemData;
 
     public Appointment() {
         kpr = null;
     }
+
+    protected Appointment(Parcel in) {
+        tempId = in.readString();
+        appId = in.readString();
+        cltId = in.readString();
+        label = in.readString();
+        des = in.readString();
+        type = in.readString();
+        athr = in.readString();
+        schdlStart = in.readString();
+        schdlFinish = in.readString();
+        nm = in.readString();
+        email = in.readString();
+        mob1 = in.readString();
+        mob2 = in.readString();
+        adr = in.readString();
+        city = in.readString();
+        state = in.readString();
+        ctry = in.readString();
+        zip = in.readString();
+        createDate = in.readString();
+        updateDate = in.readString();
+        siteId = in.readString();
+        conId = in.readString();
+        compid = in.readString();
+        lat = in.readString();
+        lng = in.readString();
+        landmark = in.readString();
+        status = in.readString();
+        isdelete = in.readString();
+        cnm = in.readString();
+        snm = in.readString();
+        quotId = in.readString();
+        quotLabel = in.readString();
+        jobId = in.readString();
+        jobLabel = in.readString();
+        attachCount = in.readString();
+        parentId = in.readString();
+        leadId = in.readString();
+        isStatusShow = in.readString();
+        itemData = new HashMap<>();
+        in.readMap(itemData, AppintmentItemDataModel.class.getClassLoader());
+
+    }
+
+    public static final Creator<Appointment> CREATOR = new Creator<Appointment>() {
+        @Override
+        public Appointment createFromParcel(Parcel in) {
+            return new Appointment(in);
+        }
+
+        @Override
+        public Appointment[] newArray(int size) {
+            return new Appointment[size];
+        }
+    };
 
     public String getAttachCount() {
         return attachCount;
@@ -345,4 +421,107 @@ public class Appointment implements Serializable {
     public void setLng(String lng) {
         this.lng = lng;
     }
+
+    public String getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(String parentId) {
+        this.parentId = parentId;
+    }
+
+    public String getLeadId() {
+        return leadId;
+    }
+
+    public void setLeadId(String leadId) {
+        this.leadId = leadId;
+    }
+
+    public String getIsStatusShow() {
+        return isStatusShow;
+    }
+
+    public void setIsStatusShow(String isStatusShow) {
+        this.isStatusShow = isStatusShow;
+    }
+
+    public Map<String, AppintmentItemDataModel> getItemData() {
+        return itemData;
+    }
+
+    public void setItemData(Map<String, AppintmentItemDataModel> itemData) {
+        this.itemData = itemData;
+    }
+    public AppintmentItemDataModel getAppintmentItemDataModel(String key) {
+        return itemData.get(key);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+    public static final Parcelable.Creator<Appointment> CREATORS = new Parcelable.Creator<Appointment>() {
+        @Override
+        public Appointment createFromParcel(Parcel in) {
+            return new Appointment(in);
+        }
+
+        @Override
+        public Appointment[] newArray(int size) {
+            return new Appointment[size];
+        }
+    };
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+
+
+        parcel.writeString(tempId);
+        parcel.writeString(appId);
+        parcel.writeString(cltId);
+        parcel.writeString(label);
+        parcel.writeString(des);
+        parcel.writeString(type);
+        parcel.writeString(athr);
+        parcel.writeString(schdlStart);
+        parcel.writeString(schdlFinish);
+        parcel.writeString(nm);
+        parcel.writeString(email);
+        parcel.writeString(mob1);
+        parcel.writeString(mob2);
+        parcel.writeString(adr);
+        parcel.writeString(city);
+        parcel.writeString(state);
+        parcel.writeString(ctry);
+        parcel.writeString(zip);
+        parcel.writeString(createDate);
+        parcel.writeString(updateDate);
+        parcel.writeString(siteId);
+        parcel.writeString(conId);
+        parcel.writeString(compid);
+        parcel.writeString(lat);
+        parcel.writeString(lng);
+        parcel.writeString(landmark);
+        parcel.writeString(status);
+        parcel.writeString(isdelete);
+        parcel.writeString(cnm);
+        parcel.writeString(snm);
+        parcel.writeString(quotId);
+        parcel.writeString(quotLabel);
+        parcel.writeString(jobId);
+        parcel.writeString(jobLabel);
+        parcel.writeString(attachCount);
+        parcel.writeString(parentId);
+        parcel.writeString(leadId);
+        parcel.writeString(isStatusShow);
+        parcel.writeMap(itemData);
+    }
+
+  /*public String getItemData() {
+        return itemData;
+    }
+
+    public void setItemData(String itemData) {
+        this.itemData = itemData;
+    }*/
 }

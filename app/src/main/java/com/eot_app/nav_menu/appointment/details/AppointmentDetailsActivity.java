@@ -41,9 +41,13 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import com.eot_app.R;
 import com.eot_app.UploadDocumentActivity;
 import com.eot_app.databinding.ActivityAppointmentDetailsBinding;
+import com.eot_app.nav_menu.appointment.AppointmetItemDataModelConverter;
 import com.eot_app.nav_menu.appointment.Keepar;
 import com.eot_app.nav_menu.appointment.addupdate.AddAppointmentActivity;
 import com.eot_app.nav_menu.appointment.addupdate.model.AppointmentUpdateReq;
+import com.eot_app.nav_menu.appointment.appointment_ItemData.AppointmentItemData_pc;
+import com.eot_app.nav_menu.appointment.appointment_ItemData.AppointmentItemData_pi;
+import com.eot_app.nav_menu.appointment.appointment_model.AppintmentItemDataModel;
 import com.eot_app.nav_menu.appointment.appointment_model.AppointmentStatusModel;
 import com.eot_app.nav_menu.appointment.dbappointment.Appointment;
 import com.eot_app.nav_menu.appointment.details.documents.ActivityDocumentUpload;
@@ -56,6 +60,8 @@ import com.eot_app.nav_menu.client.clientlist.client_detail.site.sitelist.editsi
 import com.eot_app.nav_menu.jobs.add_job.Add_job_activity;
 import com.eot_app.nav_menu.jobs.job_db.Job;
 import com.eot_app.nav_menu.jobs.job_detail.JobDetailActivity;
+import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.AddEditInvoiceItemActivity2;
+import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.model.InvoiceItemDataModel;
 import com.eot_app.nav_menu.quote.add_quotes_pkg.AddQuotes_Activity;
 import com.eot_app.nav_menu.quote.quote_invoice_pkg.Quote_Invoice_Details_Activity;
 import com.eot_app.services.Service_apis;
@@ -93,12 +99,16 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
     private final LinkedHashMap<String, String> arraystatus = new LinkedHashMap<>();
     private  String[] statusArray = new String[arraystatus.size()];
     List<AppointmentStatusModel> allAppointmentStatusList =new ArrayList<>();
+    RequirementGetheringListAdapter reqGethListAdapter;
     ArrayList<AppointmentAttachment> allAttachmentList=new ArrayList<>();
+    List<AppintmentItemDataModel> itemList;
     ActivityAppointmentDetailsBinding binding;
     AppointmentDetailsViewModel detailsViewModel;
     Appointment model = new Appointment();
     Doc_Attch_Pi doc_attch_pi;
-
+    AppointmentItemData_pi appointmentItemData_pi;
+    private final int GET_ITEM_LIST=5;
+    InvoiceItemDataModel dataModel= new InvoiceItemDataModel();
     private final BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -111,6 +121,7 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
         }
     };
     AttachementAdapter attachementAdapter;
+
     boolean isFBMenuOpened;
     //custom dialog for instruction and details
     private Dialog enterFieldDialog;
@@ -128,8 +139,8 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
         binding.tvLableScheduleDateTime.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.appointment_start_end));
         binding.tvViewOnMap.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.view_on_map));
         binding.tbLabelAttachment.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.document));
-        binding.tvFabAddQuote.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.create_quotation));
-        binding.tvFabJob.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.title_add_job));
+        //binding.tvFabAddQuote.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.create_quotation));
+       // binding.tvFabJob.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.title_add_job));
         binding.checkboxSelectAll.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.select_all));
         binding.tvExportAll.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.export_document));
         binding.tvLabelQuotation.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.quotation_label));
@@ -147,10 +158,13 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
             binding.nolistLinear.setVisibility(View.VISIBLE);
         }
         doc_attch_pi = new Doc_Attch_Pc(this);
-        model = (Appointment) getIntent().getSerializableExtra("data");
+        model = getIntent().getParcelableExtra("appointmentData");
         if (model != null) {
             setDataInUI(model);
         }
+        itemList= new ArrayList<>(model.getItemData().values());
+        reqGethListAdapter=new RequirementGetheringListAdapter(itemList);
+        binding.recyclerOfReqGeth.setAdapter(reqGethListAdapter);
         binding.recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         binding.recyclerView.setNestedScrollingEnabled(false);
 
@@ -198,12 +212,25 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
         });
 
         binding.checkboxSelectAll.setOnCheckedChangeListener(selectAllListener());
-        binding.fab.setOnClickListener(this);
+      //  binding.fab.setOnClickListener(this);
         binding.backgroundView.setOnClickListener(this);
         binding.linearFabQuote.setOnClickListener(this);
         binding.linearFabJob.setOnClickListener(this);
         binding.tvExportAll.setOnClickListener(this);
         binding.linearArrawLayout.setOnClickListener(this);
+        binding.seemore.setOnClickListener(this);
+        binding.seeless.setOnClickListener(this);
+        binding.tvAddNewItem.setOnClickListener(this);
+
+
+        binding.tvAddNewItem.setOnClickListener(view -> {
+            Intent intent = new Intent(this, AddEditInvoiceItemActivity2.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+            intent.putExtra("AddRequirmentGetheringItem",true);
+            intent.putExtra("appId",model.getAppId());
+            startActivityForResult(intent,GET_ITEM_LIST);
+
+        });
         /*binding.btnAppointmentDone.setOnClickListener(v -> {
             if (model != null && !model.getTempId().equals(model.getAppId())) {
                 sendUpdateRequest();
@@ -286,6 +313,7 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
             binding.imgEmail.setOnClickListener(this);
             binding.tvViewOnMap.setOnClickListener(this);
             binding.tvAddNew.setOnClickListener(this);
+            binding.editAppointment.setOnClickListener(this);
 
         }
 
@@ -399,8 +427,10 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
                 );
                 binding.tvStartTime.setText(timeFormat);
 
+
                 String dateFormat = AppUtility.getDateWithFormate(longStartTime, "dd-MMM-yyyy");
                 binding.tvStartDate.setText(dateFormat);
+                binding.tvDateTime.setText(timeFormat+" "+dateFormat);
 
                 long endTime = Long.parseLong(model.getSchdlFinish());
                 timeFormat = AppUtility.getDateWithFormate(endTime,
@@ -588,6 +618,7 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.quotes_menu, menu);
+        menu.getItem(0).setVisible(false);
         return true;
     }
 
@@ -595,14 +626,14 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home)
             onBackPressed();
-        else if (item.getItemId() == R.id.quotes_edit) {
+       /* else if (item.getItemId() == R.id.quotes_edit) {
             Intent intent = new Intent(this, AddAppointmentActivity.class);
             intent.putExtra(AddAppointmentActivity.ISINEDITMODE, true);
             intent.putExtra("appointment", model);
             intent.putExtra("editView",true);
             intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
             startActivityForResult(intent, EDIT_APPOINTMENT_CODE);
-        }
+        }*/
         return true;
     }
 
@@ -680,6 +711,30 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
             case R.id.linear_arraw_layout:
                 binding.statusSpinner.performClick();
                 break;
+
+            case R.id.seemore:
+                binding.seemore.setVisibility(View.GONE);
+                binding.seeless.setVisibility(View.VISIBLE);
+                binding.LayoutForSeeMoreLess.setVisibility(View.VISIBLE);
+                break;
+            case R.id.seeless:
+                binding.seemore.setVisibility(View.VISIBLE);
+                binding.seeless.setVisibility(View.GONE);
+                binding.LayoutForSeeMoreLess.setVisibility(View.GONE);
+                break;
+            case R.id.edit_appointment:
+                Intent intent = new Intent(this, AddAppointmentActivity.class);
+                intent.putExtra(AddAppointmentActivity.ISINEDITMODE, true);
+                intent.putExtra("appointment", model);
+                intent.putExtra("editView",true);
+                intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                startActivityForResult(intent, EDIT_APPOINTMENT_CODE);
+                break;
+           /* case R.id.tv_add_new_item:
+                Intent requirmentGethering = new Intent(this, AddEditInvoiceItemActivity2.class);
+                requirmentGethering.putExtra("req", "yes");
+                startActivityForResult(requirmentGethering,GET_ITEM_LIST);
+                break;*/
         }
 
     }
@@ -820,6 +875,15 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
                     }
                 }
                 break;
+
+            case GET_ITEM_LIST:
+                if(data!=null)
+                {
+                  /*    itemDataModelList=data.getParcelableArrayListExtra("RequiredItemDataList");*/
+
+
+                }
+
 
 
         }
@@ -1048,5 +1112,8 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
             i++;
         }
 
+    }
+    public void getAppointmentItemList(List<AppintmentItemDataModel> itemList){
+        this.itemList=itemList;
     }
 }
