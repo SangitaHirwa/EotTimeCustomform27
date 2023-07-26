@@ -295,7 +295,7 @@ public class JobdetailsEquActivity extends AppCompatActivity implements
             textViewJobCode.setText(builder, TextView.BufferType.SPANNABLE);
             if (!job.getSchdlStart().equals("")) {
                 String[] formated_date = AppUtility.getFormatedTime(job.getSchdlStart());
-                textViewTime.setText(formated_date[1] + formated_date[2]);
+                textViewTime.setText(formated_date[0] +" "+ formated_date[1]);
             }
             if (job.getPrty().equals("1"))
                 textViewPriority.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.Low));

@@ -516,7 +516,7 @@ public class AppUtility {
     public static String[] getFormatedTime(String updateDate) {
         try {
             String timeFormate =
-                    AppUtility.dateTimeByAmPmFormate("EEE, "+AppConstant.DATE_FORMAT+"/hh:mm/a", "EEE, "+AppConstant.DATE_FORMAT+"/HH:mm");
+                    AppUtility.dateTimeByAmPmFormate("EEE, "+AppConstant.DATE_FORMAT+"/hh:mm a", "EEE, "+AppConstant.DATE_FORMAT+"/HH:mm");
             // Create a DateFormatter object for displaying date in specified format.
 //            SimpleDateFormat formatter = new SimpleDateFormat(timeFormate, Locale.US);
             SimpleDateFormat formatter = new SimpleDateFormat(timeFormate, Locale.getDefault());
@@ -1301,7 +1301,7 @@ public class AppUtility {
                 //** based on the type of calculation , direct or percentage  **//
                 double calculaterateDis = 0;
                 if (getDisCalculationType.equals("0"))
-                    calculaterateDis = (rate * dis) / 100;
+                    calculaterateDis = (rate * qty *dis) / 100;
                 else if (getDisCalculationType.equals("1"))
                     calculaterateDis = dis;
 
@@ -1342,6 +1342,162 @@ public class AppUtility {
 
             }
             result = String.valueOf(amount);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return result;
+    }
+    /**
+     * calculate for item list
+     */
+    public static Map <String, String> getCalculatedAmountForDiscount(String str_qty, String str_rate, String str_discount, List<Tax> tax, String taxCalculationType,String getDisCalculationType,boolean update) {
+        HashMap<String, String> result = new HashMap<>();
+        double amount = 0;
+        double total_tax_amt = 0;
+        try {
+            double qty = 0, rate = 0, dis = 0;
+            if (str_qty.isEmpty()) {
+                str_qty = "0";
+            }
+            if (str_rate.isEmpty()) {
+                str_rate = "0";
+            }
+            if (str_discount.isEmpty()) {
+                str_discount = "0";
+            }
+
+            qty = Double.parseDouble(str_qty);
+            rate = Double.parseDouble(str_rate);
+            dis = Double.parseDouble(str_discount);
+            float total_tax = 0;
+            for (Tax item : tax) {
+                if(item.isSelect()) {
+                    String item_rate = item.getRate();
+                    if (update) {
+                        if (item.getOldTax() != null && !item.getOldTax().equals(""))
+                            total_tax += Float.parseFloat(item.getOldTax());
+                    } else {
+                        if (!item_rate.isEmpty()) {
+                            total_tax += Float.parseFloat(item_rate);
+                        }
+                    }
+                }
+            }
+
+
+            if (taxCalculationType.equals("0")) {
+                //TODO calculation part
+                //** based on the type of calculation , direct or percentage  **//
+                double calculaterateDis = 0;
+                if (getDisCalculationType.equals("0"))
+                    calculaterateDis = (rate * qty *dis) / 100;
+                else if (getDisCalculationType.equals("1"))
+                    calculaterateDis = dis;
+
+                double totalRate = rate * qty;
+                double newRate = totalRate - calculaterateDis;
+                double newAmt = (newRate * total_tax) / 100;
+                total_tax_amt = newAmt;
+                amount = newAmt + newRate;
+
+
+            } else if (taxCalculationType.equals("1")) {
+
+
+                //** based on the type of calculation , direct or percentage  **//
+
+
+                double totalPrice = qty * rate;
+                double itemTotal = totalPrice + ((totalPrice * total_tax) / 100);
+                double discount = 0;
+                if (getDisCalculationType.equals("0"))
+                    discount = ((itemTotal * dis) / 100);
+                else if (getDisCalculationType.equals("1"))
+                    discount = dis;
+                total_tax_amt = (totalPrice * total_tax) / 100;
+                amount = itemTotal - discount;
+
+            }
+            else if (taxCalculationType.equals("2")) {
+                //** based on the type of calculation , direct or percentage  **//
+
+                double totalPrice = qty * rate;
+                double itemTotal = totalPrice + ((totalPrice * total_tax) / 100);
+                double discount = 0;
+                if (getDisCalculationType.equals("0"))
+                    discount = ((totalPrice * dis) / 100);
+                else if (getDisCalculationType.equals("1"))
+                    discount = dis;
+                total_tax_amt= (totalPrice * total_tax) / 100;
+                amount = itemTotal - discount;
+
+            }
+            result.put("Amount",String.valueOf(amount));
+            result.put("Tax",String.valueOf(total_tax_amt));
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return result;
+    }
+    /**
+     * calculate for tax
+     */
+    public static String getCalculatedTax(String str_rate, String str_discount, List<Tax> tax, String taxCalculationType,String getDisCalculationType,boolean update) {
+        String result = "0.0";
+        double amount = 0;
+        try {
+            double rate = 0, dis = 0;
+
+            if (str_rate.isEmpty()) {
+                str_rate = "0";
+            }
+            if (str_discount.isEmpty()) {
+                str_discount = "0";
+            }
+
+            rate = Double.parseDouble(str_rate);
+            dis = Double.parseDouble(str_discount);
+            float total_tax = 0;
+            for (Tax item : tax) {
+                if(item.isSelect()) {
+                    String item_rate = item.getRate();
+                    if (update) {
+                        if (item.getOldTax() != null && !item.getOldTax().equals(""))
+                            total_tax += Float.parseFloat(item.getOldTax());
+                    } else {
+                        if (!item_rate.isEmpty()) {
+                            total_tax += Float.parseFloat(item_rate);
+                        }
+                    }
+                }
+            }
+            if (taxCalculationType.equals("0")) {
+                double calculaterateDis = 0;
+                //** based on the type of calculation , direct or percentage  **//
+                if (getDisCalculationType.equals("0"))
+                    calculaterateDis = (rate * dis) / 100;
+                else if (getDisCalculationType.equals("1"))
+                    calculaterateDis = dis;
+
+                double newRate = rate - calculaterateDis;
+                double newAmt = (newRate * total_tax) / 100;
+                double d = rate + newAmt;
+                amount = d;
+
+            }
+            else if (getDisCalculationType.equals("1")) {
+
+                double newAmt = (rate * total_tax) / 100;
+                double d = rate + newAmt;
+                amount = d;
+            }
+            else if (getDisCalculationType.equals("2")) {
+
+                double newAmt = (rate * total_tax) / 100;
+                double d = rate + newAmt;
+                amount = d;
+            }
+            result = String.valueOf(AppUtility.getRoundoff_amount(String.valueOf(amount)));
         } catch (Exception ex) {
             ex.printStackTrace();
         }

@@ -44,6 +44,7 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 
 public class Add_Edit_Inv_Invoice_Activity extends AppCompatActivity implements TextWatcher, View.OnClickListener,
@@ -508,66 +509,73 @@ public class Add_Edit_Inv_Invoice_Activity extends AppCompatActivity implements 
      * tax calculation for current add/edit item
      */
     private void total_Amount_cal() {
-
-        double qty = 0, rate = 0, dis = 0;
+String getTaxCalculationType = invoice_Details.getTaxCalculationType();
+String getDisCalculationType = App_preference.getSharedprefInstance().getLoginRes().getDisCalculationType();
+        String qty = "", rate = "", dis = "";
         double amount = 0;
         /**  check of amount calculation */
         try {
             if (!edt_item_qty.getText().toString().equals("")) {
-                qty = Double.parseDouble(AppUtility.getRoundoff_amount(edt_item_qty.getText().toString()));
+//                qty = Double.parseDouble(AppUtility.getRoundoff_amount(edt_item_qty.getText().toString()));
+                qty = edt_item_qty.getText().toString();
             }
             if (!edt_item_rate.getText().toString().equals("")) {
-                rate = Double.parseDouble(AppUtility.getRoundoff_amount(edt_item_rate.getText().toString()));
+//                rate = Double.parseDouble(AppUtility.getRoundoff_amount(edt_item_rate.getText().toString()));
+                rate = edt_item_rate.getText().toString();
             }
             if (!edt_item_disc.getText().toString().equals("")) {
-                dis = Double.parseDouble(AppUtility.getRoundoff_amount(edt_item_disc.getText().toString()));
+                dis = edt_item_disc.getText().toString();
             }
 
         } catch (Exception ex) {
             ex.getMessage();
         }
 
-
+        Map<String, String> result = AppUtility.getCalculatedAmountForDiscount(qty,rate,dis,listFilter,getTaxCalculationType,getDisCalculationType,updateItem);
         /**  */
-        if (invoice_Details.getTaxCalculationType().equals("0")) {
-//            amount = (qty * rate + qty * ((rate * total_tax) / 100)) - qty * ((rate * dis) / 100);
-            try {
-                rate = qty * rate;
-                //** based on the type of calculation , direct or percentage  **//
-                double tax=0;
-                if(App_preference.getSharedprefInstance().getLoginRes().getDisCalculationType().equals("0"))
-                    tax = (rate - ((rate * dis) / 100));
-                else if(App_preference.getSharedprefInstance().getLoginRes().getDisCalculationType().equals("1"))
-                    tax = rate-dis;
+//        if (invoice_Details.getTaxCalculationType().equals("0")) {
+////            amount = (qty * rate + qty * ((rate * total_tax) / 100)) - qty * ((rate * dis) / 100);
+//            try {
+//                rate = qty * rate;
+//                //** based on the type of calculation , direct or percentage  **//
+//                double tax=0;
+//                if(App_preference.getSharedprefInstance().getLoginRes().getDisCalculationType().equals("0"))
+//                    tax = (rate - ((rate * dis) / 100));
+//                else if(App_preference.getSharedprefInstance().getLoginRes().getDisCalculationType().equals("1"))
+//                    tax = rate-dis;
+//
+//
+//                amount = (tax * total_tax) / 100;
+//            } catch (Exception exception) {
+//                exception.printStackTrace();
+//            }
+//
+//        }
+//        else if (invoice_Details.getTaxCalculationType().equals("1")) {
+//
+//            double totalPrice  = qty * rate;
+//            double itemTotal   = totalPrice + ((totalPrice* total_tax)/100);
+//            double discount=0;
+//            if(App_preference.getSharedprefInstance().getLoginRes().getDisCalculationType().equals("0"))
+//                discount =  ((itemTotal*dis)/100);
+//            else if(App_preference.getSharedprefInstance().getLoginRes().getDisCalculationType().equals("1"))
+//                discount = dis;
+//
+//            amount  = itemTotal -discount;
+//
+//
+//        }
+//        roundOff = Math.round(amount * 100.0) / 100.0;
+//        String amountString = AppUtility.getRoundoff_amount(String.valueOf(roundOff));
+//        amount_value_txt.setText(amountString);
+//
+//
+//        taxAmount = ((total_tax * rate * qty) / 100);
+//        String tax_Amount = AppUtility.getRoundoff_amount(String.valueOf(taxAmount));
+//        taxamount_value_txt.setText(tax_Amount);
 
-
-                amount = (tax * total_tax) / 100;
-            } catch (Exception exception) {
-                exception.printStackTrace();
-            }
-
-        } else if (invoice_Details.getTaxCalculationType().equals("1")) {
-
-            double totalPrice  = qty * rate;
-            double itemTotal   = totalPrice + ((totalPrice* total_tax)/100);
-            double discount=0;
-            if(App_preference.getSharedprefInstance().getLoginRes().getDisCalculationType().equals("0"))
-                discount =  ((itemTotal*dis)/100);
-            else if(App_preference.getSharedprefInstance().getLoginRes().getDisCalculationType().equals("1"))
-                discount = dis;
-
-            amount  = itemTotal -discount;
-
-
-        }
-        roundOff = Math.round(amount * 100.0) / 100.0;
-        String amountString = AppUtility.getRoundoff_amount(String.valueOf(roundOff));
-        amount_value_txt.setText(amountString);
-
-
-        taxAmount = ((total_tax * rate * qty) / 100);
-        String tax_Amount = AppUtility.getRoundoff_amount(String.valueOf(taxAmount));
-        taxamount_value_txt.setText(tax_Amount);
+        taxamount_value_txt.setText(AppUtility.getRoundoff_amount(result.get("Tax")));
+        amount_value_txt.setText(AppUtility.getRoundoff_amount(result.get("Amount")));
 
     }
 

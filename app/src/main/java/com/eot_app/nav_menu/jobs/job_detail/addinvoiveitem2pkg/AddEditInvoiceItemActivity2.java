@@ -70,6 +70,7 @@ import com.hypertrack.hyperlog.HyperLog;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import static com.eot_app.nav_menu.jobs.job_detail.invoice2list.JoBInvoiceItemList2Activity.ADD_ITEM_DATA;
@@ -135,6 +136,8 @@ public class AddEditInvoiceItemActivity2 extends
     private RadioButton radio_billable, radio_none_billable;
     private boolean NOITEMRELECT = false, NONBILLABLE = false;
     private ImageButton tax_cancel;
+
+    private boolean firstTimeOnPage = true;
 
 
     @Override
@@ -434,7 +437,9 @@ public class AddEditInvoiceItemActivity2 extends
             e.printStackTrace();
         }
 
-
+        firstTimeOnPage = false;
+        total_Amount_cal();
+        calculateTaxRate();
     }
 
     private void setEmptyFieldsNonInventry() {
@@ -503,6 +508,7 @@ public class AddEditInvoiceItemActivity2 extends
                 add_edit_item_Btn.setVisibility(View.GONE);
             }
         }
+        firstTimeOnPage = false;
     }
 
     /**
@@ -2148,7 +2154,9 @@ public class AddEditInvoiceItemActivity2 extends
                 item_qty_layout.setHintEnabled(true);
             if (charSequence.hashCode() == edt_item_rate.getText().hashCode()) {
                 item_rate_layout.setHintEnabled(true);
+                if(!firstTimeOnPage) {
                 calculateTaxRate();
+                }
             }
             if (charSequence.hashCode() == edt_item_supplier.getText().hashCode())
                 item_supplier_layout.setHintEnabled(true);
@@ -2171,7 +2179,9 @@ public class AddEditInvoiceItemActivity2 extends
                         edt_item_disc.setText("0");
                     }
                 }
-                calculateTaxRate();
+                if(!firstTimeOnPage) {
+                    calculateTaxRate();
+                }
             }
             if (charSequence.hashCode() == edt_part_no.getText().hashCode())
                 item_partNo_layout.setHintEnabled(true);
@@ -2183,8 +2193,9 @@ public class AddEditInvoiceItemActivity2 extends
                 serialNo_layout.setHintEnabled(true);
             if (charSequence.hashCode() == edt_item_tax_rate.getText().hashCode())
                 item_tax_rate_layout.setHintEnabled(true);
-
-            total_Amount_cal();
+if(!firstTimeOnPage) {
+    total_Amount_cal();
+}
         } else if (charSequence.length() <= 0) {
             if (charSequence.hashCode() == edt_item_desc.getText().hashCode())
                 item_desc_layout.setHintEnabled(false);
@@ -2192,13 +2203,17 @@ public class AddEditInvoiceItemActivity2 extends
                 item_qty_layout.setHintEnabled(false);
             if (charSequence.hashCode() == edt_item_rate.getText().hashCode()) {
                 item_rate_layout.setHintEnabled(false);
-                calculateTaxRate();
+                if(!firstTimeOnPage) {
+                    calculateTaxRate();
+                }
             }
             if (charSequence.hashCode() == edt_item_supplier.getText().hashCode())
                 item_supplier_layout.setHintEnabled(false);
             if (charSequence.hashCode() == edt_item_disc.getText().hashCode()) {
                 item_discount_layout.setHintEnabled(false);
+                if(!firstTimeOnPage) {
                 calculateTaxRate();
+                }
             }
             if (charSequence.hashCode() == edt_part_no.getText().hashCode())
                 item_partNo_layout.setHintEnabled(false);
@@ -2210,7 +2225,9 @@ public class AddEditInvoiceItemActivity2 extends
                 serialNo_layout.setHintEnabled(false);
             if (charSequence.hashCode() == edt_item_tax_rate.getText().hashCode())
                 item_tax_rate_layout.setHintEnabled(false);
-            total_Amount_cal();
+            if(!firstTimeOnPage) {
+                total_Amount_cal();
+            }
         }
     }
 
@@ -2225,82 +2242,21 @@ public class AddEditInvoiceItemActivity2 extends
     private void total_Amount_cal() {
 
        String getDisCalculationType = AppDataBase.getInMemoryDatabase(this).jobModel().disCalculationType(jobId);
+       String getTaxCalculationType = App_preference.getSharedprefInstance().getLoginRes().getTaxCalculationType();
         discount(getDisCalculationType);
-        double qty = 0, rate = 0, dis = 0;
-        double amount = 0;
-        /*  check of amount calculation */
-        try {
+        String qty = "", rate = "" , dis = "" ;
             if (!edt_item_qty.getText().toString().equals("")) {
-                qty = Double.parseDouble((edt_item_qty.getText().toString()));
+                qty = edt_item_qty.getText().toString();
             }
             if (!edt_item_rate.getText().toString().equals("")) {
-                rate = Double.parseDouble(AppUtility.getRoundoff_amount(edt_item_rate.getText().toString()));
+                rate = edt_item_rate.getText().toString();
             }
             if (!edt_item_disc.getText().toString().equals("")) {
-                dis = Double.parseDouble(AppUtility.getRoundoff_amount(edt_item_disc.getText().toString()));
+                dis = edt_item_disc.getText().toString();
             }
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-
-        if (App_preference.getSharedprefInstance().getLoginRes().getTaxCalculationType().equals("0")) {
-            try {
-                double calculaterateDis = 0;
-                //** based on the type of calculation , direct or percentage  **//
-                if (getDisCalculationType.equals("0"))
-                    calculaterateDis = (rate * dis) / 100;
-                else if (getDisCalculationType.equals("1"))
-                    calculaterateDis = dis;
-
-                double rate1 = rate * qty;
-                double newRate = rate1 - calculaterateDis;
-                double newAmt = (newRate * total_tax) / 100;
-                amount = newAmt + newRate;
-
-
-                taxAmount = ((total_tax * rate * qty) / 100);
-
-                String tax_Amount = AppUtility.getRoundoff_amount(String.valueOf(taxAmount));
-                taxamount_value_txt.setText(tax_Amount);
-
-            } catch (Exception exception) {
-                exception.printStackTrace();
-            }
-
-        } else if (App_preference.getSharedprefInstance().getLoginRes().getTaxCalculationType().equals("1")) {
-            double totalPrice = qty * rate;
-            double itemTotal = totalPrice + ((totalPrice * total_tax) / 100);
-            double discount = 0;
-            if (getDisCalculationType.equals("0"))
-                discount = ((itemTotal * dis) / 100);
-            else if (getDisCalculationType.equals("1"))
-                discount = dis;
-
-            amount = itemTotal - discount;
-
-            taxAmount = ((total_tax * rate * qty) / 100);
-            String tax_Amount = AppUtility.getRoundoff_amount(String.valueOf(taxAmount));
-            taxamount_value_txt.setText(tax_Amount);
-        }
-        else if (App_preference.getSharedprefInstance().getLoginRes().getTaxCalculationType().equals("2")) {
-            double totalPrice = qty * rate;
-            double itemTotal = totalPrice + ((totalPrice * total_tax) / 100);
-            double discount = 0;
-            if (getDisCalculationType.equals("0"))
-                discount = ((totalPrice * dis) / 100);
-            else if (getDisCalculationType.equals("1"))
-                discount = dis;
-
-            amount = itemTotal - discount;
-
-            taxAmount = ((total_tax * rate * qty) / 100);
-            String tax_Amount = AppUtility.getRoundoff_amount(String.valueOf(taxAmount));
-            taxamount_value_txt.setText(tax_Amount);
-        }
-
-        String amountString = AppUtility.getRoundoff_amount(String.valueOf(amount));
-        amount_value_txt.setText(amountString);
+          Map<String, String> result = AppUtility.getCalculatedAmountForDiscount(qty,rate,dis,listFilter,getTaxCalculationType,getDisCalculationType,updateItem);
+        taxamount_value_txt.setText(AppUtility.getRoundoff_amount(result.get("Tax")));
+        amount_value_txt.setText(AppUtility.getRoundoff_amount(result.get("Amount")));
 
     }
 
@@ -2308,40 +2264,21 @@ public class AddEditInvoiceItemActivity2 extends
     private void calculateTaxRate() {
         if (!App_preference.getSharedprefInstance().getLoginRes().getCompPermission().get(0).getIsRateIncludingTax().equals("1")) {
             String getDisCalculationType = AppDataBase.getInMemoryDatabase(this).jobModel().disCalculationType(jobId);
+            String getTaxCalculationType = App_preference.getSharedprefInstance().getLoginRes().getTaxCalculationType();
             discount(getDisCalculationType);
-            double rate = 0, dis = 0;
+            String rate = "", dis ="" ;
 
             /* check of amount calculation */
             try {
 
                 if (!edt_item_rate.getText().toString().equals("")) {
-                    rate = Double.parseDouble(AppUtility.getRoundoff_amount(edt_item_rate.getText().toString()));
+                    rate = edt_item_rate.getText().toString();
                 }
                 if (!edt_item_disc.getText().toString().equals("")) {
-                    dis = Double.parseDouble(AppUtility.getRoundoff_amount(edt_item_disc.getText().toString()));
+                    dis = edt_item_disc.getText().toString();
                 }
-
-                if (App_preference.getSharedprefInstance().getLoginRes().getTaxCalculationType().equals("0")) {
-
-                    double newAmt = (rate * total_tax) / 100;
-                    double d = rate + newAmt;
-                    String tax_Amount = AppUtility.getRoundoff_amount(String.valueOf(d));
-                    edt_item_tax_rate.setText(tax_Amount);
-                } else if (App_preference.getSharedprefInstance().getLoginRes().getTaxCalculationType().equals("1")) {
-
-                    double newAmt = (rate * total_tax) / 100;
-                    double d = rate + newAmt;
-                    String tax_Amount = AppUtility.getRoundoff_amount(String.valueOf(d));
-                    edt_item_tax_rate.setText(tax_Amount);
-                }
-                else if (App_preference.getSharedprefInstance().getLoginRes().getTaxCalculationType().equals("2")) {
-
-                    double newAmt = (rate * total_tax) / 100;
-                    double d = rate + newAmt;
-                    String tax_Amount = AppUtility.getRoundoff_amount(String.valueOf(d));
-                    edt_item_tax_rate.setText(tax_Amount);
-
-                }
+                String result = AppUtility.getCalculatedTax(rate,dis,listFilter,getTaxCalculationType,getDisCalculationType,updateItem);
+                edt_item_tax_rate.setText(result);
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -2416,6 +2353,7 @@ public class AddEditInvoiceItemActivity2 extends
         warrantyType = "";
         warrantyValue = "";
         isGrouped = "0";
+        firstTimeOnPage = false;
     }
 
     private void discount(String discount)
