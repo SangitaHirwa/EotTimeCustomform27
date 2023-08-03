@@ -18,6 +18,7 @@ import com.eot_app.nav_menu.client_chat_pkg.client_chat_model.SendCLientAdminNot
 import com.eot_app.nav_menu.jobs.job_db.Job;
 import com.eot_app.nav_menu.jobs.job_detail.JobDetailActivity;
 import com.eot_app.nav_menu.jobs.job_detail.chat.fire_Base_Model.Chat_Send_Msg_Model;
+import com.eot_app.nav_menu.jobs.job_detail.chat.fire_Base_Model.FirestoreCountIncreaseModel;
 import com.eot_app.nav_menu.jobs.job_detail.chat.fire_Base_Model.FirestoreFieldWorkerModel;
 import com.eot_app.nav_menu.jobs.job_list.JobList;
 import com.eot_app.services.ApiClient;
@@ -34,6 +35,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -1065,7 +1067,36 @@ public class ChatController {
                     }
                 });
     }
+    public  void notifyWebForIncreaseCount(String typeOfIncreaseCount){
 
+        FirebaseFirestore.getInstance().collection(getCollectionPathForWebIncreaseCount()).document(typeOfIncreaseCount+"/")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if(task.isSuccessful()){
+
+                            WriteBatch batch = FirebaseFirestore.getInstance().batch();
+                            FirestoreCountIncreaseModel fwmodel = task.getResult().toObject(FirestoreCountIncreaseModel.class);
+                            if(fwmodel!=null){
+                                fwmodel.setCount(fwmodel.getCount() + 1);
+                            }else {
+                                fwmodel = new FirestoreCountIncreaseModel();
+                                fwmodel.setCount(fwmodel.getCount() + 1);
+                            }
+                            batch.set(task.getResult().getReference(), fwmodel);
+                            batch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    Log.d(TAG, "=>> committed");
+                                }
+                            });
+                        }else {
+                            Log.d(TAG, "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
+    }
     public void notifyWeBforNew(String type, String action, String jobId, String msg, String statusId) {
         try {
             if (statusId == null)
@@ -1100,6 +1131,20 @@ public class ChatController {
         }
     }
 
+    public String getCollectionPathForWebIncreaseCount(){
+        try {
+            for (String id : App_preference.getSharedprefInstance().getLoginRes().getAdminIds()) {
+                return "192"/*App_preference.getSharedprefInstance().getRegion()*/
+                        + "/comp-"
+                        + App_preference.getSharedprefInstance().getLoginRes().getCompId()
+                        + "/notifyWeb/ad-" + id + "/counts/";
+            }
+            return "";
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+        return "";
+    }
     public String getCollectionPathForWeb() {
         try {
             for (String id : App_preference.getSharedprefInstance().getLoginRes().getAdminIds()) {

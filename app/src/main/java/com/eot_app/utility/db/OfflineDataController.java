@@ -117,6 +117,7 @@ public class OfflineDataController {
                     AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).appointmentModel().deleteAppointmentById(addAppointment_req.getTempId());
                 }
                 EotApp.getAppinstance().notifyApiObserver(data.getService_name());
+                ChatController.getInstance().notifyWebForIncreaseCount("leadCount");
                 break;
 
             case Service_apis.addAudit:
@@ -178,6 +179,7 @@ public class OfflineDataController {
                                 + " with Job code " + s1 + ".";
 
                         ChatController.getInstance().notifyWeBforNew("JOB", "AddJob", jobitem.getJobId(), tempMsg, "");
+                        ChatController.getInstance().notifyWebForIncreaseCount("jobCount");
                     }
                 } catch (Exception exception) {
                     exception.printStackTrace();
@@ -215,6 +217,7 @@ public class OfflineDataController {
                         String msg = "A new Client has been created with Client Name " + clientitem.getNm() + ".";// in the system
 
                         ChatController.getInstance().notifyWeBforNew("CLIENT", "AddClient", clientitem.getCltId(), msg, "");
+                        ChatController.getInstance().notifyWebForIncreaseCount("clientCount");
                     }
                 } catch (Exception exception) {
                     exception.printStackTrace();

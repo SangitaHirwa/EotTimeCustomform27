@@ -46,6 +46,7 @@ import com.eot_app.nav_menu.jobs.add_job.adapters.FilterAdapterContact;
 import com.eot_app.nav_menu.jobs.add_job.adapters.FilterAdapterSites;
 import com.eot_app.nav_menu.jobs.add_job.adapters.FilterCountry;
 import com.eot_app.nav_menu.jobs.add_job.adapters.FilterStates;
+import com.eot_app.nav_menu.jobs.job_controller.ChatController;
 import com.eot_app.nav_menu.jobs.job_db.JtId;
 import com.eot_app.nav_menu.quote.add_quotes_pkg.add_quote_mvp.Add_Quote_Pc;
 import com.eot_app.nav_menu.quote.add_quotes_pkg.add_quote_mvp.Add_Quote_Pi;
@@ -1130,6 +1131,7 @@ public class AddQuotes_Activity extends UploadDocumentActivity implements View.O
 
     @Override
     public void onAddNewQuotes(String quotId, String lable) {
+        ChatController.getInstance().notifyWebForIncreaseCount("quoteCount");
         Intent intent = new Intent();
         intent.putExtra("quotId", quotId);
         intent.putExtra("label", lable);
@@ -1139,6 +1141,7 @@ public class AddQuotes_Activity extends UploadDocumentActivity implements View.O
 
     @Override
     public void finishActivity() {
+        ChatController.getInstance().notifyWebForIncreaseCount("quoteCount");
         this.finish();
     }
 
