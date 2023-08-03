@@ -71,8 +71,8 @@ public class WorkHistoryFragment extends Fragment {
         SampleFragmentPagerAdapter pagerAdapter =
                 new SampleFragmentPagerAdapter(getChildFragmentManager(), getActivity());
         if(jobId!=null){
-            pagerAdapter.addFragment(fragmentForJobHistory, LanguageController.getInstance().getMobileMsgByKey(AppConstant.title_history));
-            pagerAdapter.addFragment(fragmentForJob, LanguageController.getInstance().getMobileMsgByKey(AppConstant.job));
+            pagerAdapter.addFragment(fragmentForJobHistory, LanguageController.getInstance().getMobileMsgByKey(AppConstant.title_status_history));
+            pagerAdapter.addFragment(fragmentForJob, LanguageController.getInstance().getMobileMsgByKey(AppConstant.title_clients_work_history));
         }
         else {
             pagerAdapter.addFragment(fragmentForJob, LanguageController.getInstance().getMobileMsgByKey(AppConstant.job));

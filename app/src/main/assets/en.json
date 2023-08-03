@@ -1361,6 +1361,8 @@
     "title_expence": "Expenses",
     "title_feedback": "Feedback",
     "title_history": "History",
+    "title_status_history": "Status History",
+    "title_clients_work_history": "Client's Work History",
     "title_invoice": "Invoice",
     "title_payment": "Payment",
     "to": "To",

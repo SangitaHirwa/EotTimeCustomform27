@@ -270,6 +270,8 @@ public class ExpenseListFragment extends Fragment implements ExpenseList_View
             /***get all users list without search****/
             AppUtility.hideSoftKeyboard(getActivity());
             expenseListPi.getExpenseList("");
+        }else{
+            expenseListPi.getExpenseList(s.toString());
         }
     }
 
