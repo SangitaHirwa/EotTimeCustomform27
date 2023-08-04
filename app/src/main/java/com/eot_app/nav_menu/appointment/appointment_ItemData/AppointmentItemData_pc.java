@@ -11,6 +11,7 @@ import com.eot_app.nav_menu.appointment.appointment_model.AppointmentItemDataInM
 import com.eot_app.nav_menu.appointment.appointment_model.AppointmentUpdateItem_Req_Model;
 import com.eot_app.nav_menu.appointment.appointment_model.ItemByAppointmentId;
 import com.eot_app.nav_menu.appointment.details.AppointmentDetailsActivity;
+import com.eot_app.nav_menu.appointment.details.RequirementGetheringListAdapter;
 import com.eot_app.services.ApiClient;
 import com.eot_app.services.Service_apis;
 import com.eot_app.utility.AppConstant;
@@ -37,8 +38,13 @@ public class AppointmentItemData_pc implements AppointmentItemData_pi {
     UpdateItemDataList_pi updateItemDataList_pi = new AppointmentDetailsActivity();
 
     Context context;
+
+    public AppointmentItemData_pc(Context context) {
+        this.context = context;
+    }
+
     @Override
-    public void apiCallAddAppointmentItem(AppointmentItemAdd_RequestModel itemAddRequestModel,Context context) {
+    public void apiCallAddAppointmentItem(AppointmentItemAdd_RequestModel itemAddRequestModel) {
         JsonObject jsonObject =  AppUtility.getJsonObject(new Gson().toJson(itemAddRequestModel));
         if (AppUtility.isInternetConnected()) {
           AppUtility.progressBarShow(context);
@@ -81,7 +87,7 @@ public class AppointmentItemData_pc implements AppointmentItemData_pi {
     }
 
     @Override
-    public void apiCallUpdateAppointmentItem(AppointmentUpdateItem_Req_Model appointmentUpdateItem_req_model,  Context context) {
+    public void apiCallUpdateAppointmentItem(AppointmentUpdateItem_Req_Model appointmentUpdateItem_req_model) {
         JsonObject jsonObject =  AppUtility.getJsonObject(new Gson().toJson(appointmentUpdateItem_req_model));
         if (AppUtility.isInternetConnected()) {
             AppUtility.progressBarShow(context);
@@ -124,7 +130,7 @@ public class AppointmentItemData_pc implements AppointmentItemData_pi {
     }
 
     @Override
-    public void getItemFromServer(String appId , Context context) {
+    public void getItemFromServer(String appId, RequirementGetheringListAdapter requirementGetheringListAdapter) {
         ItemByAppointmentId byAppointmentId=new ItemByAppointmentId(appId);
         JsonObject jsonObject =  AppUtility.getJsonObject(new Gson().toJson(byAppointmentId));
         if (AppUtility.isInternetConnected()) {
@@ -171,7 +177,9 @@ public class AppointmentItemData_pc implements AppointmentItemData_pi {
                             Type listType = new TypeToken<List<AppintmentItemDataModel>>() {
                             }.getType();
                             List<AppintmentItemDataModel> addedItemList = new Gson().fromJson(addedItemData, listType);
-                            updateItemDataList_pi.updateItemDataList(addedItemList);
+                            List<AppintmentItemDataModel> tempItemList = new ArrayList<>();
+                            tempItemList.addAll(addedItemList);
+                            updateItemDataList_pi.updateItemDataList(tempItemList,requirementGetheringListAdapter);
                             AppUtility.progressBarDissMiss();
                         }
                     });
@@ -180,11 +188,6 @@ public class AppointmentItemData_pc implements AppointmentItemData_pi {
             netWork_erroR();
         }
 
-    }
-
-    @Override
-    public AppointmentItemData_pi getInstanceData_ip() {
-        return new AppointmentItemData_pc();
     }
 
     private void netWork_erroR() {

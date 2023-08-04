@@ -94,7 +94,7 @@ import java.util.Set;
 import static com.eot_app.nav_menu.jobs.job_detail.detail.DetailFragment.MY_PERMISSIONS_REQUEST_CALL_PHONE;
 
 public class AppointmentDetailsActivity extends UploadDocumentActivity
-        implements View.OnClickListener, AttachementAdapter.OnItemSelection , Doc_Attch_View, MyListItemSelected<AppintmentItemDataModel>, UpdateItemDataList_pi {
+        implements View.OnClickListener, AttachementAdapter.OnItemSelection , Doc_Attch_View, MyListItemSelected<AppintmentItemDataModel>, UpdateItemDataList_pi, RequirementGetheringListAdapter.DeleteItem {
     private static final int EDIT_APPOINTMENT_CODE = 10;
     private static final int UPLOADED_NEW_LIST = 148;
     private static final int UPDATE_ITEM = 398;
@@ -163,6 +163,7 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
             binding.nolistTxt.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_check_network));
             binding.nolistLinear.setVisibility(View.VISIBLE);
         }
+        appointmentItemData_pi=new AppointmentItemData_pc(this) ;
         doc_attch_pi = new Doc_Attch_Pc(this);
         model = getIntent().getParcelableExtra("appointmentData");
         if (model != null) {
@@ -172,8 +173,9 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
             AppintmentItemDataModel itemData1 = itemData.getItemData();
              itemList.add(itemData1);
         }
-        reqGethListAdapter=new RequirementGetheringListAdapter(null,this);
-        reqGethListAdapter.setItemList(itemList);
+
+        reqGethListAdapter=new RequirementGetheringListAdapter(itemList,this);;
+//        reqGethListAdapter.setItemList(itemList);
         binding.recyclerOfReqGeth.setAdapter(reqGethListAdapter);
         binding.recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         binding.recyclerView.setNestedScrollingEnabled(false);
@@ -244,8 +246,8 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
         binding.swiperefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                appointmentItemData_pi=new AppointmentItemData_pc() ;
-                appointmentItemData_pi.getItemFromServer(model.getAppId(),AppointmentDetailsActivity.this);
+
+                appointmentItemData_pi.getItemFromServer(model.getAppId(),reqGethListAdapter);
             }
         });
 
@@ -897,8 +899,7 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
             case GET_ITEM_LIST:
                 if(data!=null) {
                     //itemDataModel = data.getParcelableExtra("AddItemData");
-                    appointmentItemData_pi=new AppointmentItemData_pc() ;
-                    appointmentItemData_pi.getItemFromServer(model.getAppId(),AppointmentDetailsActivity.this);
+                    appointmentItemData_pi.getItemFromServer(model.getAppId(),reqGethListAdapter);
                    // itemList.add(itemDataModel);
 
                 }
@@ -1163,11 +1164,24 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
     }
 
     @Override
-    public void updateItemDataList(List<AppintmentItemDataModel> dataModelList) {
+    public void updateItemDataList(List<AppintmentItemDataModel> dataModelList, RequirementGetheringListAdapter requirementGetheringListAdapter) {
         itemList.clear();
-        this.itemList=dataModelList;
-       reqGethListAdapter=new RequirementGetheringListAdapter(itemList,AppointmentDetailsActivity.this);
-        reqGethListAdapter.setItemList(itemList);
+        itemList.addAll(dataModelList);
+//        setData(itemList);
+//      reqGethListAdapter=new RequirementGetheringListAdapter(this);
+        requirementGetheringListAdapter.updateItemList(itemList);
+        requirementGetheringListAdapter.notifyDataSetChanged();
+    }
+    public void setData(List<AppintmentItemDataModel> dataModelList){
+
+        reqGethListAdapter.updateItemList(itemList);
         reqGethListAdapter.notifyDataSetChanged();
+    }
+
+
+
+    @Override
+    public void itemDelete(String ilmmId) {
+
     }
 }

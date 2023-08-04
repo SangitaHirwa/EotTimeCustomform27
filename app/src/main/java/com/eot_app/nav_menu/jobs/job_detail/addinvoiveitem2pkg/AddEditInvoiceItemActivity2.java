@@ -169,6 +169,7 @@ public class AddEditInvoiceItemActivity2 extends
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit__invoice);
         initializelables();
+        appointmentItemData_pi =new AppointmentItemData_pc(this);
         bundle = getIntent().getExtras();
         if (bundle != null) {
             try {
@@ -1529,8 +1530,7 @@ public class AddEditInvoiceItemActivity2 extends
                     String.valueOf(updateAppointmentItemData.getIlmmId()));
 
             AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).appointmentModel().updateAppointmentItem(appId,jsonUpdateDataDB);
-            appointmentItemData_pi =new AppointmentItemData_pc();
-          appointmentItemData_pi.apiCallUpdateAppointmentItem(itemAddRequestModel,AddEditInvoiceItemActivity2.this);
+          appointmentItemData_pi.apiCallUpdateAppointmentItem(itemAddRequestModel);
 
             finish_Activity();
         } catch (Exception ex) {
@@ -1598,8 +1598,7 @@ public class AddEditInvoiceItemActivity2 extends
             String jsonAddDataInApi= new Gson().toJson(addItem_resList);
 
             AppointmentItemAdd_RequestModel itemAddRequestModel =new AppointmentItemAdd_RequestModel(jsonAddDataInApi,appointmentModel.getLeadId(),appId);
-            appointmentItemData_pi =new AppointmentItemData_pc();
-            appointmentItemData_pi.apiCallAddAppointmentItem(itemAddRequestModel,AddEditInvoiceItemActivity2.this);
+            appointmentItemData_pi.apiCallAddAppointmentItem(itemAddRequestModel);
 
 
             finish_Activity();
@@ -2166,7 +2165,7 @@ public class AddEditInvoiceItemActivity2 extends
         } else if(getIntent().hasExtra("UpdateItemRequirmentGethering")){
             Intent intent=new Intent();
            intent.putExtra("appId",appId);
-            intent.putExtra("UpdateItemDateItemData",true);
+            //intent.putExtra("UpdateItemDateItemData",true);
             setResult(UPDATE_ITEM,intent);
         }
 

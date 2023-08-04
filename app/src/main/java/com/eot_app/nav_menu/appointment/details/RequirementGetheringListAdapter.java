@@ -29,21 +29,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.Inflater;
 
-public class RequirementGetheringListAdapter extends RecyclerView.Adapter<RequirementGetheringListAdapter.RequirementGetheringViewHolder> {
+public class RequirementGetheringListAdapter extends RecyclerView.Adapter<RequirementGetheringViewHolder> {
     Context context;
-     List<AppintmentItemDataModel> itemDataModels = new ArrayList<>();
+    List<AppintmentItemDataModel> itemDataModels;
     AppintmentItemDataModel ItemDataModel;
     private final MyListItemSelected<AppintmentItemDataModel> mListner;
 
 
-    RequirementGetheringListAdapter (List<AppintmentItemDataModel> itemDataModels,
-                                     MyListItemSelected<AppintmentItemDataModel> mListner)
-    {
-        this.itemDataModels=itemDataModels;
+    RequirementGetheringListAdapter(List<AppintmentItemDataModel> itemDataModels, MyListItemSelected<AppintmentItemDataModel> mListner) {
+        this.itemDataModels = itemDataModels;
         this.mListner = mListner;
-        notifyDataSetChanged();
     }
-
 
 
     @NonNull
@@ -52,41 +48,73 @@ public class RequirementGetheringListAdapter extends RecyclerView.Adapter<Requir
     public RequirementGetheringViewHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.requirment_gethering_list_view, parent, false);
-        return new RequirementGetheringViewHolder(view,mListner);
+        return new RequirementGetheringViewHolder(view, mListner);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull @NotNull RequirementGetheringListAdapter.RequirementGetheringViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull @NotNull RequirementGetheringViewHolder holder, int position) {
         ItemDataModel = itemDataModels.get(position);
 
         holder.service.setText(ItemDataModel.getInm());
         holder.desOfRequirment.setText(ItemDataModel.getDes());
-        holder.count.setText("X"+ItemDataModel.getQty());
-        if(ItemDataModel.getDataType()==1)
-        {
+        holder.count.setText("X" + ItemDataModel.getQty());
+        if (ItemDataModel.getDataType() == 1) {
             holder.work.setText("Item");
-        }else if(ItemDataModel.getDataType()==3) {
+        } else if (ItemDataModel.getDataType() == 3) {
             holder.work.setText("Service");
         }
-        if (itemDataModels.get(position).getIlmmId()==0) {
+        if (itemDataModels.get(position).getIlmmId() == 0) {
             holder.desOfRequirment.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.item_not_sync));
             holder.desOfRequirment.setTextColor(EotApp.getAppinstance().getResources().getColor(android.R.color.holo_red_light));
         }
+        holder.deleteItem.setOnClickListener(view -> {
+            try {
+                if (itemDataModels.get(position).getIlmmId() != 0) {
+
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        });
+        holder.item_req_geth.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    if (itemDataModels.get(position).getIlmmId() != 0) {
+                        mListner.onMyListitemSeleted(itemDataModels.get(position));
+                    }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
+
     }
-    public void setItemList(List<AppintmentItemDataModel> itemList){
+
+    public void setItemList(List<AppintmentItemDataModel> itemList) {
         this.itemDataModels = itemList;
         notifyDataSetChanged();
+    }
 
+    public void updateItemList(List<AppintmentItemDataModel> itemList) {
+        itemDataModels.clear();
+        itemDataModels.addAll(itemList);
+        this.notifyDataSetChanged();
     }
 
     @Override
     public int getItemCount() {
-            if(itemDataModels.size()==0)
-                return 0;
-            else return itemDataModels.size();
+        if (itemDataModels.size() == 0)
+            return 0;
+        else return itemDataModels.size();
     }
+    public interface DeleteItem {
+        void itemDelete(String ilmmId);
+    }
+}
 
-    public class RequirementGetheringViewHolder extends RecyclerView.ViewHolder {
+
+    class RequirementGetheringViewHolder extends RecyclerView.ViewHolder {
         ImageView deleteItem;
         MyListItemSelected<AppintmentItemDataModel> mListner;
         TextView work,service,desOfRequirment,count;
@@ -100,20 +128,11 @@ public class RequirementGetheringListAdapter extends RecyclerView.Adapter<Requir
             desOfRequirment=itemView.findViewById(R.id.desofRequirment);
             count=itemView.findViewById(R.id.count);
             item_req_geth = itemView.findViewById(R.id.item_req_geth);
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    try {
-                        if(itemDataModels.get(getBindingAdapterPosition()).getIlmmId()!=0){
-                            RequirementGetheringViewHolder.this.mListner.onMyListitemSeleted(itemDataModels.get(getBindingAdapterPosition()));
-                        }
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                    }
-                }
-            });
+
 
 
         }
     }
-}
+
+
+
