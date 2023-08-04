@@ -18,7 +18,6 @@ import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.text.util.Linkify;
-import android.transition.TransitionManager;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -38,16 +37,20 @@ import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import com.eot_app.R;
 import com.eot_app.UploadDocumentActivity;
 import com.eot_app.databinding.ActivityAppointmentDetailsBinding;
-import com.eot_app.nav_menu.appointment.AppointmetItemDataModelConverter;
 import com.eot_app.nav_menu.appointment.Keepar;
 import com.eot_app.nav_menu.appointment.addupdate.AddAppointmentActivity;
 import com.eot_app.nav_menu.appointment.addupdate.model.AppointmentUpdateReq;
+import com.eot_app.nav_menu.appointment.appointment_ItemData.AppointmentItemAdded_pi;
 import com.eot_app.nav_menu.appointment.appointment_ItemData.AppointmentItemData_pc;
 import com.eot_app.nav_menu.appointment.appointment_ItemData.AppointmentItemData_pi;
+import com.eot_app.nav_menu.appointment.appointment_ItemData.UpdateItemDataList_pi;
 import com.eot_app.nav_menu.appointment.appointment_model.AppintmentItemDataModel;
+import com.eot_app.nav_menu.appointment.appointment_model.AppointmentItemDataInMap;
 import com.eot_app.nav_menu.appointment.appointment_model.AppointmentStatusModel;
 import com.eot_app.nav_menu.appointment.dbappointment.Appointment;
 import com.eot_app.nav_menu.appointment.details.documents.ActivityDocumentUpload;
@@ -61,7 +64,6 @@ import com.eot_app.nav_menu.jobs.add_job.Add_job_activity;
 import com.eot_app.nav_menu.jobs.job_db.Job;
 import com.eot_app.nav_menu.jobs.job_detail.JobDetailActivity;
 import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.AddEditInvoiceItemActivity2;
-import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.model.InvoiceItemDataModel;
 import com.eot_app.nav_menu.quote.add_quotes_pkg.AddQuotes_Activity;
 import com.eot_app.nav_menu.quote.quote_invoice_pkg.Quote_Invoice_Details_Activity;
 import com.eot_app.services.Service_apis;
@@ -73,11 +75,14 @@ import com.eot_app.utility.db.AppDataBase;
 import com.eot_app.utility.db.OfflineDataController;
 import com.eot_app.utility.language_support.LanguageController;
 import com.eot_app.utility.util_interfaces.Callback_AlertDialog;
+import com.eot_app.utility.util_interfaces.MyListItemSelected;
 import com.eot_app.utility.util_interfaces.MySpinnerAdapter;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.hypertrack.hyperlog.HyperLog;
 
 import java.io.File;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -85,30 +90,31 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.concurrent.Callable;
 
 import static com.eot_app.nav_menu.jobs.job_detail.detail.DetailFragment.MY_PERMISSIONS_REQUEST_CALL_PHONE;
 
 public class AppointmentDetailsActivity extends UploadDocumentActivity
-        implements View.OnClickListener, AttachementAdapter.OnItemSelection , Doc_Attch_View {
+        implements View.OnClickListener, AttachementAdapter.OnItemSelection , Doc_Attch_View, MyListItemSelected<AppintmentItemDataModel>, UpdateItemDataList_pi {
     private static final int EDIT_APPOINTMENT_CODE = 10;
     private static final int UPLOADED_NEW_LIST = 148;
+    private static final int UPDATE_ITEM = 398;
     private final int ADD_QUOTE_RESULT = 123;
     private String statusByValue=null;
     long check = System.currentTimeMillis();
     private final LinkedHashMap<String, String> arraystatus = new LinkedHashMap<>();
     private  String[] statusArray = new String[arraystatus.size()];
     List<AppointmentStatusModel> allAppointmentStatusList =new ArrayList<>();
-    RequirementGetheringListAdapter reqGethListAdapter;
+    RequirementGetheringListAdapter reqGethListAdapter ;
     ArrayList<AppointmentAttachment> allAttachmentList=new ArrayList<>();
-    List<AppintmentItemDataModel> itemList;
+    List<AppintmentItemDataModel> itemList = new ArrayList<>();
     ActivityAppointmentDetailsBinding binding;
     AppointmentDetailsViewModel detailsViewModel;
     Appointment model = new Appointment();
     Doc_Attch_Pi doc_attch_pi;
     AppointmentItemData_pi appointmentItemData_pi;
     private final int GET_ITEM_LIST=5;
-    InvoiceItemDataModel dataModel= new InvoiceItemDataModel();
+     AppintmentItemDataModel itemDataModel=new AppintmentItemDataModel();
+
     private final BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -162,8 +168,12 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
         if (model != null) {
             setDataInUI(model);
         }
-        itemList= new ArrayList<>(model.getItemData().values());
-        reqGethListAdapter=new RequirementGetheringListAdapter(itemList);
+        for (AppointmentItemDataInMap itemData : model.getItemData()) {
+            AppintmentItemDataModel itemData1 = itemData.getItemData();
+             itemList.add(itemData1);
+        }
+        reqGethListAdapter=new RequirementGetheringListAdapter(null,this);
+        reqGethListAdapter.setItemList(itemList);
         binding.recyclerOfReqGeth.setAdapter(reqGethListAdapter);
         binding.recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         binding.recyclerView.setNestedScrollingEnabled(false);
@@ -231,6 +241,14 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
             startActivityForResult(intent,GET_ITEM_LIST);
 
         });
+        binding.swiperefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                appointmentItemData_pi=new AppointmentItemData_pc() ;
+                appointmentItemData_pi.getItemFromServer(model.getAppId(),AppointmentDetailsActivity.this);
+            }
+        });
+
         /*binding.btnAppointmentDone.setOnClickListener(v -> {
             if (model != null && !model.getTempId().equals(model.getAppId())) {
                 sendUpdateRequest();
@@ -877,15 +895,32 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
                 break;
 
             case GET_ITEM_LIST:
-                if(data!=null)
-                {
-                  /*    itemDataModelList=data.getParcelableArrayListExtra("RequiredItemDataList");*/
-
+                if(data!=null) {
+                    //itemDataModel = data.getParcelableExtra("AddItemData");
+                    appointmentItemData_pi=new AppointmentItemData_pc() ;
+                    appointmentItemData_pi.getItemFromServer(model.getAppId(),AppointmentDetailsActivity.this);
+                   // itemList.add(itemDataModel);
 
                 }
+                break;
 
+            case UPDATE_ITEM:
+                if(data!=null){
+                       String appId= data.getStringExtra("appId");
 
+                    String updatedItemData = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).appointmentModel().getUpdatedItemData(appId);
+                    Type listType = new TypeToken<List<AppointmentItemDataInMap>>() {
+                    }.getType();
+                    List<AppointmentItemDataInMap> updatedItemList = new Gson().fromJson(updatedItemData, listType);
+                    List<AppintmentItemDataModel> tempItemList = new ArrayList<>();
+                    for (AppointmentItemDataInMap itemData : updatedItemList) {
+                        AppintmentItemDataModel itemData1 = itemData.getItemData();
+                       tempItemList.add(itemData1);
+                    }
+                    reqGethListAdapter.setItemList(tempItemList);
+                    reqGethListAdapter.notifyDataSetChanged();
 
+                }
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
@@ -1087,6 +1122,8 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
 
     }
 
+
+
     @Override
     public void fileExtensionNotSupport(String msg) {
 
@@ -1113,7 +1150,24 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
         }
 
     }
-    public void getAppointmentItemList(List<AppintmentItemDataModel> itemList){
-        this.itemList=itemList;
+
+    @Override
+    public void onMyListitemSeleted(AppintmentItemDataModel appintmentItemDataModel) {
+        Intent intent = new Intent(this, AddEditInvoiceItemActivity2.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+        intent.putExtra("UpdateItemRequirmentGethering",true);
+        intent.putExtra("appId",model.getAppId());
+        intent.putExtra("appItemModelForUpdate",appintmentItemDataModel);
+
+        startActivityForResult(intent,UPDATE_ITEM);
+    }
+
+    @Override
+    public void updateItemDataList(List<AppintmentItemDataModel> dataModelList) {
+        itemList.clear();
+        this.itemList=dataModelList;
+       reqGethListAdapter=new RequirementGetheringListAdapter(itemList,AppointmentDetailsActivity.this);
+        reqGethListAdapter.setItemList(itemList);
+        reqGethListAdapter.notifyDataSetChanged();
     }
 }

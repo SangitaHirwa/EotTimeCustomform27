@@ -6,6 +6,7 @@ import androidx.room.Query;
 import androidx.room.RoomWarnings;
 import androidx.room.Update;
 
+import com.eot_app.nav_menu.appointment.appointment_model.AppointmentItemDataInMap;
 import com.eot_app.nav_menu.jobs.job_db.Job;
 import com.eot_app.utility.settings.setting_db.Offlinetable;
 
@@ -38,6 +39,13 @@ public interface AppointmentDao {
     @Query("UPDATE Appointment  SET cltId = :cltId,siteId = :siteId,conId = :conId  WHERE appId = :appId ")
     void updateAppointmentCltID(String appId, String cltId, String siteId, String conId);
 
+
+
+    @Query("UPDATE Appointment  SET itemData = :itemData WHERE appId = :appId ")
+    void updateAppointmentItem(String appId, String itemData);
+
+    @Query("Select itemData from Appointment where appId = :appId  ")
+    String getUpdatedItemData(String appId);
 
     //    for delete job
     @Query("delete from Appointment")

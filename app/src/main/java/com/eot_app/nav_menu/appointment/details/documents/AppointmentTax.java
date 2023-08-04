@@ -5,29 +5,35 @@ import android.os.Parcelable;
 
 import androidx.room.TypeConverters;
 
+import com.eot_app.nav_menu.appointment.appointment_model.AppointmentItemDataInMap;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_db.tax_dao.TaxConverter;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_detail_pkg.inv_detail_model.Tax;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class AppointmentTax implements Parcelable   {
 
     private String rate;
     private String label;
-    private String taxId;
-    private String ilmmId;
-    private String iltmmId;
+    private int taxId;
+    private int ilmmId;
+    private int iltmmId;
     @TypeConverters(TaxConverter.class)
     private List<Tax> taxComponents;
 
+    public AppointmentTax(List<Tax> taxComponents) {
+        this.taxComponents = taxComponents;
+    }
 
     protected AppointmentTax(Parcel in) {
         rate = in.readString();
         label = in.readString();
-        taxId = in.readString();
-        ilmmId = in.readString();
-        iltmmId = in.readString();
-        taxComponents = in.createTypedArrayList(Tax.CREATOR);
+        taxId = in.readInt();
+        ilmmId = in.readInt();
+        iltmmId = in.readInt();
+        taxComponents = new ArrayList<>();
+        in.readList(taxComponents, AppointmentTax.class.getClassLoader());
     }
 
     public static final Creator<AppointmentTax> CREATOR = new Creator<AppointmentTax>() {
@@ -51,9 +57,9 @@ public class AppointmentTax implements Parcelable   {
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(rate);
         parcel.writeString(label);
-        parcel.writeString(taxId);
-        parcel.writeString(ilmmId);
-        parcel.writeString(iltmmId);
+        parcel.writeInt(taxId);
+        parcel.writeInt(ilmmId);
+        parcel.writeInt(iltmmId);
         parcel.writeTypedList(taxComponents);
     }
 
@@ -73,27 +79,27 @@ public class AppointmentTax implements Parcelable   {
         this.label = label;
     }
 
-    public String getTaxId() {
+    public int getTaxId() {
         return taxId;
     }
 
-    public void setTaxId(String taxId) {
+    public void setTaxId(int taxId) {
         this.taxId = taxId;
     }
 
-    public String getIlmmId() {
+    public int getIlmmId() {
         return ilmmId;
     }
 
-    public void setIlmmId(String ilmmId) {
+    public void setIlmmId(int ilmmId) {
         this.ilmmId = ilmmId;
     }
 
-    public String getIltmmId() {
+    public int getIltmmId() {
         return iltmmId;
     }
 
-    public void setIltmmId(String iltmmId) {
+    public void setIltmmId(int iltmmId) {
         this.iltmmId = iltmmId;
     }
 

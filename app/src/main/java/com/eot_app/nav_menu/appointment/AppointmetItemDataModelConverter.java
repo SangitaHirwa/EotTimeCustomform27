@@ -3,6 +3,7 @@ package com.eot_app.nav_menu.appointment;
 import androidx.room.TypeConverter;
 
 import com.eot_app.nav_menu.appointment.appointment_model.AppintmentItemDataModel;
+import com.eot_app.nav_menu.appointment.appointment_model.AppointmentItemDataInMap;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
@@ -13,13 +14,13 @@ import java.util.Map;
 
 public class AppointmetItemDataModelConverter {
     @TypeConverter
-    public static Map<String, AppintmentItemDataModel> toAppointmentItemDataModelData(String strdata) {
-            Type mapType = new TypeToken<Map<String, AppintmentItemDataModel>>() {}.getType();
+    public static List<AppointmentItemDataInMap> toAppointmentItemDataModelData(String strdata) {
+            Type mapType = new TypeToken<List<AppointmentItemDataInMap>>() {}.getType();
             return new Gson().fromJson(strdata, mapType);
         }
 
         @TypeConverter
-        public static String toString(Map<String, AppintmentItemDataModel> data) {
+        public static String toString(List<AppointmentItemDataInMap> data) {
             return new Gson().toJson(data);
         }
 }

@@ -8,10 +8,12 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
+
 import com.eot_app.nav_menu.appointment.AppointmetItemDataModelConverter;
 import com.eot_app.nav_menu.appointment.Keepar;
 import com.eot_app.nav_menu.appointment.KeeparConverter;
 import com.eot_app.nav_menu.appointment.appointment_model.AppintmentItemDataModel;
+import com.eot_app.nav_menu.appointment.appointment_model.AppointmentItemDataInMap;
 import com.eot_app.nav_menu.appointment.details.documents.AppointmentTaxConverter;
 import com.eot_app.nav_menu.equipment.model.Keeper;
 import com.eot_app.nav_menu.jobs.job_db.Job;
@@ -70,7 +72,9 @@ public class Appointment implements Parcelable  {
     private String leadId;
     private String isStatusShow;
     @TypeConverters(AppointmetItemDataModelConverter.class)
-    private Map<String ,AppintmentItemDataModel> itemData;
+    private List<AppointmentItemDataInMap> itemData;
+    /*@TypeConverters(AppointmetItemDataModelConverter.class)
+    private Map<String ,AppintmentItemDataModel> itemData;*/
    // private String itemData;
 
     public Appointment() {
@@ -116,10 +120,13 @@ public class Appointment implements Parcelable  {
         parentId = in.readString();
         leadId = in.readString();
         isStatusShow = in.readString();
-        itemData = new HashMap<>();
-        in.readMap(itemData, AppintmentItemDataModel.class.getClassLoader());
-
+        itemData = new ArrayList<>();
+        in.readList(itemData, AppointmentItemDataInMap.class.getClassLoader());
     }
+     /*   itemData = new HashMap<>();
+        in.readMap(itemData, AppintmentItemDataModel.class.getClassLoader());*/
+
+
 
     public static final Creator<Appointment> CREATOR = new Creator<Appointment>() {
         @Override
@@ -446,7 +453,14 @@ public class Appointment implements Parcelable  {
         this.isStatusShow = isStatusShow;
     }
 
-    public Map<String, AppintmentItemDataModel> getItemData() {
+    public List<AppointmentItemDataInMap> getItemData() {
+        return itemData;
+    }
+
+    public void setItemData(List<AppointmentItemDataInMap> itemData) {
+        this.itemData = itemData;
+    }
+   /*   public Map<String, AppintmentItemDataModel> getItemData() {
         return itemData;
     }
 
@@ -455,7 +469,7 @@ public class Appointment implements Parcelable  {
     }
     public AppintmentItemDataModel getAppintmentItemDataModel(String key) {
         return itemData.get(key);
-    }
+    }*/
 
     @Override
     public int describeContents() {
@@ -514,7 +528,8 @@ public class Appointment implements Parcelable  {
         parcel.writeString(parentId);
         parcel.writeString(leadId);
         parcel.writeString(isStatusShow);
-        parcel.writeMap(itemData);
+        parcel.writeList(itemData);
+     /*   parcel.writeMap(itemData);*/
     }
 
   /*public String getItemData() {

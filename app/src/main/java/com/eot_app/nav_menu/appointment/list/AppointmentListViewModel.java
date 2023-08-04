@@ -140,25 +140,6 @@ public class AppointmentListViewModel extends AndroidViewModel implements Server
                     Type typeList = new TypeToken<List<Appointment>>() {
                     }.getType();
                     List<Appointment> appointmentModelList = new Gson().fromJson(jsonString, typeList);
-
-                    if (jsonObject.has("data") && jsonObject.get("data").isJsonArray()) {
-                        JsonArray dataArray = jsonObject.getAsJsonArray("data");
-                        if (dataArray.size() > 0 && dataArray.get(0).isJsonObject()) {
-                            JsonObject firstObject = dataArray.get(0).getAsJsonObject();
-                            if (firstObject.has("itemData") && firstObject.get("itemData").isJsonObject()) {
-                                JsonObject itemDataObject = firstObject.getAsJsonObject("itemData");
-                                List<AppintmentItemDataModel> itemList = new ArrayList<>();
-                                for (Map.Entry<String, JsonElement> entry : itemDataObject.entrySet()) {
-                                    String itemId = entry.getKey();
-                                    JsonElement itemInfo = entry.getValue();
-                                    AppintmentItemDataModel item = new Gson().fromJson(itemInfo, AppintmentItemDataModel.class);
-                                    itemList.add(item);
-                                    AppointmentItemData_pi itemData_pi = new AppointmentItemData_pc();
-                                    itemData_pi.getAppointmentItemList(itemList);
-                                }
-                            }
-                        }
-                    }
                     if (appointmentModelList != null && appointmentModelList.size() > 0) {
                         AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).appointmentModel().insertAppointments(appointmentModelList);
                         tempList.addAll(appointmentModelList);
