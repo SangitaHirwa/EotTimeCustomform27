@@ -1354,6 +1354,7 @@ public class AppUtility {
         HashMap<String, String> result = new HashMap<>();
         double amount = 0;
         double total_tax_amt = 0;
+        double total_with_discount = 0;
         try {
             double qty = 0, rate = 0, dis = 0;
             if (str_qty.isEmpty()) {
@@ -1371,6 +1372,9 @@ public class AppUtility {
             dis = Double.parseDouble(str_discount);
             float total_tax = 0;
             for (Tax item : tax) {
+                if(item.getRate().equals("0")||item.getRate()==null){
+                    item.setRate(item.getPercentage());
+                }
                 if(item.isSelect()) {
                     String item_rate = item.getRate();
                     if (update) {
@@ -1381,6 +1385,8 @@ public class AppUtility {
                             total_tax += Float.parseFloat(item_rate);
                         }
                     }
+                }else if(tax.size()==1){
+                    total_tax = Float.parseFloat(item.getRate());
                 }
             }
 
@@ -1399,6 +1405,7 @@ public class AppUtility {
                 double newAmt = (newRate * total_tax) / 100;
                 total_tax_amt = newAmt;
                 amount = newAmt + newRate;
+                total_with_discount = newRate;
 
 
             } else if (taxCalculationType.equals("1")) {
@@ -1416,6 +1423,7 @@ public class AppUtility {
                     discount = dis;
                 total_tax_amt = (totalPrice * total_tax) / 100;
                 amount = itemTotal - discount;
+                total_with_discount = amount - total_tax_amt;
 
             }
             else if (taxCalculationType.equals("2")) {
@@ -1430,10 +1438,12 @@ public class AppUtility {
                     discount = dis;
                 total_tax_amt= (totalPrice * total_tax) / 100;
                 amount = itemTotal - discount;
+                total_with_discount = amount - total_tax_amt;
 
             }
             result.put("Amount",String.valueOf(amount));
             result.put("Tax",String.valueOf(total_tax_amt));
+            result.put("Subtotal",String.valueOf(total_with_discount));
         } catch (Exception ex) {
             ex.printStackTrace();
         }

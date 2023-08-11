@@ -250,6 +250,12 @@
         <item name="colorAccent">@color/colorAccent</item>
 
     </style>
+    //For invoice calculation
+    <style name="calculation_text_style" parent="@android:style/TextAppearance.Small">
+        <item name="android:fontFamily">@font/arimo_bold</item>
+        <item name="android:textSize">@dimen/large_text</item>
+        <item name="android:color">@color/invoice_sub_total_amount</item>
+    </style>
 
 </resources>
 

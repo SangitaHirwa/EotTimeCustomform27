@@ -72,6 +72,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.Callable;
 
 import static com.eot_app.nav_menu.jobs.job_detail.invoice2list.JoBInvoiceItemList2Activity.ADD_ITEM_DATA;
 
@@ -138,6 +139,7 @@ public class AddEditInvoiceItemActivity2 extends
     private ImageButton tax_cancel;
 
     private boolean firstTimeOnPage = true;
+    private String getTaxMethodType="", getSingleTaxId="0";
 
 
     @Override
@@ -180,6 +182,10 @@ public class AddEditInvoiceItemActivity2 extends
                 jobId = bundle.getString("jobId");
                 invId = bundle.getString("invId");
                 addItemOnInvoice = bundle.getBoolean("addItemOnInvoice");
+                getTaxMethodType = bundle.getString("getTaxMethodType");
+                if(getTaxMethodType.equals("1")) {
+                    getSingleTaxId = bundle.getString("getSingleTaxId");
+                }
                 setDefaultValuesForAddNewItem();
 
                 // for hiding in case of generate invoice
@@ -196,6 +202,10 @@ public class AddEditInvoiceItemActivity2 extends
                 invId = bundle.getString("invId");
                 addItemOnInvoice = bundle.getBoolean("addItemOnInvoice");
                 updateItemDataModel = bundle.getParcelable("InvoiceItemDataModel");
+                getTaxMethodType = bundle.getString("getTaxMethodType");
+                if(getTaxMethodType.equals("1")) {
+                    getSingleTaxId = bundle.getString("getSingleTaxId");
+                }
                 Log.e("InvoiceItemDataModel1", new Gson().toJson(updateItemDataModel));
                 invoiceItemPi.getTaxList();
                 goneViewsForUpdate();
@@ -1242,24 +1252,49 @@ public class AddEditInvoiceItemActivity2 extends
         } else if (!IS_SERVICES_MANDATRY && TAB_SELECT == 3) {
             AppUtility.alertDialog(this, "", LanguageController.getInstance().getMobileMsgByKey(AppConstant.service_error), AppConstant.ok, "", () -> null);
         } else {
-            if (updateItemDataModel == null) {
-                addItemsOnJob();
-            } else {
-                updateItemsOnJob();
+
+                List<Tax> taxListFilter = new ArrayList<>();
+                for (Tax tax : listFilter) {
+                    if (tax.isSelect()) {
+                        taxListFilter.add(tax);
+                        taxId = tax.getTaxId();
+                    }
+                }
+
+                if(getTaxMethodType.equals("1")) {
+                    if (!taxId.equals(getSingleTaxId)) {
+                        AppUtility.alertDialog(this, "", "You have selected Before discount calculation setting in Invoice and you are selecting different Tax. If you Add/Update Item or Service then Setting of invoice will be changed.", AppConstant.ok, AppConstant.cancel, new Callable<Boolean>() {
+                            @Override
+                            public Boolean call() throws Exception {
+                                if (updateItemDataModel == null) {
+                                addItemsOnJob(taxListFilter);
+                                }else {
+                                    updateItemsOnJob(taxListFilter);
+                                }
+                                return null;
+                            }
+                        });
+                    }else {
+                        if (updateItemDataModel == null) {
+                            addItemsOnJob(taxListFilter);
+                        }else {
+                            updateItemsOnJob(taxListFilter);
+                        }
+                    }
+                }else {
+                    if (updateItemDataModel == null) {
+                        addItemsOnJob(taxListFilter);
+                    }else {
+                        updateItemsOnJob(taxListFilter);
+                    }
+                }
             }
-        }
+
     }
-
-    private void addItemsOnJob() {
-        try {
+    String taxId = "";
+    private void addItemsOnJob(List<Tax> taxListFilter) {
+        try{
             HyperLog.i("TAG", "addItemsOnJob(M) started");
-
-            List<Tax> taxListFilter = new ArrayList<>();
-            for (Tax tax : listFilter) {
-                if (tax.isSelect())
-                    taxListFilter.add(tax);
-            }
-
 
             // for creating a unique id for the item and its part so that we can identify
             // whether the item is having parts and which are its parts
@@ -1384,6 +1419,7 @@ public class AddEditInvoiceItemActivity2 extends
 
     }
 
+
     private void addItemWithJobSync(List<InvoiceItemDataModel> addItemDataModel) {
         try {
             HyperLog.i("TAG", "addItemWithJobSync(M) start");
@@ -1478,15 +1514,10 @@ public class AddEditInvoiceItemActivity2 extends
 
     }
 
-    private void updateItemsOnJob() {
+    private void updateItemsOnJob(List<Tax> taxListFilter) {
         try {
             HyperLog.i("TAG", "updateItemsOnJob(M) start");
 
-            List<Tax> taxListFilter = new ArrayList<>();
-            for (Tax tax : listFilter) {
-                if (tax.isSelect())
-                    taxListFilter.add(tax);
-            }
 
 
             int isPartParent = 0, isPartChild = 0;

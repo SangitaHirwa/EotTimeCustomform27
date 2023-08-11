@@ -72,6 +72,15 @@ public class MobileDefaultSettings {
     private String isAddJobRecurEnable="1";
     private String isAutoTimeZone="0";
     private String loginUsrTz;
+    private String taxShowType;
+    public String getTaxShowType() {
+        return taxShowType;
+    }
+
+    public void setTaxShowType(String taxShowType) {
+        this.taxShowType = taxShowType;
+    }
+
 
     public String getIsAutoTimeZone() {
         return isAutoTimeZone;

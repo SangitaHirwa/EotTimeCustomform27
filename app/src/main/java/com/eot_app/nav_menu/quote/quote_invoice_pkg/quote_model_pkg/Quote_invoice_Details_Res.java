@@ -55,8 +55,8 @@ public class Quote_invoice_Details_Res implements Parcelable {
 
     private List<Quote_ItemData> itemData = new ArrayList<>();
     private List<ShippingItem> shippingItem = new ArrayList<>();
-
-
+    private String isAddisDiscBefore;
+    private String disCalculationType;
     public Quote_invoice_Details_Res() {
 
     }
@@ -86,6 +86,8 @@ public class Quote_invoice_Details_Res implements Parcelable {
         itemData = in.createTypedArrayList(Quote_ItemData.CREATOR);
         shippingItem = in.createTypedArrayList(ShippingItem.CREATOR);
         statusComment =  in.readString();
+        isAddisDiscBefore =  in.readString();
+        disCalculationType =  in.readString();
     }
 
     public static Creator<Quote_invoice_Details_Res> getCREATOR() {
@@ -123,6 +125,8 @@ public class Quote_invoice_Details_Res implements Parcelable {
         dest.writeTypedList(itemData);
         dest.writeTypedList(shippingItem);
         dest.writeString(statusComment);
+        dest.writeString(isAddisDiscBefore);
+        dest.writeString(disCalculationType);
     }
 
     public String getInvId() {
@@ -307,5 +311,21 @@ public class Quote_invoice_Details_Res implements Parcelable {
 
     public void setShippingItem(List<ShippingItem> shippingItem) {
         this.shippingItem = shippingItem;
+    }
+
+    public String getIsAddisDiscBefore() {
+        return isAddisDiscBefore;
+    }
+
+    public void setIsAddisDiscBefore(String isAddisDiscBefore) {
+        this.isAddisDiscBefore = isAddisDiscBefore;
+    }
+
+    public String getDisCalculationType() {
+        return disCalculationType;
+    }
+
+    public void setDisCalculationType(String disCalculationType) {
+        this.disCalculationType = disCalculationType;
     }
 }

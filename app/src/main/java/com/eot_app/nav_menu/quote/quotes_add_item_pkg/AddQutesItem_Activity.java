@@ -97,7 +97,7 @@ public class AddQutesItem_Activity extends AppCompatActivity implements TextWatc
     private boolean ITEMSYNC = false;
     RadioGroup rediogrp;
     private ImageButton tax_cancel;
-
+    private String getTaxMethodType="", getSingleTaxId="0", getTaxCalculationType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,23 +110,34 @@ public class AddQutesItem_Activity extends AppCompatActivity implements TextWatc
         /*  * Add new quotes**/
         if (getIntent().hasExtra("AddQuotesItem")) {
             String detailsobject = bundle.getString("AddQuotesItem");
+            getTaxMethodType = bundle.getString("getTaxMethodType");
             quotesDetails = new Gson().fromJson(detailsobject, QuotesDetails.class);
+            getTaxCalculationType = quotesDetails.getInvData().getTaxCalculationType();
+
+            if(getTaxMethodType.equals("1")) {
+                getSingleTaxId = bundle.getString("getSingleTaxId");
+            }
             if (quotesDetails == null) {
                 return;
             }
             invId = quotesDetails.getInvData().getInvId();
             addQuotesId = quotesDetails.getQuotId();
-            setDefaultValuesForAddNewItem();
+
 //            we have to get a new tax items from the server
             quoteItemAdd_pi.getTaxList();
 
             //            supplier cost editable if item found
             edt_item_supplier.setEnabled(true);
+            setDefaultValuesForAddNewItem();
 
         } else if (getIntent().hasExtra("quotesDetails")) {
             /* *edit quotes */
             layout_fw_item.setVisibility(View.GONE);
             String detailsobject = bundle.getString("quotesDetails");
+            getTaxMethodType = bundle.getString("getTaxMethodType");
+            if(getTaxMethodType.equals("1")) {
+                getSingleTaxId = bundle.getString("getSingleTaxId");
+            }
             quotesDetails = new Gson().fromJson(detailsobject, QuotesDetails.class);
             invId = quotesDetails.getInvData().getInvId();
             addQuotesId = quotesDetails.getQuotId();
@@ -907,7 +918,7 @@ public class AddQutesItem_Activity extends AppCompatActivity implements TextWatc
 
         }
     }
-
+    String taxId = "";
     private void checkMandatryFields() {
         if (!isMandtryItem && isfwOrItem == 1) {
             AppUtility.alertDialog(this, "", LanguageController.getInstance().getMobileMsgByKey(AppConstant.item_empty), LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok),
@@ -937,11 +948,27 @@ public class AddQutesItem_Activity extends AppCompatActivity implements TextWatc
         } else {
             List<Tax> taxListFilter = new ArrayList<>();
             for (Tax tax : listFilter) {
-                if (tax.isSelect())
+                if (tax.isSelect()) {
                     taxListFilter.add(tax);
+                    taxId = tax.getTaxId();
+                }
             }
-
-            if (quote_itemData != null) {
+            if(getTaxMethodType.equals("1")) {
+                if (!taxId.equals(getSingleTaxId)) {
+                    AppUtility.alertDialog(this, "", "You have selected Before discount calculation setting in Quotation and you are selecting different Tax. If you Add/Update Item or Service then Setting of quotation will be changed.", AppConstant.ok, AppConstant.cancel, new Callable<Boolean>() {
+                        @Override
+                        public Boolean call() throws Exception {
+                            AddUpdateQuot(taxListFilter);
+                            return null;
+                        }
+                    });
+                }else {
+                    AddUpdateQuot(taxListFilter);
+                }
+            }else {
+                AddUpdateQuot(taxListFilter);
+            }
+            /*if (quote_itemData != null) {
                 Update_Quote_ReQ updateModel = new Update_Quote_ReQ(iqmmId, invId, type,
                         edt_item_rate.getText().toString().trim(), edt_item_qty.getText().toString().trim(),
                         edt_unit.getText().toString().trim(), edt_item_discount.getText().toString().trim(),
@@ -963,13 +990,37 @@ public class AddQutesItem_Activity extends AppCompatActivity implements TextWatc
                         , isInvOrNoninv, edt_part_no.getText().toString().trim(), String.valueOf(taxAmount), amount_value_txt.getText().toString().trim(), jtId, inm);
 
                 quoteItemAdd_pi.apiCallAddQuotesItem(reqModel);
-            }
+            }*/
 
         }
 
-
     }
+    public void AddUpdateQuot(List<Tax> taxListFilter){
 
+        if (quote_itemData != null) {
+            Update_Quote_ReQ updateModel = new Update_Quote_ReQ(iqmmId, invId, type,
+                    edt_item_rate.getText().toString().trim(), edt_item_qty.getText().toString().trim(),
+                    edt_unit.getText().toString().trim(), edt_item_discount.getText().toString().trim(),
+                    edt_item_description.getText().toString().trim(), amount_value_txt.getText().toString().trim(),
+                    taxListFilter,
+                    edt_item_supplier.getText().toString().trim(),
+                    edt_part_no.getText().toString().trim(), String.valueOf(taxAmount), jtId, itemId
+                    , quote_itemData.getInm());
+
+            quoteItemAdd_pi.callApiUpdateQuotesItem(updateModel);
+        } else {
+            AddItem_Model reqModel = new AddItem_Model(addQuotesId, itemId, invId, type,
+                    edt_item_rate.getText().toString().trim(), edt_item_qty.getText().toString().trim(), edt_item_discount.getText().toString().trim(),
+                    edt_item_description.getText().toString().trim(),
+                    // listFilter,
+                    taxListFilter,
+                    edt_unit.getText().toString().trim(),
+                    edt_item_supplier.getText().toString().trim()
+                    , isInvOrNoninv, edt_part_no.getText().toString().trim(), String.valueOf(taxAmount), amount_value_txt.getText().toString().trim(), jtId, inm);
+
+            quoteItemAdd_pi.apiCallAddQuotesItem(reqModel);
+        }
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void showDialogTax() {

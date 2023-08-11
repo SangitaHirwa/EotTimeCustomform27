@@ -73,6 +73,15 @@ public class ResLoginData {
     private String isJobCrteWthDispatch="1";
     private String isAutoTimeZone="0";
     private String loginUsrTz;
+    private String taxShowType;
+
+    public String getTaxShowType() {
+        return taxShowType;
+    }
+
+    public void setTaxShowType(String taxShowType) {
+        this.taxShowType = taxShowType;
+    }
 
     public String getIsAutoTimeZone() {
         return isAutoTimeZone;
@@ -483,6 +492,7 @@ public class ResLoginData {
         this.isJobCrteWthDispatch=mobileDefaultSettings.getIsJobCrteWthDispatch();
         this.isAutoTimeZone=mobileDefaultSettings.getIsAutoTimeZone();
         this.loginUsrTz=mobileDefaultSettings.getLoginUsrTz();
+        this.taxShowType = mobileDefaultSettings.getTaxShowType();
 
     }
 

@@ -7,8 +7,12 @@ import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
+import androidx.room.TypeConverters;
+
+import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_db.tax_dao.TaxConverter;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
 
 @Entity(tableName = "Tax")
@@ -40,7 +44,8 @@ public class Tax  implements Parcelable {
     private String appliedTax = "";
     @Ignore
     private String oldTax = "";
-
+    @TypeConverters(TaxConverter.class)
+    private List<Tax> taxComponents;
     public Tax(String taxId, String rate) {
         this.taxId = taxId;
         this.rate = rate;
@@ -60,6 +65,7 @@ public class Tax  implements Parcelable {
         oldTax = in.readString();
         locId = in.readString();
         select = in.readByte() != 0;
+        taxComponents = in.createTypedArrayList(Tax.CREATOR);
     }
 
     public static Creator<Tax> getCREATOR() {
@@ -78,6 +84,7 @@ public class Tax  implements Parcelable {
         dest.writeString(oldTax);
         dest.writeString(locId);
         dest.writeByte((byte) (select ? 1 : 0));
+        dest.writeTypedList(taxComponents);
     }
 
     public boolean isSelect() {
@@ -173,6 +180,14 @@ public class Tax  implements Parcelable {
         return super.toString();
     }
 
+    public List<Tax> getTaxComponents() {
+        return taxComponents;
+    }
+
+    public void setTaxComponents(List<Tax> tax) {
+        this.taxComponents = tax;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -187,11 +202,12 @@ public class Tax  implements Parcelable {
                 Objects.equals(getPercentage(), tax.getPercentage()) &&
                 Objects.equals(getLocId(), tax.getLocId()) &&
                 Objects.equals(getAppliedTax(), tax.getAppliedTax()) &&
-                Objects.equals(getOldTax(), tax.getOldTax());
+                Objects.equals(getOldTax(), tax.getOldTax())&&
+                Objects.equals(getTaxComponents(), tax.getTaxComponents());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getTaxId(), getLabel(), getIsactive(), getShow_Invoice(), getRate(), getPercentage(), getLocId(), isSelect(), getAppliedTax(), getOldTax());
+        return Objects.hash(getTaxId(), getLabel(), getIsactive(), getShow_Invoice(), getRate(), getPercentage(), getLocId(), isSelect(), getAppliedTax(), getOldTax()/*,getTaxComponents()*/);
     }
 }

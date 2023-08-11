@@ -7,8 +7,10 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.nfc.Tag;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -24,6 +26,7 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -43,7 +46,9 @@ import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_detail_pkg.inv_detai
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_email_pkg.Invoice_Email_Activity;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_email_pkg.get_email_temp_model.InvoiceEmaliTemplate;
 import com.eot_app.nav_menu.jobs.job_detail.invoice2list.GenerateInvoiceItemAdpter;
+import com.eot_app.nav_menu.jobs.job_detail.invoice2list.adapter.InvoiceTaxAdapter;
 import com.eot_app.nav_menu.jobs.job_detail.invoice2list.itemlist_model.InvoiceItemDetailsModel;
+import com.eot_app.nav_menu.jobs.job_detail.invoice2list.itemlist_model.TaxData;
 import com.eot_app.nav_menu.jobs.job_detail.invoice2list.itemlist_mvp.ItemList_PC;
 import com.eot_app.nav_menu.jobs.job_detail.invoice2list.itemlist_mvp.ItemList_PI;
 import com.eot_app.nav_menu.jobs.job_detail.invoice2list.itemlist_mvp.ItemList_View;
@@ -54,6 +59,7 @@ import com.eot_app.utility.EotApp;
 import com.eot_app.utility.db.AppDataBase;
 import com.eot_app.utility.language_support.LanguageController;
 import com.eot_app.utility.util_interfaces.Callback_AlertDialog;
+import com.eot_app.utility.util_interfaces.GetListData;
 import com.eot_app.utility.util_interfaces.MyListItemSelected;
 import com.eot_app.utility.util_interfaces.MyListItemSelectedLisT;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -67,7 +73,7 @@ import java.util.concurrent.Callable;
 
 public class Generate_Invoice_Activity extends AppCompatActivity implements MyListItemSelected<InvoiceItemDataModel>,
         View.OnClickListener, MyListItemSelectedLisT<InvoiceItemDataModel>
-        , ItemList_View, InvoiceItemObserver {
+        , ItemList_View, InvoiceItemObserver, GetListData {
     private final static int ADD_ITEM_DATA = 1;
     static public String jobId, invId = "", isJobInvoiced = "";
     Button pay_btn_inv, addInvoiceItem_btn;
@@ -104,7 +110,11 @@ public class Generate_Invoice_Activity extends AppCompatActivity implements MyLi
     private int totalItemSize = 0;
     private Spinner loc_tax_dp;
     private List<TaxesLocation> taxList = new ArrayList<>();
+    private ConstraintLayout cl_parent_calculation;
+    private TextView txt_lbl_sub_total, txt_sub_total, txt_lbl_additional_discount, txt_additional_discount, txt_lbl_additional_discount1, txt_additional_discount1, txt_lbl_total, txt_total,txt_lbl_tax, txt_tax;
 
+    private RecyclerView rvShowTax;
+    private InvoiceTaxAdapter invoiceTaxAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -225,6 +235,24 @@ public class Generate_Invoice_Activity extends AppCompatActivity implements MyLi
         tv_due_date = findViewById(R.id.tv_due_date);
         tv_due_date.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.due_date));
 
+        cl_parent_calculation = findViewById(R.id.cl_parent_calculation);
+        txt_lbl_sub_total = findViewById(R.id.txt_lbl_sub_total);
+//        txt_lbl_sub_total.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.due_date));
+        txt_sub_total = findViewById(R.id.txt_sub_total);
+        txt_lbl_additional_discount = findViewById(R.id.txt_lbl_additional_discount);
+//        txt_lbl_additional_discount.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.due_date));
+        txt_additional_discount = findViewById(R.id.txt_additional_discount);
+        txt_lbl_additional_discount1 = findViewById(R.id.txt_lbl_additional_discount1);
+//        txt_lbl_additional_discount1.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.due_date));
+        txt_additional_discount1 = findViewById(R.id.txt_additional_discount1);
+        txt_lbl_tax = findViewById(R.id.txt_lbl_tax);
+//        txt_lbl_tax.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.due_date));
+        txt_tax = findViewById(R.id.txt_tax);
+        txt_lbl_total = findViewById(R.id.txt_lbl_total);
+//        txt_lbl_total.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.due_date));
+        txt_total = findViewById(R.id.txt_total);
+        rvShowTax = findViewById(R.id.rv_tax);
+
         /**this view for shpping item**/
         recyclerView_shippingitem = findViewById(R.id.recyclerView_shippingitem);
     }
@@ -241,14 +269,15 @@ public class Generate_Invoice_Activity extends AppCompatActivity implements MyLi
         layoutManager = new LinearLayoutManager(this);
         recyclerView_invoice.setLayoutManager(layoutManager);
 
-        invoice_list_adpter = new GenerateInvoiceItemAdpter(this, new ArrayList<InvoiceItemDataModel>(),getDisCalculationType);//, this, this
+        invoice_list_adpter = new GenerateInvoiceItemAdpter(this, new ArrayList<InvoiceItemDataModel>(),
+                getDisCalculationType,this);//, this, this
         recyclerView_invoice.setAdapter(invoice_list_adpter);
 
 /**this view for shipping items***/
         layoutManager = new LinearLayoutManager(this);
         recyclerView_shippingitem.setLayoutManager(layoutManager);
         List<ShippingItem> shippingItemList = new ArrayList<>();
-        sipping_adpter = new Sipping_Adpter(shippingItemList);
+        sipping_adpter = new Sipping_Adpter(this,shippingItemList);
         recyclerView_shippingitem.setAdapter(sipping_adpter);
 
 
@@ -323,6 +352,11 @@ public class Generate_Invoice_Activity extends AppCompatActivity implements MyLi
             rm_invice_im.setVisibility(View.VISIBLE);
         }
 
+//Show tax
+        invoiceTaxAdapter = new InvoiceTaxAdapter(this,new ArrayList<TaxData>());
+        rvShowTax.setLayoutManager(new LinearLayoutManager(this));
+        rvShowTax.setAdapter(invoiceTaxAdapter);
+
     }
 
     @Override
@@ -331,7 +365,7 @@ public class Generate_Invoice_Activity extends AppCompatActivity implements MyLi
         if (rm_DataItem.size() > 0) {
             rm_DataItem.clear();
         }
-        invoice_list_adpter.updateitemlist(itemList);
+        invoice_list_adpter.updateitemlist(itemList,invoice_Details.getIsAddisDiscBefore());
         setTxtInsideView();
         InvoiceNotFound(itemList.size() == 0);
         dismissPullTorefresh();
@@ -640,6 +674,8 @@ public class Generate_Invoice_Activity extends AppCompatActivity implements MyLi
         intent.putExtra("locId", locId);
         intent.putExtra("addItemOnInvoice", true);
         intent.putExtra("NONBILLABLE", true);
+        intent.putExtra("getTaxMethodType", invoice_Details.getIsAddisDiscBefore());
+        intent.putExtra("getSingleTaxId", SingleTaxId);
         startActivityForResult(intent, ADD_ITEM_DATA);
     }
 
@@ -686,6 +722,8 @@ public class Generate_Invoice_Activity extends AppCompatActivity implements MyLi
         intent.putExtra("locId", locId);
         intent.putExtra("addItemOnInvoice", true);
         intent.putExtra("NONBILLABLE", true);
+        intent.putExtra("getTaxMethodType", invoice_Details.getIsAddisDiscBefore());
+        intent.putExtra("getSingleTaxId", SingleTaxId);
         startActivityForResult(intent, ADD_ITEM_DATA);
     }
 
@@ -829,7 +867,93 @@ public class Generate_Invoice_Activity extends AppCompatActivity implements MyLi
             inv_total_amount.setText(AppUtility.getRoundoff_amount(totalAmount + ""));
         }
     }
+    Double totalOfShippingItem = 0.0;
+    String SingleTaxId="0";
 
+    @Override
+    public void setCalculation(Double Subtotal, List<TaxData> listTax,boolean isShippingData,String SingleTaxId) {
+        String additionalDiscount =invoice_Details.getDiscount();
+
+        if(isShippingData){
+            totalOfShippingItem = Subtotal;
+        }
+
+        if(invoice_Details.getIsAddisDiscBefore().equals("0")) {
+            Log.e("Invoice additional type", "after "+invoice_Details.getIsAddisDiscBefore());
+            txt_additional_discount.setVisibility(View.GONE);
+            txt_lbl_additional_discount.setVisibility(View.GONE);
+            txt_additional_discount1.setVisibility(View.VISIBLE);
+            txt_lbl_additional_discount1.setVisibility(View.VISIBLE);
+            rvShowTax.setVisibility(View.VISIBLE);
+            if (additionalDiscount.equals("0.0000") || additionalDiscount.equals("")) {
+                txt_lbl_additional_discount1.setVisibility(View.GONE);
+                txt_additional_discount1.setVisibility(View.GONE);
+            } else {
+                txt_additional_discount1.setText("-" + AppUtility.getRoundoff_amount(additionalDiscount));
+            }
+            if(totalOfShippingItem == 0){
+                txt_lbl_tax.setVisibility(View.GONE);
+                txt_tax.setVisibility(View.GONE);
+            }else {
+                txt_tax.setText(AppUtility.getRoundoff_amount(""+totalOfShippingItem));
+            }
+            if(listTax.size()<= 0){
+                rvShowTax.setVisibility(View.GONE);
+            }else {
+                rvShowTax.setVisibility(View.VISIBLE);
+            }
+            txt_sub_total.setText(AppUtility.getRoundoff_amount("" + Subtotal));
+            invoiceTaxAdapter.setList(listTax);
+            String total = String.valueOf(Double.parseDouble(invoice_Details.getTotal()) - Double.parseDouble(additionalDiscount));
+            txt_total.setText(AppUtility.getRoundoff_amount(total));
+            inv_total_amount.setText(AppUtility.getRoundoff_amount(total));
+        }
+        else if(invoice_Details.getIsAddisDiscBefore().equals("1")){
+            Log.e("Invoice additional type", "before "+invoice_Details.getIsAddisDiscBefore());
+            this.SingleTaxId = SingleTaxId;
+            int taxRate = 0;
+            txt_additional_discount.setVisibility(View.VISIBLE);
+            txt_lbl_additional_discount.setVisibility(View.VISIBLE);
+            txt_additional_discount1.setVisibility(View.GONE);
+            txt_lbl_additional_discount1.setVisibility(View.GONE);
+            rvShowTax.setVisibility(View.VISIBLE);
+            if (additionalDiscount.equals("0.0000") || additionalDiscount.equals("")) {
+                txt_lbl_additional_discount.setVisibility(View.GONE);
+                txt_additional_discount.setVisibility(View.GONE);
+            } else {
+                txt_additional_discount.setText("-" + AppUtility.getRoundoff_amount(additionalDiscount));
+            }
+            if(totalOfShippingItem == 0){
+                txt_lbl_tax.setVisibility(View.GONE);
+                txt_tax.setVisibility(View.GONE);
+            }else {
+                txt_tax.setText(AppUtility.getRoundoff_amount(""+totalOfShippingItem));
+            }
+            txt_sub_total.setText(AppUtility.getRoundoff_amount("" + Subtotal));
+            List<TaxData> showTaxList = new ArrayList<>();
+            for (TaxData tax: listTax
+            ) {
+                taxRate = tax.getRate();
+                TaxData taxData = new TaxData();
+                taxData.setRate(taxRate);
+                taxData.setTaxAmount(tax.getTaxAmount());
+                taxData.setLabel(tax.getLabel());
+                showTaxList.add(taxData);
+            }
+            Double total = Subtotal - Double.parseDouble(additionalDiscount);;
+            Double taxTotal = 0.0;
+            for (TaxData changeAmt : showTaxList){
+                Double taxAmount = total*changeAmt.getRate()/100;
+                changeAmt.setTaxAmount(taxAmount);
+                taxTotal = taxTotal +taxAmount;
+            }
+            invoiceTaxAdapter.setList(showTaxList);
+            total = total+taxTotal+totalOfShippingItem;
+            txt_total.setText(AppUtility.getRoundoff_amount(""+total));
+            inv_total_amount.setText(AppUtility.getRoundoff_amount(""+total));
+        }
+
+    }
 }
 
 

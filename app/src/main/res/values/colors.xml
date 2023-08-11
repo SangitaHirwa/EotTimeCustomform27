@@ -75,5 +75,8 @@
     <color name="week_select_color">#078379</color>
     <color name="bg_job">#f2f7fa</color>
     <color name="light_red">#F67070</color>
+    <color name="invoice_calculation_bd">#EFFEFF</color>
+    <color name="invoice_sub_total_amount">#4F4F4F</color>
+    <color name="invoice_total_amount">#222222</color>
 
 </resources>
