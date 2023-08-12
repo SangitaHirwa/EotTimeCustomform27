@@ -18,7 +18,7 @@ public class AppointmentAddItem_Res {
     private String qty;
     private String discount;
     private int isGrouped;
-    private List<Tax> tax;
+    private List<AppointmentTax> tax;
     private String des;
     private String hsncode;
     private String pno;
@@ -37,7 +37,12 @@ public class AppointmentAddItem_Res {
     private  String labourTempId;
 
 
-    public AppointmentAddItem_Res(String itemId, String inm, int dataType, int itemType, String rate, String supplierCost, String serialNo, String qty, String discount, int isGrouped, List<Tax> tax, String des, String hsncode, String pno, String unit, String isBillable, String isBillableChange, String tempId, String ilmmId, String isLabourParent, double taxamnt, String isPartParent, String isPartChild, String partTempId, int isItemOrTitle) {
+    public AppointmentAddItem_Res(String itemId, String inm, int dataType, int itemType, String rate,
+                                  String supplierCost, String serialNo, String qty, String discount,
+                                  int isGrouped, List<AppointmentTax> tax, String des, String hsncode,
+                                  String pno, String unit, String isBillable, String isBillableChange,
+                                  String tempId, String ilmmId, String isLabourParent, double taxamnt,
+                                  String isPartParent, String isPartChild, String partTempId, int isItemOrTitle) {
         this.itemId = itemId;
         this.inm = inm;
         this.dataType = dataType;
@@ -67,7 +72,7 @@ public class AppointmentAddItem_Res {
     public AppointmentAddItem_Res(String itemId, String inm, int dataType,
                                   int itemType, String rate, String supplierCost,
                                   String serialNo, String qty, String discount,
-                                  int isGrouped, List<Tax> tax, String des,
+                                  int isGrouped, List<AppointmentTax> tax, String des,
                                   String hsncode, String pno, String unit,
                                   String isBillableChange, String tempId, String ilmmId, String isLabourParent,
                                   String isLabourChild,String labourTempId,
@@ -182,11 +187,11 @@ public class AppointmentAddItem_Res {
         this.isGrouped = isGrouped;
     }
 
-    public List<Tax> getTax() {
+    public List<AppointmentTax> getTax() {
         return tax;
     }
 
-    public void setTax(List<Tax> tax) {
+    public void setTax(List<AppointmentTax> tax) {
         this.tax = tax;
     }
 

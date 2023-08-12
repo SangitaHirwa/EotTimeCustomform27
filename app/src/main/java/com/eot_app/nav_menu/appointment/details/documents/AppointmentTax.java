@@ -22,8 +22,11 @@ public class AppointmentTax implements Parcelable   {
     @TypeConverters(TaxConverter.class)
     private List<Tax> taxComponents;
 
-    public AppointmentTax(List<Tax> taxComponents) {
+    public AppointmentTax(int taxId,String rate,String label,List<Tax> taxComponents) {
+        this.taxId=taxId;
         this.taxComponents = taxComponents;
+        this.rate=rate;
+        this.label=label;
     }
 
     protected AppointmentTax(Parcel in) {
@@ -33,7 +36,7 @@ public class AppointmentTax implements Parcelable   {
         ilmmId = in.readInt();
         iltmmId = in.readInt();
         taxComponents = new ArrayList<>();
-        in.readList(taxComponents, AppointmentTax.class.getClassLoader());
+        in.readList(taxComponents, Tax.class.getClassLoader());
     }
 
     public static final Creator<AppointmentTax> CREATOR = new Creator<AppointmentTax>() {
@@ -60,7 +63,7 @@ public class AppointmentTax implements Parcelable   {
         parcel.writeInt(taxId);
         parcel.writeInt(ilmmId);
         parcel.writeInt(iltmmId);
-        parcel.writeTypedList(taxComponents);
+        parcel.writeList(taxComponents);
     }
 
     public String getRate() {

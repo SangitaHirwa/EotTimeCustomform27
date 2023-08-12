@@ -9,6 +9,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Parcelable;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -44,6 +45,7 @@ import com.eot_app.nav_menu.appointment.appointment_model.AppointmentItemAdd_Req
 import com.eot_app.nav_menu.appointment.appointment_model.AppointmentItemDataInMap;
 import com.eot_app.nav_menu.appointment.appointment_model.AppointmentUpdateItem_Req_Model;
 import com.eot_app.nav_menu.appointment.dbappointment.Appointment;
+import com.eot_app.nav_menu.appointment.details.RequirementGetheringListAdapter;
 import com.eot_app.nav_menu.appointment.details.documents.AppointmentTax;
 import com.eot_app.nav_menu.jobs.job_db.Job;
 import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.model.AddInvoiceItemReqModel;
@@ -75,8 +77,10 @@ import com.eot_app.utility.settings.setting_db.Offlinetable;
 import com.eot_app.utility.util_interfaces.Callback_AlertDialog;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.hypertrack.hyperlog.HyperLog;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -163,13 +167,16 @@ public class AddEditInvoiceItemActivity2 extends
     private int appDataType;
     private int appitemType;
     private int appjtId;
-
+    private  String appInm="";
+    private AppointmentUpdateItem_Req_Model itemAddRequestModel;
+    private  AppointmentAddItem_Res updateItem_res;
+    RequirementGetheringListAdapter getheringListAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit__invoice);
         initializelables();
-        appointmentItemData_pi =new AppointmentItemData_pc(this);
+        appointmentItemData_pi = new AppointmentItemData_pc();
         bundle = getIntent().getExtras();
         if (bundle != null) {
             try {
@@ -231,8 +238,10 @@ public class AddEditInvoiceItemActivity2 extends
                 invoiceItemPi.getTaxList();
 
             }else if(getIntent().hasExtra("UpdateItemRequirmentGethering")){
+                bundle.getBoolean("UpdateItemRequirmentGethering");
                 appId = bundle.getString("appId");
-                updateAppointmentItemData = bundle.getParcelable("appItemModelForUpdate");
+                updateAppointmentItemData= getIntent().getParcelableExtra("updateItemDataOfApp");
+                getheringListAdapter=getIntent().getParcelableExtra("adapterObject");
                 invoiceItemPi.getTaxList();
                 goneViewsForUpdateAppItem();
             }
@@ -421,8 +430,8 @@ public class AddEditInvoiceItemActivity2 extends
 
         itemId = updateAppointmentItemData.getItemId();
         appDataType = updateAppointmentItemData.getDataType();
+        appInm = updateAppointmentItemData.getInm();
         appitemType = updateAppointmentItemData.getItemType();
-        inm = updateAppointmentItemData.getInm();
         appjtId = updateAppointmentItemData.getJtId();
         try {
             if (!NONBILLABLE && updateAppointmentItemData.getDataType()==1) {
@@ -1449,7 +1458,13 @@ public class AddEditInvoiceItemActivity2 extends
             for (Tax tax : listFilter) {
                 if (tax.isSelect())
                     taxListFilter.add(tax);
-                appointmentTax =new AppointmentTax(taxListFilter);
+            }
+               if(taxListFilter.size()>0) {
+                appointmentTax = new AppointmentTax(Integer.parseInt(taxListFilter.get(0).getTaxId()),
+                        taxListFilter.get(0).getRate(), taxListFilter.get(0).getLabel(), taxListFilter);
+            }else{
+                   appointmentTax = new AppointmentTax(Integer.parseInt("0"),
+                           "0", "0", taxListFilter);
             }
             apptaxList.add(appointmentTax);
 
@@ -1459,7 +1474,7 @@ public class AddEditInvoiceItemActivity2 extends
                 isPartParent = 1;
                 partTempId = AppUtility.getRandomUUID();
             }
-            if(dataType==null){
+            if(updateAppointmentItemData.getDataType()==0){
                 dataType="0";
             }if(itemType.equals(""))
             {
@@ -1470,73 +1485,92 @@ public class AddEditInvoiceItemActivity2 extends
             if(edt_serialNo.getText().toString().equals("")) {
                 edt_serialNo.setText("0");
             }
-            updateAppintmentItemDataModel= new AppintmentItemDataModel(edt_item_desc.getText().toString(),"",
-                    inm,edt_part_no.getText().toString(),edt_item_qty.getText().toString(),
+            updateAppintmentItemDataModel= new AppintmentItemDataModel(edt_item_desc.getText().toString(),"",appInm
+                    ,edt_part_no.getText().toString(),edt_item_qty.getText().toString(),
                     edt_item_rate.getText().toString(),edt_unit.getText().toString(),apptaxList,
-                    itemId,edt_hsnCode.getText().toString(),String.valueOf(taxAmount),Integer.parseInt(dataType),
-                    edt_item_disc.getText().toString(), Integer.parseInt(itemType),edt_item_supplier.getText().toString(),
+                    itemId,edt_hsnCode.getText().toString(),String.valueOf(taxAmount),updateAppointmentItemData.getDataType(),
+                    edt_item_disc.getText().toString(),updateAppointmentItemData.getItemType(),edt_item_supplier.getText().toString(),
                     isBillable,isBillableChange,appointmentModel.getTempId(),String.valueOf(isPartParent),String.valueOf(isPartChild),partTempId,
-                    0, edt_serialNo.getText().toString(),Integer.parseInt(isGrouped));
+                    updateAppointmentItemData.getIsItemOrTitle(), edt_serialNo.getText().toString(),Integer.parseInt(isGrouped),updateAppointmentItemData.getIlmmId());
 
 
-            AppointmentAddItem_Res updateItem_res=new AppointmentAddItem_Res(itemId,inm, Integer.parseInt(dataType),
-                    Integer.parseInt(itemType),edt_item_rate.getText().toString(),edt_item_supplier.getText().toString(),
+            updateItem_res=new AppointmentAddItem_Res(itemId,appInm, updateAppointmentItemData.getDataType(),
+                    updateAppointmentItemData.getItemType(),edt_item_rate.getText().toString(),edt_item_supplier.getText().toString(),
                     edt_serialNo.getText().toString(),edt_item_qty.getText().toString(),
-                    edt_item_disc.getText().toString(), Integer.parseInt(isGrouped),taxListFilter,
+                    edt_item_disc.getText().toString(), Integer.parseInt(isGrouped),apptaxList,
                     edt_item_desc.getText().toString(),edt_hsnCode.getText().toString(),edt_part_no.getText().toString(),
-                    edt_unit.getText().toString(), updateAppointmentItemData.getIsBillableChange(),appointmentModel.getTempId(),
+                    edt_unit.getText().toString(), isBillableChange,appointmentModel.getTempId(),
                     String.valueOf(updateAppointmentItemData.getIlmmId()),updateAppointmentItemData.getIsLabourParent(),
                     updateAppointmentItemData.getIsLabourChild(),updateAppointmentItemData.getLabourTempId(),
                     taxAmount,String.valueOf(isPartParent),String.valueOf(isPartChild),
-                    partTempId,0);
+                    partTempId,updateAppointmentItemData.getDataType());
             // *add api for appointment item**/
             try {
-                if (updateAppointmentItemData.getIsBillable()!=null) {
+                if (!isBillable.equals("")) {
                     updateAppointmentItemData.setIsBillable(isBillable);
-                }
-                if (addItemOnInvoice) {
-                   updateAppointmentItemData.setIsBillable("1");
                 }
             } catch (Exception exception) {
                 exception.printStackTrace();
             }
-            if (updateAppointmentItemData.getDataType()==1|| (updateAppointmentItemData.getDataType()==2)
-                    || updateAppointmentItemData.getDataType()==0) {
 
-                HyperLog.i("TAG", "updateItemsOnJob(M) not sync item update");
 
-                /*check inventry item **/
-                if (appointmentModel != null && appointmentModel.getItemData() != null) {
-                    HyperLog.i("TAG", "updateItemsOnJob(M) check inventry item ");
+            if(AppUtility.isInternetConnected()){
+                List<AppointmentAddItem_Res> addItem_resList=new ArrayList<>();
+                addItem_resList.add(updateItem_res);
+                String addToservice = new Gson().toJson(addItem_resList);
+                AppointmentItemDataInMap itemDataInMap=new AppointmentItemDataInMap(String.valueOf(updateAppointmentItemData.getIlmmId()),updateAppintmentItemDataModel);
+                 AppointmentUpdateItem_Req_Model updateItem_req_model=new AppointmentUpdateItem_Req_Model(addToservice,
+                         String.valueOf(updateAppointmentItemData.getLeadId()),String.valueOf(updateAppointmentItemData.getIlmmId()));
+                 Intent intent=new Intent();
+                 intent.putExtra("updateDataReqModel",updateItem_req_model);
+                 intent.putExtra("updateDataForDB",itemDataInMap);
+                 intent.putExtra("gatheringObject", (Parcelable) getheringListAdapter);
+                 setResult(RESULT_OK,intent);
+               /*  AppointmentItemDataInMap itemDataInMap=new AppointmentItemDataInMap(String.valueOf(updateAppointmentItemData.getIlmmId()),updateAppintmentItemDataModel);
+                 appointmentItemData_pi.apiCallUpdateAppointmentItem(updateItem_req_model,itemDataInMap,
+                         updateAppointmentItemData,appointmentModel.getAppId()*/
 
-                    for (AppointmentItemDataInMap tempModel : appointmentModel.getItemData()) {
-                        if (tempModel.getIlmmId().equals(String.valueOf(updateAppointmentItemData.getIlmmId()))) {
-                            appointmentModel.getItemData().remove(tempModel);
-                            break;
-                        }
-                    }
-                }
-            }
+             }
+             else updateSyncAppItem(updateItem_res);
 
-           List<AppointmentItemDataInMap> itemDataInMaps= new ArrayList<>();
-            AppointmentItemDataInMap itemDataInMap=new AppointmentItemDataInMap(String.valueOf(updateAppointmentItemData.getIlmmId()),updateAppintmentItemDataModel);
-            itemDataInMaps.add(itemDataInMap);
-            itemDataInMaps.addAll(appointmentModel.getItemData());
-            String jsonUpdateDataDB = new Gson().toJson(itemDataInMaps);
-            List<AppointmentAddItem_Res> updateItemList = new ArrayList<>();
-            updateItemList.add(updateItem_res);
-            String jsonUpdateDataInApi= new Gson().toJson(updateItemList);
-            AppointmentUpdateItem_Req_Model itemAddRequestModel =new AppointmentUpdateItem_Req_Model(jsonUpdateDataInApi,appointmentModel.getLeadId(),
-                    String.valueOf(updateAppointmentItemData.getIlmmId()));
-
-            AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).appointmentModel().updateAppointmentItem(appId,jsonUpdateDataDB);
-          appointmentItemData_pi.apiCallUpdateAppointmentItem(itemAddRequestModel);
 
             finish_Activity();
         } catch (Exception ex) {
             ex.printStackTrace();
             HyperLog.i("TAG", "addItemsOnJob(M) exception:" + ex.toString());
         }
+    }
+
+    private void updateSyncAppItem(AppointmentAddItem_Res updateItem_res) {
+        try {
+            List<Offlinetable> offlinetableList = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).offlinemodel().getOfflinetablesById(Service_apis.updateItemOnAppointment);
+            List<AppointmentAddItem_Res> tempList = new ArrayList<>();
+            tempList.add(updateItem_res);
+            if (offlinetableList.size() > 0) {
+                for (Offlinetable offLineModel : offlinetableList) {
+                    AppointmentUpdateItem_Req_Model updateItemReqModel = new Gson().fromJson(offLineModel.getParams(), AppointmentUpdateItem_Req_Model.class);
+                    String addToCartServices = updateItemReqModel.getAddToCartServices();
+                    Type listType = new TypeToken<List<AppointmentAddItem_Res>>() {
+                    }.getType();
+                    List<AppointmentAddItem_Res> updatedItemList = new Gson().fromJson(addToCartServices, listType);
+
+                    for (AppointmentAddItem_Res tempModel : updatedItemList) {
+                        if (tempModel.getIlmmId().equals(updateAppointmentItemData.getIlmmId())) {
+                            updatedItemList.remove(tempModel);
+                            break;
+                        }
+                    }
+                    updatedItemList.add(updateItem_res);
+                        offLineModel.setParams(new Gson().toJson(updateItemReqModel));
+                        AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).offlinemodel().update(offLineModel);
+                        break;
+                    }
+
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
     }
 
     private void addItemOnAppointment() {
@@ -1547,7 +1581,13 @@ public class AddEditInvoiceItemActivity2 extends
             for (Tax tax : listFilter) {
                 if (tax.isSelect())
                     taxListFilter.add(tax);
-               appointmentTax =new AppointmentTax(taxListFilter);
+
+            }if(taxListFilter.size()>0) {
+                appointmentTax = new AppointmentTax(Integer.parseInt(taxListFilter.get(0).getTaxId()),
+                        taxListFilter.get(0).getRate(), taxListFilter.get(0).getLabel(), taxListFilter);
+            }else{
+                appointmentTax = new AppointmentTax(Integer.parseInt("0"),
+                        "0", "0", taxListFilter);
             }
             apptaxList.add(appointmentTax);
 
@@ -1560,22 +1600,25 @@ public class AddEditInvoiceItemActivity2 extends
             if(edt_serialNo.getText().toString().equals("")) {
                 edt_serialNo.setText("0");
             }
+            if(itemType.equals("")){
+                itemType="0";
+            }
             appintmentItemDataModel= new AppintmentItemDataModel(edt_item_desc.getText().toString(),"",
-                    inm,edt_part_no.getText().toString(),edt_item_qty.getText().toString(),
+                   inm ,edt_part_no.getText().toString(),edt_item_qty.getText().toString(),
                     edt_item_rate.getText().toString(),edt_unit.getText().toString(),apptaxList,
                     itemId,edt_hsnCode.getText().toString(),String.valueOf(taxAmount),Integer.parseInt(dataType),
                     edt_item_disc.getText().toString(), Integer.parseInt(itemType),edt_item_supplier.getText().toString(),
                     isBillable,isBillableChange,appointmentModel.getTempId(),String.valueOf(isPartParent),String.valueOf(isPartChild),partTempId,
-                    0, edt_serialNo.getText().toString(),Integer.parseInt(isGrouped));
+                    Integer.parseInt(dataType), edt_serialNo.getText().toString(),Integer.parseInt(isGrouped),0);
 
 
      AppointmentAddItem_Res addItem_res=new AppointmentAddItem_Res(itemId,inm, Integer.parseInt(dataType),
              Integer.parseInt(itemType),edt_item_rate.getText().toString(),edt_item_supplier.getText().toString(),
              edt_serialNo.getText().toString(),edt_item_qty.getText().toString(),
-             edt_item_disc.getText().toString(), Integer.parseInt(isGrouped),taxListFilter,
+             edt_item_disc.getText().toString(), Integer.parseInt(isGrouped),apptaxList,
              edt_item_desc.getText().toString(),edt_hsnCode.getText().toString(),edt_part_no.getText().toString(),
              edt_unit.getText().toString(), isBillable,isBillableChange,appointmentModel.getTempId(),"",
-             "",taxAmount,String.valueOf(isPartParent),String.valueOf(isPartChild),partTempId,0);
+             "",taxAmount,String.valueOf(isPartParent),String.valueOf(isPartChild),partTempId,Integer.parseInt(dataType));
              // *add api for appointment item**/
             try {
                 if (!isBillable.equals("")) {
@@ -1584,30 +1627,89 @@ public class AddEditInvoiceItemActivity2 extends
                 if (addItemOnInvoice) {
                   //  appintmentItemDataModel.setIsBillable("1");
                 }
+
             } catch (Exception exception) {
                 exception.printStackTrace();
             }
+
+    /**Code For Offline Online**/
             List<AppointmentItemDataInMap> itemDataInMaps= new ArrayList<>();
             AppointmentItemDataInMap itemDataInMap=new AppointmentItemDataInMap("",appintmentItemDataModel);
             itemDataInMaps.add(itemDataInMap);
-            itemDataInMaps.addAll(appointmentModel.getItemData());
-            String jsonAddDataDB = new Gson().toJson(itemDataInMaps);
-            AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).appointmentModel().updateAppointmentItem(appId,jsonAddDataDB);
             List<AppointmentAddItem_Res> addItem_resList=new ArrayList<>();
             addItem_resList.add(addItem_res);
-            String jsonAddDataInApi= new Gson().toJson(addItem_resList);
 
-            AppointmentItemAdd_RequestModel itemAddRequestModel =new AppointmentItemAdd_RequestModel(jsonAddDataInApi,appointmentModel.getLeadId(),appId);
-            appointmentItemData_pi.apiCallAddAppointmentItem(itemAddRequestModel);
+                     List<AppointmentItemDataInMap> itemDataInMaps1= new ArrayList<>(itemDataInMaps);
+                     if(appointmentModel!= null && appointmentModel.getItemData() != null){
+                         itemDataInMaps1.addAll(appointmentModel.getItemData());
+                     }
+                     String jsonAddDataDB1 = new Gson().toJson(itemDataInMaps1);
+                     AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).appointmentModel().updateAppointmentItem(appId,jsonAddDataDB1);
+                     appointmentModel.setItemData(itemDataInMaps1);
+                     addItemWithAppointmentSync(addItem_resList);
 
 
-            finish_Activity();
+          finish_Activity();
     } catch (Exception ex) {
         ex.printStackTrace();
         HyperLog.i("TAG", "addItemsOnJob(M) exception:" + ex.toString());
     }
     }
 
+    private void addItemWithAppointmentSync(List<AppointmentAddItem_Res> itemDataList) {
+        try {
+            boolean noItem = false;
+            List<Offlinetable> offlinetableList = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).offlinemodel()
+                    .getOfflinetablesById(Service_apis.addItemOnAppointment);
+            if (offlinetableList != null && offlinetableList.size() > 0) {
+                HyperLog.i("TAG", "addItemWithJobSync(M) item found");
+
+                for (Offlinetable offlinetableModel : offlinetableList) {
+
+                    AppointmentItemAdd_RequestModel reqModel = new Gson().fromJson(offlinetableModel.getParams(),AppointmentItemAdd_RequestModel.class);
+                    if (reqModel.getAppId().equals(appId)) {
+
+                        HyperLog.i("TAG", "addItemWithJobSync(M) item found 1");
+                        HyperLog.i("TAG reqModel1", new Gson().toJson(reqModel));
+
+                        offlinetableModel.setParams(new Gson().toJson(reqModel));
+                        HyperLog.i("TAG offlinetableModel", new Gson().toJson(offlinetableModel));
+
+                        AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).offlinemodel().update(offlinetableModel);
+                        noItem = true;
+
+                    }
+                }
+            }if(!noItem){
+                List<AppointmentAddItem_Res> addItem_resList=new ArrayList<>();
+                addItem_resList.addAll(itemDataList);
+                String jsonAddDataInApi= new Gson().toJson(addItem_resList);
+                AppointmentItemAdd_RequestModel itemAddRequestModel =new AppointmentItemAdd_RequestModel(jsonAddDataInApi,appointmentModel.getLeadId(),appId);
+                String dateTime = AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT);
+                Gson gson = new Gson();
+                String addAppointmentReqest = gson.toJson(itemAddRequestModel);
+                HyperLog.i("TAG addJobReqest", new Gson().toJson(itemAddRequestModel));
+                OfflineDataController.getInstance().addInOfflineDB(Service_apis.addItemOnAppointment, addAppointmentReqest, dateTime);
+            }else{
+                List<AppointmentAddItem_Res> addItem_resList=new ArrayList<>();
+                addItem_resList.addAll(itemDataList);
+                String jsonAddDataInApi= new Gson().toJson(addItem_resList);
+                AppointmentItemAdd_RequestModel itemAddRequestModel =new AppointmentItemAdd_RequestModel(jsonAddDataInApi,appointmentModel.getLeadId(),appId);
+                String dateTime = AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT);
+                Gson gson = new Gson();
+                String addAppointmentReqest = gson.toJson(itemAddRequestModel);
+                HyperLog.i("TAG addJobReqest", new Gson().toJson(itemAddRequestModel));
+                OfflineDataController.getInstance().addInOfflineDB(Service_apis.addItemOnAppointment, addAppointmentReqest, dateTime);
+
+            }
+
+        }catch (Exception e) {
+            HyperLog.i("TAG", "addItemWithJobSync(M) exception:" + e.toString());
+
+            e.printStackTrace();
+        }
+
+    }
     private void addItemsOnJob() {
         try {
             HyperLog.i("TAG", "addItemsOnJob(M) started");
@@ -2162,14 +2264,8 @@ public class AddEditInvoiceItemActivity2 extends
            // intent.putExtra("AddItemData",appintmentItemDataModel);
             setResult(ADD_REQUIRED_ITEM,intent);
 
-        } else if(getIntent().hasExtra("UpdateItemRequirmentGethering")){
-            Intent intent=new Intent();
-           intent.putExtra("appId",appId);
-            //intent.putExtra("UpdateItemDateItemData",true);
-            setResult(UPDATE_ITEM,intent);
         }
-
-        else {
+        else if(bundle.getBoolean("addItemOnInvoice")) {
             Intent intent = new Intent();
             intent.putExtra("AddInvoiceItem", "AddItem");
             setResult(ADD_ITEM_DATA, intent);

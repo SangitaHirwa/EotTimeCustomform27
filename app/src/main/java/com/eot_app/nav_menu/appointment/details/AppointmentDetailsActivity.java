@@ -14,6 +14,8 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.os.PersistableBundle;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
@@ -30,7 +32,9 @@ import android.widget.AdapterView;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
@@ -42,16 +46,20 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.eot_app.R;
 import com.eot_app.UploadDocumentActivity;
 import com.eot_app.databinding.ActivityAppointmentDetailsBinding;
+import com.eot_app.nav_menu.appointment.AppointmentItem_Observer;
 import com.eot_app.nav_menu.appointment.Keepar;
 import com.eot_app.nav_menu.appointment.addupdate.AddAppointmentActivity;
 import com.eot_app.nav_menu.appointment.addupdate.model.AppointmentUpdateReq;
+import com.eot_app.nav_menu.appointment.appointment_ItemData.AppointmentItemAdded_pc;
 import com.eot_app.nav_menu.appointment.appointment_ItemData.AppointmentItemAdded_pi;
 import com.eot_app.nav_menu.appointment.appointment_ItemData.AppointmentItemData_pc;
 import com.eot_app.nav_menu.appointment.appointment_ItemData.AppointmentItemData_pi;
 import com.eot_app.nav_menu.appointment.appointment_ItemData.UpdateItemDataList_pi;
 import com.eot_app.nav_menu.appointment.appointment_model.AppintmentItemDataModel;
 import com.eot_app.nav_menu.appointment.appointment_model.AppointmentItemDataInMap;
+import com.eot_app.nav_menu.appointment.appointment_model.AppointmentItemDeleteRequestModel;
 import com.eot_app.nav_menu.appointment.appointment_model.AppointmentStatusModel;
+import com.eot_app.nav_menu.appointment.appointment_model.AppointmentUpdateItem_Req_Model;
 import com.eot_app.nav_menu.appointment.dbappointment.Appointment;
 import com.eot_app.nav_menu.appointment.details.documents.ActivityDocumentUpload;
 import com.eot_app.nav_menu.appointment.details.documents.DocumentExportReq;
@@ -64,6 +72,7 @@ import com.eot_app.nav_menu.jobs.add_job.Add_job_activity;
 import com.eot_app.nav_menu.jobs.job_db.Job;
 import com.eot_app.nav_menu.jobs.job_detail.JobDetailActivity;
 import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.AddEditInvoiceItemActivity2;
+import com.eot_app.nav_menu.jobs.joboffline_db.JobItem_Observer;
 import com.eot_app.nav_menu.quote.add_quotes_pkg.AddQuotes_Activity;
 import com.eot_app.nav_menu.quote.quote_invoice_pkg.Quote_Invoice_Details_Activity;
 import com.eot_app.services.Service_apis;
@@ -78,12 +87,12 @@ import com.eot_app.utility.util_interfaces.Callback_AlertDialog;
 import com.eot_app.utility.util_interfaces.MyListItemSelected;
 import com.eot_app.utility.util_interfaces.MySpinnerAdapter;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.hypertrack.hyperlog.HyperLog;
 
 import java.io.File;
-import java.lang.reflect.Type;
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -94,7 +103,8 @@ import java.util.Set;
 import static com.eot_app.nav_menu.jobs.job_detail.detail.DetailFragment.MY_PERMISSIONS_REQUEST_CALL_PHONE;
 
 public class AppointmentDetailsActivity extends UploadDocumentActivity
-        implements View.OnClickListener, AttachementAdapter.OnItemSelection , Doc_Attch_View, MyListItemSelected<AppintmentItemDataModel>, UpdateItemDataList_pi, RequirementGetheringListAdapter.DeleteItem {
+        implements View.OnClickListener, AttachementAdapter.OnItemSelection , Doc_Attch_View, MyListItemSelected<AppintmentItemDataModel>, UpdateItemDataList_pi,
+        RequirementGetheringListAdapter.DeleteItem, AppointmentItem_Observer {
     private static final int EDIT_APPOINTMENT_CODE = 10;
     private static final int UPLOADED_NEW_LIST = 148;
     private static final int UPDATE_ITEM = 398;
@@ -104,7 +114,7 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
     private final LinkedHashMap<String, String> arraystatus = new LinkedHashMap<>();
     private  String[] statusArray = new String[arraystatus.size()];
     List<AppointmentStatusModel> allAppointmentStatusList =new ArrayList<>();
-    RequirementGetheringListAdapter reqGethListAdapter ;
+    RequirementGetheringListAdapter reqGethListAdapter  = new RequirementGetheringListAdapter(new ArrayList<>(),this,this);
     ArrayList<AppointmentAttachment> allAttachmentList=new ArrayList<>();
     List<AppintmentItemDataModel> itemList = new ArrayList<>();
     ActivityAppointmentDetailsBinding binding;
@@ -112,6 +122,7 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
     Appointment model = new Appointment();
     Doc_Attch_Pi doc_attch_pi;
     AppointmentItemData_pi appointmentItemData_pi;
+    AppointmentItemAdded_pi itemAdded_pi;
     private final int GET_ITEM_LIST=5;
      AppintmentItemDataModel itemDataModel=new AppintmentItemDataModel();
 
@@ -131,6 +142,12 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
     boolean isFBMenuOpened;
     //custom dialog for instruction and details
     private Dialog enterFieldDialog;
+
+    /*@Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable("adapterObject",reqGethListAdapter);
+    }*/
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -163,20 +180,18 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
             binding.nolistTxt.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_check_network));
             binding.nolistLinear.setVisibility(View.VISIBLE);
         }
-        appointmentItemData_pi=new AppointmentItemData_pc(this) ;
+
+
         doc_attch_pi = new Doc_Attch_Pc(this);
+        EotApp.getAppinstance().setAppointmentItem_observer(this);
+       // reqGethListAdapter = new RequirementGetheringListAdapter(new ArrayList<>(),this,this);
+        binding.recyclerOfReqGeth.setAdapter(reqGethListAdapter);
+        appointmentItemData_pi =new AppointmentItemData_pc();
+        itemAdded_pi = new AppointmentItemAdded_pc(this);
         model = getIntent().getParcelableExtra("appointmentData");
         if (model != null) {
             setDataInUI(model);
         }
-        for (AppointmentItemDataInMap itemData : model.getItemData()) {
-            AppintmentItemDataModel itemData1 = itemData.getItemData();
-             itemList.add(itemData1);
-        }
-
-        reqGethListAdapter=new RequirementGetheringListAdapter(itemList,this);;
-//        reqGethListAdapter.setItemList(itemList);
-        binding.recyclerOfReqGeth.setAdapter(reqGethListAdapter);
         binding.recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         binding.recyclerView.setNestedScrollingEnabled(false);
 
@@ -247,7 +262,7 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
             @Override
             public void onRefresh() {
 
-                appointmentItemData_pi.getItemFromServer(model.getAppId(),reqGethListAdapter);
+                itemAdded_pi.getItemListByAppointmentFromDB(model.getAppId());
             }
         });
 
@@ -334,6 +349,9 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
             binding.tvViewOnMap.setOnClickListener(this);
             binding.tvAddNew.setOnClickListener(this);
             binding.editAppointment.setOnClickListener(this);
+
+
+            itemAdded_pi.getItemListByAppointmentFromDB(model.getAppId());
 
         }
 
@@ -897,30 +915,19 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
                 break;
 
             case GET_ITEM_LIST:
+           
                 if(data!=null) {
-                    //itemDataModel = data.getParcelableExtra("AddItemData");
-                    appointmentItemData_pi.getItemFromServer(model.getAppId(),reqGethListAdapter);
-                   // itemList.add(itemDataModel);
-
+                    itemAdded_pi.getItemListByAppointmentFromDB(model.getAppId());
                 }
                 break;
-
             case UPDATE_ITEM:
-                if(data!=null){
-                       String appId= data.getStringExtra("appId");
-
-                    String updatedItemData = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).appointmentModel().getUpdatedItemData(appId);
-                    Type listType = new TypeToken<List<AppointmentItemDataInMap>>() {
-                    }.getType();
-                    List<AppointmentItemDataInMap> updatedItemList = new Gson().fromJson(updatedItemData, listType);
-                    List<AppintmentItemDataModel> tempItemList = new ArrayList<>();
-                    for (AppointmentItemDataInMap itemData : updatedItemList) {
-                        AppintmentItemDataModel itemData1 = itemData.getItemData();
-                       tempItemList.add(itemData1);
+                if(resultCode== AppCompatActivity.RESULT_OK){
+                    if(data!=null){
+                        reqGethListAdapter = data.getParcelableExtra("gatheringObject");
+                        AppointmentItemDataInMap updateDataForDB = data.getParcelableExtra("updateDataForDB");
+                        AppointmentUpdateItem_Req_Model updateDta = (AppointmentUpdateItem_Req_Model) data.getSerializableExtra("updateDataReqModel");
+                        appointmentItemData_pi.apiCallUpdateAppointmentItem(updateDta,updateDataForDB,model.getAppId());
                     }
-                    reqGethListAdapter.setItemList(tempItemList);
-                    reqGethListAdapter.notifyDataSetChanged();
-
                 }
         }
         super.onActivityResult(requestCode, resultCode, data);
@@ -1155,11 +1162,11 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
     @Override
     public void onMyListitemSeleted(AppintmentItemDataModel appintmentItemDataModel) {
         Intent intent = new Intent(this, AddEditInvoiceItemActivity2.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+//        intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         intent.putExtra("UpdateItemRequirmentGethering",true);
         intent.putExtra("appId",model.getAppId());
-        intent.putExtra("appItemModelForUpdate",appintmentItemDataModel);
-
+       intent.putExtra("updateItemDataOfApp",appintmentItemDataModel);
+       intent.putExtra("adapterObject", (Parcelable) reqGethListAdapter);
         startActivityForResult(intent,UPDATE_ITEM);
     }
 
@@ -1172,16 +1179,69 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
         requirementGetheringListAdapter.updateItemList(itemList);
         requirementGetheringListAdapter.notifyDataSetChanged();
     }
-    public void setData(List<AppintmentItemDataModel> dataModelList){
-
-        reqGethListAdapter.updateItemList(itemList);
-        reqGethListAdapter.notifyDataSetChanged();
-    }
-
-
 
     @Override
-    public void itemDelete(String ilmmId) {
+    public void setItemListByAppointment(List<AppointmentItemDataInMap> itemListMap) {
+        /* *** *Sort Item By name***/
+        try {
+            Collections.sort(itemListMap, (o1, o2) -> o1.getItemData().getInm().compareTo(o2.getItemData().getInm()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        Log.e("TAG itemList::", new Gson().toJson(itemListMap));
+        this.itemList.clear();
+        for (AppointmentItemDataInMap item : itemListMap
+        ) {
+            this.itemList.add(item.getItemData());
+        }
+
+        if (itemList != null && reqGethListAdapter != null && itemList.size() > 0) {
+            reqGethListAdapter.updateItemList(this.itemList);
+           // invalidateOptionsMenu();
+        }
 
     }
+
+    @Override
+    public void itemDelete(String ilmmId,int isItemOrTitle,int leadId) {
+        AppointmentItemDeleteRequestModel deleteRequestModel=new AppointmentItemDeleteRequestModel(ilmmId,String.valueOf(isItemOrTitle),
+                String.valueOf(leadId));
+        appointmentItemData_pi.apiCallForDeleteItem(deleteRequestModel,reqGethListAdapter,model.getAppId());
+    }
+
+    @Override
+    public void onObserveCallBack(String api_name, String jobId) {
+        try{
+            Log.e("TAG", api_name);
+            switch (api_name) {
+                case Service_apis.addItemOnAppointment: {
+                    if (itemAdded_pi != null) {
+                        itemAdded_pi.getItemFromServer(model.getAppId(),this);
+                    }
+                    break;
+                }
+
+            }
+        }catch (Exception e){
+            Log.e("Tag",e.getMessage());
+        }
+    }
+
+   /* @Override
+    public void onObserveCallBack(String api_name, String appId) {
+        try{
+            Log.e("TAG", api_name);
+            switch (api_name) {
+                case "LeadController/addLeadCart": {
+                    if (itemAdded_pi != null) {
+                        itemAdded_pi.getItemFromServer(model.getAppId(),this);
+                    }
+                    break;
+                }
+            }
+        }catch (Exception e){
+            Log.e("Tag",e.getMessage());
+        }
+    }*/
 }

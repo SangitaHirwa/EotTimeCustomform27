@@ -1,6 +1,8 @@
 package com.eot_app.nav_menu.appointment.appointment_model;
 
-public class AppointmentUpdateItem_Req_Model {
+import java.io.Serializable;
+
+public class AppointmentUpdateItem_Req_Model implements Serializable {
     private String addToCartServices;
     private  String leadId;
     private String ilmmId;
@@ -34,4 +36,5 @@ public class AppointmentUpdateItem_Req_Model {
     public void setIlmmId(String ilmmId) {
         this.ilmmId = ilmmId;
     }
+
 }

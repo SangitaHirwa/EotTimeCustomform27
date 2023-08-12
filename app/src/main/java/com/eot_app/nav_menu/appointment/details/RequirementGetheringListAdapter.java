@@ -34,11 +34,13 @@ public class RequirementGetheringListAdapter extends RecyclerView.Adapter<Requir
     List<AppintmentItemDataModel> itemDataModels;
     AppintmentItemDataModel ItemDataModel;
     private final MyListItemSelected<AppintmentItemDataModel> mListner;
+    DeleteItem deleteItem;
 
 
-    RequirementGetheringListAdapter(List<AppintmentItemDataModel> itemDataModels, MyListItemSelected<AppintmentItemDataModel> mListner) {
-        this.itemDataModels = itemDataModels;
+    RequirementGetheringListAdapter( List<AppintmentItemDataModel> itemList, MyListItemSelected<AppintmentItemDataModel> mListner,DeleteItem deleteItem) {
+        this.itemDataModels=itemList;
         this.mListner = mListner;
+        this.deleteItem=deleteItem;
     }
 
 
@@ -54,14 +56,17 @@ public class RequirementGetheringListAdapter extends RecyclerView.Adapter<Requir
     @Override
     public void onBindViewHolder(@NonNull @NotNull RequirementGetheringViewHolder holder, int position) {
         ItemDataModel = itemDataModels.get(position);
-
-        holder.service.setText(ItemDataModel.getInm());
+        if(!ItemDataModel.getInm().equals("")) {
+            holder.service.setText(ItemDataModel.getInm());
+        }
         holder.desOfRequirment.setText(ItemDataModel.getDes());
         holder.count.setText("X" + ItemDataModel.getQty());
         if (ItemDataModel.getDataType() == 1) {
-            holder.work.setText("Item");
+            String item="Item";
+            holder.work.setText(item);
         } else if (ItemDataModel.getDataType() == 3) {
-            holder.work.setText("Service");
+            String service="Service";
+            holder.work.setText(service);
         }
         if (itemDataModels.get(position).getIlmmId() == 0) {
             holder.desOfRequirment.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.item_not_sync));
@@ -70,7 +75,8 @@ public class RequirementGetheringListAdapter extends RecyclerView.Adapter<Requir
         holder.deleteItem.setOnClickListener(view -> {
             try {
                 if (itemDataModels.get(position).getIlmmId() != 0) {
-
+                    deleteItem.itemDelete(String.valueOf(itemDataModels.get(position).getIlmmId())
+                            ,itemDataModels.get(position).getIsItemOrTitle(),itemDataModels.get(position).getLeadId());
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
@@ -109,7 +115,7 @@ public class RequirementGetheringListAdapter extends RecyclerView.Adapter<Requir
         else return itemDataModels.size();
     }
     public interface DeleteItem {
-        void itemDelete(String ilmmId);
+        void itemDelete(String ilmmId,int isItemOrTitle, int leadId);
     }
 }
 

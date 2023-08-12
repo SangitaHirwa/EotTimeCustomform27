@@ -1,6 +1,7 @@
 package com.eot_app.nav_menu.appointment.appointment_ItemData;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -8,6 +9,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.eot_app.nav_menu.appointment.appointment_model.AppintmentItemDataModel;
 import com.eot_app.nav_menu.appointment.appointment_model.AppointmentItemAdd_RequestModel;
 import com.eot_app.nav_menu.appointment.appointment_model.AppointmentItemDataInMap;
+import com.eot_app.nav_menu.appointment.appointment_model.AppointmentItemDeleteRequestModel;
 import com.eot_app.nav_menu.appointment.appointment_model.AppointmentUpdateItem_Req_Model;
 import com.eot_app.nav_menu.appointment.appointment_model.ItemByAppointmentId;
 import com.eot_app.nav_menu.appointment.details.AppointmentDetailsActivity;
@@ -34,63 +36,18 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 public class AppointmentItemData_pc implements AppointmentItemData_pi {
-    AppointmentItemAdded_pi itemAdded_pi=new AppointmentItemAdded_pc();
-    UpdateItemDataList_pi updateItemDataList_pi = new AppointmentDetailsActivity();
 
+    UpdateItemDataList_pi updateItemDataList_pi = new AppointmentDetailsActivity();
+    AppointmentItemAdded_pi itemAdded_pi=new AppointmentItemAdded_pc(updateItemDataList_pi);
+    public final static int ADD_REQUIRED_ITEM = 5;
     Context context;
 
-    public AppointmentItemData_pc(Context context) {
-        this.context = context;
-    }
 
     @Override
-    public void apiCallAddAppointmentItem(AppointmentItemAdd_RequestModel itemAddRequestModel) {
-        JsonObject jsonObject =  AppUtility.getJsonObject(new Gson().toJson(itemAddRequestModel));
-        if (AppUtility.isInternetConnected()) {
-          AppUtility.progressBarShow(context);
-            ApiClient.getservices().eotServiceCall(Service_apis.addItemOnAppointment,AppUtility.getApiHeaders(),jsonObject)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Observer<JsonObject>() {
-                        @Override
-                        public void onSubscribe(Disposable d) {
-
-                        }
-
-                        @Override
-                        public void onNext(JsonObject jsonObject) {
-                            Log.e("Responce--->>>", "" + jsonObject.toString());
-                            if (jsonObject.get("success").getAsBoolean()) {
-                                String convert = new Gson().toJson(jsonObject.get("data"));
-                                //itemAdded_pi.setItemAdded();
-                                EotApp.getAppinstance().showToastmsg(LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
-                            } else if (jsonObject.get("statusCode") != null && jsonObject.get("statusCode").getAsString().equals(AppConstant.SESSION_EXPIRE)) {
-                                itemAdded_pi.onSessionExpire(LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
-                            }
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-                            AppUtility.progressBarDissMiss();
-                            Log.e("", e.getMessage());
-                        }
-
-                        @Override
-                        public void onComplete() {
-                            AppUtility.progressBarDissMiss();
-                        }
-                    });
-
-        } else {
-            netWork_erroR();
-        }
-    }
-
-    @Override
-    public void apiCallUpdateAppointmentItem(AppointmentUpdateItem_Req_Model appointmentUpdateItem_req_model) {
+    public void apiCallUpdateAppointmentItem(AppointmentUpdateItem_Req_Model appointmentUpdateItem_req_model
+            ,AppointmentItemDataInMap itemDataModelForDB,String appId) {
         JsonObject jsonObject =  AppUtility.getJsonObject(new Gson().toJson(appointmentUpdateItem_req_model));
         if (AppUtility.isInternetConnected()) {
-            AppUtility.progressBarShow(context);
             ApiClient.getservices().eotServiceCall(Service_apis.updateItemOnAppointment,AppUtility.getApiHeaders(),jsonObject)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -104,22 +61,38 @@ public class AppointmentItemData_pc implements AppointmentItemData_pi {
                         public void onNext(JsonObject jsonObject) {
                             Log.e("Responce--->>>", "" + jsonObject.toString());
                             if (jsonObject.get("success").getAsBoolean()) {
-                                String convert = new Gson().toJson(jsonObject.get("data"));
-                                EotApp.getAppinstance().showToastmsg(LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
+
+                                String updateItem = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).appointmentModel().getUpdatedItemData(appId);
+                                Type listType = new TypeToken<List<AppointmentItemDataInMap>>() {
+                                }.getType();
+                                List<AppointmentItemDataInMap > addItemList = new Gson().fromJson(updateItem, listType);
+                                for (AppointmentItemDataInMap itemData : addItemList) {
+                                    AppintmentItemDataModel itemData1 = itemData.getItemData();
+                                    if(String.valueOf(itemData1.getIlmmId()).equals(itemDataModelForDB.getIlmmId())){
+                                        addItemList.remove(itemData1);
+                                    }
+                                        break;
+                                }
+                                addItemList.add(itemDataModelForDB);
+
+                                String updateInDB = new Gson().toJson(addItemList);
+                                AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).appointmentModel().updateAppointmentItem(appId,updateInDB);
+
                             } else if (jsonObject.get("statusCode") != null && jsonObject.get("statusCode").getAsString().equals(AppConstant.SESSION_EXPIRE)) {
                                 itemAdded_pi.onSessionExpire(LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
                             }
+
                         }
 
                         @Override
                         public void onError(Throwable e) {
-                            AppUtility.progressBarDissMiss();
                             Log.e("", e.getMessage());
                         }
 
                         @Override
                         public void onComplete() {
-                            AppUtility.progressBarDissMiss();
+                            itemAdded_pi.getItemListByAppointmentFromDB(appId);
+
                         }
                     });
 
@@ -130,12 +103,12 @@ public class AppointmentItemData_pc implements AppointmentItemData_pi {
     }
 
     @Override
-    public void getItemFromServer(String appId, RequirementGetheringListAdapter requirementGetheringListAdapter) {
-        ItemByAppointmentId byAppointmentId=new ItemByAppointmentId(appId);
-        JsonObject jsonObject =  AppUtility.getJsonObject(new Gson().toJson(byAppointmentId));
+    public void apiCallForDeleteItem(AppointmentItemDeleteRequestModel deleteRequestModel,
+                                     RequirementGetheringListAdapter requirementGetheringListAdapter,String appId) {
+        JsonObject jsonObject =  AppUtility.getJsonObject(new Gson().toJson(deleteRequestModel));
         if (AppUtility.isInternetConnected()) {
             AppUtility.progressBarShow(context);
-            ApiClient.getservices().eotServiceCall(Service_apis.getItemFromServer,AppUtility.getApiHeaders(),jsonObject)
+            ApiClient.getservices().eotServiceCall(Service_apis.deleteItemOnAppointment,AppUtility.getApiHeaders(),jsonObject)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Observer<JsonObject>() {
@@ -148,17 +121,21 @@ public class AppointmentItemData_pc implements AppointmentItemData_pi {
                         public void onNext(JsonObject jsonObject) {
                             Log.e("Responce--->>>", "" + jsonObject.toString());
                             if (jsonObject.get("success").getAsBoolean()) {
-                                String convert = new Gson().toJson(jsonObject.get("data").getAsJsonObject().get("itemData"));
+
+                                String removeDeletedItem = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).appointmentModel().getUpdatedItemData(appId);
                                 Type listType = new TypeToken<List<AppointmentItemDataInMap>>() {
                                 }.getType();
-                                List<AppointmentItemDataInMap> updatedItemList = new Gson().fromJson(convert, listType);
-                                List<AppintmentItemDataModel> tempItemList = new ArrayList<>();
-                                for (AppointmentItemDataInMap itemData : updatedItemList) {
-                                    AppintmentItemDataModel itemData1 = itemData.getItemData();
-                                    tempItemList.add(itemData1);
+                                List<AppointmentItemDataInMap > addItemList = new Gson().fromJson(removeDeletedItem, listType);
+                                List<AppointmentItemDataInMap > removeItemList=new ArrayList<>();
+                                for (AppointmentItemDataInMap itemData : addItemList) {
+                                    String ilmmId= itemData.getIlmmId();
+                                    if(ilmmId.equals(deleteRequestModel.getIlmmId())){
+                                        removeItemList.add(itemData);
+                                    }
                                 }
-                                String itemJson = new Gson().toJson(tempItemList);
-                                AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).appointmentModel().updateAppointmentItem(appId,itemJson);
+                                addItemList.removeAll(removeItemList);
+                                String deletedDtaRemoved = new Gson().toJson(addItemList);
+                                AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).appointmentModel().updateAppointmentItem(appId,deletedDtaRemoved);
 
                             } else if (jsonObject.get("statusCode") != null && jsonObject.get("statusCode").getAsString().equals(AppConstant.SESSION_EXPIRE)) {
                                 itemAdded_pi.onSessionExpire(LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
@@ -173,13 +150,7 @@ public class AppointmentItemData_pc implements AppointmentItemData_pi {
 
                         @Override
                         public void onComplete() {
-                            String addedItemData = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).appointmentModel().getUpdatedItemData(appId);
-                            Type listType = new TypeToken<List<AppintmentItemDataModel>>() {
-                            }.getType();
-                            List<AppintmentItemDataModel> addedItemList = new Gson().fromJson(addedItemData, listType);
-                            List<AppintmentItemDataModel> tempItemList = new ArrayList<>();
-                            tempItemList.addAll(addedItemList);
-                            updateItemDataList_pi.updateItemDataList(tempItemList,requirementGetheringListAdapter);
+                            itemAdded_pi.getItemListByAppointmentFromDB(appId);
                             AppUtility.progressBarDissMiss();
                         }
                     });
@@ -189,6 +160,7 @@ public class AppointmentItemData_pc implements AppointmentItemData_pi {
         }
 
     }
+
 
     private void netWork_erroR() {
         AppUtility.alertDialog((EotApp.getAppinstance()), LanguageController.getInstance().getMobileMsgByKey(AppConstant.dialog_alert), LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_check_network), LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), "", new Callable<Boolean>() {

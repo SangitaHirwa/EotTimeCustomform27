@@ -5,12 +5,14 @@ import android.os.Parcelable;
 
 import androidx.room.TypeConverters;
 
+import com.eot_app.nav_menu.appointment.dbappointment.Appointment;
 import com.eot_app.nav_menu.appointment.details.documents.AppointmentTax;
 import com.eot_app.nav_menu.appointment.details.documents.AppointmentTaxConverter;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_db.tax_dao.TaxConverter;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_detail_pkg.inv_detail_model.Tax;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class AppintmentItemDataModel implements Parcelable {
@@ -57,7 +59,7 @@ public class AppintmentItemDataModel implements Parcelable {
                                    int dataType, String discount, int itemType,
                                    String supplierCost, String isBillable, String isBillableChange,
                                    String tempId, String isPartParent, String isPartChild,
-                                   String partTempId, int isItemOrTitle, String serialNo, int isGrouped) {
+                                   String partTempId, int isItemOrTitle, String serialNo, int isGrouped,int ilmmId) {
         this.des = des;
         this.img = img;
         this.inm = inm;
@@ -82,11 +84,13 @@ public class AppintmentItemDataModel implements Parcelable {
         this.isItemOrTitle = isItemOrTitle;
         this.serialNo = serialNo;
         this.isGrouped = isGrouped;
+        this.ilmmId = ilmmId;
     }
 
     public static final Creator<AppintmentItemDataModel> CREATOR = new Creator<AppintmentItemDataModel>() {
         @Override
         public AppintmentItemDataModel createFromParcel(Parcel in) {
+
             return new AppintmentItemDataModel(in);
         }
 
@@ -107,7 +111,8 @@ public class AppintmentItemDataModel implements Parcelable {
             rate = in.readString();
             unit = in.readString();
             //tax = in.readString();
-            tax = in.createTypedArrayList(AppointmentTax.CREATOR);
+            tax = new ArrayList<>();
+            in.readList(tax, AppointmentTax.class.getClassLoader());
             ilmmId = in.readInt();
             itemId = in.readString();
             leadId = in.readInt();
@@ -118,8 +123,50 @@ public class AppintmentItemDataModel implements Parcelable {
             discount = in.readString();
             itemType = in.readInt();
             supplierCost = in.readString();
-    }
+            isBillable = in.readString();
+            isBillableChange = in.readString();
+            tempId = in.readString();
+            isPartParent = in.readString();
+            isPartChild = in.readString();
+            partTempId = in.readString();
+            isItemOrTitle = in.readInt();
+            serialNo = in.readString();
+            isGrouped = in.readInt();
 
+        }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(des);
+        parcel.writeString(img);
+        parcel.writeString(inm);
+        parcel.writeString(pno);
+        parcel.writeString(qty);
+        parcel.writeInt(jtId);
+        parcel.writeString(rate);
+        parcel.writeString(unit);
+        parcel.writeList(tax);
+        parcel.writeInt(ilmmId);
+        parcel.writeString(itemId);
+        parcel.writeInt(leadId);
+        parcel.writeString(hsncode);
+        parcel.writeInt(orderNo);
+        parcel.writeString(taxamnt);
+        parcel.writeInt(dataType);
+        parcel.writeString(discount);
+        parcel.writeInt(itemType);
+        parcel.writeString(supplierCost);
+        parcel.writeString(isBillable);
+        parcel.writeString(isBillableChange);
+        parcel.writeString(tempId);
+        parcel.writeString(isPartParent);
+        parcel.writeString(isPartChild);
+        parcel.writeString(partTempId);
+        parcel.writeInt(isItemOrTitle);
+        parcel.writeString(serialNo);
+        parcel.writeInt(isGrouped );
+
+    }
 
     public String getDes() {
         return des;
@@ -375,26 +422,5 @@ public class AppintmentItemDataModel implements Parcelable {
         return 0;
     }
 
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeString(des);
-        parcel.writeString(img);
-        parcel.writeString(inm);
-        parcel.writeString(pno);
-        parcel.writeString(qty);
-        parcel.writeInt(jtId);
-        parcel.writeString(rate);
-        parcel.writeString(unit);
-        parcel.writeTypedList(tax);
-        parcel.writeInt(ilmmId);
-        parcel.writeString(itemId);
-        parcel.writeInt(leadId);
-        parcel.writeString(hsncode);
-        parcel.writeInt(orderNo);
-        parcel.writeString(taxamnt);
-        parcel.writeInt(dataType);
-        parcel.writeString(discount);
-        parcel.writeInt(itemType);
-        parcel.writeString(supplierCost);
-    }
+
 }
