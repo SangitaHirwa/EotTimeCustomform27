@@ -147,7 +147,7 @@ public class AddEditInvoiceItemActivity2 extends
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit__invoice);
-        initializelables();
+//        initializelables();
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             try {
@@ -162,6 +162,7 @@ public class AddEditInvoiceItemActivity2 extends
                     equipmentId = bundle.getString("equipmentId");
                     equipmentIdName = bundle.getString("equipmentIdName");
                     equipmentType = bundle.getString("equipmentType");
+                    initializelables();
                     if (comeFrom != null && comeFrom.equalsIgnoreCase("AddRemark")) {
                         edt_item_qty.setEnabled(false);
                         ll_note.setVisibility(View.VISIBLE);
@@ -183,6 +184,7 @@ public class AddEditInvoiceItemActivity2 extends
                 jobId = bundle.getString("jobId");
                 invId = bundle.getString("invId");
                 getTaxDisType(jobId);
+                initializelables();
                 addItemOnInvoice = bundle.getBoolean("addItemOnInvoice");
                 if(!invId.equals("") && invId != null) {
                     getTaxMethodType = bundle.getString("getTaxMethodType");
@@ -205,6 +207,7 @@ public class AddEditInvoiceItemActivity2 extends
                 jobId = bundle.getString("edit_jobId");
                 invId = bundle.getString("invId");
                 getTaxDisType(jobId);
+                initializelables();
                 addItemOnInvoice = bundle.getBoolean("addItemOnInvoice");
                 updateItemDataModel = bundle.getParcelable("InvoiceItemDataModel");
                 if(!invId.equals("") && invId != null) {
