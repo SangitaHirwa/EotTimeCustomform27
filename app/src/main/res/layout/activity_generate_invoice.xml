@@ -379,8 +379,6 @@
                             android:id="@+id/recyclerView_shippingitem"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:minHeight="150dp"
-                            tools:itemCount="5"
                             android:layout_below="@+id/recyclerView_invoice" />
 
                         <androidx.constraintlayout.widget.ConstraintLayout

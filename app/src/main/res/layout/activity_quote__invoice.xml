@@ -249,7 +249,6 @@
                             android:id="@+id/recyclerView_shippingitem"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:minHeight="150dp"
                             android:layout_below="@+id/recyclerView_quote" />
                         <androidx.constraintlayout.widget.ConstraintLayout
                             android:id="@+id/cl_parent_calculation"

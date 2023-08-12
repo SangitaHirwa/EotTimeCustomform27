@@ -1010,7 +1010,7 @@ public class AddQutesItem_Activity extends AppCompatActivity implements TextWatc
                     edt_item_description.getText().toString().trim(), amount_value_txt.getText().toString().trim(),
                     taxListFilter,
                     edt_item_supplier.getText().toString().trim(),
-                    edt_part_no.getText().toString().trim(), String.valueOf(taxAmount), jtId, itemId
+                    edt_part_no.getText().toString().trim(), taxamount_value_txt.getText().toString().trim(), jtId, itemId
                     , quote_itemData.getInm());
 
             quoteItemAdd_pi.callApiUpdateQuotesItem(updateModel);
@@ -1022,7 +1022,7 @@ public class AddQutesItem_Activity extends AppCompatActivity implements TextWatc
                     taxListFilter,
                     edt_unit.getText().toString().trim(),
                     edt_item_supplier.getText().toString().trim()
-                    , isInvOrNoninv, edt_part_no.getText().toString().trim(), String.valueOf(taxAmount), amount_value_txt.getText().toString().trim(), jtId, inm);
+                    , isInvOrNoninv, edt_part_no.getText().toString().trim(), taxamount_value_txt.getText().toString().trim(), amount_value_txt.getText().toString().trim(), jtId, inm);
 
             quoteItemAdd_pi.apiCallAddQuotesItem(reqModel);
         }

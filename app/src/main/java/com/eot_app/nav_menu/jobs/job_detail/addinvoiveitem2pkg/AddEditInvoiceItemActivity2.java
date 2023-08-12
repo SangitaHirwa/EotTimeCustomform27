@@ -1344,7 +1344,7 @@ public class AddEditInvoiceItemActivity2 extends
                             edt_hsnCode.getText().toString().trim(),
                             edt_part_no.getText().toString().trim(),
                             edt_unit.getText().toString().trim(),
-                            (String.valueOf(taxAmount))
+                            taxamount_value_txt.getText().toString().trim()
                             , edt_item_supplier.getText().toString().trim()
                             , taxListFilter, jtId,
                             edt_serialNo.getText().toString().trim(),
@@ -1569,7 +1569,7 @@ public class AddEditInvoiceItemActivity2 extends
                     edt_item_desc.getText().toString().trim(),
                     edt_hsnCode.getText().toString().trim(), edt_part_no.getText().toString().trim(),
                     edt_unit.getText().toString().trim(),
-                    (String.valueOf(taxAmount)),
+                    taxamount_value_txt.getText().toString().trim(),
                     edt_item_supplier.getText().toString().trim()
                     , taxListFilter, jtId, edt_serialNo.getText().toString().trim(),
                     updateItemDataModel.getItemConvertCount()
