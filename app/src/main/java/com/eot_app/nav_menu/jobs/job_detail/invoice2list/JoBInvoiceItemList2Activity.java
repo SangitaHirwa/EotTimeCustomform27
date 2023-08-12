@@ -83,6 +83,8 @@ public class JoBInvoiceItemList2Activity extends AppCompatActivity implements Vi
     private Spinner loc_tax_dp;
     private String locId = "0";
     private List<TaxesLocation> taxList = new ArrayList<>();
+    private Job job;
+    String getDisCalculationType, getTaxCalculationType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,11 +102,22 @@ public class JoBInvoiceItemList2Activity extends AppCompatActivity implements Vi
             jobId = bundle.getString("JobId");
             try {
                 if (jobId != null && !jobId.equals("")) {
-                    Job job = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(jobId);
+                    job = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(jobId);
                     if (job.getLocId() == null)
                         job.setLocId("0");
                     else locId = job.getLocId();
+                }else{
+                    getDisCalculationType= App_preference.getSharedprefInstance().getLoginRes().getDisCalculationType();
+                    getTaxCalculationType= App_preference.getSharedprefInstance().getLoginRes().getTaxCalculationType();
                 }
+
+                    if(job.getCanInvoiceCreated().equals("1")) {
+                        getDisCalculationType = AppDataBase.getInMemoryDatabase(this).jobModel().disCalculationType(jobId);
+                        getTaxCalculationType = AppDataBase.getInMemoryDatabase(this).jobModel().taxCalculationType(jobId);
+                    }else {
+                        getDisCalculationType= App_preference.getSharedprefInstance().getLoginRes().getDisCalculationType();
+                        getTaxCalculationType= App_preference.getSharedprefInstance().getLoginRes().getTaxCalculationType();
+                    }
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -303,17 +316,10 @@ public class JoBInvoiceItemList2Activity extends AppCompatActivity implements Vi
     }
 
     private void intialize_UI_Views() {
-        String getDisCalculationType;
-        if (jobId!=null&&!jobId.isEmpty())
-        {
-            getDisCalculationType=AppDataBase.getInMemoryDatabase(this).jobModel().disCalculationType(jobId);
-        }else{
-            getDisCalculationType= App_preference.getSharedprefInstance().getLoginRes().getDisCalculationType();
-        }
         layoutManager = new LinearLayoutManager(this);
         recyclerView_invoice.setLayoutManager(layoutManager);
 
-        invoice_list_adpter = new InvoiceItemList2Adpter(this, new ArrayList<>(),getDisCalculationType);//, this, this
+        invoice_list_adpter = new InvoiceItemList2Adpter(this, new ArrayList<>(),getDisCalculationType,getTaxCalculationType);//, this, this
         recyclerView_invoice.setAdapter(invoice_list_adpter);
 
 

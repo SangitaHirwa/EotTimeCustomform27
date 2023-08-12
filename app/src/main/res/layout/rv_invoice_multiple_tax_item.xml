@@ -24,5 +24,5 @@
         app:layout_constraintTop_toTopOf="@id/txt_lbl_tax"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="100.00" />
+        android:text="" />
 </androidx.constraintlayout.widget.ConstraintLayout>

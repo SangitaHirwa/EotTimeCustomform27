@@ -55,7 +55,7 @@ public class InvoiceItemList2Adpter extends RecyclerView.Adapter<InvoiceItemList
     private String getDisCalculationType;
 
     /****This for FORM - 1 **/
-    public InvoiceItemList2Adpter(Context context, List<InvoiceItemDataModel> invoiceItemList,String getDisCalculationType) {
+    public InvoiceItemList2Adpter(Context context, List<InvoiceItemDataModel> invoiceItemList,String getDisCalculationType, String getTaxCalculationType) {
         this.invoiceItemList = invoiceItemList;
         this.is_pos_checked = new boolean[invoiceItemList.size()];
         nm_list = new HashSet<>();
@@ -63,20 +63,20 @@ public class InvoiceItemList2Adpter extends RecyclerView.Adapter<InvoiceItemList
         chk_pos = new HashSet<>();
         this.invoce_rm_item = ((MyListItemSelectedLisT)context);
         this.myListItemSelected = ((MyListItemSelected<InvoiceItemDataModel>) context);
-        this.taxCalculationType = App_preference.getSharedprefInstance().getLoginRes().getTaxCalculationType();
+        this.taxCalculationType = getTaxCalculationType;
         this.context = context;
         this.getDisCalculationType=getDisCalculationType;
     }
 
     /****This for FORM - 1 **/
-    public InvoiceItemList2Adpter(Context context, List<InvoiceItemDataModel> invoiceItemList, boolean is_hide_checkBox, String jobId,String getDisCalculationType) {
+    public InvoiceItemList2Adpter(Context context, List<InvoiceItemDataModel> invoiceItemList, boolean is_hide_checkBox, String jobId,String getDisCalculationType,String getTaxCalculationType) {
         this.invoiceItemList = invoiceItemList;
         this.context = context;
         this.jobId = jobId;
         nm_list = new HashSet<>();
         ids_list = new HashSet<>();
         chk_pos = new HashSet<>();
-        this.taxCalculationType = App_preference.getSharedprefInstance().getLoginRes().getTaxCalculationType();
+        this.taxCalculationType = getTaxCalculationType;
         this.is_hide_checkBox = is_hide_checkBox;
         this.getDisCalculationType=getDisCalculationType;
     }
@@ -151,13 +151,20 @@ public class InvoiceItemList2Adpter extends RecyclerView.Adapter<InvoiceItemList
                 exception.printStackTrace();
             }
 
+//            myViewHolder.item_price_invoice.setText(
+//                    AppUtility.getRoundoff_amount
+//                            (AppUtility.getCalculatedAmountfordiscount(invoiceItemList.get(position).getQty(),
+//                                    invoiceItemList.get(position).getRate(),
+//                                    invoiceItemList.get(position).getDiscount(),
+//                                    invoiceItemList.get(position).getTax(),
+//                                    taxCalculationType,getDisCalculationType)));
             myViewHolder.item_price_invoice.setText(
                     AppUtility.getRoundoff_amount
-                            (AppUtility.getCalculatedAmountfordiscount(invoiceItemList.get(position).getQty(),
+                            (AppUtility.getCalculatedAmountForDiscount(invoiceItemList.get(position).getQty(),
                                     invoiceItemList.get(position).getRate(),
                                     invoiceItemList.get(position).getDiscount(),
                                     invoiceItemList.get(position).getTax(),
-                                    taxCalculationType,getDisCalculationType)));
+                                    taxCalculationType,getDisCalculationType,false).get("Amount")));
 
             /* **update Item's base on Permissiom**/
             myViewHolder.item_layout.setOnClickListener(view -> {

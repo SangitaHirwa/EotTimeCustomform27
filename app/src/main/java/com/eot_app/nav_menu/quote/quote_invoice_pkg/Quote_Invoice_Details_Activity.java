@@ -88,6 +88,7 @@ public class Quote_Invoice_Details_Activity extends AppCompatActivity implements
 
     private RecyclerView rvShowTax;
     private InvoiceTaxAdapter invoiceTaxAdapter;
+    private int listCount = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -315,13 +316,8 @@ public class Quote_Invoice_Details_Activity extends AppCompatActivity implements
 
     private void setTxtInsideView() {
         rm_quote_im.setEnabled(false);
-        int count = quotes_item_Adpter.getItemCount();
-        list_item_quote_count.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.list_item) + " (" + count + ")");
-        if(count==0){
-            cl_parent_calculation.setVisibility(View.GONE);
-        }else {
-            cl_parent_calculation.setVisibility(View.VISIBLE);
-        }
+        listCount = quotes_item_Adpter.getItemCount();
+        list_item_quote_count.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.list_item) + " (" + listCount + ")");
     }
 
 
@@ -614,6 +610,11 @@ public class Quote_Invoice_Details_Activity extends AppCompatActivity implements
     @Override
     public void setCalculation(Double Subtotal, List<TaxData> listTax,boolean isShippingData,String SingleTaxId) {
         String additionalDiscount =quotes_Details_Inv.getDiscount();
+        if(listCount==0){
+            cl_parent_calculation.setVisibility(View.GONE);
+        }else {
+            cl_parent_calculation.setVisibility(View.VISIBLE);
+        }
         if(isShippingData){
             totalOfShippingItem = Subtotal;
         }

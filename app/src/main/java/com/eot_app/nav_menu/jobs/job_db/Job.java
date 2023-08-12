@@ -107,6 +107,7 @@ public class Job implements Parcelable {//
     private String isJobInvoiced;
     private String desWithoutHtml;
     private String disCalculationType;
+    private String taxCalculationType;
 
     public String getDesWithoutHtml() {
         return desWithoutHtml;
@@ -176,6 +177,7 @@ public class Job implements Parcelable {//
         isJobInvoiced = in.readString();
         desWithoutHtml = in.readString();
         disCalculationType=in.readString();
+        taxCalculationType=in.readString();
     }
 
     public static Creator<Job> getCREATOR() {
@@ -629,6 +631,14 @@ public class Job implements Parcelable {//
         this.disCalculationType = disCalculationType;
     }
 
+    public String getTaxCalculationType() {
+        return taxCalculationType;
+    }
+
+    public void setTaxCalculationType(String taxCalculationType) {
+        this.taxCalculationType = taxCalculationType;
+    }
+
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(status);
@@ -687,6 +697,7 @@ public class Job implements Parcelable {//
         dest.writeString(isJobInvoiced);
         dest.writeString(desWithoutHtml);
         dest.writeString(disCalculationType);
+        dest.writeString(taxCalculationType);
     }
 
     public String getPono() {

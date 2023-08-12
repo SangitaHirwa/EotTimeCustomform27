@@ -97,14 +97,14 @@ public class AddQutesItem_Activity extends AppCompatActivity implements TextWatc
     private boolean ITEMSYNC = false;
     RadioGroup rediogrp;
     private ImageButton tax_cancel;
-    private String getTaxMethodType="", getSingleTaxId="0", getTaxCalculationType;
+    private String getTaxMethodType="", getSingleTaxId="0", getTaxCalculationType, getDisCalculationType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit__invoice);
-        initializelables();
-        intializeViews();
+//        initializelables();
+//        intializeViews();
 
         Bundle bundle = getIntent().getExtras();
         /*  * Add new quotes**/
@@ -113,7 +113,9 @@ public class AddQutesItem_Activity extends AppCompatActivity implements TextWatc
             getTaxMethodType = bundle.getString("getTaxMethodType");
             quotesDetails = new Gson().fromJson(detailsobject, QuotesDetails.class);
             getTaxCalculationType = quotesDetails.getInvData().getTaxCalculationType();
-
+            getDisCalculationType = quotesDetails.getInvData().getDisCalculationType();
+            initializelables();
+            intializeViews();
             if(getTaxMethodType.equals("1")) {
                 getSingleTaxId = bundle.getString("getSingleTaxId");
             }
@@ -132,13 +134,17 @@ public class AddQutesItem_Activity extends AppCompatActivity implements TextWatc
 
         } else if (getIntent().hasExtra("quotesDetails")) {
             /* *edit quotes */
-            layout_fw_item.setVisibility(View.GONE);
             String detailsobject = bundle.getString("quotesDetails");
             getTaxMethodType = bundle.getString("getTaxMethodType");
             if(getTaxMethodType.equals("1")) {
                 getSingleTaxId = bundle.getString("getSingleTaxId");
             }
             quotesDetails = new Gson().fromJson(detailsobject, QuotesDetails.class);
+            getTaxCalculationType = quotesDetails.getInvData().getTaxCalculationType();
+            getDisCalculationType = quotesDetails.getInvData().getDisCalculationType();
+            initializelables();
+            intializeViews();
+            layout_fw_item.setVisibility(View.GONE);
             invId = quotesDetails.getInvData().getInvId();
             addQuotesId = quotesDetails.getQuotId();
             String itemId = bundle.getString("itemId");
@@ -327,9 +333,9 @@ public class AddQutesItem_Activity extends AppCompatActivity implements TextWatc
 //        edt_item_discount.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.discount) + " (%)");
 
         // direct discount case
-        if(App_preference.getSharedprefInstance().getLoginRes().getDisCalculationType().equals("0"))
+        if(getDisCalculationType.equals("0"))
             edt_item_discount.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.discount) + " (%)");
-        else if(App_preference.getSharedprefInstance().getLoginRes().getDisCalculationType().equals("1"))
+        else if(getDisCalculationType.equals("1"))
             edt_item_discount.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.discount));
         else
 
@@ -463,8 +469,8 @@ public class AddQutesItem_Activity extends AppCompatActivity implements TextWatc
      */
     private void total_Amount_cal() {
         if (quotesDetails != null) {
-            String getDisCalculationType = App_preference.getSharedprefInstance().getLoginRes().getDisCalculationType();
-            String getTaxCalculationType = quotesDetails.getInvData().getTaxCalculationType();
+//            String getDisCalculationType = App_preference.getSharedprefInstance().getLoginRes().getDisCalculationType();
+//            String getTaxCalculationType = quotesDetails.getInvData().getTaxCalculationType();
             String qty = "", rate = "" , dis = "" ;
             // check of amount calculation
                 if (!edt_item_qty.getText().toString().equals("")) {
@@ -955,7 +961,7 @@ public class AddQutesItem_Activity extends AppCompatActivity implements TextWatc
             }
             if(getTaxMethodType.equals("1")) {
                 if (!taxId.equals(getSingleTaxId)) {
-                    AppUtility.alertDialog(this, "", "You have selected Before discount calculation setting in Quotation and you are selecting different Tax. If you Add/Update Item or Service then Setting of quotation will be changed.", AppConstant.ok, AppConstant.cancel, new Callable<Boolean>() {
+                    AppUtility.alertDialog(this, "Are you want to change the Setting?", "You have selected Before discount calculation setting in Quotation and you are selecting different Tax. If you Add/Update Item or Service then Setting of quotation will be changed.", AppConstant.ok, AppConstant.cancel, new Callable<Boolean>() {
                         @Override
                         public Boolean call() throws Exception {
                             AddUpdateQuot(taxListFilter);
@@ -1411,14 +1417,14 @@ public class AddQutesItem_Activity extends AppCompatActivity implements TextWatc
                 item_discount_layout.setHintEnabled(true);
 
                 /* discount must not be gratter than 100 */
-                if(App_preference.getSharedprefInstance().getLoginRes().getDisCalculationType().equals("0"))
+                if(getDisCalculationType.equals("0"))
                 {
                     if (!edt_item_discount.getText().toString().isEmpty()&&Float.parseFloat(edt_item_discount.getText().toString()) > 100) {
                         showDisError(LanguageController.getInstance().getMobileMsgByKey(AppConstant.discountError));
                         edt_item_discount.setText("0");
                     }
                 }
-                else if(App_preference.getSharedprefInstance().getLoginRes().getDisCalculationType().equals("1"))
+                else if(getDisCalculationType.equals("1"))
                 {
                     if (!edt_item_discount.getText().toString().isEmpty()&&!edt_item_rate.getText().toString().isEmpty()&& Float.parseFloat(edt_item_discount.getText().toString()) > Float.parseFloat(edt_item_rate.getText().toString())) {
                         showDisError(LanguageController.getInstance().getMobileMsgByKey(AppConstant.discountError));
@@ -1470,8 +1476,8 @@ public class AddQutesItem_Activity extends AppCompatActivity implements TextWatc
     private void calculateTaxRate() {
         if (!App_preference.getSharedprefInstance().getLoginRes().getCompPermission().get(0).getIsRateIncludingTax().equals("1")) {
 
-          String getTaxCalculationType =  quotesDetails.getInvData().getTaxCalculationType();
-          String getDisCalculationType = App_preference.getSharedprefInstance().getLoginRes().getDisCalculationType();
+//          String getTaxCalculationType =  quotesDetails.getInvData().getTaxCalculationType();
+//          String getDisCalculationType = App_preference.getSharedprefInstance().getLoginRes().getDisCalculationType();
             String rate = "", dis = "";
 
             /* *  check of amount calculation */

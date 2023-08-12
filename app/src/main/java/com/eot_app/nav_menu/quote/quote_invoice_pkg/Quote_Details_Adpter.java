@@ -227,6 +227,7 @@ public class Quote_Details_Adpter extends RecyclerView.Adapter<Quote_Details_Adp
             getListData.setCalculation(subTotal,tempList,false,singleTaxId);
             subTotal =0.0;
             showTaxList.clear();
+            getDataOfTaxComponent = true;
         }
     }
 

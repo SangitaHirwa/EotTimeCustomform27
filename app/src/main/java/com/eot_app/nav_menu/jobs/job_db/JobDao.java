@@ -176,6 +176,8 @@ public interface JobDao {
 
     @Query("select disCalculationType from Job WHERE jobId = :jobId")
     String disCalculationType(String jobId);
+ @Query("select taxCalculationType from Job WHERE jobId = :jobId")
+    String taxCalculationType(String jobId);
 
 ////  @Query("SELECT * FROM user WHERE birthday = :targetDate")
 //    @Query("delete from Job where status != '1' or status != '2' or status != '3' or status != '4' or status != '5' or status != '6' " +

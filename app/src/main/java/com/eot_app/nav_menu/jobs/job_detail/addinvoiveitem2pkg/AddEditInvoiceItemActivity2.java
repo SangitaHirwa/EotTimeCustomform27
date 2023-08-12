@@ -140,6 +140,7 @@ public class AddEditInvoiceItemActivity2 extends
 
     private boolean firstTimeOnPage = true;
     private String getTaxMethodType="", getSingleTaxId="0";
+    private String getDisCalculationType,getTaxCalculationType;
 
 
     @Override
@@ -181,10 +182,13 @@ public class AddEditInvoiceItemActivity2 extends
             if (getIntent().hasExtra("jobId")) {
                 jobId = bundle.getString("jobId");
                 invId = bundle.getString("invId");
+                getTaxDisType(jobId);
                 addItemOnInvoice = bundle.getBoolean("addItemOnInvoice");
-                getTaxMethodType = bundle.getString("getTaxMethodType");
-                if(getTaxMethodType.equals("1")) {
-                    getSingleTaxId = bundle.getString("getSingleTaxId");
+                if(!invId.equals("") && invId != null) {
+                    getTaxMethodType = bundle.getString("getTaxMethodType");
+                    if (getTaxMethodType.equals("1")) {
+                        getSingleTaxId = bundle.getString("getSingleTaxId");
+                    }
                 }
                 setDefaultValuesForAddNewItem();
 
@@ -200,11 +204,14 @@ public class AddEditInvoiceItemActivity2 extends
             } else if (getIntent().hasExtra("InvoiceItemDataModel")) {
                 jobId = bundle.getString("edit_jobId");
                 invId = bundle.getString("invId");
+                getTaxDisType(jobId);
                 addItemOnInvoice = bundle.getBoolean("addItemOnInvoice");
                 updateItemDataModel = bundle.getParcelable("InvoiceItemDataModel");
-                getTaxMethodType = bundle.getString("getTaxMethodType");
-                if(getTaxMethodType.equals("1")) {
-                    getSingleTaxId = bundle.getString("getSingleTaxId");
+                if(!invId.equals("") && invId != null) {
+                    getTaxMethodType = bundle.getString("getTaxMethodType");
+                    if (getTaxMethodType.equals("1")) {
+                        getSingleTaxId = bundle.getString("getSingleTaxId");
+                    }
                 }
                 Log.e("InvoiceItemDataModel1", new Gson().toJson(updateItemDataModel));
                 invoiceItemPi.getTaxList();
@@ -298,6 +305,21 @@ public class AddEditInvoiceItemActivity2 extends
         });
     }
 
+    private void getTaxDisType(String jobId){
+        if(jobId != null && !jobId.equals("")){
+            Job job = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(jobId);
+            if(job.getCanInvoiceCreated().equals("1")) {
+                getDisCalculationType = AppDataBase.getInMemoryDatabase(this).jobModel().disCalculationType(jobId);
+                getTaxCalculationType = AppDataBase.getInMemoryDatabase(this).jobModel().taxCalculationType(jobId);
+            }else {
+                getDisCalculationType= App_preference.getSharedprefInstance().getLoginRes().getDisCalculationType();
+                getTaxCalculationType= App_preference.getSharedprefInstance().getLoginRes().getTaxCalculationType();
+            }
+        }else{
+            getDisCalculationType= App_preference.getSharedprefInstance().getLoginRes().getDisCalculationType();
+            getTaxCalculationType= App_preference.getSharedprefInstance().getLoginRes().getTaxCalculationType();
+        }
+    }
     private void showDialogForLoadData() {
         AppUtility.alertDialog2(this,
                 "", LanguageController.getInstance().getMobileMsgByKey(AppConstant.item_sync),
@@ -599,7 +621,7 @@ public class AddEditInvoiceItemActivity2 extends
         edt_item_disc = findViewById(R.id.edt_item_disc);
 
         // direct discount case
-        discount(App_preference.getSharedprefInstance().getLoginRes().getDisCalculationType());
+        discount(getDisCalculationType);
 
         taxamount_layout = findViewById(R.id.taxamount_layout);
         taxamount_txt_hint = findViewById(R.id.taxamount_txt_hint);
@@ -1263,7 +1285,7 @@ public class AddEditInvoiceItemActivity2 extends
 
                 if(getTaxMethodType.equals("1")) {
                     if (!taxId.equals(getSingleTaxId)) {
-                        AppUtility.alertDialog(this, "", "You have selected Before discount calculation setting in Invoice and you are selecting different Tax. If you Add/Update Item or Service then Setting of invoice will be changed.", AppConstant.ok, AppConstant.cancel, new Callable<Boolean>() {
+                        AppUtility.alertDialog(this, "Are you want to change the Setting?", "You have selected Before discount calculation setting in Invoice and you are selecting different Tax. If you Add/Update Item or Service then Setting of invoice will be changed.", AppConstant.ok, AppConstant.cancel, new Callable<Boolean>() {
                             @Override
                             public Boolean call() throws Exception {
                                 if (updateItemDataModel == null) {
@@ -2194,12 +2216,12 @@ public class AddEditInvoiceItemActivity2 extends
             if (charSequence.hashCode() == edt_item_disc.getText().hashCode()) {
                 item_discount_layout.setHintEnabled(true);
                 /* discount must not be gratter than 100 */
-                if (App_preference.getSharedprefInstance().getLoginRes().getDisCalculationType() != null && App_preference.getSharedprefInstance().getLoginRes().getDisCalculationType().equals("0")) {
+                if (getDisCalculationType != null && getDisCalculationType.equals("0")) {
                     if (!edt_item_disc.getText().toString().isEmpty() && Float.parseFloat(edt_item_disc.getText().toString()) > 100) {
                         showDisError(LanguageController.getInstance().getMobileMsgByKey(AppConstant.discountError));
                         edt_item_disc.setText("0");
                     }
-                } else if (App_preference.getSharedprefInstance().getLoginRes().getDisCalculationType()!= null &&App_preference.getSharedprefInstance().getLoginRes().getDisCalculationType().equals("1")) {
+                } else if (getDisCalculationType!= null &&getDisCalculationType.equals("1")) {
                     if (!edt_item_disc.getText().toString().isEmpty() && !edt_item_rate.getText().toString().isEmpty() && Float.parseFloat(edt_item_disc.getText().toString()) > Float.parseFloat(edt_item_rate.getText().toString())) {
                         showDisError(LanguageController.getInstance().getMobileMsgByKey(AppConstant.discountError));
                         edt_item_disc.setText("0");
@@ -2272,8 +2294,8 @@ if(!firstTimeOnPage) {
      */
     private void total_Amount_cal() {
 
-       String getDisCalculationType = AppDataBase.getInMemoryDatabase(this).jobModel().disCalculationType(jobId);
-       String getTaxCalculationType = App_preference.getSharedprefInstance().getLoginRes().getTaxCalculationType();
+//       String getDisCalculationType = AppDataBase.getInMemoryDatabase(this).jobModel().disCalculationType(jobId);
+//       String getTaxCalculationType = App_preference.getSharedprefInstance().getLoginRes().getTaxCalculationType();
         discount(getDisCalculationType);
         String qty = "", rate = "" , dis = "" ;
             if (!edt_item_qty.getText().toString().equals("")) {
@@ -2294,8 +2316,8 @@ if(!firstTimeOnPage) {
 
     private void calculateTaxRate() {
         if (!App_preference.getSharedprefInstance().getLoginRes().getCompPermission().get(0).getIsRateIncludingTax().equals("1")) {
-            String getDisCalculationType = AppDataBase.getInMemoryDatabase(this).jobModel().disCalculationType(jobId);
-            String getTaxCalculationType = App_preference.getSharedprefInstance().getLoginRes().getTaxCalculationType();
+//            String getDisCalculationType = AppDataBase.getInMemoryDatabase(this).jobModel().disCalculationType(jobId);
+//            String getTaxCalculationType = App_preference.getSharedprefInstance().getLoginRes().getTaxCalculationType();
             discount(getDisCalculationType);
             String rate = "", dis ="" ;
 

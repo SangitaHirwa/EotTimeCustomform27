@@ -391,6 +391,7 @@
                             android:padding="20dp"
                             android:paddingVertical="20dp"
                             android:layout_below="@id/recyclerView_shippingitem"
+                            android:visibility="gone"
                             >
                             <TextView
                                 android:id="@+id/txt_lbl_sub_total"
@@ -407,7 +408,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 style="@style/calculation_text_style"
-                                android:text="3308.00"
+                                android:text=""
                                 app:layout_constraintTop_toTopOf="@id/txt_lbl_sub_total"
                                 app:layout_constraintBottom_toBottomOf="@id/txt_lbl_sub_total"
                                 app:layout_constraintEnd_toEndOf="parent"
@@ -428,7 +429,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 style="@style/calculation_text_style"
-                                android:text="308.00"
+                                android:text=""
                                 app:layout_constraintTop_toTopOf="@id/txt_lbl_additional_discount"
                                 app:layout_constraintBottom_toBottomOf="@id/txt_lbl_additional_discount"
                                 app:layout_constraintEnd_toEndOf="parent"
@@ -447,7 +448,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:fontFamily="@font/arimo_regular"
-                                android:text="Extra Items :"
+                                android:text="Extra Items Total :"
                                 android:layout_marginTop="10dp"
                                 app:layout_constraintTop_toBottomOf="@id/rv_tax"
                                 app:layout_constraintStart_toStartOf="@id/rv_tax"
@@ -461,7 +462,7 @@
                                 app:layout_constraintTop_toTopOf="@id/txt_lbl_tax"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="100.00" />
+                                android:text="" />
 
                             <TextView
                                 android:id="@+id/txt_lbl_additional_discount1"
@@ -479,7 +480,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 style="@style/calculation_text_style"
-                                android:text="308.00"
+                                android:text=""
                                 app:layout_constraintTop_toTopOf="@id/txt_lbl_additional_discount1"
                                 app:layout_constraintBottom_toBottomOf="@id/txt_lbl_additional_discount1"
                                 app:layout_constraintEnd_toEndOf="parent"
@@ -511,7 +512,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 style="@style/calculation_text_style"
-                                android:text="3400.00"
+                                android:text=""
                                 android:textSize="18dp"
                                 android:textColor="@color/invoice_total_amount"
                                 app:layout_constraintTop_toTopOf="@id/txt_lbl_total"

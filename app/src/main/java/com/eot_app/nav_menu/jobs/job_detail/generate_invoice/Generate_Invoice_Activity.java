@@ -115,6 +115,7 @@ public class Generate_Invoice_Activity extends AppCompatActivity implements MyLi
 
     private RecyclerView rvShowTax;
     private InvoiceTaxAdapter invoiceTaxAdapter;
+    private String getDisCalculationType,getTaxCalculationType;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -141,10 +142,26 @@ public class Generate_Invoice_Activity extends AppCompatActivity implements MyLi
         } catch (Exception exception) {
             exception.printStackTrace();
         }
+        getTaxDisType(jobId);
         initializelables();
         intialize_UI_Views();
     }
 
+    private void getTaxDisType(String jobId){
+        if(jobId != null && !jobId.equals("")){
+            Job job = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(jobId);
+            if(job.getCanInvoiceCreated().equals("1")) {
+                getDisCalculationType = AppDataBase.getInMemoryDatabase(this).jobModel().disCalculationType(jobId);
+                getTaxCalculationType = AppDataBase.getInMemoryDatabase(this).jobModel().taxCalculationType(jobId);
+            }else {
+                getDisCalculationType= App_preference.getSharedprefInstance().getLoginRes().getDisCalculationType();
+                getTaxCalculationType= App_preference.getSharedprefInstance().getLoginRes().getTaxCalculationType();
+            }
+        }else{
+            getDisCalculationType= App_preference.getSharedprefInstance().getLoginRes().getDisCalculationType();
+            getTaxCalculationType= App_preference.getSharedprefInstance().getLoginRes().getTaxCalculationType();
+        }
+    }
     @Override
     public void finishActivity() {
         this.finish();
@@ -259,18 +276,18 @@ public class Generate_Invoice_Activity extends AppCompatActivity implements MyLi
 
     private void intialize_UI_Views() {
 /***this for invoice items**/
-        String getDisCalculationType;
-        if (jobId!=null&&!jobId.isEmpty())
-        {
-            getDisCalculationType=AppDataBase.getInMemoryDatabase(this).jobModel().disCalculationType(jobId);
-        }else{
-            getDisCalculationType= App_preference.getSharedprefInstance().getLoginRes().getDisCalculationType();
-        }
+//        String getDisCalculationType;
+//        if (jobId!=null&&!jobId.isEmpty())
+//        {
+//            getDisCalculationType=AppDataBase.getInMemoryDatabase(this).jobModel().disCalculationType(jobId);
+//        }else{
+//            getDisCalculationType= App_preference.getSharedprefInstance().getLoginRes().getDisCalculationType();
+//        }
         layoutManager = new LinearLayoutManager(this);
         recyclerView_invoice.setLayoutManager(layoutManager);
 
         invoice_list_adpter = new GenerateInvoiceItemAdpter(this, new ArrayList<InvoiceItemDataModel>(),
-                getDisCalculationType,this);//, this, this
+                getDisCalculationType,getTaxCalculationType,this);//, this, this
         recyclerView_invoice.setAdapter(invoice_list_adpter);
 
 /**this view for shipping items***/
@@ -874,6 +891,11 @@ public class Generate_Invoice_Activity extends AppCompatActivity implements MyLi
     public void setCalculation(Double Subtotal, List<TaxData> listTax,boolean isShippingData,String SingleTaxId) {
         String additionalDiscount =invoice_Details.getDiscount();
 
+        if(totalItemSize==0){
+            cl_parent_calculation.setVisibility(View.GONE);
+        }else {
+            cl_parent_calculation.setVisibility(View.VISIBLE);
+        }
         if(isShippingData){
             totalOfShippingItem = Subtotal;
         }
@@ -904,7 +926,7 @@ public class Generate_Invoice_Activity extends AppCompatActivity implements MyLi
             }
             txt_sub_total.setText(AppUtility.getRoundoff_amount("" + Subtotal));
             invoiceTaxAdapter.setList(listTax);
-            String total = String.valueOf(Double.parseDouble(invoice_Details.getTotal()) - Double.parseDouble(additionalDiscount));
+            String total = String.valueOf(Double.parseDouble(invoice_Details.getTotal()));
             txt_total.setText(AppUtility.getRoundoff_amount(total));
             inv_total_amount.setText(AppUtility.getRoundoff_amount(total));
         }

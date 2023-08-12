@@ -220,6 +220,7 @@ public class DetailFragment extends Fragment
     private TextView site_name;
     private String isMailSentToClt = "1";
     boolean accept=true,reject=true,travel=true,onhold=true,brack=true;
+    String getDisCalculationType, getTaxCalculationType;
 
 
     public DetailFragment() {
@@ -389,6 +390,21 @@ public class DetailFragment extends Fragment
 
 //        getData from
         mParam2 = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(param3);
+
+        if (mParam2.getJobId()!=null&&!mParam2.getJobId().isEmpty())
+        {
+            if(mParam2.getCanInvoiceCreated().equals("1")) {
+                    getDisCalculationType = AppDataBase.getInMemoryDatabase(getActivity()).jobModel().disCalculationType(mParam2.getJobId());
+                    getTaxCalculationType = AppDataBase.getInMemoryDatabase(getActivity()).jobModel().taxCalculationType(mParam2.getJobId());
+                }
+                else{
+                getDisCalculationType= App_preference.getSharedprefInstance().getLoginRes().getDisCalculationType();
+                getTaxCalculationType= App_preference.getSharedprefInstance().getLoginRes().getTaxCalculationType();
+                }
+        }else{
+            getDisCalculationType= App_preference.getSharedprefInstance().getLoginRes().getDisCalculationType();
+            getTaxCalculationType= App_preference.getSharedprefInstance().getLoginRes().getTaxCalculationType();
+        }
 
         initializelables();
         mMapView.getMapAsync(this);
@@ -674,17 +690,11 @@ public class DetailFragment extends Fragment
 
         // set item data
 
-        String getDisCalculationType;
-        if (mParam2.getJobId()!=null&&!mParam2.getJobId().isEmpty())
-        {
-            getDisCalculationType=AppDataBase.getInMemoryDatabase(getActivity()).jobModel().disCalculationType(mParam2.getJobId());
-        }else{
-            getDisCalculationType= App_preference.getSharedprefInstance().getLoginRes().getDisCalculationType();
-        }
+
 
         recyclerView_job_item.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL
                 , false));
-        invoice_list_adpter = new InvoiceItemList2Adpter(getActivity(), new ArrayList<>(), true, mParam2.getJobId(),getDisCalculationType);//, this, this
+        invoice_list_adpter = new InvoiceItemList2Adpter(getActivity(), new ArrayList<>(), true, mParam2.getJobId(),getDisCalculationType,getTaxCalculationType);//, this, this
         recyclerView_job_item.setAdapter(invoice_list_adpter);
         recyclerView_job_item.setNestedScrollingEnabled(false);
 

@@ -58,7 +58,7 @@ public class GenerateInvoiceItemAdpter extends RecyclerView.Adapter<GenerateInvo
     private String getIsAddisDiscBefore = "0";
     String singleTaxId ="0";
     /****This for FORM - 1 **/
-    public GenerateInvoiceItemAdpter(Context context, List<InvoiceItemDataModel> invoiceItemList,String getDisCalculationType, GetListData getListData) {
+    public GenerateInvoiceItemAdpter(Context context, List<InvoiceItemDataModel> invoiceItemList,String getDisCalculationType, String getTaxCalculationType,GetListData getListData) {
         this.invoiceItemList = invoiceItemList;
         this.is_pos_checked = new boolean[invoiceItemList.size()];
         nm_list = new HashSet<>();
@@ -67,7 +67,7 @@ public class GenerateInvoiceItemAdpter extends RecyclerView.Adapter<GenerateInvo
         this.getListData = getListData;
         this.invoce_rm_item = ((MyListItemSelectedLisT) context);
         this.myListItemSelected = ((MyListItemSelected<InvoiceItemDataModel>) context);
-        this.taxCalculationType = App_preference.getSharedprefInstance().getLoginRes().getTaxCalculationType();
+        this.taxCalculationType = getTaxCalculationType;
         this.context = context;
         this.getDisCalculationType=getDisCalculationType;
     }
@@ -258,6 +258,7 @@ public class GenerateInvoiceItemAdpter extends RecyclerView.Adapter<GenerateInvo
             getListData.setCalculation(subTotal,tempList,false,singleTaxId);
             subTotal =0.0;
             showTaxList.clear();
+            getDataOfTaxComponent = true;
         }
     }
 
