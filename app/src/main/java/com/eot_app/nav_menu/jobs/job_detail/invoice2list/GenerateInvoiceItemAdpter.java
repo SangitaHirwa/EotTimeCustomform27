@@ -57,6 +57,7 @@ public class GenerateInvoiceItemAdpter extends RecyclerView.Adapter<GenerateInvo
     private boolean getDataOfTaxComponent = true;
     private String getIsAddisDiscBefore = "0";
     String singleTaxId ="0";
+    boolean isTaxIdSame =false;
     /****This for FORM - 1 **/
     public GenerateInvoiceItemAdpter(Context context, List<InvoiceItemDataModel> invoiceItemList,String getDisCalculationType, String getTaxCalculationType,GetListData getListData) {
         this.invoiceItemList = invoiceItemList;
@@ -210,9 +211,20 @@ public class GenerateInvoiceItemAdpter extends RecyclerView.Adapter<GenerateInvo
             exception.printStackTrace();
         }
         subTotal += Double.parseDouble(_subtotal);
+        int taxItemPos=0;
         if(invoiceItemList.get(position).getTax().size()>0) {
             if(getDataOfTaxComponent) {
                 singleTaxId = invoiceItemList.get(position).getTax().get(0).getTaxId();
+                for (TaxData tax: showTaxList
+                ) {
+                    if(singleTaxId.equals(tax.getTaxId())){
+                        isTaxIdSame= true;
+                        break;
+                    }else {
+                        isTaxIdSame= false;
+                    }
+                    taxItemPos++;
+                }
                 if (App_preference.getSharedprefInstance().getLoginRes().getTaxShowType().equals("2")) {
                     if (invoiceItemList.get(position).getTax().get(0).getTaxComponents() != null&&invoiceItemList.get(position).getTax().get(0).getTaxComponents().size() > 0) {
                         for (Tax tax2 : invoiceItemList.get(position).getTax().get(0).getTaxComponents()
@@ -225,25 +237,58 @@ public class GenerateInvoiceItemAdpter extends RecyclerView.Adapter<GenerateInvo
                                             invoiceItemList.get(position).getDiscount(),
                                             tempList,
                                             taxCalculationType, getDisCalculationType, false).get("Tax"));
-                            TaxData taxData = new TaxData();
-                            taxData.setRate(Integer.parseInt(tax2.getRate()));
-                            taxData.setTaxAmount(Double.parseDouble(__taxAmt));
-                            taxData.setLabel(tax2.getLabel());
-                            showTaxList.add(taxData);
+                            if(isTaxIdSame){
+                                for (TaxData taxData: showTaxList
+                                ) {
+                                    if(taxData.getTaxId().equals(singleTaxId)&&taxData.getLabel().equals(tax2.getLabel())){
+                                        Double subTotalTax = taxData.getTaxAmount() + Double.parseDouble(__taxAmt);
+                                        taxData.setTaxAmount(subTotalTax);
+                                    }
+                                }
+                            }else
+                            {
+                                TaxData taxData = new TaxData();
+                                taxData.setRate(Integer.parseInt(tax2.getRate()));
+                                taxData.setTaxAmount(Double.parseDouble(__taxAmt));
+                                taxData.setLabel(tax2.getLabel()); taxData.setTaxId(invoiceItemList.get(position).getTax().get(0).getTaxId());
+                                showTaxList.add(taxData);
+                            }
                         }
                     }else {
+                        if(isTaxIdSame){
+                            for(TaxData taxData : showTaxList){
+                                if(taxData.getTaxId().equals(singleTaxId)&&taxData.getLabel().equals(invoiceItemList.get(position).getTax().get(0).getLabel())) {
+                                    Double subTotalTax = taxData.getTaxAmount() + Double.parseDouble(taxAmount);
+                                    taxData.setTaxAmount(subTotalTax);
+                                }
+                            }
+                        }
+                        else{
+                            TaxData taxData = new TaxData();
+                            taxData.setRate(Integer.parseInt(invoiceItemList.get(position).getTax().get(0).getRate()));
+                            taxData.setTaxAmount(Double.parseDouble(taxAmount));
+                            taxData.setLabel(invoiceItemList.get(position).getTax().get(0).getLabel());
+                            taxData.setTaxId(invoiceItemList.get(position).getTax().get(0).getTaxId());
+                            showTaxList.add(taxData);
+                        }
+                    }
+                } else {
+                    if(isTaxIdSame){
+                        for(TaxData taxData : showTaxList){
+                            if(taxData.getTaxId().equals(singleTaxId)&&taxData.getLabel().equals(invoiceItemList.get(position).getTax().get(0).getLabel())) {
+                                Double subTotalTax = taxData.getTaxAmount() + Double.parseDouble(taxAmount);
+                                taxData.setTaxAmount(subTotalTax);
+                            }
+                        }
+                    }
+                    else{
                         TaxData taxData = new TaxData();
                         taxData.setRate(Integer.parseInt(invoiceItemList.get(position).getTax().get(0).getRate()));
                         taxData.setTaxAmount(Double.parseDouble(taxAmount));
                         taxData.setLabel(invoiceItemList.get(position).getTax().get(0).getLabel());
+                        taxData.setTaxId(invoiceItemList.get(position).getTax().get(0).getTaxId());
                         showTaxList.add(taxData);
                     }
-                } else {
-                    TaxData taxData = new TaxData();
-                    taxData.setRate(Integer.parseInt(invoiceItemList.get(position).getTax().get(0).getRate()));
-                    taxData.setTaxAmount(Double.parseDouble(taxAmount));
-                    taxData.setLabel(invoiceItemList.get(position).getTax().get(0).getLabel());
-                    showTaxList.add(taxData);
 
                 }
                 if(getIsAddisDiscBefore.equals("1")){

@@ -961,7 +961,7 @@ public class AddQutesItem_Activity extends AppCompatActivity implements TextWatc
             }
             if(getTaxMethodType.equals("1")) {
                 if (!taxId.equals(getSingleTaxId)) {
-                    AppUtility.alertDialog(this, "Are you want to change the Setting?", "You have selected Before discount calculation setting in Quotation and you are selecting different Tax. If you Add/Update Item or Service then Setting of quotation will be changed.", AppConstant.ok, AppConstant.cancel, new Callable<Boolean>() {
+                    AppUtility.alertDialog(this, "Are you sure?", "'Before Tax' option only works when all the line items have the same taxation, if you have different tax for line items then additional discount will be calculated as per the option 'After Tax'.", AppConstant.yes, AppConstant.no, new Callable<Boolean>() {
                         @Override
                         public Boolean call() throws Exception {
                             AddUpdateQuot(taxListFilter);

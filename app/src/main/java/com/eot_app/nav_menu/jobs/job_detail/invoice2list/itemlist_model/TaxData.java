@@ -6,6 +6,16 @@ public class TaxData {
     Double taxAmount;
     String label;
 
+    public String getTaxId() {
+        return taxId;
+    }
+
+    public void setTaxId(String taxId) {
+        this.taxId = taxId;
+    }
+
+    String taxId;
+
     public String getLabel() {
         return label;
     }

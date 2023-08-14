@@ -636,6 +636,8 @@ public class Quote_Invoice_Details_Activity extends AppCompatActivity implements
                 txt_tax.setVisibility(View.GONE);
             }else {
                 txt_tax.setText(AppUtility.getRoundoff_amount(""+totalOfShippingItem));
+                txt_lbl_tax.setVisibility(View.GONE);
+                txt_tax.setVisibility(View.GONE);
             }
             if(listTax.size()<= 0){
                 rvShowTax.setVisibility(View.GONE);
@@ -644,9 +646,8 @@ public class Quote_Invoice_Details_Activity extends AppCompatActivity implements
             }
             txt_sub_total.setText(AppUtility.getRoundoff_amount("" + Subtotal));
             invoiceTaxAdapter.setList(listTax);
-            String total = String.valueOf(Double.parseDouble(quotes_Details_Inv.getTotal()) - Double.parseDouble(additionalDiscount));
-            txt_total.setText(AppUtility.getRoundoff_amount(total));
-            quote_total_amount.setText(AppUtility.getRoundoff_amount(total));
+            txt_total.setText(AppUtility.getRoundoff_amount(String.valueOf(Double.parseDouble(quotes_Details_Inv.getTotal()))));
+            quote_total_amount.setText(AppUtility.getRoundoff_amount(String.valueOf(Double.parseDouble(quotes_Details_Inv.getTotal()))));
         }
         else if(quotes_Details_Inv.getIsAddisDiscBefore().equals("1")){
             int taxRate = 0;
@@ -667,6 +668,8 @@ public class Quote_Invoice_Details_Activity extends AppCompatActivity implements
                 txt_tax.setVisibility(View.GONE);
             }else {
                 txt_tax.setText(AppUtility.getRoundoff_amount(""+totalOfShippingItem));
+                txt_lbl_tax.setVisibility(View.GONE);
+                txt_tax.setVisibility(View.GONE);
             }
             txt_sub_total.setText(AppUtility.getRoundoff_amount("" + Subtotal));
             List<TaxData> showTaxList = new ArrayList<>();
