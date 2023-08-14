@@ -36,7 +36,10 @@ import com.eot_app.utility.AppUtility;
 import com.eot_app.utility.App_preference;
 import com.eot_app.utility.EotApp;
 import com.eot_app.utility.language_support.LanguageController;
+
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.Callable;
 
@@ -44,9 +47,9 @@ public class DialogUpdateDocuments extends DialogFragment implements View.OnClic
 
     AppCompatImageView img_doc;
     AppCompatTextView tv_doc_name;
-    AppCompatTextView tv_label_desc;
-    AppCompatTextView tv_label_optional;
-    AppCompatEditText ed_doc_desc;
+    AppCompatTextView tv_label_desc, tv_label_rename;
+    AppCompatTextView tv_label_optional, tv_label_rename_optional;
+    AppCompatEditText ed_doc_desc, et_doc_rename;
     AppCompatButton btn_submit;
     Doc_Attch_Pi doc_attch_pi;
     OnDocumentUpdate onDocumentUpdate;
@@ -63,6 +66,7 @@ public class DialogUpdateDocuments extends DialogFragment implements View.OnClic
     private boolean isClickDisabled=false;
     LinearLayout llBottom;
     Bitmap bitmap;
+    String[] splitTxt;
 
     public void setIsFileImage(boolean b) {
         this.isFileImage = b;
@@ -121,6 +125,9 @@ public class DialogUpdateDocuments extends DialogFragment implements View.OnClic
         tv_label_desc = view.findViewById(R.id.tv_label_des);
         tv_label_optional = view.findViewById(R.id.tv_label_optional);
         ed_doc_desc = view.findViewById(R.id.et_doc_desc);
+        tv_label_rename = view.findViewById(R.id.tv_label_rename);
+        tv_label_rename_optional = view.findViewById(R.id.tv_label_rename_optional);
+        et_doc_rename = view.findViewById(R.id.et_doc_rename);
 
         btn_submit = view.findViewById(R.id.button_submit);
         btn_submit.setOnClickListener(this);
@@ -164,12 +171,16 @@ public class DialogUpdateDocuments extends DialogFragment implements View.OnClic
         btn_submit.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.update_btn));
         tv_label_desc.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.doc_des_op));
         tv_label_optional.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.optional));
+        tv_label_rename.setText("Rename"/*LanguageController.getInstance().getMobileMsgByKey(AppConstant.doc_des_op)*/);
+        tv_label_rename_optional.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.optional));
 
 
         if (desc != null)
             ed_doc_desc.setText(desc);
-        if (fileName != null)
+        if (fileName != null) {
             tv_doc_name.setText(fileName);
+            et_doc_rename.setText(fileName);
+        }
         if (isFileImage && imgPath != null)
         {
             Glide.with(Objects.requireNonNull(getActivity()))
@@ -227,15 +238,17 @@ public class DialogUpdateDocuments extends DialogFragment implements View.OnClic
     private void uploadDocuments(String isAddAttachAsCompletionNote) {
         if (docId != null) {
             AppUtility.hideSoftKeyboard(getActivity());
-            String updateDesc = "";
+            String updateDesc = "", updateName = "";
             if (!TextUtils.isEmpty(ed_doc_desc.getText().toString()))
                 updateDesc = ed_doc_desc.getText().toString();
-
-            if (desc.contentEquals(updateDesc)) {
+            if (!TextUtils.isEmpty(et_doc_rename.getText().toString()))
+                updateName = et_doc_rename.getText().toString();
+            if (desc.contentEquals(updateDesc) && fileName.contentEquals(updateName)) {
                 dismiss();
             } else {
                 AppUtility.progressBarShow(getActivity());
-                doc_attch_pi.updateDocuments(docId, updateDesc, isAddAttachAsCompletionNote, jobId);
+               splitTxt = updateName.split("\\.");
+                doc_attch_pi.updateDocuments(docId, updateDesc, splitTxt[0],isAddAttachAsCompletionNote, jobId);
             }
         }
 
@@ -266,7 +279,7 @@ public class DialogUpdateDocuments extends DialogFragment implements View.OnClic
     @Override
     public void onDocumentUpdate(String msg, boolean isSuccess) {
         if (isSuccess && onDocumentUpdate != null) {
-            onDocumentUpdate.onUpdateDes(ed_doc_desc.getText().toString());
+            onDocumentUpdate.onUpdateDes(ed_doc_desc.getText().toString(),splitTxt[0]);
             dismiss();
 
         } else if (msg != null)
@@ -330,6 +343,6 @@ public class DialogUpdateDocuments extends DialogFragment implements View.OnClic
     }
 
     public interface OnDocumentUpdate {
-        void onUpdateDes(String desc);
+        void onUpdateDes(String desc,String name);
     }
 }

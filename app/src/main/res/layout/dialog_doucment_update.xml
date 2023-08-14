@@ -46,6 +46,38 @@
             android:orientation="horizontal">
 
             <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_label_rename"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_label_rename_optional"
+                style="@style/subtext_style"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:text=")"
+                tools:ignore="HardcodedText" />
+        </LinearLayout>
+
+        <EditText
+            android:id="@+id/et_doc_rename"
+            style="@style/subtext_style"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/edt_cntct_brdr"
+            android:gravity="top|start"
+            android:padding="10dp"
+            tools:ignore="Autofill,LabelFor,TextFields" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tv_label_des"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

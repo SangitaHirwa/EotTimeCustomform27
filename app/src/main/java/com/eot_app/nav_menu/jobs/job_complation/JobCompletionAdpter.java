@@ -175,18 +175,26 @@ public class JobCompletionAdpter extends RecyclerView.Adapter<RecyclerView.ViewH
 
                     if (!TextUtils.isEmpty(ext) && ext.equals("jpg") || ext.equals("jpeg") || ext.equals("png"))
                         dialogUpdateDocuments.setIsFileImage(true);
+                    String img_name = "";
+                    if(getFileList_res.get(position).getAtt_docName()==null){
+                        img_name = getFileList_res.get(position).getAttachFileActualName();
+                    }else {
+                        img_name = getFileList_res.get(position).getAtt_docName()+"."+ext;
+                    }
 
                     dialogUpdateDocuments.setImgPath(
                             getFileList_res.get(position).getAttachmentId(),
                             getFileList_res.get(position).getAttachFileName(),
-                            getFileList_res.get(position).getAttachFileActualName(),
+                            img_name,
                             getFileList_res.get(position).getDes(),
                             getFileList_res.get(position).getType(),
                             jobId);
 
-                    dialogUpdateDocuments.setOnDocumentUpdate(desc -> {
-                        if (desc != null)
+                    dialogUpdateDocuments.setOnDocumentUpdate((desc,name) -> {
+                        if (desc != null) {
                             getFileList_res.get(position).setDes(desc);
+                            getFileList_res.get(position).setAtt_docName(name);
+                        }
                         if (jobCompletionActivity != null)
                             jobCompletionActivity.setUpdatedDesc(desc);
 

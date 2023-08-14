@@ -133,8 +133,14 @@ public class DocumentListAdapter extends RecyclerView.Adapter<DocumentListAdapte
     public void onBindViewHolder(@NonNull final MyView_Holder holder, final int pos) {
         GetFileList_Res fileList = getFileList_res.get(pos);
 
-        holder.file_name.setText(fileList.getAttachFileActualName());
+
         final String ext = fileList.getImage_name().substring((fileList.getImage_name().lastIndexOf(".")) + 1).toLowerCase();
+
+        if(fileList.getAtt_docName()==null){
+            holder.file_name.setText(fileList.getAttachFileActualName());
+        }else {
+            holder.file_name.setText(fileList.getAtt_docName()+"."+ext);
+        }
 
 
         if (!ext.isEmpty()) {
@@ -195,14 +201,18 @@ public class DocumentListAdapter extends RecyclerView.Adapter<DocumentListAdapte
                         dialogUpdateDocuments.setImgPath(
                                 getFileList_res.get(pos).getAttachmentId(),
                                 getFileList_res.get(pos).getAttachFileName(),
-                                getFileList_res.get(pos).getAttachFileActualName(),
+                                holder.file_name.getText().toString().trim(),
                                 getFileList_res.get(pos).getDes(),
                                 getFileList_res.get(pos).getType(),
                                 jobId,isClickDisabled);
 
-                        dialogUpdateDocuments.setOnDocumentUpdate(desc -> {
-                            if (desc != null)
+
+                        dialogUpdateDocuments.setOnDocumentUpdate((desc,name) -> {
+                            if (desc != null) {
                                 getFileList_res.get(pos).setDes(desc);
+                                getFileList_res.get(pos).setAtt_docName(name);
+                            }
+                                holder.file_name.setText(fileList.getAtt_docName()+"."+ext);
                             if (jobCompletionActivity != null)
                                 jobCompletionActivity.setUpdatedDesc(desc);
 

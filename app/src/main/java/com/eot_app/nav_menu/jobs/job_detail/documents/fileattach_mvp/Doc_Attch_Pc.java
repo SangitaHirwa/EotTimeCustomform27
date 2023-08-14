@@ -225,10 +225,10 @@ public class Doc_Attch_Pc implements Doc_Attch_Pi {
     }
 
     @Override
-    public void updateDocuments(String docId, String des, final String isAddAttachAsCompletionNote, final String jobId) {
+    public void updateDocuments(String docId, String des, String rename,final String isAddAttachAsCompletionNote, final String jobId) {
         if (AppUtility.isInternetConnected()) {
 
-            DocUpdateRequest docUpdateRequest = new DocUpdateRequest(docId, des, isAddAttachAsCompletionNote);
+            DocUpdateRequest docUpdateRequest = new DocUpdateRequest(docId, des, rename,isAddAttachAsCompletionNote);
             String request = new Gson().toJson(docUpdateRequest);
             ApiClient.getservices().eotServiceCall(Service_apis.updateJObDocument,
                     AppUtility.getApiHeaders(), AppUtility.getJsonObject(request))

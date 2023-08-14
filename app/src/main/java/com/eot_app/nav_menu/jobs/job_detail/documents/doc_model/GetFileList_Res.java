@@ -27,6 +27,7 @@ public class GetFileList_Res implements Parcelable {
     private String createdate;
     private String complNote;
     String  bitmap;
+    String att_docName;
 
     public String getBitmap() {
         return bitmap;
@@ -67,6 +68,7 @@ public class GetFileList_Res implements Parcelable {
         createdate = in.readString();
         complNote = in.readString();
         bitmap = in.readString();
+        att_docName = in.readString();
     }
 
     public static final Creator<GetFileList_Res> CREATOR = new Creator<GetFileList_Res>() {
@@ -170,6 +172,14 @@ public class GetFileList_Res implements Parcelable {
         return complNote;
     }
 
+    public String getAtt_docName() {
+        return att_docName;
+    }
+
+    public void setAtt_docName(String att_docName) {
+        this.att_docName = att_docName;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -190,5 +200,6 @@ public class GetFileList_Res implements Parcelable {
         parcel.writeString(createdate);
         parcel.writeString(complNote);
         parcel.writeString(bitmap);
+        parcel.writeString(att_docName);
     }
 }

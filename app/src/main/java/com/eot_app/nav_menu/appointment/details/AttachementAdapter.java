@@ -171,7 +171,7 @@ public class AttachementAdapter extends RecyclerView.Adapter<AttachementAdapter.
                     list.get(position).getAttachFileActualName(),
                     list.get(position).getDes(),"","");
 
-            dialogUpdateDocuments.setOnDocumentUpdate(desc -> {
+            dialogUpdateDocuments.setOnDocumentUpdate((desc,name) -> {
                 if (desc != null)
                     list.get(position).setDes(desc);
             });

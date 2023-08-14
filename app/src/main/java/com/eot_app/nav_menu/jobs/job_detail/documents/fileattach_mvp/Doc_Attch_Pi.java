@@ -10,6 +10,6 @@ public interface Doc_Attch_Pi {
     void uploadDocuments(String job_Id, String file, String finalFname, String desc,String type,String isAddAttachAsCompletionNote);
 
 
-    void updateDocuments(String docId, String des, String isAddAttachAsCompletionNote, String jobId);
+    void updateDocuments(String docId, String des, String rename,String isAddAttachAsCompletionNote, String jobId);
 }
 
