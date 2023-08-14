@@ -315,8 +315,11 @@ public class OfflineDataController {
                         Type listType = new com.google.gson.reflect.TypeToken<List<AppintmentItemDataModel>>() {
                         }.getType();
                         List<AppintmentItemDataModel> updatedItemList = new Gson().fromJson(updateData.getAddToCartServices(), listType);
-
-
+                        List<AppointmentItemDataInMap> updatedItemForDb=new ArrayList<>();
+                        for(AppintmentItemDataModel dataModel:updatedItemList) {
+                            AppointmentItemDataInMap itemDataInMap = new AppointmentItemDataInMap(String.valueOf(dataModel.getIlmmId())
+                                    ,dataModel);
+                        }
                     }
             }
         }catch (Exception ex) {

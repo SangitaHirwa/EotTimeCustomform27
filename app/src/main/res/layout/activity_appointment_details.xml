@@ -14,10 +14,6 @@
         android:id="@+id/parent_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-            android:id="@+id/swiperefresh"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -115,7 +111,7 @@
                             style="@style/style_sec"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="aawaweaea"
+                            android:text=""
                             android:layout_margin="5dp"
                             android:inputType="textMultiLine"
                             android:textStyle="bold" />
@@ -620,7 +616,6 @@
                             android:visibility="gone" />
                     </FrameLayout>
                 </LinearLayout>
-
             </androidx.core.widget.NestedScrollView>
 
             <View
@@ -666,6 +661,7 @@
             android:text="Convert To Job"
             android:textColor="@color/white" />
         </LinearLayout>
-        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

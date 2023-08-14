@@ -14,8 +14,8 @@ import com.eot_app.nav_menu.appointment.details.RequirementGetheringListAdapter;
 public interface AppointmentItemData_pi {
 
     void apiCallUpdateAppointmentItem(AppointmentUpdateItem_Req_Model appointmentUpdateItem_req_model,
-                                      AppointmentItemDataInMap appintmentItemDataModel, String appId);
+                                      AppointmentItemDataInMap appintmentItemDataModel, String appId,AppintmentItemDataModel modelForUpdate,
+                                      Context context);
     void apiCallForDeleteItem(AppointmentItemDeleteRequestModel deleteRequestModel,
-                              RequirementGetheringListAdapter requirementGetheringListAdapter,
-                                 String appId);
+                                 String appId,Context context);
 }

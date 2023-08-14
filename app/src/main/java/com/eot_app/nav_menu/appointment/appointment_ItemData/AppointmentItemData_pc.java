@@ -45,9 +45,10 @@ public class AppointmentItemData_pc implements AppointmentItemData_pi {
 
     @Override
     public void apiCallUpdateAppointmentItem(AppointmentUpdateItem_Req_Model appointmentUpdateItem_req_model
-            ,AppointmentItemDataInMap itemDataModelForDB,String appId) {
+            ,AppointmentItemDataInMap itemDataModelForDB,String appId,AppintmentItemDataModel modelForUpdate,Context context) {
         JsonObject jsonObject =  AppUtility.getJsonObject(new Gson().toJson(appointmentUpdateItem_req_model));
         if (AppUtility.isInternetConnected()) {
+            AppUtility.progressBarShow(context);
             ApiClient.getservices().eotServiceCall(Service_apis.updateItemOnAppointment,AppUtility.getApiHeaders(),jsonObject)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -68,10 +69,10 @@ public class AppointmentItemData_pc implements AppointmentItemData_pi {
                                 List<AppointmentItemDataInMap > addItemList = new Gson().fromJson(updateItem, listType);
                                 for (AppointmentItemDataInMap itemData : addItemList) {
                                     AppintmentItemDataModel itemData1 = itemData.getItemData();
-                                    if(String.valueOf(itemData1.getIlmmId()).equals(itemDataModelForDB.getIlmmId())){
-                                        addItemList.remove(itemData1);
-                                    }
+                                    if(itemData1.getIlmmId()==modelForUpdate.getIlmmId()){
+                                        addItemList.remove(itemData);
                                         break;
+                                    }
                                 }
                                 addItemList.add(itemDataModelForDB);
 
@@ -86,13 +87,14 @@ public class AppointmentItemData_pc implements AppointmentItemData_pi {
 
                         @Override
                         public void onError(Throwable e) {
+                            AppUtility.progressBarDissMiss();
                             Log.e("", e.getMessage());
                         }
 
                         @Override
                         public void onComplete() {
                             itemAdded_pi.getItemListByAppointmentFromDB(appId);
-
+                            AppUtility.progressBarDissMiss();
                         }
                     });
 
@@ -104,7 +106,7 @@ public class AppointmentItemData_pc implements AppointmentItemData_pi {
 
     @Override
     public void apiCallForDeleteItem(AppointmentItemDeleteRequestModel deleteRequestModel,
-                                     RequirementGetheringListAdapter requirementGetheringListAdapter,String appId) {
+                                    String appId,Context context) {
         JsonObject jsonObject =  AppUtility.getJsonObject(new Gson().toJson(deleteRequestModel));
         if (AppUtility.isInternetConnected()) {
             AppUtility.progressBarShow(context);
@@ -131,6 +133,7 @@ public class AppointmentItemData_pc implements AppointmentItemData_pi {
                                     String ilmmId= itemData.getIlmmId();
                                     if(ilmmId.equals(deleteRequestModel.getIlmmId())){
                                         removeItemList.add(itemData);
+                                        break;
                                     }
                                 }
                                 addItemList.removeAll(removeItemList);

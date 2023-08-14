@@ -114,7 +114,7 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
     private final LinkedHashMap<String, String> arraystatus = new LinkedHashMap<>();
     private  String[] statusArray = new String[arraystatus.size()];
     List<AppointmentStatusModel> allAppointmentStatusList =new ArrayList<>();
-    RequirementGetheringListAdapter reqGethListAdapter  = new RequirementGetheringListAdapter(new ArrayList<>(),this,this);
+    private static RequirementGetheringListAdapter reqGethListAdapter;
     ArrayList<AppointmentAttachment> allAttachmentList=new ArrayList<>();
     List<AppintmentItemDataModel> itemList = new ArrayList<>();
     ActivityAppointmentDetailsBinding binding;
@@ -142,12 +142,6 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
     boolean isFBMenuOpened;
     //custom dialog for instruction and details
     private Dialog enterFieldDialog;
-
-    /*@Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putParcelable("adapterObject",reqGethListAdapter);
-    }*/
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -184,7 +178,7 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
 
         doc_attch_pi = new Doc_Attch_Pc(this);
         EotApp.getAppinstance().setAppointmentItem_observer(this);
-       // reqGethListAdapter = new RequirementGetheringListAdapter(new ArrayList<>(),this,this);
+        reqGethListAdapter = new RequirementGetheringListAdapter(new ArrayList<>(),this,this);
         binding.recyclerOfReqGeth.setAdapter(reqGethListAdapter);
         appointmentItemData_pi =new AppointmentItemData_pc();
         itemAdded_pi = new AppointmentItemAdded_pc(this);
@@ -258,13 +252,7 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
             startActivityForResult(intent,GET_ITEM_LIST);
 
         });
-        binding.swiperefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
 
-                itemAdded_pi.getItemListByAppointmentFromDB(model.getAppId());
-            }
-        });
 
         /*binding.btnAppointmentDone.setOnClickListener(v -> {
             if (model != null && !model.getTempId().equals(model.getAppId())) {
@@ -686,7 +674,7 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
     public void onClick(View v) {
         switch (v.getId()) {
 
-            case R.id.backgroundView:
+            /*case R.id.backgroundView:
                 closeFABMenu();
                 break;
             case R.id.fab:
@@ -694,13 +682,13 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
                     closeFABMenu();
                 else
                     showFBButtons();
-                break;
+                break;*/
             case R.id.linearFabQuote:
                 if (model != null) {
                     if (model.getTempId().equals(model.getAppId()))
                         showDialogs(LanguageController.getInstance().getMobileMsgByKey(AppConstant.appointment_not_sync));
                     else {
-                        closeFABMenu();
+                       // closeFABMenu();
                         Intent intent = new Intent(this, AddQuotes_Activity.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                         startActivityForResult(intent.putExtra("appointmentId", model.getAppId()), ADD_QUOTE_RESULT);
@@ -713,7 +701,7 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
                     if (model.getTempId().equals(model.getAppId()))
                         showDialogs(LanguageController.getInstance().getMobileMsgByKey(AppConstant.appointment_not_sync));
                     else {
-                        closeFABMenu();
+                       // closeFABMenu();
                         Intent open_add_job = new Intent(AppointmentDetailsActivity.this, Add_job_activity.class);
                         open_add_job.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                         startActivity(open_add_job.putExtra("appId", model.getAppId()));
@@ -865,7 +853,7 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
 
             case EDIT_APPOINTMENT_CODE:
                 if (data != null) {
-                    model = (Appointment) data.getSerializableExtra("appointment");
+                    model = data.getParcelableExtra("appointment");
                     if (model != null)
                         setDataInUI(model);
                 }
@@ -923,10 +911,10 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
             case UPDATE_ITEM:
                 if(resultCode== AppCompatActivity.RESULT_OK){
                     if(data!=null){
-                        reqGethListAdapter = data.getParcelableExtra("gatheringObject");
+                        AppintmentItemDataModel modelForUpdate = data.getParcelableExtra("modelForUpdate");
                         AppointmentItemDataInMap updateDataForDB = data.getParcelableExtra("updateDataForDB");
                         AppointmentUpdateItem_Req_Model updateDta = (AppointmentUpdateItem_Req_Model) data.getSerializableExtra("updateDataReqModel");
-                        appointmentItemData_pi.apiCallUpdateAppointmentItem(updateDta,updateDataForDB,model.getAppId());
+                        appointmentItemData_pi.apiCallUpdateAppointmentItem(updateDta,updateDataForDB,model.getAppId(),modelForUpdate,this);
                     }
                 }
         }
@@ -1166,18 +1154,12 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
         intent.putExtra("UpdateItemRequirmentGethering",true);
         intent.putExtra("appId",model.getAppId());
        intent.putExtra("updateItemDataOfApp",appintmentItemDataModel);
-       intent.putExtra("adapterObject", (Parcelable) reqGethListAdapter);
         startActivityForResult(intent,UPDATE_ITEM);
     }
 
     @Override
     public void updateItemDataList(List<AppintmentItemDataModel> dataModelList, RequirementGetheringListAdapter requirementGetheringListAdapter) {
-        itemList.clear();
-        itemList.addAll(dataModelList);
-//        setData(itemList);
-//      reqGethListAdapter=new RequirementGetheringListAdapter(this);
-        requirementGetheringListAdapter.updateItemList(itemList);
-        requirementGetheringListAdapter.notifyDataSetChanged();
+
     }
 
     @Override
@@ -1207,7 +1189,7 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
     public void itemDelete(String ilmmId,int isItemOrTitle,int leadId) {
         AppointmentItemDeleteRequestModel deleteRequestModel=new AppointmentItemDeleteRequestModel(ilmmId,String.valueOf(isItemOrTitle),
                 String.valueOf(leadId));
-        appointmentItemData_pi.apiCallForDeleteItem(deleteRequestModel,reqGethListAdapter,model.getAppId());
+        appointmentItemData_pi.apiCallForDeleteItem(deleteRequestModel,model.getAppId(),this);
     }
 
     @Override
@@ -1228,20 +1210,5 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
         }
     }
 
-   /* @Override
-    public void onObserveCallBack(String api_name, String appId) {
-        try{
-            Log.e("TAG", api_name);
-            switch (api_name) {
-                case "LeadController/addLeadCart": {
-                    if (itemAdded_pi != null) {
-                        itemAdded_pi.getItemFromServer(model.getAppId(),this);
-                    }
-                    break;
-                }
-            }
-        }catch (Exception e){
-            Log.e("Tag",e.getMessage());
-        }
-    }*/
+
 }

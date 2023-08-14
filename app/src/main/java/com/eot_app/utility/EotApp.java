@@ -256,6 +256,7 @@ public class EotApp extends Application implements Application.ActivityLifecycle
         }
     }
 
+
     public void setInvoiceItemObserver(InvoiceItemObserver invoiceItemObserver) {
         this.invoiceItemObserver = invoiceItemObserver;
     }

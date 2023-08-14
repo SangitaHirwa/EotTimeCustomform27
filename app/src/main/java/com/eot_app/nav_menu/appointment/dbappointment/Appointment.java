@@ -88,6 +88,8 @@ public class Appointment implements Parcelable  {
         label = in.readString();
         des = in.readString();
         type = in.readString();
+        kpr = new ArrayList<>();
+        in.readList(kpr,Keepar.class.getClassLoader());
         athr = in.readString();
         schdlStart = in.readString();
         schdlFinish = in.readString();
@@ -496,6 +498,7 @@ public class Appointment implements Parcelable  {
         parcel.writeString(label);
         parcel.writeString(des);
         parcel.writeString(type);
+        parcel.writeList(kpr);
         parcel.writeString(athr);
         parcel.writeString(schdlStart);
         parcel.writeString(schdlFinish);

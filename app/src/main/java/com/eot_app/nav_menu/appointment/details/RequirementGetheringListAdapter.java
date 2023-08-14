@@ -71,12 +71,15 @@ public class RequirementGetheringListAdapter extends RecyclerView.Adapter<Requir
         if (itemDataModels.get(position).getIlmmId() == 0) {
             holder.desOfRequirment.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.item_not_sync));
             holder.desOfRequirment.setTextColor(EotApp.getAppinstance().getResources().getColor(android.R.color.holo_red_light));
+        }else{
+            holder.desOfRequirment.setTextColor(EotApp.getAppinstance().getResources().getColor(R.color.txt_color));
         }
+
         holder.deleteItem.setOnClickListener(view -> {
             try {
                 if (itemDataModels.get(position).getIlmmId() != 0) {
                     deleteItem.itemDelete(String.valueOf(itemDataModels.get(position).getIlmmId())
-                            ,itemDataModels.get(position).getIsItemOrTitle(),itemDataModels.get(position).getLeadId());
+                            ,itemDataModels.get(position).getDataType(),itemDataModels.get(position).getLeadId());
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();

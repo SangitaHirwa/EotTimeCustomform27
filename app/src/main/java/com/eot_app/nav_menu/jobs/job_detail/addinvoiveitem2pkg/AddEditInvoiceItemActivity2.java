@@ -170,7 +170,7 @@ public class AddEditInvoiceItemActivity2 extends
     private  String appInm="";
     private AppointmentUpdateItem_Req_Model itemAddRequestModel;
     private  AppointmentAddItem_Res updateItem_res;
-    RequirementGetheringListAdapter getheringListAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -241,7 +241,7 @@ public class AddEditInvoiceItemActivity2 extends
                 bundle.getBoolean("UpdateItemRequirmentGethering");
                 appId = bundle.getString("appId");
                 updateAppointmentItemData= getIntent().getParcelableExtra("updateItemDataOfApp");
-                getheringListAdapter=getIntent().getParcelableExtra("adapterObject");
+
                 invoiceItemPi.getTaxList();
                 goneViewsForUpdateAppItem();
             }
@@ -1524,7 +1524,7 @@ public class AddEditInvoiceItemActivity2 extends
                  Intent intent=new Intent();
                  intent.putExtra("updateDataReqModel",updateItem_req_model);
                  intent.putExtra("updateDataForDB",itemDataInMap);
-                 intent.putExtra("gatheringObject", (Parcelable) getheringListAdapter);
+                 intent.putExtra("modelForUpdate",updateAppointmentItemData);
                  setResult(RESULT_OK,intent);
                /*  AppointmentItemDataInMap itemDataInMap=new AppointmentItemDataInMap(String.valueOf(updateAppointmentItemData.getIlmmId()),updateAppintmentItemDataModel);
                  appointmentItemData_pi.apiCallUpdateAppointmentItem(updateItem_req_model,itemDataInMap,
@@ -1565,6 +1565,20 @@ public class AddEditInvoiceItemActivity2 extends
                         AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).offlinemodel().update(offLineModel);
                         break;
                     }
+
+            }else{
+
+                List<AppointmentAddItem_Res> addItem_resList=new ArrayList<>();
+                addItem_resList.add(updateItem_res);
+                String jsonAddDataInApi= new Gson().toJson(addItem_resList);
+                AppointmentUpdateItem_Req_Model itemupdateRequestModel =new AppointmentUpdateItem_Req_Model(jsonAddDataInApi,appointmentModel.getLeadId(),
+                        String.valueOf(updateAppointmentItemData.getIlmmId()));
+                String dateTime = AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT);
+                Gson gson = new Gson();
+                String updateAppointmentReqest = gson.toJson(itemupdateRequestModel);
+                HyperLog.i("TAG addJobReqest", new Gson().toJson(itemAddRequestModel));
+                OfflineDataController.getInstance().addInOfflineDB(Service_apis.updateItemOnAppointment, updateAppointmentReqest, dateTime);
+
 
             }
         } catch (Exception ex) {
