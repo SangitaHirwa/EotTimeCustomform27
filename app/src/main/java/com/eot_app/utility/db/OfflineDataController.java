@@ -285,7 +285,8 @@ public class OfflineDataController {
                 }
                 break;
             case Service_apis.addItemOnAppointment:
-            case Service_apis.updateItemOnAppointment: {
+            case Service_apis.updateItemOnAppointment:
+            case Service_apis.deleteItemOnAppointment:{
                 updateAppointmentItems(data,obj);
                 break;
             }
@@ -313,17 +314,9 @@ public class OfflineDataController {
                     EotApp.getAppinstance().notifyApiItemAddEdit_Observer(data.getService_name(), itemAddRequestModel.getAppId());
                     break;
                 case Service_apis.updateItemOnAppointment:
-                    if (data!=null) {
-                        AppointmentUpdateItem_Req_Model updateData = gson.fromJson(data.getParams(), AppointmentUpdateItem_Req_Model.class);
-                        Type listType = new com.google.gson.reflect.TypeToken<List<AppintmentItemDataModel>>() {
-                        }.getType();
-                        List<AppintmentItemDataModel> updatedItemList = new Gson().fromJson(updateData.getAddToCartServices(), listType);
-                        List<AppointmentItemDataInMap> updatedItemForDb=new ArrayList<>();
-                        for(AppintmentItemDataModel dataModel:updatedItemList) {
-                            AppointmentItemDataInMap itemDataInMap = new AppointmentItemDataInMap(String.valueOf(dataModel.getIlmmId())
-                                    ,dataModel);
-                        }
-                    }
+                case Service_apis.deleteItemOnAppointment:
+                    EotApp.getAppinstance().notifyApiItemAddEdit_Observer(data.getService_name(),"");
+
             }
         }catch (Exception ex) {
             ex.printStackTrace();

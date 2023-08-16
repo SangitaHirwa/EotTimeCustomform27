@@ -56,6 +56,7 @@ import com.eot_app.nav_menu.appointment.appointment_ItemData.AppointmentItemData
 import com.eot_app.nav_menu.appointment.appointment_ItemData.AppointmentItemData_pi;
 import com.eot_app.nav_menu.appointment.appointment_ItemData.UpdateItemDataList_pi;
 import com.eot_app.nav_menu.appointment.appointment_model.AppintmentItemDataModel;
+import com.eot_app.nav_menu.appointment.appointment_model.AppointmentAddItem_Res;
 import com.eot_app.nav_menu.appointment.appointment_model.AppointmentItemDataInMap;
 import com.eot_app.nav_menu.appointment.appointment_model.AppointmentItemDeleteRequestModel;
 import com.eot_app.nav_menu.appointment.appointment_model.AppointmentStatusModel;
@@ -83,14 +84,17 @@ import com.eot_app.utility.EotApp;
 import com.eot_app.utility.db.AppDataBase;
 import com.eot_app.utility.db.OfflineDataController;
 import com.eot_app.utility.language_support.LanguageController;
+import com.eot_app.utility.settings.setting_db.Offlinetable;
 import com.eot_app.utility.util_interfaces.Callback_AlertDialog;
 import com.eot_app.utility.util_interfaces.MyListItemSelected;
 import com.eot_app.utility.util_interfaces.MySpinnerAdapter;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.hypertrack.hyperlog.HyperLog;
 
 import java.io.File;
 import java.io.Serializable;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -162,6 +166,10 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
         binding.tvExportAll.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.export_document));
         binding.tvLabelQuotation.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.quotation_label));
         binding.tvRecentQuote.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.recent_quote));
+        binding.tvAddNew.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add));
+        binding.requirmentGethering.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.Text_Req_Gath));
+        binding.txtSeeMore.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.Text_See_More));
+        binding.txtSeeLess.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.Text_see_Less));
        /* binding.btnAppointmentDone.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.mark_as_done));
         binding.btnAppointmentCompleted.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.completed));*/
 
@@ -1039,6 +1047,7 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
         if (model != null && model.getKpr() != null)
             for (Keepar keepar : model.getKpr()) {
                 kprs.add(keepar.getUsrId());
+                kprs.add(keepar.getStatus());
                 updateReq.setMemIds(kprs);
             }
         assert model != null;
@@ -1193,15 +1202,57 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
     public void itemDelete(String ilmmId,int isItemOrTitle,int leadId) {
         AppointmentItemDeleteRequestModel deleteRequestModel=new AppointmentItemDeleteRequestModel(ilmmId,String.valueOf(isItemOrTitle),
                 String.valueOf(leadId));
-        appointmentItemData_pi.apiCallForDeleteItem(deleteRequestModel,model.getAppId(),this);
+        if(AppUtility.isInternetConnected()) {
+            appointmentItemData_pi.apiCallForDeleteItem(deleteRequestModel, model.getAppId(), this);
+        }else{
+            offlineDeleteAppItem(deleteRequestModel);
+        }
+    }
+
+    private void offlineDeleteAppItem(AppointmentItemDeleteRequestModel deleteRequestModel) {
+        try {
+            List<Offlinetable> offlinetableList = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).offlinemodel().getOfflinetablesById(Service_apis.deleteItemOnAppointment);
+            List<AppointmentItemDeleteRequestModel> tempList = new ArrayList<>();
+            if (offlinetableList.size() > 0) {
+                for (Offlinetable offLineModel : offlinetableList) {
+                    Type listType = new TypeToken<AppointmentItemDeleteRequestModel>() {
+                    }.getType();
+                    AppointmentItemDeleteRequestModel updatedItemList = new Gson().fromJson(offLineModel.getParams(), listType);
+
+                    if (deleteRequestModel.getIlmmId().equals(updatedItemList.getIlmmId())) {
+                        tempList.remove(updatedItemList);
+                    }
+
+                    tempList.add(deleteRequestModel);
+                    offLineModel.setParams(new Gson().toJson(tempList));
+
+                    AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).offlinemodel().update(offLineModel);
+                    break;
+
+                }
+            }else{
+                String dateTime = AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT);
+                Gson gson = new Gson();
+                String deleteAppointmentReqest = gson.toJson(deleteRequestModel);
+                HyperLog.i("TAG addJobReqest", new Gson().toJson(deleteRequestModel));
+                OfflineDataController.getInstance().addInOfflineDB(Service_apis.deleteItemOnAppointment, deleteAppointmentReqest, dateTime);
+
+
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
     }
 
     @Override
-    public void onObserveCallBack(String api_name, String jobId) {
+    public void onObserveCallBack(String api_name) {
         try{
             Log.e("TAG", api_name);
             switch (api_name) {
-                case Service_apis.addItemOnAppointment: {
+                case Service_apis.addItemOnAppointment:
+                case Service_apis.updateItemOnAppointment:
+                case Service_apis.deleteItemOnAppointment:{
                     if (itemAdded_pi != null) {
                         itemAdded_pi.getItemFromServer(model.getAppId(),this);
                     }

@@ -1806,7 +1806,10 @@
     "additional_discount": "Additional Discount",
     "extra_items_total": "Extra Item's Total",
     "rename": "Rename",
-    "tax_change_msg": "'Before Tax' option only works when all the line items have the same taxation, if you have different tax for line items then additional discount will be calculated as per the option 'After Tax'"
+    "tax_change_msg": "'Before Tax' option only works when all the line items have the same taxation, if you have different tax for line items then additional discount will be calculated as per the option 'After Tax'",
+    "text_requirement_gathering": "Requirment Gathering",
+    "txt_see_more_appointment": "See More",
+    "txt_see_less_appointment": "See Less"
   }
 }
 
