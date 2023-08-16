@@ -21,11 +21,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.eot_app.R;
 import com.eot_app.login_next.login_next_model.CompPermission;
 import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.model.InvoiceItemDataModel;
+import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_detail_pkg.inv_detail_model.Tax;
+import com.eot_app.nav_menu.jobs.job_detail.invoice2list.itemlist_model.TaxData;
 import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.AppUtility;
 import com.eot_app.utility.App_preference;
 import com.eot_app.utility.EotApp;
 import com.eot_app.utility.language_support.LanguageController;
+import com.eot_app.utility.util_interfaces.GetListData;
 import com.eot_app.utility.util_interfaces.MyListItemSelected;
 import com.eot_app.utility.util_interfaces.MyListItemSelectedLisT;
 import java.util.ArrayList;
@@ -53,9 +56,13 @@ public class InvoiceItemList2Adpter extends RecyclerView.Adapter<InvoiceItemList
     EditText qtyedit;
     String jobId;
     private String getDisCalculationType;
+    private GetListData getListData;
+    private boolean getDataOfTaxComponent = true;
+    private String getIsAddisDiscBefore = "0";
+    String singleTaxId ="0";
 
     /****This for FORM - 1 **/
-    public InvoiceItemList2Adpter(Context context, List<InvoiceItemDataModel> invoiceItemList,String getDisCalculationType, String getTaxCalculationType) {
+    public InvoiceItemList2Adpter(Context context, List<InvoiceItemDataModel> invoiceItemList,String getDisCalculationType, String getTaxCalculationType, GetListData getListData, String getIsAddisDiscBefore) {
         this.invoiceItemList = invoiceItemList;
         this.is_pos_checked = new boolean[invoiceItemList.size()];
         nm_list = new HashSet<>();
@@ -66,6 +73,8 @@ public class InvoiceItemList2Adpter extends RecyclerView.Adapter<InvoiceItemList
         this.taxCalculationType = getTaxCalculationType;
         this.context = context;
         this.getDisCalculationType=getDisCalculationType;
+        this.getListData = getListData;
+        this.getIsAddisDiscBefore= getIsAddisDiscBefore;
     }
 
     /****This for FORM - 1 **/
@@ -324,6 +333,23 @@ public class InvoiceItemList2Adpter extends RecyclerView.Adapter<InvoiceItemList
                 }
             });
 
+        }
+
+        if(invoiceItemList.get(position).getTax().size()>0) {
+            if(getDataOfTaxComponent) {
+                singleTaxId = invoiceItemList.get(position).getTax().get(0).getTaxId();
+                if(getIsAddisDiscBefore.equals("1")){
+                    getDataOfTaxComponent = false;
+                }
+            }
+        }
+
+        if(position == invoiceItemList.size()-1){
+            List<TaxData> tempList = new ArrayList<>();
+            if(getListData!= null) {
+                getListData.setCalculation(0.0, tempList, false, singleTaxId);
+            }
+            getDataOfTaxComponent = true;
         }
     }
 

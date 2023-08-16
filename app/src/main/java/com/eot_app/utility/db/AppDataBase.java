@@ -625,8 +625,9 @@ public abstract class AppDataBase extends RoomDatabase {
             database.execSQL("ALTER TABLE Appointment ADD COLUMN isStatusShow TEXT");
             database.execSQL("ALTER TABLE Appointment ADD COLUMN count TEXT");
             database.execSQL("ALTER TABLE Appointment ADD COLUMN itemData TEXT");
-            database.execSQL("ALTER TABLE Tax ADD COLUMN itemData taxComponents");
-            database.execSQL("ALTER TABLE Job ADD COLUMN itemData taxCalculationType");
+            database.execSQL("ALTER TABLE Tax ADD COLUMN taxComponents TEXT");
+            database.execSQL("ALTER TABLE Job ADD COLUMN taxCalculationType TEXT");
+            database.execSQL("ALTER TABLE Job ADD COLUMN isAddisDiscBefore TEXT");
 
         }
     };

@@ -265,8 +265,6 @@ public class AppConstant {
     public static final String feed_sub_head = "feed_sub_head";
     public static final String sign = "sign";
     public static final String title_history = "title_history";
-    public static final String title_status_history = "title_status_history";
-    public static final String title_clients_work_history = "title_clients_work_history";
     public static final String title_documents = "title_documents";
     public static final String total_inv_amt = "total_inv_amt";
     public static final String paid_amt = "paid_amt";
@@ -927,6 +925,16 @@ public class AppConstant {
     public static String timezone_Message="timezone_Message";
     public static String Equipment_without_client="Equipment_without_client";
     public static String Form_is_already_submitted="Form_is_already_submitted";
+    public static final String title_status_history = "title_status_history";
+    public static final String title_clients_work_history = "title_clients_work_history";
+    public static final String sub_total = "sub_total";
+    public static final String additional_discount = "additional_discount";
+    public static final String extra_items_total = "extra_items_total";
+    public static final String total_amount = "total_amount";
+    public static final String rename = "rename";
+    public static final String tax_change_msg = "tax_change_msg";
+
+
 
     public static String server(String location) {
         switch (location) {

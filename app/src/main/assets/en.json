@@ -1361,8 +1361,6 @@
     "title_expence": "Expenses",
     "title_feedback": "Feedback",
     "title_history": "History",
-    "title_status_history": "Status History",
-    "title_clients_work_history": "Client's Work History",
     "title_invoice": "Invoice",
     "title_payment": "Payment",
     "to": "To",
@@ -1801,7 +1799,14 @@
     "job_break" : "JobBreak",
     "project_site_name" : "Project/Site Name",
     "pleas_selec_clien_firs":"Please fill the client first",
-    "equ_status":"Equipment status"
+    "equ_status":"Equipment status",
+    "title_status_history": "Status History",
+    "title_clients_work_history": "Client's Work History",
+    "sub_total": "Sub Total",
+    "additional_discount": "Additional Discount",
+    "extra_items_total": "Extra Item's Total",
+    "rename": "Rename",
+    "tax_change_msg": "'Before Tax' option only works when all the line items have the same taxation, if you have different tax for line items then additional discount will be calculated as per the option 'After Tax'"
   }
 }
 

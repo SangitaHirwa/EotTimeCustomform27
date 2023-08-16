@@ -171,7 +171,7 @@ public class DialogUpdateDocuments extends DialogFragment implements View.OnClic
         btn_submit.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.update_btn));
         tv_label_desc.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.doc_des_op));
         tv_label_optional.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.optional));
-        tv_label_rename.setText("Rename"/*LanguageController.getInstance().getMobileMsgByKey(AppConstant.doc_des_op)*/);
+        tv_label_rename.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.rename));
         tv_label_rename_optional.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.optional));
 
 

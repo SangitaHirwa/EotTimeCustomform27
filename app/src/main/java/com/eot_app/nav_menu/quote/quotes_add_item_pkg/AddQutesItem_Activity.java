@@ -914,6 +914,7 @@ public class AddQutesItem_Activity extends AppCompatActivity implements TextWatc
                 {
                     tax.setSelect(false);
                 }
+                taxId="0";
                 float localtax = getTotalApplyTax();
                 total_tax = localtax;
                 tax_value_txt.setText((String.valueOf(localtax)));
@@ -961,7 +962,7 @@ public class AddQutesItem_Activity extends AppCompatActivity implements TextWatc
             }
             if(getTaxMethodType.equals("1")) {
                 if (!taxId.equals(getSingleTaxId)) {
-                    AppUtility.alertDialog(this, "Are you sure?", "'Before Tax' option only works when all the line items have the same taxation, if you have different tax for line items then additional discount will be calculated as per the option 'After Tax'.", AppConstant.yes, AppConstant.no, new Callable<Boolean>() {
+                    AppUtility.alertDialog(this, LanguageController.getInstance().getMobileMsgByKey(AppConstant.are_you_sure), LanguageController.getInstance().getMobileMsgByKey(AppConstant.tax_change_msg), AppConstant.yes, AppConstant.no, new Callable<Boolean>() {
                         @Override
                         public Boolean call() throws Exception {
                             AddUpdateQuot(taxListFilter);

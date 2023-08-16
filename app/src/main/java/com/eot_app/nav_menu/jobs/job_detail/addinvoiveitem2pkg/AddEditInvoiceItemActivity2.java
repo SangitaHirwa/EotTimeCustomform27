@@ -186,12 +186,10 @@ public class AddEditInvoiceItemActivity2 extends
                 getTaxDisType(jobId);
                 initializelables();
                 addItemOnInvoice = bundle.getBoolean("addItemOnInvoice");
-                if(!invId.equals("") && invId != null) {
                     getTaxMethodType = bundle.getString("getTaxMethodType");
                     if (getTaxMethodType.equals("1")) {
                         getSingleTaxId = bundle.getString("getSingleTaxId");
                     }
-                }
                 setDefaultValuesForAddNewItem();
 
                 // for hiding in case of generate invoice
@@ -210,12 +208,10 @@ public class AddEditInvoiceItemActivity2 extends
                 initializelables();
                 addItemOnInvoice = bundle.getBoolean("addItemOnInvoice");
                 updateItemDataModel = bundle.getParcelable("InvoiceItemDataModel");
-                if(!invId.equals("") && invId != null) {
                     getTaxMethodType = bundle.getString("getTaxMethodType");
                     if (getTaxMethodType.equals("1")) {
                         getSingleTaxId = bundle.getString("getSingleTaxId");
                     }
-                }
                 Log.e("InvoiceItemDataModel1", new Gson().toJson(updateItemDataModel));
                 invoiceItemPi.getTaxList();
                 goneViewsForUpdate();
@@ -1257,6 +1253,7 @@ public class AddEditInvoiceItemActivity2 extends
                 {
                     tax.setSelect(false);
                 }
+                taxId="0";
                 float localtax = getTotalApplyTax();
                 total_tax = localtax;
                 tax_value_txt.setText((String.valueOf(localtax)));
@@ -1267,7 +1264,7 @@ public class AddEditInvoiceItemActivity2 extends
         }
     }
 
-
+    String taxId = "0";
     private void checkMandtryFileds() {
         if (!IS_ITEM_MANDATRY && TAB_SELECT == 1) {
             AppUtility.alertDialog(this, "", LanguageController.getInstance().getMobileMsgByKey(AppConstant.item_empty), LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok),
@@ -1285,38 +1282,36 @@ public class AddEditInvoiceItemActivity2 extends
                         taxId = tax.getTaxId();
                     }
                 }
-
-                if(getTaxMethodType.equals("1")) {
-                    if (!taxId.equals(getSingleTaxId)) {
-                        AppUtility.alertDialog(this, "Are you sure?", "'Before Tax' option only works when all the line items have the same taxation, if you have different tax for line items then additional discount will be calculated as per the option 'After Tax'", AppConstant.yes, AppConstant.no, new Callable<Boolean>() {
-                            @Override
-                            public Boolean call() throws Exception {
-                                if (updateItemDataModel == null) {
-                                addItemsOnJob(taxListFilter);
-                                }else {
-                                    updateItemsOnJob(taxListFilter);
+                if(jobModel.getCanInvoiceCreated().equals("1")) {
+                    if (getTaxMethodType.equals("1")) {
+                        if (!taxId.equals(getSingleTaxId)) {
+                            AppUtility.alertDialog(this, LanguageController.getInstance().getMobileMsgByKey(AppConstant.are_you_sure),LanguageController.getInstance().getMobileMsgByKey(AppConstant.tax_change_msg) , AppConstant.yes, AppConstant.no, new Callable<Boolean>() {
+                                @Override
+                                public Boolean call() throws Exception {
+                                    AppUpdateJob(taxListFilter);
+                                    return null;
                                 }
-                                return null;
-                            }
-                        });
-                    }else {
-                        if (updateItemDataModel == null) {
-                            addItemsOnJob(taxListFilter);
-                        }else {
-                            updateItemsOnJob(taxListFilter);
+                            });
+                        } else {
+                            AppUpdateJob(taxListFilter);
                         }
+                    } else {
+                        AppUpdateJob(taxListFilter);
                     }
                 }else {
-                    if (updateItemDataModel == null) {
-                        addItemsOnJob(taxListFilter);
-                    }else {
-                        updateItemsOnJob(taxListFilter);
-                    }
+                    AppUpdateJob(taxListFilter);
                 }
             }
 
     }
-    String taxId = "";
+
+    public void AppUpdateJob(List<Tax> taxListFilter){
+        if (updateItemDataModel == null) {
+            addItemsOnJob(taxListFilter);
+        } else {
+            updateItemsOnJob(taxListFilter);
+        }
+    }
     private void addItemsOnJob(List<Tax> taxListFilter) {
         try{
             HyperLog.i("TAG", "addItemsOnJob(M) started");

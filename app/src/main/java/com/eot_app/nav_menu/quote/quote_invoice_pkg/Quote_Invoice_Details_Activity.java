@@ -149,19 +149,19 @@ public class Quote_Invoice_Details_Activity extends AppCompatActivity implements
 
         cl_parent_calculation = findViewById(R.id.cl_parent_calculation);
         txt_lbl_sub_total = findViewById(R.id.txt_lbl_sub_total);
-//        txt_lbl_sub_total.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.due_date));
+        txt_lbl_sub_total.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.sub_total));
         txt_sub_total = findViewById(R.id.txt_sub_total);
         txt_lbl_additional_discount = findViewById(R.id.txt_lbl_additional_discount);
-//        txt_lbl_additional_discount.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.due_date));
+        txt_lbl_additional_discount.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.additional_discount));
         txt_additional_discount = findViewById(R.id.txt_additional_discount);
         txt_lbl_additional_discount1 = findViewById(R.id.txt_lbl_additional_discount1);
-//        txt_lbl_additional_discount1.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.due_date));
+        txt_lbl_additional_discount1.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.additional_discount));
         txt_additional_discount1 = findViewById(R.id.txt_additional_discount1);
         txt_lbl_tax = findViewById(R.id.txt_lbl_tax);
-//        txt_lbl_tax.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.due_date));
+        txt_lbl_tax.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.extra_items_total));
         txt_tax = findViewById(R.id.txt_tax);
         txt_lbl_total = findViewById(R.id.txt_lbl_total);
-//        txt_lbl_total.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.due_date));
+        txt_lbl_total.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.total_amount));
         txt_total = findViewById(R.id.txt_total);
         rvShowTax = findViewById(R.id.rv_tax);
         /**this view for shpping item**/
