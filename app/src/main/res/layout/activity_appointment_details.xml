@@ -28,22 +28,31 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical"
-                    android:padding="14dp">
+                  >
+                <LinearLayout
+                    android:id="@+id/Layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="visible"
+                    android:orientation="vertical"
+                    android:background="#effeff"
 
+                    >
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:layout_margin="5dp">
 
                         <TextView
-                            android:id="@+id/tv_client_name"
-                            style="@style/style_sec"
+                            android:id="@+id/tv_date_time"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text=""
-                            android:textStyle="bold" />
+                            style="@style/style_sec_sec"
+                            android:textColor="#11d57a"
+                            android:textStyle="normal" />
 
                         <LinearLayout
                             android:id="@+id/linear_arraw_layout"
@@ -90,6 +99,34 @@
                             android:layout_height="wrap_content"
                             app:srcCompat="@drawable/svg_email_yellow" />
                     </LinearLayout>
+
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp">
+
+                        <TextView
+                            android:id="@+id/tv_client_name"
+                            style="@style/style_sec"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text=""
+                            android:layout_margin="5dp"
+                            android:inputType="textMultiLine"
+                            android:textStyle="bold" />
+
+                        <ImageView
+                            android:id="@+id/edit_appointment"
+                            style="@style/style_sec_sec"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_margin="5dp"
+                            android:src="@drawable/ic_baseline_edit_24"
+                            android:textColor="#EBB057" />
+                    </RelativeLayout>
+
                     <com.eot_app.utility.util_interfaces.NoDefaultSpinner
                         android:id="@+id/status_spinner"
                         android:layout_width="match_parent"
@@ -98,6 +135,7 @@
                         android:popupBackground="@drawable/popupbg"
                         android:visibility="invisible" />
                     <LinearLayout
+                        android:layout_margin="5dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
@@ -114,6 +152,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="10dp"
+                            android:layout_margin="5dp"
                             android:layout_weight="1"
                             android:text=""
                             android:textStyle="normal" />
@@ -136,7 +175,39 @@
                         android:layout_marginTop="10dp"
                         android:layout_marginBottom="10dp"
                         android:background="@color/border_font_color" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:id="@+id/seemore"
 
+                        android:gravity="center"
+                        >
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="See More"
+                            android:textSize="11sp"
+                            style="@style/style_sec"
+                            android:textStyle="normal"
+
+                            android:textColor="@color/colorPrimary"
+                            />
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/ic_arrow_drop_down_black_24dp"
+                            />
+                    </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/LayoutForSeeMoreLess"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:layout_margin="5dp"
+                    android:orientation="vertical"
+                    android:background="#effeff"
+                    >
                     <TextView
                         android:id="@+id/tv_label_des"
                         style="@style/style_sec"
@@ -256,6 +327,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
+                        android:layout_margin="5dp"
                         android:visibility="gone">
 
                         <TextView
@@ -313,6 +385,7 @@
 
                     <LinearLayout
                         android:id="@+id/ll_job"
+                        android:layout_margin="5dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
@@ -350,19 +423,105 @@
                                 android:textStyle="bold" />
 
                         </LinearLayout>
-
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:layout_marginTop="15dp"
-                            android:layout_marginBottom="10dp"
-                            android:background="@color/border_font_color" />
-
                     </LinearLayout>
 
+
+                    <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:id="@+id/seeless"
+                    android:visibility="gone"
+                    android:gravity="center"
+
+
+                    >
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="See Less"
+                        android:textSize="11sp"
+                        style="@style/style_sec"
+                        android:textColor="@color/colorPrimary"
+                        />
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_baseline_arrow_drop_up_24"
+                        />
+                </LinearLayout>
+                </LinearLayout>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_margin="5dp"
+                    >
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/requirmentGethering"
+                            style="@style/style_sec"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:padding="10dp"
+                            android:text="Requirment Gethering"
+                            android:textStyle="bold" />
+                       <LinearLayout
+                           android:id="@+id/tv_add_new_item"
+                           android:layout_width="wrap_content"
+                           android:layout_height="wrap_content"
+                           android:layout_margin="10dp"
+                           android:paddingLeft="8dp"
+                           android:paddingTop="5dp"
+                           android:paddingBottom="5dp"
+                           android:paddingRight="8dp"
+                           android:background="@drawable/submit_btn"
+                           android:layout_alignParentEnd="true">
+                        <TextView
+                            style="@style/style_sec_sec"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Add"
+                            android:paddingTop="3dp"
+                            android:layout_marginRight="10dp"
+                            android:layout_marginLeft="10dp"
+                            android:paddingBottom="3dp"
+                            android:textColor="@color/white" />
+                           <ImageView
+                               android:layout_width="wrap_content"
+                               android:layout_height="wrap_content"
+                               android:src="@drawable/ic_baseline_arrow_drop_down_24"
+                               />
+
+                             </LinearLayout>
+
+                    </RelativeLayout>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginBottom="8dp"
+                        android:background="@color/border_font_color" />
+                        <androidx.recyclerview.widget.RecyclerView
+
+                            android:id="@+id/recyclerOfReqGeth"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                            />
+
+                </LinearLayout>
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="8dp">
+
 
                         <TextView
                             android:id="@+id/tb_label_attachment"
@@ -416,15 +575,15 @@
 
                     <FrameLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginTop="10dp">
+                        android:layout_height="wrap_content"
+                        >
 
                         <androidx.recyclerview.widget.RecyclerView
                             android:id="@+id/recyclerView"
                             android:layout_width="match_parent"
+                            android:layout_margin="8dp"
                             android:layout_height="wrap_content"
                             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-
                         <LinearLayout
                             android:id="@+id/nolist_linear"
                             android:layout_width="match_parent"
@@ -456,9 +615,7 @@
                             android:layout_gravity="center"
                             android:visibility="gone" />
                     </FrameLayout>
-
                 </LinearLayout>
-
             </androidx.core.widget.NestedScrollView>
 
             <View
@@ -470,74 +627,41 @@
         </FrameLayout>
 
         <LinearLayout
-            android:id="@+id/linearFabJob"
-            android:layout_width="wrap_content"
+            android:id="@+id/layoutForConverterBtn"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
             android:layout_margin="10dp"
             android:orientation="horizontal"
-            android:visibility="gone">
-
-            <TextView
-                android:id="@+id/tv_fab_job"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:background="@color/white"
-                android:padding="3dp"
-                android:textColor="@color/body_font_color" />
-
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:tint="@color/white"
-                app:fabSize="mini"
-                app:maxImageSize="20dp"
-                app:srcCompat="@drawable/ic_job"
-                app:useCompatPadding="true"
-                tools:ignore="ContentDescription" />
-        </LinearLayout>
-
-        <LinearLayout
+            android:visibility="visible">
+        <Button
             android:id="@+id/linearFabQuote"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
-            android:layout_margin="10dp"
-            android:orientation="horizontal"
-            android:visibility="gone">
+            android:layout_height="35dp"
+            android:textAllCaps="false"
+            android:background="@drawable/submit_btn"
+            android:paddingRight="2dp"
+            android:layout_margin="8dp"
+            style="@style/style_sec_sec"
+            android:layout_weight="1"
+            android:text="Convert To Quote"
 
-            <TextView
-                android:id="@+id/tv_fab_add_quote"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:background="@color/white"
-                android:padding="3dp"
-                android:textColor="@color/body_font_color" />
+            android:textColor="@color/white" />
 
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:tint="@color/white"
-                app:fabSize="mini"
-                app:maxImageSize="20dp"
-                app:srcCompat="@drawable/ic_quote"
-                app:useCompatPadding="true"
-                tools:ignore="ContentDescription" />
+        <Button
+            android:id="@+id/linearFabJob"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:background="@drawable/submit_btn"
+            android:paddingLeft="2dp"
+            style="@style/style_sec_sec"
+            android:layout_weight="1"
+            android:textAllCaps="false"
+            android:layout_margin="8dp"
+            android:text="Convert To Job"
+            android:textColor="@color/white" />
         </LinearLayout>
 
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
-            android:layout_margin="@dimen/fab_margin"
-            android:visibility="visible"
-            app:srcCompat="@drawable/ic_generate_invoice"
-            tools:ignore="ContentDescription" />
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

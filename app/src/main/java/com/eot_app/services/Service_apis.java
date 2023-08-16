@@ -138,6 +138,11 @@ public interface Service_apis {
 
     String getJobCardEmailTemplate = "JobController/getJobCardEmailTemplate";
     String sendJobCardEmailTemplate = "JobController/sendJobCardEmailTemplate";
+    /**add apis for item in appointment**/
+    String addItemOnAppointment = "LeadController/addLeadCart";
+    String updateItemOnAppointment = "LeadController/updateLeadCart";
+    String deleteItemOnAppointment = "LeadController/deleteLeadCart";
+    String getItemFromServer = "LeadController/getItemFromAppointment";
 
     /***Client industry**/
     String getIndustryList = "CompanyController/getIndustryList";

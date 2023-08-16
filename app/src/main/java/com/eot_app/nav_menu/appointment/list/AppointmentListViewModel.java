@@ -18,8 +18,12 @@ import com.eot_app.activitylog.LogModel;
 import com.eot_app.home_screens.MainActivity;
 import com.eot_app.nav_menu.appointment.Requestor;
 import com.eot_app.nav_menu.appointment.ServerResponse;
+import com.eot_app.nav_menu.appointment.appointment_ItemData.AppointmentItemData_pc;
+import com.eot_app.nav_menu.appointment.appointment_ItemData.AppointmentItemData_pi;
+import com.eot_app.nav_menu.appointment.appointment_model.AppintmentItemDataModel;
 import com.eot_app.nav_menu.appointment.calendar.data.Event;
 import com.eot_app.nav_menu.appointment.dbappointment.Appointment;
+import com.eot_app.nav_menu.appointment.details.AppointmentDetailsActivity;
 import com.eot_app.nav_menu.appointment.list.common.CommonAppointmentModel;
 import com.eot_app.nav_menu.appointment.list.model.AppointmentListReq;
 import com.eot_app.nav_menu.audit.audit_list.audit_mvp.model.AuditListRequestModel;
@@ -37,6 +41,8 @@ import com.eot_app.utility.EotApp;
 import com.eot_app.utility.db.AppDataBase;
 import com.eot_app.utility.language_support.LanguageController;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
@@ -46,6 +52,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.TimeZone;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -149,7 +156,8 @@ public class AppointmentListViewModel extends AndroidViewModel implements Server
                         //refresh recent job on appointment details and show the label of recent job with code
                         LocalBroadcastManager.getInstance(EotApp.getAppinstance()).sendBroadcast(new Intent("appointment_details_refresh"));
                     }
-                } else {
+                }
+                 else {
                     if (jsonObject.get("statusCode") != null && jsonObject.get("statusCode").getAsString().equals(AppConstant.SESSION_EXPIRE)) {
                         mainActivity.onSessionExpired(LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
                     }

@@ -615,6 +615,8 @@ public abstract class AppDataBase extends RoomDatabase {
                     " PRIMARY KEY(`id`))");
         }
     };
+    /**Add some filed in Appointment for Item add in Requirement Gathering **/
+
 
     static final Migration MIGRATION_41_42 = new Migration(41, 42) {
         @Override
@@ -623,7 +625,6 @@ public abstract class AppDataBase extends RoomDatabase {
             database.execSQL("ALTER TABLE Appointment ADD COLUMN parentId TEXT");
             database.execSQL("ALTER TABLE Appointment ADD COLUMN leadId TEXT");
             database.execSQL("ALTER TABLE Appointment ADD COLUMN isStatusShow TEXT");
-            database.execSQL("ALTER TABLE Appointment ADD COLUMN count TEXT");
             database.execSQL("ALTER TABLE Appointment ADD COLUMN itemData TEXT");
             database.execSQL("ALTER TABLE Tax ADD COLUMN taxComponents TEXT");
             database.execSQL("ALTER TABLE Job ADD COLUMN taxCalculationType TEXT");

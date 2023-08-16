@@ -126,7 +126,7 @@ public class AddAppointmentActivity extends UploadDocumentActivity implements Te
         if (getIntent() != null && getIntent().hasExtra(ISINEDITMODE)) {
             isInEditMode = true;
             getSupportActionBar().setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.appointment_edit));
-            appointment = (Appointment) getIntent().getSerializableExtra("appointment");
+            appointment =  getIntent().getParcelableExtra("appointment");
         }
 
         initializelables();

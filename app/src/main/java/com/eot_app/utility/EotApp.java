@@ -11,6 +11,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 import com.eot_app.login_next.Login2Activity;
+import com.eot_app.nav_menu.appointment.AppointmentItem_Observer;
 import com.eot_app.nav_menu.jobs.job_controller.ChatController;
 import com.eot_app.nav_menu.jobs.job_detail.JobDetailActivity;
 import com.eot_app.nav_menu.jobs.job_detail.detail.NotifyForAddJob;
@@ -60,7 +61,7 @@ public class EotApp extends Application implements Application.ActivityLifecycle
     private NotifyForEquipmentCountList notifyForEquipmentCountList;
     private NotifyForEquipmentStatusList notifyForEquipmentStatusList;
     private NotifyForInvoiceGenr notifyForInvoiceGenr;
-
+    private AppointmentItem_Observer appointmentItem_observer;
     public static synchronized EotApp getAppinstance() {
         return INSTANCE;
     }
@@ -243,12 +244,18 @@ public class EotApp extends Application implements Application.ActivityLifecycle
     public void setApiItemAddEdit_Observer(JobItem_Observer itemAddEditObserver) {
         this.jobItemObserver = itemAddEditObserver;
     }
+    public void setAppointmentItem_observer(AppointmentItem_Observer itemAddEditObserver) {
+        this.appointmentItem_observer = itemAddEditObserver;
+    }
 
     public void notifyApiItemAddEdit_Observer(String api_name, String jobId) {
         if (this.jobItemObserver != null) {
             jobItemObserver.onObserveCallBack(api_name, jobId);
+        }else if(this.appointmentItem_observer!=null){
+            appointmentItem_observer.onObserveCallBack(api_name, jobId);
         }
     }
+
 
     public void setInvoiceItemObserver(InvoiceItemObserver invoiceItemObserver) {
         this.invoiceItemObserver = invoiceItemObserver;

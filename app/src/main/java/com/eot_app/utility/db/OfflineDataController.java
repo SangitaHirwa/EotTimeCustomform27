@@ -15,6 +15,12 @@ import com.eot_app.BuildConfig;
 import com.eot_app.activitylog.LogModelActivity;
 import com.eot_app.nav_menu.appointment.addupdate.model.AppointmentAddReq;
 import com.eot_app.nav_menu.appointment.addupdate.model.AppointmentUpdateReq;
+import com.eot_app.nav_menu.appointment.appointment_model.AppintmentItemDataModel;
+import com.eot_app.nav_menu.appointment.appointment_model.AppointmentAddItem_Res;
+import com.eot_app.nav_menu.appointment.appointment_model.AppointmentItemAdd_RequestModel;
+import com.eot_app.nav_menu.appointment.appointment_model.AppointmentItemDataInMap;
+import com.eot_app.nav_menu.appointment.appointment_model.AppointmentUpdateItem_Req_Model;
+import com.eot_app.nav_menu.appointment.appointment_model.ItemByAppointmentId;
 import com.eot_app.nav_menu.appointment.dbappointment.Appointment;
 import com.eot_app.nav_menu.audit.addAudit.add_aduit_model_pkg.AddAudit_Req;
 import com.eot_app.nav_menu.audit.audit_list.audit_mvp.model.AuditList_Res;
@@ -278,6 +284,11 @@ public class OfflineDataController {
                     e.printStackTrace();
                 }
                 break;
+            case Service_apis.addItemOnAppointment:
+            case Service_apis.updateItemOnAppointment: {
+                updateAppointmentItems(data,obj);
+                break;
+            }
             case Service_apis.addItemOnJob:
             case Service_apis.deleteItemFromJob:
             case Service_apis.updateItemInJobMobile: {
@@ -293,6 +304,33 @@ public class OfflineDataController {
             getTotalRequest();
         }
     };
+
+    private void updateAppointmentItems(Offlinetable data, JsonObject obj) {
+        try {
+            switch (data.getService_name()) {
+                case Service_apis.addItemOnAppointment:
+                    AppointmentItemAdd_RequestModel itemAddRequestModel = gson.fromJson(data.getParams(), AppointmentItemAdd_RequestModel.class);
+                    EotApp.getAppinstance().notifyApiItemAddEdit_Observer(data.getService_name(), itemAddRequestModel.getAppId());
+                    break;
+                case Service_apis.updateItemOnAppointment:
+                    if (data!=null) {
+                        AppointmentUpdateItem_Req_Model updateData = gson.fromJson(data.getParams(), AppointmentUpdateItem_Req_Model.class);
+                        Type listType = new com.google.gson.reflect.TypeToken<List<AppintmentItemDataModel>>() {
+                        }.getType();
+                        List<AppintmentItemDataModel> updatedItemList = new Gson().fromJson(updateData.getAddToCartServices(), listType);
+                        List<AppointmentItemDataInMap> updatedItemForDb=new ArrayList<>();
+                        for(AppintmentItemDataModel dataModel:updatedItemList) {
+                            AppointmentItemDataInMap itemDataInMap = new AppointmentItemDataInMap(String.valueOf(dataModel.getIlmmId())
+                                    ,dataModel);
+                        }
+                    }
+            }
+        }catch (Exception ex) {
+            ex.printStackTrace();
+            HyperLog.i(TAG, "updateJobItems(M) exception:" + ex.toString());
+
+        }
+    }
 
     private OfflineDataController() {
     }
