@@ -935,6 +935,11 @@ public class AppConstant {
     public static final String tax_change_msg = "tax_change_msg";
 
 
+    /**Add Appointment Item keys**/
+    public static String Add_New_Item="add_new_item";
+    public static String Text_Req_Gath="text_requirement_gathering";
+    public static String Text_See_More="txt_see_more_appointment";
+    public static String Text_see_Less="txt_see_less_appointment";
 
     public static String server(String location) {
         switch (location) {

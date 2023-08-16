@@ -35,6 +35,7 @@ public class AppointmentAddItem_Res {
     private int isItemOrTitle;
     private String isLabourChild;
     private  String labourTempId;
+    private String jtId;
 
 
     public AppointmentAddItem_Res(String itemId, String inm, int dataType, int itemType, String rate,
@@ -42,7 +43,7 @@ public class AppointmentAddItem_Res {
                                   int isGrouped, List<AppointmentTax> tax, String des, String hsncode,
                                   String pno, String unit, String isBillable, String isBillableChange,
                                   String tempId, String ilmmId, String isLabourParent, double taxamnt,
-                                  String isPartParent, String isPartChild, String partTempId, int isItemOrTitle) {
+                                  String isPartParent, String isPartChild, String partTempId, int isItemOrTitle,String jtId) {
         this.itemId = itemId;
         this.inm = inm;
         this.dataType = dataType;
@@ -68,6 +69,7 @@ public class AppointmentAddItem_Res {
         this.isPartChild = isPartChild;
         this.partTempId = partTempId;
         this.isItemOrTitle = isItemOrTitle;
+        this.jtId = jtId;
     }
     public AppointmentAddItem_Res(String itemId, String inm, int dataType,
                                   int itemType, String rate, String supplierCost,
@@ -77,7 +79,7 @@ public class AppointmentAddItem_Res {
                                   String isBillableChange, String tempId, String ilmmId, String isLabourParent,
                                   String isLabourChild,String labourTempId,
                                   double taxamnt, String isPartParent, String isPartChild,
-                                  String partTempId, int isItemOrTitle) {
+                                  String partTempId, int isItemOrTitle,String jtId) {
         this.itemId = itemId;
         this.inm = inm;
         this.dataType = dataType;
@@ -104,7 +106,7 @@ public class AppointmentAddItem_Res {
         this.isPartChild = isPartChild;
         this.partTempId = partTempId;
         this.isItemOrTitle = isItemOrTitle;
-
+        this.jtId = jtId;
 
     }
     public String getItemId() {
@@ -306,5 +308,13 @@ public class AppointmentAddItem_Res {
 
     public void setIsItemOrTitle(int isItemOrTitle) {
         this.isItemOrTitle = isItemOrTitle;
+    }
+
+    public String getJtId() {
+        return jtId;
+    }
+
+    public void setJtId(String jtId) {
+        this.jtId = jtId;
     }
 }

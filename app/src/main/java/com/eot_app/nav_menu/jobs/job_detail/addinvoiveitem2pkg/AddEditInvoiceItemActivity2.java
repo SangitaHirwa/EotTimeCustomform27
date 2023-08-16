@@ -420,7 +420,7 @@ public class AddEditInvoiceItemActivity2 extends
 
     private void setItemFieldsForApp() {
         tax_value_txt.setText((String.valueOf(total_tax)));
-        calculateTaxRate();
+//        calculateTaxRate();
 
         /* type 1 for inventry item  */
         switch (updateAppointmentItemData.getDataType()) {
@@ -1532,6 +1532,7 @@ public class AddEditInvoiceItemActivity2 extends
             updateItemsOnJob(taxListFilter);
         }
     }
+
     private void updateItemsOnAppointment() {
         try {
             HyperLog.i("TAG", "addItemsOnJob(M) started");
@@ -1585,7 +1586,7 @@ public class AddEditInvoiceItemActivity2 extends
                     String.valueOf(updateAppointmentItemData.getIlmmId()),updateAppointmentItemData.getIsLabourParent(),
                     updateAppointmentItemData.getIsLabourChild(),updateAppointmentItemData.getLabourTempId(),
                     taxAmount,String.valueOf(isPartParent),String.valueOf(isPartChild),
-                    partTempId,updateAppointmentItemData.getDataType());
+                    partTempId,updateAppointmentItemData.getDataType(),String.valueOf(appjtId));
             // *add api for appointment item**/
             try {
                 if (!isBillable.equals("")) {
@@ -1601,16 +1602,13 @@ public class AddEditInvoiceItemActivity2 extends
                 addItem_resList.add(updateItem_res);
                 String addToservice = new Gson().toJson(addItem_resList);
                 AppointmentItemDataInMap itemDataInMap=new AppointmentItemDataInMap(String.valueOf(updateAppointmentItemData.getIlmmId()),updateAppintmentItemDataModel);
-                AppointmentUpdateItem_Req_Model updateItem_req_model=new AppointmentUpdateItem_Req_Model(addToservice,
-                        String.valueOf(updateAppointmentItemData.getLeadId()),String.valueOf(updateAppointmentItemData.getIlmmId()));
-                Intent intent=new Intent();
-                intent.putExtra("updateDataReqModel",updateItem_req_model);
-                intent.putExtra("updateDataForDB",itemDataInMap);
-                intent.putExtra("modelForUpdate",updateAppointmentItemData);
-                setResult(RESULT_OK,intent);
-               /*  AppointmentItemDataInMap itemDataInMap=new AppointmentItemDataInMap(String.valueOf(updateAppointmentItemData.getIlmmId()),updateAppintmentItemDataModel);
-                 appointmentItemData_pi.apiCallUpdateAppointmentItem(updateItem_req_model,itemDataInMap,
-                         updateAppointmentItemData,appointmentModel.getAppId()*/
+                 AppointmentUpdateItem_Req_Model updateItem_req_model=new AppointmentUpdateItem_Req_Model(addToservice,
+                         String.valueOf(updateAppointmentItemData.getLeadId()),String.valueOf(updateAppointmentItemData.getIlmmId()));
+                 Intent intent=new Intent();
+                 intent.putExtra("updateDataReqModel",updateItem_req_model);
+                 intent.putExtra("updateDataForDB",itemDataInMap);
+                 intent.putExtra("modelForUpdate",updateAppointmentItemData);
+                 setResult(RESULT_OK,intent);
 
             }
             else updateSyncAppItem(updateItem_res);
@@ -1699,6 +1697,10 @@ public class AddEditInvoiceItemActivity2 extends
             if(itemType.equals("")){
                 itemType="0";
             }
+            if(jtId.equals("")){
+                jtId=" ";
+            }
+
             appintmentItemDataModel= new AppintmentItemDataModel(edt_item_desc.getText().toString(),"",
                     inm ,edt_part_no.getText().toString(),edt_item_qty.getText().toString(),
                     edt_item_rate.getText().toString(),edt_unit.getText().toString(),apptaxList,
@@ -1708,14 +1710,14 @@ public class AddEditInvoiceItemActivity2 extends
                     Integer.parseInt(dataType), edt_serialNo.getText().toString(),Integer.parseInt(isGrouped),0);
 
 
-            AppointmentAddItem_Res addItem_res=new AppointmentAddItem_Res(itemId,inm, Integer.parseInt(dataType),
-                    Integer.parseInt(itemType),edt_item_rate.getText().toString(),edt_item_supplier.getText().toString(),
-                    edt_serialNo.getText().toString(),edt_item_qty.getText().toString(),
-                    edt_item_disc.getText().toString(), Integer.parseInt(isGrouped),apptaxList,
-                    edt_item_desc.getText().toString(),edt_hsnCode.getText().toString(),edt_part_no.getText().toString(),
-                    edt_unit.getText().toString(), isBillable,isBillableChange,appointmentModel.getTempId(),"",
-                    "",taxAmount,String.valueOf(isPartParent),String.valueOf(isPartChild),partTempId,Integer.parseInt(dataType));
-            // *add api for appointment item**/
+     AppointmentAddItem_Res addItem_res=new AppointmentAddItem_Res(itemId,inm, Integer.parseInt(dataType),
+             Integer.parseInt(itemType),edt_item_rate.getText().toString(),edt_item_supplier.getText().toString(),
+             edt_serialNo.getText().toString(),edt_item_qty.getText().toString(),
+             edt_item_disc.getText().toString(), Integer.parseInt(isGrouped),apptaxList,
+             edt_item_desc.getText().toString(),edt_hsnCode.getText().toString(),edt_part_no.getText().toString(),
+             edt_unit.getText().toString(),isBillableChange,appointmentModel.getTempId(),"","","",
+             "",taxAmount,String.valueOf(isPartParent),String.valueOf(isPartChild),partTempId,Integer.parseInt(dataType),jtId);
+             // *add api for appointment item**/
             try {
                 if (!isBillable.equals("")) {
                     // appintmentItemDataModel.setIsBillable(isBillable);

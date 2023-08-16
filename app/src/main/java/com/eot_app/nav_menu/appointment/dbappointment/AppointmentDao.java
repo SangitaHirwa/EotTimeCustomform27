@@ -96,4 +96,6 @@ public interface AppointmentDao {
     @Update
     void updateOfflineTable(Offlinetable offlinetable);
 
+    @Query("select * from Appointment where appId =:leadId")
+    Appointment getAppointmentByLeadId(String leadId);
 }

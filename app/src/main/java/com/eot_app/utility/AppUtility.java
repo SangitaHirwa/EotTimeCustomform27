@@ -1495,13 +1495,13 @@ public class AppUtility {
                 amount = d;
 
             }
-            else if (getDisCalculationType.equals("1")) {
+            else if (taxCalculationType.equals("1")) {
 
                 double newAmt = (rate * total_tax) / 100;
                 double d = rate + newAmt;
                 amount = d;
             }
-            else if (getDisCalculationType.equals("2")) {
+            else if (taxCalculationType.equals("2")) {
 
                 double newAmt = (rate * total_tax) / 100;
                 double d = rate + newAmt;
