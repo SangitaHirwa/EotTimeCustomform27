@@ -138,8 +138,8 @@ public class AddEditInvoiceItemActivity2 extends
     private List<JobTitle> servicesItemList = new ArrayList<>();
     private List<FieldWorker> fieldWorkerList = new ArrayList<>();
     private List<Inventry_ReS_Model> itemsList = new ArrayList<>();
-    private String jobId;
-    private String appId;
+    private String jobId="";
+    private String appId="";
     private String jtId = "";
 
     private String isBillable = "1";
@@ -255,12 +255,24 @@ public class AddEditInvoiceItemActivity2 extends
             }
             if(getIntent().hasExtra("AddRequirmentGetheringItem")) {
                appId = bundle.getString("appId");
+                getTaxDisType("");
+                initializelables();
+                getTaxMethodType = bundle.getString("getTaxMethodType");
+                if (getTaxMethodType.equals("1")) {
+                    getSingleTaxId = bundle.getString("getSingleTaxId");
+                }
                 setDefaultValuesForAddNewItem();
                 invoiceItemPi.getTaxList();
 
             }else if(getIntent().hasExtra("UpdateItemRequirmentGethering")){
                 bundle.getBoolean("UpdateItemRequirmentGethering");
                 appId = bundle.getString("appId");
+                getTaxDisType("");
+                initializelables();
+                getTaxMethodType = bundle.getString("getTaxMethodType");
+                if (getTaxMethodType.equals("1")) {
+                    getSingleTaxId = bundle.getString("getSingleTaxId");
+                }
                 updateAppointmentItemData= getIntent().getParcelableExtra("updateItemDataOfApp");
 
                 invoiceItemPi.getTaxList();
@@ -495,7 +507,9 @@ public class AddEditInvoiceItemActivity2 extends
             e.printStackTrace();
         }
 
-
+        firstTimeOnPage = false;
+        total_Amount_cal();
+        calculateTaxRate();
     }
 
     private void getAppointmentById() {
@@ -1483,7 +1497,7 @@ public class AddEditInvoiceItemActivity2 extends
                         taxId = tax.getTaxId();
                     }
                 }
-                if(jobModel.getCanInvoiceCreated().equals("1")) {
+                if( jobModel!= null && jobModel.getCanInvoiceCreated().equals("1")) {
                     if (getTaxMethodType.equals("1")) {
                         if (!taxId.equals(getSingleTaxId)) {
                             AppUtility.alertDialog(this, LanguageController.getInstance().getMobileMsgByKey(AppConstant.are_you_sure),LanguageController.getInstance().getMobileMsgByKey(AppConstant.tax_change_msg) , AppConstant.yes, AppConstant.no, new Callable<Boolean>() {

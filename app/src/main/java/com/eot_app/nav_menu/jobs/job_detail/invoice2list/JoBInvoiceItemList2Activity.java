@@ -320,7 +320,6 @@ public class JoBInvoiceItemList2Activity extends AppCompatActivity implements Vi
     private void intialize_UI_Views() {
         layoutManager = new LinearLayoutManager(this);
         recyclerView_invoice.setLayoutManager(layoutManager);
-        job.setIsAddisDiscBefore("1");
         invoice_list_adpter = new InvoiceItemList2Adpter(this, new ArrayList<>(),getDisCalculationType,getTaxCalculationType,this,job.getIsAddisDiscBefore());//, this, this
         recyclerView_invoice.setAdapter(invoice_list_adpter);
 
@@ -469,7 +468,6 @@ public class JoBInvoiceItemList2Activity extends AppCompatActivity implements Vi
 
     /****Add Item**/
     private void addInvoiceItem() {
-        job.setIsAddisDiscBefore("1");
         Intent intent = new Intent(this, AddEditInvoiceItemActivity2.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         intent.putExtra("invId", invId);
@@ -511,7 +509,6 @@ public class JoBInvoiceItemList2Activity extends AppCompatActivity implements Vi
      **/
     private void editInvoiceItem(InvoiceItemDataModel invoiceItemDataModel) {
         //convertInEquip(invoiceItemDataModel);
-        job.setIsAddisDiscBefore("1");
         Intent intent = new Intent(this, AddEditInvoiceItemActivity2.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         intent.putExtra("InvoiceItemDataModel", invoiceItemDataModel);

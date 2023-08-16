@@ -249,6 +249,8 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
             intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
             intent.putExtra("AddRequirmentGetheringItem",true);
             intent.putExtra("appId",model.getAppId());
+            intent.putExtra("getTaxMethodType", "0");
+            intent.putExtra("getSingleTaxId", "0");
             startActivityForResult(intent,GET_ITEM_LIST);
 
         });
@@ -1154,6 +1156,8 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
         intent.putExtra("UpdateItemRequirmentGethering",true);
         intent.putExtra("appId",model.getAppId());
        intent.putExtra("updateItemDataOfApp",appintmentItemDataModel);
+        intent.putExtra("getTaxMethodType", "0");
+        intent.putExtra("getSingleTaxId", "0");
         startActivityForResult(intent,UPDATE_ITEM);
     }
 
