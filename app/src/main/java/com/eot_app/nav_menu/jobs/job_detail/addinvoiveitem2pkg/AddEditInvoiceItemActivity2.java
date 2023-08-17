@@ -1595,23 +1595,43 @@ public class AddEditInvoiceItemActivity2 extends
             } catch (Exception exception) {
                 exception.printStackTrace();
             }
+            String updateItem = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).appointmentModel().getUpdatedItemData(appId);
+            Type listType = new TypeToken<List<AppointmentItemDataInMap>>() {
+            }.getType();
+            List<AppointmentItemDataInMap > addItemList = new Gson().fromJson(updateItem, listType);
+            for (AppointmentItemDataInMap itemData : addItemList) {
+                AppintmentItemDataModel itemData1 = itemData.getItemData();
+                if(itemData1.getIlmmId()==updateAppointmentItemData.getIlmmId()){
+                    addItemList.remove(itemData);
+                    break;
+                }
+            }
+            AppointmentItemDataInMap itemDataInMap=new AppointmentItemDataInMap(String.valueOf(updateAppointmentItemData.getIlmmId()),updateAppintmentItemDataModel);
+            addItemList.add(itemDataInMap);
+            String updateInDB = new Gson().toJson(addItemList);
+            AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).appointmentModel().updateAppointmentItem(appId,updateInDB);
 
 
             if(AppUtility.isInternetConnected()){
                 List<AppointmentAddItem_Res> addItem_resList=new ArrayList<>();
                 addItem_resList.add(updateItem_res);
                 String addToservice = new Gson().toJson(addItem_resList);
-                AppointmentItemDataInMap itemDataInMap=new AppointmentItemDataInMap(String.valueOf(updateAppointmentItemData.getIlmmId()),updateAppintmentItemDataModel);
                  AppointmentUpdateItem_Req_Model updateItem_req_model=new AppointmentUpdateItem_Req_Model(addToservice,
                          String.valueOf(updateAppointmentItemData.getLeadId()),String.valueOf(updateAppointmentItemData.getIlmmId()));
                  Intent intent=new Intent();
                  intent.putExtra("updateDataReqModel",updateItem_req_model);
                  intent.putExtra("updateDataForDB",itemDataInMap);
                  intent.putExtra("modelForUpdate",updateAppointmentItemData);
+                 intent.putExtra("onlineUpdate",true);
                  setResult(RESULT_OK,intent);
 
             }
-            else updateSyncAppItem(updateItem_res);
+            else {
+                updateSyncAppItem(updateItem_res);
+                Intent intent=new Intent();
+                intent.putExtra("offlineUpdate",true);
+                setResult(RESULT_OK,intent);
+            }
 
 
             finish_Activity();

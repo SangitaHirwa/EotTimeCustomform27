@@ -19,8 +19,10 @@ import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.model.InvoiceItem
 import com.eot_app.nav_menu.quote.quotes_list_pkg.QuoteList_Adpter;
 import com.eot_app.nav_menu.quote.quotes_list_pkg.qoute_model_pkg.Quote_ReS;
 import com.eot_app.utility.AppConstant;
+import com.eot_app.utility.AppUtility;
 import com.eot_app.utility.EotApp;
 import com.eot_app.utility.language_support.LanguageController;
+import com.eot_app.utility.util_interfaces.Callback_AlertDialog;
 import com.eot_app.utility.util_interfaces.MyListItemSelected;
 
 import org.jetbrains.annotations.NotNull;
@@ -37,10 +39,12 @@ public class RequirementGetheringListAdapter extends RecyclerView.Adapter<Requir
     DeleteItem deleteItem;
 
 
-    RequirementGetheringListAdapter( List<AppintmentItemDataModel> itemList, MyListItemSelected<AppintmentItemDataModel> mListner,DeleteItem deleteItem) {
+    RequirementGetheringListAdapter( List<AppintmentItemDataModel> itemList, MyListItemSelected<AppintmentItemDataModel> mListner,DeleteItem deleteItem,
+                                     Context context) {
         this.itemDataModels=itemList;
         this.mListner = mListner;
         this.deleteItem=deleteItem;
+        this.context=context;
     }
 
 
@@ -76,7 +80,11 @@ public class RequirementGetheringListAdapter extends RecyclerView.Adapter<Requir
         }
 
         holder.deleteItem.setOnClickListener(view -> {
+            AppUtility.alertDialog2(context, "", LanguageController.getInstance().getMobileMsgByKey(AppConstant.invoice_remove), LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), LanguageController.getInstance().getMobileMsgByKey(AppConstant.cancel), new Callback_AlertDialog() {
+                @Override
+                public void onPossitiveCall() {
             try {
+
                 if (itemDataModels.get(position).getIlmmId() != 0) {
                     deleteItem.itemDelete(String.valueOf(itemDataModels.get(position).getIlmmId())
                             ,itemDataModels.get(position).getDataType(),itemDataModels.get(position).getLeadId());
@@ -84,6 +92,14 @@ public class RequirementGetheringListAdapter extends RecyclerView.Adapter<Requir
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
+
+                }
+
+                @Override
+                public void onNegativeCall() {
+
+                }
+            });
         });
         holder.item_req_geth.setOnClickListener(new View.OnClickListener() {
             @Override
