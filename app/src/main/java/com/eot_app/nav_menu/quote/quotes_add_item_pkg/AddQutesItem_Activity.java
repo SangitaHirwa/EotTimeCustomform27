@@ -534,6 +534,7 @@ public class AddQutesItem_Activity extends AppCompatActivity implements TextWatc
         itemId = itemdata.getItemId();
         iqmmId = itemdata.getIqmmId();
         type = itemdata.getType();
+        jtId = itemdata.getJtId();
     }
 
     private void set_Title() {
