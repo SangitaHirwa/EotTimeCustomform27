@@ -262,7 +262,12 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
             startActivityForResult(intent,GET_ITEM_LIST);
 
         });
+        binding.swiperefresh.setOnRefreshListener(() -> {
+            if (itemAdded_pi != null) {
+                itemAdded_pi.getItemFromServer(model.getAppId(),this);
+            }
 
+        });
 
         /*binding.btnAppointmentDone.setOnClickListener(v -> {
             if (model != null && !model.getTempId().equals(model.getAppId())) {
@@ -1198,6 +1203,15 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
         if (itemList != null && reqGethListAdapter != null && itemList.size() >= 0) {
             reqGethListAdapter.updateItemList(this.itemList);
            // invalidateOptionsMenu();
+        }
+        dismissPullTorefresh();
+
+    }
+
+    @Override
+    public void dismissPullTorefresh() {
+        if (binding.swiperefresh.isRefreshing()) {
+            binding.swiperefresh.setRefreshing(false);
         }
 
     }
