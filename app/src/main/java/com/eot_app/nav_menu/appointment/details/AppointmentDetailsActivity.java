@@ -887,6 +887,7 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
                     }
                     if (attachementAdapter != null) {
                         allAttachmentList=getFileList_res;
+                        allAttachmentList=getFileList_res;
                         attachementAdapter.setList(getFileList_res);
                         binding.nolistLinear.setVisibility(View.GONE);
                     }
@@ -1051,7 +1052,6 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
         if (model != null && model.getKpr() != null)
             for (Keepar keepar : model.getKpr()) {
                 kprs.add(keepar.getUsrId());
-                kprs.add(keepar.getStatus());
                 updateReq.setMemIds(kprs);
             }
         assert model != null;
