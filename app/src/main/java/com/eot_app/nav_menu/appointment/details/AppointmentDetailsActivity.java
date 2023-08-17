@@ -1195,7 +1195,7 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
             this.itemList.add(item.getItemData());
         }
 
-        if (itemList != null && reqGethListAdapter != null && itemList.size() > 0) {
+        if (itemList != null && reqGethListAdapter != null && itemList.size() >= 0) {
             reqGethListAdapter.updateItemList(this.itemList);
            // invalidateOptionsMenu();
         }
