@@ -186,7 +186,7 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
 
         doc_attch_pi = new Doc_Attch_Pc(this);
         EotApp.getAppinstance().setAppointmentItem_observer(this);
-        reqGethListAdapter = new RequirementGetheringListAdapter(new ArrayList<>(),this,this);
+        reqGethListAdapter = new RequirementGetheringListAdapter(new ArrayList<>(),this,this,this);
         binding.recyclerOfReqGeth.setAdapter(reqGethListAdapter);
         appointmentItemData_pi =new AppointmentItemData_pc();
         itemAdded_pi = new AppointmentItemAdded_pc(this);
@@ -920,11 +920,15 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
                 break;
             case UPDATE_ITEM:
                 if(resultCode== AppCompatActivity.RESULT_OK){
-                    if(data!=null){
-                        AppintmentItemDataModel modelForUpdate = data.getParcelableExtra("modelForUpdate");
-                        AppointmentItemDataInMap updateDataForDB = data.getParcelableExtra("updateDataForDB");
-                        AppointmentUpdateItem_Req_Model updateDta = (AppointmentUpdateItem_Req_Model) data.getSerializableExtra("updateDataReqModel");
-                        appointmentItemData_pi.apiCallUpdateAppointmentItem(updateDta,updateDataForDB,model.getAppId(),modelForUpdate,this);
+                    if(data!=null) {
+                        if (data.getBooleanExtra("onlineUpdate",false)) {
+                            AppintmentItemDataModel modelForUpdate = data.getParcelableExtra("modelForUpdate");
+                            AppointmentItemDataInMap updateDataForDB = data.getParcelableExtra("updateDataForDB");
+                            AppointmentUpdateItem_Req_Model updateDta = (AppointmentUpdateItem_Req_Model) data.getSerializableExtra("updateDataReqModel");
+                            appointmentItemData_pi.apiCallUpdateAppointmentItem(updateDta, updateDataForDB, model.getAppId(), modelForUpdate, this);
+                        }else if(data.getBooleanExtra("offlineUpdate",false)){
+                            itemAdded_pi.getItemListByAppointmentFromDB(model.getAppId());
+                        }
                     }
                 }
         }
@@ -1202,9 +1206,26 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
     public void itemDelete(String ilmmId,int isItemOrTitle,int leadId) {
         AppointmentItemDeleteRequestModel deleteRequestModel=new AppointmentItemDeleteRequestModel(ilmmId,String.valueOf(isItemOrTitle),
                 String.valueOf(leadId));
+
         if(AppUtility.isInternetConnected()) {
             appointmentItemData_pi.apiCallForDeleteItem(deleteRequestModel, model.getAppId(), this);
         }else{
+            String removeDeletedItem = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).appointmentModel().getUpdatedItemData(model.getAppId());
+            Type listType = new TypeToken<List<AppointmentItemDataInMap>>() {
+            }.getType();
+            List<AppointmentItemDataInMap > addItemList = new Gson().fromJson(removeDeletedItem, listType);
+            List<AppointmentItemDataInMap > removeItemList=new ArrayList<>();
+            for (AppointmentItemDataInMap itemData : addItemList) {
+                String ilmmId1= itemData.getIlmmId();
+                if(ilmmId1.equals(deleteRequestModel.getIlmmId())){
+                    removeItemList.add(itemData);
+                    break;
+                }
+            }
+            addItemList.removeAll(removeItemList);
+            String deletedDtaRemoved = new Gson().toJson(addItemList);
+            AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).appointmentModel().updateAppointmentItem(model.getAppId(),deletedDtaRemoved);
+            itemAdded_pi.getItemListByAppointmentFromDB(model.getAppId());
             offlineDeleteAppItem(deleteRequestModel);
         }
     }
