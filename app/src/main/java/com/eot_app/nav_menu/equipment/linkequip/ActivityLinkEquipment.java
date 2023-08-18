@@ -225,8 +225,8 @@ public class ActivityLinkEquipment extends AppCompatActivity implements View.OnC
             intent.putExtra("cltId", cltId);
             intent.putExtra("contrId", contrId);
             Gson gson = new Gson();
-            String str = gson.toJson(myEquList);
-            intent.putExtra("myEquList", str);
+//            String str = gson.toJson(myEquList);
+//            intent.putExtra("myEquList", str);
             String strstatusstr = gson.toJson(statusList);
             intent.putExtra("strstatus", strstatusstr);
             startActivityForResult(intent, 330);

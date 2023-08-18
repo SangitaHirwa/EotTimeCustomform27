@@ -63,7 +63,7 @@ public class LinkEquipmentPC implements LinkEquipmentPI {
                     type,
                     cltId
             );
-
+            view.showHideProgressBar(true);
             JsonObject jsonObject = AppUtility.jsonToStingConvrt(equipmentListReq);
             ApiClient.getservices().eotServiceCall(
                     Service_apis.getAllEquipments,
