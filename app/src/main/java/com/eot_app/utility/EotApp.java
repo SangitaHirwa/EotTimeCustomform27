@@ -252,7 +252,7 @@ public class EotApp extends Application implements Application.ActivityLifecycle
         if (this.jobItemObserver != null) {
             jobItemObserver.onObserveCallBack(api_name, jobId);
         }else if(this.appointmentItem_observer!=null){
-            appointmentItem_observer.onObserveCallBack(api_name);
+            appointmentItem_observer.onObserveCallBack(api_name,jobId);
         }
     }
 

@@ -1281,7 +1281,7 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
     }
 
     @Override
-    public void onObserveCallBack(String api_name) {
+    public void onObserveCallBack(String api_name,String leadId) {
         try{
             Log.e("TAG", api_name);
             switch (api_name) {

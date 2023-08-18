@@ -98,4 +98,8 @@ public interface AppointmentDao {
 
     @Query("select * from Appointment where appId =:leadId")
     Appointment getAppointmentByLeadId(String leadId);
+
+    @Query("UPDATE Appointment  SET leadId = :leadId WHERE appId = :appId ")
+    void updateAppointmentLeadID(String appId, String leadId);
+
 }
