@@ -1205,6 +1205,7 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
             reqGethListAdapter.updateItemList(this.itemList);
            // invalidateOptionsMenu();
         }
+        model=AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).appointmentModel().getAppointmentById(model.getAppId());
         dismissPullTorefresh();
 
     }
@@ -1291,6 +1292,7 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
                 case Service_apis.deleteItemOnAppointment:{
                     if (itemAdded_pi != null) {
                         itemAdded_pi.getItemFromServer(model.getAppId(),this);
+
                     }
                     break;
                 }
