@@ -600,6 +600,7 @@
                             android:gravity="center"
                             android:orientation="vertical"
                             android:visibility="gone"
+                            android:layout_marginBottom="20dp"
                             tools:ignore="UseCompoundDrawables">
 
                             <ImageView
