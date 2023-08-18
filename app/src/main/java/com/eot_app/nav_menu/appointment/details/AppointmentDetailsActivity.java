@@ -170,6 +170,7 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
         binding.requirmentGethering.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.Text_Req_Gath));
         binding.txtSeeMore.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.Text_See_More));
         binding.txtSeeLess.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.Text_see_Less));
+        binding.btnAddItem.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add));
        /* binding.btnAppointmentDone.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.mark_as_done));
         binding.btnAppointmentCompleted.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.completed));*/
 
