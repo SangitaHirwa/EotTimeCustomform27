@@ -14,17 +14,20 @@
         android:id="@+id/parent_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/swiperefresh"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+
         <FrameLayout
+            android:id="@+id/frame_layout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
 
             <androidx.core.widget.NestedScrollView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:fillViewport="true">
 
                 <LinearLayout
@@ -581,6 +584,7 @@
                     <FrameLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginBottom="40dp"
                         >
 
                         <androidx.recyclerview.widget.RecyclerView
@@ -632,12 +636,12 @@
         </FrameLayout>
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
         <LinearLayout
+
             android:background="@color/white"
             android:id="@+id/layoutForConverterBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
-            android:layout_margin="10dp"
             android:orientation="horizontal"
             android:visibility="visible">
         <Button

@@ -1038,6 +1038,7 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
         HyperLog.i("", "sendUpdateRequest(M) start");
 
         HyperLog.i("", "sendUpdateRequest(M) on synced appointment");
+        model.setStatus(statusByValue);
         AppointmentUpdateReq updateReq = new AppointmentUpdateReq();
         updateReq.setAppId(model.getAppId());
         updateReq.setCltId(model.getCltId());
@@ -1077,7 +1078,7 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
         String dateTime = AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT);
 
         //update in local DB
-        model.setStatus(statusByValue);
+
         AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).appointmentModel().insertSingleAppointment(model);
         OfflineDataController.getInstance().addInOfflineDB(Service_apis.updateAppointment, s, dateTime);
         Intent intent = new Intent();
