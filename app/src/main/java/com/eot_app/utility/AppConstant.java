@@ -925,21 +925,20 @@ public class AppConstant {
     public static String timezone_Message="timezone_Message";
     public static String Equipment_without_client="Equipment_without_client";
     public static String Form_is_already_submitted="Form_is_already_submitted";
-    public static final String title_status_history = "title_status_history";
-    public static final String title_clients_work_history = "title_clients_work_history";
-    public static final String sub_total = "sub_total";
-    public static final String additional_discount = "additional_discount";
+    public static final String title_status_history = "status_history";
+    public static final String title_clients_work_history = "clients_work_history";
+    public static final String sub_total = "Sub_Total";
+    public static final String additional_discount = "Additional_Discount";
     public static final String extra_items_total = "extra_items_total";
     public static final String total_amount = "total_amount";
     public static final String rename = "rename";
-    public static final String tax_change_msg = "tax_change_msg";
+    public static final String tax_change_msg = "Additional_Discount_Message";
 
 
     /**Add Appointment Item keys**/
-    public static String Add_New_Item="add_new_item";
-    public static String Text_Req_Gath="text_requirement_gathering";
-    public static String Text_See_More="txt_see_more_appointment";
-    public static String Text_see_Less="txt_see_less_appointment";
+    public static String Text_Req_Gath="Requirements_Gathering";
+    public static String Text_See_More="SeeMore";
+    public static String Text_see_Less="Seeless";
 
     public static String server(String location) {
         switch (location) {

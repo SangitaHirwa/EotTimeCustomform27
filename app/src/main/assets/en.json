@@ -1800,16 +1800,16 @@
     "project_site_name" : "Project/Site Name",
     "pleas_selec_clien_firs":"Please fill the client first",
     "equ_status":"Equipment status",
-    "title_status_history": "Status History",
-    "title_clients_work_history": "Client's Work History",
-    "sub_total": "Sub Total",
-    "additional_discount": "Additional Discount",
-    "extra_items_total": "Extra Item's Total",
+    "SeeMore":"SeeMore",
+    "Seeless":"Seeless",
+    "Sub_Total":"Sub Total",
+    "Additional_Discount":"Additional Discount",
+    "Requirements_Gathering":"Requirements Gathering",
+    "Additional_Discount_Message":"Before Tax option only works when all the line items have the same taxation, if you have different tax for line items then additional discount will be calculated as per the option After Tax",
     "rename": "Rename",
-    "tax_change_msg": "'Before Tax' option only works when all the line items have the same taxation, if you have different tax for line items then additional discount will be calculated as per the option 'After Tax'",
-    "text_requirement_gathering": "Requirment Gathering",
-    "txt_see_more_appointment": "See More",
-    "txt_see_less_appointment": "See Less"
+    "status_history": "Status History",
+    "extra_items_total": "Extra Item's Total",
+    "clients_work_history": "Client's Work History"
   }
 }
 
