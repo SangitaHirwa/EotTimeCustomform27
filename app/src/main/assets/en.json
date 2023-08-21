@@ -1809,7 +1809,9 @@
     "rename": "Rename",
     "status_history": "Status History",
     "extra_items_total": "Extra Item's Total",
-    "clients_work_history": "Client's Work History"
+    "clients_work_history": "Client's Work History",
+    "convert_to_quote": "Convert To Quote",
+    "convert_to_job": "Convert To Job"
   }
 }
 
