@@ -1247,8 +1247,8 @@ public class OfflineDataController {
     }
 
     private void sendForErrorLog(Offlinetable table, String message) {
-        // Todo as per discussion with ayush sir the api will get called 5 times in error case
-        if (table.getCount() > 4) {
+        // Todo as per discussion with ayush sir the api will get called 3 times in error case (18-aug-2023)
+        if (table.getCount() > 2) {
 
             if(table.getService_name().equalsIgnoreCase(Service_apis.changeJobStatus))
                 HyperLog.i("ChangeJobStatus", "ChangeJobStatus - table count increases by 2 with message -"+message);

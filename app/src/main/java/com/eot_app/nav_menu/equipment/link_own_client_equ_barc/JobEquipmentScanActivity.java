@@ -33,11 +33,9 @@ import com.eot_app.utility.AppUtility;
 import com.eot_app.utility.EotApp;
 import com.eot_app.utility.language_support.LanguageController;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.google.zxing.BarcodeFormat;
 
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,6 +54,8 @@ public class JobEquipmentScanActivity extends AppCompatActivity implements ScanE
     String type = "", cltId = "", contrId = "";
     LinkEquipmentPI linkEquipmentPI;
     ContentLoadingProgressBar content_loading_progress;
+    CodeScannerView scannerView = null;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,7 +111,7 @@ public class JobEquipmentScanActivity extends AppCompatActivity implements ScanE
     private void initializeViews() {
 
         content_loading_progress = findViewById(R.id.content_loading_progress);
-        final CodeScannerView scannerView = findViewById(R.id.scanner_view);
+        scannerView = findViewById(R.id.scanner_view);
         mCodeScanner = new CodeScanner(this, scannerView);
         List<BarcodeFormat> list = new ArrayList<>();
         list.add(BarcodeFormat.CODE_128);
@@ -140,6 +140,7 @@ public class JobEquipmentScanActivity extends AppCompatActivity implements ScanE
 
         });
 
+        scannerView.setVisibility(View.GONE);
 
     }
 
@@ -201,6 +202,7 @@ public class JobEquipmentScanActivity extends AppCompatActivity implements ScanE
             content_loading_progress.setVisibility(View.VISIBLE);
         } else {
             content_loading_progress.setVisibility(View.GONE);
+            scannerView.setVisibility(View.VISIBLE);
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
         }
     }
