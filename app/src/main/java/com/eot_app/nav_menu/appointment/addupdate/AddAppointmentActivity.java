@@ -1637,6 +1637,11 @@ public class AddAppointmentActivity extends UploadDocumentActivity implements Te
         newAppointment.setTempId(appointment.getTempId());
         newAppointment.setAppId(appointment.getAppId());
         newAppointment.setLabel(appointment.getLabel());
+        newAppointment.setJobId(appointment.getJobId());
+        newAppointment.setJobLabel(appointment.getJobLabel());
+        newAppointment.setQuotId(appointment.getQuotId());
+        newAppointment.setQuotLabel(appointment.getQuotLabel());
+        newAppointment.setItemData(appointment.getItemData());
         newAppointment.setCltId(cltId);
         newAppointment.setSiteId(siteId);
         newAppointment.setConId(conId);

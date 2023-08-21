@@ -1038,6 +1038,7 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
         HyperLog.i("", "sendUpdateRequest(M) start");
 
         HyperLog.i("", "sendUpdateRequest(M) on synced appointment");
+        model.setStatus(statusByValue);
         AppointmentUpdateReq updateReq = new AppointmentUpdateReq();
         updateReq.setAppId(model.getAppId());
         updateReq.setCltId(model.getCltId());
@@ -1077,7 +1078,7 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
         String dateTime = AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT);
 
         //update in local DB
-        model.setStatus(statusByValue);
+
         AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).appointmentModel().insertSingleAppointment(model);
         OfflineDataController.getInstance().addInOfflineDB(Service_apis.updateAppointment, s, dateTime);
         Intent intent = new Intent();
@@ -1205,6 +1206,7 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
             reqGethListAdapter.updateItemList(this.itemList);
            // invalidateOptionsMenu();
         }
+        model=AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).appointmentModel().getAppointmentById(model.getAppId());
         dismissPullTorefresh();
 
     }
@@ -1282,7 +1284,7 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
     }
 
     @Override
-    public void onObserveCallBack(String api_name) {
+    public void onObserveCallBack(String api_name,String leadId) {
         try{
             Log.e("TAG", api_name);
             switch (api_name) {
@@ -1291,6 +1293,7 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
                 case Service_apis.deleteItemOnAppointment:{
                     if (itemAdded_pi != null) {
                         itemAdded_pi.getItemFromServer(model.getAppId(),this);
+
                     }
                     break;
                 }

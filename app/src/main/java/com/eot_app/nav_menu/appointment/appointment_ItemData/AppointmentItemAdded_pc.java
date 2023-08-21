@@ -80,11 +80,12 @@ public class AppointmentItemAdded_pc implements AppointmentItemAdded_pi{
                                 Type listType = new TypeToken<List<AppointmentItemDataInMap>>() {
                                 }.getType();
                                 List<AppointmentItemDataInMap> updatedItemList = new Gson().fromJson(convert, listType);
-                              /*  List<AppintmentItemDataModel> tempItemList = new ArrayList<>();
-                                for (AppointmentItemDataInMap itemData : updatedItemList) {
-                                    AppintmentItemDataModel itemData1 = itemData.getItemData();
-                                    tempItemList.add(itemData1);
-                                }*/
+
+                                  if(updatedItemList.size()==1){
+                                      AppintmentItemDataModel itemData = updatedItemList.get(0).getItemData();
+                                      int leadId = itemData.getLeadId();
+                                      AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).appointmentModel().updateAppointmentLeadID(appId,String.valueOf(leadId));
+                                  }
                                 String itemJson = new Gson().toJson(updatedItemList);
                                 AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).appointmentModel().updateAppointmentItem(appId,itemJson);
 

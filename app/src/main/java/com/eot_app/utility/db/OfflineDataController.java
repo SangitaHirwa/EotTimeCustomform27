@@ -310,9 +310,6 @@ public class OfflineDataController {
         try {
             switch (data.getService_name()) {
                 case Service_apis.addItemOnAppointment:
-                    AppointmentItemAdd_RequestModel itemAddRequestModel = gson.fromJson(data.getParams(), AppointmentItemAdd_RequestModel.class);
-                    EotApp.getAppinstance().notifyApiItemAddEdit_Observer(data.getService_name(), itemAddRequestModel.getAppId());
-                    break;
                 case Service_apis.updateItemOnAppointment:
                 case Service_apis.deleteItemOnAppointment:
                     EotApp.getAppinstance().notifyApiItemAddEdit_Observer(data.getService_name(),"");

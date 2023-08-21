@@ -1718,7 +1718,7 @@ public class AddEditInvoiceItemActivity2 extends
                 itemType="0";
             }
             if(jtId.equals("")){
-                jtId=" ";
+                jtId="0";
             }
 
             appintmentItemDataModel= new AppintmentItemDataModel(edt_item_desc.getText().toString(),"",
