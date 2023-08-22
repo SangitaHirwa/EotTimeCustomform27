@@ -321,7 +321,7 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
                     if (System.currentTimeMillis() - check < 1000) {
                         return;
                     }
-                    AppUtility.alertDialog2(AppointmentDetailsActivity.this, LanguageController.getInstance().getMobileMsgByKey(AppConstant.status_dialog), LanguageController.getInstance().getMobileMsgByKey(AppConstant.audit_status_change), LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), LanguageController.getInstance().getMobileMsgByKey(AppConstant.cancel), new Callback_AlertDialog() {
+                    AppUtility.alertDialog2(AppointmentDetailsActivity.this, LanguageController.getInstance().getMobileMsgByKey(AppConstant.status_dialog), LanguageController.getInstance().getMobileMsgByKey(AppConstant.appointment_status_change), LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), LanguageController.getInstance().getMobileMsgByKey(AppConstant.cancel), new Callback_AlertDialog() {
                         @Override
                         public void onPossitiveCall() {
                             binding.statusLabel.setText(statusArray[position]);

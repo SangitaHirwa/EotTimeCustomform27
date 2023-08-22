@@ -321,7 +321,7 @@ public class AddAppointmentActivity extends UploadDocumentActivity implements Te
             date_en = dateFormat;
 
 
-            try {
+         /*   try {
                 if (!TextUtils.isEmpty(this.appointment.getDes())) {
                     binding.jobdeshint.setVisibility(View.VISIBLE);
                     binding.editor.setHtml(this.appointment.getDes());
@@ -346,7 +346,7 @@ public class AddAppointmentActivity extends UploadDocumentActivity implements Te
             } catch (Exception exception) {
                 exception.getMessage();
             }
-
+*/
 
         } catch (Exception ex) {
             HyperLog.i("", "preFilledForm(M) exception:" + ex.toString());
@@ -431,7 +431,7 @@ public class AddAppointmentActivity extends UploadDocumentActivity implements Te
         else
             binding.submitBtn.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_appointment));
 
-        binding.jobdeshint.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.description));
+        binding.inputLayoutDesJob.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.description));
 
         //  binding.dateStart.setOnClickListener(this);
         //binding.dateEnd.setOnClickListener(this);
