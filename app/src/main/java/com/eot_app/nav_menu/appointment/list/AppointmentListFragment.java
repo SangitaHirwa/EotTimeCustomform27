@@ -207,7 +207,7 @@ public class AppointmentListFragment extends
                         Appointment appointment = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).appointmentModel().getAppointmentById(notificationDataId);
                         if (appointment != null) {
                             Intent intent = new Intent(getActivity(), AppointmentDetailsActivity.class);
-                            intent.putExtra("data", appointment);
+                            intent.putExtra("appointmentData", appointment);
                             intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                             startActivityForResult(intent, APPOINTMENT_INTENT_CODE);
                         }
