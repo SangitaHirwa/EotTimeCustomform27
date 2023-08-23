@@ -314,6 +314,19 @@ public class AddAudit_pc implements AddAduit_pi {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+
+            if(datestr!=null && !datestr.isEmpty()){
+                try {
+                    SimpleDateFormat spf = new SimpleDateFormat("dd-MM-yyyy");
+                    Date date = spf.parse(datestr);
+                    spf= new SimpleDateFormat(AppConstant.DATE_FORMAT);
+                    datestr = spf.format(date);
+                    System.out.println(datestr);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+
+            }
             //String[] am_pm = date_Time.split(" ");
             String cur_start = remv_sec[0] + ":" + remv_sec[1] + an_pm;
             String date_time = datestr + " " + cur_start;

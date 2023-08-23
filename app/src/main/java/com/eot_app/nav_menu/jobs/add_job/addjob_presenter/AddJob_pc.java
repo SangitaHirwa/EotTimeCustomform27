@@ -3,6 +3,9 @@ package com.eot_app.nav_menu.jobs.add_job.addjob_presenter;
 import android.app.Activity;
 import android.text.TextUtils;
 import android.util.Log;
+
+import androidx.annotation.NonNull;
+
 import com.eot_app.activitylog.ActivityLogController;
 import com.eot_app.activitylog.LogModel;
 import com.eot_app.nav_menu.client.client_db.Client;
@@ -180,7 +183,7 @@ public class AddJob_pc implements Add_job_pi {
         }
     }
 
-    private void sch_time_cur(String datestr, String date_Time, String sch_tm_dt) {
+    private void sch_time_cur(String datestr, @NonNull String date_Time, String sch_tm_dt) {
         String an_pm = "";
         try {
             String[] remv_sec = date_Time.split(":");
@@ -194,7 +197,18 @@ public class AddJob_pc implements Add_job_pi {
             } catch (Exception e) {
                 e.getMessage();
             }
+            if(datestr!=null && !datestr.isEmpty()){
+                try {
+                    SimpleDateFormat spf = new SimpleDateFormat("dd-MM-yyyy");
+                    Date date = spf.parse(datestr);
+                    spf= new SimpleDateFormat(AppConstant.DATE_FORMAT);
+                    datestr = spf.format(date);
+                    System.out.println(datestr);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
 
+            }
             //  String[] am_pm = date_Time.split(" ");
             String cur_start = remv_sec[0] + ":" + remv_sec[1] + an_pm;
             String date_time = datestr + " " + cur_start;

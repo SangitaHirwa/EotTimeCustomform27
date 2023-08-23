@@ -1033,6 +1033,18 @@ public class AddAppointmentActivity extends UploadDocumentActivity implements Te
             } catch (Exception e) {
                 e.getMessage();
             }
+            if(datestr!=null && !datestr.isEmpty()){
+                try {
+                    SimpleDateFormat spf = new SimpleDateFormat("dd-MM-yyyy");
+                    Date date = spf.parse(datestr);
+                    spf= new SimpleDateFormat(AppConstant.DATE_FORMAT);
+                    datestr = spf.format(date);
+                    System.out.println(datestr);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+
+            }
             String cur_start = remv_sec[0] + ":" + remv_sec[1] + an_pm;
             String date_time = datestr + " " + cur_start;
             String[] time_dur = sch_tm_dt.split(":");
