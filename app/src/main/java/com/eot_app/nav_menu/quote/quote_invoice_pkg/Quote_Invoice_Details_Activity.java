@@ -650,7 +650,7 @@ public class Quote_Invoice_Details_Activity extends AppCompatActivity implements
             quote_total_amount.setText(AppUtility.getRoundoff_amount(String.valueOf(Double.parseDouble(quotes_Details_Inv.getTotal()))));
         }
         else if(quotes_Details_Inv.getIsAddisDiscBefore().equals("1")){
-            int taxRate = 0;
+            Double taxRate = 0.0;
             this.SingleTaxId = SingleTaxId;
             txt_additional_discount.setVisibility(View.VISIBLE);
             txt_lbl_additional_discount.setVisibility(View.VISIBLE);

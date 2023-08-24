@@ -935,7 +935,7 @@ public class Generate_Invoice_Activity extends AppCompatActivity implements MyLi
         else if(invoice_Details.getIsAddisDiscBefore().equals("1")){
             Log.e("Invoice additional type", "before "+invoice_Details.getIsAddisDiscBefore());
             this.SingleTaxId = SingleTaxId;
-            int taxRate = 0;
+            Double taxRate = 0.0;
             txt_additional_discount.setVisibility(View.VISIBLE);
             txt_lbl_additional_discount.setVisibility(View.VISIBLE);
             txt_additional_discount1.setVisibility(View.GONE);
