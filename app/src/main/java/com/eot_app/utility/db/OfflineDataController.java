@@ -805,15 +805,17 @@ public class OfflineDataController {
                             AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).offlinemodel().deleteFromId(table.getId());
                             isSync = false;
                         } else {
-                            if (table.getService_name().equals(Service_apis.addFWlatlong)) {
-                                AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).errorLogmodel().deleteById(table.getId());
-                            } else {
+                            //(24-aug-23) Hide code of "if" condition, because when error comes in api "UserController/addFWlatlong2" then offline table stuck and is not clear.
+//                            if (table.getService_name().equals(Service_apis.addFWlatlong)) {
+//                                AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).errorLogmodel().deleteById(table.getId());
+//                            }
+//                            else {
                                 if(table.getService_name().equalsIgnoreCase(Service_apis.changeJobStatus))
                                 HyperLog.i("ChangeJobStatus", "ChangeJobStatus - Send Error ForLog");
 
                                 /*very important ***/
                                 sendForErrorLog(table, LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
-                            }
+//                            }
 
                             if (callBackFirstSync != null) { // for first time call from sync
                                 callBackFirstSync.getCallBackOfComplete(0, "Error Occur");

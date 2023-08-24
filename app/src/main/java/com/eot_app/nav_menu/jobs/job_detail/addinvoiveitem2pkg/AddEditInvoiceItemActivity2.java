@@ -1992,6 +1992,10 @@ public class AddEditInvoiceItemActivity2 extends
                     HyperLog.i("TAG addJobReqest", new Gson().toJson(object));
                     OfflineDataController.getInstance().addInOfflineDB(Service_apis.addItemOnJob,addJobReqest, dateTime);
                 }
+                //(24-aug-23) Add "else" condition, because when "noItem" is true its not run api only store data in offline table.
+                else{
+                    OfflineDataController.getInstance().getTotalRequest();
+                }
             } else {
                 HyperLog.i("TAG", "addItemWithJobSync(M) item added in offline quque");
 
