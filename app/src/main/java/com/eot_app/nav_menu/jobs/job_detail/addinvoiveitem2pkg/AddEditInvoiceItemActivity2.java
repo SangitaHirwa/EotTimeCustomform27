@@ -1643,30 +1643,6 @@ public class AddEditInvoiceItemActivity2 extends
 
     private void updateSyncAppItem(AppointmentAddItem_Res updateItem_res) {
         try {
-            List<Offlinetable> offlinetableList = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).offlinemodel().getOfflinetablesById(Service_apis.updateItemOnAppointment);
-            List<AppointmentAddItem_Res> tempList = new ArrayList<>();
-            tempList.add(updateItem_res);
-            if (offlinetableList.size() > 0) {
-                for (Offlinetable offLineModel : offlinetableList) {
-                    AppointmentUpdateItem_Req_Model updateItemReqModel = new Gson().fromJson(offLineModel.getParams(), AppointmentUpdateItem_Req_Model.class);
-                    String addToCartServices = updateItemReqModel.getAddToCartServices();
-                    Type listType = new TypeToken<List<AppointmentAddItem_Res>>() {
-                    }.getType();
-                    List<AppointmentAddItem_Res> updatedItemList = new Gson().fromJson(addToCartServices, listType);
-
-                    for (AppointmentAddItem_Res tempModel : updatedItemList) {
-                        if (tempModel.getIlmmId().equals(updateAppointmentItemData.getIlmmId())) {
-                            updatedItemList.remove(tempModel);
-                            break;
-                        }
-                    }
-                    updatedItemList.add(updateItem_res);
-                    offLineModel.setParams(new Gson().toJson(updateItemReqModel));
-                    AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).offlinemodel().update(offLineModel);
-                    break;
-                }
-
-            }else{
 
                 List<AppointmentAddItem_Res> addItem_resList=new ArrayList<>();
                 addItem_resList.add(updateItem_res);
@@ -1680,7 +1656,6 @@ public class AddEditInvoiceItemActivity2 extends
                 OfflineDataController.getInstance().addInOfflineDB(Service_apis.updateItemOnAppointment, updateAppointmentReqest, dateTime);
 
 
-            }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
