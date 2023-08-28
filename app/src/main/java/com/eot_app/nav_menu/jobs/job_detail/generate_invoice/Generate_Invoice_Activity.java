@@ -918,8 +918,8 @@ public class Generate_Invoice_Activity extends AppCompatActivity implements MyLi
                 txt_tax.setVisibility(View.GONE);
             }else {
                 txt_tax.setText(AppUtility.getRoundoff_amount(""+totalOfShippingItem));
-                txt_lbl_tax.setVisibility(View.GONE);
-                txt_tax.setVisibility(View.GONE);
+                txt_lbl_tax.setVisibility(View.VISIBLE);
+                txt_tax.setVisibility(View.VISIBLE);
             }
             if(listTax.size()<= 0){
                 rvShowTax.setVisibility(View.GONE);

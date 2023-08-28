@@ -210,9 +210,11 @@ public class DocumentListAdapter extends RecyclerView.Adapter<DocumentListAdapte
                         dialogUpdateDocuments.setOnDocumentUpdate((desc,name) -> {
                             if (desc != null) {
                                 getFileList_res.get(pos).setDes(desc);
-                                getFileList_res.get(pos).setAtt_docName(name);
                             }
-                                holder.file_name.setText(fileList.getAtt_docName()+"."+ext);
+                            if(name != null) {
+                                getFileList_res.get(pos).setAtt_docName(name);
+                                holder.file_name.setText(fileList.getAtt_docName() + "." + ext);
+                            }
                             if (jobCompletionActivity != null)
                                 jobCompletionActivity.setUpdatedDesc(desc);
 
