@@ -252,6 +252,9 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
         binding.seeless.setOnClickListener(this);
         binding.tvAddNewItem.setOnClickListener(this);
 
+        if (App_preference.getSharedprefInstance().getLoginRes().getCompPermission().get(0).getIsItemEnable().equals("1")) {
+            binding.tvAddNewItem.setVisibility(View.GONE);
+        }
 
         binding.tvAddNewItem.setOnClickListener(view -> {
             Intent intent = new Intent(this, AddEditInvoiceItemActivity2.class);
