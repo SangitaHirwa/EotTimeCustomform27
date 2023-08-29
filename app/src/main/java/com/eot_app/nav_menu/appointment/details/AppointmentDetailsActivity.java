@@ -176,7 +176,7 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
 
 
         if (AppUtility.isInternetConnected()) {
-            binding.progressBar.setVisibility(View.VISIBLE);
+           // binding.progressBar.setVisibility(View.VISIBLE);
             binding.nolistTxt.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.appointment_attach_msg));
         } else {
             binding.progressBar.setVisibility(View.GONE);
@@ -203,9 +203,19 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
 
         binding.recyclerView.setAdapter(attachementAdapter);
 
-
-        detailsViewModel.fetchAppointmentDetails(model);
-
+        if(AppUtility.isInternetConnected()) {
+            detailsViewModel.fetchAppointmentDetails(model);
+        }else{
+            binding.progressBar.setVisibility(View.GONE);
+            if(model.getAttachments() != null && model.getAttachments().size() > 0){
+                binding.nolistLinear.setVisibility(View.GONE);
+                allAttachmentList.addAll(model.getAttachments());
+                attachementAdapter.setList(allAttachmentList);
+            }
+            else {
+                binding.nolistLinear.setVisibility(View.VISIBLE);
+            }
+        }
 
         detailsViewModel.getLiveAttachments().observe(this, appointmentAttachments -> {
             binding.progressBar.setVisibility(View.GONE);
@@ -220,9 +230,13 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
 
 
         detailsViewModel.getIsUploading().observe(this, aBoolean -> {
-            if (aBoolean)
-                AppUtility.progressBarShow(AppointmentDetailsActivity.this);
+            if(AppUtility.isInternetConnected()) {
+                if (aBoolean)
+                    AppUtility.progressBarShow(AppointmentDetailsActivity.this);
+                else AppUtility.progressBarDissMiss();
+            }
             else AppUtility.progressBarDissMiss();
+
         });
 
         detailsViewModel.pdfPath.observe(this, s -> {
@@ -742,9 +756,9 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
             case R.id.tv_add_new:
                 if (model != null && model.getTempId().equals(model.getAppId())) {
                     showDialogs(LanguageController.getInstance().getMobileMsgByKey(AppConstant.appointment_not_sync));
-                } else if (!AppUtility.isInternetConnected())
+                } else{ /*if (!AppUtility.isInternetConnected())
                     showDialogs(LanguageController.getInstance().getMobileMsgByKey(AppConstant.network_error));
-                else {
+                else {*/
                     selectFile(false);
                     //selectAttachment();
                 }
@@ -1074,6 +1088,7 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
         updateReq.setNm(model.getNm());
         updateReq.setEmail(model.getEmail());
         updateReq.setAttachCount(model.getAttachCount());
+
 
         List<String> files = new ArrayList<>();
         updateReq.setAppDoc(files);
