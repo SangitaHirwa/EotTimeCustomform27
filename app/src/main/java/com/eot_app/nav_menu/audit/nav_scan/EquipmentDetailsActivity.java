@@ -838,6 +838,7 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
 
     @Override
     public void setJobDetails(Job job) {
+        //After discuss with Jit sir, Move on Job detail Screen if Job in local db (29-aug-23)
         List<Job> jobList = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJoblist();
         boolean isContainJob = false;
         for (Job jobData : jobList
