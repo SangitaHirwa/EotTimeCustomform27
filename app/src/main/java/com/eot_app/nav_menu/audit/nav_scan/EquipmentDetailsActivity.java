@@ -32,6 +32,7 @@ import com.eot_app.nav_menu.equipment.model.aduit_job_history.Aduit_Job_History_
 import com.eot_app.nav_menu.jobs.add_job.Add_job_activity;
 import com.eot_app.nav_menu.jobs.job_db.EquArrayModel;
 import com.eot_app.nav_menu.jobs.job_db.Job;
+import com.eot_app.nav_menu.jobs.job_detail.JobDetailActivity;
 import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.model.InvoiceItemDataModel;
 import com.eot_app.nav_menu.jobs.job_detail.invoice2list.InvoiceItemList2Adpter;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.job_equ_remrk.EquipmentPartRemarkAdapter;
@@ -837,10 +838,27 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
 
     @Override
     public void setJobDetails(Job job) {
-        Intent intent = new Intent(this, JobdetailsEquActivity.class);
-        intent.putExtra("Job_data", new Gson().toJson(job));
-        intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-        startActivity(intent);
+        List<Job> jobList = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJoblist();
+        boolean isContainJob = false;
+        for (Job jobData : jobList
+             ) {
+            if(jobData.getJobId().equals(job.getJobId())){
+                isContainJob = true;
+                break;
+            }
+        }
+        if(isContainJob) {
+            Intent intentJobDeatis = new Intent(this, JobDetailActivity.class);
+            String strjob = new Gson().toJson(job);
+            intentJobDeatis.putExtra("JOBS", strjob);
+//        intentJobDeatis.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+            startActivity(intentJobDeatis);
+        }else {
+            Intent intent = new Intent(this, JobdetailsEquActivity.class);
+            intent.putExtra("Job_data", new Gson().toJson(job));
+            intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+            startActivity(intent);
+        }
     }
 
     @Override
