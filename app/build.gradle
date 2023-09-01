@@ -30,8 +30,8 @@ android {
         debug {
 //          buildConfigField "String", 'BASEURL', "\"http://103.231.46.90:8435/eotServices/\""
  //           buildConfigField "String", 'BASEURL', "\"http://192.168.88.2:8435/eotServices/\""
- //         buildConfigField "String", "BASEURL", "\"https://www.eyeontask.com/eotServices/\""
-           buildConfigField "String", "BASEURL", "\"https://staging.eyeontask.com/eotServices/\""
+          buildConfigField "String", "BASEURL", "\"https://www.eyeontask.com/eotServices/\""
+//           buildConfigField "String", "BASEURL", "\"https://staging.eyeontask.com/eotServices/\""
             buildConfigField "String", "REGISTER_US" , "\"https://us1.eyeontask.com/en/eotServices/\""
             buildConfigField "String", "REGISTER_AU" , "\"https://au1.eyeontask.com/en/eotServices/\""
             buildConfigField "String", "REGISTER_AS" , "\"https://as1.eyeontask.com/en/eotServices/\""
