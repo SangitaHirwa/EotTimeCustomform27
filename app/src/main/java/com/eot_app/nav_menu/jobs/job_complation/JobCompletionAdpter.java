@@ -191,10 +191,11 @@ public class JobCompletionAdpter extends RecyclerView.Adapter<RecyclerView.ViewH
                             jobId);
 
                     dialogUpdateDocuments.setOnDocumentUpdate((desc,name) -> {
-                        if (desc != null) {
+                        if (desc != null)
                             getFileList_res.get(position).setDes(desc);
+                        if (name != null)
                             getFileList_res.get(position).setAtt_docName(name);
-                        }
+
                         if (jobCompletionActivity != null)
                             jobCompletionActivity.setUpdatedDesc(desc);
 

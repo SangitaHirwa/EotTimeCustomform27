@@ -77,16 +77,30 @@ public class AttachementAdapter extends RecyclerView.Adapter<AttachementAdapter.
 
         final AppointmentAttachment fileList = list.get(position);
         final File file = convertToFile(fileList.getAttachFileActualName());
-        if (fileList.getType() == 1) {
-            if (file != null)
-                holder.file_name.setText(file.getName());
-        } else
-            holder.file_name.setText(fileList.getAttachFileActualName());
+
         try {
             ext = fileList.getAttachFileActualName().substring((fileList.getAttachFileActualName().lastIndexOf(".")) + 1).toLowerCase();
         } catch (Exception e) {
             e.printStackTrace();
         }
+        if (fileList.getType() == 1) {
+            if (file != null) {
+//                holder.file_name.setText(file.getName());
+                if(fileList.getDocNm()==null){
+                    holder.file_name.setText(file.getName());
+                }else {
+                    holder.file_name.setText(fileList.getDocNm()+"."+ext);
+                }
+            }
+        } else {
+//            holder.file_name.setText(fileList.getAttachFileActualName());
+            if(fileList.getDocNm()==null){
+                holder.file_name.setText(fileList.getAttachFileActualName());
+            }else {
+                holder.file_name.setText(fileList.getDocNm()+"."+ext);
+            }
+        }
+
         if (!ext.isEmpty()) {
             switch (ext) {
                 case "jpg":
@@ -153,6 +167,7 @@ public class AttachementAdapter extends RecyclerView.Adapter<AttachementAdapter.
             }
         }
 
+        String finalExt = ext;
         holder.layout_doc.setOnClickListener(view -> {
 
             DialogUpdateDocuments
@@ -165,15 +180,25 @@ public class AttachementAdapter extends RecyclerView.Adapter<AttachementAdapter.
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            String img_name = "";
+            if(list.get(position).getDocNm()==null){
+                img_name = list.get(position).getAttachFileActualName();
+            }else {
+                img_name = list.get(position).getDocNm()+"."+ finalExt;
+            }
             dialogUpdateDocuments.setImgPath(
                     list.get(position).getAttachmentId(),
                     list.get(position).getAttachFileName(),
-                    list.get(position).getAttachFileActualName(),
+                    img_name,
                     list.get(position).getDes(),"","");
 
             dialogUpdateDocuments.setOnDocumentUpdate((desc,name) -> {
-                if (desc != null)
+                if (desc != null )
                     list.get(position).setDes(desc);
+                if (name != null ) {
+                    list.get(position).setDocNm(name);
+                    holder.file_name.setText(fileList.getDocNm() + "." + finalExt);
+                }
             });
             dialogUpdateDocuments.show(((AppCompatActivity) context).getSupportFragmentManager(), "dialog");
         });

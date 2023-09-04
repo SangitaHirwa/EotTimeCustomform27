@@ -2,7 +2,7 @@ package com.eot_app.nav_menu.jobs.job_detail.invoice2list.itemlist_model;
 
 public class TaxData {
 
-    int rate;
+    Double rate;
     Double taxAmount;
     String label;
 
@@ -24,11 +24,11 @@ public class TaxData {
         this.label = label;
     }
 
-    public int getRate() {
+    public Double getRate() {
         return rate;
     }
 
-    public void setRate(int rate) {
+    public void setRate(Double rate) {
         this.rate = rate;
     }
 

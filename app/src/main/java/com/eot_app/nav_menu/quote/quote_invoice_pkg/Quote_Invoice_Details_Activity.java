@@ -636,8 +636,8 @@ public class Quote_Invoice_Details_Activity extends AppCompatActivity implements
                 txt_tax.setVisibility(View.GONE);
             }else {
                 txt_tax.setText(AppUtility.getRoundoff_amount(""+totalOfShippingItem));
-                txt_lbl_tax.setVisibility(View.GONE);
-                txt_tax.setVisibility(View.GONE);
+                txt_lbl_tax.setVisibility(View.VISIBLE);
+                txt_tax.setVisibility(View.VISIBLE);
             }
             if(listTax.size()<= 0){
                 rvShowTax.setVisibility(View.GONE);
@@ -650,7 +650,7 @@ public class Quote_Invoice_Details_Activity extends AppCompatActivity implements
             quote_total_amount.setText(AppUtility.getRoundoff_amount(String.valueOf(Double.parseDouble(quotes_Details_Inv.getTotal()))));
         }
         else if(quotes_Details_Inv.getIsAddisDiscBefore().equals("1")){
-            int taxRate = 0;
+            Double taxRate = 0.0;
             this.SingleTaxId = SingleTaxId;
             txt_additional_discount.setVisibility(View.VISIBLE);
             txt_lbl_additional_discount.setVisibility(View.VISIBLE);

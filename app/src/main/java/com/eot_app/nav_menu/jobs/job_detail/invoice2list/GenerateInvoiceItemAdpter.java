@@ -248,7 +248,7 @@ public class GenerateInvoiceItemAdpter extends RecyclerView.Adapter<GenerateInvo
                             }else
                             {
                                 TaxData taxData = new TaxData();
-                                taxData.setRate(Integer.parseInt(tax2.getRate()));
+                                taxData.setRate(Double.parseDouble(tax2.getRate()));
                                 taxData.setTaxAmount(Double.parseDouble(__taxAmt));
                                 taxData.setLabel(tax2.getLabel()); taxData.setTaxId(invoiceItemList.get(position).getTax().get(0).getTaxId());
                                 showTaxList.add(taxData);
@@ -265,7 +265,7 @@ public class GenerateInvoiceItemAdpter extends RecyclerView.Adapter<GenerateInvo
                         }
                         else{
                             TaxData taxData = new TaxData();
-                            taxData.setRate(Integer.parseInt(invoiceItemList.get(position).getTax().get(0).getRate()));
+                            taxData.setRate(Double.parseDouble(invoiceItemList.get(position).getTax().get(0).getRate()));
                             taxData.setTaxAmount(Double.parseDouble(taxAmount));
                             taxData.setLabel(invoiceItemList.get(position).getTax().get(0).getLabel());
                             taxData.setTaxId(invoiceItemList.get(position).getTax().get(0).getTaxId());
@@ -283,7 +283,7 @@ public class GenerateInvoiceItemAdpter extends RecyclerView.Adapter<GenerateInvo
                     }
                     else{
                         TaxData taxData = new TaxData();
-                        taxData.setRate(Integer.parseInt(invoiceItemList.get(position).getTax().get(0).getRate()));
+                        taxData.setRate(Double.parseDouble(invoiceItemList.get(position).getTax().get(0).getRate()));
                         taxData.setTaxAmount(Double.parseDouble(taxAmount));
                         taxData.setLabel(invoiceItemList.get(position).getTax().get(0).getLabel());
                         taxData.setTaxId(invoiceItemList.get(position).getTax().get(0).getTaxId());

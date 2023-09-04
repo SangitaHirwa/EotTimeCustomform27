@@ -31,9 +31,10 @@ public class ErrorLogController {
         if (AppUtility.isInternetConnected()) {
             ErrorLog record = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).errorLogmodel().getSingleRecord();
             if (record != null) {
-                if (record.getApiUrl().equals(Service_apis.addFWlatlong)) {
-                    AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).errorLogmodel().deleteById(record.getId());
-                } else
+                //(24-aug-23) Hide code of "if" condition, because when error comes in api "UserController/addFWlatlong2" then its not send error mail.
+//                if (record.getApiUrl().equals(Service_apis.addFWlatlong)) {
+//                    AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).errorLogmodel().deleteById(record.getId());
+//                } else
                     callErrorRequest(record);
             }
         }
