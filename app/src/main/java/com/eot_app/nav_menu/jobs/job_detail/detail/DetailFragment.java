@@ -595,7 +595,9 @@ public class DetailFragment extends Fragment
         item_txt.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.item));
         btn_add_item = layout.findViewById(R.id.btn_add_item);
         btn_add_item.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add));
-
+        if (App_preference.getSharedprefInstance().getLoginRes().getCompPermission().get(0).getIsItemEnable().equals("1")) {
+            btn_add_item.setVisibility(View.GONE);
+        }
 
         eq_txt = layout.findViewById(R.id.eq_txt);
         eq_txt.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.equipment));
