@@ -252,6 +252,9 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
         binding.seeless.setOnClickListener(this);
         binding.tvAddNewItem.setOnClickListener(this);
 
+        if (App_preference.getSharedprefInstance().getLoginRes().getCompPermission().get(0).getIsItemEnable().equals("1")) {
+            binding.tvAddNewItem.setVisibility(View.GONE);
+        }
 
         binding.tvAddNewItem.setOnClickListener(view -> {
             Intent intent = new Intent(this, AddEditInvoiceItemActivity2.class);
@@ -1249,26 +1252,7 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
 
     private void offlineDeleteAppItem(AppointmentItemDeleteRequestModel deleteRequestModel) {
         try {
-            List<Offlinetable> offlinetableList = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).offlinemodel().getOfflinetablesById(Service_apis.deleteItemOnAppointment);
-            List<AppointmentItemDeleteRequestModel> tempList = new ArrayList<>();
-            if (offlinetableList.size() > 0) {
-                for (Offlinetable offLineModel : offlinetableList) {
-                    Type listType = new TypeToken<AppointmentItemDeleteRequestModel>() {
-                    }.getType();
-                    AppointmentItemDeleteRequestModel updatedItemList = new Gson().fromJson(offLineModel.getParams(), listType);
 
-                    if (deleteRequestModel.getIlmmId().equals(updatedItemList.getIlmmId())) {
-                        tempList.remove(updatedItemList);
-                    }
-
-                    tempList.add(deleteRequestModel);
-                    offLineModel.setParams(new Gson().toJson(tempList));
-
-                    AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).offlinemodel().update(offLineModel);
-                    break;
-
-                }
-            }else{
                 String dateTime = AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT);
                 Gson gson = new Gson();
                 String deleteAppointmentReqest = gson.toJson(deleteRequestModel);
@@ -1276,7 +1260,7 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
                 OfflineDataController.getInstance().addInOfflineDB(Service_apis.deleteItemOnAppointment, deleteAppointmentReqest, dateTime);
 
 
-            }
+
         } catch (Exception ex) {
             ex.printStackTrace();
         }
