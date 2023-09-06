@@ -78,6 +78,9 @@ public class ClientChat_PC implements ClientChat_PI {
                              * ** function call for offline user push notification.**/
 //                        ChatController.getInstance().sendNotificationToAdmins(chat_send_Msg_model);
                             //ChatController.getInstance().getClientChatUserOffline(chatReqModel);
+                            /**
+                             * ** function call for increase job count.**/
+                            ChatController.getInstance().notifyWebForIncreaseCount("jobCount");
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                 @Override
