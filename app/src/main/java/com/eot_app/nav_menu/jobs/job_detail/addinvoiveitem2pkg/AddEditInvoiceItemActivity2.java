@@ -2088,7 +2088,7 @@ public class AddEditInvoiceItemActivity2 extends
                     updateItemDataModel.getItemConvertCount()
                     , isBillableChange, equipmentId,
                     updateItemDataModel.getIsPartTempId()
-                    , isPartParent, isPartChild
+                    , isPartParent, isPartChild,updateItemDataModel.getGroupId()
                     //        , updateItemDataModel.getIsBillable()
             );
 
