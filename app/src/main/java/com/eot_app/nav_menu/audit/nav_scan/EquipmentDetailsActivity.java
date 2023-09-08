@@ -852,7 +852,7 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
             Intent intentJobDeatis = new Intent(this, JobDetailActivity.class);
             String strjob = new Gson().toJson(job);
             intentJobDeatis.putExtra("JOBS", strjob);
-//        intentJobDeatis.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+            intentJobDeatis.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
             startActivity(intentJobDeatis);
         }else {
             Intent intent = new Intent(this, JobdetailsEquActivity.class);

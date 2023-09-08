@@ -19,21 +19,28 @@ import com.budiyev.android.codescanner.CodeScanner;
 import com.budiyev.android.codescanner.CodeScannerView;
 
 import com.eot_app.R;
+import com.eot_app.home_screens.MainActivity;
 import com.eot_app.nav_menu.audit.audit_list.equipment.model.EquipmentStatus;
 import com.eot_app.nav_menu.audit.audit_list.scanbarcode.model.ScanBarcodeRequest;
+import com.eot_app.nav_menu.audit.nav_scan.BarcodeScanActivity;
 import com.eot_app.nav_menu.equipment.link_own_client_equ_barc.mvp_scanbar.ScanEquPc;
 import com.eot_app.nav_menu.equipment.link_own_client_equ_barc.mvp_scanbar.ScanEquView;
+import com.eot_app.nav_menu.equipment.linkequip.ActivityLinkEquipment;
 import com.eot_app.nav_menu.equipment.linkequip.linkMVP.LinkEquipmentPC;
 import com.eot_app.nav_menu.equipment.linkequip.linkMVP.LinkEquipmentPI;
 import com.eot_app.nav_menu.equipment.linkequip.linkMVP.LinkEquipmentView;
 import com.eot_app.nav_menu.equipment.linkequip.linkMVP.model.ContractEquipmentReq;
 import com.eot_app.nav_menu.jobs.job_db.EquArrayModel;
+import com.eot_app.nav_menu.jobs.job_detail.JobDetailActivity;
+import com.eot_app.nav_menu.jobs.job_detail.job_equipment.JobEquipmentActivity;
 import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.AppUtility;
 import com.eot_app.utility.EotApp;
 import com.eot_app.utility.language_support.LanguageController;
 import com.google.gson.Gson;
 import com.google.zxing.BarcodeFormat;
+import com.gun0912.tedpermission.PermissionListener;
+import com.gun0912.tedpermission.TedPermission;
 
 
 import java.util.ArrayList;
@@ -91,7 +98,24 @@ public class JobEquipmentScanActivity extends AppCompatActivity implements ScanE
 
 
     }
+    private void askTedPermission(int type,String[] permissions) {
+        TedPermission.with(EotApp.getAppinstance())
+                .setPermissionListener(new PermissionListener() {
+                    @Override
+                    public void onPermissionGranted() {
+                        if (type == 0)
+                            mCodeScanner.startPreview();
+                    }
 
+                    @Override
+                    public void onPermissionDenied(ArrayList<String> deniedPermissions) {
+                        finish();
+                    }
+                })
+                .setDeniedMessage("If you reject permission,you can not use this service\n\nPlease turn on permissions at [SettingActivity] > [Permission]")
+                .setPermissions(permissions)
+                .check();
+    }
     public String getJobId() {
         return jobId;
     }
@@ -162,8 +186,15 @@ public class JobEquipmentScanActivity extends AppCompatActivity implements ScanE
     }
 
     private void startScanner() {
+//        if (AppUtility.askCameraTakePicture(this)) {
+//            mCodeScanner.startPreview();
+//        }
+
         if (AppUtility.askCameraTakePicture(this)) {
             mCodeScanner.startPreview();
+        }
+        else {
+            askTedPermission(0,AppConstant.cameraPermissions);
         }
     }
 

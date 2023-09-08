@@ -1134,7 +1134,7 @@ public class ChatController {
     public String getCollectionPathForWebIncreaseCount(){
         try {
             for (String id : App_preference.getSharedprefInstance().getLoginRes().getAdminIds()) {
-                return "192"/*App_preference.getSharedprefInstance().getRegion()*/
+                return /*"192"*/App_preference.getSharedprefInstance().getRegion()
                         + "/comp-"
                         + App_preference.getSharedprefInstance().getLoginRes().getCompId()
                         + "/notifyWeb/ad-" + id + "/counts/";
