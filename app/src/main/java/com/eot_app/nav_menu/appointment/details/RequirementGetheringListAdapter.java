@@ -1,10 +1,13 @@
 package com.eot_app.nav_menu.appointment.details;
 import android.content.Context;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -20,6 +23,7 @@ import com.eot_app.nav_menu.quote.quotes_list_pkg.QuoteList_Adpter;
 import com.eot_app.nav_menu.quote.quotes_list_pkg.qoute_model_pkg.Quote_ReS;
 import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.AppUtility;
+import com.eot_app.utility.App_preference;
 import com.eot_app.utility.EotApp;
 import com.eot_app.utility.language_support.LanguageController;
 import com.eot_app.utility.util_interfaces.Callback_AlertDialog;
@@ -62,6 +66,7 @@ public class RequirementGetheringListAdapter extends RecyclerView.Adapter<Requir
         ItemDataModel = itemDataModels.get(position);
         if(!ItemDataModel.getInm().equals("")) {
             holder.service.setText(ItemDataModel.getInm());
+            holder.service.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
         }
         holder.desOfRequirment.setText(ItemDataModel.getDes());
         holder.count.setText("X" + ItemDataModel.getQty());
@@ -153,7 +158,14 @@ public class RequirementGetheringListAdapter extends RecyclerView.Adapter<Requir
             desOfRequirment=itemView.findViewById(R.id.desofRequirment);
             count=itemView.findViewById(R.id.count);
             item_req_geth = itemView.findViewById(R.id.item_req_geth);
-
+            if (App_preference.getSharedprefInstance().getLoginRes().getIsItemDeleteEnable().equals("0")) {
+                deleteItem.setVisibility(View.GONE);
+                ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) desOfRequirment.getLayoutParams();
+                layoutParams.setMarginStart(8);
+                desOfRequirment.setLayoutParams(layoutParams);
+            }else {
+                deleteItem.setVisibility(View.VISIBLE);
+            }
 
 
         }

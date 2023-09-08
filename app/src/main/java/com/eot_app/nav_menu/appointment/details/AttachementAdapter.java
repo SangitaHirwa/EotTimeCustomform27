@@ -86,7 +86,7 @@ public class AttachementAdapter extends RecyclerView.Adapter<AttachementAdapter.
         if (fileList.getType() == 1) {
             if (file != null) {
 //                holder.file_name.setText(file.getName());
-                if(fileList.getDocNm()==null){
+                if(fileList.getDocNm()==null|| fileList.getDocNm().isEmpty()){
                     holder.file_name.setText(file.getName());
                 }else {
                     holder.file_name.setText(fileList.getDocNm()+"."+ext);
@@ -94,7 +94,7 @@ public class AttachementAdapter extends RecyclerView.Adapter<AttachementAdapter.
             }
         } else {
 //            holder.file_name.setText(fileList.getAttachFileActualName());
-            if(fileList.getDocNm()==null){
+            if(fileList.getDocNm()==null|| fileList.getDocNm().isEmpty()){
                 holder.file_name.setText(fileList.getAttachFileActualName());
             }else {
                 holder.file_name.setText(fileList.getDocNm()+"."+ext);
@@ -181,7 +181,7 @@ public class AttachementAdapter extends RecyclerView.Adapter<AttachementAdapter.
                 e.printStackTrace();
             }
             String img_name = "";
-            if(list.get(position).getDocNm()==null){
+            if(list.get(position).getDocNm()==null || list.get(position).getDocNm().isEmpty() ){
                 img_name = list.get(position).getAttachFileActualName();
             }else {
                 img_name = list.get(position).getDocNm()+"."+ finalExt;
