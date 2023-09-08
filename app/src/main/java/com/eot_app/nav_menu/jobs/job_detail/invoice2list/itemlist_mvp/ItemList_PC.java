@@ -2,6 +2,7 @@ package com.eot_app.nav_menu.jobs.job_detail.invoice2list.itemlist_mvp;
 
 import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.eot_app.activitylog.ActivityLogController;
 import com.eot_app.activitylog.LogModel;
@@ -11,6 +12,7 @@ import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.model.AddInvoiceI
 import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.model.InvoiceItemDataModel;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_db.location_tax_dao.TaxesLocation;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_db.model_pkg.ItembyJobModel;
+import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_detail_pkg.Invoice_Due_Date_ReqModel;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_detail_pkg.inv_detail_model.Inv_List_Req_Model;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_email_pkg.get_email_temp_model.InvoiceEmaliTemplate;
 import com.eot_app.nav_menu.jobs.job_detail.invoice2list.itemlist_model.InvoiceItemDetailsModel;
@@ -532,6 +534,50 @@ public class ItemList_PC implements ItemList_PI {
                     });
         }
     }
+
+    @Override
+    public void setDueDate(String invId, String dueDate) {
+        Invoice_Due_Date_ReqModel due_date_reqModel =new Invoice_Due_Date_ReqModel(invId,dueDate);
+        JsonObject jsonObject = AppUtility.getJsonObject(new Gson().toJson(due_date_reqModel));
+        if(AppUtility.isInternetConnected()) {
+            ApiClient.getservices().eotServiceCall(Service_apis.updateInvDueDate, AppUtility.getApiHeaders(), jsonObject)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<JsonObject>() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
+
+                        }
+
+                        @Override
+                        public void onNext(JsonObject jsonObject) {
+
+                            if (jsonObject.get("success").getAsBoolean() || jsonObject.get("statusCode") != null && jsonObject.get("statusCode").getAsString().equals(AppConstant.SESSION_EXPIRE)) {
+                                Toast.makeText(EotApp.getAppinstance(),LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString())
+                                        ,Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            AppUtility.progressBarDissMiss();
+                            Log.e("", e.getMessage());
+                        }
+
+                        @Override
+                        public void onComplete() {
+
+                        }
+                    });
+
+        }else {
+            networkError();
+        }
+    }
+
+
+
+
     private void networkError() {
         AppUtility.alertDialog(((Context) itemListView), LanguageController.getInstance().
                 getMobileMsgByKey(AppConstant.dialog_alert), LanguageController.getInstance().

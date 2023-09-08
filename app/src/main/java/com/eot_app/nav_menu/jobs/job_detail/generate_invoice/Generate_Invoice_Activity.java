@@ -1,6 +1,7 @@
 package com.eot_app.nav_menu.jobs.job_detail.generate_invoice;
 
 import android.animation.Animator;
+import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -11,11 +12,14 @@ import android.nfc.Tag;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -28,6 +32,8 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
+import androidx.databinding.DataBindingUtil;
+import androidx.databinding.ViewDataBinding;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -52,6 +58,7 @@ import com.eot_app.nav_menu.jobs.job_detail.invoice2list.itemlist_model.TaxData;
 import com.eot_app.nav_menu.jobs.job_detail.invoice2list.itemlist_mvp.ItemList_PC;
 import com.eot_app.nav_menu.jobs.job_detail.invoice2list.itemlist_mvp.ItemList_PI;
 import com.eot_app.nav_menu.jobs.job_detail.invoice2list.itemlist_mvp.ItemList_View;
+import com.eot_app.nav_menu.quote.add_quotes_pkg.AddQuotes_Activity;
 import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.AppUtility;
 import com.eot_app.utility.App_preference;
@@ -65,10 +72,18 @@ import com.eot_app.utility.util_interfaces.MyListItemSelectedLisT;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.gson.Gson;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
+import java.util.TimeZone;
 import java.util.concurrent.Callable;
 
 public class Generate_Invoice_Activity extends AppCompatActivity implements MyListItemSelected<InvoiceItemDataModel>,
@@ -81,7 +96,7 @@ public class Generate_Invoice_Activity extends AppCompatActivity implements MyLi
     boolean isFABOpen = false;
     List<InvoiceItemDataModel> itemData_Details = new ArrayList<>();
     LinearLayoutManager layoutManager;
-    TextView list_item_invoice_count, pay_txt;
+    TextView list_item_invoice_count, pay_txt, dueDate,txt_date,txt_ok,txt_cancel;
     EditText pay_edt_partial;
     TextView invoice_nm, invoice_adrs, inv_email, inv_total_amount, invoice_cre_dt, invoice_due_dt, tv_fab_email, tv_fab_print_invoice, tv_fab_add_new_item, tv_due_date, tv_create_date;
     DialogJobCardDocuments dialogJobCardDocuments;
@@ -112,10 +127,33 @@ public class Generate_Invoice_Activity extends AppCompatActivity implements MyLi
     private List<TaxesLocation> taxList = new ArrayList<>();
     private ConstraintLayout cl_parent_calculation;
     private TextView txt_lbl_sub_total, txt_sub_total, txt_lbl_additional_discount, txt_additional_discount, txt_lbl_additional_discount1, txt_additional_discount1, txt_lbl_total, txt_total,txt_lbl_tax, txt_tax;
-
+    InvoiceItemDetailsModel invResModelForDueDate;
     private RecyclerView rvShowTax;
     private InvoiceTaxAdapter invoiceTaxAdapter;
     private String getDisCalculationType,getTaxCalculationType;
+    String End_Date = "End_Date";
+    static Dialog dialog;
+    private final DatePickerDialog.OnDateSetListener datePickerListener = new DatePickerDialog.OnDateSetListener() {
+        @Override
+        public void onDateSet(DatePicker view, int selectedYear, int selectedMonth, int selectedDay) {
+            String dateselect = "";
+            try {
+                DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy", Locale.US);//hh:mm:ss a
+                Date dueDate = formatter.parse(selectedDay + "-" + (selectedMonth + 1) + "-" + selectedYear);
+                dateselect = new SimpleDateFormat(AppConstant.DATE_FORMAT, Locale.US).format(dueDate);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            DateFormat dateFormat = new SimpleDateFormat(
+                    AppUtility.dateTimeByAmPmFormate("hh:mm:ss a", "HH:mm:ss"), Locale.US);//append current time
+            dateFormat.format(new Date());
+            String tag = ((String) view.getTag());
+
+            if (tag.equals(End_Date)) {
+                txt_date.setText(dateselect);
+            }
+        }
+    };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -535,6 +573,7 @@ public class Generate_Invoice_Activity extends AppCompatActivity implements MyLi
     }
 
     private void setInvoiceitemDetails(InvoiceItemDetailsModel invResModel) {
+        invResModelForDueDate =invResModel;
         if (invResModel != null && invResModel.getInvId() != null) {
             invId = invResModel.getInvId();
         }
@@ -603,6 +642,7 @@ public class Generate_Invoice_Activity extends AppCompatActivity implements MyLi
 
     @Override
     public void onClick(View view) {
+        String format="";
         switch (view.getId()) {
             case R.id.remove_txt_loc:
                 removeApplyTaxtion();
@@ -680,7 +720,60 @@ public class Generate_Invoice_Activity extends AppCompatActivity implements MyLi
                 addInvoiceItem();
                 closeFABMenu();
                 break;
+
+            case R.id.date_end:
+                SelectStartDate(End_Date);
+                break;
+            case R.id.cancel:
+                dialog.dismiss();
+                break;
+            case R.id.ok_btn:
+                if (!conditionCheck(AppUtility.getDateWithFormate(Long.parseLong(invResModelForDueDate.getInvDate()), "dd-MMM-yyyy"), txt_date.getText().toString())) {
+                    EotApp.getAppinstance().
+                            showToastmsg(LanguageController.getInstance().getMobileMsgByKey(AppConstant.quotes_end_start_time));
+                } else {
+                    invoice_due_dt.setText(txt_date.getText().toString());
+                    dialog.dismiss();
+                    try {
+                        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-yyyy", Locale.getDefault());
+                        Date date = dateFormat.parse(txt_date.getText().toString());
+                        SimpleDateFormat dateFormat1 = new SimpleDateFormat("yyyy-MM-dd", Locale.UK);
+                        if (App_preference.getSharedprefInstance().getLoginRes().getIsAutoTimeZone().equals("1")) {
+                            dateFormat1.setTimeZone(TimeZone.getTimeZone(App_preference.getSharedprefInstance().getLoginRes().getLoginUsrTz()));
+                        } else {
+                            dateFormat1.setTimeZone(TimeZone.getDefault());
+                        }
+                        String dueDateFormat = dateFormat1.format(date);
+                        itemListPi.setDueDate(invResModelForDueDate.getInvId(), dueDateFormat);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                }
+                break;
         }
+    }
+    private boolean conditionCheck(String schdlStart, String schdlFinish) {
+        try {
+            SimpleDateFormat gettingfmt = new SimpleDateFormat(AppConstant.DATE_FORMAT, Locale.US);//hh:mm:s a
+            Date date = gettingfmt.parse(schdlStart);
+            Objects.requireNonNull(date).getTime();
+            Date date1 = gettingfmt.parse(schdlFinish);
+            Objects.requireNonNull(date1).getTime();
+            if (date1.getTime() > date.getTime() || date1.getTime() == date.getTime())
+                return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+    private void SelectStartDate(String endDate) {
+        Calendar myCalendar = Calendar.getInstance();
+        int year = myCalendar.get(Calendar.YEAR);
+        int month = myCalendar.get(Calendar.MONTH);
+        int dayOfMonth = myCalendar.get(Calendar.DAY_OF_MONTH);
+        DatePickerDialog datePickerDialog = new DatePickerDialog(Generate_Invoice_Activity.this, datePickerListener, year, month, dayOfMonth);
+        datePickerDialog.getDatePicker().setTag(endDate);
+        datePickerDialog.show();
     }
 
     private void addInvoiceItem() {
@@ -802,14 +895,39 @@ public class Generate_Invoice_Activity extends AppCompatActivity implements MyLi
             }
         }
     }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.quotes_menu, menu);
+        return true;
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            onBackPressed();
-            return true;
+        switch (item.getItemId()) {
+            case R.id.quotes_edit:
+                getDueDateDailog();
+                break;
+            case android.R.id.home:
+                onBackPressed();
+                AppUtility.hideSoftKeyboard(this);
+                return true;
         }
         return super.onOptionsItemSelected(item);
+
+    }
+
+    private void getDueDateDailog() {
+        dialog = new Dialog(this);
+        dialog.setContentView(R.layout.activity_generate_invoice_due_date);
+         dueDate=dialog.findViewById(R.id.date_end);
+        txt_ok = dialog.findViewById(R.id.ok_btn);
+        txt_cancel = dialog.findViewById(R.id.cancel);
+        txt_date = dialog.findViewById(R.id.date_taxt);
+        txt_date.setText(AppUtility.getDateWithFormate(Long.parseLong(invResModelForDueDate.getDuedate()), "dd-MMM-yyyy"));
+        dueDate.setOnClickListener(this);
+        txt_ok.setOnClickListener(this);
+        txt_cancel.setOnClickListener(this);
+        dialog.show();
     }
 
     private void showFABMenu() {
