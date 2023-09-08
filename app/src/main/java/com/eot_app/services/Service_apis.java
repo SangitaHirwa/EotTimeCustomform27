@@ -165,6 +165,7 @@ public interface Service_apis {
     String getInvoiceDetailMobile = "InvoiceController/getInvoiceDetailMobile";
     String getSubscriptionData = "companyController/getSubscriptionData";
     String addInvoiceForMobile = "InvoiceController/addInvoiceForMobile";
+    String updateInvDueDate = "InvoiceController/updateInvDueDate";
 
     String rescheduleJob = "jobController/updateJobSchedule";
 
