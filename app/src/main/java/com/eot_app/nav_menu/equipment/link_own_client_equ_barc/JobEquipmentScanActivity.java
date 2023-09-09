@@ -1,6 +1,7 @@
 package com.eot_app.nav_menu.equipment.link_own_client_equ_barc;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.Menu;
@@ -194,7 +195,12 @@ public class JobEquipmentScanActivity extends AppCompatActivity implements ScanE
             mCodeScanner.startPreview();
         }
         else {
-            askTedPermission(0,AppConstant.cameraPermissions);
+            // Sdk version 33
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU ) {
+                askTedPermission(0, AppConstant.cameraPermissions33);
+            }else {
+                askTedPermission(0, AppConstant.cameraPermissions);
+            }
         }
     }
 

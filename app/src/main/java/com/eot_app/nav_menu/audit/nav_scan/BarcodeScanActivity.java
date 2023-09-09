@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -178,7 +179,12 @@ public class BarcodeScanActivity extends AppCompatActivity implements ScanBarcod
             mCodeScanner.startPreview();
         }
         else {
-            askTedPermission(0,AppConstant.cameraPermissions);
+            // Sdk version 33
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU ) {
+                askTedPermission(0, AppConstant.cameraPermissions33);
+            }else {
+                askTedPermission(0, AppConstant.cameraPermissions);
+            }
         }
     }
     private void askTedPermission(int type,String[] permissions) {

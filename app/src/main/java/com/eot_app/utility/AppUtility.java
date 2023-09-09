@@ -1063,7 +1063,7 @@ public class AppUtility {
 
     public static boolean askCameraTakePicture(Context context) {
         HyperLog.i("AppUtility", "askCameraTakePicture(M) Start");
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP && Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
             HyperLog.i("AppUtility", "LOLLIPOP grater");
             if (verifyPermissions(AppConstant.cameraPermissions)) {
                 HyperLog.i("AppUtility", "Allow Permission dialog ......");
@@ -1072,6 +1072,14 @@ public class AppUtility {
                 HyperLog.i("AppUtility", "Ask Permission dialog ......");
                 ActivityCompat.requestPermissions((Activity) context, AppConstant.cameraPermissions, 1);
             }*/
+        }
+        // Sdk version 33
+        else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU ) {
+            HyperLog.i("AppUtility", "LOLLIPOP grater");
+            if (verifyPermissions(AppConstant.cameraPermissions33)) {
+                HyperLog.i("AppUtility", "Allow Permission dialog ......");
+                return true;
+            }
         } else {
             HyperLog.i("AppUtility", "LOLLIPOP Less than");
             return true;
@@ -1082,8 +1090,12 @@ public class AppUtility {
     }
 
     public static boolean askGalaryTakeImagePermiSsion(Context context) {
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP && Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
             return verifyPermissions(AppConstant.galleryPermissions);
+        }
+        // Sdk version 33
+        else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU ) {
+            return verifyPermissions(AppConstant.galleryPermissions33);
         } else {
             return true;
         }
@@ -1102,7 +1114,7 @@ public class AppUtility {
     }
 
     public static boolean askStoragePerMission(Context context) {
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP && Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(context,
                     Manifest.permission.READ_EXTERNAL_STORAGE)
                     != PackageManager.PERMISSION_GRANTED) {
@@ -1112,10 +1124,56 @@ public class AppUtility {
                 ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
                 return true;
             }
-        } else {
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(context,
+                    Manifest.permission.READ_MEDIA_IMAGES)
+                    != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions((Activity) context,
+                        new String[]{Manifest.permission.READ_MEDIA_IMAGES}, UPLOAD_FILE);
+            } else {
+                ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.READ_MEDIA_IMAGES}, 1);
+                return true;
+            }
+        }else {
             return true;
         }
         return false;
+    }
+public static void askAllPerMission(Context context) {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP && Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+            ||ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+            ||ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED
+            ||ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+            ) {
+                ActivityCompat.requestPermissions((Activity) context,
+                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
+                                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                                Manifest.permission.CAMERA,
+                                Manifest.permission.ACCESS_FINE_LOCATION
+                        }, UPLOAD_FILE);
+            } else {
+                ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+
+            }
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED
+                ||ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED
+                ||ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                ||ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
+            ) {
+                ActivityCompat.requestPermissions((Activity) context,
+                        new String[]{Manifest.permission.READ_MEDIA_IMAGES,
+                                    Manifest.permission.CAMERA,
+                                   Manifest.permission.ACCESS_FINE_LOCATION,
+                                   Manifest.permission.POST_NOTIFICATIONS
+                        }, UPLOAD_FILE);
+            } else {
+                ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.READ_MEDIA_IMAGES}, 1);
+
+            }
+        }
+
     }
 
 

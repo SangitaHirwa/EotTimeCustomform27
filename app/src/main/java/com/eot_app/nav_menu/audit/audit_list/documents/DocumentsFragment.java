@@ -10,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -308,7 +309,12 @@ public class DocumentsFragment extends Fragment implements Doc_Attch_View, Docum
                     if (AppUtility.askCameraTakePicture(getActivity())) {
                         takePictureFromCamera();
                     }else {
-                        askTedPermission(0,AppConstant.cameraPermissions);
+                        // Sdk version 33
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU ) {
+                            askTedPermission(0, AppConstant.cameraPermissions33);
+                        }else {
+                            askTedPermission(0, AppConstant.cameraPermissions);
+                        }
                     }
                     dialog.dismiss();
                 }
@@ -320,7 +326,12 @@ public class DocumentsFragment extends Fragment implements Doc_Attch_View, Docum
                     if (AppUtility.askGalaryTakeImagePermiSsion(getActivity())) {
                         getImageFromGallray();
                     }else {
-                        askTedPermission(1,AppConstant.galleryPermissions);
+                        // Sdk version 33
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU ) {
+                            askTedPermission(1, AppConstant.galleryPermissions33);
+                        }else {
+                            askTedPermission(1, AppConstant.galleryPermissions);
+                        }
                     }
                     dialog.dismiss();
                 }
@@ -332,7 +343,12 @@ public class DocumentsFragment extends Fragment implements Doc_Attch_View, Docum
                     if (AppUtility.askGalaryTakeImagePermiSsion(getActivity())) {
                         takeimageFromGalary();//only for drive documents
                     }else {
-                        askTedPermission(2,AppConstant.galleryPermissions);
+                        // Sdk version 33
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU ) {
+                            askTedPermission(2, AppConstant.galleryPermissions33);
+                        }else {
+                            askTedPermission(2, AppConstant.galleryPermissions);
+                        }
                     }
                     dialog.dismiss();
                 }

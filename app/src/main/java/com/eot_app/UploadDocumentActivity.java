@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -71,7 +72,12 @@ public class UploadDocumentActivity extends AppCompatActivity implements ImageCr
                 if (AppUtility.askCameraTakePicture(UploadDocumentActivity.this)) {
                     getPictureFromCamera();
                 } else {
-                    askTedPermission(0,AppConstant.cameraPermissions);
+                    // Sdk version 33
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU ) {
+                        askTedPermission(0, AppConstant.cameraPermissions33);
+                    }else {
+                        askTedPermission(0, AppConstant.cameraPermissions);
+                    }
                 }
                 HyperLog.i("UploadDocumentActivity", "onClick(M) Stop");
                 dialog.dismiss();
@@ -80,7 +86,12 @@ public class UploadDocumentActivity extends AppCompatActivity implements ImageCr
                 if (AppUtility.askGalaryTakeImagePermiSsion(UploadDocumentActivity.this)) {
                     getImageFromGallery();
                 } else {
-                    askTedPermission(1,AppConstant.galleryPermissions);
+                    // Sdk version 33
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU ) {
+                        askTedPermission(1, AppConstant.galleryPermissions33);
+                    }else {
+                        askTedPermission(1, AppConstant.galleryPermissions);
+                    }
                 }
                 dialog.dismiss();
             });
@@ -88,7 +99,12 @@ public class UploadDocumentActivity extends AppCompatActivity implements ImageCr
                 if (AppUtility.askGalaryTakeImagePermiSsion(UploadDocumentActivity.this)) {
                     getDocumentsFromGallery();//only for drive documents
                 } else {
-                    askTedPermission(2,AppConstant.galleryPermissions);
+                    // Sdk version 33
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU ) {
+                        askTedPermission(2, AppConstant.galleryPermissions33);
+                    }else {
+                        askTedPermission(2, AppConstant.galleryPermissions);
+                    }
                 }
                 dialog.dismiss();
             });
@@ -119,7 +135,12 @@ public class UploadDocumentActivity extends AppCompatActivity implements ImageCr
                 if (AppUtility.askCameraTakePicture(UploadDocumentActivity.this)) {
                     getPictureFromCamera();
                 } else {
-                    askTedPermission(0,AppConstant.cameraPermissions);
+                    // Sdk version 33
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU ) {
+                        askTedPermission(0, AppConstant.cameraPermissions33);
+                    }else {
+                        askTedPermission(0, AppConstant.cameraPermissions);
+                    }
                 }
                 HyperLog.i("UploadDocumentActivity", "onClick(M) Stop");
                 dialog.dismiss();
@@ -128,7 +149,12 @@ public class UploadDocumentActivity extends AppCompatActivity implements ImageCr
                 if (AppUtility.askGalaryTakeImagePermiSsion(UploadDocumentActivity.this)) {
                     getImageFromGallery();
                 } else {
-                    askTedPermission(1,AppConstant.galleryPermissions);
+                    // Sdk version 33
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU ) {
+                        askTedPermission(1, AppConstant.galleryPermissions33);
+                    }else {
+                        askTedPermission(1, AppConstant.galleryPermissions);
+                    }
                 }
                 dialog.dismiss();
             });
@@ -136,7 +162,12 @@ public class UploadDocumentActivity extends AppCompatActivity implements ImageCr
                 if (AppUtility.askGalaryTakeImagePermiSsion(UploadDocumentActivity.this)) {
                     getDocumentsFromGallery();//only for drive documents
                 } else {
-                    askTedPermission(2,AppConstant.galleryPermissions);
+                    // Sdk version 33
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU ) {
+                        askTedPermission(2, AppConstant.galleryPermissions33);
+                    }else {
+                        askTedPermission(2, AppConstant.galleryPermissions);
+                    }
                 }
                 dialog.dismiss();
             });
