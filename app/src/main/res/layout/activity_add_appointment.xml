@@ -384,8 +384,7 @@
                                 android:drawablePadding="5dp"
                                 android:textSize="10sp"
                                 android:drawableTint="@color/color_gray"
-                                android:singleLine="true"
-                                tools:ignore="Autofill,LabelFor,UnusedAttribute" />
+                               />
                         </com.google.android.material.textfield.TextInputLayout>
                         <ImageView
                             android:id="@+id/action_insert_image"
