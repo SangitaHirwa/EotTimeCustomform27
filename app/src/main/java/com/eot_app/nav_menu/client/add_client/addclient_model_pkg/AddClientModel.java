@@ -34,10 +34,11 @@ public class AddClientModel {
      String cnm;
      String lat;
      String lng;
+     String altEmail;
     //  private int reference;
 
 
-    public AddClientModel(String tempId, String compId, String nm, int pymtType, String email, String mob1, String gstNo, String tinNo,
+    public AddClientModel(String tempId, String compId, String nm, int pymtType, String email, String alternateEmail, String mob1, String gstNo, String tinNo,
                           int industry, String adr, String ctry, String state, String city, String zip,
                           String note, String cltId, String snm, String conId, String cnm, String lat, String lng, String industryName
             , String referral) {
@@ -46,6 +47,7 @@ public class AddClientModel {
         this.nm = nm;
         this.pymtType = pymtType;
         this.email = email;
+        this.altEmail = alternateEmail;
         this.mob1 = mob1;
         this.gstNo = gstNo;
         this.tinNo = tinNo;
@@ -170,4 +172,11 @@ public class AddClientModel {
         return lng;
     }
 
+    public String getAlternateEmail() {
+        return altEmail;
+    }
+
+    public void setAlternateEmail(String altEmail) {
+        this.altEmail = altEmail;
+    }
 }

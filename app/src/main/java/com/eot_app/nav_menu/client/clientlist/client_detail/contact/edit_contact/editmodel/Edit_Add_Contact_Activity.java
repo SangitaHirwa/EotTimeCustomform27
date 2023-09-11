@@ -37,14 +37,14 @@ import java.util.Set;
 public class Edit_Add_Contact_Activity extends AppCompatActivity implements View.OnClickListener, EditContact_View, TextWatcher {
 
 
-    TextInputLayout input_layout_name, input_layout_con_email, input_layout_mobile, input_layout_Alternate, input_layout_Fax, input_layout_skype,
+    TextInputLayout input_layout_name, input_layout_con_email,input_layout_Alternate_email, input_layout_mobile, input_layout_Alternate, input_layout_Fax, input_layout_skype,
             input_layout_twitter,
             input_layout_notes,
             input_layout_extra1,
             input_layout_extra2,
             input_layout_extra3,
             input_layout_extra4;//, contact_lat_layout, contact_lng_layout;
-    EditText con_name, con_email, con_mob, con_alternate, con_fax, con_skype,
+    EditText con_name, con_email,a_email, con_mob, con_alternate, con_fax, con_skype,
             con_twitter, con_notes, con_extra1, con_extra2,
             con_extra3, con_extra4;//, edt_lng, edt_lat;
     Button update_bt;
@@ -138,6 +138,9 @@ public class Edit_Add_Contact_Activity extends AppCompatActivity implements View
         con_email = findViewById(R.id.con_email);
         con_email.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.email));// + " *"
 
+        a_email = findViewById(R.id.alternate_email);
+       a_email.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.alternate_email));
+
         con_mob = findViewById(R.id.con_mob);
         con_mob.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.mob_no));//+ " *"
 
@@ -226,6 +229,7 @@ public class Edit_Add_Contact_Activity extends AppCompatActivity implements View
     public void findInputTextLayout() {
         input_layout_name = findViewById(R.id.input_layout_name);
         input_layout_con_email = findViewById(R.id.input_layout_con_email);
+        input_layout_Alternate_email =findViewById(R.id.input_layout_alter_email);
         input_layout_mobile = findViewById(R.id.input_layout_mobile);
         input_layout_Alternate = findViewById(R.id.input_layout_Alternate);
         input_layout_Fax = findViewById(R.id.input_layout_Fax);
@@ -285,6 +289,7 @@ public class Edit_Add_Contact_Activity extends AppCompatActivity implements View
     public void textInputClick() {
         Objects.requireNonNull(input_layout_name.getEditText()).addTextChangedListener(this);
         Objects.requireNonNull(input_layout_con_email.getEditText()).addTextChangedListener(this);
+        Objects.requireNonNull(input_layout_Alternate_email.getEditText()).addTextChangedListener(this);
         Objects.requireNonNull(input_layout_mobile.getEditText()).addTextChangedListener(this);
         Objects.requireNonNull(input_layout_Alternate.getEditText()).addTextChangedListener(this);
         Objects.requireNonNull(input_layout_Fax.getEditText()).addTextChangedListener(this);
@@ -306,11 +311,12 @@ public class Edit_Add_Contact_Activity extends AppCompatActivity implements View
                 site_title_spinner.performClick();
                 break;
             case R.id.update_bt:
-                String nm, email, fax, skype, twitter, alternate, mob,
+                String nm, email,aEmail, fax, skype, twitter, alternate, mob,
                         extra3, extra4,
                         extra1, extra2, notes;
                 nm = con_name.getText().toString().trim();
                 email = con_email.getText().toString().trim();
+                aEmail = a_email.getText().toString().trim();
                 mob = con_mob.getText().toString().trim();
                 alternate = con_alternate.getText().toString().trim();
                 fax = con_fax.getText().toString().trim();
@@ -322,13 +328,13 @@ public class Edit_Add_Contact_Activity extends AppCompatActivity implements View
                 extra4 = con_extra4.getText().toString().trim();
                 notes = con_notes.getText().toString().trim();
                 int def = active.isChecked() ? 1 : 0;
-                if (editContact_pi.checkValidation(nm, email, mob, alternate)) {
+                if (editContact_pi.checkValidation(nm, email,aEmail, mob, alternate)) {
                     if (contactData == null) {
                         /*if (nm.equalsIgnoreCase("self")) {
                             setNameError(LanguageController.getInstance().getMobileMsgByKey(AppConstant.self_validation_msg));
                             return;
                         }*/
-                        ClientContactAddEdit_Model addcontact = new ClientContactAddEdit_Model(App_preference.getSharedprefInstance().getLoginRes().getCompId(), key, nm, email, mob, alternate, fax, skype,
+                        ClientContactAddEdit_Model addcontact = new ClientContactAddEdit_Model(App_preference.getSharedprefInstance().getLoginRes().getCompId(), key, nm, email,aEmail, mob, alternate, fax, skype,
                                 twitter, def, 0, jtIdList,
                                 extra1, extra2,
                                 extra3, extra4, notes);
@@ -349,7 +355,7 @@ public class Edit_Add_Contact_Activity extends AppCompatActivity implements View
                         } else {
                             isactive = "0";
                         }
-                        ClientContactEdit_Model contactEdit = new ClientContactEdit_Model(contactData.getCltId(), contactData.getConId(), nm, email, mob, alternate, fax, twitter, skype, def, 0
+                        ClientContactEdit_Model contactEdit = new ClientContactEdit_Model(contactData.getCltId(), contactData.getConId(), nm, email,aEmail, mob, alternate, fax, twitter, skype, def, 0
                                 , jtIdList,
                                 extra1, extra2,
                                 extra3, extra4, notes,
@@ -369,14 +375,22 @@ public class Edit_Add_Contact_Activity extends AppCompatActivity implements View
                 rbDisable.setChecked(contactData.getIsactive().equals("0"));
             }
 
-
+            if(!contactData.getExtraField1().equals(""))
             con_extra1.setText(contactData.getExtraField1());
+            if(!contactData.getExtraField2().equals(""))
             con_extra2.setText(contactData.getExtraField2());
+            if (!contactData.getExtraField3().equals(""))
             con_extra3.setText(contactData.getExtraField3());
+            if (!contactData.getExtraField4().equals(""))
             con_extra4.setText(contactData.getExtraField4());
+            if (!contactData.getNotes().equals(""))
             con_notes.setText(contactData.getNotes());
+            if (!contactData.getCnm().equals(""))
             con_name.setText(contactData.getCnm());
+            if (!contactData.getEmail().equals(""))
             con_email.setText(contactData.getEmail());
+            if (contactData.getAltEmail() != null)
+                a_email.setText(contactData.getAltEmail());
             if (contactData.getMob1() != null && !contactData.getMob1().equals(""))
                 con_mob.setText(contactData.getMob1());
             else
@@ -477,6 +491,8 @@ public class Edit_Add_Contact_Activity extends AppCompatActivity implements View
                 input_layout_name.setHintEnabled(true);
             if (charSequence.hashCode() == con_email.getText().hashCode())
                 input_layout_con_email.setHintEnabled(true);
+            if (charSequence.hashCode() == a_email.getText().hashCode())
+                input_layout_Alternate_email.setHintEnabled(true);
             if (charSequence.hashCode() == con_mob.getText().hashCode()) {
                 input_layout_mobile.setHintEnabled(true);
                 //    con_mob.setText(App_preference.getSharedprefInstance().getLoginRes().getCtryCode() + " ");
@@ -505,6 +521,8 @@ public class Edit_Add_Contact_Activity extends AppCompatActivity implements View
                 input_layout_name.setHintEnabled(false);
             if (charSequence.hashCode() == con_email.getText().hashCode())
                 input_layout_con_email.setHintEnabled(false);
+            if (charSequence.hashCode() == a_email.getText().hashCode())
+                input_layout_Alternate_email.setHintEnabled(false);
             if (charSequence.hashCode() == con_mob.getText().hashCode()) {
                 // con_mob.setTag("");
                 input_layout_mobile.setHintEnabled(false);

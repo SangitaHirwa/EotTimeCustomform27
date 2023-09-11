@@ -45,7 +45,7 @@ public class Client implements Parcelable {
     private String extra;
     private String industryName;
     private String referral;
-
+    private String altEmail;
     public Client() {
     }
 
@@ -95,6 +95,7 @@ public class Client implements Parcelable {
         extra = in.readString();
         industryName = in.readString();
         referral = in.readString();
+        altEmail = in.readString();
     }
 
     @Override
@@ -336,6 +337,14 @@ public class Client implements Parcelable {
         this.referral = referral;
     }
 
+    public String getAltEmail() {
+        return altEmail;
+    }
+
+    public void setAltEmail(String altEmail) {
+        this.altEmail = altEmail;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -372,5 +381,6 @@ public class Client implements Parcelable {
         parcel.writeString(extra);
         parcel.writeString(industryName);
         parcel.writeString(referral);
+        parcel.writeString(altEmail);
     }
 }

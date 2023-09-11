@@ -51,6 +51,7 @@
     <string name="mob_no">Mobile Number *</string>
     <string name="job_email">Email ID *</string>
     <string name="add">Address *</string>
+    <string name="alternate_email">Alternate Email</string>
 
 
     //drawer main menu item
