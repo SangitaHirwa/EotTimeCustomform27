@@ -421,10 +421,10 @@ public class AddQuotes_Activity extends UploadDocumentActivity implements View.O
 
             invDate = AppUtility.getDateWithFormate
                     (Long.parseLong(quotesDetails.getInvData().getInvDate()),
-                            AppUtility.dateTimeByAmPmFormate("dd-MM-yyyy hh:mm:ss a",
+                            AppUtility.dateTimeByAmPmFormate("dd-MMM-yyyy hh:mm:ss",
                                     "dd-MM-yyyy HH:mm:ss"));
             dueDate = AppUtility.getDateWithFormate(Long.parseLong(quotesDetails.getInvData().getDuedate()),
-                    AppUtility.dateTimeByAmPmFormate("dd-MM-yyyy hh:mm:ss a"
+                    AppUtility.dateTimeByAmPmFormate("dd-MMM-yyyy hh:mm:ss"
                             , "dd-MM-yyyy HH:mm:ss"));
             date_start.setText(AppUtility.getDateWithFormate
                     (Long.parseLong(quotesDetails.getInvData().getInvDate()), AppConstant.DATE_FORMAT));
