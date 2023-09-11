@@ -45,14 +45,16 @@ public class EditContact_Pc implements EditContact_Pi {
     }
 
     @Override
-    public boolean checkValidation(String name, String email, String mob, String alterNate) {
+    public boolean checkValidation(String name, String email,String alternateEmail, String mob, String alterNate) {
         if (name.equals("")) {
             editContact_view.setNameError(LanguageController.getInstance().getMobileMsgByKey(AppConstant.cont_name));
             return false;
         } else if (((!email.equals("")) && !Eot_Validation.email_checker(email).equals(""))) {
             editContact_view.setEmailError(Eot_Validation.email_checker(email));
             return false;
-        } else if (!mob.isEmpty() && !mob.equalsIgnoreCase(App_preference.getSharedprefInstance().getLoginRes().getCtryCode()) && mob.length() < AppConstant.MOBILE_LIMIT) {
+
+        }
+        else if (!mob.isEmpty() && !mob.equalsIgnoreCase(App_preference.getSharedprefInstance().getLoginRes().getCtryCode()) && mob.length() < AppConstant.MOBILE_LIMIT) {
             editContact_view.setMobError(LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_mob_lent));
             return false;
         } else if (!alterNate.isEmpty() && !mob.equalsIgnoreCase(App_preference.getSharedprefInstance().getLoginRes().getCtryCode()) && alterNate.length() < AppConstant.MOBILE_LIMIT) {
@@ -97,6 +99,7 @@ public class EditContact_Pc implements EditContact_Pi {
         tempContact.setMob2(model.getMob2());
         tempContact.setMob1(model.getMob1());
         tempContact.setEmail(model.getEmail());
+        tempContact.setAltEmail(model.getAltEmail());
         tempContact.setCnm(model.getCnm());
         tempContact.setCltId(model.getCltId());
 
@@ -143,6 +146,7 @@ public class EditContact_Pc implements EditContact_Pi {
         ContactData contactData = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).contactModel().getContactById(clientContactEdit.getConId());
         contactData.setCnm(clientContactEdit.getCnm());
         contactData.setEmail(clientContactEdit.getEmail());
+        contactData.setAltEmail(clientContactEdit.getAltEmail());
         contactData.setMob1(clientContactEdit.getMob1());
         contactData.setMob2(clientContactEdit.getMob2());
         contactData.setFax(clientContactEdit.getFax());

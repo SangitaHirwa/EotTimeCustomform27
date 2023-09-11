@@ -639,7 +639,9 @@ public abstract class AppDataBase extends RoomDatabase {
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) {
             /* **Alter Table for getting item list in appointment and tax components in tax**/
-            database.execSQL("ALTER TABLE Appointment ADD COLUMN attachments TEXT");
+            database.execSQL("ALTER TABLE Client ADD COLUMN altEmail TEXT");
+
+            database.execSQL("ALTER TABLE ContactData ADD COLUMN altEmail TEXT");
         }
     };
     private static final String DB_NAME = "eot_db";

@@ -42,7 +42,7 @@ public class AddClient_Pc implements AddClient_Pi {
     }
 
     @Override
-    public Boolean addClientValidation(String name, String contactName, String email, String siteName, String add, String countryname, String statename, String mob) {
+    public Boolean addClientValidation(String name, String contactName, String email,String alternateEmail, String siteName, String add, String countryname, String statename, String mob) {
         if (name.equals("")) {
             addClient_view.setNameError(LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_client_name));
             return false;
@@ -51,6 +51,9 @@ public class AddClient_Pc implements AddClient_Pi {
             return false;
         } else if ((!email.equals("")) && !Eot_Validation.email_checker(email).equals("")) {
             addClient_view.setEmailError(Eot_Validation.email_checker(email));
+            return false;
+        } else if ((!alternateEmail.equals("")) && !Eot_Validation.email_checker(alternateEmail).equals("")) {
+            addClient_view.setEmailError(Eot_Validation.email_checker(alternateEmail));
             return false;
         }
         //else if ((!mob.equals("")) && !Eot_Validation.mob_checker(mob).equals("")) {

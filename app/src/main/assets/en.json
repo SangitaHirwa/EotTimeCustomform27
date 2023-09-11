@@ -1812,7 +1812,8 @@
     "clients_work_history": "Client's Work History",
     "convert_to_quote": "Convert To Quote",
     "convert_to_job": "Convert To Job",
-    "appointment_status_change": "Are you sure you want to change the appointment status?"
+    "appointment_status_change": "Are you sure you want to change the appointment status?",
+    "alternate_email": "Alternate Email"
   }
 }
 
