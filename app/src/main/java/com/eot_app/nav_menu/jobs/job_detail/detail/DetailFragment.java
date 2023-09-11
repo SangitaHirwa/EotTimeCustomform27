@@ -954,8 +954,12 @@ public class DetailFragment extends Fragment
         }
 
         /* ***custom fields question list** */
-        if (App_preference.getSharedprefInstance().getLoginRes().getIsCustomFieldEnable().equals("1")) {
-            jobDetail_pi.getCustomFieldQues(mParam2.getJobId());
+        if(App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsEditCustomFormVisible()==0) {
+            if (App_preference.getSharedprefInstance().getLoginRes().getIsCustomFieldEnable().equals("1")) {
+                jobDetail_pi.getCustomFieldQues(mParam2.getJobId());
+            }
+        }else {
+            customField_view.setVisibility(View.GONE);
         }
 
         addComplationButtonTxt();
