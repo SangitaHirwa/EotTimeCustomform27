@@ -251,6 +251,8 @@ public class Item_activity extends AppCompatActivity implements ItemList_View, J
         intent.putExtra("invId", invId);
         intent.putExtra("locId", locId);
         intent.putExtra("NONBILLABLE", false);
+        intent.putExtra("getTaxMethodType", "0");
+        intent.putExtra("getSingleTaxId", "0");
         startActivityForResult(intent, ADD_ITEM_DATA);
     }
 

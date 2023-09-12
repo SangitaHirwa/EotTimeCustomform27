@@ -207,6 +207,8 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
         intent.putExtra("locId", locId);
         intent.putExtra("comeFrom", "AddRemark");
         intent.putExtra("NONBILLABLE", false);
+        intent.putExtra("getTaxMethodType", "0");
+        intent.putExtra("getSingleTaxId", "0");
         startActivityForResult(intent, ADDPART);
     }
 
@@ -818,6 +820,8 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
         intent.putExtra("equipmentType", equipment.getType());
         intent.putExtra("comeFrom", "AddRemarkItem");
         intent.putExtra("NONBILLABLE", false);
+        intent.putExtra("getTaxMethodType", "0");
+        intent.putExtra("getSingleTaxId", "0");
         startActivityForResult(intent, ADD_ITEM_DATA);
     }
 
