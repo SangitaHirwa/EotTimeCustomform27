@@ -447,6 +447,13 @@ public class AppConstant {
             "android.permission.WRITE_EXTERNAL_STORAGE",
             "android.permission.READ_EXTERNAL_STORAGE"
     };
+    public static String[] cameraPermissions33 = {
+            "android.permission.CAMERA",
+            "android.permission.READ_MEDIA_IMAGES"
+    };
+    public static String[] galleryPermissions33 = {
+            "android.permission.READ_MEDIA_IMAGES"
+    };
     public static String No = "No";
     public static String Update = "Update";
     public static String Sync_alert = "Sync Alert";

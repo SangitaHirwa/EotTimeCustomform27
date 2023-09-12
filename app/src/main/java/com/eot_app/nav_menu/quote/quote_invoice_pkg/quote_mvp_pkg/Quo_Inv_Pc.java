@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.eot_app.activitylog.ActivityLogController;
+import com.eot_app.nav_menu.jobs.job_controller.ChatController;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_email_pkg.get_email_temp_model.InvoiceEmaliTemplate;
 import com.eot_app.nav_menu.quote.add_quotes_pkg.model_pkg.Remove_ItemData;
 import com.eot_app.nav_menu.quote.quote_invoice_pkg.quote_model_pkg.Quote_InvoiceDetails_ReQ;
@@ -237,6 +238,7 @@ public class Quo_Inv_Pc implements Quo_Invo_Pi {
                             Log.e("Responce--->>>", "" + jsonObject.toString());
                             if (jsonObject.get("success").getAsBoolean()) {
                                 quotesList_view.onConvertQuotationToJob(LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
+                                ChatController.getInstance().notifyWebForIncreaseCount("jobCount");
                             } else if (jsonObject.get("statusCode") != null && jsonObject.get("statusCode").getAsString().equals(AppConstant.SESSION_EXPIRE)) {
                                 quotesList_view.onSessionExpire(LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
                             }

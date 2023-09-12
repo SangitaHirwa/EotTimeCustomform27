@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion 33
     defaultConfig {
         applicationId "com.eot_app"
         minSdkVersion 21
-        targetSdkVersion 31
+        targetSdkVersion 33
         versionCode 107
         versionName "2.88"
         testInstrumentationRunner 'androidx.test.reyeontask@123' +

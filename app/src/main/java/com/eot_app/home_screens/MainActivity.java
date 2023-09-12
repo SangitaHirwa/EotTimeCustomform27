@@ -289,6 +289,7 @@ public class MainActivity extends UploadDocumentActivity implements MainActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        AppUtility.askAllPerMission(this);
         /*
            after language change update status json according the language
          **/

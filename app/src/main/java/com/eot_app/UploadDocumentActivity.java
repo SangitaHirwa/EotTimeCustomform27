@@ -47,9 +47,9 @@ public class UploadDocumentActivity extends AppCompatActivity implements ImageCr
 
 
     public void selectFile(boolean hideAttachment) {
-//        if (!Utils.isOnline(this)) {
-//            AppUtility.alertDialog(this, LanguageController.getInstance().getMobileMsgByKey(AppConstant.dialog_error_title), LanguageController.getInstance().getMobileMsgByKey(AppConstant.feature_not_available), LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), "", () -> null);
-//        } else {
+        if (!Utils.isOnline(this)) {
+            AppUtility.alertDialog(this, LanguageController.getInstance().getMobileMsgByKey(AppConstant.dialog_error_title), LanguageController.getInstance().getMobileMsgByKey(AppConstant.feature_not_available), LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), "", () -> null);
+        } else {
             final BottomSheetDialog dialog = new BottomSheetDialog(UploadDocumentActivity.this);
             dialog.setContentView(R.layout.bottom_image_chooser);
             TextView camera = dialog.findViewById(R.id.camera);
@@ -71,7 +71,7 @@ public class UploadDocumentActivity extends AppCompatActivity implements ImageCr
                 if (AppUtility.askCameraTakePicture(UploadDocumentActivity.this)) {
                     getPictureFromCamera();
                 } else {
-                    askTedPermission(0, AppConstant.cameraPermissions);
+                    askTedPermission(0,AppConstant.cameraPermissions);
                 }
                 HyperLog.i("UploadDocumentActivity", "onClick(M) Stop");
                 dialog.dismiss();
@@ -80,7 +80,7 @@ public class UploadDocumentActivity extends AppCompatActivity implements ImageCr
                 if (AppUtility.askGalaryTakeImagePermiSsion(UploadDocumentActivity.this)) {
                     getImageFromGallery();
                 } else {
-                    askTedPermission(1, AppConstant.galleryPermissions);
+                    askTedPermission(1,AppConstant.galleryPermissions);
                 }
                 dialog.dismiss();
             });
@@ -88,12 +88,12 @@ public class UploadDocumentActivity extends AppCompatActivity implements ImageCr
                 if (AppUtility.askGalaryTakeImagePermiSsion(UploadDocumentActivity.this)) {
                     getDocumentsFromGallery();//only for drive documents
                 } else {
-                    askTedPermission(2, AppConstant.galleryPermissions);
+                    askTedPermission(2,AppConstant.galleryPermissions);
                 }
                 dialog.dismiss();
             });
             dialog.show();
-       // }
+        }
     }
 
 
