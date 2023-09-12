@@ -947,6 +947,7 @@ public class AppConstant {
     public static String Text_See_More="SeeMore";
     public static String Text_see_Less="Seeless";
     public static String appointment_status_change = "appointment_status_change";
+    public static String alternate_email = "alternate_email";
 
 
     public static String server(String location) {

@@ -268,7 +268,7 @@ public class AddAppointmentActivity extends UploadDocumentActivity implements Te
         binding.adderes.setText(appointment.getAdr());
         binding.city.setText(appointment.getCity());
         binding.postCode.setText(appointment.getZip());
-        binding.jobDesc.setText(appointment.getDes());
+        binding.editor.setHtml(appointment.getDes());
         binding.email.setText(appointment.getEmail());
         binding.mobNo.setText(appointment.getMob1());
         binding.cbFutureClient.setVisibility(View.GONE);

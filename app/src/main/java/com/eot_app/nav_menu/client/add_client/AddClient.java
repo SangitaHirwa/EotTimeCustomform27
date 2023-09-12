@@ -71,7 +71,7 @@ import static android.location.LocationManager.GPS_PROVIDER;
 
 public class AddClient extends AppCompatActivity implements AddClient_View, View.OnClickListener, Spinner.OnItemSelectedListener, TextWatcher {
     public static final int LOCATION_REQUEST = 1000;
-    EditText c_name, c_email, c_mob, c_gst, c_tin, c_add, c_city, c_zip, c_notes, edt_lng, edt_lat;
+    EditText c_name, c_email,a_email, c_mob, c_gst, c_tin, c_add, c_city, c_zip, c_notes, edt_lng, edt_lat;
     EditText c_contact_name, c_site_name;
     Button save_clnt;
     Spinner spinn_industry, c_account, referenceDp;
@@ -81,7 +81,7 @@ public class AddClient extends AppCompatActivity implements AddClient_View, View
     int indusId;
     String cntryId;
     String stateId;
-    TextInputLayout input_layout_clientname, input_layout_client_email, input_layout_clientmobile, layout_gst_no, layout_tin_no, client_adr_layout, client_lat_layout, client_lng_layout, client_city_layout, client_country_layout, client_state_layout, client_zip_layout, layout_client_notes;
+    TextInputLayout input_layout_clientname, input_layout_client_email,input_layout_client_alternate_email, input_layout_clientmobile, layout_gst_no, layout_tin_no, client_adr_layout, client_lat_layout, client_lng_layout, client_city_layout, client_country_layout, client_state_layout, client_zip_layout, layout_client_notes;
     TextInputLayout client_contact_layout, client_site_layout;
     RelativeLayout relative_main;
     TextView hint_tv_ac, tv_spinner_account, tv_spinner_ind, tv_hint_indus, hint_tv_reference, tv_spinner_reference;
@@ -306,6 +306,8 @@ public class AddClient extends AppCompatActivity implements AddClient_View, View
         c_email = findViewById(R.id.c_email);
         c_email.setHint((LanguageController.getInstance().getMobileMsgByKey(AppConstant.client_email)));
         //+ " *"
+        a_email = findViewById(R.id.a_email);
+        a_email.setHint((LanguageController.getInstance().getMobileMsgByKey(AppConstant.alternate_email)));
 
         c_mob = findViewById(R.id.c_mob);
         c_mob.setHint((LanguageController.getInstance().getMobileMsgByKey(AppConstant.mob_no)));
@@ -514,6 +516,7 @@ public class AddClient extends AppCompatActivity implements AddClient_View, View
     private void intializeTextInputLayout() {
         input_layout_clientname = findViewById(R.id.input_layout_clientname);
         input_layout_client_email = findViewById(R.id.input_layout_client_email);
+        input_layout_client_alternate_email = findViewById(R.id.input_layout_client_alternate_email);
         input_layout_clientmobile = findViewById(R.id.input_layout_clientmobile);
         layout_gst_no = findViewById(R.id.layout_gst_no);
         layout_tin_no = findViewById(R.id.layout_tin_no);
@@ -529,6 +532,7 @@ public class AddClient extends AppCompatActivity implements AddClient_View, View
 
         Objects.requireNonNull(input_layout_clientname.getEditText()).addTextChangedListener(this);
         Objects.requireNonNull(input_layout_client_email.getEditText()).addTextChangedListener(this);
+        Objects.requireNonNull(input_layout_client_alternate_email.getEditText()).addTextChangedListener(this);
         Objects.requireNonNull(input_layout_clientmobile.getEditText()).addTextChangedListener(this);
         Objects.requireNonNull(layout_gst_no.getEditText()).addTextChangedListener(this);
         Objects.requireNonNull(layout_tin_no.getEditText()).addTextChangedListener(this);
@@ -683,7 +687,7 @@ public class AddClient extends AppCompatActivity implements AddClient_View, View
                 spinn_industry.performClick();
                 break;
             case R.id.save_clnt: {
-                String nm, cemail, cmob, cadd, gst_no, tno, note, adr, city, state, country, zip, mob;
+                String nm, cemail,aemail, cmob, cadd, gst_no, tno, note, adr, city, state, country, zip, mob;
 
                 String cname, sitename;
 
@@ -693,6 +697,7 @@ public class AddClient extends AppCompatActivity implements AddClient_View, View
 
                 nm = c_name.getText().toString().trim();
                 cemail = c_email.getText().toString().trim();
+                aemail = a_email.getText().toString().trim();
                 cmob = c_mob.getText().toString().trim();
                 cadd = c_add.getText().toString().trim();
                 gst_no = c_gst.getText().toString().trim();
@@ -705,9 +710,9 @@ public class AddClient extends AppCompatActivity implements AddClient_View, View
                 state = client_state.getText().toString().trim();
                 country = client_cntry.getText().toString().trim();
                 String tempId = AppUtility.getTempIdFormat("Client");
-                if (addClient_pi.addClientValidation(nm, cname, cemail, sitename, cadd, country, state, mob)) {// cmob,
+                if (addClient_pi.addClientValidation(nm, cname, cemail,aemail, sitename, cadd, country, state, mob)) {// cmob,
                     AddClientModel addClientModel = new AddClientModel(tempId, App_preference.getSharedprefInstance().getLoginRes().getCompId(),
-                            nm, accountId, cemail, mob, gst_no, tno, indusId, adr, cntryId, stateId, city, zip, note, "", sitename, "",
+                            nm, accountId, cemail,aemail, mob, gst_no, tno, indusId, adr, cntryId, stateId, city, zip, note, "", sitename, "",
                             cname
                             , edt_lat.getText().toString(), edt_lng.getText().toString(), tv_spinner_account.getText().toString()
                             , reference + "");
@@ -754,6 +759,8 @@ public class AddClient extends AppCompatActivity implements AddClient_View, View
                 input_layout_clientname.setHintEnabled(true);
             if (charSequence.hashCode() == c_email.getText().hashCode())
                 input_layout_client_email.setHintEnabled(true);
+            if(charSequence.hashCode() == a_email.getText().hashCode())
+                input_layout_client_alternate_email.setHintEnabled(true);
             if (charSequence.hashCode() == c_mob.getText().hashCode())
                 input_layout_clientmobile.setHintEnabled(true);
             if (charSequence.hashCode() == c_gst.getText().hashCode())
@@ -781,6 +788,8 @@ public class AddClient extends AppCompatActivity implements AddClient_View, View
                 input_layout_clientname.setHintEnabled(false);
             if (charSequence.hashCode() == c_email.getText().hashCode())
                 input_layout_client_email.setHintEnabled(false);
+            if(charSequence.hashCode() == a_email.getText().hashCode())
+                input_layout_client_alternate_email.setHintEnabled(false);
             if (charSequence.hashCode() == c_mob.getText().hashCode())
                 input_layout_clientmobile.setHintEnabled(false);
             if (charSequence.hashCode() == c_gst.getText().hashCode())

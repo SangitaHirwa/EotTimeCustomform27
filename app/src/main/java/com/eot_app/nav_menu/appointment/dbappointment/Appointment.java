@@ -9,11 +9,13 @@ import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
 
+import com.eot_app.nav_menu.appointment.AppointmentAttachmentConverter;
 import com.eot_app.nav_menu.appointment.AppointmetItemDataModelConverter;
 import com.eot_app.nav_menu.appointment.Keepar;
 import com.eot_app.nav_menu.appointment.KeeparConverter;
 import com.eot_app.nav_menu.appointment.appointment_model.AppintmentItemDataModel;
 import com.eot_app.nav_menu.appointment.appointment_model.AppointmentItemDataInMap;
+import com.eot_app.nav_menu.appointment.details.AppointmentAttachment;
 import com.eot_app.nav_menu.appointment.details.documents.AppointmentTaxConverter;
 import com.eot_app.nav_menu.equipment.model.Keeper;
 import com.eot_app.nav_menu.jobs.job_db.Job;
@@ -73,6 +75,8 @@ public class Appointment implements Parcelable  {
     private String isStatusShow;
     @TypeConverters(AppointmetItemDataModelConverter.class)
     private List<AppointmentItemDataInMap> itemData;
+   /* @TypeConverters(AppointmentAttachmentConverter.class)
+    private List<AppointmentAttachment> attachments;*/
     /*@TypeConverters(AppointmetItemDataModelConverter.class)
     private Map<String ,AppintmentItemDataModel> itemData;*/
     // private String itemData;
@@ -124,6 +128,8 @@ public class Appointment implements Parcelable  {
         isStatusShow = in.readString();
         itemData = new ArrayList<>();
         in.readList(itemData, AppointmentItemDataInMap.class.getClassLoader());
+       /* attachments = new ArrayList<>();
+        in.readList(attachments,AppointmentAttachment.class.getClassLoader());*/
     }
      /*   itemData = new HashMap<>();
         in.readMap(itemData, AppintmentItemDataModel.class.getClassLoader());*/
@@ -462,7 +468,16 @@ public class Appointment implements Parcelable  {
     public void setItemData(List<AppointmentItemDataInMap> itemData) {
         this.itemData = itemData;
     }
-   /*   public Map<String, AppintmentItemDataModel> getItemData() {
+
+  /*  public List<AppointmentAttachment> getAttachments() {
+        return attachments;
+    }
+
+    public void setAttachments(List<AppointmentAttachment> attachments) {
+        this.attachments = attachments;
+    }*/
+
+    /*   public Map<String, AppintmentItemDataModel> getItemData() {
         return itemData;
     }
 
@@ -532,6 +547,7 @@ public class Appointment implements Parcelable  {
         parcel.writeString(leadId);
         parcel.writeString(isStatusShow);
         parcel.writeList(itemData);
+       /* parcel.writeList(attachments);*/
         /*   parcel.writeMap(itemData);*/
     }
 

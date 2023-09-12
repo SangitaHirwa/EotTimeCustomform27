@@ -188,7 +188,7 @@ public class Client_pc implements Client_pi {
      * get update record
      */
     private void getContactList() {
-        if (AppUtility.isInternetConnected()) {
+         if (AppUtility.isInternetConnected()) {
             ActivityLogController.saveActivity(
                     ActivityLogController.CLIENT_MODULE,
                     ActivityLogController.CONTACT_SYNC,
