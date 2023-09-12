@@ -7,6 +7,7 @@ import android.util.Log;
 import com.eot_app.activitylog.ActivityLogController;
 import com.eot_app.nav_menu.client.client_db.Client;
 import com.eot_app.nav_menu.client.clientlist.client_detail.site.sitelist.editsite.editsitedb.SpinnerCountrySite;
+import com.eot_app.nav_menu.jobs.job_controller.ChatController;
 import com.eot_app.nav_menu.quote.add_quotes_pkg.model_pkg.Add_Quote_ReQ;
 import com.eot_app.nav_menu.quote.quotes_list_pkg.qoute_model_pkg.Quote_ReQ;
 import com.eot_app.services.ApiClient;
@@ -407,6 +408,10 @@ public class Add_Quote_Pc implements Add_Quote_Pi {
                         public void onNext(@NotNull JsonObject jsonObject) {
                             AppUtility.progressBarDissMiss();
                             if (jsonObject.get("success").getAsBoolean()) {
+                                //Increase client count. when add new client for future use
+                                if(add_quote_reQ.getClientForFuture()==1){
+                                    ChatController.getInstance().notifyWebForIncreaseCount("clientCount");
+                                }
                                 add_quote_view.finishActivity();
                                 //refresh recent job on appointment details and show the label of recent job with code
 //                                EotApp.getAppinstance().notifyApiObserver(Service_apis.addJob);

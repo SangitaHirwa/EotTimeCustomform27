@@ -124,6 +124,10 @@ public class OfflineDataController {
                 }
                 EotApp.getAppinstance().notifyApiObserver(data.getService_name());
                 ChatController.getInstance().notifyWebForIncreaseCount("leadCount");
+                //Increase client count. when add new client for future use
+                if(addAppointment_req.getClientForFuture().equals("1")){
+                    ChatController.getInstance().notifyWebForIncreaseCount("clientCount");
+                }
                 break;
 
             case Service_apis.addAudit:
@@ -143,6 +147,10 @@ public class OfflineDataController {
                     AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).auditDao().deletAuditById(addAudit_req.getTempId());
                 }
                 EotApp.getAppinstance().notifyApiObserver(data.getService_name());
+                //Increase client count. when add new client for future use
+                if(addAudit_req.getClientForFuture()==1){
+                    ChatController.getInstance().notifyWebForIncreaseCount("clientCount");
+                }
                 break;
 
             case Service_apis.addJob:
@@ -187,7 +195,7 @@ public class OfflineDataController {
                         ChatController.getInstance().notifyWeBforNew("JOB", "AddJob", jobitem.getJobId(), tempMsg, "");
                         ChatController.getInstance().notifyWebForIncreaseCount("jobCount");
                         //Increase client count. when add new client for future use
-                        if(addJob_req.getContactForFuture()==1){
+                        if(addJob_req.getClientForFuture()==1){
                             ChatController.getInstance().notifyWebForIncreaseCount("clientCount");
                         }
                     }
