@@ -75,8 +75,8 @@ public class Appointment implements Parcelable  {
     private String isStatusShow;
     @TypeConverters(AppointmetItemDataModelConverter.class)
     private List<AppointmentItemDataInMap> itemData;
-    @TypeConverters(AppointmentAttachmentConverter.class)
-    private List<AppointmentAttachment> attachments;
+   /* @TypeConverters(AppointmentAttachmentConverter.class)
+    private List<AppointmentAttachment> attachments;*/
     /*@TypeConverters(AppointmetItemDataModelConverter.class)
     private Map<String ,AppintmentItemDataModel> itemData;*/
     // private String itemData;
@@ -128,8 +128,8 @@ public class Appointment implements Parcelable  {
         isStatusShow = in.readString();
         itemData = new ArrayList<>();
         in.readList(itemData, AppointmentItemDataInMap.class.getClassLoader());
-        attachments = new ArrayList<>();
-        in.readList(attachments,AppointmentAttachment.class.getClassLoader());
+       /* attachments = new ArrayList<>();
+        in.readList(attachments,AppointmentAttachment.class.getClassLoader());*/
     }
      /*   itemData = new HashMap<>();
         in.readMap(itemData, AppintmentItemDataModel.class.getClassLoader());*/
@@ -469,13 +469,13 @@ public class Appointment implements Parcelable  {
         this.itemData = itemData;
     }
 
-    public List<AppointmentAttachment> getAttachments() {
+  /*  public List<AppointmentAttachment> getAttachments() {
         return attachments;
     }
 
     public void setAttachments(List<AppointmentAttachment> attachments) {
         this.attachments = attachments;
-    }
+    }*/
 
     /*   public Map<String, AppintmentItemDataModel> getItemData() {
         return itemData;
@@ -547,7 +547,7 @@ public class Appointment implements Parcelable  {
         parcel.writeString(leadId);
         parcel.writeString(isStatusShow);
         parcel.writeList(itemData);
-        parcel.writeList(attachments);
+       /* parcel.writeList(attachments);*/
         /*   parcel.writeMap(itemData);*/
     }
 

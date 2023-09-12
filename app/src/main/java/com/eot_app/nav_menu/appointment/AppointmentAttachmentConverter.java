@@ -11,7 +11,7 @@ import java.lang.reflect.Type;
 import java.util.List;
 
 public class AppointmentAttachmentConverter {
-    @TypeConverter
+   /* @TypeConverter
     public static List<AppointmentAttachment> toAppointmentAttachment(String strdata) {
         Type mapType = new TypeToken<List<AppointmentAttachment>>() {}.getType();
         return new Gson().fromJson(strdata, mapType);
@@ -20,5 +20,5 @@ public class AppointmentAttachmentConverter {
     @TypeConverter
     public static String toString(List<AppointmentAttachment> data) {
         return new Gson().toJson(data);
-    }
+    }*/
 }
