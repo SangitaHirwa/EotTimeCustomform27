@@ -186,6 +186,10 @@ public class OfflineDataController {
 
                         ChatController.getInstance().notifyWeBforNew("JOB", "AddJob", jobitem.getJobId(), tempMsg, "");
                         ChatController.getInstance().notifyWebForIncreaseCount("jobCount");
+                        //Increase client count. when add new client for future use
+                        if(addJob_req.getContactForFuture()==1){
+                            ChatController.getInstance().notifyWebForIncreaseCount("clientCount");
+                        }
                     }
                 } catch (Exception exception) {
                     exception.printStackTrace();
