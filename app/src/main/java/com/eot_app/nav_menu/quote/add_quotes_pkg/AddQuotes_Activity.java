@@ -114,6 +114,7 @@ public class AddQuotes_Activity extends UploadDocumentActivity implements View.O
     private AutoCompleteTextView auto_quote_client, auto_sites, auto_quote_contact, auto_quote_country, auto_quote_state;
     private RelativeLayout relative_main;
     private String invDate = "", dueDate = "";
+    private String invDateInMMM = "", dueDateInMMM = "";
     /*
      * select date from picker & concanate current time
      */
@@ -423,9 +424,16 @@ public class AddQuotes_Activity extends UploadDocumentActivity implements View.O
                     (Long.parseLong(quotesDetails.getInvData().getInvDate()),
                             AppUtility.dateTimeByAmPmFormate("dd-MMM-yyyy hh:mm:ss",
                                     "dd-MM-yyyy HH:mm:ss"));
+            invDateInMMM = AppUtility.getDateWithFormate
+                    (Long.parseLong(quotesDetails.getInvData().getInvDate()),
+                            AppUtility.dateTimeByAmPmFormate("dd-MMM-yyyy hh:mm:ss",
+                                    "dd-MMM-yyyy HH:mm:ss"));
             dueDate = AppUtility.getDateWithFormate(Long.parseLong(quotesDetails.getInvData().getDuedate()),
                     AppUtility.dateTimeByAmPmFormate("dd-MMM-yyyy hh:mm:ss"
                             , "dd-MM-yyyy HH:mm:ss"));
+            dueDateInMMM = AppUtility.getDateWithFormate(Long.parseLong(quotesDetails.getInvData().getDuedate()),
+                    AppUtility.dateTimeByAmPmFormate("dd-MMM-yyyy hh:mm:ss"
+                            , "dd-MMM-yyyy HH:mm:ss"));
             date_start.setText(AppUtility.getDateWithFormate
                     (Long.parseLong(quotesDetails.getInvData().getInvDate()), AppConstant.DATE_FORMAT));
             date_end.setText(AppUtility.getDateWithFormate(Long.parseLong(quotesDetails.getInvData().getDuedate()), AppConstant.DATE_FORMAT));
@@ -948,7 +956,7 @@ public class AddQuotes_Activity extends UploadDocumentActivity implements View.O
     private void callAddQuotes(String clientNameReq, String adr) {
         HyperLog.i("", "callAddQuotes(M) Start");
 
-        if (!conditionCheck(invDate, dueDate)) {
+        if (!conditionCheck(invDateInMMM, dueDateInMMM)) {
             EotApp.getAppinstance().
                     showToastmsg(LanguageController.getInstance().getMobileMsgByKey(AppConstant.quotes_end_start_time));
         } else if (add_quote_pi.requiredFileds(jtIdList, clientNameReq, adr, ctry_id, state_id, quote_mob_no_edt.getText().toString().trim(), quote_at_mob_edt.getText().toString().trim(), quote_email_edt.getText().toString().trim())) {
