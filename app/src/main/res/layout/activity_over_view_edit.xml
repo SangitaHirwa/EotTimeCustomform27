@@ -161,7 +161,7 @@
                     android:background="@android:color/transparent"
                     android:hint="@string/tin_no"
                     android:inputType="textCapCharacters"
-                    android:maxLength="10"
+                    android:maxLength="15"
                     android:paddingTop="8dp"
                     android:singleLine="true"
                     tools:ignore="Autofill" />

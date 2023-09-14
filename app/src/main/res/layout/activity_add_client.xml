@@ -323,6 +323,7 @@
                         android:hint="@string/gst_no"
                         android:inputType="textCapCharacters"
                         android:singleLine="true"
+                        android:maxLength="15"
                         tools:ignore="Autofill" />
                 </com.google.android.material.textfield.TextInputLayout>
 
