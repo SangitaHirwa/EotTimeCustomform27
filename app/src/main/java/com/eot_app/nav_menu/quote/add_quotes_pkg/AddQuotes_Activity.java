@@ -90,6 +90,7 @@ public class AddQuotes_Activity extends UploadDocumentActivity implements View.O
     final String Start_Date = "StartDate";
     final String End_Date = "EndDate";
     private final String[] arraystatus = {"New", "Approved", "Reject", "On Hold", "Sent", "Revised request"};
+    private final String[] arrayType = {AppConstant.percentage_discount,AppConstant.flat_discount};
     private final Set<String> jtIdList = new HashSet<>();
     final List<JtId> Edit_jtIdList = new ArrayList<>();
     private final ArrayList<JobTitle> datastr = new ArrayList<>();
@@ -99,9 +100,9 @@ public class AddQuotes_Activity extends UploadDocumentActivity implements View.O
     CustomEditor mEditor;
     TextView quotesdeshint;
     ImageView action_insert_image;
-    TextView quote_title_hint_tv, quote_title_set, schel_start, schel_end, date_start, time_start, date_end, time_end;
-    LinearLayout ll_status_notes;
-    TextView hint_txt_fw_Nm, hint_txt_status_Nm, tv_spinner_Fw, tv_spinner_status;
+    TextView quote_title_hint_tv, quote_title_set, schel_start, schel_end, date_start, time_start, date_end, time_end,texDisTypeText;
+    LinearLayout ll_status_notes,texDidTypeLayout;
+    TextView hint_txt_fw_Nm, hint_txt_status_Nm,hint_txt_taxType, tv_spinner_Fw, tv_spinner_status;
     private TextInputLayout quote_instr_layout, quote_mobile_layout, quote_mob2_layout, quote_email_layout, quote_adr_layout, quote_city_layout, quote_postal_layout, client_quote_layout, contact_quote_layout, site_quote_layout, quote_country_layout, quote_state_layout, quote_notes_layout, quote_status_notes_layout, quote_term_layout;
     //quote_desc_layout,
     private EditText quote_instr_edt, quote_mob_no_edt, quote_at_mob_edt, quote_email_edt, quote_adrs_edt, quote_city_edt, quote_post_code_edt, quote_notes_edt, quote_status_notes_edt, quote_term_edt;
@@ -114,6 +115,7 @@ public class AddQuotes_Activity extends UploadDocumentActivity implements View.O
     private AutoCompleteTextView auto_quote_client, auto_sites, auto_quote_contact, auto_quote_country, auto_quote_state;
     private RelativeLayout relative_main;
     private String invDate = "", dueDate = "";
+    private String invDateInMMM = "", dueDateInMMM = "";
     /*
      * select date from picker & concanate current time
      */
@@ -156,10 +158,11 @@ public class AddQuotes_Activity extends UploadDocumentActivity implements View.O
     private LinearLayout linearLayout_Fw, linearLayout_status, ll_status;
     private List<FieldWorker> fw_List = new ArrayList<>();
     private MyAdapter2 myAdapter;
-    private Spinner spinner_Fw, spinner_status;
+    private Spinner spinner_Fw, spinner_status,typeSpinner;
     private boolean isUpdate;
     private String[] id_array;
     private String appId;
+    private String taxType="";
     ContactData selectedContactData;
     Site_model selectedSiteData;
     private ImageView site_dp_img, contact_dp_img;
@@ -423,9 +426,16 @@ public class AddQuotes_Activity extends UploadDocumentActivity implements View.O
                     (Long.parseLong(quotesDetails.getInvData().getInvDate()),
                             AppUtility.dateTimeByAmPmFormate("dd-MMM-yyyy hh:mm:ss",
                                     "dd-MM-yyyy HH:mm:ss"));
+            invDateInMMM = AppUtility.getDateWithFormate
+                    (Long.parseLong(quotesDetails.getInvData().getInvDate()),
+                            AppUtility.dateTimeByAmPmFormate("dd-MMM-yyyy hh:mm:ss",
+                                    "dd-MMM-yyyy HH:mm:ss"));
             dueDate = AppUtility.getDateWithFormate(Long.parseLong(quotesDetails.getInvData().getDuedate()),
                     AppUtility.dateTimeByAmPmFormate("dd-MMM-yyyy hh:mm:ss"
                             , "dd-MM-yyyy HH:mm:ss"));
+            dueDateInMMM = AppUtility.getDateWithFormate(Long.parseLong(quotesDetails.getInvData().getDuedate()),
+                    AppUtility.dateTimeByAmPmFormate("dd-MMM-yyyy hh:mm:ss"
+                            , "dd-MMM-yyyy HH:mm:ss"));
             date_start.setText(AppUtility.getDateWithFormate
                     (Long.parseLong(quotesDetails.getInvData().getInvDate()), AppConstant.DATE_FORMAT));
             date_end.setText(AppUtility.getDateWithFormate(Long.parseLong(quotesDetails.getInvData().getDuedate()), AppConstant.DATE_FORMAT));
@@ -454,7 +464,12 @@ public class AddQuotes_Activity extends UploadDocumentActivity implements View.O
                     ex.printStackTrace();
                 }
             }
-
+            if(quotesDetails.getInvData().getDisCalculationType().equals("0")) {
+                texDisTypeText.setText(arrayType[0]);
+            }
+            else if (quotesDetails.getInvData().getDisCalculationType().equals("1")) {
+                texDisTypeText.setText(arrayType[1]);
+            }
 
             try {
                 if (!TextUtils.isEmpty(this.quotesDetails.getDes())) {
@@ -631,6 +646,9 @@ public class AddQuotes_Activity extends UploadDocumentActivity implements View.O
         hint_txt_status_Nm = findViewById(R.id.hint_txt_status_Nm);
         hint_txt_status_Nm.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.status_radio_btn));
 
+        hint_txt_taxType = findViewById(R.id.hint_txt_taxType);
+        hint_txt_taxType.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.discount));
+
         tv_spinner_Fw = findViewById(R.id.tv_spinner_Fw);
         tv_spinner_Fw.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.assign_to_fw));
         spinner_Fw = findViewById(R.id.spinner_Fw);
@@ -643,7 +661,9 @@ public class AddQuotes_Activity extends UploadDocumentActivity implements View.O
 
         submit_btn = findViewById(R.id.submit_btn);
         submit_btn.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.submit_btn));
-
+        typeSpinner = findViewById(R.id.type_spinner);
+       texDisTypeText = findViewById(R.id.type_label);
+        texDidTypeLayout = findViewById(R.id.appointmentItemType_relative);
 
         initializeView();
     }
@@ -677,7 +697,7 @@ public class AddQuotes_Activity extends UploadDocumentActivity implements View.O
         submit_btn.setOnClickListener(this);
         linearLayout_Fw.setOnClickListener(this);
         linearLayout_status.setOnClickListener(this);
-
+        texDidTypeLayout.setOnClickListener(this);
 
         textInputLayoutHint();
 
@@ -685,6 +705,31 @@ public class AddQuotes_Activity extends UploadDocumentActivity implements View.O
         //  add_quote_pi.getJobServices();//use ful
         add_quote_pi.getCountryList();
         add_quote_pi.getActiveUserList();
+        if(App_preference.getSharedprefInstance().getLoginRes().getDisCalculationType().equals("0")){
+            texDisTypeText.setText(arrayType[0]);
+        }else if(App_preference.getSharedprefInstance().getLoginRes().getDisCalculationType().equals("1")){
+            texDisTypeText.setText(arrayType[1]);
+        }
+
+        AppUtility.spinnerPopUpWindow(typeSpinner);
+        typeSpinner.setSelected(false);
+        typeSpinner.setAdapter(new MySpinnerAdapter(this, arrayType));
+        typeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                texDisTypeText.setText(arrayType[position]);
+                if(position==0)
+                taxType="0";
+                else if(position==1)
+                    taxType="1";
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
 
         AppUtility.spinnerPopUpWindow(spinner_status);
         spinner_status.setSelected(false);
@@ -847,6 +892,10 @@ public class AddQuotes_Activity extends UploadDocumentActivity implements View.O
                 createAddQuotesRequest();
                 new Handler().postDelayed(() -> submit_btn.setEnabled(true), 500);
                 break;
+            case R.id.appointmentItemType_relative:
+                typeSpinner.performClick();
+                break;
+
         }
     }
 
@@ -948,7 +997,7 @@ public class AddQuotes_Activity extends UploadDocumentActivity implements View.O
     private void callAddQuotes(String clientNameReq, String adr) {
         HyperLog.i("", "callAddQuotes(M) Start");
 
-        if (!conditionCheck(invDate, dueDate)) {
+        if (!conditionCheck(invDateInMMM, dueDateInMMM)) {
             EotApp.getAppinstance().
                     showToastmsg(LanguageController.getInstance().getMobileMsgByKey(AppConstant.quotes_end_start_time));
         } else if (add_quote_pi.requiredFileds(jtIdList, clientNameReq, adr, ctry_id, state_id, quote_mob_no_edt.getText().toString().trim(), quote_at_mob_edt.getText().toString().trim(), quote_email_edt.getText().toString().trim())) {
@@ -983,7 +1032,7 @@ public class AddQuotes_Activity extends UploadDocumentActivity implements View.O
                     siteForFuture, invDate, dueDate, quote_notes_edt.getText().toString().trim()
                     , assignByUser, quotId, invId, terms, status,
                     LatLngSycn_Controller.getInstance().getLat(),
-                    LatLngSycn_Controller.getInstance().getLng(), quote_status_notes_edt.getText().toString());
+                    LatLngSycn_Controller.getInstance().getLng(), quote_status_notes_edt.getText().toString(),taxType);
 
             add_quote_reQ.setAppId(appId);
 

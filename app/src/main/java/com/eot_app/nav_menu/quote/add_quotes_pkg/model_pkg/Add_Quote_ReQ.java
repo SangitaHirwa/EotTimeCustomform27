@@ -39,6 +39,7 @@ public class Add_Quote_ReQ {
     private String lng;
     private String isMailSentToClt;
     private String statusComment;
+    private String disCalculationType;
 
     public String getCommets() {
         return statusComment;
@@ -49,7 +50,7 @@ public class Add_Quote_ReQ {
     }
 
     public Add_Quote_ReQ(Set<String> jtId, String cltId, String siteId, String conId, String des, String athr, String inst, String nm, String cnm, String snm, String email, String mob1, String mob2, String adr, String city, String state, String ctry, String zip, int clientForFuture, int contactForFuture, int siteForFuture, String invDate, String dueDate, String note, String assignByUser, String quotId, String invId,
-                         String term, String status, String lat, String lng, String statusComment) {
+                         String term, String status, String lat, String lng, String statusComment,String disCalculationType) {
         this.cltId = cltId;
         this.siteId = siteId;
         this.conId = conId;
@@ -82,6 +83,8 @@ public class Add_Quote_ReQ {
         this.lat = lat;
         this.lng = lng;
         this.statusComment = statusComment;
+        this.disCalculationType = disCalculationType;
+
     }
 
     public String getIsMailSentToClt() {
@@ -354,5 +357,13 @@ public class Add_Quote_ReQ {
 
     public void setLng(String lng) {
         this.lng = lng;
+    }
+
+    public String getDisCalculationType() {
+        return disCalculationType;
+    }
+
+    public void setDisCalculationType(String disCalculationType) {
+        this.disCalculationType = disCalculationType;
     }
 }
