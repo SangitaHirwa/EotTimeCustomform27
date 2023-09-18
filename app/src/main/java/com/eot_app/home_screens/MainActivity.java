@@ -458,6 +458,9 @@ public class MainActivity extends UploadDocumentActivity implements MainActivity
                         title_calender.performClick();
                     } else if (Objects.equals(bundle.get("NOTIFICATIONTAG"), "updateLeave")) {
                         updateFragment(LanguageController.getInstance().getMobileMsgByKey(AppConstant.user_leave), userLeaveListFragment);
+                    } else if (Objects.equals(bundle.get("NOTIFICATIONTAG"), "MULTI_JOB")) {
+                        setNotificationDataId("");
+                        updateFragment(LanguageController.getInstance().getMobileMsgByKey(AppConstant.jobs), joblistfragment);
                     } else {
                         title_jobs.performClick();
                     }
