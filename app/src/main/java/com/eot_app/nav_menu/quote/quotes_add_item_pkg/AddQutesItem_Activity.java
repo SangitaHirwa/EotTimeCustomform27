@@ -549,7 +549,8 @@ public class AddQutesItem_Activity extends AppCompatActivity implements TextWatc
                 getSupportActionBar().setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.update_item));
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                 add_edit_item_Btn.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.update_btn));
-                DP_OPEN = true;
+                /** Not to edit name like job item (18/Sep/23)*/
+                DP_OPEN = false;
             } else {
                 EnableDisbleFields();
                 getSupportActionBar().setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.view_details));
@@ -1364,8 +1365,9 @@ public class AddQutesItem_Activity extends AppCompatActivity implements TextWatc
                 item_supplier_layout.setVisibility(View.GONE);
                 supplier_view.setVisibility(View.GONE);
 
-                disc_view.setVisibility(View.GONE);
-                item_discount_layout.setVisibility(View.GONE);
+                /** Service Discount show on add and edit time(18-09-23 ticket no #Eye015389)*/
+                disc_view.setVisibility(View.VISIBLE);
+                item_discount_layout.setVisibility(View.VISIBLE);
 
                 item_partNo_layout.setVisibility(View.VISIBLE);
                 part_no_view.setVisibility(View.VISIBLE);
