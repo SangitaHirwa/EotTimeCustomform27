@@ -355,7 +355,9 @@ public class ActivityEditImageDialog extends AppCompatActivity implements View.O
                         .build();
 
                 if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                    return;
+                    ActivityCompat.requestPermissions(this,
+                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                            PackageManager.PERMISSION_GRANTED);
                 }
                 if (file.exists()) {
                     photoEditor.saveAsFile(file.getAbsolutePath(), saveSettings, new PhotoEditor.OnSaveListener() {
