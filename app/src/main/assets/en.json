@@ -1815,7 +1815,13 @@
     "appointment_status_change": "Are you sure you want to change the appointment status?",
     "alternate_email": "Alternate Email",
     "percentage_discount": "Percentage Discount",
-    "flat_discount": "Direct(Flat) Discount"
+    "flat_discount": "Direct(Flat) Discount",
+    "valid_alternate_Email_Id": "Please enter valid alternate email",
+    "alternate_Email_Id": "Alternate Email ID",
+    "invoice_Due_Date": "Invoice Due Date" ,
+    "select_invoice_Due_Date": "Select Invoice Due Date" ,
+    "err_due_Invoice_date": "due date must be greater then invoice date" ,
+    "alternate_Email_Not_Same": "Email and alternate email is not same"
   }
 }
 
