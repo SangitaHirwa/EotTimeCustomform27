@@ -167,6 +167,7 @@ public class MainActivity extends UploadDocumentActivity implements MainActivity
     public boolean isSyncDone = false;
     public boolean isNetworkDisconnected = false;
     boolean auditNoti;
+    boolean jobNoti;
     //firebase ref path
     String path;
     @SuppressLint("SimpleDateFormat")
@@ -452,6 +453,7 @@ public class MainActivity extends UploadDocumentActivity implements MainActivity
                         updateFragment(LanguageController.getInstance().getMobileMsgByKey(AppConstant.audit_nav),
                                 fragmentAuditList);
                     } else if (Objects.equals(bundle.get("NOTIFICATIONTAG"), "JOB")) {
+                        jobNoti= true;
                         updateFragment(LanguageController.getInstance().getMobileMsgByKey(AppConstant.jobs), joblistfragment);
                     } else if (Objects.equals(bundle.get("NOTIFICATIONTAG"), "APPOINTMENT")) {
                         isCalendarSelected = true;
@@ -459,6 +461,7 @@ public class MainActivity extends UploadDocumentActivity implements MainActivity
                     } else if (Objects.equals(bundle.get("NOTIFICATIONTAG"), "updateLeave")) {
                         updateFragment(LanguageController.getInstance().getMobileMsgByKey(AppConstant.user_leave), userLeaveListFragment);
                     } else if (Objects.equals(bundle.get("NOTIFICATIONTAG"), "MULTI_JOB")) {
+                        jobNoti= true;
                         setNotificationDataId("");
                         updateFragment(LanguageController.getInstance().getMobileMsgByKey(AppConstant.jobs), joblistfragment);
                     } else {
@@ -1168,7 +1171,18 @@ public class MainActivity extends UploadDocumentActivity implements MainActivity
             isCalendarSelected = true;
             img_month_arrow.setVisibility(View.VISIBLE);
             img_sorting.setVisibility(View.VISIBLE);
-        } else if (menu != null) {
+        } else if (jobNoti) {
+            menu.setGroupVisible(R.id.job_group, true);
+            menu.setGroupVisible(R.id.client_group, false);
+            menu.setGroupVisible(R.id.quote_group, false);
+            menu.setGroupVisible(R.id.audit_group, false);
+            menu.setGroupVisible(R.id.single_chat_group, false);
+            menu.setGroupVisible(R.id.expense_group, false);
+            menu.setGroupVisible(R.id.report_group, false);
+            isCalendarSelected = false;
+            img_month_arrow.setVisibility(View.GONE);
+            img_sorting.setVisibility(View.GONE);
+        }else  {
             menu.setGroupVisible(R.id.job_group, false);
             menu.setGroupVisible(R.id.client_group, false);
             menu.setGroupVisible(R.id.quote_group, false);
