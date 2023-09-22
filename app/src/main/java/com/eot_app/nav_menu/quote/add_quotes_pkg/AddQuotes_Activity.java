@@ -90,7 +90,9 @@ public class AddQuotes_Activity extends UploadDocumentActivity implements View.O
     final String Start_Date = "StartDate";
     final String End_Date = "EndDate";
     private final String[] arraystatus = {"New", "Approved", "Reject", "On Hold", "Sent", "Revised request"};
-    private final String[] arrayType = {AppConstant.percentage_discount,AppConstant.flat_discount};
+    private final String[] arrayType = {
+            LanguageController.getInstance().getMobileMsgByKey(AppConstant.percentage_discount),
+            LanguageController.getInstance().getMobileMsgByKey(AppConstant.flat_discount)};
     private final Set<String> jtIdList = new HashSet<>();
     final List<JtId> Edit_jtIdList = new ArrayList<>();
     private final ArrayList<JobTitle> datastr = new ArrayList<>();
@@ -458,10 +460,10 @@ public class AddQuotes_Activity extends UploadDocumentActivity implements View.O
                 }
             }
             if(quotesDetails.getInvData().getDisCalculationType().equals("0")) {
-                texDisTypeText.setText(arrayType[0]);
+                texDisTypeText.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.percentage_discount));
             }
             else if (quotesDetails.getInvData().getDisCalculationType().equals("1")) {
-                texDisTypeText.setText(arrayType[1]);
+                texDisTypeText.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.percentage_discount));
             }
 
             try {

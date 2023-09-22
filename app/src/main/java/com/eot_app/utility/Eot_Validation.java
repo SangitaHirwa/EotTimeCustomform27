@@ -16,7 +16,14 @@ public class Eot_Validation {
         }
         return "";
     }
-
+    static public String emailAlter_checker(String email) {
+        if (email.isEmpty()) {
+            return LanguageController.getInstance().getMobileMsgByKey(AppConstant.valid_alternate_Email_Id);
+        } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()){
+            return LanguageController.getInstance().getMobileMsgByKey(AppConstant.valid_alternate_Email_Id);
+        }
+        return "";
+    }
 
     static public String mob_checker(String mob) {   //mendatry mob
         if (mob.isEmpty()) {

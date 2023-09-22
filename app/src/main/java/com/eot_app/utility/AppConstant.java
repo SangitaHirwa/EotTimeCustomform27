@@ -947,10 +947,12 @@ public class AppConstant {
     public static String Text_See_More="SeeMore";
     public static String Text_see_Less="Seeless";
     public static String appointment_status_change = "appointment_status_change";
-    public static String alternate_email = "alternate_email";
+    public static String alternate_email = "alternate_Email_Id";
     public static String percentage_discount = "percentage_discount";
     public static String flat_discount = "flat_discount";
-
+    public static String invoice_Due_Date ="invoice_Due_Date";
+    public static String valid_alternate_Email_Id = "valid_alternate_Email_Id";
+    public static String err_due_Invoice_date = "err_due_Invoice_date";
 
     public static String server(String location) {
         switch (location) {

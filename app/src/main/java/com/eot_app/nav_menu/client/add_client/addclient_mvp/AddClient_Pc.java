@@ -52,8 +52,8 @@ public class AddClient_Pc implements AddClient_Pi {
         } else if ((!email.equals("")) && !Eot_Validation.email_checker(email).equals("")) {
             addClient_view.setEmailError(Eot_Validation.email_checker(email));
             return false;
-        } else if ((!alternateEmail.equals("")) && !Eot_Validation.email_checker(alternateEmail).equals("")) {
-            addClient_view.setEmailError(Eot_Validation.email_checker(alternateEmail));
+        } else if ((!alternateEmail.equals("")) && !Eot_Validation.emailAlter_checker(alternateEmail).equals("")) {
+            addClient_view.setEmailError(Eot_Validation.emailAlter_checker(alternateEmail));
             return false;
         }
         //else if ((!mob.equals("")) && !Eot_Validation.mob_checker(mob).equals("")) {
