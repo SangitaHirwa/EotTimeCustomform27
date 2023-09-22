@@ -53,6 +53,10 @@ public class EditContact_Pc implements EditContact_Pi {
             editContact_view.setEmailError(Eot_Validation.email_checker(email));
             return false;
 
+        }else if (((!alternateEmail.equals("")) && !Eot_Validation.emailAlter_checker(alternateEmail).equals(""))) {
+            editContact_view.setEmailError(Eot_Validation.emailAlter_checker(alternateEmail));
+            return false;
+
         }
         else if (!mob.isEmpty() && !mob.equalsIgnoreCase(App_preference.getSharedprefInstance().getLoginRes().getCtryCode()) && mob.length() < AppConstant.MOBILE_LIMIT) {
             editContact_view.setMobError(LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_mob_lent));

@@ -730,7 +730,7 @@ public class Generate_Invoice_Activity extends AppCompatActivity implements MyLi
             case R.id.ok_btn:
                 if (!conditionCheck(AppUtility.getDateWithFormate(Long.parseLong(invResModelForDueDate.getInvDate()), "dd-MMM-yyyy"), txt_date.getText().toString())) {
                     EotApp.getAppinstance().
-                            showToastmsg(LanguageController.getInstance().getMobileMsgByKey(AppConstant.quotes_end_start_time));
+                            showToastmsg(LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_due_Invoice_date));
                 } else {
                     invoice_due_dt.setText(txt_date.getText().toString());
                     dialog.dismiss();
@@ -919,9 +919,13 @@ public class Generate_Invoice_Activity extends AppCompatActivity implements MyLi
     private void getDueDateDailog() {
         dialog = new Dialog(this);
         dialog.setContentView(R.layout.activity_generate_invoice_due_date);
-         dueDate=dialog.findViewById(R.id.date_end);
+        TextView invoiceDueDate = dialog.findViewById(R.id.invoiceDueDate);
+        invoiceDueDate.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.invoice_Due_Date));
+        dueDate=dialog.findViewById(R.id.date_end);
         txt_ok = dialog.findViewById(R.id.ok_btn);
+        txt_ok.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok));
         txt_cancel = dialog.findViewById(R.id.cancel);
+        txt_cancel.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.cancel));
         txt_date = dialog.findViewById(R.id.date_taxt);
         txt_date.setText(AppUtility.getDateWithFormate(Long.parseLong(invResModelForDueDate.getDuedate()), "dd-MMM-yyyy"));
         dueDate.setOnClickListener(this);
