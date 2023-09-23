@@ -75,6 +75,8 @@ public class Appointment implements Parcelable  {
     private String isStatusShow;
     @TypeConverters(AppointmetItemDataModelConverter.class)
     private List<AppointmentItemDataInMap> itemData;
+    private String taxCalculationType;
+    private String disCalculationType;
    /* @TypeConverters(AppointmentAttachmentConverter.class)
     private List<AppointmentAttachment> attachments;*/
     /*@TypeConverters(AppointmetItemDataModelConverter.class)
@@ -128,6 +130,8 @@ public class Appointment implements Parcelable  {
         isStatusShow = in.readString();
         itemData = new ArrayList<>();
         in.readList(itemData, AppointmentItemDataInMap.class.getClassLoader());
+        taxCalculationType = in.readString();
+        disCalculationType = in.readString();
        /* attachments = new ArrayList<>();
         in.readList(attachments,AppointmentAttachment.class.getClassLoader());*/
     }
@@ -469,7 +473,23 @@ public class Appointment implements Parcelable  {
         this.itemData = itemData;
     }
 
-  /*  public List<AppointmentAttachment> getAttachments() {
+    public String getTaxCalculationType() {
+        return taxCalculationType;
+    }
+
+    public void setTaxCalculationType(String taxCalculationType) {
+        this.taxCalculationType = taxCalculationType;
+    }
+
+    public String getDisCalculationType() {
+        return disCalculationType;
+    }
+
+    public void setDisCalculationType(String disCalculationType) {
+        this.disCalculationType = disCalculationType;
+    }
+
+    /*  public List<AppointmentAttachment> getAttachments() {
         return attachments;
     }
 
@@ -547,6 +567,8 @@ public class Appointment implements Parcelable  {
         parcel.writeString(leadId);
         parcel.writeString(isStatusShow);
         parcel.writeList(itemData);
+        parcel.writeString(taxCalculationType);
+        parcel.writeString(disCalculationType);
        /* parcel.writeList(attachments);*/
         /*   parcel.writeMap(itemData);*/
     }
