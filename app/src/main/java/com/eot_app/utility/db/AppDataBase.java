@@ -642,6 +642,10 @@ public abstract class AppDataBase extends RoomDatabase {
             database.execSQL("ALTER TABLE Client ADD COLUMN altEmail TEXT");
 
             database.execSQL("ALTER TABLE ContactData ADD COLUMN altEmail TEXT");
+
+            database.execSQL("ALTER TABLE Appointment ADD COLUMN taxCalculationType TEXT");
+            database.execSQL("ALTER TABLE Appointment ADD COLUMN disCalculationType TEXT");
+
         }
     };
     private static final String DB_NAME = "eot_db";

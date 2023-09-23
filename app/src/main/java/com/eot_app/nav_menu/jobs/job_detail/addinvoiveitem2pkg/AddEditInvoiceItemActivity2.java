@@ -255,7 +255,7 @@ public class AddEditInvoiceItemActivity2 extends
             }
             if(getIntent().hasExtra("AddRequirmentGetheringItem")) {
                appId = bundle.getString("appId");
-                getTaxDisType("");
+                getTaxDisTypeForApp(appId);
                 initializelables();
                 getTaxMethodType = bundle.getString("getTaxMethodType");
                 if (getTaxMethodType.equals("1")) {
@@ -267,7 +267,7 @@ public class AddEditInvoiceItemActivity2 extends
             }else if(getIntent().hasExtra("UpdateItemRequirmentGethering")){
                 bundle.getBoolean("UpdateItemRequirmentGethering");
                 appId = bundle.getString("appId");
-                getTaxDisType("");
+                getTaxDisTypeForApp(appId);
                 initializelables();
                 getTaxMethodType = bundle.getString("getTaxMethodType");
                 if (getTaxMethodType.equals("1")) {
@@ -377,6 +377,23 @@ public class AddEditInvoiceItemActivity2 extends
             if(job.getCanInvoiceCreated().equals("1")) {
                 getDisCalculationType = AppDataBase.getInMemoryDatabase(this).jobModel().disCalculationType(jobId);
                 getTaxCalculationType = AppDataBase.getInMemoryDatabase(this).jobModel().taxCalculationType(jobId);
+            }else {
+                getDisCalculationType= App_preference.getSharedprefInstance().getLoginRes().getDisCalculationType();
+                getTaxCalculationType= App_preference.getSharedprefInstance().getLoginRes().getTaxCalculationType();
+            }
+        }else{
+            getDisCalculationType= App_preference.getSharedprefInstance().getLoginRes().getDisCalculationType();
+            getTaxCalculationType= App_preference.getSharedprefInstance().getLoginRes().getTaxCalculationType();
+        }
+    }
+    private void getTaxDisTypeForApp(String appId){
+        if(appId != null && !appId.equals("")){
+            Appointment appointment = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).appointmentModel().getAppointmentById(appId);
+            if( appointment.getItemData().size()>0) {
+                if(!appointment.getDisCalculationType().equals("") && !appointment.getTaxCalculationType().equals("")
+                && appointment.getDisCalculationType() != null && appointment.getTaxCalculationType() != null )
+                getDisCalculationType = appointment.getDisCalculationType();
+                getTaxCalculationType = appointment.getTaxCalculationType();
             }else {
                 getDisCalculationType= App_preference.getSharedprefInstance().getLoginRes().getDisCalculationType();
                 getTaxCalculationType= App_preference.getSharedprefInstance().getLoginRes().getTaxCalculationType();
