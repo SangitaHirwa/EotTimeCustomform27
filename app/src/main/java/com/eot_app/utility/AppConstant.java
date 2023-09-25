@@ -953,6 +953,7 @@ public class AppConstant {
     public static String invoice_Due_Date ="invoice_Due_Date";
     public static String valid_alternate_Email_Id = "valid_alternate_Email_Id";
     public static String err_due_Invoice_date = "err_due_Invoice_date";
+    public static String inv_duedate_updated = "inv_duedate_updated";
 
     public static String server(String location) {
         switch (location) {

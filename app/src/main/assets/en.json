@@ -1820,7 +1820,8 @@
     "invoice_Due_Date": "Invoice Due Date" ,
     "select_invoice_Due_Date": "Select Invoice Due Date" ,
     "err_due_Invoice_date": "due date must be greater then invoice date" ,
-    "alternate_Email_Not_Same": "Email and alternate email is not same"
+    "alternate_Email_Not_Same": "Email and alternate email is not same",
+    "inv_duedate_updated" : "Invoice Due Date Updated"
   }
 }
 
