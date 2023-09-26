@@ -463,7 +463,7 @@ public class AddQuotes_Activity extends UploadDocumentActivity implements View.O
                 texDisTypeText.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.percentage_discount));
             }
             else if (quotesDetails.getInvData().getDisCalculationType().equals("1")) {
-                texDisTypeText.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.percentage_discount));
+                texDisTypeText.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.flat_discount));
             }
 
             try {
