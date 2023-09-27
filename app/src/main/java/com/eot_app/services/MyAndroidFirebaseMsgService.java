@@ -155,6 +155,11 @@ public class MyAndroidFirebaseMsgService extends FirebaseMessagingService {
                     LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent("job_refresh"));
                 createNotification(data.get("title").toString(), data.get("body").toString(), "MULTI_JOB", otherdata.getId());
                 LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent("appointment_refresh"));
+            }else if (otherdata.getAction().equals("updateQuote")) {
+                if (App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsQuoteVisible()==0) {
+                    createNotification(data.get("title").toString(), data.get("body").toString(), "quote_update", otherdata.getId());
+//                    LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent("appointment_refresh"));
+                }
             }
 
             if (/* Check if data needs to be processed by long running job */ true) {

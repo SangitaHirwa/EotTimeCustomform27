@@ -168,6 +168,7 @@ public class MainActivity extends UploadDocumentActivity implements MainActivity
     public boolean isNetworkDisconnected = false;
     boolean auditNoti;
     boolean jobNoti;
+    boolean quoteNoti;
     //firebase ref path
     String path;
     @SuppressLint("SimpleDateFormat")
@@ -464,6 +465,9 @@ public class MainActivity extends UploadDocumentActivity implements MainActivity
                         jobNoti= true;
                         setNotificationDataId("");
                         updateFragment(LanguageController.getInstance().getMobileMsgByKey(AppConstant.jobs), joblistfragment);
+                    }else if (Objects.equals(bundle.get("NOTIFICATIONTAG"), "quote_update")) {
+                        quoteNoti = true;
+                        title_qoutes.performClick();
                     } else {
                         title_jobs.performClick();
                     }
@@ -1175,6 +1179,17 @@ public class MainActivity extends UploadDocumentActivity implements MainActivity
             menu.setGroupVisible(R.id.job_group, true);
             menu.setGroupVisible(R.id.client_group, false);
             menu.setGroupVisible(R.id.quote_group, false);
+            menu.setGroupVisible(R.id.audit_group, false);
+            menu.setGroupVisible(R.id.single_chat_group, false);
+            menu.setGroupVisible(R.id.expense_group, false);
+            menu.setGroupVisible(R.id.report_group, false);
+            isCalendarSelected = false;
+            img_month_arrow.setVisibility(View.GONE);
+            img_sorting.setVisibility(View.GONE);
+        }else if (quoteNoti) {
+            menu.setGroupVisible(R.id.job_group, false);
+            menu.setGroupVisible(R.id.client_group, false);
+            menu.setGroupVisible(R.id.quote_group, true);
             menu.setGroupVisible(R.id.audit_group, false);
             menu.setGroupVisible(R.id.single_chat_group, false);
             menu.setGroupVisible(R.id.expense_group, false);
