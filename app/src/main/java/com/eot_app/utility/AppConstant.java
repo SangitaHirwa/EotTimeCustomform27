@@ -954,6 +954,8 @@ public class AppConstant {
     public static String valid_alternate_Email_Id = "valid_alternate_Email_Id";
     public static String err_due_Invoice_date = "err_due_Invoice_date";
     public static String inv_duedate_updated = "inv_duedate_updated";
+    public static String contract_invoice_alert = "contract_invoice_alert";
+    public static String batch_invoice_can_not_generate_msg = "batch_invoice_can_not_generate_msg";
 
     public static String server(String location) {
         switch (location) {
