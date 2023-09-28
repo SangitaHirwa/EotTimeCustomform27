@@ -435,36 +435,52 @@ public class DetailFragment extends Fragment
                 } else
                     showErrorDialog(LanguageController.getInstance().getMobileMsgByKey(AppConstant.cannot_raise_revisit_request_for_job_which_is_already_marked_as_recurring));
             } else {
-                JobStatusModelNew statusModel = JobStatus_Controller.getInstance().getStatusObjectById(statusArrayForIds[i]);
-                if (statusModel != null) {
-                    HyperLog.i(TAG, "Selected status:" + statusModel.getStatus_name());
-                    HyperLog.i(TAG, "onItemSelected:" + "Select status From DropDown");
-                    jobstatus.setStatus_name(statusModel.getStatus_name());
-                    jobstatus.setStatus_no(statusModel.getStatus_no());
-                } else {
-                    return;
-                }
-                if (!jobDetail_pi.isOldStaus(jobstatus.getStatus_no(), mParam2.getJobId())) {
-                    //&& (i != -1){
-                    AppUtility.alertDialog2(getActivity(), LanguageController.getInstance()
-                                    .getMobileMsgByKey(AppConstant.status_dialog),
-                            LanguageController.getInstance().getMobileMsgByKey(AppConstant.job_status_change),
-                            LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok),
-                            LanguageController.getInstance().getMobileMsgByKey(AppConstant.cancel), new Callback_AlertDialog() {
-                                @Override
-                                public void onPossitiveCall() {
-                                    HyperLog.i(TAG, "Request change status start");
-                                    ((JobDetailActivity) Objects.requireNonNull(getActivity())).openFormForEvent(jobstatus.getStatus_no());
-                                }
+                //After discussion with Ayush sir, Add new condition for check signature of customer (27/Sep/2023)
 
-                                @Override
-                                public void onNegativeCall() {
-                                    HyperLog.i(TAG, "onNegativeCall::");
-                                    jobDetail_pi.setJobCurrentStatus(mParam2.getJobId());
-                                }
-                            });
-                } else {
-                    jobDetail_pi.setJobCurrentStatus(mParam2.getJobId());
+                if(App_preference.getSharedprefInstance().getLoginRes().getIsJobCompCustSignEnable().equals("1")) {
+                    if (statusArray[i].equals(LanguageController.getInstance().getMobileMsgByKey(AppConstant.completed))) {
+                        if (mParam2.getSignature() == null || mParam2.getSignature().equals("")) {
+                            showErrorDialog(AppConstant.signature_alert);
+                        }else {
+                            changeStatus(i);
+                        }
+                    }else {
+                        changeStatus(i);
+                    }
+                }
+                else{
+                    changeStatus(i);
+//                    JobStatusModelNew statusModel = JobStatus_Controller.getInstance().getStatusObjectById(statusArrayForIds[i]);
+//                    if (statusModel != null) {
+//                        HyperLog.i(TAG, "Selected status:" + statusModel.getStatus_name());
+//                        HyperLog.i(TAG, "onItemSelected:" + "Select status From DropDown");
+//                        jobstatus.setStatus_name(statusModel.getStatus_name());
+//                        jobstatus.setStatus_no(statusModel.getStatus_no());
+//                    } else {
+//                        return;
+//                    }
+//                    if (!jobDetail_pi.isOldStaus(jobstatus.getStatus_no(), mParam2.getJobId())) {
+//                        //&& (i != -1){
+//                        AppUtility.alertDialog2(getActivity(), LanguageController.getInstance()
+//                                        .getMobileMsgByKey(AppConstant.status_dialog),
+//                                LanguageController.getInstance().getMobileMsgByKey(AppConstant.job_status_change),
+//                                LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok),
+//                                LanguageController.getInstance().getMobileMsgByKey(AppConstant.cancel), new Callback_AlertDialog() {
+//                                    @Override
+//                                    public void onPossitiveCall() {
+//                                        HyperLog.i(TAG, "Request change status start");
+//                                        ((JobDetailActivity) Objects.requireNonNull(getActivity())).openFormForEvent(jobstatus.getStatus_no());
+//                                    }
+//
+//                                    @Override
+//                                    public void onNegativeCall() {
+//                                        HyperLog.i(TAG, "onNegativeCall::");
+//                                        jobDetail_pi.setJobCurrentStatus(mParam2.getJobId());
+//                                    }
+//                                });
+//                    } else {
+//                        jobDetail_pi.setJobCurrentStatus(mParam2.getJobId());
+//                    }
                 }
             }
         });
@@ -475,6 +491,39 @@ public class DetailFragment extends Fragment
         return layout;
     }
 
+    private void changeStatus(int i){
+        JobStatusModelNew statusModel = JobStatus_Controller.getInstance().getStatusObjectById(statusArrayForIds[i]);
+        if (statusModel != null) {
+            HyperLog.i(TAG, "Selected status:" + statusModel.getStatus_name());
+            HyperLog.i(TAG, "onItemSelected:" + "Select status From DropDown");
+            jobstatus.setStatus_name(statusModel.getStatus_name());
+            jobstatus.setStatus_no(statusModel.getStatus_no());
+        } else {
+            return;
+        }
+        if (!jobDetail_pi.isOldStaus(jobstatus.getStatus_no(), mParam2.getJobId())) {
+            //&& (i != -1){
+            AppUtility.alertDialog2(getActivity(), LanguageController.getInstance()
+                            .getMobileMsgByKey(AppConstant.status_dialog),
+                    LanguageController.getInstance().getMobileMsgByKey(AppConstant.job_status_change),
+                    LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok),
+                    LanguageController.getInstance().getMobileMsgByKey(AppConstant.cancel), new Callback_AlertDialog() {
+                        @Override
+                        public void onPossitiveCall() {
+                            HyperLog.i(TAG, "Request change status start");
+                            ((JobDetailActivity) Objects.requireNonNull(getActivity())).openFormForEvent(jobstatus.getStatus_no());
+                        }
+
+                        @Override
+                        public void onNegativeCall() {
+                            HyperLog.i(TAG, "onNegativeCall::");
+                            jobDetail_pi.setJobCurrentStatus(mParam2.getJobId());
+                        }
+                    });
+        } else {
+            jobDetail_pi.setJobCurrentStatus(mParam2.getJobId());
+        }
+    }
     @SuppressLint("SetTextI18n")
     private void initializelables() {
 
@@ -2036,7 +2085,21 @@ public class DetailFragment extends Fragment
                     mParam2 = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(param3);
                     jobstatus = new JobStatusModelNew(mParam2.getStatus(), jobDetail_pi.getStatusName(mParam2.getStatus()));
                 }
-                setButtonsAction(jobstatus.getStatus_no(), 2);
+                //After discussion with Ayush sir, Add new condition for check signature of customer (27/Sep/2023)
+
+                if(App_preference.getSharedprefInstance().getLoginRes().getIsJobCompCustSignEnable().equals("1")) {
+                    if(buttonDecline.getText().equals(LanguageController.getInstance().getMobileMsgByKey(AppConstant.job_finish))) {
+                        if (mParam2.getSignature() == null || mParam2.getSignature().equals("")) {
+                            showErrorDialog(AppConstant.signature_alert);
+                        } else {
+                            setButtonsAction(jobstatus.getStatus_no(), 2);
+                        }
+                    }else {
+                        setButtonsAction(jobstatus.getStatus_no(), 2);
+                    }
+                }else {
+                    setButtonsAction(jobstatus.getStatus_no(), 2);
+                }
                 break;
             case R.id.textViewAddress:
                 if (mParam2 != null) {

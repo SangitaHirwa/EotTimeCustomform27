@@ -73,6 +73,16 @@ public class MobileDefaultSettings {
     private String isAutoTimeZone="0";
     private String loginUsrTz;
     private String taxShowType;
+    private String isJobCompCustSignEnable ;
+
+    public String getIsJobCompCustSignEnable() {
+        return isJobCompCustSignEnable;
+    }
+
+    public void setIsJobCompCustSignEnable(String isJobCompCustSignEnable) {
+        this.isJobCompCustSignEnable = isJobCompCustSignEnable;
+    }
+
     public String getTaxShowType() {
         return taxShowType;
     }

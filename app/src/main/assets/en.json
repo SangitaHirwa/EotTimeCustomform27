@@ -1823,7 +1823,8 @@
     "alternate_Email_Not_Same": "Email and alternate email is not same",
     "inv_duedate_updated" : "Invoice Due Date Updated",
     "contract_invoice_alert": "Here you can create job specific invoice, since this job is a part of Contract it’s better to use invoice section within the Contract for creating the Contract invoice.\nDo you still want to create job based invoice?\n",
-    "batch_invoice_can_not_generate_msg": "It's a Batch Invoice. Please contact with your Administration."
+    "batch_invoice_can_not_generate_msg": "It's a Batch Invoice. Please contact with your Administration.",
+    "signature_alert": "Signature is required. Please take Signature.\n"
   }
 }
 

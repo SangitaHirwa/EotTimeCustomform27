@@ -956,6 +956,8 @@ public class AppConstant {
     public static String inv_duedate_updated = "inv_duedate_updated";
     public static String contract_invoice_alert = "contract_invoice_alert";
     public static String batch_invoice_can_not_generate_msg = "batch_invoice_can_not_generate_msg";
+    public static String signature_alert = "signature_alert";
+
 
     public static String server(String location) {
         switch (location) {

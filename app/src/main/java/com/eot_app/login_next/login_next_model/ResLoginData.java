@@ -182,6 +182,7 @@ public class ResLoginData {
     private String disCalculationType;
     private String isQuotStatusComtEnable;
     private String checkInOutDuration ="10";
+    private String isJobCompCustSignEnable ;
 
     public String getCheckInOutDuration() {
         return checkInOutDuration;
@@ -493,6 +494,7 @@ public class ResLoginData {
         this.isAutoTimeZone=mobileDefaultSettings.getIsAutoTimeZone();
         this.loginUsrTz=mobileDefaultSettings.getLoginUsrTz();
         this.taxShowType = mobileDefaultSettings.getTaxShowType();
+        this.isJobCompCustSignEnable = mobileDefaultSettings.getIsJobCompCustSignEnable();
 
     }
 
@@ -562,6 +564,13 @@ public class ResLoginData {
     }
     public void setLastCheckIn(String lastCheckIn) {
         this.lastCheckIn = lastCheckIn;
+    }
+    public String getIsJobCompCustSignEnable() {
+        return isJobCompCustSignEnable;
+    }
+
+    public void setIsJobCompCustSignEnable(String isJobCompCustSignEnable) {
+        this.isJobCompCustSignEnable = isJobCompCustSignEnable;
     }
 
 }
