@@ -322,7 +322,7 @@ public class Payment_Activity extends UploadDocumentActivity implements  Documen
             invNm = invoiceDetails.getNm();
         }
         LinearLayout.LayoutParams param;
-        if(invoice_Details.getType2().equals("3")){
+        if(invoice_Details.getType2()!= null && invoice_Details.getType2().equals("3")){
              param = new LinearLayout.LayoutParams(
                     0,
                     LinearLayout.LayoutParams.MATCH_PARENT,
