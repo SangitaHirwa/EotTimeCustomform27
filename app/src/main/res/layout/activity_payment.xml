@@ -36,48 +36,45 @@
                     android:layout_weight="1"
                     android:background="@color/payment_bg_one"
                     android:orientation="vertical">
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:layout_weight="0.5"
-    android:layout_gravity="center"
-    android:weightSum="1"
-    >
+<!--<LinearLayout-->
+<!--    android:layout_width="match_parent"-->
+<!--    android:layout_height="wrap_content"-->
+<!--    android:orientation="horizontal"-->
+<!--    android:layout_weight="0.5"-->
+<!--    android:layout_gravity="center"-->
+<!--    android:weightSum="1"-->
+<!--    >-->
 
-    <TextView
-        android:id="@+id/totalInvoiceAmo"
-        style="@style/style_thrid_thrd"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight=".87"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:textColor="@color/payment_text_one"
-        tools:ignore="NestedWeights"
-        />
-    <ImageView
-        android:id="@+id/img_batchTotalAmt"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight=".13"
-        android:visibility="gone"
-        android:src="@drawable/batch_invoice"/>
+<!--    <TextView-->
+<!--        android:id="@+id/totalInvoiceAmo"-->
+<!--        style="@style/style_thrid_thrd"-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_weight=".87"-->
+<!--        android:layout_gravity="center"-->
+<!--        android:gravity="center"-->
+<!--        android:textColor="@color/payment_text_one"-->
+<!--        tools:ignore="NestedWeights"-->
+<!--        />-->
+<!--    <ImageView-->
+<!--        android:id="@+id/img_batchTotalAmt"-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_weight=".13"-->
+<!--        android:visibility="gone"-->
+<!--        android:src="@drawable/batch_invoice"/>-->
 
-</LinearLayout>
-<!--                    <TextView-->
-<!--                        android:id="@+id/totalInvoiceAmo"-->
-<!--                        style="@style/style_thrid_thrd"-->
-<!--                        android:layout_width="wrap_content"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:layout_gravity="center"-->
-<!--                        android:layout_weight="0.5"-->
-<!--                        android:gravity="center"-->
-<!--                        android:text="Total Invoice Amount:"-->
-<!--                        android:drawableRight="@drawable/batch_invoice"-->
-<!--                        android:drawablePadding="5dp"-->
-<!--                        android:textColor="@color/payment_text_one"-->
-<!--                        tools:ignore="NestedWeights" />-->
+<!--</LinearLayout>-->
+                    <TextView
+                        android:id="@+id/totalInvoiceAmo"
+                        style="@style/style_thrid_thrd"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_weight="0.5"
+                        android:gravity="center"
+                        android:textColor="@color/payment_text_one"
+                        tools:ignore="NestedWeights" />
 
                     <TextView
                         android:id="@+id/txtTotalAmount"
@@ -87,7 +84,15 @@
                         android:layout_gravity="center"
                         android:layout_weight="0.5"
                         android:gravity="center"
-                        android:textColor="@color/payment_text_one" />
+                        android:textColor="@color/payment_text_one"
+                        android:ellipsize="marquee"
+                        android:marqueeRepeatLimit="marquee_forever"
+                        android:focusable="true"
+                        android:focusableInTouchMode="true"
+                        android:scrollbars="horizontal"
+                        android:singleLine="true"
+                        android:drawablePadding="5dp"
+                        />
                     <!--   android:text="₹10.00"-->
                     <!--       android:text="₹0.00"-->
 
@@ -101,44 +106,44 @@
                     android:layout_weight="1"
                     android:background="@color/payment_bg_two"
                     android:orientation="vertical">
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_weight="0.5"
-                        android:layout_gravity="center"
-                        android:weightSum="1"
-                        >
-                        <TextView
-                            android:id="@+id/paidAmo"
-                            style="@style/style_thrid_thrd"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:layout_weight="0.87"
-                            android:gravity="center"
-                            android:textColor="@color/payment_text_two"
-                            tools:ignore="NestedWeights" />
-                        <ImageView
-                            android:id="@+id/img_batchPaidAmt"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight=".13"
-                            android:visibility="gone"
-                            android:backgroundTint="@color/light_red"
-                            android:src="@drawable/batch_invoice"/>
-
-                    </LinearLayout>
-<!--                    <TextView-->
-<!--                        android:id="@+id/paidAmo"-->
-<!--                        style="@style/style_thrid_thrd"-->
-<!--                        android:layout_width="wrap_content"-->
+<!--                    <LinearLayout-->
+<!--                        android:layout_width="match_parent"-->
 <!--                        android:layout_height="wrap_content"-->
-<!--                        android:layout_gravity="center"-->
+<!--                        android:orientation="horizontal"-->
 <!--                        android:layout_weight="0.5"-->
-<!--                        android:gravity="center"-->
-<!--                        android:textColor="@color/payment_text_two"-->
-<!--                        tools:ignore="NestedWeights" />-->
+<!--                        android:layout_gravity="center"-->
+<!--                        android:weightSum="1"-->
+<!--                        >-->
+<!--                        <TextView-->
+<!--                            android:id="@+id/paidAmo"-->
+<!--                            style="@style/style_thrid_thrd"-->
+<!--                            android:layout_width="0dp"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:layout_gravity="center"-->
+<!--                            android:layout_weight="0.87"-->
+<!--                            android:gravity="center"-->
+<!--                            android:textColor="@color/payment_text_two"-->
+<!--                            tools:ignore="NestedWeights" />-->
+<!--                        <ImageView-->
+<!--                            android:id="@+id/img_batchPaidAmt"-->
+<!--                            android:layout_width="0dp"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:layout_weight=".13"-->
+<!--                            android:visibility="gone"-->
+<!--                            android:backgroundTint="@color/light_red"-->
+<!--                            android:src="@drawable/batch_invoice"/>-->
+
+<!--                    </LinearLayout>-->
+                    <TextView
+                        android:id="@+id/paidAmo"
+                        style="@style/style_thrid_thrd"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_weight="0.5"
+                        android:gravity="center"
+                        android:textColor="@color/payment_text_two"
+                        tools:ignore="NestedWeights" />
 
                     <TextView
                         android:id="@+id/txtPaidAmount"
@@ -148,7 +153,15 @@
                         android:layout_gravity="center"
                         android:layout_weight="0.5"
                         android:gravity="center"
-                        android:textColor="@color/payment_text_two" />
+                        android:textColor="@color/payment_text_two"
+                        android:ellipsize="marquee"
+                        android:marqueeRepeatLimit="marquee_forever"
+                        android:focusable="true"
+                        android:focusableInTouchMode="true"
+                        android:scrollbars="horizontal"
+                        android:singleLine="true"
+                        android:drawablePadding="5dp"
+                        />
                     <!-- android:text="₹10.00"-->
                     <!-- android:text="₹0.00"-->
 
@@ -162,45 +175,45 @@
                     android:layout_weight="1"
                     android:background="@color/payment_bg_three"
                     android:orientation="vertical">
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_weight="0.5"
-                        android:layout_gravity="center"
-                        android:weightSum="1"
-                        >
-                        <TextView
-                            android:id="@+id/dueAmo"
-                            style="@style/style_thrid_thrd"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:layout_weight="0.87"
-                            android:gravity="center"
-                            android:textColor="@color/payment_text_three"
-                            tools:ignore="NestedWeights" />
-
-                        <ImageView
-                            android:id="@+id/img_batchDueAmt"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight=".13"
-                            android:visibility="gone"
-                            android:backgroundTint="@color/light_red"
-                            android:src="@drawable/batch_invoice"/>
-
-                    </LinearLayout>
-<!--                    <TextView-->
-<!--                        android:id="@+id/dueAmo"-->
-<!--                        style="@style/style_thrid_thrd"-->
-<!--                        android:layout_width="wrap_content"-->
+<!--                    <LinearLayout-->
+<!--                        android:layout_width="match_parent"-->
 <!--                        android:layout_height="wrap_content"-->
-<!--                        android:layout_gravity="center"-->
+<!--                        android:orientation="horizontal"-->
 <!--                        android:layout_weight="0.5"-->
-<!--                        android:gravity="center"-->
-<!--                        android:textColor="@color/payment_text_three"-->
-<!--                        tools:ignore="NestedWeights" />-->
+<!--                        android:layout_gravity="center"-->
+<!--                        android:weightSum="1"-->
+<!--                        >-->
+<!--                        <TextView-->
+<!--                            android:id="@+id/dueAmo"-->
+<!--                            style="@style/style_thrid_thrd"-->
+<!--                            android:layout_width="0dp"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:layout_gravity="center"-->
+<!--                            android:layout_weight="0.87"-->
+<!--                            android:gravity="center"-->
+<!--                            android:textColor="@color/payment_text_three"-->
+<!--                            tools:ignore="NestedWeights" />-->
+
+<!--                        <ImageView-->
+<!--                            android:id="@+id/img_batchDueAmt"-->
+<!--                            android:layout_width="0dp"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:layout_weight=".13"-->
+<!--                            android:visibility="gone"-->
+<!--                            android:backgroundTint="@color/light_red"-->
+<!--                            android:src="@drawable/batch_invoice"/>-->
+
+<!--                    </LinearLayout>-->
+                    <TextView
+                        android:id="@+id/dueAmo"
+                        style="@style/style_thrid_thrd"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_weight="0.5"
+                        android:gravity="center"
+                        android:textColor="@color/payment_text_three"
+                        tools:ignore="NestedWeights" />
 
                     <TextView
                         android:id="@+id/txtDueAmount"
@@ -210,7 +223,15 @@
                         android:layout_gravity="center"
                         android:layout_weight="0.5"
                         android:gravity="center"
-                        android:textColor="@color/payment_text_three" />
+                        android:textColor="@color/payment_text_three"
+                        android:ellipsize="marquee"
+                        android:marqueeRepeatLimit="marquee_forever"
+                        android:focusable="true"
+                        android:focusableInTouchMode="true"
+                        android:scrollbars="horizontal"
+                        android:singleLine="true"
+                        android:drawablePadding="5dp"
+                        />
                     <!-- android:text="₹0.00"-->
 
                 </LinearLayout>

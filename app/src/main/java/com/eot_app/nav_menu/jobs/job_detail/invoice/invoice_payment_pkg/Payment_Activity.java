@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -90,7 +91,6 @@ public class Payment_Activity extends UploadDocumentActivity implements  Documen
     RecyclerView recyclerView_attachment;
     String imagePath;
     double totalDueAmount=0;
-    ImageView img_totalAmt,img_paidAmt, img_dueAmt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -248,9 +248,7 @@ public class Payment_Activity extends UploadDocumentActivity implements  Documen
         txtPaidAmount.setText(SpinnerCountrySite.getCourrencyNamebyId(App_preference.getSharedprefInstance().getCompanySettingsDetails().getCur()) + AppUtility.getRoundoff_amount(String.valueOf(0)));
         txtDueAmount.setText(SpinnerCountrySite.getCourrencyNamebyId(App_preference.getSharedprefInstance().getCompanySettingsDetails().getCur()) + AppUtility.getRoundoff_amount(String.valueOf(0)));
 
-        img_totalAmt = findViewById(R.id.img_batchTotalAmt);
-        img_paidAmt = findViewById(R.id.img_batchPaidAmt);
-        img_dueAmt = findViewById(R.id.img_batchDueAmt);
+
 
     }
 
@@ -321,32 +319,16 @@ public class Payment_Activity extends UploadDocumentActivity implements  Documen
             invId = invoiceDetails.getInvId();
             invNm = invoiceDetails.getNm();
         }
-        LinearLayout.LayoutParams param;
+
         if(invoice_Details.getType2()!= null && invoice_Details.getType2().equals("3")){
-             param = new LinearLayout.LayoutParams(
-                    0,
-                    LinearLayout.LayoutParams.MATCH_PARENT,
-                    .87f
-            );
-            img_totalAmt.setVisibility(View.VISIBLE);
-            img_paidAmt.setVisibility(View.VISIBLE);
-            img_dueAmt.setVisibility(View.VISIBLE);
+
+        txtTotalAmount.setCompoundDrawablesWithIntrinsicBounds(batch_invoice,0,0,0);
 
         }else {
-            param = new LinearLayout.LayoutParams(
-                    0,
-                    LinearLayout.LayoutParams.MATCH_PARENT,
-                    1.0f
-            );
-            img_totalAmt.setVisibility(View.GONE);
-            img_paidAmt.setVisibility(View.GONE);
-            img_dueAmt.setVisibility(View.GONE);
 
+            txtTotalAmount.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
         }
 
-        totalInvoiceAmo.setLayoutParams(param);
-        paidAmo.setLayoutParams(param);
-        dueAmo.setLayoutParams(param);
 
         //currencyList("currency.json");
         double remainingAmount = 0, totalAmount = 0, paidAmount = 0;
@@ -356,6 +338,9 @@ public class Payment_Activity extends UploadDocumentActivity implements  Documen
                 try {
                     totalAmount = Double.parseDouble(AppUtility.getRoundoff_amount(invoice_Details.getTotal()));
                     txtTotalAmount.setText(invoice_Details.getCurSym() + AppUtility.getRoundoff_amount(String.valueOf(totalAmount)));
+                    if(txtTotalAmount.getText().length()>11){
+                        txtTotalAmount.setMovementMethod(new ScrollingMovementMethod());
+                    }
                 } catch (NumberFormatException e) {
                     e.printStackTrace();
                 }
@@ -364,6 +349,9 @@ public class Payment_Activity extends UploadDocumentActivity implements  Documen
                 try {
                     paidAmount = Double.parseDouble(AppUtility.getRoundoff_amount(invoice_Details.getPaid()));
                     txtPaidAmount.setText(invoice_Details.getCurSym() + AppUtility.getRoundoff_amount(String.valueOf(paidAmount)));
+                    if(txtPaidAmount.getText().length()>11){
+                        txtPaidAmount.setMovementMethod(new ScrollingMovementMethod());
+                    }
                 } catch (NumberFormatException e) {
                     e.printStackTrace();
                 }
@@ -377,6 +365,9 @@ public class Payment_Activity extends UploadDocumentActivity implements  Documen
              **/
             if (invoice_Details != null && !TextUtils.isEmpty(invoice_Details.getCurSym())){
                 txtDueAmount.setText(invoice_Details.getCurSym() + AppUtility.getRoundoff_amount(String.valueOf(remainingAmount)));
+                if(txtDueAmount.getText().length()>11){
+                    txtDueAmount.setMovementMethod(new ScrollingMovementMethod());
+                }
             }
 
         }
