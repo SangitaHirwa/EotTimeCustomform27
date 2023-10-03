@@ -1454,6 +1454,12 @@ public class MainActivity extends UploadDocumentActivity implements MainActivity
                         expenseListFragment.refereshExpenseList();
                     }
                     break;
+                    case ADDUSERLEAVE:
+                    Log.e("Leave Added", "true");
+                    if(userLeaveListFragment != null){
+                        userLeaveListFragment.refreshLeaveList();
+                    }
+                    break;
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
@@ -1645,8 +1651,9 @@ public class MainActivity extends UploadDocumentActivity implements MainActivity
                     appointmentListFragment.refreshAppointmentList();
                 break;
             case Service_apis.addLeave:
+                Log.e("Leave Added", "After Api call success");
                 if (userLeaveListFragment != null)
-                    userLeaveListFragment.refreshAppointmentList();
+                    userLeaveListFragment.refreshLeaveList();
                 break;
         }
     }

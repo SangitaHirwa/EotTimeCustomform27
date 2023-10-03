@@ -102,10 +102,10 @@ public class UserleaveAdpter extends RecyclerView.Adapter<UserleaveAdpter.ViewHo
                 AppConstant.DATE_FORMAT);
 
         String statTime = AppUtility.getDateWithFormate(Long.parseLong(model.getStartDateTime()), AppUtility.dateTimeByAmPmFormate(
-                "hh:mm a",
+                "hh:mm aa",
                 "HH:mm"));
         String endTime = AppUtility.getDateWithFormate(Long.parseLong(model.getFinishDateTime()), AppUtility.dateTimeByAmPmFormate(
-                "hh:mm a",
+                "hh:mm aa",
                 "HH:mm"));
 
         holder.leave_time_label1.setText(statTime);
