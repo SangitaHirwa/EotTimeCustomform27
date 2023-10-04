@@ -1091,23 +1091,37 @@ public class JobDetailActivity extends AppCompatActivity implements
 
     @Override
     public void moreInvoiceOption(List<InvoiceItemDataModel> data) {
-        if (data.size() > 0) {
-            dataJob = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(dataJob.getJobId());
-            if (dataJob != null && dataJob.getIsJobInvoiced() != null && dataJob.getIsJobInvoiced().equals("0")) {
-                showDialogForInvoice();
-            } else {
-                Intent generateInvoiceIntent = new Intent(JobDetailActivity.this,
-                        Generate_Invoice_Activity.class);
-                generateInvoiceIntent.putExtra("JobId", dataJob.getJobId());
-                startActivity(generateInvoiceIntent);
-            }
-        } else {
-            AppUtility.alertDialog(this, "", LanguageController.getInstance().getMobileMsgByKey(AppConstant.no_Item_generate_inv), LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), "", () -> null);
-        }
+       if(haveBillableItem(data)) {
+           if (data.size() > 0) {
+               dataJob = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(dataJob.getJobId());
+               if (dataJob != null && dataJob.getIsJobInvoiced() != null && dataJob.getIsJobInvoiced().equals("0")) {
+                   showDialogForInvoice();
+               } else {
+                   Intent generateInvoiceIntent = new Intent(JobDetailActivity.this,
+                           Generate_Invoice_Activity.class);
+                   generateInvoiceIntent.putExtra("JobId", dataJob.getJobId());
+                   startActivity(generateInvoiceIntent);
+               }
+           } else {
+               AppUtility.alertDialog(this, "", LanguageController.getInstance().getMobileMsgByKey(AppConstant.no_Item_generate_inv), LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), "", () -> null);
+           }
+       }else {
+           AppUtility.alertDialog(this, "", LanguageController.getInstance().getMobileMsgByKey(AppConstant.non_billable_item_alert), LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), "", () -> null);
+       }
     }
 
 
-
+private boolean haveBillableItem(List<InvoiceItemDataModel> data){
+        boolean haveBillableItem = false;
+    for (InvoiceItemDataModel item : data
+    ) {
+        if(item.getIsBillable().equals("1")){
+            haveBillableItem =  true;
+            break;
+        }
+    }
+    return haveBillableItem;
+}
 
     private void showDialogForInvoice() {
         String message = "";
