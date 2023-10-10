@@ -109,7 +109,7 @@ public class Job implements Parcelable {//
     private String disCalculationType;
     private String taxCalculationType;
     private  String isAddisDiscBefore;
-    private String type2;
+//    private String type2;
 
     public String getDesWithoutHtml() {
         return desWithoutHtml;
@@ -181,7 +181,7 @@ public class Job implements Parcelable {//
         disCalculationType=in.readString();
         taxCalculationType=in.readString();
         isAddisDiscBefore=in.readString();
-        type2=in.readString();
+//        type2=in.readString();
     }
 
     public static Creator<Job> getCREATOR() {
@@ -703,7 +703,7 @@ public class Job implements Parcelable {//
         dest.writeString(disCalculationType);
         dest.writeString(taxCalculationType);
         dest.writeString(isAddisDiscBefore);
-        dest.writeString(type2);
+//        dest.writeString(type2);
     }
 
     public String getPono() {
@@ -746,11 +746,11 @@ public class Job implements Parcelable {//
         this.isAddisDiscBefore = isAddisDiscBefore;
     }
 
-    public String getType2() {
-        return type2;
-    }
-
-    public void setType2(String type2) {
-        this.type2 = type2;
-    }
+//    public String getType2() {
+//        return type2;
+//    }
+//
+//    public void setType2(String type2) {
+//        this.type2 = type2;
+//    }
 }

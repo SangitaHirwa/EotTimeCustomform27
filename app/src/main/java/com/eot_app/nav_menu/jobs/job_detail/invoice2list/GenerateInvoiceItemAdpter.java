@@ -210,7 +210,9 @@ public class GenerateInvoiceItemAdpter extends RecyclerView.Adapter<GenerateInvo
         } catch (Exception exception) {
             exception.printStackTrace();
         }
-        subTotal += Double.parseDouble(_subtotal);
+        if(invoiceItemList.get(position).getIsBillable().equals("1")) {
+            subTotal += Double.parseDouble(_subtotal);
+        }
         int taxItemPos=0;
         if(invoiceItemList.get(position).getTax().size()>0) {
             if(getDataOfTaxComponent) {

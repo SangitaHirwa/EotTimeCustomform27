@@ -320,14 +320,14 @@ public class Payment_Activity extends UploadDocumentActivity implements  Documen
             invNm = invoiceDetails.getNm();
         }
 
-        if(invoice_Details.getType2()!= null && invoice_Details.getType2().equals("3")){
-
-        txtTotalAmount.setCompoundDrawablesWithIntrinsicBounds(batch_invoice,0,0,0);
-
-        }else {
+//        if(invoice_Details.getType2()!= null && invoice_Details.getType2().equals("3")){
+//
+//        txtTotalAmount.setCompoundDrawablesWithIntrinsicBounds(batch_invoice,0,0,0);
+//
+//        }else {
 
             txtTotalAmount.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
-        }
+//        }
 
 
         //currencyList("currency.json");
