@@ -553,7 +553,7 @@ public class ItemList_PC implements ItemList_PI {
                         public void onNext(JsonObject jsonObject) {
 
                             if (jsonObject.get("success").getAsBoolean() || jsonObject.get("statusCode") != null && jsonObject.get("statusCode").getAsString().equals(AppConstant.SESSION_EXPIRE)) {
-                                Toast.makeText(EotApp.getAppinstance(),LanguageController.getInstance().getServerMsgByKey(AppConstant.inv_duedate_updated)
+                                Toast.makeText(EotApp.getAppinstance(),LanguageController.getInstance().getMobileMsgByKey(AppConstant.inv_duedate_updated)
                                         ,Toast.LENGTH_SHORT).show();
                             }
                         }
