@@ -440,7 +440,7 @@ public class DetailFragment extends Fragment
                 if(App_preference.getSharedprefInstance().getLoginRes().getIsJobCompCustSignEnable().equals("1")) {
                     if (statusArray[i].equals(LanguageController.getInstance().getMobileMsgByKey(AppConstant.completed))) {
                         if (mParam2.getSignature() == null || mParam2.getSignature().equals("")) {
-                            showErrorDialog(AppConstant.signature_alert);
+                            showErrorDialog(LanguageController.getInstance().getMobileMsgByKey(AppConstant.signature_alert));
                         }else {
                             changeStatus(i);
                         }
@@ -2090,7 +2090,7 @@ public class DetailFragment extends Fragment
                 if(App_preference.getSharedprefInstance().getLoginRes().getIsJobCompCustSignEnable().equals("1")) {
                     if(buttonDecline.getText().equals(LanguageController.getInstance().getMobileMsgByKey(AppConstant.job_finish))) {
                         if (mParam2.getSignature() == null || mParam2.getSignature().equals("")) {
-                            showErrorDialog(AppConstant.signature_alert);
+                            showErrorDialog(LanguageController.getInstance().getMobileMsgByKey(AppConstant.signature_alert));
                         } else {
                             setButtonsAction(jobstatus.getStatus_no(), 2);
                         }
