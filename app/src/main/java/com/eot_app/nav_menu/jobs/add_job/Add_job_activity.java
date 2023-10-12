@@ -36,6 +36,8 @@ import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.app.ActivityCompat;
@@ -170,7 +172,7 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
     private String ctry_id = "";
     private String state_id = "";
     private int clientForFuture = 0, siteForFuture = 0, contactForFuture = 0, member_type;
-    private String date_str, time_str, date_en, time_en, schdlStart, schdlFinish;
+    private String date_str, time_str, date_en, time_en,oldDate_str, oldTime_str, oldDate_en, oldTime_en, schdlStart, schdlFinish;
     int iTag = 1;
     private String kpr;
     private String[] job_prioty;
@@ -1858,6 +1860,11 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
 
     @Override
     public void showErrorMsgsForValidation(String msg) {
+
+        date_str = oldDate_str;
+        time_str =oldTime_str;
+        date_en = oldDate_en;
+        time_en = oldTime_en;
         showErrorDialog(msg);
     }
 
@@ -2283,6 +2290,11 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
                 } else {
                     schdlStart = date_str + " " + time_str;
                     schdlFinish = date_en + " " + time_en;
+
+                    oldDate_str = date_str;
+                    oldTime_str = time_str;
+                    oldDate_en = date_en;
+                    oldTime_en = time_en;
                 }
 
 
