@@ -6,7 +6,7 @@ package com.eot_app.services;
 
 import android.util.Log;
 
-import com.google.firebase.iid.FirebaseInstanceId;
+//import com.google.firebase.iid.FirebaseInstanceId;
 //import com.google.firebase.iid.FirebaseInstanceIdService;
 
 public class InstantMessaging /*extends FirebaseInstanceIdService*/ {

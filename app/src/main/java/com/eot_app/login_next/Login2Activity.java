@@ -36,8 +36,10 @@ import com.eot_app.utility.language_support.LanguageController;
 import com.eot_app.utility.settings.firstSync.FirstSyncActivity;
 import com.eot_app.utility.util_interfaces.Callback_AlertDialog;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.textfield.TextInputLayout;
-import com.google.firebase.iid.FirebaseInstanceId;
+//import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.HashMap;
 import java.util.Objects;
@@ -142,13 +144,18 @@ public class Login2Activity extends AppCompatActivity implements View.OnClickLis
                 break;
             case R.id.submit_button:
                 if (App_preference.getSharedprefInstance().getFirebaseDeviceToken().equals("")) {
-                    FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(instanceIdResult -> {
-                        App_preference.getSharedprefInstance().setFirebaseDeviceToken(instanceIdResult.getToken());
-                        pass = editText_pass.getText().toString();
-                        if (login_next_pi.checkPassValidation(pass)) {
-                            request_mOdel = new Login_Next_Request_MOdel(email, pass, App_preference.getSharedprefInstance().getCompCode(), instanceIdResult.getToken());
-                            Log.e("MyDeviceToken", "" + instanceIdResult.getToken());
-                            login_next_pi.UserLoginServiceCall(request_mOdel, rememberme.isChecked());
+                    FirebaseMessaging.getInstance().getToken().addOnSuccessListener(new OnSuccessListener<String>() {
+                        @Override
+                        public void onSuccess(String s) {
+
+//                    FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(instanceIdResult -> {
+                        App_preference.getSharedprefInstance().setFirebaseDeviceToken(s);
+                            pass = editText_pass.getText().toString();
+                            if (login_next_pi.checkPassValidation(pass)) {
+                                request_mOdel = new Login_Next_Request_MOdel(email, pass, App_preference.getSharedprefInstance().getCompCode(), s);
+                            Log.e("MyDeviceToken", "" + s);
+                                login_next_pi.UserLoginServiceCall(request_mOdel, rememberme.isChecked());
+                            }
                         }
                     });
                 } else {
