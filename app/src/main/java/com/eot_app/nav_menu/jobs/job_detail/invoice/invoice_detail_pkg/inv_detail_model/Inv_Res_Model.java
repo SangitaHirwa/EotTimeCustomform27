@@ -47,7 +47,7 @@ public class Inv_Res_Model implements Parcelable {
     private String shipto;
     private String hsnCodeLable;
     private String taxCalculationType = "0";
-//    private String type2;
+
 
     protected Inv_Res_Model(Parcel in) {
         invId = in.readString();
@@ -78,7 +78,6 @@ public class Inv_Res_Model implements Parcelable {
         shipto = in.readString();
         hsnCodeLable = in.readString();
         taxCalculationType = in.readString();
-//        type2 = in.readString();
     }
 
     public String getTaxCalculationType() {
@@ -319,13 +318,7 @@ public class Inv_Res_Model implements Parcelable {
         return 0;
     }
 
-//    public String getType2() {
-//        return type2;
-//    }
-//
-//    public void setType2(String type2) {
-//        this.type2 = type2;
-//    }
+
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
@@ -357,6 +350,5 @@ public class Inv_Res_Model implements Parcelable {
         parcel.writeString(shipto);
         parcel.writeString(hsnCodeLable);
         parcel.writeString(taxCalculationType);
-//        parcel.writeString(type2);
     }
 }

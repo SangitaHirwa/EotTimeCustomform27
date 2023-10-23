@@ -96,7 +96,7 @@ import com.eot_app.utility.settings.setting_db.TagData;
         , AuditList_Res.class, ContractRes.class, Equipment.class, JobStatusModelNew.class,
         TaxesLocation.class, ClientRefrenceModel.class, ShiftTimeReSModel.class, CustomForm.class, CustomFormQue.class,
         CustomFormSubmited.class, CustomFormListOffline.class, AuditStatusModel.class, AppointmentStatusModel.class},
-        version = 43, exportSchema = false)
+        version = 44, exportSchema = false)
 @TypeConverters({TaxDataConverter.class, TagDataConverter.class, InvoiceItemDataModelConverter.class, TaxConverter.class
         , EquipmentTypeConverter.class, EquArrayConvrtr.class, EquCategoryConvrtr.class
         , SiteCustomFieldConverter.class, JobRecurTypeConvert.class, SelecetedDaysConverter.class
@@ -646,7 +646,14 @@ public abstract class AppDataBase extends RoomDatabase {
             database.execSQL("ALTER TABLE Appointment ADD COLUMN taxCalculationType TEXT");
             database.execSQL("ALTER TABLE Appointment ADD COLUMN disCalculationType TEXT");
             /* **Alter Table for getting invoice type **/
-//            database.execSQL("ALTER TABLE Job ADD COLUMN type2 TEXT");
+            database.execSQL("ALTER TABLE Job ADD COLUMN invType TEXT");
+
+        }
+    };  static final Migration MIGRATION_43_44 = new Migration(43, 44) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            /* **Alter Table for getting invoice type **/
+            database.execSQL("ALTER TABLE Job ADD COLUMN invType TEXT");
 
         }
     };
@@ -707,6 +714,7 @@ public abstract class AppDataBase extends RoomDatabase {
                     .addMigrations(MIGRATION_40_41)
                     .addMigrations(MIGRATION_41_42)
                     .addMigrations(MIGRATION_42_43)
+                    .addMigrations(MIGRATION_43_44)
                     .fallbackToDestructiveMigration()
                     .build();
         }
