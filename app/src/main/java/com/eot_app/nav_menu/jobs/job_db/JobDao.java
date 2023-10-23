@@ -160,6 +160,8 @@ public interface JobDao {
 
     @Query("select jobId from Job WHERE equArray LIKE (:barcode)")
     List<String> getjobidsbyequid(String barcode);
+    @Query("select * from Job WHERE equArray LIKE (:barcode)")
+    List<Job> getEqupByBarcode(String barcode);
 
     @Query("select *from Job WHERE equArray LIKE (:equipmentID)")
     Job getJobEquipmentByEquipmentIds(String equipmentID);

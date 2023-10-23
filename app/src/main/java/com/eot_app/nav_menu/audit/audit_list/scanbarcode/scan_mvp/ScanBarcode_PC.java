@@ -178,9 +178,13 @@ public class ScanBarcode_PC implements ScanBarcode_PI {
     }
 
     @Override
-    public void equipmentbarcode(String barcode) {
+    public void equipmentbarcode(String barcode,boolean isScannerValue) {
         JsonObject jsonObject=new JsonObject();
-        jsonObject.addProperty("barCode",barcode);
+        if(isScannerValue) {
+            jsonObject.addProperty("barCode", barcode);
+        }else {
+            jsonObject.addProperty("search", barcode);
+        }
         String data = new Gson().toJson(jsonObject);
         ApiClient.getservices().eotServiceCall(Service_apis.getAllEquipments,AppUtility.getApiHeaders(),AppUtility.getJsonObject(data))
                 .subscribeOn(Schedulers.io())
