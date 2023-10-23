@@ -305,7 +305,11 @@ public class ForegroundService2 extends Service {
                     = new BatteryStatusReceiver();
             IntentFilter intentFilter = new IntentFilter();
             intentFilter.addAction(Intent.ACTION_BATTERY_CHANGED);
-            this.registerReceiver(batteryStatusReceiver, intentFilter);
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+                this.registerReceiver(batteryStatusReceiver, intentFilter);
+            } else {
+                this.registerReceiver(batteryStatusReceiver, intentFilter, RECEIVER_EXPORTED);
+            }
         }
     }
 
@@ -719,15 +723,17 @@ public class ForegroundService2 extends Service {
      */
     private void registerTransitionReceiver() {
         Intent intent = new Intent(TRANSITIONS_RECEIVER_ACTION);
+        final int flag = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ? PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE : PendingIntent.FLAG_UPDATE_CURRENT;
         mActivityTransitionsPendingIntent =
-                PendingIntent.getBroadcast(this, 0, intent, 0);
+                PendingIntent.getBroadcast(this, 0, intent, flag);
 
         if (mTransitionsReceiver == null) {
             mTransitionsReceiver = new TransitionsReceiver();
-            registerReceiver(
-                    mTransitionsReceiver,
-                    new IntentFilter(TRANSITIONS_RECEIVER_ACTION)
-            );
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+                registerReceiver(mTransitionsReceiver, new IntentFilter(TRANSITIONS_RECEIVER_ACTION));
+            } else {
+                registerReceiver(mTransitionsReceiver, new IntentFilter(TRANSITIONS_RECEIVER_ACTION), RECEIVER_EXPORTED);
+            }
         }
     }
 
@@ -739,19 +745,19 @@ public class ForegroundService2 extends Service {
             Task<Void> task = ActivityRecognition.getClient(this)
                     .removeActivityTransitionUpdates(mActivityTransitionsPendingIntent);
 
-            task.addOnSuccessListener(
-                    result -> {
-                        mActivityTransitionsPendingIntent.cancel();
-                        //  HyperLog.i(LOG_TAG, "Activity Removed.");
-                    }
-            );
+                task.addOnSuccessListener(
+                        result -> {
+                            mActivityTransitionsPendingIntent.cancel();
+                            //  HyperLog.i(LOG_TAG, "Activity Removed.");
+                        }
+                );
 
-            task.addOnFailureListener(
-                    e -> {
-                        //HyperLog.i(LOG_TAG, "Activity Remove Error: " + e.toString());
+                task.addOnFailureListener(
+                        e -> {
+                            //HyperLog.i(LOG_TAG, "Activity Remove Error: " + e.toString());
 
-                    }
-            );
+                        }
+                );
 
         }
 
@@ -993,7 +999,11 @@ public class ForegroundService2 extends Service {
     private void registerGPSReceiver() {
         IntentFilter filter = new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION);
         filter.addAction(Intent.ACTION_PROVIDER_CHANGED);
-        registerReceiver(locationSwitchStateReceiver, filter);
+        if(Build.VERSION.SDK_INT< Build.VERSION_CODES.O) {
+            registerReceiver(locationSwitchStateReceiver, filter);
+        }else {
+            registerReceiver(locationSwitchStateReceiver, filter,RECEIVER_EXPORTED);
+        }
 
     }
 
@@ -1036,7 +1046,11 @@ public class ForegroundService2 extends Service {
     private void registerNetworkReceiver() {
         IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
         filter.addAction(Intent.ACTION_PROVIDER_CHANGED);
-        registerReceiver(networkSwitchStateReceiver, filter);
+        if(Build.VERSION.SDK_INT< Build.VERSION_CODES.O) {
+            registerReceiver(networkSwitchStateReceiver, filter);
+        }else {
+            registerReceiver(networkSwitchStateReceiver, filter,RECEIVER_EXPORTED);
+        }
     }
 
     /**

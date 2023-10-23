@@ -7,6 +7,7 @@ import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -83,8 +84,11 @@ public class FirstSyncActivity extends AppCompatActivity implements FirstSyncVie
 
         IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
         filter.addAction(Intent.ACTION_PROVIDER_CHANGED);
-        registerReceiver(networkSwitchStateReceiver, filter);
-
+        if(Build.VERSION.SDK_INT< Build.VERSION_CODES.O) {
+            registerReceiver(networkSwitchStateReceiver, filter);
+        }else{
+            registerReceiver(networkSwitchStateReceiver, filter,RECEIVER_EXPORTED);
+        }
         //added by shivani
         //In contact and site added a new param is active to manage the enable and disable contact functionality ,
         // can be removed after two or three release , current version is 2.73

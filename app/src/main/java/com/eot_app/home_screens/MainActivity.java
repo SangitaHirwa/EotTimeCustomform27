@@ -253,7 +253,11 @@ public class MainActivity extends UploadDocumentActivity implements MainActivity
                     = new BatteryStatusReceiver();
             IntentFilter intentFilter = new IntentFilter();
             intentFilter.addAction(Intent.ACTION_BATTERY_CHANGED);
+            if(Build.VERSION.SDK_INT< Build.VERSION_CODES.O) {
             registerReceiver(batteryStatusReceiver, intentFilter);
+            }else {
+                registerReceiver(batteryStatusReceiver, intentFilter,RECEIVER_EXPORTED);
+            }
         }
     }
 
@@ -324,7 +328,11 @@ public class MainActivity extends UploadDocumentActivity implements MainActivity
                     stopService(new Intent(MainActivity.this, SyncDataJobService.class));
                 }
             };
-            registerReceiver(updateUIReceiver, filter);
+            if(Build.VERSION.SDK_INT< Build.VERSION_CODES.O) {
+                registerReceiver(updateUIReceiver, filter);
+            }else {
+                registerReceiver(updateUIReceiver, filter,RECEIVER_EXPORTED);
+            }
         }
 
         IntentFilter filter = new IntentFilter();
@@ -338,7 +346,11 @@ public class MainActivity extends UploadDocumentActivity implements MainActivity
                 showRetryDialog();
             }
         };
-        registerReceiver(showAlertReceiver, filter);
+        if(Build.VERSION.SDK_INT< Build.VERSION_CODES.O) {
+            registerReceiver(showAlertReceiver, filter);
+        }else {
+            registerReceiver(showAlertReceiver, filter,RECEIVER_EXPORTED);
+        }
 
         // first sync end
 
@@ -683,7 +695,11 @@ public class MainActivity extends UploadDocumentActivity implements MainActivity
         if (action) {
             IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
             filter.addAction(Intent.ACTION_AIRPLANE_MODE_CHANGED);
-            this.registerReceiver(br, filter);
+            if(Build.VERSION.SDK_INT< Build.VERSION_CODES.O) {
+                this.registerReceiver(br, filter);
+            }else {
+                this.registerReceiver(br, filter,RECEIVER_EXPORTED);
+            }
         } else {
             unregisterReceiver(br);
         }
@@ -2287,7 +2303,11 @@ public class MainActivity extends UploadDocumentActivity implements MainActivity
         if (!isRegistered) {
             IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
             filter.addAction(Intent.ACTION_PROVIDER_CHANGED);
-            registerReceiver(networkSwitchStateReceiver, filter);
+            if(Build.VERSION.SDK_INT< Build.VERSION_CODES.O) {
+                registerReceiver(networkSwitchStateReceiver, filter);
+            }else {
+                registerReceiver(networkSwitchStateReceiver, filter,RECEIVER_EXPORTED);
+            }
             isRegistered = true;
         }
     }
@@ -2392,7 +2412,11 @@ public class MainActivity extends UploadDocumentActivity implements MainActivity
                     stopService(new Intent(MainActivity.this, SyncDataJobService.class));
                 }
             };
-            registerReceiver(updateUIReceiver, filter);
+            if(Build.VERSION.SDK_INT< Build.VERSION_CODES.O) {
+                registerReceiver(updateUIReceiver, filter);
+            }else {
+                registerReceiver(updateUIReceiver, filter,RECEIVER_EXPORTED);
+            }
 
         } else {
             sync_iv.clearAnimation();
