@@ -235,7 +235,8 @@ public class ActivityDocumentUpload extends AppCompatActivity implements View.On
                 dialog.setOnImageEdited(path -> {
                     isEdited = true;
                     uri = Uri.parse(path);
-                    img_doc.setImageURI(Uri.parse(path));
+                    img_doc.setImageBitmap(BitmapFactory.decodeFile(path));
+//                    img_doc.setImageURI(Uri.parse(path));
                 });
 
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
