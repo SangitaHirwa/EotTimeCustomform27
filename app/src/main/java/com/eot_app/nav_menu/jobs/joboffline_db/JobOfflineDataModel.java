@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 /**
@@ -37,7 +38,7 @@ public class JobOfflineDataModel implements Parcelable {
         this.timestamp = timestamp;
         this.tempId = tempId;
     }
-
+    @Ignore
     public JobOfflineDataModel() {
     }
 

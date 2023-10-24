@@ -11,7 +11,6 @@ import androidx.room.TypeConverters;
 
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_db.tax_dao.TaxConverter;
 
-import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 
@@ -46,10 +45,10 @@ public class Tax  implements Parcelable {
     private String oldTax = "";
     @TypeConverters(TaxConverter.class)
     private List<Tax> taxComponents;
-    public Tax(String taxId, String rate) {
-        this.taxId = taxId;
-        this.rate = rate;
-    }
+//    public Tax(String taxId, String rate) {
+//        this.taxId = taxId;
+//        this.rate = rate;
+//    }
 
     public Tax() {
     }
