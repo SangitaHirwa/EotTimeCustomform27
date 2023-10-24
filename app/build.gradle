@@ -41,12 +41,6 @@ android {
         useLibrary 'org.apache.http.legacy'
     }
 
-    lintOptions {
-        checkReleaseBuilds false
-        // Or, if you prefer, you can continue to check for errors in prod builds,
-        // but continue the build even when errors are found:
-        abortOnError false
-    }
 
     buildFeatures {
         dataBinding true
@@ -56,6 +50,10 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+    }
+    lint {
+        abortOnError false
+        checkReleaseBuilds false
     }
 }
 

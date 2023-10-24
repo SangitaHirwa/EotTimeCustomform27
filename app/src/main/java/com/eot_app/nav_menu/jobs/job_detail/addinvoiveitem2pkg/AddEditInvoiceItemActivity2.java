@@ -1988,6 +1988,7 @@ public class AddEditInvoiceItemActivity2 extends
                 else{
                     OfflineDataController.getInstance().getTotalRequest();
                 }
+                EotApp.getAppinstance().notifyApiItemAddEdit_Observer(Service_apis.addItemOnJob, jobId);
             } else {
                 HyperLog.i("TAG", "addItemWithJobSync(M) item added in offline quque");
 
@@ -1997,6 +1998,7 @@ public class AddEditInvoiceItemActivity2 extends
                 Gson gson = new Gson();
                 String addJobReqest = gson.toJson(object);
                 OfflineDataController.getInstance().addInOfflineDB(Service_apis.addItemOnJob,addJobReqest, dateTime);
+                EotApp.getAppinstance().notifyApiItemAddEdit_Observer(Service_apis.addItemOnJob, jobId);
             }
             HyperLog.i("TAG", "addItemWithJobSync(M) finish");
         } catch (Exception e) {

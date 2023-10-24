@@ -240,32 +240,62 @@ public class GenerateInvoiceItemAdpter extends RecyclerView.Adapter<GenerateInvo
                                             tempList,
                                             taxCalculationType, getDisCalculationType, false).get("Tax"));
                             if(isTaxIdSame){
-                                for (TaxData taxData: showTaxList
-                                ) {
-                                    if(taxData.getTaxId().equals(singleTaxId)&&taxData.getLabel().equals(tax2.getLabel())){
-                                        Double subTotalTax = taxData.getTaxAmount() + Double.parseDouble(__taxAmt);
-                                        taxData.setTaxAmount(subTotalTax);
+                                if(invoiceItemList.get(position).getIsBillable().equals("1")) {
+                                    for (TaxData taxData : showTaxList
+                                    ) {
+                                        if (taxData.getTaxId().equals(singleTaxId) && taxData.getLabel().equals(tax2.getLabel())) {
+                                            Double subTotalTax = taxData.getTaxAmount() + Double.parseDouble(__taxAmt);
+                                            taxData.setTaxAmount(subTotalTax);
+                                        }
                                     }
                                 }
                             }else
                             {
-                                TaxData taxData = new TaxData();
-                                taxData.setRate(Double.parseDouble(tax2.getRate()));
-                                taxData.setTaxAmount(Double.parseDouble(__taxAmt));
-                                taxData.setLabel(tax2.getLabel()); taxData.setTaxId(invoiceItemList.get(position).getTax().get(0).getTaxId());
-                                showTaxList.add(taxData);
+                                if(invoiceItemList.get(position).getIsBillable().equals("1")) {
+                                    TaxData taxData = new TaxData();
+                                    taxData.setRate(Double.parseDouble(tax2.getRate()));
+                                    taxData.setTaxAmount(Double.parseDouble(__taxAmt));
+                                    taxData.setLabel(tax2.getLabel());
+                                    taxData.setTaxId(invoiceItemList.get(position).getTax().get(0).getTaxId());
+                                    showTaxList.add(taxData);
+                                }
                             }
                         }
                     }else {
                         if(isTaxIdSame){
-                            for(TaxData taxData : showTaxList){
-                                if(taxData.getTaxId().equals(singleTaxId)&&taxData.getLabel().equals(invoiceItemList.get(position).getTax().get(0).getLabel())) {
+                            if(invoiceItemList.get(position).getIsBillable().equals("1")) {
+                                for (TaxData taxData : showTaxList) {
+                                    if (taxData.getTaxId().equals(singleTaxId) && taxData.getLabel().equals(invoiceItemList.get(position).getTax().get(0).getLabel())) {
+                                        Double subTotalTax = taxData.getTaxAmount() + Double.parseDouble(taxAmount);
+                                        taxData.setTaxAmount(subTotalTax);
+                                    }
+                                }
+                            }
+                        }
+                        else{
+                            if(invoiceItemList.get(position).getIsBillable().equals("1")) {
+                                TaxData taxData = new TaxData();
+                                taxData.setRate(Double.parseDouble(invoiceItemList.get(position).getTax().get(0).getRate()));
+                                taxData.setTaxAmount(Double.parseDouble(taxAmount));
+                                taxData.setLabel(invoiceItemList.get(position).getTax().get(0).getLabel());
+                                taxData.setTaxId(invoiceItemList.get(position).getTax().get(0).getTaxId());
+                                showTaxList.add(taxData);
+                            }
+                        }
+                    }
+                } else {
+                    if(isTaxIdSame){
+                        if(invoiceItemList.get(position).getIsBillable().equals("1")) {
+                            for (TaxData taxData : showTaxList) {
+                                if (taxData.getTaxId().equals(singleTaxId) && taxData.getLabel().equals(invoiceItemList.get(position).getTax().get(0).getLabel())) {
                                     Double subTotalTax = taxData.getTaxAmount() + Double.parseDouble(taxAmount);
                                     taxData.setTaxAmount(subTotalTax);
                                 }
                             }
                         }
-                        else{
+                    }
+                    else{
+                        if(invoiceItemList.get(position).getIsBillable().equals("1")) {
                             TaxData taxData = new TaxData();
                             taxData.setRate(Double.parseDouble(invoiceItemList.get(position).getTax().get(0).getRate()));
                             taxData.setTaxAmount(Double.parseDouble(taxAmount));
@@ -273,23 +303,6 @@ public class GenerateInvoiceItemAdpter extends RecyclerView.Adapter<GenerateInvo
                             taxData.setTaxId(invoiceItemList.get(position).getTax().get(0).getTaxId());
                             showTaxList.add(taxData);
                         }
-                    }
-                } else {
-                    if(isTaxIdSame){
-                        for(TaxData taxData : showTaxList){
-                            if(taxData.getTaxId().equals(singleTaxId)&&taxData.getLabel().equals(invoiceItemList.get(position).getTax().get(0).getLabel())) {
-                                Double subTotalTax = taxData.getTaxAmount() + Double.parseDouble(taxAmount);
-                                taxData.setTaxAmount(subTotalTax);
-                            }
-                        }
-                    }
-                    else{
-                        TaxData taxData = new TaxData();
-                        taxData.setRate(Double.parseDouble(invoiceItemList.get(position).getTax().get(0).getRate()));
-                        taxData.setTaxAmount(Double.parseDouble(taxAmount));
-                        taxData.setLabel(invoiceItemList.get(position).getTax().get(0).getLabel());
-                        taxData.setTaxId(invoiceItemList.get(position).getTax().get(0).getTaxId());
-                        showTaxList.add(taxData);
                     }
 
                 }
