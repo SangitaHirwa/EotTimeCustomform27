@@ -271,14 +271,14 @@ public class JobDetailActivity extends AppCompatActivity implements
                     //ChatController.getInstance().setChatScreenState(2, "");
                     CLIENTCHATWINDOW = false;
                     //   COMMNENTWINDOW = false;
-                    if (dataJob != null && dataJob.getCanInvoiceCreated() != null &&
-                            dataJob.getCanInvoiceCreated().equals("0")) {
 //                    if (dataJob != null && dataJob.getCanInvoiceCreated() != null &&
-//                            dataJob.getInvType().equals("3")) {
+//                            dataJob.getCanInvoiceCreated().equals("0")) {
+                    if (dataJob != null && dataJob.getCanInvoiceCreated() != null &&
+                            dataJob.getInvType().equals("3")) {
                         AppUtility.alertDialog(JobDetailActivity.this,
                                 LanguageController.getInstance().getMobileMsgByKey(AppConstant.title_invoice),
-//                                LanguageController.getInstance().getMobileMsgByKey(AppConstant.batch_invoice_can_not_generate_msg), null,
-                                LanguageController.getInstance().getMobileMsgByKey(AppConstant.invoice_can_not_generate_msg), null,
+                                LanguageController.getInstance().getMobileMsgByKey(AppConstant.batch_invoice_can_not_generate_msg), null,
+//                                LanguageController.getInstance().getMobileMsgByKey(AppConstant.invoice_can_not_generate_msg), null,
                                 LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), null);
                     } else {
                         assert dataJob != null;
@@ -947,14 +947,14 @@ public class JobDetailActivity extends AppCompatActivity implements
                             3- Multi job / batch
                  * **/
 
-                if (dataJob != null && dataJob.getCanInvoiceCreated() != null &&
-                        dataJob.getCanInvoiceCreated().equals("0")) {
-//                    if (dataJob != null && dataJob.getCanInvoiceCreated() != null &&
-//                            dataJob.getInvType().equals("3")) {
+//                if (dataJob != null && dataJob.getCanInvoiceCreated() != null &&
+//                        dataJob.getCanInvoiceCreated().equals("0")) {
+                    if (dataJob != null && dataJob.getCanInvoiceCreated() != null &&
+                            dataJob.getInvType().equals("3")) {
                         AppUtility.alertDialog(JobDetailActivity.this,
                                 LanguageController.getInstance().getMobileMsgByKey(AppConstant.title_invoice),
-//                                LanguageController.getInstance().getMobileMsgByKey(AppConstant.batch_invoice_can_not_generate_msg), null,
-                                LanguageController.getInstance().getMobileMsgByKey(AppConstant.invoice_can_not_generate_msg), null,
+                                LanguageController.getInstance().getMobileMsgByKey(AppConstant.batch_invoice_can_not_generate_msg), null,
+//                                LanguageController.getInstance().getMobileMsgByKey(AppConstant.invoice_can_not_generate_msg), null,
                                 LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), null);
                     } else
                         detail_activity_pi.getItemFromServer(dataJob.getJobId());
@@ -1129,20 +1129,20 @@ public class JobDetailActivity extends AppCompatActivity implements
 }
 
     private void showDialogForInvoice() {
-//        String message = "";
-//        String title = "";
-//        if(!dataJob.getContrId().equals("0")){
-//            title = LanguageController.getInstance().getMobileMsgByKey(AppConstant.title_invoice);
-//            message = LanguageController.getInstance().getMobileMsgByKey(AppConstant.contract_invoice_alert);
-//
-//        }else {
-//            title = LanguageController.getInstance().getMobileMsgByKey(AppConstant.are_you_sure_invoice);
-//
-//        }
-//        AppUtility.alertDialog2(this, title
-//                , message
-        AppUtility.alertDialog2(this, LanguageController.getInstance().getMobileMsgByKey(AppConstant.are_you_sure_invoice)
-                 ,""
+        String message = "";
+        String title = "";
+        if(!dataJob.getContrId().equals("0")){
+            title = LanguageController.getInstance().getMobileMsgByKey(AppConstant.title_invoice);
+            message = LanguageController.getInstance().getMobileMsgByKey(AppConstant.contract_invoice_alert);
+
+        }else {
+            title = LanguageController.getInstance().getMobileMsgByKey(AppConstant.are_you_sure_invoice);
+
+        }
+        AppUtility.alertDialog2(this, title
+                , message
+//        AppUtility.alertDialog2(this, LanguageController.getInstance().getMobileMsgByKey(AppConstant.are_you_sure_invoice)
+//                 ,""
                 , LanguageController.getInstance().getMobileMsgByKey(AppConstant.yes), LanguageController.getInstance().getMobileMsgByKey(AppConstant.no), new Callback_AlertDialog() {
                     @Override
                     public void onPossitiveCall() {
