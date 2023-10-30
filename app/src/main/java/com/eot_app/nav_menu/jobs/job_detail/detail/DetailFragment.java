@@ -47,6 +47,7 @@ import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.eot_app.R;
@@ -68,6 +69,7 @@ import com.eot_app.nav_menu.jobs.job_db.JtId;
 import com.eot_app.nav_menu.jobs.job_detail.JobDetailActivity;
 import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.model.InvoiceItemDataModel;
 import com.eot_app.nav_menu.jobs.job_detail.customform.CustomFormCompletionCallBack;
+import com.eot_app.nav_menu.jobs.job_detail.detail.filedworker_list.Filedworker_List_Adapter;
 import com.eot_app.nav_menu.jobs.job_detail.detail.job_detail_presenter.JobDetail_pc;
 import com.eot_app.nav_menu.jobs.job_detail.detail.job_detail_presenter.JobDetail_pi;
 import com.eot_app.nav_menu.jobs.job_detail.detail.job_detail_view.JobDetail_view;
@@ -114,6 +116,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
@@ -172,7 +175,7 @@ public class DetailFragment extends Fragment
     TextView text_misc;
     View ll_item, ll_equipment;
     RecyclerView recyclerView_job_item;
-    RecyclerView recyclerView_job_eq;
+    RecyclerView recyclerView_job_eq,rv_fw_list;
     TextView tv_label_ac_job_time, date_ac_start;
     TextView date_ac_end;
     TextView tv_label_job_travel_time, date_tr_start;
@@ -615,8 +618,13 @@ public class DetailFragment extends Fragment
         imageViewCall = layout.findViewById(R.id.imageViewCall);
         imageViewEmail = layout.findViewById(R.id.imageViewEmail);
 
-        txt_fw_nm_list = layout.findViewById(R.id.txt_fw_nm_list);
-        txt_fw_nm_list.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.no_fw_available));
+     /*   txt_fw_nm_list = layout.findViewById(R.id.txt_fw_nm_list);
+        txt_fw_nm_list.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.no_fw_available));*/
+
+        rv_fw_list  =layout.findViewById(R.id.rv_fw_list);
+        LinearLayoutManager layoutManager=new LinearLayoutManager(getActivity());
+        layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        rv_fw_list.setLayoutManager(layoutManager);
 
         contact_card = layout.findViewById(R.id.contact_card);
 
@@ -1837,10 +1845,15 @@ public class DetailFragment extends Fragment
 
     private void setFwList() {
         try {
-            StringBuffer stringBuffer = new StringBuffer();
+            List<String> list =  new ArrayList<>();
+          //  StringBuffer stringBuffer = new StringBuffer();
             String kpr = mParam2.getKpr();
             String[] kprList = kpr.split(",");
-            for (String id : kprList) {
+            list.addAll(Arrays.asList(kprList));
+            Filedworker_List_Adapter filedworkerListAdapter = new Filedworker_List_Adapter(mParam2,list,getActivity().getApplicationContext());
+            rv_fw_list.setAdapter(filedworkerListAdapter);
+
+           /* for (String id : kprList) {
                 FieldWorker fieldWorker = AppDataBase.getInMemoryDatabase(getActivity()).fieldWorkerModel().getFieldWorkerByID(id);
                 if (fieldWorker != null) {
                     stringBuffer.append(fieldWorker.getName())
@@ -1850,10 +1863,10 @@ public class DetailFragment extends Fragment
             }
             stringBuffer.deleteCharAt(stringBuffer.length() - 2);
             String paramIds = stringBuffer.toString();
-            txt_fw_nm_list.setText(paramIds);
+            txt_fw_nm_list.setText(paramIds);*/
         } catch (Exception e) {
             e.printStackTrace();
-            txt_fw_nm_list.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.not_available));
+          /*  txt_fw_nm_list.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.not_available));*/
         }
     }
 

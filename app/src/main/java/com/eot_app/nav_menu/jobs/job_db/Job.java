@@ -110,6 +110,8 @@ public class Job implements Parcelable {//
     private String taxCalculationType;
     private  String isAddisDiscBefore;
     private String invType;
+    //add param for leader
+    private String isLeader;
 
     public String getDesWithoutHtml() {
         return desWithoutHtml;
@@ -182,6 +184,7 @@ public class Job implements Parcelable {//
         taxCalculationType=in.readString();
         isAddisDiscBefore=in.readString();
         invType=in.readString();
+        isLeader =in.readString();
     }
 
     public static Creator<Job> getCREATOR() {
@@ -704,6 +707,7 @@ public class Job implements Parcelable {//
         dest.writeString(taxCalculationType);
         dest.writeString(isAddisDiscBefore);
         dest.writeString(invType);
+        dest.writeString(isLeader);
     }
 
     public String getPono() {
@@ -752,5 +756,13 @@ public class Job implements Parcelable {//
 
     public void setInvType(String invType) {
         this.invType = invType;
+    }
+
+    public String getIsLeader() {
+        return isLeader;
+    }
+
+    public void setIsLeader(String isLeader) {
+        this.isLeader = isLeader;
     }
 }
