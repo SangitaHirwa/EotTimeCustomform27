@@ -93,11 +93,12 @@
                     <TextView
                         android:layout_centerVertical="true"
                         android:id="@+id/tv_label_ac_job_time"
-                        style="@style/job_details_headr_style"
+                        style="@style/actual_time_text"
                         android:layout_alignParentStart="true"
                         android:text="Instruction"
                         tools:ignore="HardcodedText"
-                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:textSize="15sp"
                         />
                     <TextView
                         android:layout_centerVertical="true"
@@ -105,9 +106,9 @@
                         android:id="@+id/tvActualJobTime"
                         android:layout_toEndOf="@+id/tv_label_ac_job_time"
                         android:layout_marginTop="10dp"
-                        style="@style/job_details_headr_style"
+                        style="@style/actual_time_text"
                         android:text="@string/_00_00_hours"
-                        android:textSize="16sp"
+                        android:textSize="15sp"
                         />
                     <ImageView
                         android:id="@+id/ivEditAc"
@@ -184,10 +185,10 @@
                         android:layout_centerVertical="true"
                         android:layout_marginTop="10dp"
                         android:id="@+id/tv_label_job_travel_time"
-                        style="@style/job_details_headr_style"
+                        style="@style/actual_time_text"
                         android:text="Instruction"
                         tools:ignore="HardcodedText"
-                        android:textSize="16sp"
+                        android:textSize="15sp"
 
                         />
                     <TextView
@@ -197,10 +198,9 @@
                         android:id="@+id/tvTravelJobTime"
                         android:layout_toEndOf="@+id/tv_label_job_travel_time"
                         android:layout_marginTop="10dp"
-                        style="@style/job_details_headr_style"
+                        style="@style/actual_time_text"
                         android:text="00:00 Hours"
-                        android:textSize="16sp"
-
+                        android:textSize="15sp"
                         tools:ignore="HardcodedText"
                         />
 

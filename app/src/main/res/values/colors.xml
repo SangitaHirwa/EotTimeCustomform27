@@ -27,8 +27,10 @@
     <color name="custom_search_bg">#ebe8e8</color>
     <color name="app_background_color">#ebe8e8</color>
 
-
+    <color name="actual_text">#685F5F</color>
+    <color name="start_text">#757575</color>
     <color name="txt_color">#737D7E</color>
+    <color name="actual_taxt_time">#685F5F</color>
     <color name="txt_sub_color">#8C9293</color>
     <color name="recyclerview">#f6f2f3</color>
     <color name="card_view_color">#f5f2f2</color>
