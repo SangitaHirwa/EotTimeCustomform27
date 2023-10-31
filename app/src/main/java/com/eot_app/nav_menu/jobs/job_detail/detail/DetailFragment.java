@@ -1013,7 +1013,7 @@ public class DetailFragment extends Fragment
         }
 
         /* ***custom fields question list** */
-        if(App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsEditCustomFormVisible()==0) {
+        if(App_preference.getSharedprefInstance().getLoginRes().getIsCustomField()==0) {
             if (App_preference.getSharedprefInstance().getLoginRes().getIsCustomFieldEnable().equals("1")) {
                 jobDetail_pi.getCustomFieldQues(mParam2.getJobId());
             }
@@ -2862,6 +2862,8 @@ public class DetailFragment extends Fragment
         }
 
         try {
+            if(App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsEditCustomFormVisible()==0) {
+
             if (!btnText) {
                 customfiled_btn.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add));
                 SAVEANS = false;
@@ -2869,7 +2871,11 @@ public class DetailFragment extends Fragment
                 customfiled_btn.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit));
                 SAVEANS = true;
             }
-        } catch (Exception ex) {
+        }
+        else {
+            customfiled_btn.setVisibility(View.GONE);
+        }
+        }catch (Exception ex) {
             ex.printStackTrace();
         }
     }

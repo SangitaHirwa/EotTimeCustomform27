@@ -1118,7 +1118,9 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
         imvCross_site.setOnClickListener(this);
 
 
-        if (App_preference.getSharedprefInstance().getLoginRes().getIsCustomFieldEnable().equals("1")
+        if (App_preference.getSharedprefInstance().getLoginRes().getIsCustomFieldEnable().equals("1") &&
+                App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsEditCustomFormVisible()==0
+
                 // add job form setting page permission
                 && App_preference.getSharedprefInstance().getLoginRes().getIsAddJobCustomFieldEnable().equals("1")) {
             setAdapterOfCustomField();
