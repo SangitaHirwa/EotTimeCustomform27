@@ -649,7 +649,9 @@ public abstract class AppDataBase extends RoomDatabase {
             database.execSQL("ALTER TABLE Job ADD COLUMN invType TEXT");
 
         }
-    };  static final Migration MIGRATION_43_44 = new Migration(43, 44) {
+    };
+
+    static final Migration MIGRATION_43_44 = new Migration(43, 44) {
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) {
             /* **Alter Table for getting invoice type **/

@@ -1142,7 +1142,8 @@ public class JobDetailActivity extends AppCompatActivity implements
         AppUtility.alertDialog2(this, title
                 , message
 //        AppUtility.alertDialog2(this, LanguageController.getInstance().getMobileMsgByKey(AppConstant.are_you_sure_invoice)
-                 , LanguageController.getInstance().getMobileMsgByKey(AppConstant.yes), LanguageController.getInstance().getMobileMsgByKey(AppConstant.no), new Callback_AlertDialog() {
+//                 ,""
+                , LanguageController.getInstance().getMobileMsgByKey(AppConstant.yes), LanguageController.getInstance().getMobileMsgByKey(AppConstant.no), new Callback_AlertDialog() {
                     @Override
                     public void onPossitiveCall() {
                         Intent generateInvoiceIntent = new Intent(JobDetailActivity.this,
