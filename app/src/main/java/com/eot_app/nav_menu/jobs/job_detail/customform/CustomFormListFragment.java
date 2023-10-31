@@ -59,12 +59,14 @@ public class CustomFormListFragment extends Fragment implements MyListItemSelect
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+
+    private static final String ARG_PARAM3 = "param3";
     SwipeRefreshLayout swiperefresh;
     RecyclerView customform_list;
     private AdapterCustomFormList adapter;
     // TODO: Rename and change types of parameters
     private List<CustomFormList_Res> mParam1;
-    private String mParam2;
+    private String mParam2, mParam3;
     View em_layout;
     TextView nolist_txt;
     private int Requestcode=147;
@@ -100,11 +102,12 @@ public class CustomFormListFragment extends Fragment implements MyListItemSelect
      * @return A new instance of fragment CustomFormListFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static CustomFormListFragment newInstance(List<CustomFormList_Res> param1, String param2) {
+    public static CustomFormListFragment newInstance(List<CustomFormList_Res> param1, String param2, String param3) {
         CustomFormListFragment fragment = new CustomFormListFragment();
         Bundle args = new Bundle();
         args.putParcelableArrayList(ARG_PARAM1, (ArrayList<? extends Parcelable>) param1);
         args.putString(ARG_PARAM2, param2);
+        args.putString(ARG_PARAM3, param3);
         fragment.setArguments(args);
         return fragment;
     }
@@ -116,6 +119,7 @@ public class CustomFormListFragment extends Fragment implements MyListItemSelect
         if (getArguments() != null) {
             mParam1 = getArguments().getParcelableArrayList(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
+            mParam3 = getArguments().getString(ARG_PARAM3);
         }
     }
 
@@ -210,6 +214,8 @@ public class CustomFormListFragment extends Fragment implements MyListItemSelect
             intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
             intent.putExtra("formId", customFormList_res);
             intent.putExtra("jobId", mParam2);
+            intent.putExtra("isLeader",mParam3);
+
 
             startActivityForResult(intent, Requestcode);
         }else{
@@ -228,6 +234,7 @@ public class CustomFormListFragment extends Fragment implements MyListItemSelect
                                 intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                                 intent.putExtra("formId", customFormList_res);
                                 intent.putExtra("jobId", mParam2);
+                                intent.putExtra("isLeader",mParam3);
                                 startActivityForResult(intent,Requestcode);
                             }
 
@@ -241,6 +248,7 @@ public class CustomFormListFragment extends Fragment implements MyListItemSelect
                 intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                 intent.putExtra("formId", customFormList_res);
                 intent.putExtra("jobId", mParam2);
+                intent.putExtra("isLeader",mParam3);
                 startActivityForResult(intent,Requestcode);
             }
         }

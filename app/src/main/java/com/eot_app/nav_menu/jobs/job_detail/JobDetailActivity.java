@@ -1019,6 +1019,7 @@ public class JobDetailActivity extends AppCompatActivity implements
                                 Intent intent = new Intent(JobDetailActivity.this, FormQueAns_Activity.class);
                                 intent.putExtra("formId", item);
                                 intent.putExtra("jobId", dataJob.getJobId());
+                                intent.putExtra("isLeader",dataJob.getIsLeader());
                                 startActivityForResult(intent, CUSTOM_FORM_REQUESTCALL + i);
                                 i++;
                             }
@@ -1443,7 +1444,7 @@ public class JobDetailActivity extends AppCompatActivity implements
                 case 5:
                     return ClientChatFragment.newInstance("NO", dataJob.getJobId());
                 case 6:
-                    return CustomFormListFragment.newInstance(customFormLists, dataJob.getJobId());
+                    return CustomFormListFragment.newInstance(customFormLists, dataJob.getJobId(),dataJob.getIsLeader());
                 default:
                     return null;
             }
