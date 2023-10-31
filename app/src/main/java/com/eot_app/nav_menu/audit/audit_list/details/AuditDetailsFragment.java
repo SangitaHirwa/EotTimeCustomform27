@@ -315,12 +315,19 @@ public class AuditDetailsFragment extends Fragment implements View.OnClickListen
         }
 
         try {
-            if (!btnText) {
-                customfiled_btn.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add));
-                SAVEANS = false;
-            } else {
-                customfiled_btn.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit));
-                SAVEANS = true;
+
+            if(App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsEditCustomFormVisible()==0) {
+
+                if (!btnText) {
+                    customfiled_btn.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add));
+                    SAVEANS = false;
+                } else {
+                    customfiled_btn.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit));
+                    SAVEANS = true;
+                }
+            }
+            else {
+                customfiled_btn.setVisibility(View.GONE);
             }
         } catch (Exception ex) {
             ex.printStackTrace();

@@ -74,6 +74,7 @@ public class MobileDefaultSettings {
     private String loginUsrTz;
     private String taxShowType;
     private String isJobCompCustSignEnable ;
+    private int isCustomField;
 
     public String getIsJobCompCustSignEnable() {
         return isJobCompCustSignEnable;
@@ -447,5 +448,9 @@ public class MobileDefaultSettings {
 
     public void setIscheckInOutAttachment(String ischeckInOutAttachment) {
         this.ischeckInOutAttachment = ischeckInOutAttachment;
+    }
+
+    public int getIsCustomField() {
+        return isCustomField;
     }
 }

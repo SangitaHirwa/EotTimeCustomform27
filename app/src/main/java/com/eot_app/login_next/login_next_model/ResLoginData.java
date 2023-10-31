@@ -75,6 +75,8 @@ public class ResLoginData {
     private String loginUsrTz;
     private String taxShowType;
 
+    private int isCustomField;
+
     public String getTaxShowType() {
         return taxShowType;
     }
@@ -495,6 +497,7 @@ public class ResLoginData {
         this.loginUsrTz=mobileDefaultSettings.getLoginUsrTz();
         this.taxShowType = mobileDefaultSettings.getTaxShowType();
         this.isJobCompCustSignEnable = mobileDefaultSettings.getIsJobCompCustSignEnable();
+        this.isCustomField = mobileDefaultSettings.getIsCustomField();
 
     }
 
@@ -573,4 +576,11 @@ public class ResLoginData {
         this.isJobCompCustSignEnable = isJobCompCustSignEnable;
     }
 
+    public int getIsCustomField() {
+        return isCustomField;
+    }
+
+    public void setIsCustomField(int isCustomField) {
+        this.isCustomField = isCustomField;
+    }
 }
