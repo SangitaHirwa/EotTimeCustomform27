@@ -24,6 +24,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -380,6 +381,7 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
 
     }
 
+    @SuppressLint("SetJavaScriptEnabled")
     private void appoinmentAttchment(Appointment model) {
         try {
             binding.editor.setPlaceholder(LanguageController.getInstance().getMobileMsgByKey(AppConstant.description));
@@ -388,8 +390,21 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
             binding.editor.setBackgroundColor(Color.TRANSPARENT);
             binding.editor.focusEditor();
             binding.editor.setInputEnabled(true);
+            binding.editor.setFocusable(false);
             binding.editor.getSettings().setAllowFileAccess(true);
-
+            binding.editor.getSettings().setJavaScriptEnabled(true);
+                binding.editor.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    return true;
+                }
+            });
+            binding.editor.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    return true;
+                }
+            });
             if (!TextUtils.isEmpty(model.getDes())) {
                 // binding.tvDes.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.description));
                 binding.editor.setHtml(model.getDes());
