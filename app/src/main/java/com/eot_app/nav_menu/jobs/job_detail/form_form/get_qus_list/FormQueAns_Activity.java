@@ -87,7 +87,7 @@ public class FormQueAns_Activity extends UploadDocumentActivity implements View.
     private TextView actionbar_title;
     private QuestionListAdapter questionListAdapter;
     private List<QuesRspncModel> quesRspncModelList = new ArrayList<>();
-    private String jobId;
+    private String jobId, isLeader;
     private View em_layout;
     private TextView nolist_txt;
     private RelativeLayout rl;
@@ -143,6 +143,7 @@ public class FormQueAns_Activity extends UploadDocumentActivity implements View.
         getSupportActionBar().hide();
         customFormList = getIntent().getParcelableExtra("formId");
         jobId = getIntent().getStringExtra("jobId");
+        isLeader = getIntent().getStringExtra("isLeader");
         initializeView();
     }
 
@@ -161,7 +162,11 @@ public class FormQueAns_Activity extends UploadDocumentActivity implements View.
         if (customFormList.getMandatory().equals("1")) {
             skip_btn.setEnabled(false);
             skip_btn.setBackgroundColor(getResources().getColor(R.color.hintcolor));
-        } else {
+        } else if(customFormList.getMandatory().equals("2") &&
+                App_preference.getSharedprefInstance().getLoginRes().getUsrId().equals(isLeader) ){
+            skip_btn.setEnabled(false);
+            skip_btn.setBackgroundColor(getResources().getColor(R.color.hintcolor));
+        }else {
             skip_btn.setBackground(getResources().getDrawable(R.drawable.submit_btn));
             skip_btn.setOnClickListener(this);
         }
