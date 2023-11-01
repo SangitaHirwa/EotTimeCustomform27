@@ -1013,7 +1013,7 @@ public class DetailFragment extends Fragment
         }
 
         /* ***custom fields question list** */
-        if(App_preference.getSharedprefInstance().getLoginRes().getIsCustomField()==0) {
+        if(App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsCustomField()==0) {
             if (App_preference.getSharedprefInstance().getLoginRes().getIsCustomFieldEnable().equals("1")) {
                 jobDetail_pi.getCustomFieldQues(mParam2.getJobId());
             }
