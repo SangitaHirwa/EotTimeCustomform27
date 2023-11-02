@@ -2538,6 +2538,7 @@ public class DetailFragment extends Fragment
                             HyperLog.i("", "Job Data Not found");
                             HyperLog.i("", "Job Id" + param3);
                             mParam2 = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(param3);
+                            jobstatus = new JobStatusModelNew(mParam2.getStatus(), jobDetail_pi.getStatusName(mParam2.getStatus()));
                         } else if (mParam2.getStatus() != null && !mParam2.getStatus().equals("")) {
                             HyperLog.i("", "Find Job status from Json file in Job status resume condition..");
                             jobstatus = new JobStatusModelNew(mParam2.getStatus(), jobDetail_pi.getStatusName(mParam2.getStatus()));
