@@ -476,4 +476,7 @@ Required only when requesting background location access on
     <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
     <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+    <!--For remove inbuilt Advertising Id permission from dependencies -->
+    <uses-permission android:name="com.google.android.gms.permission.AD_ID"
+        tools:node="remove"/>
 </manifest>
