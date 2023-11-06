@@ -18,6 +18,7 @@ public class Right {
     private int isJobRescheduleOrNot;
     private int isJobRevisitOrNot;
     private int isEditCustomFormVisible;
+    private int isCustomField;
     private String isRecur;
     private String isTimeSheetEnableMobile;
     private String isCheckInOutDownload;
@@ -117,5 +118,13 @@ public class Right {
 
     public String getIsLeaveAddEnable() {
         return isLeaveAddEnable;
+    }
+
+    public int getIsCustomField() {
+        return isCustomField;
+    }
+
+    public void setIsCustomField(int isCustomField) {
+        this.isCustomField = isCustomField;
     }
 }

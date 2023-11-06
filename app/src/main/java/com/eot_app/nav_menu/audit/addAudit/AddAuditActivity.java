@@ -492,7 +492,7 @@ public class AddAuditActivity extends UploadDocumentActivity implements Add_Adui
         Objects.requireNonNull(contact_add_layout.getEditText()).addTextChangedListener(this);
         Objects.requireNonNull(site_add_layout.getEditText()).addTextChangedListener(this);
 
-        if(App_preference.getSharedprefInstance().getLoginRes().getIsCustomField()==0 &&
+        if(App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsCustomField()==0 &&
                 App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsEditCustomFormVisible()==0) {
             if (App_preference.getSharedprefInstance().getLoginRes().getIsCustomFieldEnable().equals("1")) {
                 setAdapterOfCustomField();

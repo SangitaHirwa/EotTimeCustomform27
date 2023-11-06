@@ -485,7 +485,7 @@ public class FormQueAns_Activity extends UploadDocumentActivity implements View.
         }
         if (fragments > 0) {
             getFragmentManager().popBackStack();
-        } else if (customFormList.getMandatory().equals("1")) {
+        } else if (customFormList.getMandatory().equals("1")||customFormList.getMandatory().equals("2")) {
             setResult(RESULT_CANCELED,intent);
             super.onBackPressed();
         } else {
