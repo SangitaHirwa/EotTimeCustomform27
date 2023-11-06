@@ -574,9 +574,7 @@ public class AuditDetailsFragment extends Fragment implements View.OnClickListen
 
             /* ***custom fileds qiestion list***/
             if (App_preference.getSharedprefInstance().getLoginRes().getIsCustomFieldEnable().equals("1")) {
-                if(App_preference.getSharedprefInstance().getLoginRes().getIsCustomField()==0) {
-                    auditDetail_pc.getCustomFieldQues(audit.getAudId());
-                }
+                auditDetail_pc.getCustomFieldQues(audit.getAudId());
             }
 
             try {
