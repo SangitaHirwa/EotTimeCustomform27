@@ -4,6 +4,14 @@ plugins {
 }
 
 android {
+    signingConfigs {
+        release {
+            storeFile file('/home/aplite/Desktop/Savan Projects/GitEyeOnTask/keystorefile')
+            storePassword 'Eyeontask@1'
+            keyPassword 'Eyeontask@1'
+            keyAlias 'eyeontask'
+        }
+    }
     namespace 'com.eot_app'
     defaultConfig {
         applicationId "com.eot_app"
@@ -26,6 +34,7 @@ android {
             buildConfigField "String", "REGISTER_AU" , "\"https://au.eyeontask.com/en/eotServices/\""
             buildConfigField "String", "REGISTER_AS" , "\"https://as.eyeontask.com/en/eotServices/\""
             buildConfigField "String", "REGISTER_UK" , "\"https://uk.eyeontask.com/en/eotServices/\""
+            signingConfig signingConfigs.release
         }
 
         debug {
@@ -54,6 +63,15 @@ android {
     lint {
         abortOnError false
         checkReleaseBuilds false
+    }
+    flavorDimensions = ["default"]
+    productFlavors {
+        prod {
+            dimension 'default'
+        }
+        dev {
+            dimension 'default'
+        }
     }
 }
 
@@ -93,9 +111,9 @@ dependencies {
 //    fire base setup
     implementation platform('com.google.firebase:firebase-bom:26.1.0')
     implementation 'com.google.firebase:firebase-core:21.1.1'
-    implementation 'com.google.firebase:firebase-messaging:23.3.0'
+    implementation 'com.google.firebase:firebase-messaging:23.3.1'
     implementation 'com.google.firebase:firebase-storage:20.3.0'
-    implementation 'com.google.firebase:firebase-firestore:24.9.0'
+    implementation 'com.google.firebase:firebase-firestore:24.9.1'
     implementation 'com.firebaseui:firebase-ui-firestore:4.2.1'
     implementation 'com.google.firebase:firebase-database:20.3.0'
 
@@ -134,7 +152,8 @@ dependencies {
     implementation 'com.squareup.okhttp3:logging-interceptor:4.2.2'
     implementation 'gun0912.ted:tedpermission:2.1.0'
 
-
+    // WorkManager dependency
+    implementation "androidx.work:work-runtime:$versions.work"
     // added for AppcenterLogs
     def appCenterSdkVersion = '4.4.5'
     implementation "com.microsoft.appcenter:appcenter-analytics:${appCenterSdkVersion}"

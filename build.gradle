@@ -5,7 +5,8 @@ plugins {
     id 'com.android.library' version '8.1.1' apply false
     id "com.google.gms.google-services" version "4.3.14" apply false
 }
-
+ext.versions = [:]
+versions.work = "2.7.1"
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
