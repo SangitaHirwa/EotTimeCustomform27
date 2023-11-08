@@ -47,6 +47,10 @@ android {
             buildConfigField "String", "REGISTER_AS" , "\"https://as1.eyeontask.com/en/eotServices/\""
             buildConfigField "String", "REGISTER_UK" , "\"https://uk1.eyeontask.com/en/eotServices/\""
         }
+        releaseDebuggable {
+            initWith release
+            debuggable true
+        }
         useLibrary 'org.apache.http.legacy'
     }
 
