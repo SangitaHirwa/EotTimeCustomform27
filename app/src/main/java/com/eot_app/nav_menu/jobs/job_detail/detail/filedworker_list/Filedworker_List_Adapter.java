@@ -19,10 +19,10 @@ import com.eot_app.utility.settings.setting_db.FieldWorker;
 import java.util.List;
 
 public class Filedworker_List_Adapter extends RecyclerView.Adapter<FiledworkerViewHolder> {
-      List<String> list;
+      List<FieldWorker> list;
       Job job;
       Context context;
-    public Filedworker_List_Adapter(Job mParam2, List<String> list, Context context) {
+    public Filedworker_List_Adapter(Job mParam2, List<FieldWorker> list, Context context) {
         this.job=mParam2;
         this.list=list;
         this.context=context;
@@ -37,22 +37,16 @@ public class Filedworker_List_Adapter extends RecyclerView.Adapter<FiledworkerVi
 
     @Override
     public void onBindViewHolder(@NonNull FiledworkerViewHolder holder, int position) {
-        String fw_id = list.get(position);
-        if(!fw_id.equals("")){
-            FieldWorker fieldWorker = AppDataBase.getInMemoryDatabase(context).fieldWorkerModel().getFieldWorkerByID(fw_id);
-
-            if (fieldWorker!=null){
-                if(fieldWorker.getUsrId().equals(job.getIsLeader())){
+        FieldWorker fieldWorker = list.get(position);
+            if (fieldWorker!=null) {
+                if (fieldWorker.getUsrId().equals(job.getIsLeader())) {
                     holder.icon_for_leader.setVisibility(View.VISIBLE);
                     holder.text_for_fw.setText(fieldWorker.getName());
-                }
-                else {
+                } else {
                     holder.icon_for_leader.setVisibility(View.GONE);
                     holder.text_for_fw.setText(fieldWorker.getName());
                 }
             }
-        }
-
     }
 
     @Override

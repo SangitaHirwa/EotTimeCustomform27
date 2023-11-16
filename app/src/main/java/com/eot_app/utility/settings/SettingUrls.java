@@ -488,6 +488,7 @@ public class SettingUrls {
     }
 
     private void addFieldWorkerToDB(List<FieldWorker> data) {
+        AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).fieldWorkerModel().delete();
         AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).fieldWorkerModel().inserFieldWorker(data);
     }
 
