@@ -50,6 +50,8 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.eot_app.BuildConfig;
 import com.eot_app.R;
 import com.eot_app.eoteditor.EotEditor;
 import com.eot_app.eoteditor.PicassoImageGetter;
@@ -291,6 +293,7 @@ public class DetailFragment extends Fragment
                         map_loc_txt.setVisibility(View.VISIBLE);
                         image_txt.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.location_not_found));
                     } else {
+                        Log.e("Api_Map_Key", BuildConfig.MAPS_API_KEY);
                         LatLng latLng = new LatLng(Double.parseDouble(mParam2.getLat()), Double.parseDouble(mParam2.getLng()));
                         googleMap.addMarker(new MarkerOptions()
                                 .position(latLng)
@@ -381,12 +384,12 @@ public class DetailFragment extends Fragment
         mMapView = layout.findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
 
-        mMapView.onResume(); // needed to get the map to display immediately
+//        mMapView.onResume(); // needed to get the map to display immediately
         Log.e("GoogleMap", "2");
 
 
         try {
-            MapsInitializer.initialize(Objects.requireNonNull(getActivity()).getApplicationContext());
+            MapsInitializer.initialize(requireActivity().getApplicationContext());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -410,7 +413,7 @@ public class DetailFragment extends Fragment
         }
 
         initializelables();
-        mMapView.getMapAsync(this);
+//        mMapView.getMapAsync(this);
 
         // adapter for job status dropdown
         mySpinnerAdapter = new Job_Status_Adpter(getActivity(), statusArray, i -> {
@@ -472,7 +475,7 @@ public class DetailFragment extends Fragment
 //                                    @Override
 //                                    public void onPossitiveCall() {
 //                                        HyperLog.i(TAG, "Request change status start");
-//                                        ((JobDetailActivity) Objects.requireNonNull(getActivity())).openFormForEvent(jobstatus.getStatus_no());
+//                                        ((JobDetailActivity) requireActivity()).openFormForEvent(jobstatus.getStatus_no());
 //                                    }
 //
 //                                    @Override
@@ -514,7 +517,7 @@ public class DetailFragment extends Fragment
                         @Override
                         public void onPossitiveCall() {
                             HyperLog.i(TAG, "Request change status start");
-                            ((JobDetailActivity) Objects.requireNonNull(getActivity())).openFormForEvent(jobstatus.getStatus_no());
+                            ((JobDetailActivity) requireActivity()).openFormForEvent(jobstatus.getStatus_no());
                         }
 
                         @Override
@@ -743,7 +746,7 @@ public class DetailFragment extends Fragment
                 , false);
         recyclerView.setLayoutManager(customLayoutManager);
         jobCompletionAdpter = new CompletionAdpterJobDteails(new ArrayList<>()
-                , () -> ((JobDetailActivity) Objects.requireNonNull(getActivity())).getAttchmentFragment());
+                , () -> ((JobDetailActivity) requireActivity()).getAttchmentFragment());
         recyclerView.setAdapter(jobCompletionAdpter);
 
 
@@ -781,7 +784,7 @@ public class DetailFragment extends Fragment
     }
 
     private void addJobServicesInChips(JtId jtildModel) {
-        LayoutInflater vi = (LayoutInflater) Objects.requireNonNull(getActivity()).getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater vi = (LayoutInflater) requireActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View v = vi.inflate(R.layout.job_lable_dynamic_layout, null);
         TextView textView = v.findViewById(R.id.job_lables);
         textView.setText(jtildModel.getTitle());
@@ -1193,7 +1196,7 @@ public class DetailFragment extends Fragment
                 builder.append(str1);
                 SpannableString str2 = new SpannableString("  " + LanguageController.getInstance().getMobileMsgByKey(AppConstant.get_direction));
 
-                str2.setSpan(new ForegroundColorSpan(Objects.requireNonNull(getActivity()).getResources().getColor(R.color.colorPrimary)),
+                str2.setSpan(new ForegroundColorSpan(requireActivity().getResources().getColor(R.color.colorPrimary)),
                         0, str2.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
                 builder.append(str2);
@@ -2035,6 +2038,7 @@ public class DetailFragment extends Fragment
         Log.e("OnResume", "onResumeCalled");
         check = System.currentTimeMillis();
         mMapView.onResume();
+        mMapView.getMapAsync(this);
         // for updating item count
         updateCountItem();
     }
@@ -2065,7 +2069,7 @@ public class DetailFragment extends Fragment
                 stopRecurpattern();
                 break;
             case R.id.btn_add_signature:
-                ((JobDetailActivity) Objects.requireNonNull(getActivity())).openCustomSignatureDialog();
+                ((JobDetailActivity) requireActivity()).openCustomSignatureDialog();
                 break;
             case R.id.customfiled_btn:
                 Intent intent1 = new Intent(getActivity(), CustomFiledListActivity.class);
@@ -2263,7 +2267,7 @@ public class DetailFragment extends Fragment
                             if (mParam2.getSkype() != null) {
                                 txtViewSkypeCon1.setText(mParam2.getSkype());
                             }
-                            txtViewSkypeCon1.setOnClickListener(view12 -> openApp(Objects.requireNonNull(getActivity()), "com.skype.raider", LanguageController.getInstance().getMobileMsgByKey(AppConstant.install_the_skype_app)));
+                            txtViewSkypeCon1.setOnClickListener(view12 -> openApp(requireActivity(), "com.skype.raider", LanguageController.getInstance().getMobileMsgByKey(AppConstant.install_the_skype_app)));
 
                             TextView txtViewSkypeCon2 = enterFieldDialog.findViewById(R.id.txtViewSkypeCon2);
                             txtViewSkypeCon2.setVisibility(View.VISIBLE);
@@ -2275,7 +2279,7 @@ public class DetailFragment extends Fragment
                                     txtViewSkypeCon2.setText(mParam2.getTwitter());
                                 }
 
-                                txtViewSkypeCon2.setOnClickListener(view1 -> openApp(Objects.requireNonNull(getActivity()), "com.twitter.android", LanguageController.getInstance().getMobileMsgByKey(AppConstant.install_the_twitter_app)));
+                                txtViewSkypeCon2.setOnClickListener(view1 -> openApp(requireActivity(), "com.twitter.android", LanguageController.getInstance().getMobileMsgByKey(AppConstant.install_the_twitter_app)));
                             }
 
                             TextView okBtn = enterFieldDialog.findViewById(R.id.btnClose);
@@ -2310,7 +2314,7 @@ public class DetailFragment extends Fragment
                                 txtViewSkypeCon1.setText(s1);
 
                             txtViewSkypeCon1.setOnClickListener(v -> {
-                                if (ContextCompat.checkSelfPermission(Objects.requireNonNull(getActivity()), Manifest.permission.CALL_PHONE)
+                                if (ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.CALL_PHONE)
                                         != PackageManager.PERMISSION_GRANTED) {
 
                                     ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CALL_PHONE}, MY_PERMISSIONS_REQUEST_CALL_PHONE);
@@ -2329,7 +2333,7 @@ public class DetailFragment extends Fragment
                             else
                                 txtViewSkypeCon2.setText(s);
                             txtViewSkypeCon2.setOnClickListener(v -> {
-                                if (ContextCompat.checkSelfPermission(Objects.requireNonNull(getActivity()), Manifest.permission.CALL_PHONE)
+                                if (ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.CALL_PHONE)
                                         != PackageManager.PERMISSION_GRANTED) {
 
                                     ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CALL_PHONE}, MY_PERMISSIONS_REQUEST_CALL_PHONE);
@@ -2372,13 +2376,13 @@ public class DetailFragment extends Fragment
             case R.id.rl_Collapse1:
             case R.id.ivEditAc:
                 if (isClickedActual) {
-                    ivEditAc.setImageDrawable(ContextCompat.getDrawable(Objects.requireNonNull(getActivity()), R.drawable.ic_arrow_drop_down_black_24dp));
+                    ivEditAc.setImageDrawable(ContextCompat.getDrawable(requireActivity(), R.drawable.ic_arrow_drop_down_black_24dp));
                     isClickedActual = false;
                     ll_actual_date_time.setVisibility(View.GONE);
                     ll_travel_date_time.setVisibility(View.GONE);
                     rl_Collapse2.setVisibility(View.GONE);
                 } else {
-                    ivEditAc.setImageDrawable(ContextCompat.getDrawable(Objects.requireNonNull(getActivity()), R.drawable.ic_baseline_arrow_drop_up_24));
+                    ivEditAc.setImageDrawable(ContextCompat.getDrawable(requireActivity(), R.drawable.ic_baseline_arrow_drop_up_24));
                     ll_actual_date_time.setVisibility(View.VISIBLE);
                     ll_travel_date_time.setVisibility(View.VISIBLE);
                     rl_Collapse2.setVisibility(View.VISIBLE);
@@ -2527,7 +2531,7 @@ public class DetailFragment extends Fragment
             //  ((JobDetailActivity) getActivity()).openFormForEvent(jobstatus.getStatus_no());
             try {
                 HyperLog.i("", "Resume states found");
-                ((JobDetailActivity) Objects.requireNonNull(getActivity())).openFormForEvent(jobstatus.getStatus_no());
+                ((JobDetailActivity) requireActivity()).openFormForEvent(jobstatus.getStatus_no());
             } catch (Exception e) {
                 e.printStackTrace();
                 HyperLog.i("", "Resume states Exception handle" + e.getMessage());
@@ -2551,13 +2555,13 @@ public class DetailFragment extends Fragment
                         mParam2 = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(param3);
                         jobstatus = new JobStatusModelNew(mParam2.getStatus(), jobDetail_pi.getStatusName(mParam2.getStatus()));
                     }
-                    ((JobDetailActivity) Objects.requireNonNull(getActivity())).openFormForEvent(jobstatus.getStatus_no());
+                    ((JobDetailActivity) requireActivity()).openFormForEvent(jobstatus.getStatus_no());
                 } catch (Exception exception) {
                     exception.printStackTrace();
                     HyperLog.i("", "Exception" + exception.getMessage());
                     mParam2 = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(param3);
                     jobstatus = new JobStatusModelNew(mParam2.getStatus(), jobDetail_pi.getStatusName(mParam2.getStatus()));
-                    ((JobDetailActivity) Objects.requireNonNull(getActivity())).openFormForEvent(jobstatus.getStatus_no());
+                    ((JobDetailActivity) requireActivity()).openFormForEvent(jobstatus.getStatus_no());
                 }
             }
         } else {
