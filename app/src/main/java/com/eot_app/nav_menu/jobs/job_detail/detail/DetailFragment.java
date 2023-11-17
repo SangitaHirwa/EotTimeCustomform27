@@ -1848,23 +1848,27 @@ public class DetailFragment extends Fragment
 
     private void setFwList() {
         try {
-            List<String> list =  new ArrayList<>();
+            List<FieldWorker> list =  new ArrayList<>();
           //  StringBuffer stringBuffer = new StringBuffer();
             String kpr = mParam2.getKpr();
             String[] kprList = kpr.split(",");
-            list.addAll(Arrays.asList(kprList));
+            /*list.addAll(Arrays.asList(kprList));
             Filedworker_List_Adapter filedworkerListAdapter = new Filedworker_List_Adapter(mParam2,list,getActivity().getApplicationContext());
-            rv_fw_list.setAdapter(filedworkerListAdapter);
+            rv_fw_list.setAdapter(filedworkerListAdapter);*/
 
-           /* for (String id : kprList) {
+            for (String id : kprList) {
                 FieldWorker fieldWorker = AppDataBase.getInMemoryDatabase(getActivity()).fieldWorkerModel().getFieldWorkerByID(id);
                 if (fieldWorker != null) {
-                    stringBuffer.append(fieldWorker.getName())
+                    list.add(fieldWorker);
+
+                   /* stringBuffer.append(fieldWorker.getName())
                             .append(fieldWorker.getLnm())
-                            .append(", ");
+                            .append(", ");*/
                 }
             }
-            stringBuffer.deleteCharAt(stringBuffer.length() - 2);
+            Filedworker_List_Adapter filedworkerListAdapter = new Filedworker_List_Adapter(mParam2,list,getActivity().getApplicationContext());
+            rv_fw_list.setAdapter(filedworkerListAdapter);
+           /* stringBuffer.deleteCharAt(stringBuffer.length() - 2);
             String paramIds = stringBuffer.toString();
             txt_fw_nm_list.setText(paramIds);*/
         } catch (Exception e) {
