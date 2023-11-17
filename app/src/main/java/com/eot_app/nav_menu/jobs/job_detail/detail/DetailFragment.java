@@ -226,6 +226,7 @@ public class DetailFragment extends Fragment
     private String isMailSentToClt = "1";
     boolean accept=true,reject=true,travel=true,onhold=true,brack=true;
     String getDisCalculationType, getTaxCalculationType;
+    GoogleMap mMap;
 
 
     public DetailFragment() {
@@ -278,6 +279,8 @@ public class DetailFragment extends Fragment
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         Log.e("GoogleMap", "1");
+        mMap = googleMap;
+        mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
         if (mParam2 == null) {
             HyperLog.i(TAG, "Job Not Found In DB");
         } else {
@@ -295,11 +298,12 @@ public class DetailFragment extends Fragment
                     } else {
                         Log.e("Api_Map_Key", BuildConfig.MAPS_API_KEY);
                         LatLng latLng = new LatLng(Double.parseDouble(mParam2.getLat()), Double.parseDouble(mParam2.getLng()));
-                        googleMap.addMarker(new MarkerOptions()
+                        mMap.addMarker(new MarkerOptions()
                                 .position(latLng)
                         );
-                        googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-                        googleMap.animateCamera(CameraUpdateFactory.zoomTo(17.0f));
+                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,17.0f));
+                        mMap.animateCamera(CameraUpdateFactory.zoomIn());
+                        mMap.animateCamera(CameraUpdateFactory.zoomTo(17.0f),2000,null);
 
                         if (map_loc_txt != null) {
                             map_loc_txt.setVisibility(View.GONE);
@@ -1829,7 +1833,7 @@ public class DetailFragment extends Fragment
                     if (mParam2.getSignature() != null && !mParam2.getSignature().equals("")) {
                         btn_add_signature.setVisibility(View.GONE);
                         signature_img.setVisibility(View.VISIBLE);
-                        Picasso.with(getActivity()).load(App_preference.getSharedprefInstance().getBaseURL() +
+                        Picasso.get().load(App_preference.getSharedprefInstance().getBaseURL() +
                                 mParam2.getSignature()).placeholder(R.drawable.ic_profile).error(R.drawable.ic_profile)
                                 .into(signature_img);
                     } else {

@@ -1810,7 +1810,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
             File file = new File(path);
             if (file != null && file.exists()) {
                 img_attachment.setVisibility(View.VISIBLE);
-                Picasso.with(this).load(file).into(img_attachment);
+                Picasso.get().load(file).into(img_attachment);
                 image_txt.setText("");
                 remove_txt.setVisibility(View.GONE);
                 radio_after.setChecked(false);
@@ -1845,7 +1845,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
                 File file = new File(path);
                 if (file != null && file.exists()) {
                     img_attachment.setVisibility(View.VISIBLE);
-                    Picasso.with(this).load(file).into(img_attachment);
+                    Picasso.get().load(file).into(img_attachment);
                 }
                 img_attachment.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
                 rediogrpForTag.setVisibility(View.VISIBLE);

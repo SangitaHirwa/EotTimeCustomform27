@@ -80,17 +80,17 @@ public class ChatUsersListAdpter extends RecyclerView.Adapter<ChatUsersListAdpte
         /*user image/profile set***/
         if (chatMembersList.get(i).getUserChatModel().getIsTeam() != null && chatMembersList.get(i).getUserChatModel().getIsTeam().equals("1")
                 && chatMembersList.get(i).getUserChatModel().getTeamMemId() != null && chatMembersList.get(i).getUserChatModel().getTeamMemId().size() > 0) {
-            Picasso.with(context).load(R.drawable.grp_chat).into(myViewHolder.userImg);
+         Picasso.get().load(R.drawable.grp_chat).into(myViewHolder.userImg);
 
         } else {
             if (chatMembersList.get(i).getUserChatModel().getImg() != null
                     && !chatMembersList.get(i).getUserChatModel().getImg().equals("")) {
-                Picasso.with(context).load(App_preference.getSharedprefInstance().getBaseURL() +
+             Picasso.get().load(App_preference.getSharedprefInstance().getBaseURL() +
                         chatMembersList.get(i).getUserChatModel().getImg()).
                         placeholder(R.drawable.chat_user_ic).error(R.drawable.chat_user_ic)
                         .into(myViewHolder.userImg);
             } else {
-                Picasso.with(context).load(R.drawable.chat_user_ic).into(myViewHolder.userImg);
+             Picasso.get().load(R.drawable.chat_user_ic).into(myViewHolder.userImg);
             }
         }
         /*user online/offline status ***/

@@ -40,7 +40,7 @@ public class DocumentPreview extends AppCompatActivity {
         if (doc != null) {
             tv_title.setText(doc.getImage_name());
         webView.loadUrl(App_preference.getSharedprefInstance().getBaseURL() + "" + doc.getAttachFileName());
-          /*  Picasso.with(this).load(App_preference.getSharedprefInstance().getBaseURL() + "" + doc.getAttachFileName())
+          /*  Picasso.get().load(App_preference.getSharedprefInstance().getBaseURL() + "" + doc.getAttachFileName())
                     .into(img_doc);*/
         }
 

@@ -80,7 +80,7 @@ public class DialogUploadDocuments extends DialogFragment implements View.OnClic
                 ed_doc_title.setText(fileName);
         }
         if (isFileImage && imgPath != null) {
-            Picasso.with(getActivity()).load(new File(imgPath)).into(img_doc);
+            Picasso.get().load(new File(imgPath)).into(img_doc);
         } else {
             img_doc.setVisibility(View.GONE);
 
