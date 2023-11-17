@@ -384,7 +384,7 @@ public class DetailFragment extends Fragment
         mMapView = layout.findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
 
-//        mMapView.onResume(); // needed to get the map to display immediately
+        mMapView.onResume(); // needed to get the map to display immediately
         Log.e("GoogleMap", "2");
 
 
@@ -413,7 +413,7 @@ public class DetailFragment extends Fragment
         }
 
         initializelables();
-//        mMapView.getMapAsync(this);
+        mMapView.getMapAsync(this);
 
         // adapter for job status dropdown
         mySpinnerAdapter = new Job_Status_Adpter(getActivity(), statusArray, i -> {
@@ -2042,7 +2042,6 @@ public class DetailFragment extends Fragment
         Log.e("OnResume", "onResumeCalled");
         check = System.currentTimeMillis();
         mMapView.onResume();
-        mMapView.getMapAsync(this);
         // for updating item count
         updateCountItem();
     }

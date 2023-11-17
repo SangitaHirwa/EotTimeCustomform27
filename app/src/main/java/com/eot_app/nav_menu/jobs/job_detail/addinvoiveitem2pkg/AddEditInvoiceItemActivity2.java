@@ -2197,7 +2197,7 @@ public class AddEditInvoiceItemActivity2 extends
                 String dateTime = AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT);
                 Gson gson = new Gson();
                 String addJobReqest = gson.toJson(updateItemReqModel);
-                OfflineDataController.getInstance().addInOfflineDB(Service_apis                                    .updateItemInJobMobile, addJobReqest, dateTime);
+                OfflineDataController.getInstance().addInOfflineDB(Service_apis.updateItemInJobMobile, addJobReqest, dateTime);
             }
         } catch (Exception ex) {
             ex.printStackTrace();
