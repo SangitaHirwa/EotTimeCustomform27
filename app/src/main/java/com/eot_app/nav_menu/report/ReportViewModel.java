@@ -3,6 +3,8 @@ package com.eot_app.nav_menu.report;
 import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
 
@@ -114,6 +116,10 @@ public class ReportViewModel extends AndroidViewModel implements ApiCalServerReq
                     c.setRequestMethod("GET");//Set Request Method to "GET" since we are grtting data
                     c.connect();//connect the URL Connection
 
+                    Intent openAnyType = new Intent(Intent.ACTION_VIEW);
+                    openAnyType.setData(Uri.parse(String.valueOf(urls)));
+
+                    context.startActivity(openAnyType);
                     //If Connection response is not OK then show Logs
                     if (c.getResponseCode() != HttpURLConnection.HTTP_OK) {
                         Log.e("TAG", "Server returned HTTP " + c.getResponseCode() + " " + c.getResponseMessage());
