@@ -240,7 +240,7 @@ public class DialogCheckInUploadDocuments extends DialogFragment implements View
                                 showToastmsg(LanguageController.getInstance().getMobileMsgByKey(AppConstant.checkout_time_greater_current_time));
                         return;
                     }
-                    uploadDocuments(AppUtility.changeDateFormat(date,format,AppConstant.DATE_TIME_FORMAT_new));
+                    uploadDocuments(AppUtility.changeDateFormat(date,format,AppConstant.DATE_TIME_FORMAT));
                 }
                 else {
                     uploadDocuments("");

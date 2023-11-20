@@ -124,7 +124,7 @@ public class MainActivity_pc implements MainActivity_pi {
             time = timeCheckout;
         }
         else {
-            time = AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT_new);
+            time = AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT);
         }
 
         String checkId = App_preference.getSharedprefInstance().getcheckId();
