@@ -280,7 +280,6 @@ public class DetailFragment extends Fragment
     public void onMapReady(@NonNull GoogleMap googleMap) {
         Log.e("GoogleMap", "1");
         mMap = googleMap;
-        mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
         if (mParam2 == null) {
             HyperLog.i(TAG, "Job Not Found In DB");
         } else {
