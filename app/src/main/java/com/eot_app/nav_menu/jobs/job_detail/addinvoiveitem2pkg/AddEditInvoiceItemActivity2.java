@@ -1538,6 +1538,12 @@ public class AddEditInvoiceItemActivity2 extends
     }
 
     public void AppUpdateJob(List<Tax> taxListFilter){
+        if(edt_item_rate.getText().length()<=0){
+            edt_item_rate.setText("0");
+        }
+        if(edt_item_disc.getText().length()<=0){
+            edt_item_disc.setText("0");
+        }
         if(bundle.getBoolean("AddRequirmentGetheringItem")){
             addItemOnAppointment();
         }
