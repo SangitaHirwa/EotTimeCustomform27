@@ -1280,7 +1280,7 @@
     "remark": "Remark",
     "remark_msg": "Tap to add remark(s) for equipment audit.",
     "remove": "Remove",
-    "remove_item_mandtry": "Can not delete all Items or fieldworker. Please add at least one Item or field worker.",
+    "remove_item_mandtry": "Can not delete all Items or Job Type / Services. Please add at least one Item or Job Type / Services.",
     "remove_item_msg": "Item has been deleted",
     "report_mandatory_msg": "Report can not be empty",
     "reset": "Reset",
@@ -1822,7 +1822,7 @@
     "err_due_Invoice_date": "due date must be greater then invoice date" ,
     "alternate_Email_Not_Same": "Email and alternate email is not same",
     "inv_duedate_updated" : "Invoice Due Date Updated",
-    "contract_invoice_alert": "Here you can create job specific invoice, since this job is a part of Contract it’s better to use invoice section within the Contract for creating the Contract invoice.\nDo you still want to create job based invoice?",
+    "contract_invoice_alert": "Here you can create job specific invoice, since this job is a part of Contract it’s better to use invoice section within the Contract for creating the Contract invoice.Do you still want to create job based invoice?",
     "batch_invoice_can_not_generate_msg": "App user can not see multi jobs invoice.",
     "signature_alert": "Signature is mandatory to complete the job.",
     "non_billable_item_alert": "To generate an invoice. It is necessary to add atleast one billable item/service. "

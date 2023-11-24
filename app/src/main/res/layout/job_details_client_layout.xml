@@ -26,27 +26,36 @@
             android:padding="12dp">
 
 
-            <RelativeLayout
+            <LinearLayout
                 android:id="@+id/linearLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+              >
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    >
+                    <TextView
+                        android:id="@+id/person_name"
+                        style="@style/job_details_headr_style"
+                        android:layout_width="0dp"
+                        android:text="job - client name"
+                        android:paddingHorizontal="3dp"
+                        app:layout_constraintEnd_toStartOf="@+id/textViewJobCode"
+                        app:layout_constraintStart_toStartOf="parent"
+                        tools:ignore="HardcodedText,MissingConstraints" />
 
-                <TextView
-                    android:id="@+id/person_name"
-                    style="@style/job_details_headr_style"
-                    android:layout_width="wrap_content"
-                    android:text="job - client name"
-                    tools:ignore="HardcodedText" />
 
-
-                <TextView
-                    android:layout_alignParentEnd="true"
-                    android:id="@+id/textViewJobCode"
-                    style="@style/job_details_child_style"
-                    android:text="Job code :"
-                    tools:ignore="HardcodedText" />
-            </RelativeLayout>
+                    <TextView
+                        android:id="@+id/textViewJobCode"
+                        style="@style/job_details_child_style"
+                        android:text="Job code :"
+                        android:layout_width="0dp"
+                        android:gravity="end"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        tools:ignore="HardcodedText,MissingConstraints" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </LinearLayout>
 
             <!--            <TextView-->
             <!--                android:id="@+id/person_name"-->
