@@ -74,7 +74,8 @@ public interface Service_apis {
     String sendNotificationToUser = "UserController/sendNotificationToUser";
     String getItemList = "InvoiceController/getItemList";
     String getInvoiceDetail = "InvoiceController/getInvoiceDetail";
-    String updateInvoice = "InvoiceController/updateInvoice";
+    //Remove after discussion with Jit Sir 8/nov/23
+//    String updateInvoice = "InvoiceController/updateInvoice";
     String getTaxList = "CompanyController/getTaxList";
     String addInvoice = "InvoiceController/addInvoice";
     String postPaymentInvoice = "InvoiceController/invoicePaymentRecieve";

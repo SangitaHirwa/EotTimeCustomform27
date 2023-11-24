@@ -1538,6 +1538,12 @@ public class AddEditInvoiceItemActivity2 extends
     }
 
     public void AppUpdateJob(List<Tax> taxListFilter){
+        if(edt_item_rate.getText().length()<=0){
+            edt_item_rate.setText("0");
+        }
+        if(edt_item_disc.getText().length()<=0){
+            edt_item_disc.setText("0");
+        }
         if(bundle.getBoolean("AddRequirmentGetheringItem")){
             addItemOnAppointment();
         }
@@ -2197,7 +2203,7 @@ public class AddEditInvoiceItemActivity2 extends
                 String dateTime = AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT);
                 Gson gson = new Gson();
                 String addJobReqest = gson.toJson(updateItemReqModel);
-                OfflineDataController.getInstance().addInOfflineDB(Service_apis                                    .updateItemInJobMobile, addJobReqest, dateTime);
+                OfflineDataController.getInstance().addInOfflineDB(Service_apis.updateItemInJobMobile, addJobReqest, dateTime);
             }
         } catch (Exception ex) {
             ex.printStackTrace();

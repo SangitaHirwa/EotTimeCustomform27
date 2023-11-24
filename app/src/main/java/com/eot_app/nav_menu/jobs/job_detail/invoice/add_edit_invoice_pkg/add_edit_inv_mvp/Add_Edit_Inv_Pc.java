@@ -92,75 +92,76 @@ public class Add_Edit_Inv_Pc implements Add_Edit_Inv_Pi {
         add_edit_Inv_view.setItemdata(inveteryItemDataList);
     }
 
-    @Override
-    public void addInvoiceItem(final Invoice_Update_Request_Model inv_res_model) {
-        try {
-            for (ItemData itemdata : inv_res_model.getItemData()) {
-                for (Tax tax : itemdata.getTax()) {
-//                    if (tax.getTxRate() == null) {
-//                        tax.setTxRate(tax.getRate());
-//                    }
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        JsonObject jsonObject = AppUtility.getJsonObject(new Gson().toJson(inv_res_model));
-
-        if (AppUtility.isInternetConnected()) {
-            LogModel logModel = ActivityLogController
-                    .getObj(ActivityLogController.JOB_MODULE, ActivityLogController.JOB_ADD_INVOICE_ITEM, ActivityLogController.JOB_MODULE);
-            ActivityLogController.saveOfflineTable(logModel);
-            AppUtility.progressBarShow((Context) add_edit_Inv_view);
-            ApiClient.getservices().eotServiceCall(Service_apis.updateInvoice, AppUtility.getApiHeaders(), jsonObject)
-
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Observer<JsonObject>() {
-                        @Override
-                        public void onSubscribe(Disposable d) {
-
-                        }
-
-                        @Override
-                        public void onNext(JsonObject jsonObject) {
-                            Log.e("Responce--->>>", "" + jsonObject.toString());
-                            if (jsonObject.get("success").getAsBoolean()) {
-                                String convert = new Gson().toJson(jsonObject.get("data"));
-                                Inv_Res_Model invResModel = new Gson().fromJson(convert, Inv_Res_Model.class);
-                                List<ItemData> itemDataList = new ArrayList<>();
-                                for (ItemData itemData : invResModel.getItemData()) {
-                                    itemData.setAmount(AppUtility.getCalculatedAmount(itemData.getQty(), itemData.getRate(), itemData.getDiscount(),
-                                            itemData.getTax(), invResModel.getTaxCalculationType()));
-                                    itemDataList.add(itemData);
-                                }
-                                invResModel.getItemData().clear();
-                                invResModel.setItemData(itemDataList);
-                                add_edit_Inv_view.setInvoiceData(invResModel);
-                                EotApp.getAppinstance().showToastmsg(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_edit_item));
-                            } else if (jsonObject.get("statusCode") != null && jsonObject.get("statusCode").getAsString().equals(AppConstant.SESSION_EXPIRE)) {
-                                EotApp.getAppinstance().sessionExpired();
-                            }
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-                            add_edit_Inv_view.errorOccured();
-                            AppUtility.progressBarDissMiss();
-                            Log.e("", e.getMessage());
-                        }
-
-                        @Override
-                        public void onComplete() {
-                            AppUtility.progressBarDissMiss();
-                        }
-                    });
-
-        } else {
-            netWork_erroR();
-        }
-    }
+//Remove after discussion with Jit Sir 8/nov/23
+//    @Override
+//    public void addInvoiceItem(final Invoice_Update_Request_Model inv_res_model) {
+//        try {
+//            for (ItemData itemdata : inv_res_model.getItemData()) {
+//                for (Tax tax : itemdata.getTax()) {
+////                    if (tax.getTxRate() == null) {
+////                        tax.setTxRate(tax.getRate());
+////                    }
+//                }
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//
+//        JsonObject jsonObject = AppUtility.getJsonObject(new Gson().toJson(inv_res_model));
+//
+//        if (AppUtility.isInternetConnected()) {
+//            LogModel logModel = ActivityLogController
+//                    .getObj(ActivityLogController.JOB_MODULE, ActivityLogController.JOB_ADD_INVOICE_ITEM, ActivityLogController.JOB_MODULE);
+//            ActivityLogController.saveOfflineTable(logModel);
+//            AppUtility.progressBarShow((Context) add_edit_Inv_view);
+//            ApiClient.getservices().eotServiceCall(Service_apis.updateInvoice, AppUtility.getApiHeaders(), jsonObject)
+//
+//                    .subscribeOn(Schedulers.io())
+//                    .observeOn(AndroidSchedulers.mainThread())
+//                    .subscribe(new Observer<JsonObject>() {
+//                        @Override
+//                        public void onSubscribe(Disposable d) {
+//
+//                        }
+//
+//                        @Override
+//                        public void onNext(JsonObject jsonObject) {
+//                            Log.e("Responce--->>>", "" + jsonObject.toString());
+//                            if (jsonObject.get("success").getAsBoolean()) {
+//                                String convert = new Gson().toJson(jsonObject.get("data"));
+//                                Inv_Res_Model invResModel = new Gson().fromJson(convert, Inv_Res_Model.class);
+//                                List<ItemData> itemDataList = new ArrayList<>();
+//                                for (ItemData itemData : invResModel.getItemData()) {
+//                                    itemData.setAmount(AppUtility.getCalculatedAmount(itemData.getQty(), itemData.getRate(), itemData.getDiscount(),
+//                                            itemData.getTax(), invResModel.getTaxCalculationType()));
+//                                    itemDataList.add(itemData);
+//                                }
+//                                invResModel.getItemData().clear();
+//                                invResModel.setItemData(itemDataList);
+//                                add_edit_Inv_view.setInvoiceData(invResModel);
+//                                EotApp.getAppinstance().showToastmsg(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_edit_item));
+//                            } else if (jsonObject.get("statusCode") != null && jsonObject.get("statusCode").getAsString().equals(AppConstant.SESSION_EXPIRE)) {
+//                                EotApp.getAppinstance().sessionExpired();
+//                            }
+//                        }
+//
+//                        @Override
+//                        public void onError(Throwable e) {
+//                            add_edit_Inv_view.errorOccured();
+//                            AppUtility.progressBarDissMiss();
+//                            Log.e("", e.getMessage());
+//                        }
+//
+//                        @Override
+//                        public void onComplete() {
+//                            AppUtility.progressBarDissMiss();
+//                        }
+//                    });
+//
+//        } else {
+//            netWork_erroR();
+//        }
+//    }
 
     private void addtempItemInDb(ItemData itemData) {
     }

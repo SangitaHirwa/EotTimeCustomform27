@@ -728,7 +728,7 @@ public class MainActivity extends UploadDocumentActivity implements MainActivity
             profile_name.setText(full_name);
             profile_email.setText(email);
             if (!img_url.equals("")) {
-                Picasso.with(this).load(App_preference.getSharedprefInstance().getBaseURL() + img_url).placeholder(R.drawable.ic_profile).error(R.drawable.ic_profile).into(profile_img);
+                Picasso.get().load(App_preference.getSharedprefInstance().getBaseURL() + img_url).placeholder(R.drawable.ic_profile).error(R.drawable.ic_profile).into(profile_img);
             }
         }
     }

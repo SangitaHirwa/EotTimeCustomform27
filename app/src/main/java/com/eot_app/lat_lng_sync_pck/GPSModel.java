@@ -3,6 +3,7 @@ package com.eot_app.lat_lng_sync_pck;
 import android.location.Location;
 import android.os.BatteryManager;
 
+import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.AppUtility;
 import com.eot_app.utility.EotApp;
 
@@ -18,7 +19,7 @@ public class GPSModel {
         BatteryManager bm = (BatteryManager) (EotApp.getAppinstance()).getSystemService(BATTERY_SERVICE);
         this.location = location;
         this.btryStatus = bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY);
-        this.dateTime = AppUtility.getDateByFormat("yyyy-MM-dd hh:mm:ss a");
+        this.dateTime = AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT);
     }
 
     public Location getLocation() {

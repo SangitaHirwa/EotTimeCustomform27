@@ -1201,7 +1201,7 @@ public class AuditDetailsFragment extends Fragment implements View.OnClickListen
                     switchDefaultColor(EotApp.getAppinstance().getResources().getColor(R.color.txt_color));
 
                     if(imageForStatus.getUrl()!=null){
-                        Picasso.with(EotApp.getAppinstance()).load(App_preference.getSharedprefInstance().getBaseURL() +
+                        Picasso.get().load(App_preference.getSharedprefInstance().getBaseURL() +
                                 imageForStatus.getUrl())
                                 .into(status_img);
                     } else{

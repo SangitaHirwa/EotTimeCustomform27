@@ -211,7 +211,7 @@ public class AdapterAuditList extends RecyclerView.Adapter<AdapterAuditList.MyVi
                 holder.status.setText(imageForStatus.getText());
 
                 if(imageForStatus.getUrl()!=null){
-                    Picasso.with(EotApp.getAppinstance()).load(App_preference.getSharedprefInstance().getBaseURL() +
+                    Picasso.get().load(App_preference.getSharedprefInstance().getBaseURL() +
                             imageForStatus.getUrl())
                             .into(holder.status_img);
                     holder.status_constraints.setBackgroundResource(R.color.white);

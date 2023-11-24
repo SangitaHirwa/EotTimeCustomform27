@@ -34,6 +34,7 @@ import com.eot_app.lat_lng_sync_pck.GPSModel;
 import com.eot_app.lat_lng_sync_pck.LatLngRequest;
 import com.eot_app.lat_lng_sync_pck.LatLngSycn_Controller;
 import com.eot_app.recievers.BatteryStatusReceiver;
+import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.AppUtility;
 import com.eot_app.utility.App_preference;
 import com.eot_app.utility.db.OfflineDataController;
@@ -909,7 +910,7 @@ public class ForegroundService2 extends Service {
                 );
                 String toJson = gson.toJson(latLngRequest);
                 HyperLog.i(LOG_TAG, "Location saved on local DB:" + toJson);
-                OfflineDataController.getInstance().addInOfflineDB(Service_apis.addFWlatlong, toJson, AppUtility.getDateByFormat("yyyy-MM-dd hh:mm:ss a"));
+                OfflineDataController.getInstance().addInOfflineDB(Service_apis.addFWlatlong, toJson, AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT));
                 //clear after save to offline
                 offlineLocations.clear();
             }

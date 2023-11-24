@@ -151,7 +151,7 @@ public class AddExpenseActivity extends UploadDocumentActivity implements TextWa
         if (expenseDetails != null && expenseDetails.getReceipt() != null && expenseDetails.getReceipt().size() > 0) {
             try {
                 if (expenseDetails.getReceipt().get(expenseDetails.getReceipt().size() - 1).getReceipt() != null) {
-                    Picasso.with(this)
+                    Picasso.get()
                             .load(App_preference.getSharedprefInstance().getBaseURL()
                                     + expenseDetails.getReceipt().get(expenseDetails.getReceipt().size() - 1).getReceipt())
                             .into(upload_Img);

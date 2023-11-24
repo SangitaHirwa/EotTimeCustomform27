@@ -15,9 +15,10 @@
         tools:context="com.eot_app.nav_menu.jobs.job_detail.detail.DetailFragment">
 
 
-        <ScrollView
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:fillViewport="true"
             tools:ignore="UselessParent">
 
             <LinearLayout
@@ -105,7 +106,7 @@
 
             </LinearLayout>
 
-        </ScrollView>
+        </androidx.core.widget.NestedScrollView>
 
 
     </FrameLayout>

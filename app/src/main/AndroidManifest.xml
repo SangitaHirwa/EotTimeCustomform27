@@ -402,7 +402,7 @@
         <!-- TODO changed with new  Key   -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyBTZDC_PrAX3xPPfqNtAr1dNrhLW0UEviE" />
+            android:value="${MAPS_API_KEY}" />
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.eot_app.provider"

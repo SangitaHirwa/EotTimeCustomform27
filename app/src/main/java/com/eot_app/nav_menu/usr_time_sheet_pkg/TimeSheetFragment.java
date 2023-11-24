@@ -1,5 +1,6 @@
 package com.eot_app.nav_menu.usr_time_sheet_pkg;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -98,16 +99,33 @@ public class TimeSheetFragment extends Fragment implements View.OnClickListener 
     }
 
     private void requestPermissionAndContinue() {
-        if (Build.VERSION.SDK_INT >= 23) {
+
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP && Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
             String[] PERMISSIONS = {android.Manifest.permission.WRITE_EXTERNAL_STORAGE};
             if (!hasPermissions(getActivity(), PERMISSIONS)) {
                 ActivityCompat.requestPermissions(Objects.requireNonNull(getActivity()), PERMISSIONS, TIMESHEET);
             } else {
                 SHEETPERMMISSIONALLOW = true;
             }
-        } else {
-            SHEETPERMMISSIONALLOW = true;
         }
+        else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            String[] PERMISSIONS = {Manifest.permission.READ_MEDIA_IMAGES};
+            if (!hasPermissions(getActivity(), PERMISSIONS)) {
+                ActivityCompat.requestPermissions(Objects.requireNonNull(getActivity()), PERMISSIONS, TIMESHEET);
+            } else {
+                SHEETPERMMISSIONALLOW = true;
+            }
+        }
+//        if (Build.VERSION.SDK_INT >= 23) {
+//            String[] PERMISSIONS = {android.Manifest.permission.WRITE_EXTERNAL_STORAGE};
+//            if (!hasPermissions(getActivity(), PERMISSIONS)) {
+//                ActivityCompat.requestPermissions(Objects.requireNonNull(getActivity()), PERMISSIONS, TIMESHEET);
+//            } else {
+//                SHEETPERMMISSIONALLOW = true;
+//            }
+//        } else {
+//            SHEETPERMMISSIONALLOW = true;
+//        }
     }
 
     @Override

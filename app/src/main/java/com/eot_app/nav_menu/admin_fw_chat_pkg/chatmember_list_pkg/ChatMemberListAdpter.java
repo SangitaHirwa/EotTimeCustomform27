@@ -66,7 +66,7 @@ public class ChatMemberListAdpter extends RecyclerView.Adapter<ChatMemberListAdp
             myViewHolder.badge_count.setVisibility(View.GONE);
         }
         if (!memberModel.getImg().isEmpty()) {
-            Picasso.with(context).load(App_preference.getSharedprefInstance().getBaseURL() +
+         Picasso.get().load(App_preference.getSharedprefInstance().getBaseURL() +
                     memberModel.getImg()).placeholder(R.drawable.ic_profile).error(R.drawable.ic_profile)
                     .into(myViewHolder.userImg);
 

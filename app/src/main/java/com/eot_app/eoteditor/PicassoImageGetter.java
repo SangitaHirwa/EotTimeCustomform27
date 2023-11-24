@@ -68,10 +68,11 @@ public class PicassoImageGetter implements Html.ImageGetter {
     @Override
     public Drawable getDrawable(String source) {
         BitmapDrawablePlaceHolder drawable = new BitmapDrawablePlaceHolder();
-        Picasso.with(EotApp.getAppinstance())
-                .load(source)
-                .placeholder(R.drawable.app_logo2)
-                .into(drawable);
+        Picasso.get().load(source).placeholder(R.drawable.app_logo2).into(drawable);
+//        Picasso.get()
+//                .load(source)
+//                .placeholder(R.drawable.app_logo2)
+//                .into(drawable);
         return drawable;
     }
 
@@ -114,9 +115,9 @@ public class PicassoImageGetter implements Html.ImageGetter {
         }
 
         @Override
-        public void onBitmapFailed(Drawable errorDrawable) {
-        }
+        public void onBitmapFailed(Exception e, Drawable errorDrawable) {
 
+        }
         @Override
         public void onPrepareLoad(Drawable placeHolderDrawable) {
 
