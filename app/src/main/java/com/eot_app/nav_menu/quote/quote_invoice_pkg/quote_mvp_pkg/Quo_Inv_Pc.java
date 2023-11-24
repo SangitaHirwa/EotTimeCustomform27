@@ -238,7 +238,7 @@ public class Quo_Inv_Pc implements Quo_Invo_Pi {
                             Log.e("Responce--->>>", "" + jsonObject.toString());
                             if (jsonObject.get("success").getAsBoolean()) {
                                 quotesList_view.onConvertQuotationToJob(LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
-                                ChatController.getInstance().notifyWebForIncreaseCount("jobCount");
+                                ChatController.getInstance().notifyWebForIncreaseCount("jobCount",false);
                             } else if (jsonObject.get("statusCode") != null && jsonObject.get("statusCode").getAsString().equals(AppConstant.SESSION_EXPIRE)) {
                                 quotesList_view.onSessionExpire(LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
                             }

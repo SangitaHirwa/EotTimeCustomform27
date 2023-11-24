@@ -1175,7 +1175,7 @@ public class AddQuotes_Activity extends UploadDocumentActivity implements View.O
 
     @Override
     public void onAddNewQuotes(String quotId, String lable) {
-        ChatController.getInstance().notifyWebForIncreaseCount("quoteCount");
+        ChatController.getInstance().notifyWebForIncreaseCount("quoteCount",false);
         Intent intent = new Intent();
         intent.putExtra("quotId", quotId);
         intent.putExtra("label", lable);
@@ -1185,7 +1185,7 @@ public class AddQuotes_Activity extends UploadDocumentActivity implements View.O
 
     @Override
     public void finishActivity() {
-        ChatController.getInstance().notifyWebForIncreaseCount("quoteCount");
+        ChatController.getInstance().notifyWebForIncreaseCount("quoteCount",false);
         this.finish();
     }
 

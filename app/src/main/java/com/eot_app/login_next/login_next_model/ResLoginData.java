@@ -4,6 +4,10 @@ import com.eot_app.login_next.FooterMenu;
 import com.eot_app.nav_menu.audit.audit_list.equipment.model.EquipmentStatus;
 import com.eot_app.utility.language_support.Language_Model;
 import com.eot_app.utility.language_support.Language_Settings;
+import com.google.gson.Gson;
+
+import org.json.JSONArray;
+import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,6 +78,15 @@ public class ResLoginData {
     private String isAutoTimeZone="0";
     private String loginUsrTz;
     private String taxShowType;
+    private List<AdminID> AdminIdsWithFBasePerm;
+
+    public List<AdminID> getAdminIdsWithFBasePerm() {
+        return AdminIdsWithFBasePerm;
+    }
+
+    public void setAdminIdsWithFBasePerm(List<AdminID> adminIdsWithFBasePerm) throws JSONException {
+        this.AdminIdsWithFBasePerm = adminIdsWithFBasePerm;
+    }
 
     public String getTaxShowType() {
         return taxShowType;
@@ -431,7 +444,7 @@ public class ResLoginData {
     /**
      * set Mobile SettingActivity Data
      *****/
-    public void setMobileDefaultSettings(MobileDefaultSettings mobileDefaultSettings) {
+    public void setMobileDefaultSettings(MobileDefaultSettings mobileDefaultSettings) throws JSONException {
         this.rights = mobileDefaultSettings.getRights();
         this.duration = mobileDefaultSettings.getDuration();
         this.jobCurrentTime = mobileDefaultSettings.getJobCurrentTime();
@@ -495,6 +508,7 @@ public class ResLoginData {
         this.loginUsrTz=mobileDefaultSettings.getLoginUsrTz();
         this.taxShowType = mobileDefaultSettings.getTaxShowType();
         this.isJobCompCustSignEnable = mobileDefaultSettings.getIsJobCompCustSignEnable();
+        this.AdminIdsWithFBasePerm = ConvertStringToJsonArray(mobileDefaultSettings.getAdminIdsWithFBasePerm());
 
     }
 
@@ -573,4 +587,19 @@ public class ResLoginData {
         this.isJobCompCustSignEnable = isJobCompCustSignEnable;
     }
 
+    public List<AdminID >ConvertStringToJsonArray(String convertString) throws JSONException {
+        List<AdminID> list = new ArrayList<>();
+        if(convertString!= null && !convertString.isBlank()) {
+            JSONArray jsonArray = new JSONArray(convertString);
+            if (jsonArray != null) {
+                int len = jsonArray.length();
+                for (int i = 0; i < len; i++) {
+                    Gson gson = new Gson();
+                    AdminID adminID = gson.fromJson(jsonArray.get(i).toString(), AdminID.class);
+                    list.add(adminID);
+                }
+            }
+        }
+        return list;
+    }
 }
