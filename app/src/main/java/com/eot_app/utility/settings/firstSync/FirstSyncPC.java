@@ -32,6 +32,7 @@ import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -238,7 +239,11 @@ public class FirstSyncPC implements FirstSyncPi {
                                 ResLoginData resLoginData = App_preference.getSharedprefInstance().getLoginRes();
 
                                 if (resLoginData != null) {
-                                    resLoginData.setMobileDefaultSettings(mobileDefaultSettings);
+                                    try {
+                                        resLoginData.setMobileDefaultSettings(mobileDefaultSettings);
+                                    } catch (JSONException e) {
+                                        throw new RuntimeException(e);
+                                    }
                                 }
                                 String saveLoginData = gson.toJson(resLoginData);
                                 App_preference.getSharedprefInstance().setLoginResponse(saveLoginData);

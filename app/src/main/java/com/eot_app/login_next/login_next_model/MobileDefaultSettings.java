@@ -5,6 +5,9 @@ import com.eot_app.nav_menu.audit.audit_list.equipment.model.EquipmentStatus;
 import com.eot_app.utility.language_support.Language_Model;
 import com.eot_app.utility.language_support.Language_Settings;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -75,6 +78,15 @@ public class MobileDefaultSettings {
     private String taxShowType;
     private String isJobCompCustSignEnable ;
     private int isCustomField;
+    private String AdminIdsWithFBasePerm;
+
+    public String getAdminIdsWithFBasePerm() {
+        return AdminIdsWithFBasePerm;
+    }
+
+    public void setAdminIdsWithFBasePerm(String adminIdsWithFBasePerm) throws JSONException {
+              AdminIdsWithFBasePerm = adminIdsWithFBasePerm;
+    }
 
     public String getIsJobCompCustSignEnable() {
         return isJobCompCustSignEnable;

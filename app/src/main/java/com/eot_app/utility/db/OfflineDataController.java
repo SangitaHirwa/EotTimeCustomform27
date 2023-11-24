@@ -13,6 +13,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.eot_app.BuildConfig;
 import com.eot_app.activitylog.LogModelActivity;
+import com.eot_app.login_next.login_next_model.AdminID;
 import com.eot_app.nav_menu.appointment.addupdate.model.AppointmentAddReq;
 import com.eot_app.nav_menu.appointment.addupdate.model.AppointmentUpdateReq;
 import com.eot_app.nav_menu.appointment.appointment_model.AppintmentItemDataModel;
@@ -123,10 +124,10 @@ public class OfflineDataController {
                     AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).appointmentModel().deleteAppointmentById(addAppointment_req.getTempId());
                 }
                 EotApp.getAppinstance().notifyApiObserver(data.getService_name());
-                ChatController.getInstance().notifyWebForIncreaseCount("leadCount");
+                ChatController.getInstance().notifyWebForIncreaseCount("leadCount",false);
                 //Increase client count. when add new client for future use
                 if(addAppointment_req.getClientForFuture().equals("1")){
-                    ChatController.getInstance().notifyWebForIncreaseCount("clientCount");
+                    ChatController.getInstance().notifyWebForIncreaseCount("clientCount",false);
                 }
                 break;
 
@@ -149,7 +150,7 @@ public class OfflineDataController {
                 EotApp.getAppinstance().notifyApiObserver(data.getService_name());
                 //Increase client count. when add new client for future use
                 if(addAudit_req.getClientForFuture()==1){
-                    ChatController.getInstance().notifyWebForIncreaseCount("clientCount");
+                    ChatController.getInstance().notifyWebForIncreaseCount("clientCount",false);
                 }
                 break;
 
@@ -162,8 +163,13 @@ public class OfflineDataController {
                 } else if (!(addJob_req.getMemIds()).contains(App_preference.getSharedprefInstance().getLoginRes().getUsrId())) {
                     AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().deleteJobByTempId(jobitem.getTempId());
                     /*initialize all fieldworkers unread count "0" with admin and super admin*/
-                    if (App_preference.getSharedprefInstance().getLoginRes().getAdminIds() != null) {
-                        List<String> userIds = App_preference.getSharedprefInstance().getLoginRes().getAdminIds();
+//                    if (App_preference.getSharedprefInstance().getLoginRes().getAdminIds() != null) {
+//                        List<String> userIds = App_preference.getSharedprefInstance().getLoginRes().getAdminIds();
+                    if (App_preference.getSharedprefInstance().getLoginRes().getAdminIdsWithFBasePerm() != null) {
+                        List<String> userIds = new ArrayList<>();
+                        for(AdminID id :App_preference.getSharedprefInstance().getLoginRes().getAdminIdsWithFBasePerm()) {
+                            userIds.add(id.getUsrId().toString());
+                        }
                         userIds.addAll(addJob_req.getMemIds());
                         ChatController.getInstance().initializeUnreadFromJobID(jobitem.getLabel(), jobitem.getJobId(), userIds);
                     }
@@ -193,10 +199,10 @@ public class OfflineDataController {
                                 + " with Job code " + s1 + ".";
 
                         ChatController.getInstance().notifyWeBforNew("JOB", "AddJob", jobitem.getJobId(), tempMsg, "");
-                        ChatController.getInstance().notifyWebForIncreaseCount("jobCount");
+                        ChatController.getInstance().notifyWebForIncreaseCount("jobCount",false);
                         //Increase client count. when add new client for future use
                         if(addJob_req.getClientForFuture()==1){
-                            ChatController.getInstance().notifyWebForIncreaseCount("clientCount");
+                            ChatController.getInstance().notifyWebForIncreaseCount("clientCount",false);
                         }
                     }
                 } catch (Exception exception) {
@@ -235,7 +241,7 @@ public class OfflineDataController {
                         String msg = "A new Client has been created with Client Name " + clientitem.getNm() + ".";// in the system
 
                         ChatController.getInstance().notifyWeBforNew("CLIENT", "AddClient", clientitem.getCltId(), msg, "");
-                        ChatController.getInstance().notifyWebForIncreaseCount("clientCount");
+                        ChatController.getInstance().notifyWebForIncreaseCount("clientCount",false);
                     }
                 } catch (Exception exception) {
                     exception.printStackTrace();

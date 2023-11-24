@@ -80,7 +80,7 @@ public class ClientChat_PC implements ClientChat_PI {
                             //ChatController.getInstance().getClientChatUserOffline(chatReqModel);
                             /**
                              * ** function call for increase job count.**/
-                            ChatController.getInstance().notifyWebForIncreaseCount("jobCount");
+                            ChatController.getInstance().notifyWebForIncreaseCount("jobCount", true);
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                 @Override
