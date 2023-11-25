@@ -88,6 +88,7 @@
                             android:background="@android:color/transparent"
                             android:inputType="text"
                             android:singleLine="true"
+                            android:importantForAutofill="no"
                             tools:ignore="Autofill,LabelFor,TextFields" />
 
 

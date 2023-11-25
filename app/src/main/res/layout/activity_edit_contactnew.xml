@@ -71,6 +71,7 @@
                     android:background="@android:color/transparent"
                     android:hint="@string/email_star"
                     android:singleLine="true"
+                    android:importantForAutofill="no"
                     android:textColor="@color/body_font_color"
                     tools:ignore="Autofill,TextFields" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -99,6 +100,7 @@
                     android:background="@android:color/transparent"
                     android:hint="@string/alternate_email"
                     android:singleLine="true"
+                    android:importantForAutofill="no"
                     android:textColor="@color/body_font_color"
                     tools:ignore="Autofill,TextFields" />
             </com.google.android.material.textfield.TextInputLayout>

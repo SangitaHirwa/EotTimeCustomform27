@@ -166,6 +166,7 @@
                         android:background="@android:color/transparent"
                         android:hint="@string/job_email"
                         android:inputType="textEmailAddress"
+                        android:importantForAutofill="no"
                         android:singleLine="true"
                         tools:ignore="Autofill" />
                 </com.google.android.material.textfield.TextInputLayout>
@@ -196,6 +197,7 @@
                         android:background="@android:color/transparent"
                         android:hint="@string/alternate_email"
                         android:inputType="textEmailAddress"
+                        android:importantForAutofill="no"
                         android:singleLine="true"
                         tools:ignore="Autofill" />
                 </com.google.android.material.textfield.TextInputLayout>
