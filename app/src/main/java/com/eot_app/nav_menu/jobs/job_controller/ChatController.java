@@ -1088,13 +1088,15 @@ public class ChatController {
                     }
                 });
     }
-    public  void notifyWebForIncreaseCount(String typeOfIncreaseCount,boolean isFromChat){
+    public  void notifyWebForIncreaseCount(String typeOfIncreaseCount,String isFrom){
         for (AdminID id : App_preference.getSharedprefInstance().getLoginRes().getAdminIdsWithFBasePerm()) {
             if(typeOfIncreaseCount.equals("jobCount")) {
-                if(isFromChat){
+                if(isFrom.equals("teamChat")){
                     if(id.getFirebaseNotifpermi().getJobChat().equals("1")) {
                         IncreaseCount(id.getUsrId().toString(), typeOfIncreaseCount);
-                    }else if(id.getFirebaseNotifpermi().getJobClientChat().equals("1")){
+                    }
+                } else if(isFrom.equals("clientChat")){
+                     if(id.getFirebaseNotifpermi().getJobClientChat().equals("1")){
                         IncreaseCount(id.getUsrId().toString(), typeOfIncreaseCount);
                     }
                 }else {

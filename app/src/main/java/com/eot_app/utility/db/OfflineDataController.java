@@ -124,10 +124,10 @@ public class OfflineDataController {
                     AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).appointmentModel().deleteAppointmentById(addAppointment_req.getTempId());
                 }
                 EotApp.getAppinstance().notifyApiObserver(data.getService_name());
-                ChatController.getInstance().notifyWebForIncreaseCount("leadCount",false);
+                ChatController.getInstance().notifyWebForIncreaseCount("leadCount","leadCount");
                 //Increase client count. when add new client for future use
                 if(addAppointment_req.getClientForFuture().equals("1")){
-                    ChatController.getInstance().notifyWebForIncreaseCount("clientCount",false);
+                    ChatController.getInstance().notifyWebForIncreaseCount("clientCount","clientCount");
                 }
                 break;
 
@@ -150,7 +150,7 @@ public class OfflineDataController {
                 EotApp.getAppinstance().notifyApiObserver(data.getService_name());
                 //Increase client count. when add new client for future use
                 if(addAudit_req.getClientForFuture()==1){
-                    ChatController.getInstance().notifyWebForIncreaseCount("clientCount",false);
+                    ChatController.getInstance().notifyWebForIncreaseCount("clientCount","clientCount");
                 }
                 break;
 
@@ -199,10 +199,10 @@ public class OfflineDataController {
                                 + " with Job code " + s1 + ".";
 
                         ChatController.getInstance().notifyWeBforNew("JOB", "AddJob", jobitem.getJobId(), tempMsg, "");
-                        ChatController.getInstance().notifyWebForIncreaseCount("jobCount",false);
+                        ChatController.getInstance().notifyWebForIncreaseCount("jobCount","jobCount");
                         //Increase client count. when add new client for future use
                         if(addJob_req.getClientForFuture()==1){
-                            ChatController.getInstance().notifyWebForIncreaseCount("clientCount",false);
+                            ChatController.getInstance().notifyWebForIncreaseCount("clientCount","clientCount");
                         }
                     }
                 } catch (Exception exception) {
@@ -241,7 +241,7 @@ public class OfflineDataController {
                         String msg = "A new Client has been created with Client Name " + clientitem.getNm() + ".";// in the system
 
                         ChatController.getInstance().notifyWeBforNew("CLIENT", "AddClient", clientitem.getCltId(), msg, "");
-                        ChatController.getInstance().notifyWebForIncreaseCount("clientCount",false);
+                        ChatController.getInstance().notifyWebForIncreaseCount("clientCount","clientCount");
                     }
                 } catch (Exception exception) {
                     exception.printStackTrace();
