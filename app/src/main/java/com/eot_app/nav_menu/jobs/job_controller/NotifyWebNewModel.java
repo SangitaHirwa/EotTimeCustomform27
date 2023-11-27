@@ -22,7 +22,7 @@ public class NotifyWebNewModel {
         this.type = type;
         this.action = action;
         this.id = id;
-        this.usrNm = App_preference.getSharedprefInstance().getLoginRes().getUsername();
+        this.usrNm = App_preference.getSharedprefInstance().getLoginRes().getFnm();
         this.usrId = App_preference.getSharedprefInstance().getLoginRes().getUsrId();
         this.usrType = "2";
         this.time = AppUtility.getDateByMiliseconds();
