@@ -1078,7 +1078,7 @@ public class DetailFragment extends Fragment
             if (jobDetail_pi.checkContactHideOrNot()) {
                 contact_card.setVisibility(View.GONE);
             }else {
-                //IsHideContactOnDispatch == 0- enable/show , 1 -disable /hide
+                // this check is use for show/hide contatct detail on dispatch status IsHideContactOnDispatch == 0- enable/show , 1 -disable /hide
                 if(App_preference.getSharedprefInstance().getLoginRes().getIsHideContactOnDispatch().equals("1")
                         && mParam2.getStatus().equals(AppConstant.Not_Started)){
                     contact_card.setVisibility(View.GONE);
