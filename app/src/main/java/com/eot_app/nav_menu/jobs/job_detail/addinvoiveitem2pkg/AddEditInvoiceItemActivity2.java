@@ -1568,11 +1568,13 @@ public class AddEditInvoiceItemActivity2 extends
             if(taxListFilter.size()>0) {
                 appointmentTax = new AppointmentTax(Integer.parseInt(taxListFilter.get(0).getTaxId()),
                         taxListFilter.get(0).getRate(), taxListFilter.get(0).getLabel(), taxListFilter);
-            }else{
-                appointmentTax = new AppointmentTax(Integer.parseInt("0"),
-                        "0", "0", taxListFilter);
+                apptaxList.add(appointmentTax);
             }
-            apptaxList.add(appointmentTax);
+//            else{
+//                appointmentTax = new AppointmentTax(Integer.parseInt("0"),
+//                        "0", "0", taxListFilter);
+//            }
+//            apptaxList.add(appointmentTax);
 
             int isPartParent = 0;
             String partTempId = "";
@@ -1697,11 +1699,13 @@ public class AddEditInvoiceItemActivity2 extends
             }if(taxListFilter.size()>0) {
                 appointmentTax = new AppointmentTax(Integer.parseInt(taxListFilter.get(0).getTaxId()),
                         taxListFilter.get(0).getRate(), taxListFilter.get(0).getLabel(), taxListFilter);
-            }else{
-                appointmentTax = new AppointmentTax(Integer.parseInt("0"),
-                        "0", "0", taxListFilter);
+                apptaxList.add(appointmentTax);
             }
-            apptaxList.add(appointmentTax);
+//            else{
+//                appointmentTax = new AppointmentTax(Integer.parseInt("0"),
+//                        "0", "0", taxListFilter);
+//            }
+//            apptaxList.add(appointmentTax);
 
             int isPartParent = 0;
             String partTempId = "";
