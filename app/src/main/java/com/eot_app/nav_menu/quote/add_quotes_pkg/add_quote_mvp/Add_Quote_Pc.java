@@ -410,7 +410,7 @@ public class Add_Quote_Pc implements Add_Quote_Pi {
                             if (jsonObject.get("success").getAsBoolean()) {
                                 //Increase client count. when add new client for future use
                                 if(add_quote_reQ.getClientForFuture()==1){
-                                    ChatController.getInstance().notifyWebForIncreaseCount("clientCount",false);
+                                    ChatController.getInstance().notifyWebForIncreaseCount("clientCount","quote");
                                 }
                                 add_quote_view.finishActivity();
                                 //refresh recent job on appointment details and show the label of recent job with code

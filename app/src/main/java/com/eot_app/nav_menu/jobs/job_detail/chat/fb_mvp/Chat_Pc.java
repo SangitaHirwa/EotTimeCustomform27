@@ -63,7 +63,7 @@ public class Chat_Pc implements Chat_Pi {
                             ChatController.getInstance().sendNotificationToAdmins(chat_send_Msg_model);
                             /*
                              *function call for increase job count**/
-                            ChatController.getInstance().notifyWebForIncreaseCount("jobCount",true);
+                            ChatController.getInstance().notifyWebForIncreaseCount("jobCount","teamChat");
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
