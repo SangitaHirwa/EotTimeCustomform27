@@ -2722,7 +2722,9 @@ public class DetailFragment extends Fragment
                     tempstring.replace("<br>","");
                     complation_notes.setText(tempstring);
                     btnComplationView.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit));
-                } else
+                }if(!mParam2.getComplNote().isEmpty()){
+                    btnComplationView.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit));
+                }else
                     btnComplationView.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add));
             } catch (Exception e) {
                 e.printStackTrace();
