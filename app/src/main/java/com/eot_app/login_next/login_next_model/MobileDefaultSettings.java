@@ -79,6 +79,15 @@ public class MobileDefaultSettings {
     private String isJobCompCustSignEnable ;
     private int isCustomField;
     private String AdminIdsWithFBasePerm;
+    private String isHideContactOnDispatch;
+
+    public String getIsHideContactOnDispatch() {
+        return isHideContactOnDispatch;
+    }
+
+    public void setIsHideContactOnDispatch(String isHideContactOnDispatch) {
+        this.isHideContactOnDispatch = isHideContactOnDispatch;
+    }
 
     public String getAdminIdsWithFBasePerm() {
         return AdminIdsWithFBasePerm;

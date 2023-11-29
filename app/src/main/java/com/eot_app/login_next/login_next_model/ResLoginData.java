@@ -79,6 +79,14 @@ public class ResLoginData {
     private String loginUsrTz;
     private String taxShowType;
     private List<AdminID> AdminIdsWithFBasePerm;
+    private String isHideContactOnDispatch;
+    public String getIsHideContactOnDispatch() {
+        return isHideContactOnDispatch;
+    }
+
+    public void setIsHideContactOnDispatch(String isHideContactOnDispatch) {
+        this.isHideContactOnDispatch = isHideContactOnDispatch;
+    }
 
     public List<AdminID> getAdminIdsWithFBasePerm() {
         return AdminIdsWithFBasePerm;

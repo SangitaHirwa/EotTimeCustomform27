@@ -1075,8 +1075,14 @@ public class DetailFragment extends Fragment
             jobstatus = new JobStatusModelNew(mParam2.getStatus(), jobDetail_pi.getStatusName(mParam2.getStatus()), jobDetail_pi.getImg());
             setButtonsUI(jobstatus); //changes
 //          this check is use for show/hide contact detail.
-            if (jobDetail_pi.checkContactHideOrNot() && mParam2.getStatus().equals(AppConstant.Not_Started)) {
+            if (jobDetail_pi.checkContactHideOrNot()) {
                 contact_card.setVisibility(View.GONE);
+            }else {
+                //IsHideContactOnDispatch == 0- enable/show , 1 -disable /hide
+                if(App_preference.getSharedprefInstance().getLoginRes().getIsHideContactOnDispatch().equals("1")
+                        && mParam2.getStatus().equals(AppConstant.Not_Started)){
+                    contact_card.setVisibility(View.GONE);
+                }
             }
         }
 
