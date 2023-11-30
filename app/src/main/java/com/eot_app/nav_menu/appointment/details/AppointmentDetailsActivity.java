@@ -68,6 +68,7 @@ import com.eot_app.nav_menu.appointment.details.documents.DocumentExportReq;
 import com.eot_app.nav_menu.appointment.details.documents.fileattach_mvp.Doc_Attch_Pc;
 import com.eot_app.nav_menu.appointment.details.documents.fileattach_mvp.Doc_Attch_Pi;
 import com.eot_app.nav_menu.appointment.details.documents.fileattach_mvp.Doc_Attch_View;
+import com.eot_app.nav_menu.appointment.list.AppointmentListViewModel;
 import com.eot_app.nav_menu.client.client_db.Client;
 import com.eot_app.nav_menu.client.clientlist.client_detail.site.sitelist.editsite.editsitedb.SpinnerCountrySite;
 import com.eot_app.nav_menu.jobs.add_job.Add_job_activity;
@@ -130,6 +131,7 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
     AppointmentItemAdded_pi itemAdded_pi;
     private final int GET_ITEM_LIST=5;
      AppintmentItemDataModel itemDataModel=new AppintmentItemDataModel();
+    AppointmentListViewModel alvm;
 
     private final BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
@@ -172,6 +174,7 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
         binding.txtSeeMore.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.Text_See_More));
         binding.txtSeeLess.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.Text_see_Less));
         binding.btnAddItem.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add));
+        alvm = new ViewModelProvider(this).get(AppointmentListViewModel.class);
        /* binding.btnAppointmentDone.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.mark_as_done));
         binding.btnAppointmentCompleted.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.completed));*/
 
@@ -1305,6 +1308,7 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
                 case Service_apis.updateItemOnAppointment:
                 case Service_apis.deleteItemOnAppointment:{
                     if (itemAdded_pi != null) {
+                        alvm.refreshAppoiListFromServer();
                         itemAdded_pi.getItemFromServer(model.getAppId(),this);
 
                     }
