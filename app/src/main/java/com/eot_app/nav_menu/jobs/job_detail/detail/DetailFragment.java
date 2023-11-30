@@ -2607,10 +2607,21 @@ public class DetailFragment extends Fragment
     @Override
     public void onFormSuccess() {
         HyperLog.i(TAG, "onFormSuccess(M) Start");
-        if (jobstatus != null) {
-            if (!jobstatus.getStatus_no().equals(AppConstant.Not_Started)) {
-                contact_card.setVisibility(View.VISIBLE);
-            }
+         if (jobstatus != null) {
+             if (jobDetail_pi.checkContactHideOrNot()) {
+                 contact_card.setVisibility(View.GONE);
+             }else {
+                 if (!jobstatus.getStatus_no().equals(AppConstant.Not_Started)) {
+                     contact_card.setVisibility(View.VISIBLE);
+                 } else {
+                     if (App_preference.getSharedprefInstance().getLoginRes().getIsHideContactOnDispatch().equals("1")
+                             && jobstatus.getStatus_no().equals(AppConstant.Not_Started)) {
+                         contact_card.setVisibility(View.GONE);
+                     } else {
+                         contact_card.setVisibility(View.VISIBLE);
+                     }
+                 }
+             }
             /* **** check permission for  custom form ******/
 
             if (App_preference.getSharedprefInstance().getLoginRes().getConfirmationTrigger() != null) {

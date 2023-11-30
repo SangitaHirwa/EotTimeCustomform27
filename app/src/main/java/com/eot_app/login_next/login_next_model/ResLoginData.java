@@ -517,6 +517,7 @@ public class ResLoginData {
         this.taxShowType = mobileDefaultSettings.getTaxShowType();
         this.isJobCompCustSignEnable = mobileDefaultSettings.getIsJobCompCustSignEnable();
         this.AdminIdsWithFBasePerm = ConvertStringToJsonArray(mobileDefaultSettings.getAdminIdsWithFBasePerm());
+        this.isHideContactOnDispatch = mobileDefaultSettings.getIsHideContactOnDispatch();
 
     }
 
