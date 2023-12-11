@@ -1004,6 +1004,7 @@ public class Generate_Invoice_Activity extends AppCompatActivity implements MyLi
     public void onObserveCallBack(String totalAmount) {
         if (itemListPi != null) {
             inv_total_amount.setText(AppUtility.getRoundoff_amount(totalAmount + ""));
+            txt_total.setText(AppUtility.getRoundoff_amount(""+totalAmount));
         }
     }
     Double totalOfShippingItem = 0.0;
