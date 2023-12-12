@@ -57,7 +57,7 @@ public class Invoice_Email_Activity extends AppCompatActivity implements View.On
         setContentView(R.layout.activity_invoice_email);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.email_invoice));
-        invoice_email_pi = new Invoice_Email_pc(this);
+        invoice_email_pi = new Invoice_Email_pc(this, this);
         findViews();
         Bundle bundle = getIntent().getExtras();
         if (getIntent().hasExtra("invId")) {
@@ -117,7 +117,7 @@ public class Invoice_Email_Activity extends AppCompatActivity implements View.On
 
         // if user is not coming from dialog of template selection
         if(tempId==null||tempId.isEmpty())
-        rl.setVisibility(View.VISIBLE);
+            rl.setVisibility(View.VISIBLE);
 
         if (templateList != null && templateList.size() > 0) {
             for (InvoiceEmaliTemplate model : templateList) {

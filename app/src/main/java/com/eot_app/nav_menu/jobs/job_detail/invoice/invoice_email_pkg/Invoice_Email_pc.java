@@ -31,9 +31,11 @@ import io.reactivex.schedulers.Schedulers;
 
 public class Invoice_Email_pc implements Invoice_Email_pi {
     Invoice_Email_View email_view;
+    Context context;
 
-    public Invoice_Email_pc(Invoice_Email_View email_view) {
+    public Invoice_Email_pc(Invoice_Email_View email_view,Context context) {
         this.email_view = email_view;
+        this.context = context;
     }
 
     @Override
@@ -244,7 +246,7 @@ public class Invoice_Email_pc implements Invoice_Email_pi {
                     ActivityLogController.JOB_GET_INVOICE_TEMP,
                     ActivityLogController.JOB_MODULE
             );
-            AppUtility.progressBarShow((Context) email_view);
+            AppUtility.progressBarShow(context);
             ApiClient.getservices().eotServiceCall(Service_apis.getInvoiceEmailTemplate, AppUtility.getApiHeaders(), jsonObject)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -299,7 +301,7 @@ public class Invoice_Email_pc implements Invoice_Email_pi {
                     ActivityLogController.JOB_MODULE
             );
 
-            AppUtility.progressBarShow((Context) email_view);
+            AppUtility.progressBarShow(context);
             ApiClient.getservices().eotServiceCall(Service_apis.sendInvoiceEmailTemplate, AppUtility.getApiHeaders(), jsonObject)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -377,7 +379,7 @@ public class Invoice_Email_pc implements Invoice_Email_pi {
                     ActivityLogController.JOB_GET_EMAIL_QOUTE,
                     ActivityLogController.JOB_MODULE
             );
-            AppUtility.progressBarShow((Context) email_view);
+            AppUtility.progressBarShow(context);
             ApiClient.getservices().eotServiceCall(Service_apis.getQuotationEmailTemplate, AppUtility.getApiHeaders(), jsonObject)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -439,7 +441,7 @@ public class Invoice_Email_pc implements Invoice_Email_pi {
                     ActivityLogController.JOB_SEND_QUOTE_TEMP,
                     ActivityLogController.JOB_MODULE
             );
-            AppUtility.progressBarShow((Context) email_view);
+            AppUtility.progressBarShow(context);
             ApiClient.getservices().eotServiceCall(Service_apis.sendQuotationEmailTemplate, AppUtility.getApiHeaders(), jsonObject)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -489,7 +491,7 @@ public class Invoice_Email_pc implements Invoice_Email_pi {
 
         if (AppUtility.isInternetConnected()) {
 
-            AppUtility.progressBarShow((Context) email_view);
+            AppUtility.progressBarShow(context);
             ApiClient.getservices().eotServiceCall(Service_apis.getJobDocEmailTemplate, AppUtility.getApiHeaders(), jsonObject)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -544,7 +546,7 @@ public class Invoice_Email_pc implements Invoice_Email_pi {
         JsonObject jsonObject = AppUtility.getJsonObject(new Gson().toJson(hm));
         if (AppUtility.isInternetConnected()) {
 
-            AppUtility.progressBarShow((Context) email_view);
+            AppUtility.progressBarShow(context);
             ApiClient.getservices().eotServiceCall(Service_apis.sendJobDocEmailTemplate, AppUtility.getApiHeaders(), jsonObject)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -594,7 +596,7 @@ public class Invoice_Email_pc implements Invoice_Email_pi {
 
         if (AppUtility.isInternetConnected()) {
 
-            AppUtility.progressBarShow((Context) email_view);
+            AppUtility.progressBarShow(context);
             ApiClient.getservices().eotServiceCall(Service_apis.getJobCardEmailTemplate, AppUtility.getApiHeaders(), jsonObject)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -651,7 +653,7 @@ public class Invoice_Email_pc implements Invoice_Email_pi {
         JsonObject jsonObject = AppUtility.getJsonObject(new Gson().toJson(hm));
         if (AppUtility.isInternetConnected()) {
 
-            AppUtility.progressBarShow((Context) email_view);
+            AppUtility.progressBarShow(context);
             ApiClient.getservices().eotServiceCall(Service_apis.sendJobCardEmailTemplate, AppUtility.getApiHeaders(), jsonObject)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())

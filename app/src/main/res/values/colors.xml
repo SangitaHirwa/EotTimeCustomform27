@@ -80,5 +80,11 @@
     <color name="invoice_calculation_bd">#EFFEFF</color>
     <color name="invoice_sub_total_amount">#4F4F4F</color>
     <color name="invoice_total_amount">#222222</color>
+    <color name="dialog_edit_text_lbl_color">#72777A</color>
+    <color name="scroll_thumb_color">#1E5F62</color>
+    <color name="scroll_track_color">#CED4DA</color>
+    <color name="bg_color_dialog_toolbar">#E6F0F1</color>
+    <color name="txt_dialog_link_color">#16A1B4</color>
+    <color name="bg_rv_dialog">#EDEDED</color>
 
 </resources>
