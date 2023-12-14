@@ -461,9 +461,11 @@ public class AddQuotes_Activity extends UploadDocumentActivity implements View.O
             }
             if(quotesDetails.getInvData().getDisCalculationType().equals("0")) {
                 texDisTypeText.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.percentage_discount));
+                taxType = "0";
             }
             else if (quotesDetails.getInvData().getDisCalculationType().equals("1")) {
                 texDisTypeText.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.flat_discount));
+                taxType = "1";
             }
 
             try {
@@ -702,8 +704,10 @@ public class AddQuotes_Activity extends UploadDocumentActivity implements View.O
         add_quote_pi.getActiveUserList();
         if(App_preference.getSharedprefInstance().getLoginRes().getDisCalculationType().equals("0")){
             texDisTypeText.setText(arrayType[0]);
+            taxType="0";
         }else if(App_preference.getSharedprefInstance().getLoginRes().getDisCalculationType().equals("1")){
             texDisTypeText.setText(arrayType[1]);
+            taxType="1";
         }
 
         AppUtility.spinnerPopUpWindow(typeSpinner);
