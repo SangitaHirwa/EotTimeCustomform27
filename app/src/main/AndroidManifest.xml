@@ -16,6 +16,10 @@
         android:usesCleartextTraffic="true"
         tools:replace="android:allowBackup">
         <activity
+            android:name=".nav_menu.jobs.job_card_view.JobCardViewActivity"
+            android:exported="false"
+            />
+        <activity
             android:name=".nav_menu.addlead.AddLeadFragment"
             android:exported="false"
             tools:ignore="Instantiatable" />
