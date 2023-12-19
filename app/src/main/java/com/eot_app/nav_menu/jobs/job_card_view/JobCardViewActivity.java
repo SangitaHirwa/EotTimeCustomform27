@@ -396,10 +396,10 @@ public class JobCardViewActivity extends AppCompatActivity  implements
         binding.eotEditor.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
         binding.eotEditor.setScrollbarFadingEnabled(false);
         if(b){
-            String replacedMessage = webMessage.replace("<p id=\"esignUrl\"></p>", "<p id=\"esignUrl\"><a href=\"_eSign_\" style=\"color:#15a0b3;\">E-Sign</a></p>");
+            String replacedMessage = webMessage.replace("<p id=\"esignUrl\"> </p>", "<p id=\"esignUrl\"> <a href=\"_eSign_\" style=\"color:#15a0b3;\">E-Sign</a></p>");
             binding.eotEditor.setHtml(replacedMessage);
         }else {
-            String replacedMessage = webMessage.replaceAll(" <a href=\"_eSign_\" style=\"color:#15a0b3;\">E-Sign</a>", "");
+            String replacedMessage = webMessage.replaceAll("<a href=\"_eSign_\" style=\"color:#15a0b3;\">E-Sign</a>", "");
             binding.eotEditor.setHtml(replacedMessage);
         }
 
