@@ -43,6 +43,7 @@ import com.eot_app.login_next.FooterMenu;
 import com.eot_app.login_next.login_next_model.CompPermission;
 import com.eot_app.nav_menu.client.clientlist.client_detail.work_history.WorkHistoryFragment;
 import com.eot_app.nav_menu.client_chat_pkg.ClientChatFragment;
+import com.eot_app.nav_menu.jobs.job_card_view.JobCardViewActivity;
 import com.eot_app.nav_menu.jobs.job_controller.ChatController;
 import com.eot_app.nav_menu.jobs.job_controller.ChatListnersContainer;
 import com.eot_app.nav_menu.jobs.job_db.Job;
@@ -93,7 +94,6 @@ import com.hypertrack.hyperlog.HyperLog;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 
 public class JobDetailActivity extends AppCompatActivity implements
@@ -140,8 +140,9 @@ public class JobDetailActivity extends AppCompatActivity implements
     private TextView text, clientChatTextView;
     private BottomSheetDialog mBottomSheetDialog;
     private ButtomBarAdapter buttomBarAdapter;
-    private String appId;
+    private String appId, toJsonTemplate;
     private boolean DOCUMENTSELECT = false;
+    JobCardViewActivity jobCardViewActivity;
     private boolean keyboardListenersAttached = false;
     private ViewGroup rootLayout;
     BroadcastReceiver loadfromforserver=new BroadcastReceiver() {
@@ -805,7 +806,21 @@ public class JobDetailActivity extends AppCompatActivity implements
             return true;
         }
         else if (item.getItemId() == R.id.miJobCard) {
-            dialogJobCardDocuments = new DialogJobCardDocuments();
+
+            if(templateList!=null && !templateList.isEmpty()){
+                toJsonTemplate = new Gson().toJson(templateList);
+            }
+           Intent intent=new Intent(this,JobCardViewActivity.class);
+           intent.putExtra("DataForJobCardView",true);
+           intent.putExtra("JobId",dataJob.getJobId());
+           intent.putExtra("toJsonTemplateString",toJsonTemplate);
+            if(dataJob.getKpr()!=null)
+            {
+                String[] fwList2=dataJob.getKpr().split(",");
+               intent.putExtra("FwList",fwList2);
+            }
+           startActivity(intent);
+            /*dialogJobCardDocuments = new DialogJobCardDocuments();
             dialogJobCardDocuments.setContext(this);
             dialogJobCardDocuments.setJobId(dataJob.getJobId());
 
@@ -818,7 +833,7 @@ public class JobDetailActivity extends AppCompatActivity implements
             if(templateList!=null && !templateList.isEmpty()){
                 dialogJobCardDocuments.setInvoiceTmpList(templateList);
             }
-            dialogJobCardDocuments.show(getSupportFragmentManager(), "dialog");
+           *//* dialogJobCardDocuments.show(getSupportFragmentManager(), "dialog");*/
             return true;
         }
         return super.onOptionsItemSelected(item);

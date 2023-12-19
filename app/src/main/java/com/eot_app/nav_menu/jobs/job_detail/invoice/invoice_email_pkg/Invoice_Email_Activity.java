@@ -20,6 +20,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.eot_app.R;
 import com.eot_app.eoteditor.EotEditor;
+import com.eot_app.nav_menu.jobs.job_detail.detail.jobdetial_model.JobCardAttachmentModel;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_email_pkg.get_email_temp_model.Get_Email_ReS_Model;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_email_pkg.get_email_temp_model.InvoiceEmaliTemplate;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_email_pkg.send_email_temp_model.Send_Email_ReS_Model;
@@ -30,7 +31,9 @@ import com.eot_app.utility.language_support.LanguageController;
 import com.google.android.material.textfield.TextInputLayout;
 import com.hypertrack.hyperlog.HyperLog;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.Callable;
 
@@ -41,7 +44,7 @@ public class Invoice_Email_Activity extends AppCompatActivity implements View.On
     private EditText edt_email_to, edt_email_cc, edt_email_subject/*, edt_email_message*/;
     Button btn_send_email;
     private Invoice_Email_pi invoice_email_pi;
-    private String invId, quotId, appId, jobId;
+    private String invId, quotId, appId, jobId , email_message;
     TextInputLayout input_layout_email_to, input_layout_email_cc, input_layout_email_subject, input_layout_email_message;
     private Get_Email_ReS_Model email_reS_model;
     private String isProformaInv = "0";
@@ -50,6 +53,7 @@ public class Invoice_Email_Activity extends AppCompatActivity implements View.On
     ArrayList<InvoiceEmaliTemplate> templateList = new ArrayList<>();
     private RelativeLayout rl;
     private Object stripLink;
+    List<JobCardAttachmentModel> reqAttachmentList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +85,8 @@ public class Invoice_Email_Activity extends AppCompatActivity implements View.On
         }
         if (getIntent().hasExtra("jobId")) {
             jobId = bundle.getString("jobId");
+            email_message =bundle.getString("message");
+            reqAttachmentList = (List<JobCardAttachmentModel>) bundle.getSerializable("attachmentList");
             HyperLog.i("", "Job intent received:" + jobId);
 
         }
@@ -218,7 +224,7 @@ public class Invoice_Email_Activity extends AppCompatActivity implements View.On
             edt_email_subject.setText(email_reS_model.getSubject());
         }
         if (email_reS_model.getMessage() != null && !email_reS_model.getMessage().equals("")) {
-            editor.setHtml(email_reS_model.getMessage());
+            editor.setHtml(email_message);
         }
         this.email_reS_model = email_reS_model;
 
@@ -342,7 +348,7 @@ public class Invoice_Email_Activity extends AppCompatActivity implements View.On
                                 messageInHtml,
                                 emailSubject,
                                 emailTo,
-                                emailCc,tempId,getIntent().getStringExtra("fwid"));
+                                emailCc,tempId,getIntent().getStringExtra("fwid"),reqAttachmentList);
                     }
                 }
                 break;

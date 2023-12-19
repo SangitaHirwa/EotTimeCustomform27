@@ -4,11 +4,13 @@ import android.content.Context;
 import android.util.Log;
 
 import com.eot_app.activitylog.ActivityLogController;
+import com.eot_app.nav_menu.jobs.job_detail.detail.jobdetial_model.JobCardAttachmentModel;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_email_pkg.get_email_temp_model.Get_Email_ReQ_Model;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_email_pkg.get_email_temp_model.Get_Email_ReS_Model;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_email_pkg.get_email_temp_model.InvoiceEmaliTemplate;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_email_pkg.send_email_temp_model.Send_Email_ReQ_Model;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_email_pkg.send_email_temp_model.Send_Email_ReS_Model;
+import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_email_pkg.send_email_temp_model.Send_JobCard_Email_ReqModel;
 import com.eot_app.services.ApiClient;
 import com.eot_app.services.Service_apis;
 import com.eot_app.utility.AppConstant;
@@ -22,6 +24,7 @@ import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import io.reactivex.Observer;
@@ -637,19 +640,8 @@ public class Invoice_Email_pc implements Invoice_Email_pi {
     }
 
     @Override
-    public void sendJobCardEmailTemplate(String jobId, String pdfPath, String message, String subject, String to, String cc, String tempId,String fwid) {
-
-        Map<String, String> hm = new HashMap<>();
-        hm.put("jobId", jobId);
-        hm.put("pdfPath", pdfPath);
-        hm.put("message", message);
-        hm.put("subject", subject);
-        hm.put("to", to);
-        hm.put("cc", cc);
-        hm.put("isJobCardPdfSend", "1");
-        hm.put("tempId", tempId);
-        hm.put("techId",fwid);
-
+    public void sendJobCardEmailTemplate(String jobId, String pdfPath, String message, String subject, String to, String cc, String tempId,String fwid,List<JobCardAttachmentModel> cardAttachmentModelList) {
+        Send_JobCard_Email_ReqModel hm = new Send_JobCard_Email_ReqModel(jobId,pdfPath,message,subject,to,cc,tempId,fwid,cardAttachmentModelList);
         JsonObject jsonObject = AppUtility.getJsonObject(new Gson().toJson(hm));
         if (AppUtility.isInternetConnected()) {
 
