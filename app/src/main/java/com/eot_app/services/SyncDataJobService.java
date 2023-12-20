@@ -822,7 +822,7 @@ public class SyncDataJobService extends JobService {
                                executors.execute(new Runnable() {
                                    @Override
                                    public void run() {
-                                    //   AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).customFormListOfflineDao().delete();
+                                       AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).customFormListOfflineDao().delete();
                                        for (int i=0;i<formList.size();i++)
                                        {
                                            String jtId = formList.get(i).getJtId();
