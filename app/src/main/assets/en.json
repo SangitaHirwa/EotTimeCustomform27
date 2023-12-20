@@ -1825,7 +1825,10 @@
     "contract_invoice_alert": "Here you can create job specific invoice, since this job is a part of Contract it’s better to use invoice section within the Contract for creating the Contract invoice.Do you still want to create job based invoice?",
     "batch_invoice_can_not_generate_msg": "App user can not see multi jobs invoice.",
     "signature_alert": "Signature is mandatory to complete the job.",
-    "non_billable_item_alert": "To generate an invoice. It is necessary to add atleast one billable item/service. "
+    "non_billable_item_alert": "To generate an invoice. It is necessary to add atleast one billable item/service. ",
+    "send_job_card": "Send Jobcard",
+    "download": "Download",
+    "appointment_code": "Appointment Code"
   }
 }
 

@@ -316,7 +316,8 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
         HyperLog.i("", "setDataInUI(M) start");
         if (model != null) {
 
-
+            binding.titleAppointmentCode.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.appointment_code+": "));
+            binding.tvAppointmentCode.setText(model.getLabel());
             setClientName(model);
             setAppointmentStatusList();
             setQuotationDetails();
@@ -372,7 +373,7 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
             binding.imgEmail.setOnClickListener(this);
             binding.tvViewOnMap.setOnClickListener(this);
             binding.tvAddNew.setOnClickListener(this);
-            binding.editAppointment.setOnClickListener(this);
+          /*  binding.editAppointment.setOnClickListener(this);*/
 
 
             itemAdded_pi.getItemListByAppointmentFromDB(model.getAppId());
@@ -694,7 +695,7 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.quotes_menu, menu);
-        menu.getItem(0).setVisible(false);
+        menu.getItem(0).setVisible(true);
         return true;
     }
 
@@ -702,14 +703,20 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home)
             onBackPressed();
-       /* else if (item.getItemId() == R.id.quotes_edit) {
+        else if (item.getItemId() == R.id.quotes_edit) {
             Intent intent = new Intent(this, AddAppointmentActivity.class);
             intent.putExtra(AddAppointmentActivity.ISINEDITMODE, true);
             intent.putExtra("appointment", model);
             intent.putExtra("editView",true);
             intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
             startActivityForResult(intent, EDIT_APPOINTMENT_CODE);
-        }*/
+           /* Intent intent = new Intent(this, AddAppointmentActivity.class);
+            intent.putExtra(AddAppointmentActivity.ISINEDITMODE, true);
+            intent.putExtra("appointment", model);
+            intent.putExtra("editView",true);
+            intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+            startActivityForResult(intent, EDIT_APPOINTMENT_CODE);*/
+        }
         return true;
     }
 
@@ -798,14 +805,14 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
                 binding.seeless.setVisibility(View.GONE);
                 binding.LayoutForSeeMoreLess.setVisibility(View.GONE);
                 break;
-            case R.id.edit_appointment:
+           /* case R.id.edit_appointment:
                 Intent intent = new Intent(this, AddAppointmentActivity.class);
                 intent.putExtra(AddAppointmentActivity.ISINEDITMODE, true);
                 intent.putExtra("appointment", model);
                 intent.putExtra("editView",true);
                 intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                 startActivityForResult(intent, EDIT_APPOINTMENT_CODE);
-                break;
+                break;*/
            /* case R.id.tv_add_new_item:
                 Intent requirmentGethering = new Intent(this, AddEditInvoiceItemActivity2.class);
                 requirmentGethering.putExtra("req", "yes");

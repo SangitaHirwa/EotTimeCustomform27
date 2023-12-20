@@ -1,50 +1,45 @@
-package com.eot_app.nav_menu.jobs.job_detail.detail;
+package com.eot_app.nav_menu.jobs.job_card_view;
 
-import static android.app.Activity.RESULT_OK;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
+import androidx.databinding.ViewDataBinding;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
-import android.text.Spannable;
-import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
-import android.text.Spanned;
 import android.util.Log;
-import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.Spinner;
+
 import com.eot_app.R;
+import com.eot_app.databinding.ActivityJobCardViewBinding;
+import com.eot_app.databinding.ActivityMainBinding;
 import com.eot_app.databinding.DialogJobCardBinding;
-import com.eot_app.nav_menu.custom_fileds.custom_model.CustOmFormQuestionsRes;
-import com.eot_app.nav_menu.jobs.job_db.EquArrayModel;
+import com.eot_app.nav_menu.appointment.details.AppointmentDetailsViewModel;
 import com.eot_app.nav_menu.jobs.job_detail.JobDetailActivity;
 import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.model.InvoiceItemDataModel;
 import com.eot_app.nav_menu.jobs.job_detail.detail.adapter.JobCardAttachmentAdapter;
-import com.eot_app.nav_menu.jobs.job_detail.detail.job_detail_presenter.JobDetail_pc;
 import com.eot_app.nav_menu.jobs.job_detail.detail.job_detail_presenter.JobDetail_pi;
-import com.eot_app.nav_menu.jobs.job_detail.detail.job_detail_view.JobDetail_view;
-import com.eot_app.nav_menu.jobs.job_detail.detail.jobdetial_model.CompletionDetails;
 import com.eot_app.nav_menu.jobs.job_detail.detail.jobdetial_model.JobCardAttachmentModel;
-import com.eot_app.nav_menu.jobs.job_detail.detail.jobdetial_model.JobStatusModelNew;
 import com.eot_app.nav_menu.jobs.job_detail.documents.ActivityDocumentSaveUpload;
 import com.eot_app.nav_menu.jobs.job_detail.documents.PathUtils;
 import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.GetFileList_Res;
 import com.eot_app.nav_menu.jobs.job_detail.documents.fileattach_mvp.Doc_Attch_Pc;
 import com.eot_app.nav_menu.jobs.job_detail.documents.fileattach_mvp.Doc_Attch_Pi;
 import com.eot_app.nav_menu.jobs.job_detail.documents.fileattach_mvp.Doc_Attch_View;
-import com.eot_app.nav_menu.jobs.job_detail.generate_invoice.Generate_Invoice_Activity;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_email_pkg.Invoice_Email_Activity;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_email_pkg.Invoice_Email_View;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_email_pkg.Invoice_Email_pc;
@@ -54,6 +49,8 @@ import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_email_pkg.get_email_
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_email_pkg.send_email_temp_model.Send_Email_ReS_Model;
 import com.eot_app.nav_menu.jobs.job_detail.invoice2list.itemlist_model.InvoiceItemDetailsModel;
 import com.eot_app.nav_menu.jobs.job_detail.invoice2list.itemlist_mvp.ItemList_PI;
+import com.eot_app.nav_menu.jobs.job_detail.job_detail_activity_presenter.Job_Detail_Activity_View;
+import com.eot_app.nav_menu.jobs.job_detail.job_detail_activity_presenter.Job_Detail_Activity_pc;
 import com.eot_app.nav_menu.jobs.job_detail.job_detail_activity_presenter.Job_Detail_Activity_pi;
 import com.eot_app.nav_menu.quote.quote_invoice_pkg.quote_mvp_pkg.Quo_Invo_Pi;
 import com.eot_app.utility.AppConstant;
@@ -65,25 +62,19 @@ import com.eot_app.utility.language_support.LanguageController;
 import com.eot_app.utility.settings.setting_db.FieldWorker;
 import com.eot_app.utility.util_interfaces.MySpinnerAdapter;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
 
-import java.io.File;
+import java.io.Serializable;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.databinding.DataBindingUtil;
-import androidx.fragment.app.DialogFragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-
-public class DialogJobCardDocuments extends DialogFragment
-        implements View.OnClickListener, Spinner.OnItemSelectedListener, Invoice_Email_View, JobCardAttachmentAdapter.Listener, Doc_Attch_View {
-
-    Context activity;
-    DialogJobCardBinding binding;
-    Job_Detail_Activity_pi detail_activity_pi;
+public class JobCardViewActivity extends AppCompatActivity  implements
+        View.OnClickListener, Spinner.OnItemSelectedListener, Invoice_Email_View, JobCardAttachmentAdapter.Listener, Doc_Attch_View, Job_Detail_Activity_View {
+    Job_Detail_Activity_pi detail_activity_pi=new Job_Detail_Activity_pc(this);
     private ItemList_PI itemListPi;
     Quo_Invo_Pi quo_invo_pi;
     String jobId = "";
@@ -92,13 +83,9 @@ public class DialogJobCardDocuments extends DialogFragment
     String[] fwList;
     ArrayList<InvoiceEmaliTemplate> templateList;
     String[] kprList;
-    public void setJobId(String jobId) {
-        this.jobId = jobId;
-    }
     String quotId;
     private InvoiceItemDetailsModel invoice_Details;
     private Invoice_Email_pi invoice_email_pi;
-    private JobDetail_pi jobDetail_pi;
     private JobCardAttachmentAdapter jobCardAttachmentAdapter;
     List<JobCardAttachmentModel> reqAttachmentList  = new ArrayList<>();
     List<JobCardAttachmentModel> list  = new ArrayList<>();
@@ -106,87 +93,27 @@ public class DialogJobCardDocuments extends DialogFragment
     Doc_Attch_Pi doc_attch_pi;
     private final int ATTACHFILE_CODE = 101;
     private static final int DOUCMENT_UPLOAD_CODE = 156;
-    public void setdetail_activity_pi(Job_Detail_Activity_pi detail_activity_pi) {
-        this.detail_activity_pi = detail_activity_pi;
-    }
-    public void setitemListPi(ItemList_PI itemListPi) {
-        this.itemListPi = itemListPi;
-    }
-    public void setinvoice_Details(InvoiceItemDetailsModel invoice_Details) {
-        this.invoice_Details = invoice_Details;
-    }
-    public void setFwList(String[] fwList2) {
-        this.fwList = fwList2;
-        Log.e("fwList set",new Gson().toJson(fwList));
-    }
-    public void setquo_invo_pi(Quo_Invo_Pi quo_invo_pi) {
-        this.quo_invo_pi=quo_invo_pi;
-    }
-    public void setInvoiceTmpList(ArrayList<InvoiceEmaliTemplate> templateList) {
-        this.templateList = templateList;
-        Log.e("TemplateData::", "setList:"+new Gson().toJson(this.templateList));
-        if (templateList != null && templateList.size() > 0) {
-            for (InvoiceEmaliTemplate model : templateList) {
-                if (model.getDefaultTemp() != null && model.getDefaultTemp().equals("1")) {
-                    tempId = model.getInvTempId();
-                    break;
-                }
-            }
-        }
-        AppUtility.progressBarDissMiss();
-    }
-    public void setQuoteId(String quoteId) {
-        this.quotId = quoteId;
-
-    }
-
-    public void setContext(Context activity) {
-        this.activity = activity;
-    }
+    ActivityJobCardViewBinding binding;
 
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setStyle(DialogFragment.STYLE_NORMAL, androidx.appcompat.R.style.Theme_AppCompat_Light_Dialog_Alert);
-        invoice_email_pi = new Invoice_Email_pc(this, this.getContext());
-//        jobDetail_pi = new JobDetail_pc(this);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_job_card_view);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle(LanguageController.getInstance().getMobileMsgByKey("Preview and Send JobCard"));
+        invoice_email_pi = new Invoice_Email_pc(this, this);
         doc_attch_pi = new Doc_Attch_Pc(this);
+        if(getIntent().hasExtra("DataForJobCardView")){
+            jobId = getIntent().getStringExtra("JobId");
+            fwList = getIntent().getStringArrayExtra("FwList");
+            Type type = new TypeToken<List<InvoiceEmaliTemplate>>() {}.getType();
+            templateList = new Gson().fromJson(getIntent().getStringExtra("toJsonTemplateString"),type);
+        }
 
-    }
-
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = DataBindingUtil.inflate(inflater, R.layout.dialog_job_card, container, false);
-        View view = binding.getRoot();
         initViews();
-        return view;
-    }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-//        Window window = getDialog().getWindow();
-//        if(window == null) return;
-//        WindowManager.LayoutParams params = window.getAttributes();
-//        params.height = 1000;
-//        window.setAttributes(params);
-        AppUtility.progressBarDissMiss();
     }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        AppUtility.progressBarDissMiss();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        AppUtility.progressBarDissMiss();
-    }
-
     void initViews() {
 
 
@@ -197,7 +124,7 @@ public class DialogJobCardDocuments extends DialogFragment
             AppUtility.spinnerPopUpWindow(binding.signatureDp);
             int pos = 0;
             for (String id : fwList) {
-                FieldWorker fieldWorker = AppDataBase.getInMemoryDatabase(getActivity()).fieldWorkerModel().getFieldWorkerByID(id);
+                FieldWorker fieldWorker = AppDataBase.getInMemoryDatabase(this).fieldWorkerModel().getFieldWorkerByID(id);
                 if(fieldWorker!=null)
                 {
                     kprList[pos]=fieldWorker.getName()+" "+fieldWorker.getLnm();
@@ -207,7 +134,7 @@ public class DialogJobCardDocuments extends DialogFragment
                 }
                 pos++;
             }
-            binding.signatureDp.setAdapter(new MySpinnerAdapter(activity, kprList));
+            binding.signatureDp.setAdapter(new MySpinnerAdapter(this, kprList));
         }
 
         if (templateList != null && templateList.size() > 0) {
@@ -219,7 +146,7 @@ public class DialogJobCardDocuments extends DialogFragment
                 statusList[pos] = status.getInputValue();
                 pos++;
             }
-            binding.templatDp.setAdapter(new MySpinnerAdapter(activity, statusList));
+            binding.templatDp.setAdapter(new MySpinnerAdapter(this, statusList));
             for (int i = 0; i < templateList.size(); i++) {
                 if (templateList.get(i).getDefaultTemp().equalsIgnoreCase("1"))
                     setEquStatus(i);
@@ -228,14 +155,17 @@ public class DialogJobCardDocuments extends DialogFragment
         else {
             binding.templateView.setVisibility(View.GONE);
         }
-
-
-        binding.buttonSendEmail.setOnClickListener(this);
-        binding.buttonView.setOnClickListener(this);
+        if(!binding.cbSign.isChecked()){
+            binding.cbSign.setChecked(true);
+        }
+        binding.sendJobcardBtn.setOnClickListener(this);
+        binding.downloadJobcardBtn.setOnClickListener(this);
         binding.linearLayoutSignature.setOnClickListener(this);
         binding.linearLayoutTemplat.setOnClickListener(this);
         binding.templatDp.setOnItemSelectedListener(this);
         binding.signatureDp.setOnItemSelectedListener(this);
+        binding.dropDownForCc.setOnClickListener(this);
+        binding.removeTechSignature.setOnClickListener(this);
 
         binding.hintTemplateTxt.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.select_template));
         binding.hintSignatureTxt.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.tech_sign));
@@ -251,52 +181,45 @@ public class DialogJobCardDocuments extends DialogFragment
 
 
         if (jobId != null&&!jobId.isEmpty()) {
-            binding.buttonSendEmail.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.email_job_card));
-            binding.buttonView.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.print_job_card));
-            binding.buttonSendEmail.setVisibility(View.VISIBLE);
+            binding.tvSendJobcardBtn.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.send_job_card));
+            binding.tvDownloadBtn.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.download));
+            binding.sendJobcardBtn.setVisibility(View.VISIBLE);
             binding.llEmailType.setVisibility(View.VISIBLE);
         }
-        else if(quotId!=null&&!quotId.isEmpty()){
-            binding.buttonView.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.print_quote));
-            binding.buttonSendEmail.setVisibility(View.GONE);
-            binding.llEmailType.setVisibility(View.GONE);
-        }
         else {
-            binding.buttonView.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.print_invoice));
-            binding.buttonSendEmail.setVisibility(View.GONE);
+            binding.tvDownloadBtn.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.print_invoice));
+            binding.sendJobcardBtn.setVisibility(View.GONE);
             binding.llEmailType.setVisibility(View.GONE);
         }
+
 
         setEmailData();
 
     }
 
-
-    public void setData() {
-
-    }
-
-
-    @SuppressLint("NonConstantResourceId")
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.button_send_email:
+            case R.id.send_jobcard_btn:
                 SpannableStringBuilder spnBuilder = new SpannableStringBuilder(binding.edtEmailMessage.getText());
                 String spn = Html.toHtml(spnBuilder);
                 Log.e("Email Text", ""+spn);
                 if (jobId != null&&!jobId.isEmpty()) {
-                    Intent intent = new Intent(activity, Invoice_Email_Activity.class);
+                    Intent intent = new Intent(this, Invoice_Email_Activity.class);
                     intent.putExtra("jobId", jobId);
                     intent.putExtra("tempId", tempId);
                     intent.putExtra("fwid",fwId);
+                    intent.putExtra("message",binding.eotEditor.getHtml());
+                    if(reqAttachmentList!=null&&!reqAttachmentList.isEmpty()){
+                        intent.putExtra("attachmentList", (Serializable) reqAttachmentList);
+                    }
                     intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                     startActivity(intent);
-                    dismiss();
+
                 }
                 break;
-            case R.id.button_view:
-                dismiss();
+            case R.id.download_jobcard_btn:
+
                 if (detail_activity_pi != null && jobId != null)
                     detail_activity_pi.printJobCard(jobId, tempId,fwId);
                 else if (quo_invo_pi != null && quotId != null)
@@ -311,12 +234,13 @@ public class DialogJobCardDocuments extends DialogFragment
                 break;
             case R.id.linearLayout_templat:
                 binding.templatDp.performClick();
+
                 break;
             case R.id.linearLayout_signature:
                 binding.signatureDp.performClick();
                 break;
             case R.id.txt_lblAddAttachment:
-                if (AppUtility.askGalaryTakeImagePermiSsion(getActivity())) {
+                if (AppUtility.askGalaryTakeImagePermiSsion(this)) {
                     takeimageFromGalary();//only for drive documents
                 }
                 else {
@@ -328,30 +252,39 @@ public class DialogJobCardDocuments extends DialogFragment
                     }
                 }
                 break;
+            case R.id.drop_down_for_cc:
+                if(binding.hideCCLayout.getVisibility()==View.VISIBLE){
+                    binding.hideCCLayout.setVisibility(View.GONE);
+                }else {
+                    binding.hideCCLayout.setVisibility(View.VISIBLE);
+                }
+                break;
+            case R.id.remove_techSignature:
+                 binding.signatureTxt.setText("");
+                 binding.hintSignatureTxt.setVisibility(View.GONE);
+                 binding.removeTechSignature.setVisibility(View.GONE);
         }
     }
 
-    @Override
-    public void onDismiss(DialogInterface dialog) {
-        super.onDismiss(dialog);
-    }
-
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        if (parent.getId() == R.id.templat_Dp) {
-            setEquStatus(position);
-            setEmailData();
-        }
-        if (parent.getId() == R.id.signature_Dp) {
-            setFwStatus(position);
-        }
-    }
-
+  public void setInvoiceTmpList(ArrayList<InvoiceEmaliTemplate> templateList) {
+      this.templateList = templateList;
+      Log.e("TemplateData::", "setList:"+new Gson().toJson(this.templateList));
+      if (templateList != null && templateList.size() > 0) {
+          for (InvoiceEmaliTemplate model : templateList) {
+              if (model.getDefaultTemp() != null && model.getDefaultTemp().equals("1")) {
+                  tempId = model.getInvTempId();
+                  break;
+              }
+          }
+      }
+      AppUtility.progressBarDissMiss();
+  }
     private void setFwStatus(int pos) {
         binding.hintSignatureTxt.setVisibility(View.VISIBLE);
         fwId = fwList[pos];
         String selectedValue = kprList[pos];
         binding.signatureTxt.setText(selectedValue);
+        binding.removeTechSignature.setVisibility(View.VISIBLE);
     }
 
     private void setEquStatus(int pos) {
@@ -375,7 +308,50 @@ public class DialogJobCardDocuments extends DialogFragment
             jobCardAttachmentAdapter = new JobCardAttachmentAdapter(this);
         }
     }
+    private void askTedPermission(int type,String[] permissions) {
+        TedPermission.with(EotApp.getAppinstance())
+                .setPermissionListener(new PermissionListener() {
+                    @Override
+                    public void onPermissionGranted() {
+                        if (type == 2)
+                            takeimageFromGalary();
+                    }
 
+                    @Override
+                    public void onPermissionDenied(ArrayList<String> deniedPermissions) {
+
+                    }
+                })
+                .setDeniedMessage("If you reject permission,you can not use this service\n\nPlease turn on permissions at [SettingActivity] > [Permission]")
+                .setPermissions(permissions)
+                .check();
+    }
+    private void takeimageFromGalary() {
+        //allow upload file extension
+        String[] mimeTypes = {"image/jpeg", "image/jpg", "image/png",
+                "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document",//.doc & .docx
+                "application/vnd.ms-excel", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",//.xls & .xlsx
+                "application/pdf",//pdf
+                "text/csv", "text/plain"//csv
+        };
+
+        /* *only for document uploading */
+        Intent documentIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        documentIntent.addCategory(Intent.CATEGORY_OPENABLE);
+        documentIntent.setType("*/*");
+        documentIntent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
+        startActivityForResult(documentIntent, ATTACHFILE_CODE);
+    }
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        if (parent.getId() == R.id.templat_Dp) {
+            setEquStatus(position);
+            setEmailData();
+        }
+        if (parent.getId() == R.id.signature_Dp) {
+            setFwStatus(position);
+        }
+    }
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
@@ -394,19 +370,41 @@ public class DialogJobCardDocuments extends DialogFragment
             binding.edtEmailSubject.setText(email_reS_model.getSubject());
         }
         if (email_reS_model.getMessage() != null && !email_reS_model.getMessage().equals("")) {
-            WebSettings mWebSettings = binding.eotEditor.getSettings();
-            mWebSettings.setBuiltInZoomControls(true);
-            binding.eotEditor.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
-            binding.eotEditor.setScrollbarFadingEnabled(false);
-            binding.eotEditor.setHtml(email_reS_model.getMessage());
-//            binding.edtEmailMessage.setText(email_reS_model.getMessage());
-//            binding.edtEmailMessage.setText(Html.fromHtml(email_reS_model.getMessage()));
+            boolean checkedSing = binding.cbSign.isChecked();
+            if(checkedSing){
+                binding.eotEditor.setHtml(email_reS_model.getMessage());
+            }else{
+                setEmailReplacedMessage(email_reS_model.getMessage(),checkedSing);
+            }
         }
+        binding.cbSign.setOnCheckedChangeListener((compoundButton, b) -> {
+               setEmailReplacedMessage(binding.eotEditor.getHtml(),b);
+        });
+
 //        this.email_reS_model = email_reS_model;
 //
 //        if (email_reS_model.getStripLink()!=null)
 //            this.stripLink=email_reS_model.getStripLink();
     }
+
+    @SuppressLint("SetJavaScriptEnabled")
+    private void setEmailReplacedMessage(String webMessage,Boolean b) {
+
+        WebSettings mWebSettings = binding.eotEditor.getSettings();
+        mWebSettings.setJavaScriptEnabled(true);
+        mWebSettings.setBuiltInZoomControls(true);
+        binding.eotEditor.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
+        binding.eotEditor.setScrollbarFadingEnabled(false);
+        if(b){
+            String replacedMessage = webMessage.replace("<p id=\"esignUrl\"> </p>", "<p id=\"esignUrl\"> <a href=\"_eSign_\" style=\"color:#15a0b3;\">E-Sign</a></p>");
+            binding.eotEditor.setHtml(replacedMessage);
+        }else {
+            String replacedMessage = webMessage.replaceAll("<a href=\"_eSign_\" style=\"color:#15a0b3;\">E-Sign</a>", "");
+            binding.eotEditor.setHtml(replacedMessage);
+        }
+
+    }
+
 
     @Override
     public void onSendInvoiceEmail(Send_Email_ReS_Model email_reS_model) {
@@ -422,52 +420,6 @@ public class DialogJobCardDocuments extends DialogFragment
     public void setSessionExpire(String msg) {
 
     }
-
-//    @Override
-//    public void setButtonsUI(JobStatusModelNew jobstatus) {
-//
-//    }
-//
-//    @Override
-//    public void setResultForChangeInJob(String update, String jobid) {
-//
-//    }
-//
-//    @Override
-//    public void resetstatus(String status_no) {
-//
-//    }
-//
-//    @Override
-//    public void setCustomFiledList(ArrayList<CustOmFormQuestionsRes> dataList) {
-//
-//    }
-//
-//    @Override
-//    public void sessionExpire(String msg) {
-//
-//    }
-//
-//    @Override
-//    public void setEuqipmentList(List<EquArrayModel> equArray) {
-//
-//    }
-//
-//    @Override
-//    public void StopRecurPatternHide() {
-//
-//    }
-//
-//    @Override
-//    public void setItemListByJob(List<InvoiceItemDataModel> itemList) {
-//
-//    }
-//
-//    @Override
-//    public void setCompletionDetails(List<CompletionDetails> completionDetailsList) {
-//
-//    }
-
     @Override
     public void selectFile() {
 
@@ -492,7 +444,7 @@ public class DialogJobCardDocuments extends DialogFragment
             list.add(new JobCardAttachmentModel(item.getAttachmentId(),"2",name,false));
         }
         jobCardAttachmentAdapter.updateList(list);
-        binding.rvJobCardAttachment.setLayoutManager(new LinearLayoutManager(this.getContext()));
+        binding.rvJobCardAttachment.setLayoutManager(new LinearLayoutManager(this));
         binding.rvJobCardAttachment.setAdapter(jobCardAttachmentAdapter);
 
     }
@@ -525,7 +477,40 @@ public class DialogJobCardDocuments extends DialogFragment
     }
 
     @Override
+    public void finishActivityWithSetResult() {
+
+    }
+
+    @Override
     public void onSessionExpire(String msg) {
+
+    }
+
+    @Override
+    public void setInvoiceDetails() {
+
+    }
+
+    @Override
+    public void moreInvoiceOption(List<InvoiceItemDataModel> data) {
+
+    }
+
+    @Override
+    public void onGetPdfPath(String pdfPath) {
+        String path = App_preference.getSharedprefInstance().getBaseURL() + pdfPath;
+        Intent openAnyType = new Intent(Intent.ACTION_VIEW);
+        openAnyType.setData(Uri.parse(path));
+        try {
+            startActivity(openAnyType);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @Override
+    public void onSignatureUpload(String signaturePath, String msg) {
 
     }
 
@@ -558,6 +543,8 @@ public class DialogJobCardDocuments extends DialogFragment
             ) {
                 if(item.getId().equals(jobCardAttachmentModel.getId())){
                     item.setChecked(jobCardAttachmentModel.getChecked());
+                    JobCardAttachmentModel attachmentModel=new JobCardAttachmentModel(jobCardAttachmentModel.getId(),jobCardAttachmentModel.getType());
+                    reqAttachmentList.add(attachmentModel);
                     break;
                 }
             }
@@ -569,41 +556,6 @@ public class DialogJobCardDocuments extends DialogFragment
             Log.e("Item status", item.getName()+" = "+item.getChecked());
         }
     }
-    private void takeimageFromGalary() {
-        //allow upload file extension
-        String[] mimeTypes = {"image/jpeg", "image/jpg", "image/png",
-                "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document",//.doc & .docx
-                "application/vnd.ms-excel", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",//.xls & .xlsx
-                "application/pdf",//pdf
-                "text/csv", "text/plain"//csv
-        };
-
-        /* *only for document uploading */
-        Intent documentIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-        documentIntent.addCategory(Intent.CATEGORY_OPENABLE);
-        documentIntent.setType("*/*");
-        documentIntent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
-        startActivityForResult(documentIntent, ATTACHFILE_CODE);
-    }
-    private void askTedPermission(int type,String[] permissions) {
-        TedPermission.with(EotApp.getAppinstance())
-                .setPermissionListener(new PermissionListener() {
-                    @Override
-                    public void onPermissionGranted() {
-                         if (type == 2)
-                            takeimageFromGalary();
-                    }
-
-                    @Override
-                    public void onPermissionDenied(ArrayList<String> deniedPermissions) {
-
-                    }
-                })
-                .setDeniedMessage("If you reject permission,you can not use this service\n\nPlease turn on permissions at [SettingActivity] > [Permission]")
-                .setPermissions(permissions)
-                .check();
-    }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
@@ -650,7 +602,7 @@ public class DialogJobCardDocuments extends DialogFragment
                     try {
                         Uri galreyImguriUri = data.getData();
                         //  String gallery_image_Path = PathUtils.getPath(getActivity(), galreyImguriUri);
-                        String gallery_image_Path = PathUtils.getRealPath(getActivity(), galreyImguriUri);
+                        String gallery_image_Path = PathUtils.getRealPath(this, galreyImguriUri);
                         String img_extension = gallery_image_Path.substring(gallery_image_Path.lastIndexOf("."));
                         //('jpg','png','jpeg','pdf','doc','docx','xlsx','csv','xls'); supporting extensions
                         if (img_extension.equals(".jpg") || img_extension.equals(".png") || img_extension.equals(".jpeg")) {
@@ -671,7 +623,7 @@ public class DialogJobCardDocuments extends DialogFragment
 
     private void imageEditing(Uri uri, boolean isImage) {
         try {
-            Intent intent = new Intent(getActivity(), ActivityDocumentSaveUpload.class);
+            Intent intent = new Intent(this, ActivityDocumentSaveUpload.class);
             intent.putExtra("uri", uri);
             intent.putExtra("isImage", true);
             intent.putExtra("jobid", jobId);
@@ -685,11 +637,32 @@ public class DialogJobCardDocuments extends DialogFragment
 
     //upload file dialog
     private void uploadFileDialog(final String selectedFilePath) {
-        Intent intent = new Intent(getActivity(), ActivityDocumentSaveUpload.class);
+        Intent intent = new Intent(this, ActivityDocumentSaveUpload.class);
         intent.putExtra("uri", selectedFilePath);
         intent.putExtra("isImage", false);
         intent.putExtra("jobid", jobId);
         intent.putExtra("SAVEASCOMPLETION", false);
         startActivityForResult(intent, DOUCMENT_UPLOAD_CODE);
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.quotes_menu, menu);
+        menu.getItem(0).setVisible(false);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home)
+            onBackPressed();
+        return true;
+    }
+    @Override
+    public void onBackPressed() {
+        //   EotApp.getAppinstance().notifyApiObserver(Service_apis.addAppointment);
+        super.onBackPressed();
+    }
+    public void setdetail_activity_pi(Job_Detail_Activity_pi detail_activity_pi) {
+        this.detail_activity_pi = detail_activity_pi;
     }
 }

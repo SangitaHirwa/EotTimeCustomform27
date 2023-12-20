@@ -958,6 +958,9 @@ public class AppConstant {
     public static String batch_invoice_can_not_generate_msg = "batch_invoice_can_not_generate_msg";
     public static String signature_alert = "signature_alert";
     public static String non_billable_item_alert = "non_billable_item_alert";
+    public static String send_job_card = "send_job_card";
+    public static String download = "download";
+    public static String appointment_code = "appointment_code";
 
 
     public static String server(String location) {

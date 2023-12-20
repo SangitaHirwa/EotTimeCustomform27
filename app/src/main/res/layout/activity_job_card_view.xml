@@ -1,43 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:tools="http://schemas.android.com/tools"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-
+    <data>
+        <variable
+            name="viewModel"
+            type="com.eot_app.nav_menu.jobs.job_card_view.JobCardViewActivity" />
+    </data>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
         >
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="35dp"
-            android:paddingStart="30dp"
-            android:paddingEnd="33dp"
-            android:background="@color/bg_color_dialog_toolbar"
-            >
-
-            <TextView
-                android:id="@+id/txt_title_dialog"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="Preview and Send Jobcard"
-                android:textSize="18sp"
-                android:textColor="@color/black"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/img_btn_close_toolbar"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <ImageView
-                android:id="@+id/img_btn_close_toolbar"
-                android:layout_width="13dp"
-                android:layout_height="13dp"
-                android:src="@drawable/img_dialog_close"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
         <ScrollView
             android:layout_weight="1"
             android:layout_width="match_parent"
@@ -56,14 +30,27 @@
                     android:layout_height="wrap_content"
                     android:paddingVertical="5dp"
                     android:orientation="vertical">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        >
                     <TextView
                         android:id="@+id/tv_label_to"
                         style="@style/dialog_edittext_lbl_style"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="6dp"
+                        android:layout_weight="1"
                         android:text="To*"
                         />
+                        <ImageView
+                            android:id="@+id/drop_down_for_cc"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:src="@drawable/ic_drop_down_black"
+                            />
+                    </LinearLayout>
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/input_layout_email_to"
                         android:layout_width="match_parent"
@@ -86,7 +73,12 @@
 
 
                     </com.google.android.material.textfield.TextInputLayout>
-
+                    <LinearLayout
+                        android:id="@+id/hideCCLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        android:orientation="vertical">
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
@@ -120,7 +112,7 @@
                             android:paddingStart="9dp"
                             tools:ignore="LabelFor,TextFields" />
                     </com.google.android.material.textfield.TextInputLayout>
-
+                    </LinearLayout>
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
@@ -166,7 +158,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="6dp"
                         android:text="Message*"
-                         />
+                        />
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/input_layout_email_message"
                         android:layout_width="match_parent"
@@ -195,38 +187,38 @@
                             android:visibility="gone"
                             tools:ignore="LabelFor,TextFields" />
                     </com.google.android.material.textfield.TextInputLayout>
-            <androidx.core.widget.NestedScrollView
-                android:layout_width="match_parent"
-                android:layout_height="230dp"
-                android:scrollbars="vertical"
-                android:scrollbarSize="8dp"
-               android:scrollbarAlwaysDrawVerticalTrack="true"
-                android:background="@drawable/bg_edt_jobcart"
-                android:scrollbarThumbVertical="@color/scroll_thumb_color"
-                android:scrollbarTrackVertical="@color/scroll_track_color"
-
-                >
-                    <LinearLayout
+                    <androidx.core.widget.NestedScrollView
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_marginVertical="12dp"
-                        android:layout_marginHorizontal="14dp"
-                        >
-                    <com.eot_app.eoteditor.EotEditor
-                        android:id="@+id/eot_editor"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="230dp"
+                        android:scrollbars="vertical"
+                        android:scrollbarSize="8dp"
+                        android:scrollbarAlwaysDrawVerticalTrack="true"
+                        android:background="@drawable/bg_edt_jobcart"
                         android:scrollbarThumbVertical="@color/scroll_thumb_color"
                         android:scrollbarTrackVertical="@color/scroll_track_color"
-                        android:scrollbarSize="5dp"
-                        />
-                    </LinearLayout>
-            </androidx.core.widget.NestedScrollView>
-<!--                    <View-->
-<!--                        android:layout_width="match_parent"-->
-<!--                        android:layout_height="1dp"-->
-<!--                        android:background="@color/border_font_color" />-->
+
+                        >
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_marginVertical="12dp"
+                            android:layout_marginHorizontal="14dp"
+                            >
+                            <com.eot_app.eoteditor.EotEditor
+                                android:id="@+id/eot_editor"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:scrollbarThumbVertical="@color/scroll_thumb_color"
+                                android:scrollbarTrackVertical="@color/scroll_track_color"
+                                android:scrollbarSize="5dp"
+                                />
+                        </LinearLayout>
+                    </androidx.core.widget.NestedScrollView>
+                    <!--                    <View-->
+                    <!--                        android:layout_width="match_parent"-->
+                    <!--                        android:layout_height="1dp"-->
+                    <!--                        android:background="@color/border_font_color" />-->
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -252,17 +244,17 @@
                             app:layout_constraintEnd_toEndOf="parent"
                             />
 
-<!--                        <CheckBox-->
-<!--                            android:id="@+id/cb_pdf"-->
-<!--                            android:layout_width="match_parent"-->
-<!--                            android:layout_height="wrap_content"-->
-<!--                            android:button="@null"-->
-<!--                            android:drawableRight="?android:attr/listChoiceIndicatorMultiple"-->
-<!--                            android:text="Job.pdf"-->
-<!--                            android:paddingStart="5dp"-->
-<!--                            app:layout_constraintEnd_toEndOf="parent"-->
-<!--                            app:layout_constraintStart_toStartOf="@+id/txt_lblAttachment"-->
-<!--                            app:layout_constraintTop_toBottomOf="@id/txt_lblAttachment" />-->
+                        <!--                        <CheckBox-->
+                        <!--                            android:id="@+id/cb_pdf"-->
+                        <!--                            android:layout_width="match_parent"-->
+                        <!--                            android:layout_height="wrap_content"-->
+                        <!--                            android:button="@null"-->
+                        <!--                            android:drawableRight="?android:attr/listChoiceIndicatorMultiple"-->
+                        <!--                            android:text="Job.pdf"-->
+                        <!--                            android:paddingStart="5dp"-->
+                        <!--                            app:layout_constraintEnd_toEndOf="parent"-->
+                        <!--                            app:layout_constraintStart_toStartOf="@+id/txt_lblAttachment"-->
+                        <!--                            app:layout_constraintTop_toBottomOf="@id/txt_lblAttachment" />-->
                         <androidx.recyclerview.widget.RecyclerView
                             android:id="@+id/rv_jobCardAttachment"
                             android:layout_width="match_parent"
@@ -274,45 +266,104 @@
                             app:layout_constraintStart_toStartOf="@id/txt_lblAttachment"
                             />
                     </androidx.constraintlayout.widget.ConstraintLayout>
+                    <RelativeLayout
+                        android:id="@+id/signature_view"
+                        android:visibility="visible"
+                        android:layout_marginHorizontal="10dp"
+                        android:layout_width="match_parent"
+                        android:layout_marginVertical="10dp"
+                        android:layout_height="50dp">
+
+                        <TextView
+                            android:id="@+id/hint_signature_txt"
+                            style="@style/text_hint"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:textStyle="normal"
+                            android:visibility="visible" />
+
+                        <LinearLayout
+                            android:id="@+id/linearLayout_signature"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/input_field_height"
+                            android:layout_marginTop="10dp"
+                            android:gravity="center"
+                            android:orientation="horizontal"
+                            tools:ignore="UseCompoundDrawables">
+
+                            <TextView
+                                android:id="@+id/signature_txt"
+                                style="@style/style_sec_sec"
+                                android:text="@string/technitian_signature"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:layout_weight="1"
+                                android:hint="" />
+                            <ImageView
+                                android:id="@+id/remove_techSignature"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:src="@drawable/img_dialog_close"
+                                />
+                            <ImageView
+                                android:id="@+id/img_signature"
+                                style="@style/subtext_style"
+                                android:layout_width="25dp"
+                                android:layout_height="25dp"
+                                android:src="@drawable/ic_drop_down_black"
+                                tools:ignore="ContentDescription" />
+
+                        </LinearLayout>
+
+                        <com.eot_app.utility.util_interfaces.NoDefaultSpinner
+                            android:id="@+id/signature_Dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/linearLayout_signature"
+                            android:background="@android:color/transparent"
+                            android:dropDownWidth="match_parent"
+                            android:minHeight="20dp"
+                            android:popupBackground="@drawable/popupbg"
+                            android:visibility="invisible" />
+                    </RelativeLayout>
+
                     <CheckBox
                         android:id="@+id/cb_Sign"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Send E-sign pad with email."
+                        android:textStyle="bold"
                         style="@style/dialog_edittext_lbl_style"
                         />
                 </LinearLayout>
                 <RelativeLayout
                     android:id="@+id/template_view"
-                    android:layout_marginTop="20dp"
-                    android:visibility="visible"
+                    android:layout_marginTop="2dp"
+                    android:visibility="gone"
                     android:layout_width="match_parent"
                     android:layout_height="50dp">
 
                     <TextView
                         android:id="@+id/hint_template_txt"
                         style="@style/dialog_edittext_lbl_style"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
                         android:textStyle="normal"
                         android:text="Select Templet"
-                        android:gravity="center"
-                        android:layout_marginEnd="25dp"
-                        android:layout_alignParentStart="true"
-                        android:layout_alignTop="@id/linearLayout_templat"
-                        android:layout_alignBottom="@id/linearLayout_templat"
+                        android:gravity="start"
                         android:visibility="visible" />
 
                     <LinearLayout
                         android:id="@+id/linearLayout_templat"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="36dp"
                         android:gravity="center"
                         android:background="@drawable/bg_edt_jobcart"
                         android:orientation="horizontal"
-                        android:layout_toEndOf="@id/hint_template_txt"
-                        android:layout_alignParentEnd="true"
+                        android:layout_below="@id/hint_template_txt"
                         android:paddingStart="10dp"
                         tools:ignore="UseCompoundDrawables">
 
@@ -332,14 +383,13 @@
                             android:layout_width="25dp"
                             android:layout_height="25dp"
                             android:src="@drawable/ic_drop_down_black"
-                            android:tint="@color/colorPrimary"
                             tools:ignore="ContentDescription" />
 
                     </LinearLayout>
 
                     <com.eot_app.utility.util_interfaces.NoDefaultSpinner
                         android:id="@+id/templat_Dp"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/linearLayout_templat"
                         android:background="@android:color/transparent"
@@ -347,65 +397,6 @@
                         android:minHeight="20dp"
                         android:popupBackground="@drawable/popupbg"
                         android:layout_alignParentEnd="true"
-                        android:visibility="invisible" />
-                </RelativeLayout>
-                <RelativeLayout
-                    android:id="@+id/signature_view"
-                    android:visibility="gone"
-                    android:layout_marginHorizontal="10dp"
-                    android:layout_width="match_parent"
-                    android:layout_marginVertical="10dp"
-                    android:layout_height="50dp">
-
-                    <TextView
-                        android:id="@+id/hint_signature_txt"
-                        style="@style/text_hint"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:textStyle="normal"
-                        android:visibility="gone" />
-
-                    <LinearLayout
-                        android:id="@+id/linearLayout_signature"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/input_field_height"
-
-                        android:layout_marginTop="10dp"
-                        android:gravity="center"
-                        android:orientation="horizontal"
-                        tools:ignore="UseCompoundDrawables">
-
-                        <TextView
-                            android:id="@+id/signature_txt"
-                            style="@style/style_sec_sec"
-                            android:text="@string/technitian_signature"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="5dp"
-                            android:layout_weight="1"
-                            android:hint="" />
-
-                        <ImageView
-                            android:id="@+id/img_signature"
-                            style="@style/subtext_style"
-                            android:layout_width="25dp"
-                            android:layout_height="25dp"
-                            android:src="@drawable/ic_drop_down_black"
-                            android:tint="@color/colorPrimary"
-                            tools:ignore="ContentDescription" />
-
-                    </LinearLayout>
-
-                    <com.eot_app.utility.util_interfaces.NoDefaultSpinner
-                        android:id="@+id/signature_Dp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/linearLayout_signature"
-                        android:background="@android:color/transparent"
-                        android:dropDownWidth="match_parent"
-                        android:minHeight="20dp"
-                        android:popupBackground="@drawable/popupbg"
                         android:visibility="invisible" />
                 </RelativeLayout>
 
@@ -417,12 +408,72 @@
             android:layout_marginTop="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <androidx.appcompat.widget.AppCompatButton
+            android:orientation="horizontal"
+            android:weightSum="2">
+            <LinearLayout
+                android:id="@+id/download_jobcard_btn"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:background="@drawable/submit_btn"
+                android:layout_weight="1"
+                android:layout_marginTop="20dp"
+                android:layout_margin="10dp"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:orientation="horizontal"
+                >
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/download_2x"
+                    android:layout_margin="1dp"
+                    />
+                <TextView
+                    android:id="@+id/tv_download_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Download"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
+                    android:layout_margin="1dp"
+                    style="@style/style_sec"/>
+
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/send_jobcard_btn"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:background="@drawable/submit_btn"
+                android:layout_weight="1"
+                android:layout_marginTop="20dp"
+                android:layout_margin="10dp"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:orientation="horizontal"
+                >
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/send"/>
+                <TextView
+                    android:id="@+id/tv_send_jobcard_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Send jobcard"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
+                    android:layout_margin="1dp"
+                    style="@style/style_sec"/>
+
+            </LinearLayout>
+
+            <!--<androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/button_view"
                 style="@style/style_sec"
                 android:layout_width="0dp"
-                android:text="@string/print_job_card"
+                android:text="Download"
                 android:layout_weight="1"
                 android:layout_height="40dp"
                 android:layout_marginTop="20dp"
@@ -436,7 +487,7 @@
                 android:id="@+id/button_send_email"
                 style="@style/style_sec"
                 android:layout_width="0dp"
-                android:text="@string/email_job_card"
+                android:text="Send JobCard"
                 android:layout_weight="1"
                 android:layout_height="40dp"
                 android:layout_marginTop="20dp"
@@ -445,7 +496,7 @@
                 android:layout_margin="10dp"
                 android:textColor="@color/white"
                 android:textStyle="bold"
-                />
+                />-->
         </LinearLayout>
     </LinearLayout>
 </layout>
