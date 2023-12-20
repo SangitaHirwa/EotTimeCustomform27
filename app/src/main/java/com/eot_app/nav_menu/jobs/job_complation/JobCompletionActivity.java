@@ -9,6 +9,8 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Looper;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -17,13 +19,20 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.work.Data;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkInfo;
+import androidx.work.WorkManager;
+
 import com.eot_app.R;
 import com.eot_app.eoteditor.Utils;
 import com.eot_app.nav_menu.jobs.job_complation.complat_mvp.Compl_PC;
@@ -35,15 +44,19 @@ import com.eot_app.nav_menu.jobs.job_detail.documents.ActivityDocumentSaveUpload
 import com.eot_app.nav_menu.jobs.job_detail.documents.EditImageDialog;
 import com.eot_app.nav_menu.jobs.job_detail.documents.PathUtils;
 import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.GetFileList_Res;
+import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.NotifyForMultiDocAdd;
 import com.eot_app.nav_menu.jobs.job_detail.documents.fileattach_mvp.Doc_Attch_Pc;
 import com.eot_app.nav_menu.jobs.job_detail.documents.fileattach_mvp.Doc_Attch_Pi;
 import com.eot_app.nav_menu.jobs.job_detail.documents.fileattach_mvp.Doc_Attch_View;
+import com.eot_app.nav_menu.jobs.job_detail.documents.work_manager.UploadMultiImgWorker;
+import com.eot_app.services.Service_apis;
 import com.eot_app.utility.AppCenterLogs;
 import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.AppUtility;
 import com.eot_app.utility.App_preference;
 import com.eot_app.utility.EotApp;
 import com.eot_app.utility.db.AppDataBase;
+import com.eot_app.utility.db.OfflineDataController;
 import com.eot_app.utility.language_support.LanguageController;
 import com.eot_app.utility.settings.setting_db.JobTitle;
 import com.eot_app.utility.settings.setting_db.Suggestion;
@@ -63,10 +76,12 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 
 public class JobCompletionActivity extends AppCompatActivity implements View.OnClickListener
-        , TextWatcher, Compla_View, Doc_Attch_View, JobCompletionAdpter.FileDesc_Item_Selected {
+        , TextWatcher, Compla_View, Doc_Attch_View, JobCompletionAdpter.FileDesc_Item_Selected, NotifyForMultiDocAdd {
     private final static int CAPTURE_IMAGE_GALLARY = 222;
     private static final int DOUCMENT_UPLOAD_CODE = 156;
     final String JOBCOMPLATIONTYPE = "";
@@ -93,6 +108,7 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
     private ArrayList<GetFileList_Res> fileList_res = new ArrayList<>();
     private ProgressBar progressBar;
     private Spinner job_suggestion_spinner;
+    private WorkManager mWorkManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,6 +123,7 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
                 jobId = jobData.getJobId();
             }
         }
+        EotApp.getAppinstance().setNotifyForMultiDocAdd(this);
         initializeMyViews();
     }
 
@@ -146,7 +163,7 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
 
     @Override
     public void uploadDocDelete(String msg) {
-        doc_attch_pi.getAttachFileList(jobId, App_preference.getSharedprefInstance().getLoginRes().getUsrId(), "6");
+        doc_attch_pi.getAttachFileList(jobId, App_preference.getSharedprefInstance().getLoginRes().getUsrId(), "6",true);
     }
 
 
@@ -171,7 +188,7 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
         recyclerView.setLayoutManager(layoutManager);
         initializeAdapter();
         doc_attch_pi = new Doc_Attch_Pc(this);
-        doc_attch_pi.getAttachFileList(jobId, App_preference.getSharedprefInstance().getLoginRes().getUsrId(), "6");
+        doc_attch_pi.getAttachFileList(jobId, App_preference.getSharedprefInstance().getLoginRes().getUsrId(), "6",true);
 
         cancel_txt = findViewById(R.id.cancel_txt);
         complHeader = findViewById(R.id.complHeader);
@@ -353,9 +370,9 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
 
     @Override
     public void selectFile() {
-        if (!Utils.isOnline(this)) {
-            AppUtility.alertDialog(this, LanguageController.getInstance().getMobileMsgByKey(AppConstant.dialog_error_title), LanguageController.getInstance().getMobileMsgByKey(AppConstant.feature_not_available), LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), "", () -> null);
-        } else {
+//        if (!Utils.isOnline(this)) {
+//            AppUtility.alertDialog(this, LanguageController.getInstance().getMobileMsgByKey(AppConstant.dialog_error_title), LanguageController.getInstance().getMobileMsgByKey(AppConstant.feature_not_available), LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), "", () -> null);
+//        } else {
             final BottomSheetDialog dialog = new BottomSheetDialog(this);
             dialog.setContentView(R.layout.bottom_image_chooser);
             TextView camera = dialog.findViewById(R.id.camera);
@@ -364,9 +381,12 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
             TextView gallery = dialog.findViewById(R.id.gallery);
             assert gallery != null;
             gallery.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.gallery));
-            TextView drive_document = dialog.findViewById(R.id.drive_document);
-            assert drive_document != null;
-            drive_document.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant              .document));
+             ////After discussion with Shubham and Jit Sir hide attachment all code 19/12/23
+//            TextView drive_document = dialog.findViewById(R.id.drive_document);
+            LinearLayout drive_layout = dialog.findViewById(R.id.driveLayout);
+            drive_layout.setVisibility(View.GONE);
+//            assert drive_document != null;
+//            drive_document.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant              .document));
             camera.setOnClickListener(view -> {
                 if (AppUtility.askCameraTakePicture(JobCompletionActivity.this)) {
                     takePictureFromCamera();
@@ -394,22 +414,22 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
                 }
                 dialog.dismiss();
             });
-
-            drive_document.setOnClickListener(view -> {
-                if (AppUtility.askGalaryTakeImagePermiSsion(JobCompletionActivity.this)) {
-                    takeimageFromGalary();//only for drive documents
-                } else {
-                    // Sdk version 33
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU ) {
-                        askTedPermission(2, AppConstant.galleryPermissions33);
-                    }else {
-                        askTedPermission(2, AppConstant.galleryPermissions);
-                    }
-                }
-                dialog.dismiss();
-            });
+////After discussion with Shubham and Jit Sir hide attachment all code 19/12/23
+//            drive_document.setOnClickListener(view -> {
+//                if (AppUtility.askGalaryTakeImagePermiSsion(JobCompletionActivity.this)) {
+//                    takeimageFromGalary();//only for drive documents
+//                } else {
+//                    // Sdk version 33
+//                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU ) {
+//                        askTedPermission(2, AppConstant.galleryPermissions33);
+//                    }else {
+//                        askTedPermission(2, AppConstant.galleryPermissions);
+//                    }
+//                }
+//                dialog.dismiss();
+//            });
             dialog.show();
-        }
+//        }
     }
 
     private void askTedPermission(int type, String[] permissions) {
@@ -421,8 +441,9 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
                             takePictureFromCamera();
                         else if (type == 1)
                             getImageFromGallray();
-                        else if (type == 2)
-                            takeimageFromGalary();
+                        ////After discussion with Shubham and Jit Sir hide attachment all code 19/12/23
+//                        else if (type == 2)
+//                            takeimageFromGalary();
                     }
 
                     @Override
@@ -446,22 +467,22 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
     }
 
     @Override
-    public void setList(ArrayList<GetFileList_Res> getFileList_res, String isAttachCommpletionNotes) {
+    public void setList(ArrayList<GetFileList_Res> getFileList_res, String isAttachCommpletionNotes,boolean firstCall) {
         progressBar.setVisibility(View.GONE);
         if (currentDialog != null) {
             currentDialog.dismiss();
             currentDialog = null;
         }
-        if (getFileList_res.size() == 1)
-            this.fileList_res.addAll(getFileList_res);
-        else
+//        if (getFileList_res.size() == 1)
+//            this.fileList_res.addAll(getFileList_res);
+//        else
             this.fileList_res = getFileList_res;
         if (jobCompletionAdpter != null)
-            (jobCompletionAdpter).updateFileList(fileList_res);
+            (jobCompletionAdpter).updateFileList(fileList_res,firstCall);
     }
 
     @Override
-    public void addNewItemToAttachmentList(ArrayList<GetFileList_Res> getFileList_res, String            isAttachCompletionNotes) {
+    public void addNewItemToAttachmentList(ArrayList<GetFileList_Res> getFileList_res, String isAttachCompletionNotes) {
         if (isFileImage) {
             String bitmapString = "";
             // remove the temporary added item for showing loader
@@ -483,7 +504,7 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
                 assert fileList_res != null;
                 getFileList_res.addAll(fileList_res);
                 getFileList_res.get(0).setBitmap(bitmapString);
-                setList(getFileList_res, isAttachCompletionNotes);
+                setList(getFileList_res, isAttachCompletionNotes,true);
             }
         }
     }
@@ -515,6 +536,12 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
     public void hideProgressBar() {
         progressBar.setVisibility(View.GONE);
     }
+
+    @Override
+    public void showProgressBar() {
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
     /**
      * get image from camera & edit & croping functinallity
      */
@@ -552,25 +579,26 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
 
     private void getImageFromGallray() {
         Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        galleryIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
         startActivityForResult(galleryIntent, CAPTURE_IMAGE_GALLARY);
     }
-
-    private void takeimageFromGalary() {
-        //allow upload file extension
-        String[] mimeTypes = {"image/jpeg", "image/jpg", "image/png",
-                "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document",//.doc & .docx
-                "application/vnd.ms-excel", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",//.xls & .xlsx
-                "application/pdf",//pdf
-                "text/csv", "text/plain"//csv
-        };
-
-        /* *only for document uploading */
-        Intent documentIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-        documentIntent.addCategory(Intent.CATEGORY_OPENABLE);
-        documentIntent.setType("*/*");
-        documentIntent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
-        startActivityForResult(documentIntent, ATTACHFILE_CODE);
-    }
+////After discussion with Shubham and Jit Sir hide attachment all code 19/12/23
+//    private void takeimageFromGalary() {
+//        //allow upload file extension
+//        String[] mimeTypes = {"image/jpeg", "image/jpg", "image/png",
+//                "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document",//.doc & .docx
+//                "application/vnd.ms-excel", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",//.xls & .xlsx
+//                "application/pdf",//pdf
+//                "text/csv", "text/plain"//csv
+//        };
+//
+//        /* *only for document uploading */
+//        Intent documentIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+//        documentIntent.addCategory(Intent.CATEGORY_OPENABLE);
+//        documentIntent.setType("*/*");
+//        documentIntent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
+//        startActivityForResult(documentIntent, ATTACHFILE_CODE);
+//    }
 
     private File createImageFile() throws IOException {
         Calendar calendar = Calendar.getInstance();
@@ -627,10 +655,11 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
                         }
                         GetFileList_Res obj = new GetFileList_Res("0", fileNameExt, fileNameExt, bitmapString);
                         ArrayList<GetFileList_Res> updateList = new ArrayList<>();
-                        updateList.add(obj);
+
                         if (fileList_res != null) {
                             updateList.addAll(fileList_res);
                         }
+                        updateList.add(obj);
                         String isAttach = data.getStringExtra("isAttach");
                         isFileImage = data.getBooleanExtra("isFileImage", false);
                         if (isAttach.equals("1") && isFileImage) {
@@ -646,20 +675,25 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
                             compedt.setText(tempnotes);
                             compedt.setSelection(compedt.getText().toString().length());
                             desc.setLength(0);
-                            setList(updateList, "");
+                            setList(updateList, "",true);
                         }
                         if (data.getStringExtra("fileName") != null) {
                             try {
-                                doc_attch_pi.uploadDocuments(jobId, data.getStringExtra("imgPath"),
+//                                doc_attch_pi.uploadDocuments(jobId, data.getStringExtra("imgPath"),
+//                                        data.getStringExtra("fileName"),
+//                                        data.getStringExtra("desc"),
+//                                        data.getStringExtra("type"),
+//                                        data.getStringExtra("isAttach"));
+                                OfflineDataController.getInstance().addInOfflineDB(Service_apis.upload_document, AppUtility.getParam(jobId, data.getStringExtra("imgPath"),
                                         data.getStringExtra("fileName"),
                                         data.getStringExtra("desc"),
                                         data.getStringExtra("type"),
-                                        data.getStringExtra("isAttach"));
+                                        data.getStringExtra("isAttach"), true), AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT));
                             } catch (Exception e) {
                                 AppCenterLogs.addLogToAppCenterOnAPIFail("JobCompletion","","onActivityResult()"+e.getMessage(),"JobCompletionActivity","");
                                 if (updateList.size() == 1) {
                                     fileList_res.remove(updateList.get(0));
-                                    setList(fileList_res, "");
+                                    setList(fileList_res, "",true);
                                 }
                                 e.printStackTrace();
                             }
@@ -682,26 +716,63 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
                 }
                 break;
             case CAPTURE_IMAGE_GALLARY:
-            case ATTACHFILE_CODE:
                 if (resultCode == RESULT_OK) {
                     try {
-                        Uri galreyImguriUri = data.getData();
+                        boolean isMultipleImages = false;
+
+                        Uri galreyImguriUri = data.getClipData().getItemAt(0).getUri();
+                        //  String gallery_image_Path = PathUtils.getPath(getActivity(), galreyImguriUri);
                         String gallery_image_Path = PathUtils.getRealPath(this, galreyImguriUri);
                         String img_extension = gallery_image_Path.substring(gallery_image_Path.lastIndexOf("."));
+                        if(data.getClipData().getItemCount()>1){
+                            isMultipleImages = true;
+                        }else {
+                            isMultipleImages = false;
+                        }
                         //('jpg','png','jpeg','pdf','doc','docx','xlsx','csv','xls'); supporting extensions
                         if (img_extension.equals(".jpg") || img_extension.equals(".png") || img_extension.equals(".jpeg")) {
-                            imageEditing(data.getData(), true);
+                            if(!isMultipleImages) {
+                                imageEditing(data.getClipData().getItemAt(0).getUri(), true);
+                            }
+                            else {
+                                uploadMultipleImges(data,true);
+                            }
                         } else {
-                            uploadFileDialog(gallery_image_Path);
+                            if(!isMultipleImages) {
+                                uploadFileDialog(gallery_image_Path);
+                            }
+                            else {
+                                uploadMultipleImges(data,false);
+                            }
                         }
                     } catch (Exception e) {
-                        AppCenterLogs.addLogToAppCenterOnAPIFail("JobCompletion","","onActivityResult()-->ATTACHFILE_CODE"+e.getMessage(),"JobCompletionActivity","");
                         e.printStackTrace();
                     }
                 } else {
                     return;
                 }
                 break;
+            ////After discussion with Shubham and Jit Sir hide attachment all code 19/12/23
+//            case ATTACHFILE_CODE:
+//                if (resultCode == RESULT_OK) {
+//                    try {
+//                        Uri galreyImguriUri = data.getData();
+//                        String gallery_image_Path = PathUtils.getRealPath(this, galreyImguriUri);
+//                        String img_extension = gallery_image_Path.substring(gallery_image_Path.lastIndexOf("."));
+//                        //('jpg','png','jpeg','pdf','doc','docx','xlsx','csv','xls'); supporting extensions
+//                        if (img_extension.equals(".jpg") || img_extension.equals(".png") || img_extension.equals(".jpeg")) {
+//                            imageEditing(data.getData(), true);
+//                        } else {
+//                            uploadFileDialog(gallery_image_Path);
+//                        }
+//                    } catch (Exception e) {
+//                        AppCenterLogs.addLogToAppCenterOnAPIFail("JobCompletion","","onActivityResult()-->ATTACHFILE_CODE"+e.getMessage(),"JobCompletionActivity","");
+//                        e.printStackTrace();
+//                    }
+//                } else {
+//                    return;
+//                }
+//                break;
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
@@ -727,6 +798,7 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
         intent.putExtra("uri", selectedFilePath);
         intent.putExtra("isImage", false);
         intent.putExtra("jobid", jobId);
+        intent.putExtra("SAVEASCOMPLETION", true);
         startActivityForResult(intent, DOUCMENT_UPLOAD_CODE);
     }
 
@@ -777,5 +849,71 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
             compedt.setSelection(cursorpostion+time.length()+1);
         }
         stringBuffer.setLength(0);
+    }
+
+    private void uploadMultipleImges(Intent data,boolean imgPath){
+        String [] imgPathArray = new String[data.getClipData().getItemCount()];
+        ExecutorService service = Executors.newSingleThreadExecutor();
+        service.execute(()->{
+            for(int i =0; i<data.getClipData().getItemCount();i++) {
+                Uri uri = data.getClipData().getItemAt(i).getUri();
+                String fileName = PathUtils.getRealPath(this, uri);
+                String fileNameExt = AppUtility.getFileNameWithExtension(fileName);
+                imgPathArray[i] = PathUtils.getRealPath(this, uri);
+                Bitmap bitmap = AppUtility.getBitmapFromPath(PathUtils.getRealPath(this, uri));
+                GetFileList_Res obj=new GetFileList_Res("0",fileNameExt,fileNameExt,bitmap);
+                ArrayList<GetFileList_Res> getFileList_res =new ArrayList<>();
+                if (fileList_res != null) {
+                    getFileList_res.clear();
+                    getFileList_res.addAll(fileList_res);
+                }
+                getFileList_res.add(obj);
+                new Handler(Looper.getMainLooper()).post(()->{
+                    setList(getFileList_res, "",true);
+                });
+            }
+            new Handler(Looper.getMainLooper()).post(()->{
+                uploadOffline(imgPathArray,true,false,jobId);
+            });
+
+        });
+
+
+
+    }
+
+    public void uploadOffline(String[] imgPathArray,boolean imgPath, boolean isCompNotes, String jobId){
+        Data.Builder builder = new Data.Builder();
+        builder.putStringArray("imgPathArray",imgPathArray);
+        builder.putBoolean("imgPath",true);
+        builder.putBoolean("isCompNotes",true);
+        builder.putString("jobId",jobId);
+
+        mWorkManager = WorkManager.getInstance(this);
+
+        OneTimeWorkRequest request = new OneTimeWorkRequest.Builder(UploadMultiImgWorker.class)
+                .setInputData(builder.build())
+                .build();
+        mWorkManager.enqueue(request);
+
+        mWorkManager.getWorkInfoByIdLiveData(request.getId()).observe(this, new Observer<WorkInfo>() {
+            @Override
+            public void onChanged(WorkInfo workInfo) {
+                if(workInfo.equals(WorkInfo.State.SUCCEEDED)){
+                    Log.d("Worker", "==================== success");
+                }
+            }
+        });
+    }
+
+    @Override
+    public void updateMultiDoc(String apiName, String jobId) {
+        switch (apiName) {
+            case Service_apis.upload_document:
+                if(doc_attch_pi != null) {
+                    doc_attch_pi.getAttachFileList(jobId, App_preference.getSharedprefInstance().getLoginRes().getUsrId(), "6",true);
+                }
+                break;
+        }
     }
 }

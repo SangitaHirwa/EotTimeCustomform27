@@ -27,6 +27,7 @@ public class GetFileList_Res implements Parcelable {
     private String createdate;
     private String complNote;
     String  bitmap;
+    Bitmap  bitmap1;
     String att_docName;
 
     public String getBitmap() {
@@ -53,6 +54,12 @@ public class GetFileList_Res implements Parcelable {
         this.image_name = image_name;
         this.attachFileActualName = attachFileActualName;
         this.bitmap = bitmap;
+    }
+    public GetFileList_Res(String attachmentId, String image_name, String attachFileActualName, Bitmap bitmap) {
+        this.attachmentId = attachmentId;
+        this.image_name = image_name;
+        this.attachFileActualName = attachFileActualName;
+        this.bitmap1 = bitmap;
     }
     @SuppressLint("NewApi")
     protected GetFileList_Res(Parcel in) {
@@ -201,5 +208,13 @@ public class GetFileList_Res implements Parcelable {
         parcel.writeString(complNote);
         parcel.writeString(bitmap);
         parcel.writeString(att_docName);
+    }
+
+    public Bitmap getBitmap1() {
+        return bitmap1;
+    }
+
+    public void setBitmap1(Bitmap bitmap1) {
+        this.bitmap1 = bitmap1;
     }
 }

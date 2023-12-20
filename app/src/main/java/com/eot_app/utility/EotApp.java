@@ -21,6 +21,7 @@ import com.eot_app.nav_menu.jobs.job_detail.detail.NotifyForEquipmentCountList;
 import com.eot_app.nav_menu.jobs.job_detail.detail.NotifyForEquipmentCountRemark;
 import com.eot_app.nav_menu.jobs.job_detail.detail.NotifyForItemCount;
 import com.eot_app.nav_menu.jobs.job_detail.detail.NotifyForItemCountRemark;
+import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.NotifyForMultiDocAdd;
 import com.eot_app.nav_menu.jobs.job_detail.generate_invoice.InvoiceItemObserver;
 import com.eot_app.nav_menu.jobs.joboffline_db.JobItem_Observer;
 import com.eot_app.nav_menu.jobs.joboffline_db.JobOverViewNotify;
@@ -62,6 +63,7 @@ public class EotApp extends Application implements Application.ActivityLifecycle
     private NotifyForEquipmentStatusList notifyForEquipmentStatusList;
     private NotifyForInvoiceGenr notifyForInvoiceGenr;
     private AppointmentItem_Observer appointmentItem_observer;
+    private NotifyForMultiDocAdd notifyForMultiDocAdd;
     public static synchronized EotApp getAppinstance() {
         return INSTANCE;
     }
@@ -120,7 +122,7 @@ public class EotApp extends Application implements Application.ActivityLifecycle
             e.printStackTrace();
         }
     }
-    private boolean deleteDir(File dir) {
+    public boolean deleteDir(File dir) {
         if (dir != null && dir.isDirectory()) {
             String[] children = dir.list();
             assert children != null;
@@ -150,6 +152,11 @@ public class EotApp extends Application implements Application.ActivityLifecycle
     }
 
 
+    public void getAddMultiDocObserver(String apiName,String jobId){
+        if(this.notifyForMultiDocAdd != null){
+            notifyForMultiDocAdd.updateMultiDoc(apiName, jobId);
+        }
+    }
     public void getAddJobObserver(String tempId,String jobId) {
         if (this.notifyForAddJob != null) {
             notifyForAddJob.updateJobId(tempId,jobId);
@@ -192,6 +199,9 @@ public class EotApp extends Application implements Application.ActivityLifecycle
         }
     }
 
+    public  void setNotifyForMultiDocAdd(NotifyForMultiDocAdd notifyForMultiDocAdd){
+        this.notifyForMultiDocAdd=notifyForMultiDocAdd;
+    }
     public void setNotifyForAttchCount(NotifyForAttchCount notifyForAttchCount) {
         this.notifyForAttchCount = notifyForAttchCount;
     }

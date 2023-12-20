@@ -107,10 +107,12 @@ public class DocumentListAdapter extends RecyclerView.Adapter<DocumentListAdapte
         this.jobId = jobId;
     }
 
-    public void updateFileList(ArrayList<GetFileList_Res> getFileListres) {
-        if (this.getFileList_res != null) this.getFileList_res.clear();
-        this.getFileList_res.addAll(getFileListres);
-        notifyDataSetChanged();
+    public void updateFileList(ArrayList<GetFileList_Res> getFileListres,boolean firstCall) {
+        if (this.getFileList_res != null) {
+            if (firstCall) this.getFileList_res.clear();
+            this.getFileList_res.addAll(getFileListres);
+            notifyDataSetChanged();
+        }
     }
 
 
@@ -145,7 +147,10 @@ public class DocumentListAdapter extends RecyclerView.Adapter<DocumentListAdapte
 
         if (!ext.isEmpty()) {
             if (ext.equals("jpg") || ext.equals("jpeg") || ext.equals("png")) {
-                if(fileList.getAttachmentId().equalsIgnoreCase("0")&&fileList.getBitmap()!=null)
+                if(fileList.getAttachmentId().equalsIgnoreCase("0")&&fileList.getBitmap1()!=null)
+                {
+                    holder.image_thumb_nail.setImageBitmap(fileList.getBitmap1());
+                }else if(fileList.getAttachmentId().equalsIgnoreCase("0")&&fileList.getBitmap()!=null)
                 {
                     Bitmap bitmap1= AppUtility.StringToBitMap(fileList.getBitmap());
                     holder.image_thumb_nail.setImageBitmap(bitmap1);

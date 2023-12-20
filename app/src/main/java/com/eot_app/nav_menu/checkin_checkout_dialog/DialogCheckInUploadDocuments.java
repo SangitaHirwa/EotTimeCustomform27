@@ -363,12 +363,17 @@ public class DialogCheckInUploadDocuments extends DialogFragment implements View
     }
 
     @Override
+    public void showProgressBar() {
+
+    }
+
+    @Override
     public void selectFile() {
 
     }
 
     @Override
-    public void setList(ArrayList<GetFileList_Res> getFileList_res, String isAttch) {
+    public void setList(ArrayList<GetFileList_Res> getFileList_res, String isAttch,boolean firstCall) {
 
     }
 

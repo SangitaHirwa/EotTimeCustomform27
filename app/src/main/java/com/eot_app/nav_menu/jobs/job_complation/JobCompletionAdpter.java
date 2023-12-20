@@ -88,8 +88,8 @@ public class JobCompletionAdpter extends RecyclerView.Adapter<RecyclerView.ViewH
         this.removeAttchment = removeAttchment;
     }
 
-    public void updateFileList(ArrayList<GetFileList_Res> getFileListres) {
-        this.getFileList_res.clear();
+    public void updateFileList(ArrayList<GetFileList_Res> getFileListres, boolean firstCall) {
+        if(firstCall) this.getFileList_res.clear();
         this.getFileList_res.addAll(getFileListres);
         notifyDataSetChanged();
     }
@@ -127,7 +127,10 @@ public class JobCompletionAdpter extends RecyclerView.Adapter<RecyclerView.ViewH
             if (!ext.isEmpty()) {
                 if (ext.equals("jpg") || ext.equals("jpeg") || ext.equals("png")) {
 
-                    if(fileList.getAttachmentId().equalsIgnoreCase("0")&&fileList                            .getBitmap()!=null)
+                    if(fileList.getAttachmentId().equalsIgnoreCase("0")&&fileList.getBitmap1()!=null)
+                    {
+                        holder.image_thumb_nail.setImageBitmap(fileList.getBitmap1());
+                    }else if(fileList.getAttachmentId().equalsIgnoreCase("0")&&fileList.getBitmap()!=null)
                     {
                         Bitmap bitmap1= AppUtility.StringToBitMap(fileList.getBitmap());
                         holder.image_thumb_nail.setImageBitmap(bitmap1);
