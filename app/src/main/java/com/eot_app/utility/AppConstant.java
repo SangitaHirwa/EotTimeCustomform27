@@ -962,6 +962,8 @@ public class AppConstant {
     public static String download = "download";
     public static String appointment_code = "appointment_code";
     public static String preview_and_send_jobcard = "preview_and_send_jobcard";
+    public static String Send_Esign_pad_with_email = "Send_Esign_pad_with_email";
+
 
 
     public static String server(String location) {

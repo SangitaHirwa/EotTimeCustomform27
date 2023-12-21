@@ -1829,7 +1829,8 @@
     "send_job_card": "Send Jobcard",
     "download": "Download",
     "appointment_code": "Appointment Code",
-    "preview_and_send_jobcard": "Preview and Send Jobcard"
+    "preview_and_send_jobcard": "Preview and Send Jobcard",
+    "Send_Esign_pad_with_email" : "Send E-sign pad with email."
   }
 }
 
