@@ -85,8 +85,6 @@ public class Invoice_Email_Activity extends AppCompatActivity implements View.On
         }
         if (getIntent().hasExtra("jobId")) {
             jobId = bundle.getString("jobId");
-            email_message =bundle.getString("message");
-            reqAttachmentList = (List<JobCardAttachmentModel>) bundle.getSerializable("attachmentList");
             HyperLog.i("", "Job intent received:" + jobId);
 
         }
