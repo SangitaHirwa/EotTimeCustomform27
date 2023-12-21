@@ -10,6 +10,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -56,11 +57,13 @@ import com.eot_app.nav_menu.quote.quote_invoice_pkg.quote_mvp_pkg.Quo_Invo_Pi;
 import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.AppUtility;
 import com.eot_app.utility.App_preference;
+import com.eot_app.utility.CompressImageInBack;
 import com.eot_app.utility.EotApp;
 import com.eot_app.utility.db.AppDataBase;
 import com.eot_app.utility.language_support.LanguageController;
 import com.eot_app.utility.settings.setting_db.FieldWorker;
 import com.eot_app.utility.util_interfaces.MySpinnerAdapter;
+import com.eot_app.utility.util_interfaces.OnImageCompressed;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.gun0912.tedpermission.PermissionListener;
@@ -94,6 +97,7 @@ public class JobCardViewActivity extends AppCompatActivity  implements
     private final int ATTACHFILE_CODE = 101;
     private static final int DOUCMENT_UPLOAD_CODE = 156;
     ActivityJobCardViewBinding binding;
+    CompressImageInBack compressImageInBack = null;
 
 
     @Override
@@ -101,7 +105,7 @@ public class JobCardViewActivity extends AppCompatActivity  implements
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_job_card_view);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle(LanguageController.getInstance().getMobileMsgByKey("Preview and Send JobCard"));
+        getSupportActionBar().setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.preview_and_send_jobcard));
         invoice_email_pi = new Invoice_Email_pc(this, this);
         doc_attch_pi = new Doc_Attch_Pc(this);
         if(getIntent().hasExtra("DataForJobCardView")){
@@ -158,6 +162,7 @@ public class JobCardViewActivity extends AppCompatActivity  implements
         if(!binding.cbSign.isChecked()){
             binding.cbSign.setChecked(true);
         }
+
         binding.sendJobcardBtn.setOnClickListener(this);
         binding.downloadJobcardBtn.setOnClickListener(this);
         binding.linearLayoutSignature.setOnClickListener(this);
@@ -173,10 +178,10 @@ public class JobCardViewActivity extends AppCompatActivity  implements
         binding.templatTxt.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.select_template));
         binding.signatureTxt.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.tech_sign));
 
-        binding.inputLayoutEmailTo.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.to) + " *");
-        binding.inputLayoutEmailCc.setHint(LanguageController.getInstance().getMobileMsgByKey(LanguageController.getInstance().getMobileMsgByKey(AppConstant.cc)));
-        binding.inputLayoutEmailSubject.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.subject) + " *");
-        binding.inputLayoutEmailMessage.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.message) + " *");
+        binding.inputLayoutEmailTo.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.to) + "*");
+        binding.inputLayoutEmailCc.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.cc));
+        binding.inputLayoutEmailSubject.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.subject) + "*");
+        binding.inputLayoutEmailMessage.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.message) + "*");
         binding.txtLblAddAttachment.setOnClickListener(this);
 
 
@@ -184,12 +189,11 @@ public class JobCardViewActivity extends AppCompatActivity  implements
             binding.tvSendJobcardBtn.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.send_job_card));
             binding.tvDownloadBtn.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.download));
             binding.sendJobcardBtn.setVisibility(View.VISIBLE);
-            binding.llEmailType.setVisibility(View.VISIBLE);
+
         }
         else {
             binding.tvDownloadBtn.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.print_invoice));
             binding.sendJobcardBtn.setVisibility(View.GONE);
-            binding.llEmailType.setVisibility(View.GONE);
         }
 
 
@@ -201,21 +205,13 @@ public class JobCardViewActivity extends AppCompatActivity  implements
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.send_jobcard_btn:
-                SpannableStringBuilder spnBuilder = new SpannableStringBuilder(binding.edtEmailMessage.getText());
-                String spn = Html.toHtml(spnBuilder);
-                Log.e("Email Text", ""+spn);
                 if (jobId != null&&!jobId.isEmpty()) {
-                    Intent intent = new Intent(this, Invoice_Email_Activity.class);
-                    intent.putExtra("jobId", jobId);
-                    intent.putExtra("tempId", tempId);
-                    intent.putExtra("fwid",fwId);
-                    intent.putExtra("message",binding.eotEditor.getHtml());
-                    if(reqAttachmentList!=null&&!reqAttachmentList.isEmpty()){
-                        intent.putExtra("attachmentList", (Serializable) reqAttachmentList);
-                    }
-                    intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-                    startActivity(intent);
-
+                    invoice_email_pi.sendJobCardEmailTemplate(jobId,
+                            getIntent().getStringExtra("pdfPath"),
+                            binding.jobCardEditor.getHtml(),
+                            binding.edtEmailSubject.getText().toString(),
+                            binding.edtEmailTo.getText().toString(),
+                            binding.edtEmailCc.getText().toString(),tempId,fwId,reqAttachmentList);
                 }
                 break;
             case R.id.download_jobcard_btn:
@@ -359,9 +355,9 @@ public class JobCardViewActivity extends AppCompatActivity  implements
 
     @Override
     public void onGetEmailTempData(Get_Email_ReS_Model email_reS_model) {
-        binding.inputLayoutEmailTo.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.to) + " *");
-        binding.inputLayoutEmailCc.setHint(LanguageController.getInstance().getMobileMsgByKey(LanguageController.getInstance().getMobileMsgByKey(AppConstant.cc)));
-        binding.inputLayoutEmailSubject.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.subject) + " *");
+        binding.inputLayoutEmailTo.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.to) + "*");
+        binding.inputLayoutEmailCc.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.cc));
+        binding.inputLayoutEmailSubject.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.subject) + "*");
 
         if (email_reS_model.getTo() != null && !email_reS_model.getTo().equals("")) {
             binding.edtEmailTo.setText(email_reS_model.getTo());
@@ -372,13 +368,13 @@ public class JobCardViewActivity extends AppCompatActivity  implements
         if (email_reS_model.getMessage() != null && !email_reS_model.getMessage().equals("")) {
             boolean checkedSing = binding.cbSign.isChecked();
             if(checkedSing){
-                binding.eotEditor.setHtml(email_reS_model.getMessage());
+               binding.jobCardEditor.setHtml(email_reS_model.getMessage());
             }else{
                 setEmailReplacedMessage(email_reS_model.getMessage(),checkedSing);
             }
         }
         binding.cbSign.setOnCheckedChangeListener((compoundButton, b) -> {
-               setEmailReplacedMessage(binding.eotEditor.getHtml(),b);
+              setEmailReplacedMessage(binding.jobCardEditor.getHtml(),b);
         });
 
 //        this.email_reS_model = email_reS_model;
@@ -390,17 +386,14 @@ public class JobCardViewActivity extends AppCompatActivity  implements
     @SuppressLint("SetJavaScriptEnabled")
     private void setEmailReplacedMessage(String webMessage,Boolean b) {
 
-        WebSettings mWebSettings = binding.eotEditor.getSettings();
+        WebSettings mWebSettings = binding.jobCardEditor.getSettings();
         mWebSettings.setJavaScriptEnabled(true);
-        mWebSettings.setBuiltInZoomControls(true);
-        binding.eotEditor.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
-        binding.eotEditor.setScrollbarFadingEnabled(false);
         if(b){
             String replacedMessage = webMessage.replace("<p id=\"esignUrl\"> </p>", "<p id=\"esignUrl\"> <a href=\"_eSign_\" style=\"color:#15a0b3;\">E-Sign</a></p>");
-            binding.eotEditor.setHtml(replacedMessage);
+           binding.jobCardEditor.setHtml(replacedMessage);
         }else {
             String replacedMessage = webMessage.replaceAll("<a href=\"_eSign_\" style=\"color:#15a0b3;\">E-Sign</a>", "");
-            binding.eotEditor.setHtml(replacedMessage);
+             binding.jobCardEditor.setHtml(replacedMessage);
         }
 
     }
@@ -564,7 +557,7 @@ public class JobCardViewActivity extends AppCompatActivity  implements
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
-            case DOUCMENT_UPLOAD_CODE:
+            /*case DOUCMENT_UPLOAD_CODE:
                 if (resultCode == RESULT_OK)
                     if (doc_attch_pi != null&&data!=null) {
                         String fileNameExt = AppUtility.getFileNameWithExtension(data.getStringExtra("imgPath"));
@@ -601,7 +594,7 @@ public class JobCardViewActivity extends AppCompatActivity  implements
                             }
                         }
                     }
-                break;
+                break;*/
             case ATTACHFILE_CODE:
                 if (resultCode == RESULT_OK) {
                     try {
@@ -613,7 +606,7 @@ public class JobCardViewActivity extends AppCompatActivity  implements
                         if (img_extension.equals(".jpg") || img_extension.equals(".png") || img_extension.equals(".jpeg")) {
                             imageEditing(data.getData(), true);
                         } else {
-                            uploadFileDialog(gallery_image_Path);
+                            uploadFileDialog(data.getData());
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -628,26 +621,85 @@ public class JobCardViewActivity extends AppCompatActivity  implements
 
     private void imageEditing(Uri uri, boolean isImage) {
         try {
-            Intent intent = new Intent(this, ActivityDocumentSaveUpload.class);
-            intent.putExtra("uri", uri);
-            intent.putExtra("isImage", true);
-            intent.putExtra("jobid", jobId);
-            intent.putExtra("SAVEASCOMPLETION", false);
-            startActivityForResult(intent, DOUCMENT_UPLOAD_CODE);
+            compressImageInBack = new CompressImageInBack(this, new OnImageCompressed() {
+                @Override
+                public void onImageCompressed(Bitmap bitmap) {
+                    String savedImagePath = compressImageInBack.getSavedImagePath();
+                    if (savedImagePath != null) {
+                        uploadDocumentsJobCard(savedImagePath);
+                    }
+                }
+            }, uri);
+            compressImageInBack.setSaveBitmap(true);
+            compressImageInBack.compressImageInBckg();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+    private void uploadDocumentsJobCard(String savedImagePath) {
+        if (doc_attch_pi != null&&savedImagePath!=null) {
+            String fileNameExt = AppUtility.getFileNameWithExtension(savedImagePath);
+            String bitmapString="";
+                Bitmap bitmap = AppUtility.getBitmapFromPath(savedImagePath);
+                bitmapString = AppUtility.BitMapToString(bitmap);
+            String[] split = fileNameExt.split("\\.");
+            String imageNameWithOutExt = split[0];
+            GetFileList_Res obj=new GetFileList_Res("0",fileNameExt,fileNameExt,bitmapString);
+            ArrayList<GetFileList_Res> getFileList_res =new ArrayList<>();
+            if (fileList_res != null) {
+                getFileList_res.addAll(fileList_res);
+            }
+            getFileList_res.add(obj);
+
+            setList(getFileList_res, "",true);
+
+                try
+                {
+                    doc_attch_pi.uploadDocuments(jobId, savedImagePath,
+                            imageNameWithOutExt,
+                            "",
+                            "2" ,
+                            "0");
+                }
+                catch (Exception e)
+                {
+                    if (getFileList_res.size()==1) {
+                        fileList_res.remove(getFileList_res.get(0));
+                        setList(fileList_res, "",true);
+                    }
+                    e.printStackTrace();
+                }
+
+        }
+    }
+
 
     //upload file dialog
-    private void uploadFileDialog(final String selectedFilePath) {
-        Intent intent = new Intent(this, ActivityDocumentSaveUpload.class);
+    private void uploadFileDialog(Uri selectedFilePath) {
+        try {
+            compressImageInBack = new CompressImageInBack(this, new OnImageCompressed() {
+                @Override
+                public void onImageCompressed(Bitmap bitmap) {
+                    String savedImagePath = compressImageInBack.getSavedImagePath();
+                    if (savedImagePath != null) {
+                        uploadDocumentsJobCard(savedImagePath);
+                    }
+                }
+            }, selectedFilePath);
+            compressImageInBack.setSaveBitmap(true);
+            compressImageInBack.compressImageInBckg();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        /*Intent intent = new Intent(this, ActivityDocumentSaveUpload.class);
         intent.putExtra("uri", selectedFilePath);
         intent.putExtra("isImage", false);
         intent.putExtra("jobid", jobId);
         intent.putExtra("SAVEASCOMPLETION", false);
-        startActivityForResult(intent, DOUCMENT_UPLOAD_CODE);
+        startActivityForResult(intent, DOUCMENT_UPLOAD_CODE);*/
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

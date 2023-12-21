@@ -1828,7 +1828,9 @@
     "non_billable_item_alert": "To generate an invoice. It is necessary to add atleast one billable item/service. ",
     "send_job_card": "Send Jobcard",
     "download": "Download",
-    "appointment_code": "Appointment Code"
+    "appointment_code": "Appointment Code",
+    "preview_and_send_jobcard": "Preview and Send Jobcard",
+    "Send_Esign_pad_with_email" : "Send E-sign pad with email."
   }
 }
 
