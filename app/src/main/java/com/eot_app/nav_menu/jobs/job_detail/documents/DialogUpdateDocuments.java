@@ -183,7 +183,7 @@ public class DialogUpdateDocuments extends DialogFragment implements View.OnClic
         }
         if (isFileImage && imgPath != null)
         {
-            Glide.with(Objects.requireNonNull(getActivity()))
+            Glide.with(requireActivity())
                 .load(App_preference.getSharedprefInstance().getBaseURL() + imgPath)
                 .thumbnail(Glide.with(getActivity()).load(R.raw.loader_eot))
                 .placeholder(R.drawable.picture)
@@ -292,12 +292,17 @@ public class DialogUpdateDocuments extends DialogFragment implements View.OnClic
     }
 
     @Override
+    public void showProgressBar() {
+
+    }
+
+    @Override
     public void selectFile() {
 
     }
 
     @Override
-    public void setList(ArrayList<GetFileList_Res> getFileList_res, String isAttch) {
+    public void setList(ArrayList<GetFileList_Res> getFileList_res, String isAttch, boolean firstCall) {
 
     }
 

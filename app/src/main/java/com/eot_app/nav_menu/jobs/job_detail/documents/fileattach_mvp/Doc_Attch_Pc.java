@@ -60,7 +60,7 @@ public class Doc_Attch_Pc implements Doc_Attch_Pi {
 
 
     @Override
-    public void getAttachFileList(final String jobId, final String usrId, final String type) {
+    public void getAttachFileList(final String jobId, final String usrId, final String type, boolean firstCall) {
         GetFileList_req_Model getFileList_model = new GetFileList_req_Model(updateindex, updatelimit, jobId, usrId, type);
         JsonObject jsonObject = AppUtility.getJsonObject(new Gson().toJson(getFileList_model));
 
@@ -89,10 +89,10 @@ public class Doc_Attch_Pc implements Doc_Attch_Pi {
                                         Type listType = new TypeToken<List<GetFileList_Res>>() {
                                         }.getType();
                                         ArrayList<GetFileList_Res> getFileList_res = new Gson().fromJson(convert, listType);
-                                        doc_attch_view.setList(getFileList_res, "");
+                                        doc_attch_view.setList(getFileList_res, "",firstCall);
                                     } else {
                                         doc_attch_view.addView();
-                                        doc_attch_view.setList(new ArrayList<GetFileList_Res>(), "");
+                                        doc_attch_view.setList(new ArrayList<GetFileList_Res>(), "",firstCall);
                                     }
                                 } else if (jsonObject.get("statusCode") != null && jsonObject.get("statusCode").getAsString().equals(AppConstant.SESSION_EXPIRE)) {
                                     doc_attch_view.onSessionExpire(LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
@@ -113,7 +113,9 @@ public class Doc_Attch_Pc implements Doc_Attch_Pi {
                                 //  AppUtility.progressBarDissMiss();
                                 if ((updateindex + updatelimit) <= count) {
                                     updateindex += updatelimit;
-                                    getAttachFileList(jobId, usrId, type);
+                                    getAttachFileList(jobId, usrId, type,false);
+                                }else {
+                                    updateindex = 0;
                                 }
                             }
                         });
@@ -125,6 +127,93 @@ public class Doc_Attch_Pc implements Doc_Attch_Pi {
             networkDialog();
         }
 
+    }
+
+    @Override
+    public void uploadMultipleDocuments(String job_Id, String file, String finalFname, String desc, String type, String isAddAttachAsCompletionNote,boolean lastCall) {
+        if (AppUtility.isInternetConnected()) {
+            final String[] message_key = new String[1];
+            ActivityLogController.saveActivity(ActivityLogController.JOB_MODULE, ActivityLogController.JOB_UPLOAD_DOC, ActivityLogController.JOB_MODULE);
+            String mimeType = "";
+            MultipartBody.Part body = null;
+            File file1 = new File(file);
+            if (file1 != null) {
+                mimeType = URLConnection.guessContentTypeFromName(file1.getName());
+                if (mimeType == null) {
+                    mimeType = finalFname;
+                }
+                RequestBody requestFile = RequestBody.create(file1, MediaType.parse(mimeType));
+                // MultipartBody.Part is used to send also the actual file name
+                body = MultipartBody.Part.createFormData("ja", finalFname + file.substring(file.lastIndexOf(".")), requestFile);
+            }
+            final RequestBody jobId = RequestBody.create(job_Id, MultipartBody.FORM);
+            RequestBody docName = RequestBody.create(finalFname, MultipartBody.FORM);
+            RequestBody descBody = RequestBody.create(desc, MultipartBody.FORM);
+            RequestBody userId = RequestBody.create(App_preference.getSharedprefInstance().getLoginRes().getUsrId(), MultipartBody.FORM);
+            RequestBody typeId = RequestBody.create(type, MultipartBody.FORM);
+
+            if (isAddAttachAsCompletionNote == null)
+                isAddAttachAsCompletionNote = "0";
+
+            RequestBody isAddAttachAsCompletionNoteBody = RequestBody.create(isAddAttachAsCompletionNote, MultipartBody.FORM);
+
+            //     AppUtility.progressBarShow(((Fragment) doc_attch_view).getActivity());
+            String finalIsAddAttachAsCompletionNote = isAddAttachAsCompletionNote;
+            ApiClient.getservices().uploadDocements(AppUtility.getApiHeaders(),
+                            jobId, userId, descBody, typeId, docName,
+                            isAddAttachAsCompletionNoteBody, body)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<JsonObject>() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
+                        }
+
+                        @Override
+                        public void onNext(JsonObject jsonObject) {
+                            Log.e("Responce", jsonObject.toString());
+                            if (jsonObject.get("success").getAsBoolean()) {
+                                String convert = new Gson().toJson(jsonObject.get("data").getAsJsonArray());
+                                Type listType = new TypeToken<List<GetFileList_Res>>() {
+                                }.getType();
+                                ArrayList<GetFileList_Res> docList = new Gson().fromJson(convert, listType);
+//                                if (finalIsAddAttachAsCompletionNote.equals("1")) {
+//                                    AppDataBase.getInMemoryDatabase(EotApp.getAppinstance())
+//                                            .jobModel().updateComplitionNotes(docList.get(0).getComplNote(), job_Id);
+//                                    EotApp.getAppinstance().notifyObserver("removeFW", "complition", docList.get(0).getComplNote());
+//                                }
+//                                doc_attch_view.addNewItemToAttachmentList(docList, finalIsAddAttachAsCompletionNote);
+                                message_key[0] =jsonObject.get("message").getAsString();
+                            } else if (jsonObject.get("statusCode") != null && jsonObject.get("statusCode").getAsString().equals(AppConstant.SESSION_EXPIRE)) {
+                                EotApp.getAppinstance().showToastmsg(LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
+                            } else {
+                                EotApp.getAppinstance().showToastmsg(LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
+                            }
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            AppUtility.progressBarDissMiss();
+                            Log.e("Error", e.getMessage());
+                            EotApp.getAppinstance().showToastmsg(e.getMessage());
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            AppUtility.progressBarDissMiss();
+                            if(lastCall) {
+                                EotApp.getAppinstance().showToastmsg(LanguageController.getInstance().getServerMsgByKey(message_key[0]));
+                                updateJobData(job_Id);
+                            }
+
+
+                        }
+                    });
+        } else {
+            AppUtility.progressBarDissMiss();
+            networkDialog();
+        }
+        Log.e("Worker","Run Interface attachment.............");
     }
 
     @Override

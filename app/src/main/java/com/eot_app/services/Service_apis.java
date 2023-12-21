@@ -225,6 +225,7 @@ public interface Service_apis {
     // manage JobStatus with api
     String getJobStatus = "JobController/getJobStatusList";
     String get_supplier_list = "SupplierController/getSupplierList";
+    String upload_document = "JobController/uploadDocument";
 
 
     //no token required & header

@@ -11,7 +11,7 @@ import java.util.ArrayList;
 public interface Doc_Attch_View {
     void selectFile();
 
-    void setList(ArrayList<GetFileList_Res> getFileList_res,String isAttachCompletionNotes);
+    void setList(ArrayList<GetFileList_Res> getFileList_res,String isAttachCompletionNotes,boolean firstCall);
     void addNewItemToAttachmentList(ArrayList<GetFileList_Res> getFileList_res,String isAttachCompletionNotes);
 
     void addView();
@@ -23,6 +23,7 @@ public interface Doc_Attch_View {
     void onDocumentUpdate(String msg, boolean isSuccess);
 
     void hideProgressBar();
+    void showProgressBar();
 
     //   void setUploadNewDocList(ArrayList<GetFileList_Res> getFileList_res);
 }

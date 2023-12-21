@@ -300,7 +300,7 @@ public class JobCardViewActivity extends AppCompatActivity  implements
         if (jobId != null) {
             invoice_email_pi.getJobCardEmailTemplate(jobId,tempId);
 //            jobDetail_pi.getAttachFileList(jobId, "","");
-            doc_attch_pi.getAttachFileList(jobId, "", "");
+            doc_attch_pi.getAttachFileList(jobId, "", "",true);
             jobCardAttachmentAdapter = new JobCardAttachmentAdapter(this);
         }
     }
@@ -419,7 +419,7 @@ public class JobCardViewActivity extends AppCompatActivity  implements
     }
 
     @Override
-    public void setList(ArrayList<GetFileList_Res> getFileList_res, String isAttachCompletionNotes) {
+    public void setList(ArrayList<GetFileList_Res> getFileList_res, String isAttachCompletionNotes, boolean firstCall) {
 
         Log.e("Attachment List", ""+getFileList_res.size()+""+isAttachCompletionNotes);
         list.clear();
@@ -459,7 +459,7 @@ public class JobCardViewActivity extends AppCompatActivity  implements
         // to add the new entry into existing list
         if (getFileList_res != null&&fileList_res!=null) {
             fileList_res.addAll(getFileList_res);
-            setList(fileList_res, "");
+            setList(fileList_res, "",true);
         }
 
     }
@@ -523,6 +523,11 @@ public class JobCardViewActivity extends AppCompatActivity  implements
     }
 
     @Override
+    public void showProgressBar() {
+
+    }
+
+    @Override
     public void cbClickListener(JobCardAttachmentModel jobCardAttachmentModel) {
         String isJobCardPdfSend= "1";
         if(jobCardAttachmentModel.getId().equals("-1")){
@@ -568,7 +573,7 @@ public class JobCardViewActivity extends AppCompatActivity  implements
                         }
                         getFileList_res.add(obj);
 
-                        setList(getFileList_res, "");
+                        setList(getFileList_res, "",true);
 
                         if(data.getStringExtra("fileName")!=null){
                             try
@@ -583,7 +588,7 @@ public class JobCardViewActivity extends AppCompatActivity  implements
                             {
                                 if (getFileList_res.size()==1) {
                                     fileList_res.remove(getFileList_res.get(0));
-                                    setList(fileList_res, "");
+                                    setList(fileList_res, "",true);
                                 }
                                 e.printStackTrace();
                             }

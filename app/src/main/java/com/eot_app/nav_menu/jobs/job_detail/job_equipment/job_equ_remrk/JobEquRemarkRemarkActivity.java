@@ -1269,7 +1269,7 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
                     adapter = new DocumentListAdapter(this, attachments, jobId,"1");
                     recyclerView_attachment.setAdapter(adapter);
                 } else {
-                    adapter.updateFileList(attachments);
+                    adapter.updateFileList(attachments,true);
                 }
             }
         }

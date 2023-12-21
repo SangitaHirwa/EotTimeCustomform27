@@ -423,7 +423,7 @@ public class Payment_Activity extends UploadDocumentActivity implements  Documen
                 adapter = new DocumentListAdapter(this, attachments, jobId);
                 recyclerView_attachment.setAdapter(adapter);
             } else {
-                adapter.updateFileList(attachments);
+                adapter.updateFileList(attachments,true);
             }
         }
 

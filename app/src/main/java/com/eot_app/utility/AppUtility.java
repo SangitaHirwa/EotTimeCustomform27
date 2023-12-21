@@ -41,6 +41,7 @@ import com.eot_app.R;
 import com.eot_app.nav_menu.admin_fw_chat_pkg.sonam_user_user_chat_pkg.user_chat_controller.UserToUserChatController;
 import com.eot_app.nav_menu.jobs.add_job.Add_job_activity;
 import com.eot_app.nav_menu.jobs.job_detail.detail.jobdetial_model.JobStatusModelNew;
+import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.MultiDocUpdateRequest;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_detail_pkg.inv_detail_model.Tax;
 import com.eot_app.utility.db.AppDataBase;
 import com.eot_app.utility.language_support.LanguageController;
@@ -2313,6 +2314,12 @@ public static void askAllPerMission(Context context) {
             e.printStackTrace();
         }
         return time;
+    }
+    public static String getParam(String job_Id, String file, String finalFname, String desc, String type, String isAddAttachAsCompletionNote, boolean lastCall){
+        MultiDocUpdateRequest multi_DocUpdateRequest = new MultiDocUpdateRequest(job_Id,file,finalFname,desc,type,isAddAttachAsCompletionNote,lastCall);
+        Gson gson = new Gson();
+        String multiDocUpdateRequest = gson.toJson(multi_DocUpdateRequest);
+        return multiDocUpdateRequest;
     }
 }
 
