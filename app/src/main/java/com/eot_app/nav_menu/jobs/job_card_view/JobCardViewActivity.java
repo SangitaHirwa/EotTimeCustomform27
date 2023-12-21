@@ -653,7 +653,7 @@ public class JobCardViewActivity extends AppCompatActivity  implements
             }
             getFileList_res.add(obj);
 
-            setList(getFileList_res, "");
+            setList(getFileList_res, "",true);
 
                 try
                 {
@@ -667,7 +667,7 @@ public class JobCardViewActivity extends AppCompatActivity  implements
                 {
                     if (getFileList_res.size()==1) {
                         fileList_res.remove(getFileList_res.get(0));
-                        setList(fileList_res, "");
+                        setList(fileList_res, "",true);
                     }
                     e.printStackTrace();
                 }
