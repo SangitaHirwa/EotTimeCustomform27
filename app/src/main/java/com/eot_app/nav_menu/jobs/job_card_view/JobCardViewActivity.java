@@ -5,6 +5,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.databinding.ViewDataBinding;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -439,6 +440,11 @@ public class JobCardViewActivity extends AppCompatActivity  implements
         jobCardAttachmentAdapter.updateList(list);
         binding.rvJobCardAttachment.setLayoutManager(new LinearLayoutManager(this));
         binding.rvJobCardAttachment.setAdapter(jobCardAttachmentAdapter);
+        if (jobCardAttachmentAdapter.getItemCount() <= 3) {
+            binding.rvJobCardAttachment.getLayoutParams().height = RecyclerView.LayoutParams.WRAP_CONTENT;
+        } else {
+            binding.rvJobCardAttachment.getLayoutParams().height = getResources().getDimensionPixelSize(R.dimen.job_card_att_list_hieght);
+        }
 
     }
 

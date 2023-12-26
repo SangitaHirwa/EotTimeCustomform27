@@ -163,7 +163,8 @@
                         android:orientation="vertical"
                         android:padding="10dp"
                         android:layout_weight="1"
-                        android:background="@drawable/bg_edt_jobcart">
+                        android:background="@drawable/bg_edt_jobcart"
+                        android:nestedScrollingEnabled="true">
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/input_layout_email_message"
@@ -241,11 +242,12 @@
                         <androidx.recyclerview.widget.RecyclerView
                             android:id="@+id/rv_jobCardAttachment"
                             android:layout_width="match_parent"
-                            android:layout_height="150dp"
+                            android:layout_height="wrap_content"
                             android:background="@color/bg_rv_dialog"
                             android:padding="10dp"
-                            android:maxLength="@integer/material_motion_duration_long_2"
+                            android:maxLength="150"
                             android:layout_marginTop="10dp"
+
                             />
 
                     <RelativeLayout
