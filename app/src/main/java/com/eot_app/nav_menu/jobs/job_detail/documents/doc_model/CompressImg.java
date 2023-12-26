@@ -47,7 +47,7 @@ public class CompressImg {
         int actualWidth = options.outWidth;
 
 //      the image's max dimention is gonna be: 512x512
-        float maxSize = 512.0f;
+        float maxSize = 1000.0f;
 
 //      width and height values are set maintaining the aspect ratio of the image
         float ratio = actualWidth > actualHeight ? maxSize / actualWidth : maxSize / actualHeight;
@@ -123,7 +123,7 @@ public class CompressImg {
             out = new FileOutputStream(filename);
 
 //          write the compressed bitmap at the destination specified by filename.
-            scaledBitmap.compress(Bitmap.CompressFormat.JPEG, 80, out);
+            scaledBitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
