@@ -78,7 +78,7 @@ public class DocumentsFragment extends Fragment implements Doc_Attch_View, Docum
     Doc_Attch_Pi doc_attch_pi;
     RecyclerView.LayoutManager layoutManager;
     LinearLayout nodoc_linear;
-    String captureImagePath;
+    private String captureImagePath;
     TextView noDocList;
     private DocumentListAdapter documentListAdapter;
     // TODO: Rename and change types of parameters
@@ -463,11 +463,12 @@ public class DocumentsFragment extends Fragment implements Doc_Attch_View, Docum
                 if (resultCode == RESULT_OK) {
                     try {
                          //get uri from current created path
-                        File file = AppUtility.scaleToActualAspectRatio(captureImagePath, 1024f, 1024f);
-                        if (file != null)
-                            imageEditing(Uri.fromFile(file), "camera_capture");
+                        if(captureImagePath!=null) {
+                            File file = AppUtility.scaleToActualAspectRatio(captureImagePath, 1024f, 1024f);
+                            if (file != null)
+                                imageEditing(Uri.fromFile(file), "camera_capture");
 
-                        isImage=true;
+                        }  isImage=true;
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
