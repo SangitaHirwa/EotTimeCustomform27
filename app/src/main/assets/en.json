@@ -890,7 +890,8 @@
     "pdf_not_success": "PDF report not generated, Please try agin.",
     "leave_approved": "<b> Hi %s %s</b>, <br><br>Your leave request for <b>%s</b> to <b>%s</b> is approved.<br><br>Support team, <br>EyeOnTask",
     "leave_rejected": "<b>Hi %s %s</b>, <br><br>Your leave request for <b>%s</b> to <b>%s</b> is rejected.<br><br>Support team, <br>EyeOnTask",
-    "lead_cmt_mail_subject": "Comment on Lead %s by %s."
+    "lead_cmt_mail_subject": "Comment on Lead %s by %s.",
+    "mail_limit_exceed": "Company mail limit exceed today."
   },
   "mobileMsgsModel": {
     "accept": "Accept",
