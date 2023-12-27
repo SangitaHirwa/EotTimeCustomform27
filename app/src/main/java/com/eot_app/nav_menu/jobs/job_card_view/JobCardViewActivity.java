@@ -444,6 +444,10 @@ public class JobCardViewActivity extends AppCompatActivity  implements
             }
             list.add(new JobCardAttachmentModel(item.getAttachmentId(),"2",name,false));
         }
+        if(list!=null && list.size()>0 && list.get(0).getChecked()){
+            reqAttachmentList.clear();
+            reqAttachmentList.add(list.get(0));
+        }
         jobCardAttachmentAdapter.updateList(list);
         binding.rvJobCardAttachment.setLayoutManager(new LinearLayoutManager(this));
         binding.rvJobCardAttachment.setAdapter(jobCardAttachmentAdapter);
@@ -542,25 +546,34 @@ public class JobCardViewActivity extends AppCompatActivity  implements
 
     @Override
     public void cbClickListener(JobCardAttachmentModel jobCardAttachmentModel) {
-        String isJobCardPdfSend= "1";
+      /*  String isJobCardPdfSend= "1";
         if(jobCardAttachmentModel.getId().equals("-1")){
             if(jobCardAttachmentModel.getChecked()){
                 isJobCardPdfSend = "1";
             }else {
                 isJobCardPdfSend = "0";
             }
-        }else {
-            for (JobCardAttachmentModel item : list
-            ) {
-                if(item.getId().equals(jobCardAttachmentModel.getId())){
+        }else {*/
+        if (jobCardAttachmentModel.getChecked()) {
+            for (JobCardAttachmentModel item : list) {
+
+                if (item.getId().equals(jobCardAttachmentModel.getId())) {
                     item.setChecked(jobCardAttachmentModel.getChecked());
-                    JobCardAttachmentModel attachmentModel=new JobCardAttachmentModel(jobCardAttachmentModel.getId(),jobCardAttachmentModel.getType());
+                    JobCardAttachmentModel attachmentModel = new JobCardAttachmentModel(jobCardAttachmentModel.getId(), jobCardAttachmentModel.getType());
                     reqAttachmentList.add(attachmentModel);
                     break;
                 }
             }
+        }else {
+            for (JobCardAttachmentModel item : reqAttachmentList) {
+                if (item.getId().equals(jobCardAttachmentModel.getId())) {
+                    reqAttachmentList.remove(item);
+                    break;}
+                     }
+                }
 
-        }
+//            }
+
 
         for (JobCardAttachmentModel item : list
         ) {
