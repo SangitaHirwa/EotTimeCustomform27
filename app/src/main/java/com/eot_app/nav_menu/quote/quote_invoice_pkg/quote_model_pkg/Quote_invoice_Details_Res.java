@@ -22,7 +22,7 @@ public class Quote_invoice_Details_Res implements Parcelable {
             return new Quote_invoice_Details_Res[size];
         }
     };
-    private String invId;
+//    private String invId;
     private String parentId;
     private String compId;
     private String cltId;
@@ -60,9 +60,9 @@ public class Quote_invoice_Details_Res implements Parcelable {
     public Quote_invoice_Details_Res() {
 
     }
-
+    /*Remove invId variable after discuss with Rani Yadav for 2.92 release on 26 Dec 2023*/
     protected Quote_invoice_Details_Res(Parcel in) {
-        invId = in.readString();
+//        invId = in.readString();
         parentId = in.readString();
         compId = in.readString();
         cltId = in.readString();
@@ -101,7 +101,7 @@ public class Quote_invoice_Details_Res implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(invId);
+//        dest.writeString(invId);
         dest.writeString(parentId);
         dest.writeString(compId);
         dest.writeString(cltId);
@@ -129,13 +129,13 @@ public class Quote_invoice_Details_Res implements Parcelable {
         dest.writeString(disCalculationType);
     }
 
-    public String getInvId() {
+ /*   public String getInvId() {
         return invId;
     }
 
     public void setInvId(String invId) {
         this.invId = invId;
-    }
+    }*/
 
     public String getParentId() {
         return parentId;

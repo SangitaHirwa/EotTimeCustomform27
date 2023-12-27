@@ -7,7 +7,7 @@ import java.util.List;
 public class AddItem_Model {
     String quotId;
     String itemId;
-    String invId;
+   // String invId;
     String type;
     String rate;
     String qty;
@@ -22,15 +22,14 @@ public class AddItem_Model {
     String taxamnt;
     String jtId;
     String inm;
-
-
-    public AddItem_Model(String quotId, String itemId, String invId, String type, String rate,
+  /*Remove invId variable after discuss with Rani Yadav for 2.92 release on 26 Dec 2023*/
+    public AddItem_Model(String quotId, String itemId,/* String invId,*/ String type, String rate,
                          String qty, String discount, String des, List<Tax> taxData, String unit,
                          String supplierCost, String isInvOrNoninv, String pno, String taxamnt, String totalAmount,
                          String jtId, String inm) {
         this.quotId = quotId;
         this.itemId = itemId;
-        this.invId = invId;
+       // this.invId = invId;
         this.type = type;
         this.rate = rate;
         this.qty = qty;

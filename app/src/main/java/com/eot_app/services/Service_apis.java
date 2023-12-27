@@ -576,6 +576,7 @@ public interface Service_apis {
     @Multipart
     @POST(addQuotationForMobile)
     Observable<JsonObject>
+        /*Remove invId variable after discuss with Rani Yadav for 2.92 release on 26 Dec 2023*/
     addQuoteWithDocuments(@HeaderMap Map<String, String> map,
                           @Part("leadId") RequestBody leadId,
                           @Part("appId") RequestBody appId,
@@ -606,7 +607,7 @@ public interface Service_apis {
                           @Part("note") RequestBody note,
                           @Part("assignByUser") RequestBody assignByUser,
                           @Part("quotId") RequestBody quotId,
-                          @Part("invId") RequestBody invId,
+                         /* @Part("invId") RequestBody invId,*/
                           @Part("term") RequestBody term,
                           @Part("lat") RequestBody lat,
                           @Part("lng") RequestBody lng,

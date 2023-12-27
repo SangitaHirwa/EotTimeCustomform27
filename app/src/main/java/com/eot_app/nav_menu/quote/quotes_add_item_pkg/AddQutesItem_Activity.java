@@ -122,7 +122,8 @@ public class AddQutesItem_Activity extends AppCompatActivity implements TextWatc
             if (quotesDetails == null) {
                 return;
             }
-            invId = quotesDetails.getInvData().getInvId();
+            /*Remove invId variable after discuss with Rani Yadav for 2.92 release on 26 Dec 2023*/
+          /*  invId = quotesDetails.getInvData().getInvId();*/
             addQuotesId = quotesDetails.getQuotId();
 
 //            we have to get a new tax items from the server
@@ -145,7 +146,8 @@ public class AddQutesItem_Activity extends AppCompatActivity implements TextWatc
             initializelables();
             intializeViews();
             layout_fw_item.setVisibility(View.GONE);
-            invId = quotesDetails.getInvData().getInvId();
+
+          /*invId = quotesDetails.getInvData().getInvId();*/       /*Remove invId variable after discuss with Rani Yadav for 2.92 release on 26 Dec 2023*/
             addQuotesId = quotesDetails.getQuotId();
             String itemId = bundle.getString("itemId");
             if (quotesDetails != null && quotesDetails != null && quotesDetails.getInvData() != null && quotesDetails.getInvData().getItemData() != null) {
@@ -1007,7 +1009,16 @@ public class AddQutesItem_Activity extends AppCompatActivity implements TextWatc
     public void AddUpdateQuot(List<Tax> taxListFilter){
 
         if (quote_itemData != null) {
-            Update_Quote_ReQ updateModel = new Update_Quote_ReQ(iqmmId, invId, type,
+            /*Remove invId variable after discuss with Rani Yadav for 2.92 release on 26 Dec 2023*/
+            /*Update_Quote_ReQ updateModel = new Update_Quote_ReQ(iqmmId, invId, type,
+                    edt_item_rate.getText().toString().trim(), edt_item_qty.getText().toString().trim(),
+                    edt_unit.getText().toString().trim(), edt_item_discount.getText().toString().trim(),
+                    edt_item_description.getText().toString().trim(), amount_value_txt.getText().toString().trim(),
+                    taxListFilter,
+                    edt_item_supplier.getText().toString().trim(),
+                    edt_part_no.getText().toString().trim(), taxamount_value_txt.getText().toString().trim(), jtId, itemId
+                    , quote_itemData.getInm());*/
+            Update_Quote_ReQ updateModel = new Update_Quote_ReQ(iqmmId, type,
                     edt_item_rate.getText().toString().trim(), edt_item_qty.getText().toString().trim(),
                     edt_unit.getText().toString().trim(), edt_item_discount.getText().toString().trim(),
                     edt_item_description.getText().toString().trim(), amount_value_txt.getText().toString().trim(),
@@ -1015,10 +1026,19 @@ public class AddQutesItem_Activity extends AppCompatActivity implements TextWatc
                     edt_item_supplier.getText().toString().trim(),
                     edt_part_no.getText().toString().trim(), taxamount_value_txt.getText().toString().trim(), jtId, itemId
                     , quote_itemData.getInm());
-
             quoteItemAdd_pi.callApiUpdateQuotesItem(updateModel);
         } else {
-            AddItem_Model reqModel = new AddItem_Model(addQuotesId, itemId, invId, type,
+            /*Remove invId variable after discuss with Rani Yadav for 2.92 release on 26 Dec 2023*/
+
+           /* AddItem_Model reqModel = new AddItem_Model(addQuotesId, itemId, invId, type,
+                    edt_item_rate.getText().toString().trim(), edt_item_qty.getText().toString().trim(), edt_item_discount.getText().toString().trim(),
+                    edt_item_description.getText().toString().trim(),
+                    // listFilter,
+                    taxListFilter,
+                    edt_unit.getText().toString().trim(),
+                    edt_item_supplier.getText().toString().trim()
+                    , isInvOrNoninv, edt_part_no.getText().toString().trim(), taxamount_value_txt.getText().toString().trim(), amount_value_txt.getText().toString().trim(), jtId, inm);*/
+            AddItem_Model reqModel = new AddItem_Model(addQuotesId, itemId, type,
                     edt_item_rate.getText().toString().trim(), edt_item_qty.getText().toString().trim(), edt_item_discount.getText().toString().trim(),
                     edt_item_description.getText().toString().trim(),
                     // listFilter,
@@ -1026,7 +1046,6 @@ public class AddQutesItem_Activity extends AppCompatActivity implements TextWatc
                     edt_unit.getText().toString().trim(),
                     edt_item_supplier.getText().toString().trim()
                     , isInvOrNoninv, edt_part_no.getText().toString().trim(), taxamount_value_txt.getText().toString().trim(), amount_value_txt.getText().toString().trim(), jtId, inm);
-
             quoteItemAdd_pi.apiCallAddQuotesItem(reqModel);
         }
     }
