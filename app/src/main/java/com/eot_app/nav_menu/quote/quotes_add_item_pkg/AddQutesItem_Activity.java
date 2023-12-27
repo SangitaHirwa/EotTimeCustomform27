@@ -650,10 +650,19 @@ public class AddQutesItem_Activity extends AppCompatActivity implements TextWatc
     @Override
     public void setInventryItem(final List<Inventry_ReS_Model> inventryItemList) {
         this.inventryItemList = inventryItemList;
+        List<Inventry_ReS_Model> removeItemList = new ArrayList<>();
+        if (getIntent().hasExtra("quotesDetails") || getIntent().hasExtra("AddQuotesItem") ) {
+            for (Inventry_ReS_Model item : inventryItemList) {
+                if (item.getIsBillable().equals("0")) {
+                    removeItemList.add(item);
+                }
+            }
+            this.inventryItemList.removeAll(removeItemList);
+        }
         AppUtility.autocompletetextviewPopUpWindow(autocomplete_item);
         autocomplete_item.setTag("Item");
         final Auto_Inventry_Adpter countryAdapter = new Auto_Inventry_Adpter(this,
-                R.layout.custom_adapter_item_layout, (ArrayList<Inventry_ReS_Model>) inventryItemList);
+                R.layout.custom_adapter_item_layout, (ArrayList<Inventry_ReS_Model>) this.inventryItemList);
         autocomplete_item.setAdapter(countryAdapter);
         autocomplete_item.setThreshold(3);
 
