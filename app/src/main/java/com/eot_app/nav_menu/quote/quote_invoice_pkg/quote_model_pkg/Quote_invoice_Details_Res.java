@@ -28,7 +28,8 @@ public class Quote_invoice_Details_Res implements Parcelable {
     private String cltId;
     private String quotId;
     private String code;
-    private String nm;
+    /*Remove nm variable after discuss with Rani Yadav for 2.92 release on 26 Dec 2023*/
+   /* private String nm;*/
     private String adr;
     private String pro;
     private String discount;
@@ -68,7 +69,7 @@ public class Quote_invoice_Details_Res implements Parcelable {
         cltId = in.readString();
         quotId = in.readString();
         code = in.readString();
-        nm = in.readString();
+       // nm = in.readString();
         adr = in.readString();
         pro = in.readString();
         discount = in.readString();
@@ -107,7 +108,7 @@ public class Quote_invoice_Details_Res implements Parcelable {
         dest.writeString(cltId);
         dest.writeString(quotId);
         dest.writeString(code);
-        dest.writeString(nm);
+      //  dest.writeString(nm);
         dest.writeString(adr);
         dest.writeString(pro);
         dest.writeString(discount);
@@ -177,13 +178,14 @@ public class Quote_invoice_Details_Res implements Parcelable {
         this.code = code;
     }
 
-    public String getNm() {
+    /*Remove nm variable after discuss with Rani Yadav for 2.92 release on 26 Dec 2023*/
+  /*  public String getNm() {
         return nm;
     }
 
     public void setNm(String nm) {
         this.nm = nm;
-    }
+    }*/
 
     public String getAdr() {
         return adr;

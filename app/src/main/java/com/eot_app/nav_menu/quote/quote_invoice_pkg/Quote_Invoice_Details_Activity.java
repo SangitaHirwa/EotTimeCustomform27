@@ -360,7 +360,8 @@ public class Quote_Invoice_Details_Activity extends AppCompatActivity implements
     @Override
     public void setInvoiceDetails(Quote_invoice_Details_Res invoice_Details_data) {
         if (invoice_Details_data != null) {
-            quote_nm.setText(invoice_Details_data.getNm());
+            /*Remove nm variable after discuss with Rani Yadav for 2.92 release on 26 Dec 2023*/
+          /*  quote_nm.setText(invoice_Details_data.getNm());*/
             String clientAddress = "";
             if (!invoice_Details_data.getAdr().equals(""))
                 clientAddress = invoice_Details_data.getAdr() + "\n";
