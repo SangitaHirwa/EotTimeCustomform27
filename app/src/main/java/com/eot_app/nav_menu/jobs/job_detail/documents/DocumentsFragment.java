@@ -67,6 +67,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.gson.Gson;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
+import com.hypertrack.hyperlog.HyperLog;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -96,7 +98,7 @@ public class DocumentsFragment extends Fragment implements Doc_Attch_View, Docum
     Doc_Attch_Pi doc_attch_pi;
     RecyclerView.LayoutManager layoutManager;
     LinearLayout nodoc_linear;
-    String captureImagePath;
+    private String captureImagePath;
     TextView noDocList;
     private DocumentListAdapter documentListAdapter;
     // TODO: Rename and change types of parameters
@@ -452,6 +454,9 @@ public class DocumentsFragment extends Fragment implements Doc_Attch_View, Docum
                 directoryPath   /* directory */
         );
         captureImagePath = image.getAbsolutePath();
+        HyperLog.i("UploadDocumentActivity", "captureImagePath " + captureImagePath);
+
+        HyperLog.i("UploadDocumentActivity", "createImageFile Stop(M)");
         return new File(image.getPath());
     }
 

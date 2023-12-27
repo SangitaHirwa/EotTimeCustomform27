@@ -96,8 +96,9 @@ public class Quo_Inv_Pc implements Quo_Invo_Pi {
 
 
     @Override
-    public void removeQuotesItem(ArrayList<String> itemId, String invId) {
-        Remove_ItemData rmObject = new Remove_ItemData(itemId, invId);
+    public void removeQuotesItem(ArrayList<String> itemId/*, String invId*/) {
+        /*Remove invId variable after discuss with Rani Yadav for 2.92 release on 26 Dec 2023*/
+        Remove_ItemData rmObject = new Remove_ItemData(itemId/*, invId*/);
 
         JsonObject jsonObject = AppUtility.getJsonObject(new Gson().toJson(rmObject));
 

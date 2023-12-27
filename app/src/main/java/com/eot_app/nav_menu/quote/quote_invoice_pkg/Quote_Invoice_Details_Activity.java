@@ -360,7 +360,8 @@ public class Quote_Invoice_Details_Activity extends AppCompatActivity implements
     @Override
     public void setInvoiceDetails(Quote_invoice_Details_Res invoice_Details_data) {
         if (invoice_Details_data != null) {
-            quote_nm.setText(invoice_Details_data.getNm());
+            /*Remove nm variable after discuss with Rani Yadav for 2.92 release on 26 Dec 2023*/
+          /*  quote_nm.setText(invoice_Details_data.getNm());*/
             String clientAddress = "";
             if (!invoice_Details_data.getAdr().equals(""))
                 clientAddress = invoice_Details_data.getAdr() + "\n";
@@ -479,7 +480,8 @@ public class Quote_Invoice_Details_Activity extends AppCompatActivity implements
         AppUtility.alertDialog2(this, "", LanguageController.getInstance().getMobileMsgByKey(AppConstant.invoice_remove), LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), LanguageController.getInstance().getMobileMsgByKey(AppConstant.cancel), new Callback_AlertDialog() {
             @Override
             public void onPossitiveCall() {
-                quo_invo_pi.removeQuotesItem(rm_DataItem, quotes_Details_Inv.getInvId());
+                /*Remove invId variable after discuss with Rani Yadav for 2.92 release on 26 Dec 2023*/
+                quo_invo_pi.removeQuotesItem(rm_DataItem/*, quotes_Details_Inv.getInvId()*/);
             }
 
             @Override

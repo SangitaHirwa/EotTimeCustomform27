@@ -33,7 +33,8 @@ public class Add_Quote_ReQ {
     private String note;
     private String assignByUser;
     private String quotId;
-    private String invId;
+
+//    private String invId;
     private String term;
     private String lat;
     private String lng;
@@ -49,7 +50,7 @@ public class Add_Quote_ReQ {
         this.statusComment = statusComment;
     }
 
-    public Add_Quote_ReQ(Set<String> jtId, String cltId, String siteId, String conId, String des, String athr, String inst, String nm, String cnm, String snm, String email, String mob1, String mob2, String adr, String city, String state, String ctry, String zip, int clientForFuture, int contactForFuture, int siteForFuture, String invDate, String dueDate, String note, String assignByUser, String quotId, String invId,
+    public Add_Quote_ReQ(Set<String> jtId, String cltId, String siteId, String conId, String des, String athr, String inst, String nm, String cnm, String snm, String email, String mob1, String mob2, String adr, String city, String state, String ctry, String zip, int clientForFuture, int contactForFuture, int siteForFuture, String invDate, String dueDate, String note, String assignByUser, String quotId,/* String invId,*/
                          String term, String status, String lat, String lng, String statusComment,String disCalculationType) {
         this.cltId = cltId;
         this.siteId = siteId;
@@ -78,7 +79,7 @@ public class Add_Quote_ReQ {
         this.note = note;
         this.assignByUser = assignByUser;
         this.quotId = quotId;
-        this.invId = invId;
+//        this.invId = invId;
         this.term = term;
         this.lat = lat;
         this.lng = lng;
@@ -327,14 +328,14 @@ public class Add_Quote_ReQ {
         this.quotId = quotId;
     }
 
-    public String getInvId() {
+    /*public String getInvId() {
         return invId;
     }
 
     public void setInvId(String invId) {
         this.invId = invId;
     }
-
+*/
     public String getTerm() {
         return term;
     }

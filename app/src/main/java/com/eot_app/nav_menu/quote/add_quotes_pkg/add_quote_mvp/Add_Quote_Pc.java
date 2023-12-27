@@ -335,7 +335,8 @@ public class Add_Quote_Pc implements Add_Quote_Pi {
             RequestBody note = RequestBody.create( add_quote_reQ.getNote(),MultipartBody.FORM);
             RequestBody assignByUser = RequestBody.create( add_quote_reQ.getAssignByUser(),MultipartBody.FORM);
             RequestBody quotId = RequestBody.create( add_quote_reQ.getQuotId(),MultipartBody.FORM);
-            RequestBody invId = RequestBody.create( add_quote_reQ.getInvId(),MultipartBody.FORM);
+            /*Remove invId variable after discuss with Rani Yadav for 2.92 release on 26 Dec 2023*/
+//            RequestBody invId = RequestBody.create( add_quote_reQ.getInvId(),MultipartBody.FORM);
             RequestBody term = RequestBody.create( add_quote_reQ.getTerm(),MultipartBody.FORM);
             RequestBody latrb = RequestBody.create( add_quote_reQ.getLat(),MultipartBody.FORM);
             RequestBody lngrb = RequestBody.create( add_quote_reQ.getLng(),MultipartBody.FORM);
@@ -390,7 +391,7 @@ public class Add_Quote_Pc implements Add_Quote_Pi {
                     note,
                     assignByUser,
                     quotId,
-                    invId,
+                 /*   invId,*/
                     term,
                     latrb,
                     lngrb,

@@ -5,6 +5,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.databinding.ViewDataBinding;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -74,6 +75,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.Callable;
 
 public class JobCardViewActivity extends AppCompatActivity  implements
         View.OnClickListener, Spinner.OnItemSelectedListener, Invoice_Email_View, JobCardAttachmentAdapter.Listener, Doc_Attch_View, Job_Detail_Activity_View {
@@ -401,7 +403,13 @@ public class JobCardViewActivity extends AppCompatActivity  implements
 
     @Override
     public void onSendInvoiceEmail(Send_Email_ReS_Model email_reS_model) {
+        AppUtility.alertDialog(this, "", LanguageController.getInstance().getServerMsgByKey(email_reS_model.getMessage()), LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), "", new Callable<Boolean>() {
+            @Override
+            public Boolean call() {
 
+                return null;
+            }
+        });
     }
 
     @Override
@@ -436,9 +444,18 @@ public class JobCardViewActivity extends AppCompatActivity  implements
             }
             list.add(new JobCardAttachmentModel(item.getAttachmentId(),"2",name,false));
         }
+        if(list!=null && list.size()>0 && list.get(0).getChecked()){
+            reqAttachmentList.clear();
+            reqAttachmentList.add(list.get(0));
+        }
         jobCardAttachmentAdapter.updateList(list);
         binding.rvJobCardAttachment.setLayoutManager(new LinearLayoutManager(this));
         binding.rvJobCardAttachment.setAdapter(jobCardAttachmentAdapter);
+        if (jobCardAttachmentAdapter.getItemCount() <= 3) {
+            binding.rvJobCardAttachment.getLayoutParams().height = RecyclerView.LayoutParams.WRAP_CONTENT;
+        } else {
+            binding.rvJobCardAttachment.getLayoutParams().height = getResources().getDimensionPixelSize(R.dimen.job_card_att_list_hieght);
+        }
 
     }
 
@@ -529,25 +546,34 @@ public class JobCardViewActivity extends AppCompatActivity  implements
 
     @Override
     public void cbClickListener(JobCardAttachmentModel jobCardAttachmentModel) {
-        String isJobCardPdfSend= "1";
+      /*  String isJobCardPdfSend= "1";
         if(jobCardAttachmentModel.getId().equals("-1")){
             if(jobCardAttachmentModel.getChecked()){
                 isJobCardPdfSend = "1";
             }else {
                 isJobCardPdfSend = "0";
             }
-        }else {
-            for (JobCardAttachmentModel item : list
-            ) {
-                if(item.getId().equals(jobCardAttachmentModel.getId())){
+        }else {*/
+        if (jobCardAttachmentModel.getChecked()) {
+            for (JobCardAttachmentModel item : list) {
+
+                if (item.getId().equals(jobCardAttachmentModel.getId())) {
                     item.setChecked(jobCardAttachmentModel.getChecked());
-                    JobCardAttachmentModel attachmentModel=new JobCardAttachmentModel(jobCardAttachmentModel.getId(),jobCardAttachmentModel.getType());
+                    JobCardAttachmentModel attachmentModel = new JobCardAttachmentModel(jobCardAttachmentModel.getId(), jobCardAttachmentModel.getType());
                     reqAttachmentList.add(attachmentModel);
                     break;
                 }
             }
+        }else {
+            for (JobCardAttachmentModel item : reqAttachmentList) {
+                if (item.getId().equals(jobCardAttachmentModel.getId())) {
+                    reqAttachmentList.remove(item);
+                    break;}
+                     }
+                }
 
-        }
+//            }
+
 
         for (JobCardAttachmentModel item : list
         ) {

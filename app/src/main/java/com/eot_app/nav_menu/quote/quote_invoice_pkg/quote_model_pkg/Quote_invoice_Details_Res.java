@@ -22,13 +22,17 @@ public class Quote_invoice_Details_Res implements Parcelable {
             return new Quote_invoice_Details_Res[size];
         }
     };
-    private String invId;
+//    private String invId;
     private String parentId;
     private String compId;
     private String cltId;
     private String quotId;
-    private String code;
-    private String nm;
+
+    /*Remove Code,Createdate,Paid, invType variable after discuss with Rani Yadav for 2.92 release on 07 Dec 2023*/
+//    private String code;
+
+    /*Remove nm variable after discuss with Rani Yadav for 2.92 release on 26 Dec 2023*/
+   /* private String nm;*/
     private String adr;
     private String pro;
     private String discount;
@@ -37,11 +41,11 @@ public class Quote_invoice_Details_Res implements Parcelable {
     private String pono;
     private String invDate;
     private String duedate;
-    private String createdate;
+//    private String createdate;
     private String label;
-    private String paid;
+//    private String paid;
     private String cur;
-    private String invType;
+//    private String invType;
     private String taxCalculationType;
     private String statusComment;
 
@@ -60,15 +64,15 @@ public class Quote_invoice_Details_Res implements Parcelable {
     public Quote_invoice_Details_Res() {
 
     }
-
+    /*Remove invId variable after discuss with Rani Yadav for 2.92 release on 26 Dec 2023*/
     protected Quote_invoice_Details_Res(Parcel in) {
-        invId = in.readString();
+//        invId = in.readString();
         parentId = in.readString();
         compId = in.readString();
         cltId = in.readString();
         quotId = in.readString();
-        code = in.readString();
-        nm = in.readString();
+//        code = in.readString();
+       // nm = in.readString();
         adr = in.readString();
         pro = in.readString();
         discount = in.readString();
@@ -77,11 +81,11 @@ public class Quote_invoice_Details_Res implements Parcelable {
         pono = in.readString();
         invDate = in.readString();
         duedate = in.readString();
-        createdate = in.readString();
+//        createdate = in.readString();
         label = in.readString();
-        paid = in.readString();
+//        paid = in.readString();
         cur = in.readString();
-        invType = in.readString();
+//        invType = in.readString();
         taxCalculationType = in.readString();
         itemData = in.createTypedArrayList(Quote_ItemData.CREATOR);
         shippingItem = in.createTypedArrayList(ShippingItem.CREATOR);
@@ -101,13 +105,13 @@ public class Quote_invoice_Details_Res implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(invId);
+//        dest.writeString(invId);
         dest.writeString(parentId);
         dest.writeString(compId);
         dest.writeString(cltId);
         dest.writeString(quotId);
-        dest.writeString(code);
-        dest.writeString(nm);
+//        dest.writeString(code);
+      //  dest.writeString(nm);
         dest.writeString(adr);
         dest.writeString(pro);
         dest.writeString(discount);
@@ -116,11 +120,11 @@ public class Quote_invoice_Details_Res implements Parcelable {
         dest.writeString(pono);
         dest.writeString(invDate);
         dest.writeString(duedate);
-        dest.writeString(createdate);
+//        dest.writeString(createdate);
         dest.writeString(label);
-        dest.writeString(paid);
+//        dest.writeString(paid);
         dest.writeString(cur);
-        dest.writeString(invType);
+//        dest.writeString(invType);
         dest.writeString(taxCalculationType);
         dest.writeTypedList(itemData);
         dest.writeTypedList(shippingItem);
@@ -129,13 +133,13 @@ public class Quote_invoice_Details_Res implements Parcelable {
         dest.writeString(disCalculationType);
     }
 
-    public String getInvId() {
+ /*   public String getInvId() {
         return invId;
     }
 
     public void setInvId(String invId) {
         this.invId = invId;
-    }
+    }*/
 
     public String getParentId() {
         return parentId;
@@ -169,21 +173,23 @@ public class Quote_invoice_Details_Res implements Parcelable {
         this.quotId = quotId;
     }
 
-    public String getCode() {
+    /*Remove Code,Createdate,Paid, invType variable after discuss with Rani Yadav for 2.92 release on 07 Dec 2023*/
+   /* public String getCode() {
         return code;
     }
 
     public void setCode(String code) {
         this.code = code;
-    }
+    }*/
 
-    public String getNm() {
+    /*Remove nm variable after discuss with Rani Yadav for 2.92 release on 26 Dec 2023*/
+  /*  public String getNm() {
         return nm;
     }
 
     public void setNm(String nm) {
         this.nm = nm;
-    }
+    }*/
 
     public String getAdr() {
         return adr;
@@ -249,13 +255,14 @@ public class Quote_invoice_Details_Res implements Parcelable {
         this.duedate = duedate;
     }
 
-    public String getCreatedate() {
+    /*Remove Code,Createdate,Paid, invType variable after discuss with Rani Yadav for 2.92 release on 07 Dec 2023*/
+   /* public String getCreatedate() {
         return createdate;
     }
 
     public void setCreatedate(String createdate) {
         this.createdate = createdate;
-    }
+    }*/
 
     public String getLabel() {
         return label;
@@ -265,13 +272,14 @@ public class Quote_invoice_Details_Res implements Parcelable {
         this.label = label;
     }
 
-    public String getPaid() {
+    /*Remove Code,Createdate,Paid, invType variable after discuss with Rani Yadav for 2.92 release on 07 Dec 2023*/
+   /* public String getPaid() {
         return paid;
     }
 
     public void setPaid(String paid) {
         this.paid = paid;
-    }
+    }*/
 
     public String getCur() {
         return cur;
@@ -281,13 +289,14 @@ public class Quote_invoice_Details_Res implements Parcelable {
         this.cur = cur;
     }
 
-    public String getInvType() {
+    /*Remove Code,Createdate,Paid, invType variable after discuss with Rani Yadav for 2.92 release on 07 Dec 2023*/
+    /*public String getInvType() {
         return invType;
     }
 
     public void setInvType(String invType) {
         this.invType = invType;
-    }
+    }*/
 
     public String getTaxCalculationType() {
         return taxCalculationType;

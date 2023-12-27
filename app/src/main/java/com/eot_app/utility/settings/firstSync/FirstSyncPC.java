@@ -85,7 +85,8 @@ public class FirstSyncPC implements FirstSyncPi {
         jsonObject.addProperty("index",updateIndex);
         jsonObject.addProperty("limit",updateLimit);
         jsonObject.addProperty("moduleType","");
-        jsonObject.addProperty("minAppVer","1");
+        /*Remove this variable after discuss with Ritesh Prajapat for 2.92 release on 26 Dec 2023*/
+        //jsonObject.addProperty("minAppVer","1");
         String data = new Gson().toJson(jsonObject);
         ApiClient.getservices().eotServiceCall(Service_apis.getJobStatus,
                 AppUtility.getApiHeaders(), AppUtility.getJsonObject(data))

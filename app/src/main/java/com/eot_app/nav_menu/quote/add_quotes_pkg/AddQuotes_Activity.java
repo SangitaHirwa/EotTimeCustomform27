@@ -442,7 +442,7 @@ public class AddQuotes_Activity extends UploadDocumentActivity implements View.O
             getAssignuserNameById();
 
             quotId = quotesDetails.getQuotId();
-            invId = quotesDetails.getInvData().getInvId();
+       /*     invId = quotesDetails.getInvData().getInvId();*/
             if (!TextUtils.isEmpty(quotesDetails.getTerm()))
                 quote_term_edt.setText(Html.fromHtml(quotesDetails.getTerm()));
 
@@ -1022,6 +1022,7 @@ public class AddQuotes_Activity extends UploadDocumentActivity implements View.O
                 HyperLog.i("", "callAddQuotes(M) Exception:" + e.toString());
 
             }
+            /*Remove invId variable after discuss with Rani Yadav for 2.92 release on 26 Dec 2023*/
 
             final Add_Quote_ReQ add_quote_reQ = new Add_Quote_ReQ(jtIdList, cltId, siteId, conId,
                     "",
@@ -1029,7 +1030,7 @@ public class AddQuotes_Activity extends UploadDocumentActivity implements View.O
                     nm, cnm, snm, quote_email_edt.getText().toString().trim(), quote_mob_no_edt.getText().toString().trim(), quote_at_mob_edt.getText().toString().trim(),
                     adr, quote_city_edt.getText().toString().trim(), state_id, ctry_id, quote_post_code_edt.getText().toString().trim(), clientForFuture, contactForFuture,
                     siteForFuture, invDate, dueDate, quote_notes_edt.getText().toString().trim()
-                    , assignByUser, quotId, invId, terms, status,
+                    , assignByUser, quotId,/* invId, */terms, status,
                     LatLngSycn_Controller.getInstance().getLat(),
                     LatLngSycn_Controller.getInstance().getLng(), quote_status_notes_edt.getText().toString(),taxType);
 
