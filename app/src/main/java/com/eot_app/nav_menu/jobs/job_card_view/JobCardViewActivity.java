@@ -75,6 +75,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.Callable;
 
 public class JobCardViewActivity extends AppCompatActivity  implements
         View.OnClickListener, Spinner.OnItemSelectedListener, Invoice_Email_View, JobCardAttachmentAdapter.Listener, Doc_Attch_View, Job_Detail_Activity_View {
@@ -402,7 +403,13 @@ public class JobCardViewActivity extends AppCompatActivity  implements
 
     @Override
     public void onSendInvoiceEmail(Send_Email_ReS_Model email_reS_model) {
+        AppUtility.alertDialog(this, "", LanguageController.getInstance().getServerMsgByKey(email_reS_model.getMessage()), LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), "", new Callable<Boolean>() {
+            @Override
+            public Boolean call() {
 
+                return null;
+            }
+        });
     }
 
     @Override
