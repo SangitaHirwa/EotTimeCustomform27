@@ -336,7 +336,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
                         android:textStyle="normal"
-                        android:text="Select Templet"
+                        android:text="Select Template"
                         android:gravity="start"
                         android:visibility="visible" />
 

@@ -55,12 +55,14 @@ import com.eot_app.nav_menu.jobs.job_detail.job_detail_activity_presenter.Job_De
 import com.eot_app.nav_menu.jobs.job_detail.job_detail_activity_presenter.Job_Detail_Activity_pc;
 import com.eot_app.nav_menu.jobs.job_detail.job_detail_activity_presenter.Job_Detail_Activity_pi;
 import com.eot_app.nav_menu.quote.quote_invoice_pkg.quote_mvp_pkg.Quo_Invo_Pi;
+import com.eot_app.services.Service_apis;
 import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.AppUtility;
 import com.eot_app.utility.App_preference;
 import com.eot_app.utility.CompressImageInBack;
 import com.eot_app.utility.EotApp;
 import com.eot_app.utility.db.AppDataBase;
+import com.eot_app.utility.db.OfflineDataController;
 import com.eot_app.utility.language_support.LanguageController;
 import com.eot_app.utility.settings.setting_db.FieldWorker;
 import com.eot_app.utility.util_interfaces.MySpinnerAdapter;
@@ -100,6 +102,7 @@ public class JobCardViewActivity extends AppCompatActivity  implements
     private static final int DOUCMENT_UPLOAD_CODE = 156;
     ActivityJobCardViewBinding binding;
     CompressImageInBack compressImageInBack = null;
+    Boolean isImage;
 
 
     @Override
@@ -631,8 +634,10 @@ public class JobCardViewActivity extends AppCompatActivity  implements
                         //('jpg','png','jpeg','pdf','doc','docx','xlsx','csv','xls'); supporting extensions
                         if (img_extension.equals(".jpg") || img_extension.equals(".png") || img_extension.equals(".jpeg")) {
                             imageEditing(data.getData(), true);
+                            isImage=true;
                         } else {
-                            uploadFileDialog(data.getData());
+                            isImage=false;
+                            uploadDocumentsJobCard(gallery_image_Path);
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -668,8 +673,10 @@ public class JobCardViewActivity extends AppCompatActivity  implements
         if (doc_attch_pi != null&&savedImagePath!=null) {
             String fileNameExt = AppUtility.getFileNameWithExtension(savedImagePath);
             String bitmapString="";
+            if(isImage) {
                 Bitmap bitmap = AppUtility.getBitmapFromPath(savedImagePath);
                 bitmapString = AppUtility.BitMapToString(bitmap);
+            }
             String[] split = fileNameExt.split("\\.");
             String imageNameWithOutExt = split[0];
             GetFileList_Res obj=new GetFileList_Res("0",fileNameExt,fileNameExt,bitmapString);
@@ -701,32 +708,6 @@ public class JobCardViewActivity extends AppCompatActivity  implements
         }
     }
 
-
-    //upload file dialog
-    private void uploadFileDialog(Uri selectedFilePath) {
-        try {
-            compressImageInBack = new CompressImageInBack(this, new OnImageCompressed() {
-                @Override
-                public void onImageCompressed(Bitmap bitmap) {
-                    String savedImagePath = compressImageInBack.getSavedImagePath();
-                    if (savedImagePath != null) {
-                        uploadDocumentsJobCard(savedImagePath);
-                    }
-                }
-            }, selectedFilePath);
-            compressImageInBack.setSaveBitmap(true);
-            compressImageInBack.compressImageInBckg();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        /*Intent intent = new Intent(this, ActivityDocumentSaveUpload.class);
-        intent.putExtra("uri", selectedFilePath);
-        intent.putExtra("isImage", false);
-        intent.putExtra("jobid", jobId);
-        intent.putExtra("SAVEASCOMPLETION", false);
-        startActivityForResult(intent, DOUCMENT_UPLOAD_CODE);*/
-    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.quotes_menu, menu);
