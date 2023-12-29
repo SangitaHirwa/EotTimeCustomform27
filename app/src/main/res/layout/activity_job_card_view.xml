@@ -193,15 +193,42 @@
                             android:visibility="gone"
                             tools:ignore="LabelFor,TextFields" />
                     </com.google.android.material.textfield.TextInputLayout>
+                        <androidx.core.widget.NestedScrollView
+                            android:layout_width="match_parent"
+                            android:layout_height="230dp"
+                            android:scrollbars="vertical"
+                            android:scrollbarSize="8dp"
+                            android:scrollbarAlwaysDrawVerticalTrack="true"
+                            android:background="@drawable/bg_edt_jobcart"
+                            android:scrollbarThumbVertical="@color/scroll_thumb_color"
+                            android:scrollbarTrackVertical="@color/scroll_track_color"
 
-                            <com.eot_app.eoteditor.EotEditor
+                            >
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:layout_marginVertical="12dp"
+                                android:layout_marginHorizontal="14dp"
+                                >
+                                <com.eot_app.eoteditor.EotEditor
+                                    android:id="@+id/job_card_editor"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:scrollbarThumbVertical="@color/scroll_thumb_color"
+                                    android:scrollbarTrackVertical="@color/scroll_track_color"
+                                    android:scrollbarSize="5dp"
+                                    />
+                            </LinearLayout>
+                        </androidx.core.widget.NestedScrollView>
+                          <!--  <com.eot_app.eoteditor.EotEditor
                                 android:id="@+id/job_card_editor"
                                 android:layout_width="match_parent"
                                 android:layout_height="250dp"
                                 android:nestedScrollingEnabled="true"
                                 android:background="@drawable/bg_edt_jobcart"
 
-                                />
+                                />-->
                         </LinearLayout>
                 <View
                     android:layout_width="match_parent"
