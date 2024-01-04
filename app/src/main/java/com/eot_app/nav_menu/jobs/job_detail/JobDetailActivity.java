@@ -1431,6 +1431,8 @@ public class JobDetailActivity extends AppCompatActivity implements
             super(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
         }
 
+        @NonNull
+        @Override
         public Fragment getItem(int position) {
             switch (position) {
                 case 0:
