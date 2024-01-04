@@ -409,7 +409,7 @@ public class JobCardViewActivity extends AppCompatActivity  implements
         AppUtility.alertDialog(this, "", LanguageController.getInstance().getServerMsgByKey(email_reS_model.getMessage()), LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), "", new Callable<Boolean>() {
             @Override
             public Boolean call() {
-
+                onBackPressed();
                 return null;
             }
         });
@@ -723,7 +723,6 @@ public class JobCardViewActivity extends AppCompatActivity  implements
     }
     @Override
     public void onBackPressed() {
-        //   EotApp.getAppinstance().notifyApiObserver(Service_apis.addAppointment);
         super.onBackPressed();
     }
     public void setdetail_activity_pi(Job_Detail_Activity_pi detail_activity_pi) {
