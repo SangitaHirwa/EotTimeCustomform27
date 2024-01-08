@@ -45,7 +45,7 @@ public class Invoice_Email_Activity extends AppCompatActivity implements View.On
     private EditText edt_email_to, edt_email_cc, edt_email_subject/*, edt_email_message*/;
     Button btn_send_email;
     private Invoice_Email_pi invoice_email_pi;
-    private String invId, quotId, appId, jobId , email_message;
+    private String invId, quotId, appId, jobId ;
     TextInputLayout input_layout_email_to, input_layout_email_cc, input_layout_email_subject, input_layout_email_message;
     private Get_Email_ReS_Model email_reS_model;
     private String isProformaInv = "0";
@@ -228,7 +228,7 @@ public class Invoice_Email_Activity extends AppCompatActivity implements View.On
             edt_email_subject.setText(email_reS_model.getSubject());
         }
         if (email_reS_model.getMessage() != null && !email_reS_model.getMessage().equals("")) {
-            editor.setHtml(email_message);
+            editor.setHtml(email_reS_model.getMessage());
         }
         this.email_reS_model = email_reS_model;
 
