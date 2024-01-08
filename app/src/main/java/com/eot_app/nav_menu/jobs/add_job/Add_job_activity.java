@@ -239,6 +239,10 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
         customDPController = new CustomDPController();
         tagDpController=new TagDpController();
         initializelables();
+        if(!AppUtility.isInternetConnected()){
+            AppUtility.error_Alert_Dialog(this, AppConstant.network_error, LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok)
+                    , () -> null);
+        }
         initializeView();
         textInputLayoutHint();
         jobPrioritySet();

@@ -45,6 +45,7 @@
                     android:layout_height="@dimen/input_field_height"
                     android:layout_marginTop="3dp"
                     android:gravity="center"
+                    android:layout_below="@+id/quote_title_hint_tv"
                     android:orientation="horizontal"
                     tools:ignore="UseCompoundDrawables">
 

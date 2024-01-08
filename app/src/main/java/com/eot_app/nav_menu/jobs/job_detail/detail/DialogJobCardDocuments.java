@@ -49,6 +49,7 @@ import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_email_pkg.Invoice_Em
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_email_pkg.Invoice_Email_View;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_email_pkg.Invoice_Email_pc;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_email_pkg.Invoice_Email_pi;
+import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_email_pkg.get_email_temp_model.Get_Email_Message_Res_Model;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_email_pkg.get_email_temp_model.Get_Email_ReS_Model;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_email_pkg.get_email_temp_model.InvoiceEmaliTemplate;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_email_pkg.send_email_temp_model.Send_Email_ReS_Model;
@@ -135,6 +136,12 @@ public class DialogJobCardDocuments extends DialogFragment
         }
         AppUtility.progressBarDissMiss();
     }
+
+    @Override
+    public void setChatDataList(Get_Email_Message_Res_Model chatDataList) {
+
+    }
+
     public void setQuoteId(String quoteId) {
         this.quotId = quoteId;
 
@@ -369,7 +376,7 @@ public class DialogJobCardDocuments extends DialogFragment
     }
     private void  setEmailData(){
         if (jobId != null) {
-            invoice_email_pi.getJobCardEmailTemplate(jobId,tempId);
+            invoice_email_pi.getJobCardEmailTemplate(jobId,tempId,"");
 //            jobDetail_pi.getAttachFileList(jobId, "","");
             doc_attch_pi.getAttachFileList(jobId, "", "",true);
             jobCardAttachmentAdapter = new JobCardAttachmentAdapter(this);

@@ -39,6 +39,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/dialog_input_field_height"
                         android:gravity="center"
+                        android:importantForAutofill="no|noExcludeDescendants"
                         app:hintEnabled="false"
                         android:background="@drawable/bg_edt_jobcart"
                         app:hintTextAppearance="@style/TextInputLayoutHintText">
@@ -55,6 +56,7 @@
                             android:layout_height="wrap_content"
                             android:background="@android:color/transparent"
                             android:inputType="text"
+                            android:importantForAutofill="no|noExcludeDescendants"
                             android:singleLine="true"
                             android:paddingStart="9dp"
                             tools:ignore="Autofill,LabelFor,TextFields" />
@@ -89,6 +91,7 @@
                         android:id="@+id/input_layout_email_cc"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/dialog_input_field_height"
+                        android:importantForAutofill="no|noExcludeDescendants"
                         android:gravity="center"
                         app:hintEnabled="false"
                         android:background="@drawable/bg_edt_jobcart"
@@ -98,9 +101,9 @@
                             android:id="@+id/edt_email_cc"
                             style="@style/style_sec_sec"
                             android:layout_width="match_parent"
+                            android:importantForAutofill="no|noExcludeDescendants"
                             android:layout_height="wrap_content"
                             android:background="@android:color/transparent"
-                            android:importantForAutofill="no"
                             android:inputType="text"
                             android:singleLine="true"
                             android:paddingStart="9dp"
@@ -125,6 +128,7 @@
                         android:layout_height="@dimen/dialog_input_field_height"
                         android:gravity="center"
                         app:hintEnabled="false"
+                        android:importantForAutofill="no|noExcludeDescendants"
                         android:background="@drawable/bg_edt_jobcart"
                         app:hintTextAppearance="@style/TextInputLayoutHintText">
                         <EditText
@@ -132,12 +136,12 @@
                             style="@style/style_sec_sec"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:importantForAutofill="no|noExcludeDescendants"
                             android:background="@android:color/transparent"
-                            android:importantForAutofill="no"
                             android:inputType="text"
                             android:singleLine="true"
                             android:paddingStart="9dp"
-                            tools:ignore="LabelFor,TextFields" />
+                             />
 
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -193,15 +197,42 @@
                             android:visibility="gone"
                             tools:ignore="LabelFor,TextFields" />
                     </com.google.android.material.textfield.TextInputLayout>
+                        <androidx.core.widget.NestedScrollView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scrollbars="vertical"
+                            android:scrollbarSize="8dp"
+                            android:scrollbarAlwaysDrawVerticalTrack="true"
+                            android:background="@drawable/bg_edt_jobcart"
+                            android:scrollbarThumbVertical="@color/scroll_thumb_color"
+                            android:scrollbarTrackVertical="@color/scroll_track_color"
 
-                            <com.eot_app.eoteditor.EotEditor
+                            >
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:layout_marginVertical="12dp"
+                                android:layout_marginHorizontal="14dp"
+                                >
+                                <com.eot_app.eoteditor.EotEditor
+                                    android:id="@+id/job_card_editor"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:scrollbarThumbVertical="@color/scroll_thumb_color"
+                                    android:scrollbarTrackVertical="@color/scroll_track_color"
+                                    android:scrollbarSize="5dp"
+                                    />
+                            </LinearLayout>
+                        </androidx.core.widget.NestedScrollView>
+                          <!--  <com.eot_app.eoteditor.EotEditor
                                 android:id="@+id/job_card_editor"
                                 android:layout_width="match_parent"
                                 android:layout_height="250dp"
                                 android:nestedScrollingEnabled="true"
                                 android:background="@drawable/bg_edt_jobcart"
 
-                                />
+                                />-->
                         </LinearLayout>
                 <View
                     android:layout_width="match_parent"
@@ -319,8 +350,17 @@
                         android:layout_height="wrap_content"
                         android:text="Send E-sign pad with email."
                         android:textStyle="bold"
+                        android:visibility="gone"
                         style="@style/dialog_edittext_lbl_style"
                         />
+                <CheckBox
+                    android:id="@+id/cb_Chat"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Click Here to Provide Chat Url"
+                    android:textStyle="bold"
+                    style="@style/dialog_edittext_lbl_style"
+                    />
 
                 <RelativeLayout
                     android:id="@+id/template_view"

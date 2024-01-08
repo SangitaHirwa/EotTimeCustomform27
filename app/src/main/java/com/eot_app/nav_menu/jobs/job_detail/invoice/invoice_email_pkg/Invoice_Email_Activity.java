@@ -21,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.eot_app.R;
 import com.eot_app.eoteditor.EotEditor;
 import com.eot_app.nav_menu.jobs.job_detail.detail.jobdetial_model.JobCardAttachmentModel;
+import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_email_pkg.get_email_temp_model.Get_Email_Message_Res_Model;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_email_pkg.get_email_temp_model.Get_Email_ReS_Model;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_email_pkg.get_email_temp_model.InvoiceEmaliTemplate;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_email_pkg.send_email_temp_model.Send_Email_ReS_Model;
@@ -44,7 +45,7 @@ public class Invoice_Email_Activity extends AppCompatActivity implements View.On
     private EditText edt_email_to, edt_email_cc, edt_email_subject/*, edt_email_message*/;
     Button btn_send_email;
     private Invoice_Email_pi invoice_email_pi;
-    private String invId, quotId, appId, jobId , email_message;
+    private String invId, quotId, appId, jobId ;
     TextInputLayout input_layout_email_to, input_layout_email_cc, input_layout_email_subject, input_layout_email_message;
     private Get_Email_ReS_Model email_reS_model;
     private String isProformaInv = "0";
@@ -109,7 +110,7 @@ public class Invoice_Email_Activity extends AppCompatActivity implements View.On
         } else if (jobId != null) {
             setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.email_job_card));
             invoice_email_pi.getJobCardetemplateList();
-            invoice_email_pi.getJobCardEmailTemplate(jobId,tempId);
+            invoice_email_pi.getJobCardEmailTemplate(jobId,tempId,"");
         }
     }
 
@@ -145,6 +146,11 @@ public class Invoice_Email_Activity extends AppCompatActivity implements View.On
 
             }
         });
+    }
+
+    @Override
+    public void setChatDataList(Get_Email_Message_Res_Model chatDataList) {
+
     }
 
     private void findViews() {
@@ -222,7 +228,7 @@ public class Invoice_Email_Activity extends AppCompatActivity implements View.On
             edt_email_subject.setText(email_reS_model.getSubject());
         }
         if (email_reS_model.getMessage() != null && !email_reS_model.getMessage().equals("")) {
-            editor.setHtml(email_message);
+            editor.setHtml(email_reS_model.getMessage());
         }
         this.email_reS_model = email_reS_model;
 

@@ -477,15 +477,21 @@ public class AddJob_pc implements Add_job_pi {
     }
 
     private String getTimeStampFromFormatedDate(String schdlStart) {
-        SimpleDateFormat gettingfmt = new SimpleDateFormat(
-                //AppUtility.dateTimeByAmPmFormate
-                ("dd-MM-yyyy hh:mm a"
-                        //                , "dd-MM-yyyy kk:mm"
-                )
-                , Locale.US);
+//        SimpleDateFormat gettingfmt = new SimpleDateFormat(
+//                //AppUtility.dateTimeByAmPmFormate
+//                ("dd-MM-yyyy hh:mm a"
+//                        //                , "dd-MM-yyyy kk:mm"
+//                )
+//                , Locale.US);
         try {
-            Date formated = gettingfmt.parse(schdlStart);
-            return String.valueOf(formated.getTime() / 1000);
+            SimpleDateFormat dateFormat =new SimpleDateFormat("dd-MMM-yyyy HH:mm");
+            Date date = dateFormat.parse(schdlStart);
+            SimpleDateFormat dateFormat1 = new SimpleDateFormat("dd-MM-yyyy hh:mm a",Locale.US);
+             String dateformat = dateFormat1.format(date);
+            Date date1 = new SimpleDateFormat("dd-MM-yyyy hh:mm a",Locale.US).parse(dateformat);
+            return String.valueOf(date1.getTime()/1000);
+//            Date formated = gettingfmt.parse(schdlStart);
+//            return String.valueOf(formated.getTime() / 1000);
         } catch (ParseException e) {
             e.printStackTrace();
         }

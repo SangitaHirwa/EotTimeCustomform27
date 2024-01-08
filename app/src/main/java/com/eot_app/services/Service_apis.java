@@ -138,6 +138,7 @@ public interface Service_apis {
     String sendJobDocEmailTemplate = "JobController/sendJobDocEmailTemplate";
 
     String getJobCardEmailTemplate = "JobController/getJobCardEmailTemplate";
+    String getDetailForCltToFwChat = "JobController/getDetailForCltToFwChat";
     String sendJobCardEmailTemplate = "JobController/sendJobCardEmailTemplate";
     /**add apis for item in appointment**/
     String addItemOnAppointment = "LeadController/addLeadCart";
