@@ -428,6 +428,7 @@ public class JobCardViewActivity extends AppCompatActivity  implements
         }
         if (email_reS_model.getMessage() != null && !email_reS_model.getMessage().equals("")) {
             this.htlmMessage=email_reS_model.getMessage();
+            binding.jobCardEditor.shouldBeClickable();
             getVisibilityForCheckBox(htlmMessage);
             boolean checkedSing = binding.cbSign.isChecked();
             boolean checkedChat= binding.cbChat.isChecked();
