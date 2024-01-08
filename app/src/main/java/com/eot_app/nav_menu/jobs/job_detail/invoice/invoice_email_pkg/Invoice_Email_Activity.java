@@ -21,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.eot_app.R;
 import com.eot_app.eoteditor.EotEditor;
 import com.eot_app.nav_menu.jobs.job_detail.detail.jobdetial_model.JobCardAttachmentModel;
+import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_email_pkg.get_email_temp_model.Get_Email_Message_Res_Model;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_email_pkg.get_email_temp_model.Get_Email_ReS_Model;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_email_pkg.get_email_temp_model.InvoiceEmaliTemplate;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_email_pkg.send_email_temp_model.Send_Email_ReS_Model;
@@ -109,7 +110,7 @@ public class Invoice_Email_Activity extends AppCompatActivity implements View.On
         } else if (jobId != null) {
             setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.email_job_card));
             invoice_email_pi.getJobCardetemplateList();
-            invoice_email_pi.getJobCardEmailTemplate(jobId,tempId);
+            invoice_email_pi.getJobCardEmailTemplate(jobId,tempId,"");
         }
     }
 
@@ -145,6 +146,11 @@ public class Invoice_Email_Activity extends AppCompatActivity implements View.On
 
             }
         });
+    }
+
+    @Override
+    public void setChatDataList(Get_Email_Message_Res_Model chatDataList) {
+
     }
 
     private void findViews() {

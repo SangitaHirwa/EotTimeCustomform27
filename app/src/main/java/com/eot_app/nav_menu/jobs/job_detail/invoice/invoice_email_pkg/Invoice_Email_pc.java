@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.eot_app.activitylog.ActivityLogController;
 import com.eot_app.nav_menu.jobs.job_detail.detail.jobdetial_model.JobCardAttachmentModel;
+import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_email_pkg.get_email_temp_model.Get_Email_Message_Res_Model;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_email_pkg.get_email_temp_model.Get_Email_ReQ_Model;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_email_pkg.get_email_temp_model.Get_Email_ReS_Model;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_email_pkg.get_email_temp_model.InvoiceEmaliTemplate;
@@ -103,6 +104,61 @@ public class Invoice_Email_pc implements Invoice_Email_pi {
                         public void onComplete() {
                         }
                     });
+        }
+    }
+
+    @Override
+    public void getJobCardEmailMessageChatList(String jobId) {
+        Map<String, String> hm = new HashMap<>();
+        hm.put("jobId", jobId);
+
+
+        JsonObject jsonObject = AppUtility.getJsonObject(new Gson().toJson(hm));
+
+        if (AppUtility.isInternetConnected()) {
+
+            AppUtility.progressBarShow(context);
+            ApiClient.getservices().eotServiceCall(Service_apis.getDetailForCltToFwChat, AppUtility.getApiHeaders(), jsonObject)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<JsonObject>() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
+
+                        }
+
+                        @Override
+                        public void onNext(JsonObject jsonObject) {
+                            AppUtility.progressBarDissMiss();
+                            if (jsonObject.get("success").getAsBoolean()) {
+                                Gson gson = new Gson();
+                                if(jsonObject.get("data") != null) {
+                                    Get_Email_Message_Res_Model msg_reS_model = gson.fromJson(jsonObject.get("data"), Get_Email_Message_Res_Model.class);
+                                      email_view.setChatDataList(msg_reS_model);
+                                }else {
+                                    email_view.showErrorAlertDialog("ChatDataNull");
+                                }
+                            } else if (jsonObject.get("statusCode") != null && jsonObject.get("statusCode").getAsString().equals(AppConstant.SESSION_EXPIRE)) {
+                                email_view.setSessionExpire(LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
+                            } else {
+                                email_view.showErrorAlertDialog(LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
+                            }
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            Log.e("", e.getMessage());
+                            AppUtility.progressBarDissMiss();
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            AppUtility.progressBarDissMiss();
+
+                        }
+                    });
+        } else {
+            EotApp.getAppinstance().showToastmsg(LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_check_network));
         }
     }
 
@@ -590,16 +646,19 @@ public class Invoice_Email_pc implements Invoice_Email_pi {
     }
 
     @Override
-    public void getJobCardEmailTemplate(String jobId,String tempId) {
+    public void getJobCardEmailTemplate(String jobId,String tempId, String chatUrl) {
         Map<String, String> hm = new HashMap<>();
         hm.put("jobId", jobId);
         hm.put("tempId", tempId);
-
+        if(!chatUrl.equals(""))
+        {
+            hm.put("chatUrl", chatUrl);
+        }
         JsonObject jsonObject = AppUtility.getJsonObject(new Gson().toJson(hm));
 
         if (AppUtility.isInternetConnected()) {
 
-            AppUtility.progressBarShow(context);
+//            AppUtility.progressBarShow(context);
             ApiClient.getservices().eotServiceCall(Service_apis.getJobCardEmailTemplate, AppUtility.getApiHeaders(), jsonObject)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())

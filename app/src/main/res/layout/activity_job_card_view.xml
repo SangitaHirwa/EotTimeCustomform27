@@ -195,7 +195,7 @@
                     </com.google.android.material.textfield.TextInputLayout>
                         <androidx.core.widget.NestedScrollView
                             android:layout_width="match_parent"
-                            android:layout_height="230dp"
+                            android:layout_height="match_parent"
                             android:scrollbars="vertical"
                             android:scrollbarSize="8dp"
                             android:scrollbarAlwaysDrawVerticalTrack="true"
@@ -346,8 +346,17 @@
                         android:layout_height="wrap_content"
                         android:text="Send E-sign pad with email."
                         android:textStyle="bold"
+                        android:visibility="gone"
                         style="@style/dialog_edittext_lbl_style"
                         />
+                <CheckBox
+                    android:id="@+id/cb_Chat"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Click Here to Provide Chat Url"
+                    android:textStyle="bold"
+                    style="@style/dialog_edittext_lbl_style"
+                    />
 
                 <RelativeLayout
                     android:id="@+id/template_view"

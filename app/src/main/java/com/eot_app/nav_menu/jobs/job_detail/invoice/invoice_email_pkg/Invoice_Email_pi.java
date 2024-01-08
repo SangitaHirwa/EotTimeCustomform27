@@ -20,7 +20,7 @@ public interface Invoice_Email_pi {
 
     void sendJObDocEmailTemplate(String jobId, String pdfPath, String message, String subject, String to, String cc, String bcc, String from, String fromnm);
 
-    void getJobCardEmailTemplate(String jobId,String tempId);
+    void getJobCardEmailTemplate(String jobId,String tempId,String chatUrl);
 
     void sendJobCardEmailTemplate(String jobId, String pdfPath, String message, String subject, String to, String cc,String tempId,String fwId,List<JobCardAttachmentModel> cardAttachmentModelList);
 
@@ -29,4 +29,5 @@ public interface Invoice_Email_pi {
     void getQuotesInvoicetemplateList();
 
     void getJobCardetemplateList();
+    void getJobCardEmailMessageChatList(String jobId);
 }
