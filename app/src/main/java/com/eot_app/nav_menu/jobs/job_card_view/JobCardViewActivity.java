@@ -477,6 +477,7 @@ public class JobCardViewActivity extends AppCompatActivity  implements
     @SuppressLint("SetJavaScriptEnabled")
     private void setEmailReplacedMessage(String webMessage,Boolean sing, Boolean chat) {
         String msg=webMessage;
+        String msgForChat="";
         WebSettings mWebSettings = binding.jobCardEditor.getSettings();
         mWebSettings.setJavaScriptEnabled(true);
         if(isSignCheck) {
@@ -491,9 +492,24 @@ public class JobCardViewActivity extends AppCompatActivity  implements
             }
         } if(isChatCheck){
             if(chat){
+                String[] split = htlmMessage.split("<p");
+               for(String s:split){
+                   if(s.contains("Start chatting")){
+                                String[] s1= s.split(" </p>");
+                                for(String s2 : s1){
+                                    if(s2.contains("Start chatting")){
+                                        msgForChat = "<p"+s2+" </p>";
+                                         break;
+                                    }
+                                }
+                           break;
+                   }
+               }
+                String msgSignOutUrl = msg.replaceAll("<p id=\"chatUrl\"> </p>", msgForChat);
+                msg=msgSignOutUrl;
                 binding.jobCardEditor.setHtml(msg);
             } else {
-                String msgChatOutUrl = msg.replaceAll("<p\s+id=\"chatUrl\">\s*<a[^>]*>(.*?)</a>\s*</p>", "");
+                String msgChatOutUrl = msg.replaceAll("<p id=\"chatUrl\"> <a[^>]*>(.*?)</a> with Fieldworker assigned for your job. </p>", "<p id=\"chatUrl\"> </p>");
                 msg =msgChatOutUrl;
                 binding.jobCardEditor.setHtml(msg);
             }
