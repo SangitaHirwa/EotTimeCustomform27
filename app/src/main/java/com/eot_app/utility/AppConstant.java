@@ -964,6 +964,13 @@ public class AppConstant {
     public static String preview_and_send_jobcard = "preview_and_send_jobcard";
     public static String Send_Esign_pad_with_email = "Send_Esign_pad_with_email";
 
+    public static String click_here_to_provide_chat_url = "click_here_to_provide_chat_url";
+    public static String preview_and_send_invoice = "preview_and_send_invoice";
+    public static String preview_and_send_quote = "preview_and_send_quote";
+    public static String preview_and_send_document = "preview_and_send_document";
+    public static String click_here_to_provide_paypal_link = "click_here_to_provide_paypal_link";
+    public static String services_done = "services_done";
+
 
 
     public static String server(String location) {

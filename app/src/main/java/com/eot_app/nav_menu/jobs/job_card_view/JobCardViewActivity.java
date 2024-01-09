@@ -178,14 +178,6 @@ public class JobCardViewActivity extends AppCompatActivity  implements
         else {
             binding.templateView.setVisibility(View.GONE);
         }
-       /* if(!binding.cbSign.isChecked()){
-            isSignCheck=true;
-            binding.cbSign.setChecked(true);
-        }
-        if(!binding.cbChat.isChecked()){
-            isChatCheck = true;
-            binding.cbChat.setChecked(true);
-        }*/
 
         binding.sendJobcardBtn.setOnClickListener(this);
         binding.downloadJobcardBtn.setOnClickListener(this);
@@ -196,6 +188,8 @@ public class JobCardViewActivity extends AppCompatActivity  implements
         binding.dropDownForCc.setOnClickListener(this);
         binding.removeTechSignature.setOnClickListener(this);
 
+        binding.cbSign.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.Send_Esign_pad_with_email));
+        binding.cbChat.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.click_here_to_provide_chat_url));
         binding.hintTemplateTxt.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.select_template));
         binding.hintSignatureTxt.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.tech_sign));
 
