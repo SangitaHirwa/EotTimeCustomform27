@@ -141,7 +141,7 @@ public class JobCardViewActivity extends AppCompatActivity  implements
 
 
         // Log.e("fwList",new Gson().toJson(fwList));
-
+           binding.jobCardEditor.setVerticalScrollBarEnabled(false);
         if (fwList != null && fwList.length > 0) {
             kprList = new String[fwList.length];
             AppUtility.spinnerPopUpWindow(binding.signatureDp);
@@ -196,10 +196,10 @@ public class JobCardViewActivity extends AppCompatActivity  implements
         binding.templatTxt.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.select_template));
         binding.signatureTxt.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.tech_sign));
 
-        binding.inputLayoutEmailTo.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.to) + "*");
+        binding.inputLayoutEmailTo.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.to));
         binding.inputLayoutEmailCc.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.cc));
-        binding.inputLayoutEmailSubject.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.subject) + "*");
-        binding.inputLayoutEmailMessage.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.message) + "*");
+        binding.inputLayoutEmailSubject.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.subject));
+        binding.inputLayoutEmailMessage.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.message));
         binding.txtLblAddAttachment.setOnClickListener(this);
 
 
@@ -410,9 +410,10 @@ public class JobCardViewActivity extends AppCompatActivity  implements
 
     @Override
     public void onGetEmailTempData(Get_Email_ReS_Model email_reS_model) {
-        binding.inputLayoutEmailTo.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.to) + "*");
-        binding.inputLayoutEmailCc.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.cc));
-        binding.inputLayoutEmailSubject.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.subject) + "*");
+        binding.tvLabelTo.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.to));
+        binding.tvLabelCc.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.cc));
+        binding.tvLabelSub.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.subject));
+        binding.tvLabelMsg.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.message));
 
         if (email_reS_model.getTo() != null && !email_reS_model.getTo().equals("")) {
             binding.edtEmailTo.setText(email_reS_model.getTo());
