@@ -219,7 +219,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:orientation="vertical"
-                        android:padding="10dp">
+                        android:padding="15dp">
 
                         <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/input_layout_email_message"
@@ -253,7 +253,6 @@
                             android:id="@+id/job_card_editor"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-
                             />
                     </LinearLayout>
                 </androidx.core.widget.NestedScrollView>
