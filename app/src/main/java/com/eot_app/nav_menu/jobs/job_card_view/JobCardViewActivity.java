@@ -29,6 +29,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.eot_app.R;
 import com.eot_app.databinding.ActivityJobCardViewBinding;
+import com.eot_app.eoteditor.EotEditor;
 import com.eot_app.eoteditor.Utils;
 import com.eot_app.nav_menu.appointment.Keepar;
 import com.eot_app.nav_menu.jobs.job_detail.JobDetailActivity;
@@ -81,7 +82,7 @@ import java.util.Objects;
 import java.util.concurrent.Callable;
 
 public class JobCardViewActivity extends AppCompatActivity  implements
-        View.OnClickListener, Spinner.OnItemSelectedListener, Invoice_Email_View, JobCardAttachmentAdapter.Listener, Doc_Attch_View, Job_Detail_Activity_View {
+        View.OnClickListener, Spinner.OnItemSelectedListener, Invoice_Email_View, JobCardAttachmentAdapter.Listener, Doc_Attch_View, Job_Detail_Activity_View, EotEditor.OnTextChangeListener {
     Job_Detail_Activity_pi detail_activity_pi=new Job_Detail_Activity_pc(this);
     private ItemList_PI itemListPi;
     Quo_Invo_Pi quo_invo_pi;
@@ -187,6 +188,7 @@ public class JobCardViewActivity extends AppCompatActivity  implements
         binding.signatureDp.setOnItemSelectedListener(this);
         binding.dropDownForCc.setOnClickListener(this);
         binding.removeTechSignature.setOnClickListener(this);
+        binding.jobCardEditor.setOnTextChangeListener(this);
 
         binding.cbSign.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.Send_Esign_pad_with_email));
         binding.cbChat.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.click_here_to_provide_chat_url));
@@ -1001,5 +1003,17 @@ public class JobCardViewActivity extends AppCompatActivity  implements
     }
     public void setdetail_activity_pi(Job_Detail_Activity_pi detail_activity_pi) {
         this.detail_activity_pi = detail_activity_pi;
+    }
+
+    @Override
+    public void onTextChange(String text) {
+        if(!text.contains("E-Sign")){
+            binding.cbSign.setChecked(false);
+            binding.cbSign.setVisibility(View.GONE);
+        }
+        if(!text.contains("Start chatting")) {
+            binding.cbChat.setChecked(false);
+            binding.cbChat.setVisibility(View.GONE);
+        }
     }
 }

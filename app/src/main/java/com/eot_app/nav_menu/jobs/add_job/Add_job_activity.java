@@ -281,6 +281,7 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
             HyperLog.i("Add_job_activity", "action_insert_image(M) End");
         });
         action_insert_suggestion.setOnClickListener(v -> {
+            job_suggestion_spinner.setVisibility(View.VISIBLE);
             mEditor.focusEditor();
             try {
                 if (suggestionsArray != null && suggestionsArray.length > 0)
@@ -1189,6 +1190,8 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
                         , new JoBServSuggAdpter.SelectedService() {
                     @Override
                     public void getSerNm(String nm) {
+                        mEditor.focusEditor();
+                        job_suggestion_spinner.setVisibility(View.GONE);
                         setSelectedSuggeston(nm);
                     }
                 });
@@ -1214,6 +1217,7 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
             }
 
             jobdeshint.setVisibility(View.VISIBLE);
+            job_suggestion_spinner.setVisibility(View.VISIBLE);
         } catch (Exception e) {
             e.printStackTrace();
         }
