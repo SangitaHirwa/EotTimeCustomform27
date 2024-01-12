@@ -763,7 +763,14 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
 
     @Override
     public void setEquipmentJobList(List<Aduit_Job_History_Res> aduit_res) {
+        List<Aduit_Job_History_Res> aduitJobHistoryRes= new ArrayList<>();
         if (aduit_res != null && aduit_res.size() > 0) {
+            for(Aduit_Job_History_Res jobHistoryRes : aduit_res){
+                 if(jobHistoryRes.getStatus().equals("13")){
+                     aduitJobHistoryRes.add(jobHistoryRes);
+                 }
+            }
+            aduit_res.removeAll(aduitJobHistoryRes);
             adpterJobList.setList(aduit_res);
             ll_audit_job.setVisibility(View.VISIBLE);
             tv_network_error.setVisibility(View.GONE);
