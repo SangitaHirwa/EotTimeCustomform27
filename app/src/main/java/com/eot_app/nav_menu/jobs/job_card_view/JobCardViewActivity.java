@@ -29,6 +29,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.eot_app.R;
 import com.eot_app.databinding.ActivityJobCardViewBinding;
+import com.eot_app.eoteditor.EotEditor;
 import com.eot_app.eoteditor.Utils;
 import com.eot_app.nav_menu.appointment.Keepar;
 import com.eot_app.nav_menu.jobs.job_detail.JobDetailActivity;
@@ -81,7 +82,7 @@ import java.util.Objects;
 import java.util.concurrent.Callable;
 
 public class JobCardViewActivity extends AppCompatActivity  implements
-        View.OnClickListener, Spinner.OnItemSelectedListener, Invoice_Email_View, JobCardAttachmentAdapter.Listener, Doc_Attch_View, Job_Detail_Activity_View {
+        View.OnClickListener, Spinner.OnItemSelectedListener, Invoice_Email_View, JobCardAttachmentAdapter.Listener, Doc_Attch_View, Job_Detail_Activity_View, EotEditor.OnTextChangeListener {
     Job_Detail_Activity_pi detail_activity_pi=new Job_Detail_Activity_pc(this);
     private ItemList_PI itemListPi;
     Quo_Invo_Pi quo_invo_pi;
@@ -141,7 +142,7 @@ public class JobCardViewActivity extends AppCompatActivity  implements
 
 
         // Log.e("fwList",new Gson().toJson(fwList));
-
+           binding.jobCardEditor.setVerticalScrollBarEnabled(false);
         if (fwList != null && fwList.length > 0) {
             kprList = new String[fwList.length];
             AppUtility.spinnerPopUpWindow(binding.signatureDp);
@@ -178,14 +179,6 @@ public class JobCardViewActivity extends AppCompatActivity  implements
         else {
             binding.templateView.setVisibility(View.GONE);
         }
-       /* if(!binding.cbSign.isChecked()){
-            isSignCheck=true;
-            binding.cbSign.setChecked(true);
-        }
-        if(!binding.cbChat.isChecked()){
-            isChatCheck = true;
-            binding.cbChat.setChecked(true);
-        }*/
 
         binding.sendJobcardBtn.setOnClickListener(this);
         binding.downloadJobcardBtn.setOnClickListener(this);
@@ -195,17 +188,20 @@ public class JobCardViewActivity extends AppCompatActivity  implements
         binding.signatureDp.setOnItemSelectedListener(this);
         binding.dropDownForCc.setOnClickListener(this);
         binding.removeTechSignature.setOnClickListener(this);
+        binding.jobCardEditor.setOnTextChangeListener(this);
 
+        binding.cbSign.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.Send_Esign_pad_with_email));
+        binding.cbChat.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.click_here_to_provide_chat_url));
         binding.hintTemplateTxt.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.select_template));
         binding.hintSignatureTxt.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.tech_sign));
 
         binding.templatTxt.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.select_template));
         binding.signatureTxt.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.tech_sign));
 
-        binding.inputLayoutEmailTo.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.to) + "*");
+        binding.inputLayoutEmailTo.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.to));
         binding.inputLayoutEmailCc.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.cc));
-        binding.inputLayoutEmailSubject.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.subject) + "*");
-        binding.inputLayoutEmailMessage.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.message) + "*");
+        binding.inputLayoutEmailSubject.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.subject));
+        binding.inputLayoutEmailMessage.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.message));
         binding.txtLblAddAttachment.setOnClickListener(this);
 
 
@@ -323,8 +319,8 @@ public class JobCardViewActivity extends AppCompatActivity  implements
         baseUrl1=baseUrl1.replace("/en/eotServices/","/en/customer/#/external/jobChat/");
         Gson gson=new Gson();
         String toJson = gson.toJson(message_req_modle);
-        String url=baseUrl1+encodeBase64(toJson);
-        setEmailData(url);
+        String chatUrl=baseUrl1+encodeBase64(toJson);
+        setEmailData(chatUrl);
 
     }
     public String encodeBase64(String encodeMe){
@@ -416,9 +412,10 @@ public class JobCardViewActivity extends AppCompatActivity  implements
 
     @Override
     public void onGetEmailTempData(Get_Email_ReS_Model email_reS_model) {
-        binding.inputLayoutEmailTo.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.to) + "*");
-        binding.inputLayoutEmailCc.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.cc));
-        binding.inputLayoutEmailSubject.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.subject) + "*");
+        binding.tvLabelTo.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.to));
+        binding.tvLabelCc.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.cc));
+        binding.tvLabelSub.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.subject));
+        binding.tvLabelMsg.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.message));
 
         if (email_reS_model.getTo() != null && !email_reS_model.getTo().equals("")) {
             binding.edtEmailTo.setText(email_reS_model.getTo());
@@ -476,26 +473,42 @@ public class JobCardViewActivity extends AppCompatActivity  implements
 
     @SuppressLint("SetJavaScriptEnabled")
     private void setEmailReplacedMessage(String webMessage,Boolean sing, Boolean chat) {
-        String msg=webMessage;
+        String editedMsg=webMessage;
+        String msgForChat="";
         WebSettings mWebSettings = binding.jobCardEditor.getSettings();
         mWebSettings.setJavaScriptEnabled(true);
         if(isSignCheck) {
             if (sing) {
-                String msgSignWithUrl = msg.replace("<p id=\"esignUrl\"> </p>", "<p id=\"esignUrl\"> <a href=\"_eSign_\" style=\"color:#15a0b3;\">E-Sign</a></p>");
-                msg=msgSignWithUrl;
-                binding.jobCardEditor.setHtml(msg);
+                String msgSignWithUrl = editedMsg.replace("<p id=\"esignUrl\"> </p>", "<p id=\"esignUrl\"> <a href=\"_eSign_\" style=\"color:#15a0b3;\">E-Sign</a></p>");
+                editedMsg=msgSignWithUrl;
+                binding.jobCardEditor.setHtml(editedMsg);
             } else {
-                String msgSignOutUrl = msg.replaceAll("<p id=\"esignUrl\"> <a href=\"_eSign_\" style=\"color:#15a0b3;\">E-Sign</a></p>", "<p id=\"esignUrl\"> </p>");
-                msg=msgSignOutUrl;
-                binding.jobCardEditor.setHtml(msg);
+                String msgSignWithOutUrl = editedMsg.replaceAll("<p id=\"esignUrl\"> <a href=\"_eSign_\" style=\"color:#15a0b3;\">E-Sign</a></p>", "<p id=\"esignUrl\"> </p>");
+                editedMsg=msgSignWithOutUrl;
+                binding.jobCardEditor.setHtml(editedMsg);
             }
         } if(isChatCheck){
             if(chat){
-                binding.jobCardEditor.setHtml(msg);
+                String[] htmlMsgSplit = htlmMessage.split("<p");
+               for(String msgContainP:htmlMsgSplit){
+                   if(msgContainP.contains("Start chatting")){
+                                String[] msgContainPSplit= msgContainP.split(" </p>");
+                                for(String msgContainCloseP : msgContainPSplit){
+                                    if(msgContainCloseP.contains("Start chatting")){
+                                        msgForChat = "<p"+msgContainCloseP+" </p>";
+                                         break;
+                                    }
+                                }
+                           break;
+                   }
+               }
+                String msgSignWithUrl = editedMsg.replaceAll("<p id=\"chatUrl\"> </p>", msgForChat);
+                editedMsg=msgSignWithUrl;
+                binding.jobCardEditor.setHtml(editedMsg);
             } else {
-                String msgChatOutUrl = msg.replaceAll("<p\s+id=\"chatUrl\">\s*<a[^>]*>(.*?)</a>\s*</p>", "");
-                msg =msgChatOutUrl;
-                binding.jobCardEditor.setHtml(msg);
+                String msgChatWithOutUrl = editedMsg.replaceAll("<p id=\"chatUrl\"> <a[^>]*>(.*?)</a> with Fieldworker assigned for your job. </p>", "<p id=\"chatUrl\"> </p>");
+                editedMsg =msgChatWithOutUrl;
+                binding.jobCardEditor.setHtml(editedMsg);
             }
         }
 
@@ -990,5 +1003,17 @@ public class JobCardViewActivity extends AppCompatActivity  implements
     }
     public void setdetail_activity_pi(Job_Detail_Activity_pi detail_activity_pi) {
         this.detail_activity_pi = detail_activity_pi;
+    }
+
+    @Override
+    public void onTextChange(String text) {
+        if(!text.contains("E-Sign")){
+            binding.cbSign.setChecked(false);
+            binding.cbSign.setVisibility(View.GONE);
+        }
+        if(!text.contains("Start chatting")) {
+            binding.cbChat.setChecked(false);
+            binding.cbChat.setVisibility(View.GONE);
+        }
     }
 }

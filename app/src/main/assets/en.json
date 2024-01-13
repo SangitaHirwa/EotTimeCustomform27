@@ -1740,7 +1740,7 @@
     "month": "Month",
     "job_card": "Job Card",
     "select_template": "Select Template",
-    "tech_sign": "Technician signature",
+    "tech_sign": "Technician Signature",
     "custom_form": "Custom Form",
     "select_equipment": "Select Equipment",
     "equipment_items": "Equipment Items",
@@ -1831,7 +1831,13 @@
     "download": "Download",
     "appointment_code": "Appointment Code",
     "preview_and_send_jobcard": "Preview and Send Jobcard",
-    "Send_Esign_pad_with_email" : "Send E-sign pad with email."
+    "Send_Esign_pad_with_email" : "Send E-sign pad with email.",
+    "click_here_to_provide_chat_url" : "Click Here to Provide Chat Url",
+    "preview_and_send_invoice" : "Preview and Send Invoice",
+    "preview_and_send_quote" : "Preview and Send Quote",
+    "preview_and_send_document" : "Preview and Send Document",
+    "click_here_to_provide_paypal_link": "Click here to provide Paypal Link",
+    "services_done": "Services Done"
   }
 }
 

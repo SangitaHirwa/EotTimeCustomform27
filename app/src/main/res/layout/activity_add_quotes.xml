@@ -27,7 +27,7 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="50dp">
+                android:layout_height="wrap_content">
 
                 <TextView
                     android:id="@+id/quote_title_hint_tv"
@@ -36,17 +36,19 @@
                     android:layout_height="wrap_content"
                     android:background="@android:color/transparent"
                     android:textStyle="normal"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="3dp"
                     android:visibility="invisible" />
 
 
                 <LinearLayout
                     android:id="@+id/jobservicelayout"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/input_field_height"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="3dp"
-                    android:gravity="center"
                     android:layout_below="@+id/quote_title_hint_tv"
                     android:orientation="horizontal"
+                    android:gravity="center"
                     tools:ignore="UseCompoundDrawables">
 
                     <TextView
