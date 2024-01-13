@@ -319,8 +319,8 @@ public class JobCardViewActivity extends AppCompatActivity  implements
         baseUrl1=baseUrl1.replace("/en/eotServices/","/en/customer/#/external/jobChat/");
         Gson gson=new Gson();
         String toJson = gson.toJson(message_req_modle);
-        String url=baseUrl1+encodeBase64(toJson);
-        setEmailData(url);
+        String chatUrl=baseUrl1+encodeBase64(toJson);
+        setEmailData(chatUrl);
 
     }
     public String encodeBase64(String encodeMe){
@@ -473,42 +473,42 @@ public class JobCardViewActivity extends AppCompatActivity  implements
 
     @SuppressLint("SetJavaScriptEnabled")
     private void setEmailReplacedMessage(String webMessage,Boolean sing, Boolean chat) {
-        String msg=webMessage;
+        String editedMsg=webMessage;
         String msgForChat="";
         WebSettings mWebSettings = binding.jobCardEditor.getSettings();
         mWebSettings.setJavaScriptEnabled(true);
         if(isSignCheck) {
             if (sing) {
-                String msgSignWithUrl = msg.replace("<p id=\"esignUrl\"> </p>", "<p id=\"esignUrl\"> <a href=\"_eSign_\" style=\"color:#15a0b3;\">E-Sign</a></p>");
-                msg=msgSignWithUrl;
-                binding.jobCardEditor.setHtml(msg);
+                String msgSignWithUrl = editedMsg.replace("<p id=\"esignUrl\"> </p>", "<p id=\"esignUrl\"> <a href=\"_eSign_\" style=\"color:#15a0b3;\">E-Sign</a></p>");
+                editedMsg=msgSignWithUrl;
+                binding.jobCardEditor.setHtml(editedMsg);
             } else {
-                String msgSignOutUrl = msg.replaceAll("<p id=\"esignUrl\"> <a href=\"_eSign_\" style=\"color:#15a0b3;\">E-Sign</a></p>", "<p id=\"esignUrl\"> </p>");
-                msg=msgSignOutUrl;
-                binding.jobCardEditor.setHtml(msg);
+                String msgSignWithOutUrl = editedMsg.replaceAll("<p id=\"esignUrl\"> <a href=\"_eSign_\" style=\"color:#15a0b3;\">E-Sign</a></p>", "<p id=\"esignUrl\"> </p>");
+                editedMsg=msgSignWithOutUrl;
+                binding.jobCardEditor.setHtml(editedMsg);
             }
         } if(isChatCheck){
             if(chat){
-                String[] split = htlmMessage.split("<p");
-               for(String s:split){
-                   if(s.contains("Start chatting")){
-                                String[] s1= s.split(" </p>");
-                                for(String s2 : s1){
-                                    if(s2.contains("Start chatting")){
-                                        msgForChat = "<p"+s2+" </p>";
+                String[] htmlMsgSplit = htlmMessage.split("<p");
+               for(String msgContainP:htmlMsgSplit){
+                   if(msgContainP.contains("Start chatting")){
+                                String[] msgContainPSplit= msgContainP.split(" </p>");
+                                for(String msgContainCloseP : msgContainPSplit){
+                                    if(msgContainCloseP.contains("Start chatting")){
+                                        msgForChat = "<p"+msgContainCloseP+" </p>";
                                          break;
                                     }
                                 }
                            break;
                    }
                }
-                String msgSignOutUrl = msg.replaceAll("<p id=\"chatUrl\"> </p>", msgForChat);
-                msg=msgSignOutUrl;
-                binding.jobCardEditor.setHtml(msg);
+                String msgSignWithUrl = editedMsg.replaceAll("<p id=\"chatUrl\"> </p>", msgForChat);
+                editedMsg=msgSignWithUrl;
+                binding.jobCardEditor.setHtml(editedMsg);
             } else {
-                String msgChatOutUrl = msg.replaceAll("<p id=\"chatUrl\"> <a[^>]*>(.*?)</a> with Fieldworker assigned for your job. </p>", "<p id=\"chatUrl\"> </p>");
-                msg =msgChatOutUrl;
-                binding.jobCardEditor.setHtml(msg);
+                String msgChatWithOutUrl = editedMsg.replaceAll("<p id=\"chatUrl\"> <a[^>]*>(.*?)</a> with Fieldworker assigned for your job. </p>", "<p id=\"chatUrl\"> </p>");
+                editedMsg =msgChatWithOutUrl;
+                binding.jobCardEditor.setHtml(editedMsg);
             }
         }
 
