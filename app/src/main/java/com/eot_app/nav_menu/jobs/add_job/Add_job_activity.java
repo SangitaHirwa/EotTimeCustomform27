@@ -22,6 +22,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebSettings;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -1206,14 +1207,18 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
     }
 
     private void setSelectedSuggeston(String nm) {
+        String htmlContent = nm.replaceAll("\n", "<br>");
+        WebSettings webSettings = mEditor.getSettings();
+        webSettings.setJavaScriptEnabled(true);
+
         try {
             // action_insert_suggestion.setText(nm);
             String str = "";
             if (mEditor.getHtml() != null) {
-                str = mEditor.getHtml() + "\n" + nm;
+                str = mEditor.getHtml() + "<br>" + htmlContent;
                 mEditor.setHtml(str);
             } else {
-                mEditor.setHtml(nm);
+                mEditor.setHtml(htmlContent);
             }
 
             jobdeshint.setVisibility(View.VISIBLE);
