@@ -41,4 +41,5 @@ public interface JobDetail_pi {
 
 
     void addJobCompletionDetails(String jobId, CompletionDetailsPost.CompletionDetail obj,int logType);
+    void getRecureDataList(String jobId, String recurType);
 }

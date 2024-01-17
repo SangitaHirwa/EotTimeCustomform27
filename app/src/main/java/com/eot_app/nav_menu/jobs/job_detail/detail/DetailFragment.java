@@ -38,12 +38,14 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatCheckBox;
 import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -62,6 +64,8 @@ import com.eot_app.login_next.login_next_model.CompPermission;
 import com.eot_app.nav_menu.client.clientlist.client_detail.site.sitelist.editsite.editsitedb.SpinnerCountrySite;
 import com.eot_app.nav_menu.custom_fileds.CustomFiledListActivity;
 import com.eot_app.nav_menu.custom_fileds.custom_model.CustOmFormQuestionsRes;
+import com.eot_app.nav_menu.jobs.add_job.add_job_recr.RecurReqResModel;
+import com.eot_app.nav_menu.jobs.add_job.add_job_recr.daily_recr_pkg.daily_recur_model.JobRecurModel;
 import com.eot_app.nav_menu.jobs.job_complation.DocDeleteNotfy;
 import com.eot_app.nav_menu.jobs.job_complation.JobCompletionActivity;
 import com.eot_app.nav_menu.jobs.job_complation.JobCompletionAdpter;
@@ -187,7 +191,7 @@ public class DetailFragment extends Fragment
     TextView tvTravelJobTime, tvActualJobTime, btnActualEdit, btnTravelEdit;
     ImageView ivEditAc;
     RelativeLayout ll_actual_date_time, ll_travel_date_time;
-    LinearLayout ll_completion_detail;
+    LinearLayout ll_completion_detail, liner_layout_for_recurmsg, recurMsgShow, recurMsgHide;
     RelativeLayout rl_Collapse1, rl_Collapse2;
     String firstTrvlBrkTime, lastTrvlBrkTime;
     String firstBrkTime, lastBrkTime;
@@ -227,7 +231,7 @@ public class DetailFragment extends Fragment
     boolean accept=true,reject=true,travel=true,onhold=true,brack=true;
     String getDisCalculationType, getTaxCalculationType;
     GoogleMap mMap;
-
+   ConstraintLayout progressBar_cyclic;
 
     public DetailFragment() {
         // Required empty public constructor
@@ -683,9 +687,15 @@ public class DetailFragment extends Fragment
         equi_flag = layout.findViewById(R.id.equi_flag);
 
         recur_parent_view = layout.findViewById(R.id.recur_parent_view);
+        recurMsgShow = layout.findViewById(R.id.liner_layout_for_recurmsg_show);
+        recurMsgHide = layout.findViewById(R.id.liner_layout_for_recurmsg_hide);
+        progressBar_cyclic = layout.findViewById(R.id.progressBar_cyclic);
         recur_txt = layout.findViewById(R.id.recur_txt);
         txt_recur_msg = layout.findViewById(R.id.txt_recur_msg);
         btnStopRecurView = layout.findViewById(R.id.btnStopRecurView);
+        liner_layout_for_recurmsg = layout.findViewById(R.id.liner_layout_for_recurmsg);
+        recurMsgShow.setOnClickListener(this);
+        recurMsgHide.setOnClickListener(this);
         btn_add_signature = layout.findViewById(R.id.btn_add_signature);
         btnStopRecurView.setOnClickListener(this);
         btn_add_signature.setOnClickListener(this);
@@ -784,6 +794,12 @@ public class DetailFragment extends Fragment
         EotApp.getAppinstance().setNotifyForEquipmentCount(this);
         EotApp.getAppinstance().setNotifyForEquipmentStatusList(this);
 
+        if (App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsRecur().equals("0") && !mParam2.getRecurType().equals("0")){
+            recur_parent_view.setVisibility(View.VISIBLE);
+        }else{
+            recur_parent_view.setVisibility(View.GONE);
+        }
+
     }
 
     private void addJobServicesInChips(JtId jtildModel) {
@@ -796,7 +812,10 @@ public class DetailFragment extends Fragment
 
     @Override
     public void StopRecurPatternHide() {
-        recur_parent_view.setVisibility(View.GONE);
+        recurMsgHide.setVisibility(View.GONE);
+        recurMsgShow.setVisibility(View.VISIBLE);
+        liner_layout_for_recurmsg.setVisibility(View.GONE);
+       /* recur_parent_view.setVisibility(View.GONE);*/
     }
 
     @Override
@@ -877,7 +896,7 @@ public class DetailFragment extends Fragment
 
     @SuppressLint("SetTextI18n")
     private void showRecurmsg() {
-        try {
+        /*try {
             if (App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsRecur().equals("0")
                     && mParam2.getIsRecur() != null && mParam2.getIsRecur().equals("1") && mParam2.getRecurData().size() > 0) {
                 recur_parent_view.setVisibility(View.VISIBLE);
@@ -960,7 +979,7 @@ public class DetailFragment extends Fragment
             }
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
     private void flagVisibility() {
@@ -1097,10 +1116,10 @@ public class DetailFragment extends Fragment
         });
         /* **** Equipment Item & attachment visibility***/
         flagVisibility();
-
+/*
         if (!mParam2.getJobId().equals(mParam2.getTempId()))
             showRecurmsg();
-        else recur_parent_view.setVisibility(View.GONE);
+        else recur_parent_view.setVisibility(View.GONE);*/
         setDataToView();
     }
 
@@ -1108,6 +1127,96 @@ public class DetailFragment extends Fragment
     @Override
     public void setList(ArrayList<GetFileList_Res> getFileList_res, String isAttachCommpletionNotes) {
         (jobCompletionAdpter).updateFileList(getFileList_res);
+    }
+
+    @SuppressLint("SetTextI18n")
+    @Override
+    public void setRecurData(RecurReqResModel recurData) {
+        progressBar_cyclic.setVisibility(View.GONE);
+        recurMsgHide.setVisibility(View.VISIBLE);
+        recurMsgShow.setVisibility(View.GONE);
+        liner_layout_for_recurmsg.setVisibility(View.VISIBLE);
+        try {
+            if ( recurData != null) {
+
+                if (mParam2.getRecurType() != null && mParam2.getRecurType().equals("1")) {
+                    if (recurData.getJobRecurModel().getMode() != null &&recurData.getJobRecurModel().getMode().equals("1") && recurData.getJobRecurModel().getEndRecurMode() != null
+                            && recurData.getJobRecurModel().getEndRecurMode().equals("0")) {
+                        txt_recur_msg.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.custom_recur_msg1) + " " +
+                                recurData.getJobRecurModel().getInterval() + " " + LanguageController.getInstance().getMobileMsgByKey(AppConstant.starting_on) +
+                                " " + recurData.getJobRecurModel().getStartDate() + " " +
+                                LanguageController.getInstance().getMobileMsgByKey(AppConstant.custom_recur_msg2) + " " +
+                                LanguageController.getInstance().getMobileMsgByKey(AppConstant.infinity));
+                    } else {
+                        txt_recur_msg.setText
+                                (LanguageController.getInstance().getMobileMsgByKey(AppConstant.custom_recur_msg1) + " " +
+                                        " " + recurData.getJobRecurModel().getInterval() +
+                                        " " + LanguageController.getInstance().getMobileMsgByKey(AppConstant.starting_on)
+                                        + " " + recurData.getJobRecurModel().getStartDate() + " " +
+                                        LanguageController.getInstance().getMobileMsgByKey(AppConstant.custom_recur_msg2)
+                                        + " " + recurData.getJobRecurModel().getOccurences() +
+                                        " " + LanguageController.getInstance().getMobileMsgByKey(AppConstant.custom_recur_msg3)
+                                        + " " + recurData.getJobRecurModel().getEndDate());
+                    }
+                } else if (mParam2.getRecurType() != null && mParam2.getRecurType().equals("2") && recurData.getJobRecurModel().getOccur_days() != null
+                        && recurData.getJobRecurModel().getInterval() != null) {
+                    if (recurData.getJobRecurModel().getEndRecurMode() != null && recurData.getJobRecurModel().getEndRecurMode().equals("0")) {
+                        txt_recur_msg.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.weekly_msg1) + " " +
+                                recurData.getJobRecurModel().getOccur_days() + " " +
+                                LanguageController.getInstance().getMobileMsgByKey(AppConstant.every) + " " +
+                                recurData.getJobRecurModel().getInterval() + " " +
+                                LanguageController.getInstance().getMobileMsgByKey(AppConstant.weeks) + " " +
+                                recurData.getJobRecurModel().getStartDate() + " " +
+                                LanguageController.getInstance().getMobileMsgByKey(AppConstant.custom_recur_msg2)
+                                + " " + LanguageController.getInstance().getMobileMsgByKey(AppConstant.infinity));
+                    } else {
+                        txt_recur_msg.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.weekly_msg1) + " " +
+                                recurData.getJobRecurModel().getOccur_days() + " " +
+                                LanguageController.getInstance().getMobileMsgByKey(AppConstant.every) + " " +
+                                recurData.getJobRecurModel().getInterval() + " " +
+                                LanguageController.getInstance().getMobileMsgByKey(AppConstant.weeks) + " " +
+                                recurData.getJobRecurModel().getStartDate() + " " +
+                                LanguageController.getInstance().getMobileMsgByKey(AppConstant.custom_recur_msg2)
+                                + " " + recurData.getJobRecurModel().getOccurences() +
+                                " " + LanguageController.getInstance().getMobileMsgByKey(AppConstant.custom_recur_msg3) +
+                                " " + recurData.getJobRecurModel().getEndDate());
+                    }
+
+                } else if (mParam2.getRecurType() != null && mParam2.getRecurType().equals("3")
+                        && recurData.getJobRecurModel().getEndRecurMode() != null && recurData.getJobRecurModel().getWeek_num() != null && recurData.getJobRecurModel().getInterval() != null) {
+                    if (recurData.getJobRecurModel().getEndRecurMode() != null && recurData.getJobRecurModel().getEndRecurMode().equals("0")) {
+                        txt_recur_msg.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.custom_recur_msg1) + " " +
+                                recurData.getJobRecurModel().getInterval() + " " + LanguageController.getInstance().getMobileMsgByKey(AppConstant.starting_on) +
+                                " " + recurData.getJobRecurModel().getStartDate() + " " +
+                                LanguageController.getInstance().getMobileMsgByKey(AppConstant.custom_recur_msg2) + " " +
+                                LanguageController.getInstance().getMobileMsgByKey(AppConstant.infinity));
+                    } else
+                        txt_recur_msg.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.weekly_msg1) + " " +
+                                recurData.getJobRecurModel().getWeek_num() + " " + LanguageController.getInstance().getMobileMsgByKey(AppConstant.every) + " " +
+                                recurData.getJobRecurModel().getInterval() + " " + LanguageController.getInstance().getMobileMsgByKey(AppConstant.months_starting_on) + " "
+                                + recurData.getJobRecurModel().getStartDate() + " " + LanguageController.getInstance().getMobileMsgByKey(AppConstant.custom_recur_msg2) + " "
+                                + recurData.getJobRecurModel().getOccurences() +
+                                " " + LanguageController.getInstance().getMobileMsgByKey(AppConstant.custom_recur_msg3) + " " +
+                                recurData.getJobRecurModel().getEndDate());
+                }
+            } else {
+                recurMsgHide.setVisibility(View.GONE);
+                recurMsgShow.setVisibility(View.VISIBLE);
+                liner_layout_for_recurmsg.setVisibility(View.GONE);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void notDataFoundInRecureData(String msg) {
+        progressBar_cyclic.setVisibility(View.GONE);
+        AppUtility.alertDialog(getActivity(), LanguageController.getInstance().getMobileMsgByKey(AppConstant.dialog_error_title),
+                msg, LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), "", () -> {
+            return null;
+
+        });
     }
 
 
@@ -2401,8 +2510,27 @@ public class DetailFragment extends Fragment
                     isClickedActual = true;
                 }
                 break;
+            case R.id.liner_layout_for_recurmsg_show:
+                if(AppUtility.isInternetConnected()){
+                    if (jobDetail_pi != null) {
+                        progressBar_cyclic.setVisibility(View.VISIBLE);
+                        /*AppUtility.progressBarShow(getActivity());*/
+                        jobDetail_pi.getRecureDataList(mParam2.getJobId(),mParam2.getRecurType());
+                    }
+                }else {
+                    showErrorDialog(LanguageController.getInstance().getMobileMsgByKey(AppConstant.offline_feature_alert));
+                }
+                 break;
+            case R.id.liner_layout_for_recurmsg_hide:
+                recurMsgHide.setVisibility(View.GONE);
+                recurMsgShow.setVisibility(View.VISIBLE);
+                liner_layout_for_recurmsg.setVisibility(View.GONE);
+                break;
         }
     }
+
+
+
 
 
     private void addEquipmentClicked() {

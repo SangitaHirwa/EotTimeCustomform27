@@ -1,6 +1,8 @@
 package com.eot_app.nav_menu.jobs.job_detail.detail.job_detail_view;
 
 import com.eot_app.nav_menu.custom_fileds.custom_model.CustOmFormQuestionsRes;
+import com.eot_app.nav_menu.jobs.add_job.add_job_recr.RecurReqResModel;
+import com.eot_app.nav_menu.jobs.add_job.add_job_recr.daily_recr_pkg.daily_recur_model.JobRecurModel;
 import com.eot_app.nav_menu.jobs.job_db.EquArrayModel;
 import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.model.InvoiceItemDataModel;
 import com.eot_app.nav_menu.jobs.job_detail.detail.jobdetial_model.CompletionDetails;
@@ -32,5 +34,6 @@ public interface JobDetail_view {
     void setCompletionDetails(List<CompletionDetails> completionDetailsList);
 
     void setList(ArrayList<GetFileList_Res> getFileList_res, String isAttachCompletionNotes);
-
+    void setRecurData(RecurReqResModel recurData);
+    void notDataFoundInRecureData(String msg);
 }
