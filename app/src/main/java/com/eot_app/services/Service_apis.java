@@ -228,6 +228,8 @@ public interface Service_apis {
     String get_supplier_list = "SupplierController/getSupplierList";
     String upload_document = "JobController/uploadDocument";
 
+    String getRecurDataOfJob = "JobController/getRecurDataOfJob";
+
 
     //no token required & header
     @POST

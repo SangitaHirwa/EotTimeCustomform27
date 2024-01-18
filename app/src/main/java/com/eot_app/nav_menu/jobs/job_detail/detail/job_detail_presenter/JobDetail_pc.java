@@ -9,6 +9,7 @@ import com.eot_app.nav_menu.custom_fileds.custom_model.CustOmFiledResModel;
 import com.eot_app.nav_menu.custom_fileds.custom_model.CustOmFormQuestionsReq;
 import com.eot_app.nav_menu.custom_fileds.custom_model.CustOmFormQuestionsRes;
 import com.eot_app.nav_menu.jobs.add_job.add_job_recr.DeleteReCur;
+import com.eot_app.nav_menu.jobs.add_job.add_job_recr.RecurReqResModel;
 import com.eot_app.nav_menu.jobs.job_controller.ChatController;
 import com.eot_app.nav_menu.jobs.job_db.EquArrayModel;
 import com.eot_app.nav_menu.jobs.job_db.Job;
@@ -700,6 +701,59 @@ public class JobDetail_pc implements JobDetail_pi {
                         @Override
                         public void onComplete() {
 
+                        }
+                    });
+        }
+        else
+            networkDialog();
+    }
+
+    @Override
+    public void getRecureDataList(String jobId, String recurType) {
+        if (AppUtility.isInternetConnected()) {
+            HashMap<String, String> hashMap = new HashMap<>();
+            hashMap.put("jobId", jobId);
+            hashMap.put("recurType", recurType);
+            ApiClient.getservices().eotServiceCall(Service_apis.getRecurDataOfJob, AppUtility.getApiHeaders(),
+                            AppUtility.getJsonObject(new Gson().toJson(hashMap)))
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<JsonObject>() {
+                        @Override
+                        public void onSubscribe(@NotNull Disposable d) {
+
+                        }
+
+                        @Override
+                        public void onNext(@NotNull JsonObject jsonObject) {
+                            AppUtility.progressBarDissMiss();
+                            if (jsonObject.get("success").getAsBoolean()) {
+                                try {
+
+                                    String convert = jsonObject.get("data").getAsJsonObject().toString();
+                                    Type listType = new TypeToken<RecurReqResModel>() {
+                                    }.getType();
+                                    RecurReqResModel data = new Gson().fromJson(convert, listType);
+                                    view.setRecurData(data);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            } else {
+                                AppUtility.progressBarDissMiss();
+                                view.notDataFoundInRecureData(LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
+                            }
+                        }
+
+
+                        @Override
+                        public void onError(@NotNull Throwable e) {
+                            AppUtility.progressBarDissMiss();
+                            Log.e("TAG", e.getMessage());
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            AppUtility.progressBarDissMiss();
                         }
                     });
         }

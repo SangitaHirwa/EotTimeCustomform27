@@ -45,6 +45,8 @@ import com.eot_app.nav_menu.equipment.View.Job_Equipment_MVP.Job_EquipmentPC;
 import com.eot_app.nav_menu.equipment.View.Job_Equipment_MVP.Job_Equipment_PI;
 import com.eot_app.nav_menu.equipment.View.Job_Equipment_MVP.Job_Equipment_View;
 import com.eot_app.nav_menu.equipment.model.Keeper;
+import com.eot_app.nav_menu.jobs.add_job.add_job_recr.RecurReqResModel;
+import com.eot_app.nav_menu.jobs.add_job.add_job_recr.daily_recr_pkg.daily_recur_model.JobRecurModel;
 import com.eot_app.nav_menu.jobs.job_db.EquArrayModel;
 import com.eot_app.nav_menu.jobs.job_db.Job;
 import com.eot_app.nav_menu.jobs.job_db.JtId;
@@ -231,6 +233,15 @@ public class JobdetailsEquActivity extends AppCompatActivity implements
         }
     }
 
+    @Override
+    public void setRecurData(RecurReqResModel recurData) {
+
+    }
+
+    @Override
+    public void notDataFoundInRecureData(String msg) {
+
+    }
 
 
     public void setDataToView(Job job) {
