@@ -56,7 +56,9 @@ public interface Service_apis {
      //Old api
      //    String getUserJobList = "JobController/getUserJobList";
     // new api for eq components
-    String getUserJobList = "JobController/getUserJobListNew";
+     //    after discussion with jit sir we replace this api at 19 jan 2024
+     //    String getUserJobList = "JobController/getUserJobListNew";
+     String getUserJobList = "JobController/getUserJobListForMobile";
     String getTagList = "JobController/getTagList";
     String getLoginReport = "UserController/generateCheckInOutPDF";
     String getClientSink = "CompanyController/getClientSink";
