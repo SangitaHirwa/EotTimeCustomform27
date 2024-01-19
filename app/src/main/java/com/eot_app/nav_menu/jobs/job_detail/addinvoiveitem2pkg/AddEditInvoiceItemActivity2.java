@@ -89,6 +89,7 @@ import java.util.Objects;
 import java.util.concurrent.Callable;
 
 import static com.eot_app.nav_menu.jobs.job_detail.invoice2list.JoBInvoiceItemList2Activity.ADD_ITEM_DATA;
+import static com.eot_app.utility.AppConstant.qty;
 
 
 public class AddEditInvoiceItemActivity2 extends
@@ -1194,8 +1195,18 @@ public class AddEditInvoiceItemActivity2 extends
         } else {
             edt_item_supplier.setText(AppUtility.getRoundoff_amount(itemselected.getSupplierCost()));
         }
-        edt_item_disc.setText(AppUtility.getRoundoff_amount(itemselected.getDiscount()));
+        if(getDisCalculationType.equals("1")) {
+            double calculaterateDis = 0;
+                double qty = Double.parseDouble(edt_item_qty.getText().toString());
+                double rate = Double.parseDouble(edt_item_rate.getText().toString());
+                double dis = Double.parseDouble(itemselected.getDiscount());
+                calculaterateDis = (rate * qty * dis) / 100;
+            edt_item_disc.setText(AppUtility.getRoundoff_amount(""+calculaterateDis));
 
+        }else
+        {
+            edt_item_disc.setText(AppUtility.getRoundoff_amount(itemselected.getDiscount()));
+        }
         total_Amount_cal();
 
         // TODO removed by shivani
