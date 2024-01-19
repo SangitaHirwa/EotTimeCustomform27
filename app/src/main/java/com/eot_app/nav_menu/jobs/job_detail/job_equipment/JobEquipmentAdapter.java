@@ -201,13 +201,16 @@ public class JobEquipmentAdapter extends RecyclerView.Adapter<JobEquipmentAdapte
 //                updateAttchmentList(holder, equArrayModel.getAttachments(), position);
 //            }
         }
-
-        if (equArrayModel.getIsPart().equalsIgnoreCase("0")
-                && equArrayModel.getEquComponent() != null && !equArrayModel.getEquComponent().isEmpty()) {
-            setPartList(holder, equArrayModel.getEquComponent(), equArrayModel.getEqunm(), equArrayModel.getEquId());
-        } else {
-            holder.part_layout.setVisibility(View.GONE);
-        }
+         if(equArrayModel.getIsPart()!=null) {
+             if (equArrayModel.getIsPart().equalsIgnoreCase("0")
+                     && equArrayModel.getEquComponent() != null && !equArrayModel.getEquComponent().isEmpty()) {
+                 setPartList(holder, equArrayModel.getEquComponent(), equArrayModel.getEqunm(), equArrayModel.getEquId());
+             } else {
+                 holder.part_layout.setVisibility(View.GONE);
+             }
+         }else{
+             holder.part_layout.setVisibility(View.GONE);
+         }
 
         /* 0 Mean equipment 1 means Part(Sub equipment) ****/
         if (!TextUtils.isEmpty(equArrayModel.getIsPart()) && !equArrayModel.getIsPart().equals("0"))
