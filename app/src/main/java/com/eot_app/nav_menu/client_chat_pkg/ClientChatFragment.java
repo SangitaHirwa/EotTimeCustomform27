@@ -42,6 +42,7 @@ import com.eot_app.nav_menu.jobs.job_db.Job;
 import com.eot_app.nav_menu.jobs.job_detail.chat.fire_Base_Model.Chat_Send_Msg_Model;
 import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.EotApp;
+import com.eot_app.utility.WrapContentLinearLayoutManager;
 import com.eot_app.utility.db.AppDataBase;
 import com.eot_app.utility.language_support.LanguageController;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
@@ -178,7 +179,8 @@ public class ClientChatFragment extends UploadDocumentFragment implements View.O
         Log.e("Path:-------------", "" + CLIENTPATH);
         recycler_client_chats = view.findViewById(R.id.recycler_client_chats);
         mLayoutManager = new LinearLayoutManager(getActivity());
-        recycler_client_chats.setLayoutManager(mLayoutManager);
+        //        recycler_client_chats.setLayoutManager(mLayoutManager);
+        recycler_client_chats.setLayoutManager(new WrapContentLinearLayoutManager(requireActivity(), LinearLayoutManager.VERTICAL, false));
 
 
         msg_send_edt = view.findViewById(R.id.msg_send_edt);
