@@ -2,6 +2,9 @@ package com.eot_app.nav_menu.audit.nav_scan;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -250,7 +253,9 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
 
         barnd_name_detail = findViewById(R.id.barnd_name_detail);
         model_no_detail = findViewById(R.id.model_no_detail);
+        model_no_detail.setOnClickListener(this);
         serial_no_detail = findViewById(R.id.serial_no_detail);
+        serial_no_detail.setOnClickListener(this);
         traiff_rate_detail = findViewById(R.id.traiff_rate_detail);
         warrenty_expiry_date_detail = findViewById(R.id.warrenty_expiry_date_detail);
         manufacture_date_detail = findViewById(R.id.manufacture_date_detail);
@@ -715,6 +720,20 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
                 setResult(RESULT_OK, intent);
                 finish();
                 break;
+            case R.id.model_no_detail:
+                ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clip = ClipData.newPlainText("Copied", model_no_detail.getText().toString());
+                clipboard.setPrimaryClip(clip);
+                EotApp.getAppinstance().showToastmsg("Copied");
+
+
+                break;case R.id.serial_no_detail:
+                ClipboardManager clipboard1 = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clip1 = ClipData.newPlainText("Copied", serial_no_detail.getText().toString());
+                clipboard1.setPrimaryClip(clip1);
+                EotApp.getAppinstance().showToastmsg("Copied");
+                break;
+
         }
     }
 
