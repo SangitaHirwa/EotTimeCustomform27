@@ -86,9 +86,21 @@ public class Take_Picture_For_Drag_Drop extends AppCompatActivity implements Vie
     }
 
     private void sendImageForMap() {
-         Intent intent =new Intent(Take_Picture_For_Drag_Drop.this,Drop_Item_On_Map_Activity.class);
-         intent.putExtra("uri",uriForMap.toString());
-         startActivity(intent);
+        if(uriForMap!=null) {
+            Intent intent = new Intent(Take_Picture_For_Drag_Drop.this, Drop_Item_On_Map_Activity.class);
+            intent.putExtra("uri", uriForMap.toString());
+            startActivity(intent);
+        }else {
+            AppUtility.alertDialog(Take_Picture_For_Drag_Drop.this,
+                    LanguageController.getInstance().getMobileMsgByKey("Take A image"),
+                    LanguageController.getInstance().getMobileMsgByKey("do not switch other page without select a image, so please take a picture"),
+                    LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), "", new Callable<Boolean>() {
+                @Override
+                public Boolean call() throws Exception {
+                    return null;
+                }
+            });
+        }
     }
 
     @Override

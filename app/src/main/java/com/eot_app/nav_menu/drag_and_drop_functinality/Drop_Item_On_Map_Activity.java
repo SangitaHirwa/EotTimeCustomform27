@@ -41,8 +41,7 @@ public class Drop_Item_On_Map_Activity extends AppCompatActivity {
         list.add("equipment Icon 4");
         list.add("equipment Icon 5");
          item_adapter = new Drop_Item_Adapter(this);
-         item_adapter.setList(list);
-         binding.rvItemList.setLayoutManager(new LinearLayoutManager(this));
+        item_adapter.setList(list);
          binding.rvItemList.setAdapter(item_adapter);
          binding.itemShowHide.setOnClickListener(v -> {
              if(!listshow){

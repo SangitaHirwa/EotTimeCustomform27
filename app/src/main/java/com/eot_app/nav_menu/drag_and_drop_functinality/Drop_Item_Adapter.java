@@ -58,7 +58,7 @@ public class Drop_Item_Adapter extends RecyclerView.Adapter<Drop_Item_ViewHolder
 
     @Override
     public int getItemCount() {
-        return 0;
+        return list1.size();
     }
 
     public void setList(List<String> list){

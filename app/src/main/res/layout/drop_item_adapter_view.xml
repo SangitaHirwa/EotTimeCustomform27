@@ -6,7 +6,7 @@
     android:layout_height="match_parent">
 
 
-    <RelativeLayout
+    <androidx.cardview.widget.CardView
         android:id="@+id/relative_layout_dragdrop"
         android:layout_width="250dp"
         android:layout_height="50dp"
@@ -14,7 +14,6 @@
         android:layout_marginTop="8dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-
         >
 
         <LinearLayout
@@ -43,6 +42,7 @@
                 android:textSize="20dp"
                 android:text="TextView" />
         </LinearLayout>
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -76,5 +76,5 @@
                 android:text="TextView" />
 
         </RelativeLayout>
-    </RelativeLayout>
+    </androidx.cardview.widget.CardView>
 </androidx.constraintlayout.widget.ConstraintLayout>
