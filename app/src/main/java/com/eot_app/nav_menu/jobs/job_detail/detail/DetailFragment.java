@@ -233,6 +233,10 @@ public class DetailFragment extends Fragment
     private JobDetailEquipmentAdapter adapter;
     private TextView site_name;
     private String isMailSentToClt = "1";
+    private String isKprChgStatusFalse = "0";
+    private String isKprChgStatusTrue = "1";
+    private String multipleKpr ="2";
+    private String singelKpr = "";
     boolean accept=true,reject=true,travel=true,onhold=true,brack=true;
     String getDisCalculationType, getTaxCalculationType;
     GoogleMap mMap;
@@ -243,8 +247,6 @@ public class DetailFragment extends Fragment
     private  static DetailFragment instanse;
     ConstraintLayout cl_serviceMarkAsDone, cl_pbCompletion;
     ServiceMarkDoneAdapter serviceMarkDoneAdapter;
-   private String isKprChgStatusFalse = "0";
-   private String isKprChgStatusTrue = "1";
 
     public DetailFragment() {
         // Required empty public constructor
@@ -482,6 +484,7 @@ public class DetailFragment extends Fragment
                 else{
                     checkForIsLeader(i);
 //                    changeStatus(i);
+
 //                    JobStatusModelNew statusModel = JobStatus_Controller.getInstance().getStatusObjectById(statusArrayForIds[i]);
 //                    if (statusModel != null) {
 //                        HyperLog.i(TAG, "Selected status:" + statusModel.getStatus_name());
@@ -524,9 +527,9 @@ public class DetailFragment extends Fragment
     }
     private void checkForIsLeader(int statusArrayForId ){
         String[] kprArr = mParam2.getKpr().split(",");
+        if (kprArr.length > 1) {
         if(statusArray[statusArrayForId].equals(LanguageController.getInstance().getMobileMsgByKey(AppConstant.completed))) {
             if (mParam2.getIsLeader().equals(App_preference.getSharedprefInstance().getLoginRes().getUsrId())) {
-                if (kprArr.length > 1) {
                     if(App_preference.getSharedprefInstance().getLoginRes().getCompPermission().get(0).getIsLeaderChgAllUsrStatusOnJb().equals("0")) {
                         AppUtility.alertDialog2(getActivity(), LanguageController.getInstance()
                                         .getMobileMsgByKey(AppConstant.status_dialog),
@@ -535,29 +538,29 @@ public class DetailFragment extends Fragment
                                 LanguageController.getInstance().getMobileMsgByKey(AppConstant.no), new Callback_AlertDialog() {
                                     @Override
                                     public void onPossitiveCall() {
-                                        changeStatus(statusArrayForId, isKprChgStatusTrue);
+                                        changeStatus(statusArrayForId, isKprChgStatusTrue,multipleKpr);
                                     }
 
                                     @Override
                                     public void onNegativeCall() {
-                                        changeStatus(statusArrayForId,isKprChgStatusFalse);
+                                        changeStatus(statusArrayForId,isKprChgStatusFalse,multipleKpr);
                                     }
                                 });
                     }else{
-                        changeStatus(statusArrayForId, isKprChgStatusFalse);
+                        changeStatus(statusArrayForId, isKprChgStatusFalse,multipleKpr);
                     }
-                } else {
-                    changeStatus(statusArrayForId, isKprChgStatusFalse);
-                }
             } else {
-                changeStatus(statusArrayForId, isKprChgStatusFalse);
+                changeStatus(statusArrayForId, isKprChgStatusFalse,multipleKpr);
             }
         }else{
-            changeStatus(statusArrayForId, isKprChgStatusFalse);
+            changeStatus(statusArrayForId, isKprChgStatusFalse,multipleKpr);
+        }
+        }else {
+            changeStatus(statusArrayForId, isKprChgStatusFalse,singelKpr);
         }
 
     }
-    private void changeStatus(int i, String completeFor){
+    private void changeStatus(int i, String completeFor, String jobType){
         JobStatusModelNew statusModel = JobStatus_Controller.getInstance().getStatusObjectById(statusArrayForIds[i]);
         if (statusModel != null) {
             HyperLog.i(TAG, "Selected status:" + statusModel.getStatus_name());
@@ -577,7 +580,7 @@ public class DetailFragment extends Fragment
                         @Override
                         public void onPossitiveCall() {
                             HyperLog.i(TAG, "Request change status start");
-                            ((JobDetailActivity) requireActivity()).openFormForEvent(jobstatus.getStatus_no(),completeFor);
+                            ((JobDetailActivity) requireActivity()).openFormForEvent(jobstatus.getStatus_no(),completeFor,jobType);
                         }
 
                         @Override
@@ -2906,7 +2909,7 @@ public void setCompletionDetail(){
             //  ((JobDetailActivity) getActivity()).openFormForEvent(jobstatus.getStatus_no());
             try {
                 HyperLog.i("", "Resume states found");
-                ((JobDetailActivity) requireActivity()).openFormForEvent(jobstatus.getStatus_no(),"0");
+                ((JobDetailActivity) requireActivity()).openFormForEvent(jobstatus.getStatus_no(),"0","");
             } catch (Exception e) {
                 e.printStackTrace();
                 HyperLog.i("", "Resume states Exception handle" + e.getMessage());
@@ -2930,17 +2933,17 @@ public void setCompletionDetail(){
                         mParam2 = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(param3);
                         jobstatus = new JobStatusModelNew(mParam2.getStatus(), jobDetail_pi.getStatusName(mParam2.getStatus()));
                     }
-                    ((JobDetailActivity) requireActivity()).openFormForEvent(jobstatus.getStatus_no(),"0");
+                    ((JobDetailActivity) requireActivity()).openFormForEvent(jobstatus.getStatus_no(),"0","");
                 } catch (Exception exception) {
                     exception.printStackTrace();
                     HyperLog.i("", "Exception" + exception.getMessage());
                     mParam2 = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(param3);
                     jobstatus = new JobStatusModelNew(mParam2.getStatus(), jobDetail_pi.getStatusName(mParam2.getStatus()));
-                    ((JobDetailActivity) requireActivity()).openFormForEvent(jobstatus.getStatus_no(),"0");
+                    ((JobDetailActivity) requireActivity()).openFormForEvent(jobstatus.getStatus_no(),"0","");
                 }
             }
         } else {
-            onFormSuccess("");
+            onFormSuccess("","");
         }
     }
 
@@ -2968,7 +2971,7 @@ public void setCompletionDetail(){
 
     /***** Method call for custom form success ******/
     @Override
-    public void onFormSuccess(String statusCompleteFor) {
+    public void onFormSuccess(String statusCompleteFor, String jobType) {
         HyperLog.i(TAG, "onFormSuccess(M) Start");
          if (jobstatus != null) {
              if (jobDetail_pi.checkContactHideOrNot()) {
@@ -2989,21 +2992,21 @@ public void setCompletionDetail(){
 
             if (App_preference.getSharedprefInstance().getLoginRes().getConfirmationTrigger() != null) {
                 if (jobstatus != null && jobstatus.getStatus_no() != null && App_preference.getSharedprefInstance().getLoginRes().getConfirmationTrigger().contains(jobstatus.getStatus_no())) {
-                    showDialogForSendMailToClt(statusCompleteFor);
+                    showDialogForSendMailToClt(statusCompleteFor,jobType);
                 } else {
                     isMailSentToClt = "1";
-                    updateStatusApiCall(statusCompleteFor);
+                    updateStatusApiCall(statusCompleteFor,jobType);
                 }
             } else {
                 isMailSentToClt = "1";
-                updateStatusApiCall(statusCompleteFor);
+                updateStatusApiCall(statusCompleteFor,jobType);
             }
         }
         HyperLog.i(TAG, "onFormSuccess(M) Stop");
     }
 
     /***** This is synchronized because the status should get updated one by one* *****/
-    synchronized private void updateStatusApiCall(String statusCompleteFor) {
+    synchronized private void updateStatusApiCall(String statusCompleteFor,String jobType) {
         if (LatLngSycn_Controller.getInstance().getLat() != null
                 && !LatLngSycn_Controller.getInstance().getLat().isEmpty()
                 && LatLngSycn_Controller.getInstance().getLng() != null
@@ -3011,11 +3014,11 @@ public void setCompletionDetail(){
         ) {
             HyperLog.e("Location  enable", "Location providing data success");
             jobDetail_pi.changeJobStatusAlertInvisible(mParam2.getJobId(), mParam2.getType(), jobstatus, LatLngSycn_Controller.getInstance().getLat(),
-                    LatLngSycn_Controller.getInstance().getLng(), isMailSentToClt,statusCompleteFor);
+                    LatLngSycn_Controller.getInstance().getLng(), isMailSentToClt,statusCompleteFor,mParam2.getLabel(),jobType);
         } else {
             HyperLog.e("Location not enable", "Location not providing data");
             jobDetail_pi.changeJobStatusAlertInvisible(mParam2.getJobId(), mParam2.getType(), jobstatus, "0.0", "0.0", isMailSentToClt,
-                    statusCompleteFor);
+                    statusCompleteFor,mParam2.getLabel(),jobType);
         }
 
         new Handler().postDelayed(() -> {
@@ -3026,7 +3029,7 @@ public void setCompletionDetail(){
     /***** popup for asking the user for send mail confirmation
      * This works on permission basis from admin
      * *****/
-    private void showDialogForSendMailToClt(String statusCompleteFor) {
+    private void showDialogForSendMailToClt(String statusCompleteFor, String jobType) {
         // added by shivani for resolving the double tap issue
         final Dialog dialog = new Dialog(getActivity());
         TextView dialog_msg, dialog_yes, dialog_no;
@@ -3047,7 +3050,7 @@ public void setCompletionDetail(){
             dialog_no.setClickable(false);
             dialog.dismiss();
             isMailSentToClt = "1";
-            updateStatusApiCall(statusCompleteFor);
+            updateStatusApiCall(statusCompleteFor,jobType);
         });
         dialog_no.setOnClickListener(view -> {
             dialog_yes.setEnabled(false);
@@ -3056,7 +3059,7 @@ public void setCompletionDetail(){
             dialog_no.setClickable(false);
             dialog.dismiss();
             isMailSentToClt = "0";
-            updateStatusApiCall(statusCompleteFor);
+            updateStatusApiCall(statusCompleteFor,jobType);
         });
         dialog.show();
     }
