@@ -38,6 +38,7 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -64,6 +65,7 @@ import com.eot_app.nav_menu.client.clientlist.client_detail.site.sitelist.editsi
 import com.eot_app.nav_menu.custom_fileds.CustomFiledListActivity;
 import com.eot_app.nav_menu.custom_fileds.custom_model.CustOmFormQuestionsRes;
 import com.eot_app.nav_menu.jobs.add_job.add_job_recr.RecurReqResModel;
+import com.eot_app.nav_menu.jobs.add_job.add_job_recr.daily_recr_pkg.daily_recur_model.JobRecurModel;
 import com.eot_app.nav_menu.jobs.job_complation.DocDeleteNotfy;
 import com.eot_app.nav_menu.jobs.job_complation.JobCompletionActivity;
 import com.eot_app.nav_menu.jobs.job_complation.JobCompletionAdpter;
@@ -84,6 +86,7 @@ import com.eot_app.nav_menu.jobs.job_detail.detail.jobdetial_model.CompletionDet
 import com.eot_app.nav_menu.jobs.job_detail.detail.jobdetial_model.JobStatusModelNew;
 import com.eot_app.nav_menu.jobs.job_detail.detail.jobdetial_model.ServiceMarkDoneAdapter;
 import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.Attachments;
+import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.GetFileList_Res;
 import com.eot_app.nav_menu.jobs.job_detail.form_form.get_qus_list.qus_model.AnswerModel;
 import com.eot_app.nav_menu.jobs.job_detail.form_form.get_qus_list.qus_model.QuesRspncModel;
 import com.eot_app.nav_menu.jobs.job_detail.invoice2list.InvoiceItemList2Adpter;
@@ -125,6 +128,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
@@ -1381,6 +1385,9 @@ public class DetailFragment extends Fragment
 
     }
 
+    private void checkMarkServices() {
+    }
+
     /*** add completion button view ****/
     private void addComplationButtonTxt() {
         String tempstring ="";
@@ -1474,6 +1481,17 @@ public void setCompletionDetail(){
 //        jobDetail_pi.getAttachFileList(mParam2.getJobId(), App_preference.getSharedprefInstance().getLoginRes().getUsrId()
 //                , "6");
 }
+
+    private void setServiceMarkDoneList(Set<IsMarkDoneWithJtid> isMarkDoneWithJtidsList) {
+    }
+
+    private boolean isAllServicesDone() {
+        return false;
+    }
+
+    private boolean checkInList(String jtId) {return false;
+    }
+
     /***update form list after Ans Submit***/
     public void getUpdateForm() {
         if (jobDetail_pi != null) {
@@ -2408,7 +2426,7 @@ public void setCompletionDetail(){
     }
 
 
-    public void showErrorDialog(String msg) {
+    private void showErrorDialog(String msg) {
         AppUtility.error_Alert_Dialog(getActivity(), msg, LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok)
                 , () -> null);
     }
@@ -3040,7 +3058,7 @@ public void setCompletionDetail(){
             dialog_no.setClickable(false);
             dialog.dismiss();
             isMailSentToClt = "0";
-            updateStatusApiCall(statusCompleteFor);
+            updateStatusApiCall("");
         });
         dialog.show();
     }
@@ -3081,25 +3099,17 @@ public void setCompletionDetail(){
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_COMPLETION_NOTE) {
             try {
-                cl_pbCompletion.setVisibility(View.VISIBLE);
                 if (data != null && data.hasExtra("note")) {
                     if (mParam2 != null)
                         mParam2.setComplNote(data.getStringExtra("note"));
                     String tempstring=data.getStringExtra("note").replace("null", "");
                     tempstring.replace("<br>","");
                     complation_notes.setText(tempstring);
-//                    btnComplationView.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit));
-                }
-//                if(!mParam2.getComplNote().isEmpty()){
-//                    btnComplationView.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit));
-//                }else {
-//                    btnComplationView.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add));
-//                }
-                if(AppUtility.isInternetConnected()) {
-                    jobDetail_pi.loadFromServer();
-                }else {
-                    setOfflineData();
-                }
+                    btnComplationView.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit));
+                }if(!mParam2.getComplNote().isEmpty()){
+                    btnComplationView.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit));
+                }else
+                    btnComplationView.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add));
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -3338,15 +3348,6 @@ public void setCompletionDetail(){
         }
     }
 
-    @Override
-    public void upateForCompletion(String apiName, String jobId) {
-        this.jobDetail_pi = new JobDetail_pc(this);
-
-//            jobDetail_pi.getAttachFileList(jobId, App_preference.getSharedprefInstance().getLoginRes().getUsrId()
-//                    , "6");
-//            jobDetail_pi.loadFromServer();
-    }
-
 
     /***  method for loading image set into description editor ***/
     @SuppressLint("StaticFieldLeak")
@@ -3379,59 +3380,6 @@ public void setCompletionDetail(){
                 CharSequence t = textViewDescription.getText();
                 textViewDescription.setText(t);
             }
-        }
-    }
-
-//    public void setCompAttachmentList(List<Attachments> list){
-//        attachmentsList =list;
-//    }
-//    public List<Attachments> getCompAttachmentList(){
-//        return attachmentsList;
-//    }
-    public void setServiceMarkDoneList(Set<IsMarkDoneWithJtid> list){
-        mParam2.setIsMarkDoneWithJtId(new ArrayList<>(list));
-        ArrayList<IsMarkDoneWithJtid> convertList = new ArrayList<>();
-        convertList.addAll(list);
-
-        AppDataBase.getInMemoryDatabase(getContext()).jobModel().updateServiceMarkDoneList(mParam2.getIsMarkDoneWithJtId(),mParam2.getJobId());
-    }
-//    public Set<IsMarkDoneWithJtid> getServicMarkDoneList(){
-//        return isMarkDoneWithJtidsList;
-//    }
-    public boolean checkInList (String jtid){
-        boolean isIn = false;
-        for (IsMarkDoneWithJtid item: isMarkDoneWithJtidsList
-             ) {
-            if(item.getJtId().equals(jtid)){
-                isIn = true;
-                break;
-            }
-        }
-        return isIn;
-    }
-    public boolean isAllServicesDone(){
-        boolean isIt = true;
-        for (IsMarkDoneWithJtid item: isMarkDoneWithJtidsList
-        ) {
-            if(item.getStatus().equals("0")){
-                isIt = false;
-                break;
-            }
-        }
-        return isIt;
-    }
-
-    public void checkMarkServices(){
-        if(isAllServicesDone()){
-            int i =0;
-            for (String s: statusArray
-                 ) {
-                if(s.equalsIgnoreCase(LanguageController.getInstance().getMobileMsgByKey(AppConstant.completed))){
-                    break;
-                }
-                i++;
-            }
-            checkForIsLeader(i);
         }
     }
 }
