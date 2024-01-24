@@ -1837,7 +1837,8 @@
     "preview_and_send_quote" : "Preview and Send Quote",
     "preview_and_send_document" : "Preview and Send Document",
     "click_here_to_provide_paypal_link": "Click here to provide Paypal Link",
-    "services_done": "Services Done"
+    "services_done": "Services Done",
+    "status_complete_for_all_fw": "Are you want to Completed Your Job for All Fieldworkers"
   }
 }
 
