@@ -243,7 +243,7 @@ public class JobDetail_pc implements JobDetail_pi {
 
     @Override
     synchronized public void changeJobStatusAlertInvisible(String jobid, String type, JobStatusModelNew jobStatus, String lat, String lng
-            , String isMailSentToClt
+            , String isMailSentToClt, String isLeaderChgKprsStatus
     ) {
         HyperLog.i("JobDetail_pc", "changeJobStatusAlertInvisible(M) start");
 
@@ -283,7 +283,7 @@ public class JobDetail_pc implements JobDetail_pi {
         Gson gson = new Gson();
         Jobdetail_status_res request = new Jobdetail_status_res(jobId,
                 App_preference.getSharedprefInstance().getLoginRes().getUsrId(), type, jobstatus.getStatus_no(),
-                dateTime, lat, lng, isMailSentToClt);
+                dateTime, lat, lng, isMailSentToClt, isLeaderChgKprsStatus);
         String data = gson.toJson(request);
         Job jobData = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(jobid);
         /* **JOB status change Before JOB sync**/

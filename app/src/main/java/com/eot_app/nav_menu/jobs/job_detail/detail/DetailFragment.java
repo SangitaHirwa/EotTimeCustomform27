@@ -232,6 +232,8 @@ public class DetailFragment extends Fragment
     String getDisCalculationType, getTaxCalculationType;
     GoogleMap mMap;
    ConstraintLayout progressBar_cyclic;
+   private String isKprChgStatusFalse = "0";
+   private String isKprChgStatusTrue = "1";
 
     public DetailFragment() {
         // Required empty public constructor
@@ -455,14 +457,17 @@ public class DetailFragment extends Fragment
                         if (mParam2.getSignature() == null || mParam2.getSignature().equals("")) {
                             showErrorDialog(LanguageController.getInstance().getMobileMsgByKey(AppConstant.signature_alert));
                         }else {
-                            changeStatus(i);
+                            checkForIsLeader(i);
+//                            changeStatus(i);
                         }
                     }else {
-                        changeStatus(i);
+                        checkForIsLeader(i);
+//                        changeStatus(i);
                     }
                 }
                 else{
-                    changeStatus(i);
+                    checkForIsLeader(i);
+//                    changeStatus(i);
 //                    JobStatusModelNew statusModel = JobStatus_Controller.getInstance().getStatusObjectById(statusArrayForIds[i]);
 //                    if (statusModel != null) {
 //                        HyperLog.i(TAG, "Selected status:" + statusModel.getStatus_name());
@@ -503,8 +508,42 @@ public class DetailFragment extends Fragment
 
         return layout;
     }
+    private void checkForIsLeader(int statusArrayForId ){
+        String[] kprArr = mParam2.getKpr().split(",");
+        if(statusArray[statusArrayForId].equals(LanguageController.getInstance().getMobileMsgByKey(AppConstant.completed))) {
+            if (mParam2.getIsLeader().equals(App_preference.getSharedprefInstance().getLoginRes().getUsrId())) {
+                if (kprArr.length > 1) {
+                    if(App_preference.getSharedprefInstance().getLoginRes().getCompPermission().get(0).getIsLeaderChgAllUsrStatusOnJb().equals("0")) {
+                        AppUtility.alertDialog2(getActivity(), LanguageController.getInstance()
+                                        .getMobileMsgByKey(AppConstant.status_dialog),
+                                LanguageController.getInstance().getMobileMsgByKey(AppConstant.status_complete_for_all_fw),
+                                LanguageController.getInstance().getMobileMsgByKey(AppConstant.yes),
+                                LanguageController.getInstance().getMobileMsgByKey(AppConstant.no), new Callback_AlertDialog() {
+                                    @Override
+                                    public void onPossitiveCall() {
+                                        changeStatus(statusArrayForId, isKprChgStatusTrue);
+                                    }
 
-    private void changeStatus(int i){
+                                    @Override
+                                    public void onNegativeCall() {
+                                        changeStatus(statusArrayForId,isKprChgStatusFalse);
+                                    }
+                                });
+                    }else{
+                        changeStatus(statusArrayForId, isKprChgStatusFalse);
+                    }
+                } else {
+                    changeStatus(statusArrayForId, isKprChgStatusFalse);
+                }
+            } else {
+                changeStatus(statusArrayForId, isKprChgStatusFalse);
+            }
+        }else{
+            changeStatus(statusArrayForId, isKprChgStatusFalse);
+        }
+
+    }
+    private void changeStatus(int i, String completeFor){
         JobStatusModelNew statusModel = JobStatus_Controller.getInstance().getStatusObjectById(statusArrayForIds[i]);
         if (statusModel != null) {
             HyperLog.i(TAG, "Selected status:" + statusModel.getStatus_name());
@@ -524,7 +563,7 @@ public class DetailFragment extends Fragment
                         @Override
                         public void onPossitiveCall() {
                             HyperLog.i(TAG, "Request change status start");
-                            ((JobDetailActivity) requireActivity()).openFormForEvent(jobstatus.getStatus_no());
+                            ((JobDetailActivity) requireActivity()).openFormForEvent(jobstatus.getStatus_no(),completeFor);
                         }
 
                         @Override
@@ -2671,7 +2710,7 @@ public class DetailFragment extends Fragment
             //  ((JobDetailActivity) getActivity()).openFormForEvent(jobstatus.getStatus_no());
             try {
                 HyperLog.i("", "Resume states found");
-                ((JobDetailActivity) requireActivity()).openFormForEvent(jobstatus.getStatus_no());
+                ((JobDetailActivity) requireActivity()).openFormForEvent(jobstatus.getStatus_no(),"0");
             } catch (Exception e) {
                 e.printStackTrace();
                 HyperLog.i("", "Resume states Exception handle" + e.getMessage());
@@ -2695,17 +2734,17 @@ public class DetailFragment extends Fragment
                         mParam2 = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(param3);
                         jobstatus = new JobStatusModelNew(mParam2.getStatus(), jobDetail_pi.getStatusName(mParam2.getStatus()));
                     }
-                    ((JobDetailActivity) requireActivity()).openFormForEvent(jobstatus.getStatus_no());
+                    ((JobDetailActivity) requireActivity()).openFormForEvent(jobstatus.getStatus_no(),"0");
                 } catch (Exception exception) {
                     exception.printStackTrace();
                     HyperLog.i("", "Exception" + exception.getMessage());
                     mParam2 = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(param3);
                     jobstatus = new JobStatusModelNew(mParam2.getStatus(), jobDetail_pi.getStatusName(mParam2.getStatus()));
-                    ((JobDetailActivity) requireActivity()).openFormForEvent(jobstatus.getStatus_no());
+                    ((JobDetailActivity) requireActivity()).openFormForEvent(jobstatus.getStatus_no(),"0");
                 }
             }
         } else {
-            onFormSuccess();
+            onFormSuccess("");
         }
     }
 
@@ -2733,7 +2772,7 @@ public class DetailFragment extends Fragment
 
     /***** Method call for custom form success ******/
     @Override
-    public void onFormSuccess() {
+    public void onFormSuccess(String statusCompleteFor) {
         HyperLog.i(TAG, "onFormSuccess(M) Start");
          if (jobstatus != null) {
              if (jobDetail_pi.checkContactHideOrNot()) {
@@ -2754,31 +2793,33 @@ public class DetailFragment extends Fragment
 
             if (App_preference.getSharedprefInstance().getLoginRes().getConfirmationTrigger() != null) {
                 if (jobstatus != null && jobstatus.getStatus_no() != null && App_preference.getSharedprefInstance().getLoginRes().getConfirmationTrigger().contains(jobstatus.getStatus_no())) {
-                    showDialogForSendMailToClt();
+                    showDialogForSendMailToClt(statusCompleteFor);
                 } else {
                     isMailSentToClt = "1";
-                    updateStatusApiCall();
+                    updateStatusApiCall(statusCompleteFor);
                 }
             } else {
                 isMailSentToClt = "1";
-                updateStatusApiCall();
+                updateStatusApiCall(statusCompleteFor);
             }
         }
         HyperLog.i(TAG, "onFormSuccess(M) Stop");
     }
 
     /***** This is synchronized because the status should get updated one by one* *****/
-    synchronized private void updateStatusApiCall() {
+    synchronized private void updateStatusApiCall(String statusCompleteFor) {
         if (LatLngSycn_Controller.getInstance().getLat() != null
                 && !LatLngSycn_Controller.getInstance().getLat().isEmpty()
                 && LatLngSycn_Controller.getInstance().getLng() != null
                 && !LatLngSycn_Controller.getInstance().getLng().isEmpty()
         ) {
             HyperLog.e("Location  enable", "Location providing data success");
-            jobDetail_pi.changeJobStatusAlertInvisible(mParam2.getJobId(), mParam2.getType(), jobstatus, LatLngSycn_Controller.getInstance().getLat(), LatLngSycn_Controller.getInstance().getLng(), isMailSentToClt);
+            jobDetail_pi.changeJobStatusAlertInvisible(mParam2.getJobId(), mParam2.getType(), jobstatus, LatLngSycn_Controller.getInstance().getLat(),
+                    LatLngSycn_Controller.getInstance().getLng(), isMailSentToClt,statusCompleteFor);
         } else {
             HyperLog.e("Location not enable", "Location not providing data");
-            jobDetail_pi.changeJobStatusAlertInvisible(mParam2.getJobId(), mParam2.getType(), jobstatus, "0.0", "0.0", isMailSentToClt);
+            jobDetail_pi.changeJobStatusAlertInvisible(mParam2.getJobId(), mParam2.getType(), jobstatus, "0.0", "0.0", isMailSentToClt,
+                    statusCompleteFor);
         }
 
         new Handler().postDelayed(() -> {
@@ -2789,7 +2830,7 @@ public class DetailFragment extends Fragment
     /***** popup for asking the user for send mail confirmation
      * This works on permission basis from admin
      * *****/
-    private void showDialogForSendMailToClt() {
+    private void showDialogForSendMailToClt(String statusCompleteFor) {
         // added by shivani for resolving the double tap issue
         final Dialog dialog = new Dialog(getActivity());
         TextView dialog_msg, dialog_yes, dialog_no;
@@ -2810,7 +2851,7 @@ public class DetailFragment extends Fragment
             dialog_no.setClickable(false);
             dialog.dismiss();
             isMailSentToClt = "1";
-            updateStatusApiCall();
+            updateStatusApiCall(statusCompleteFor);
         });
         dialog_no.setOnClickListener(view -> {
             dialog_yes.setEnabled(false);
@@ -2819,7 +2860,7 @@ public class DetailFragment extends Fragment
             dialog_no.setClickable(false);
             dialog.dismiss();
             isMailSentToClt = "0";
-            updateStatusApiCall();
+            updateStatusApiCall(statusCompleteFor);
         });
         dialog.show();
     }

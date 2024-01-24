@@ -859,7 +859,7 @@ public class JobDetailActivity extends AppCompatActivity implements
                 switch (resultCode) {
                     case Activity.RESULT_OK:
                         if (detailFragment != null) {
-                            detailFragment.onFormSuccess();
+                            detailFragment.onFormSuccess("0");
                         }
                         break;
                     case Activity.RESULT_CANCELED:
@@ -1015,7 +1015,7 @@ public class JobDetailActivity extends AppCompatActivity implements
         }
     }
 
-    public void openFormForEvent(String eventId) {
+    public void openFormForEvent(String eventId , String completeFor) {
         HyperLog.i(TAG, "openFormForEvent(M) check custom form permission");
 
         if (App_preference.getSharedprefInstance().getLoginRes().getCustomFormEnable().equals("1")) {
@@ -1042,7 +1042,7 @@ public class JobDetailActivity extends AppCompatActivity implements
                         if (i == 0) {
                             if (detailFragment != null) {
                                 HyperLog.i(TAG, "openFormForEvent(M) : Custom form Answer Submit than status change");
-                                detailFragment.onFormSuccess();
+                                detailFragment.onFormSuccess(completeFor);
                             } else {
                                 HyperLog.i(TAG, "openFormForEvent(M) : detailFragment NULL......");
                             }
@@ -1051,7 +1051,7 @@ public class JobDetailActivity extends AppCompatActivity implements
                         }
                     } else {
                         if (detailFragment != null) {
-                            detailFragment.onFormSuccess();
+                            detailFragment.onFormSuccess(completeFor);
                             HyperLog.i(TAG, "openFormForEvent(M) :" + "Custom Form List Not Found");
                         } else {
                             HyperLog.i(TAG, "openFormForEvent(M) : detailFragment NULL......");
@@ -1060,7 +1060,7 @@ public class JobDetailActivity extends AppCompatActivity implements
                 } else {
                     HyperLog.i(TAG, "openFormForEvent(M) :" + "Status Update WithOut NEtwork");
                     if (detailFragment != null) {
-                        detailFragment.onFormSuccess();
+                        detailFragment.onFormSuccess(completeFor);
                     } else {
                         HyperLog.i(TAG, "openFormForEvent(M) : detailFragment NULL......");
                     }
@@ -1069,7 +1069,7 @@ public class JobDetailActivity extends AppCompatActivity implements
                 ex.printStackTrace();
                 HyperLog.i(TAG, "openFormForEvent(M) :" + ex.toString());
                 if (detailFragment != null) {
-                    detailFragment.onFormSuccess();
+                    detailFragment.onFormSuccess(completeFor);
                 } else {
                     HyperLog.i(TAG, "openFormForEvent(M) : detailFragment NULL......");
                 }
@@ -1077,7 +1077,7 @@ public class JobDetailActivity extends AppCompatActivity implements
         } else {
             HyperLog.i(TAG, "openFormForEvent(M) :" + "Custom form permission Disable");
             if (detailFragment != null) {
-                detailFragment.onFormSuccess();
+                detailFragment.onFormSuccess(completeFor);
             } else {
                 HyperLog.i(TAG, "openFormForEvent(M) : detailFragment NULL......");
             }
