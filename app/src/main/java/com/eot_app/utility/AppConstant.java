@@ -971,6 +971,7 @@ public class AppConstant {
     public static String click_here_to_provide_paypal_link = "click_here_to_provide_paypal_link";
     public static String services_done = "services_done";
     public static String status_complete_for_all_fw = "status_complete_for_all_fw";
+    public static String not_synced_at = "not_synced_at";
 
 
 

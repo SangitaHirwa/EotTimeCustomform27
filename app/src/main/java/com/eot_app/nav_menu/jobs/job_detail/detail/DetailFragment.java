@@ -851,10 +851,7 @@ public class DetailFragment extends Fragment
 
     @Override
     public void StopRecurPatternHide() {
-        recurMsgHide.setVisibility(View.GONE);
-        recurMsgShow.setVisibility(View.VISIBLE);
-        liner_layout_for_recurmsg.setVisibility(View.GONE);
-       /* recur_parent_view.setVisibility(View.GONE);*/
+        recur_parent_view.setVisibility(View.GONE);
     }
 
     @Override

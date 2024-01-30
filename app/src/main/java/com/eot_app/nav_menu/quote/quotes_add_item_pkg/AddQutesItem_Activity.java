@@ -699,6 +699,9 @@ public class AddQutesItem_Activity extends AppCompatActivity implements TextWatc
             edt_item_supplier.setText(AppUtility.getRoundoff_amount(itemselected.getSupplierCost()));
         }
         if(getDisCalculationType.equals("1")) {
+            if(itemselected.getDiscount().isEmpty()){
+              itemselected.setDiscount("0");
+            }
             double calculaterateDis = 0;
             double qty = Double.parseDouble(edt_item_qty.getText().toString());
             double rate = Double.parseDouble(edt_item_rate.getText().toString());
