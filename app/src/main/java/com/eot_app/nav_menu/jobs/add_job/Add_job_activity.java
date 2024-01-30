@@ -2445,7 +2445,7 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
             if (!date_start.getText().toString().equals("")) {
                 Date start_Date = null;
                 try {
-                    start_Date = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).parse(date_start.getText().toString());
+                    start_Date = new SimpleDateFormat("dd-MMM-yyyy", Locale.getDefault()).parse(date_start.getText().toString());
 
                 } catch (ParseException e) {
                     e.printStackTrace();
