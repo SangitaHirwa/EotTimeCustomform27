@@ -7,21 +7,12 @@ import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
-import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
-
-import com.eot_app.home_screens.MainActivity;
-import com.eot_app.lat_lng_sync_pck.AddFWLatLng_Model;
 import com.eot_app.nav_menu.jobs.job_detail.documents.ActivityDocumentSaveUpload;
-import com.eot_app.nav_menu.jobs.job_detail.documents.DocumentsFragment;
-import com.eot_app.nav_menu.jobs.job_detail.documents.PathUtils;
 import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.CompressImg;
 import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.MultiDocUpdateRequest;
-import com.eot_app.nav_menu.jobs.job_detail.documents.fileattach_mvp.Doc_Attch_Pc;
-import com.eot_app.nav_menu.jobs.job_detail.documents.fileattach_mvp.Doc_Attch_View;
 import com.eot_app.services.Service_apis;
 import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.AppUtility;
@@ -46,6 +37,8 @@ public class UploadMultiImgWorker extends Worker {
     String type = "";
     String isFromCompletion = "";
     CompressImageInBack compressImageInBack ;
+    String jobId, queId, jtId ;
+
 Context context;
     public UploadMultiImgWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
@@ -61,7 +54,18 @@ Context context;
             String [] resourceUri = getInputData().getStringArray("imgPathArray");
             boolean imgPath = getInputData().getBoolean("imgPath",false);
             boolean isCompNotes = getInputData().getBoolean("isCompNotes",false);
-            String jobId = getInputData().getString("jobId");
+             jobId = getInputData().getString("jobId");
+             queId = getInputData().getString("queId");
+             jtId = getInputData().getString("jtId");
+            if(jobId == null ){
+                jobId = "";
+            }
+            if(queId == null ){
+                queId = "";
+            }
+            if(jtId == null ){
+                jtId = "";
+            }
 
             if(pos< resourceUri.length) {
                 Log.e("Length", "of multi Images" + resourceUri.length);
@@ -91,7 +95,7 @@ Context context;
                             if (savedImagePath != null) {
                                 Log.e("Loopin", "Run inner loop" + pos);
                                 Log.e("File name ", "Call api ===" + fileName[0]);
-                                OfflineDataController.getInstance().addInOfflineDB(Service_apis.upload_document, getParam(jobId, savedImagePath,
+                                OfflineDataController.getInstance().addInOfflineDB(Service_apis.upload_document, getParam(jobId, queId, jtId, savedImagePath,
                                         fileName[0],
                                         desc,
                                         type,
@@ -104,7 +108,7 @@ Context context;
                     });
 
                 } else {
-                    OfflineDataController.getInstance().addInOfflineDB(Service_apis.upload_document, getParam(jobId, resourceUri[pos],
+                    OfflineDataController.getInstance().addInOfflineDB(Service_apis.upload_document, getParam(jobId, queId, jtId,resourceUri[pos],
                             fileName[0],
                             desc,
                             type,
@@ -119,8 +123,8 @@ Context context;
             return Result.failure();
         }
     }
-    public String getParam(String job_Id, String file, String finalFname, String desc, String type, String isAddAttachAsCompletionNote,boolean lastCall){
-        MultiDocUpdateRequest multi_DocUpdateRequest = new MultiDocUpdateRequest(job_Id,file,finalFname,desc,type,isAddAttachAsCompletionNote,lastCall);
+    public String getParam(String job_Id,String queId,String jtId, String file, String finalFname, String desc, String type, String isAddAttachAsCompletionNote,boolean lastCall){
+        MultiDocUpdateRequest multi_DocUpdateRequest = new MultiDocUpdateRequest(job_Id, queId, jtId,file,finalFname,desc,type,isAddAttachAsCompletionNote,lastCall);
         Gson gson = new Gson();
         String multiDocUpdateRequest = gson.toJson(multi_DocUpdateRequest);
 

@@ -11,40 +11,26 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
-import android.text.Spannable;
-import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
-import android.text.Spanned;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.Spinner;
 import com.eot_app.R;
 import com.eot_app.databinding.DialogJobCardBinding;
-import com.eot_app.nav_menu.custom_fileds.custom_model.CustOmFormQuestionsRes;
-import com.eot_app.nav_menu.jobs.job_db.EquArrayModel;
-import com.eot_app.nav_menu.jobs.job_detail.JobDetailActivity;
-import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.model.InvoiceItemDataModel;
 import com.eot_app.nav_menu.jobs.job_detail.detail.adapter.JobCardAttachmentAdapter;
-import com.eot_app.nav_menu.jobs.job_detail.detail.job_detail_presenter.JobDetail_pc;
 import com.eot_app.nav_menu.jobs.job_detail.detail.job_detail_presenter.JobDetail_pi;
-import com.eot_app.nav_menu.jobs.job_detail.detail.job_detail_view.JobDetail_view;
-import com.eot_app.nav_menu.jobs.job_detail.detail.jobdetial_model.CompletionDetails;
 import com.eot_app.nav_menu.jobs.job_detail.detail.jobdetial_model.JobCardAttachmentModel;
-import com.eot_app.nav_menu.jobs.job_detail.detail.jobdetial_model.JobStatusModelNew;
 import com.eot_app.nav_menu.jobs.job_detail.documents.ActivityDocumentSaveUpload;
 import com.eot_app.nav_menu.jobs.job_detail.documents.PathUtils;
-import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.GetFileList_Res;
+import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.Attachments;
 import com.eot_app.nav_menu.jobs.job_detail.documents.fileattach_mvp.Doc_Attch_Pc;
 import com.eot_app.nav_menu.jobs.job_detail.documents.fileattach_mvp.Doc_Attch_Pi;
 import com.eot_app.nav_menu.jobs.job_detail.documents.fileattach_mvp.Doc_Attch_View;
-import com.eot_app.nav_menu.jobs.job_detail.generate_invoice.Generate_Invoice_Activity;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_email_pkg.Invoice_Email_Activity;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_email_pkg.Invoice_Email_View;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_email_pkg.Invoice_Email_pc;
@@ -59,7 +45,6 @@ import com.eot_app.nav_menu.jobs.job_detail.job_detail_activity_presenter.Job_De
 import com.eot_app.nav_menu.quote.quote_invoice_pkg.quote_mvp_pkg.Quo_Invo_Pi;
 import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.AppUtility;
-import com.eot_app.utility.App_preference;
 import com.eot_app.utility.EotApp;
 import com.eot_app.utility.db.AppDataBase;
 import com.eot_app.utility.language_support.LanguageController;
@@ -69,7 +54,6 @@ import com.google.gson.Gson;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -103,7 +87,7 @@ public class DialogJobCardDocuments extends DialogFragment
     private JobCardAttachmentAdapter jobCardAttachmentAdapter;
     List<JobCardAttachmentModel> reqAttachmentList  = new ArrayList<>();
     List<JobCardAttachmentModel> list  = new ArrayList<>();
-    private ArrayList<GetFileList_Res> fileList_res = new ArrayList<>();
+    private ArrayList<Attachments> fileList_res = new ArrayList<>();
     Doc_Attch_Pi doc_attch_pi;
     private final int ATTACHFILE_CODE = 101;
     private static final int DOUCMENT_UPLOAD_CODE = 156;
@@ -476,19 +460,24 @@ public class DialogJobCardDocuments extends DialogFragment
 //    }
 
     @Override
-    public void selectFile() {
+    public void selectFiles() {
 
     }
 
     @Override
-    public void setList(ArrayList<GetFileList_Res> getFileList_res, String isAttachCompletionNotes, boolean firstCall) {
+    public void selectFilesForCompletion(boolean isCompletion) {
+
+    }
+
+    @Override
+    public void setList(ArrayList<Attachments> getFileList_res, String isAttachCompletionNotes, boolean firstCall) {
 
         Log.e("Attachment List", ""+getFileList_res.size()+""+isAttachCompletionNotes);
         list.clear();
         this.fileList_res = getFileList_res;
         JobCardAttachmentModel jobCardAttachmentModel = new JobCardAttachmentModel("-1","2",LanguageController.getInstance().getMobileMsgByKey(AppConstant.job_card)+".pdf",true);
         list.add(jobCardAttachmentModel);
-        for (GetFileList_Res item : fileList_res) {
+        for (Attachments item : fileList_res) {
             final String ext = item.getImage_name().substring((item.getImage_name().lastIndexOf(".")) + 1).toLowerCase();
             String name ="";
             if(item.getAtt_docName()==null || item.getAtt_docName().isEmpty()){
@@ -505,7 +494,12 @@ public class DialogJobCardDocuments extends DialogFragment
     }
 
     @Override
-    public void addNewItemToAttachmentList(ArrayList<GetFileList_Res> getFileList_res, String isAttachCompletionNotes) {
+    public void setMultiList(ArrayList<Attachments> getFileList_res, String isAttachCompletionNotes, boolean firstCall) {
+
+    }
+
+    @Override
+    public void addNewItemToAttachmentList(ArrayList<Attachments> getFileList_res, String isAttachCompletionNotes) {
         // remove the temporary added item for showing loader
         if (fileList_res != null&&!fileList_res.isEmpty()) {
             int position = -1;
@@ -628,8 +622,8 @@ public class DialogJobCardDocuments extends DialogFragment
                             Bitmap bitmap = AppUtility.getBitmapFromPath(data.getStringExtra("imgPath"));
                             bitmapString = AppUtility.BitMapToString(bitmap);
                         }
-                        GetFileList_Res obj=new GetFileList_Res("0",fileNameExt,fileNameExt,bitmapString);
-                        ArrayList<GetFileList_Res> getFileList_res =new ArrayList<>();
+                        Attachments obj=new Attachments("0",fileNameExt,fileNameExt,bitmapString);
+                        ArrayList<Attachments> getFileList_res =new ArrayList<>();
                         if (fileList_res != null) {
                             getFileList_res.addAll(fileList_res);
                         }

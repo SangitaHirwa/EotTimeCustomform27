@@ -29,7 +29,7 @@ import com.eot_app.R;
 import com.eot_app.nav_menu.audit.audit_list.equipment.model.EquipmentStatus;
 import com.eot_app.nav_menu.jobs.job_db.EquArrayModel;
 import com.eot_app.nav_menu.jobs.job_detail.detail.CompletionAdpterJobDteails;
-import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.GetFileList_Res;
+import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.Attachments;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.add_job_equip.adpter_pkg.EquipmentPartAdapter;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.job_equ_remrk.JobEquRemarkRemarkActivity;
 import com.eot_app.utility.AppConstant;
@@ -290,7 +290,7 @@ public class JobEquipmentAdapter extends RecyclerView.Adapter<JobEquipmentAdapte
             holder.remark_notes.setVisibility(View.GONE);
         }
 
-        ArrayList<GetFileList_Res> attachmentsList = new ArrayList<>();
+        ArrayList<Attachments> attachmentsList = new ArrayList<>();
         if (equArrayModel.getAttachments() != null && equArrayModel.getAttachments().size() > 0)
             attachmentsList = equArrayModel.getAttachments();
 

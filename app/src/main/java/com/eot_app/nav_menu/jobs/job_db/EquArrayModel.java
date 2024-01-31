@@ -5,7 +5,7 @@ import android.os.Parcelable;
 
 import androidx.room.Ignore;
 
-import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.GetFileList_Res;
+import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.Attachments;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -42,7 +42,7 @@ public class EquArrayModel implements Parcelable {
     public String contrid;
     private int linkStatus = 0;
     private int isRemarkAdd = 0;
-    private ArrayList<GetFileList_Res> attachments;
+    private ArrayList<Attachments> attachments;
     private String type;
     private String brand;
     private String rate;
@@ -191,7 +191,7 @@ public class EquArrayModel implements Parcelable {
         lng = in.readString();
         location = in.readString();
         contrid = in.readString();
-        attachments = in.createTypedArrayList(GetFileList_Res.CREATOR);
+        attachments = in.createTypedArrayList(Attachments.CREATOR);
         equComponent = in.createTypedArrayList(EquArrayModel.CREATOR);
         type = in.readString();
         brand = in.readString();
@@ -479,11 +479,11 @@ public class EquArrayModel implements Parcelable {
         this.contrid = contrid;
     }
 
-    public ArrayList<GetFileList_Res> getAttachments() {
+    public ArrayList<Attachments> getAttachments() {
         return attachments;
     }
 
-    public void setAttachments(ArrayList<GetFileList_Res> attachments) {
+    public void setAttachments(ArrayList<Attachments> attachments) {
         this.attachments = attachments;
     }
 

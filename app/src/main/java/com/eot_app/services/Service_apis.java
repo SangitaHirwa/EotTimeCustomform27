@@ -57,7 +57,7 @@ public interface Service_apis {
      //    String getUserJobList = "JobController/getUserJobList";
     // new api for eq components
      //    after discussion with jit sir we replace this api at 19 jan 2024
-     //    String getUserJobList = "JobController/getUserJobListNew";
+//         String getUserJobList = "JobController/getUserJobListNew";
      String getUserJobList = "JobController/getUserJobListForMobile";
     String getTagList = "JobController/getTagList";
     String getLoginReport = "UserController/generateCheckInOutPDF";
@@ -231,6 +231,7 @@ public interface Service_apis {
     String upload_document = "JobController/uploadDocument";
 
     String getRecurDataOfJob = "JobController/getRecurDataOfJob";
+    String getSyncJobAttachments = "JobController/syncJobAttachments";
 
 
     //no token required & header
@@ -297,6 +298,8 @@ public interface Service_apis {
     Observable<JsonObject>
     uploadDocements(@HeaderMap Map<String, String> map,
                     @Part("jobId") RequestBody jobId,
+                    @Part("queId") RequestBody queId,
+                    @Part("jtId") RequestBody jtId,
                     @Part("usrId") RequestBody userId,
                     @Part("des") RequestBody des,
                     @Part("type") RequestBody type,
@@ -413,6 +416,18 @@ public interface Service_apis {
                                                @Part("jobId") RequestBody jobId,
                                                @Part("isdelete") RequestBody isdelete,
                                                @Part("type") RequestBody type);
+@Multipart
+    @POST("jobController/setCompletionNotes")
+    Observable<JsonObject> submitCopletionFormAns(@HeaderMap Map<String, String> map,
+                                               @Part List<MultipartBody.Part> signAns,
+                                               @Part List<MultipartBody.Part> docAns,
+                                                  @Part("signQueIdArray") RequestBody signQueIdArray,
+                                                  @Part("docQueIdArray") RequestBody docQueIdArray,
+                                                  @Part("answerArray") RequestBody answer,
+                                                  @Part("usrId") RequestBody usrId,
+                                                  @Part("complNote") RequestBody complNote,
+                                                  @Part("jobId") RequestBody jobId,
+                                                  @Part("isMarkDoneWithJtId") RequestBody isMarkDoneWithJtid);
 
 
     @Multipart

@@ -12,34 +12,22 @@ public interface JobDetail_pi {
     void changeJobStatusAlertInvisible(String jobId, String type, JobStatusModelNew status, String lat, String lng, String isMailSentToClt,String isLeaderChgKprsStatus);//,String cltMailConfirmEnable);
 
     String getStatusName(String status);
-
     boolean isOldStaus(String status_no, String jobId);
-
     void setJobCurrentStatus(String jobid);
-
     boolean checkContactHideOrNot();
-
     JobStatusModelNew getJobStatusObject(String statusId);
-
     void getCustomFieldQues(String jobId);
-
     void getQuestByParntId(String formId, String jobId);
-
     void stopRecurpattern(String jobId);
-
     void getAttachFileList(String jobId, String usrId, String type);
     void getItemFromServer(final String jobId);
     void getItemListByJobFromDB(String jobId);
     String getImg();
-
     void getEquipmentList(String auditId);
-
     void refreshList(String auditID, String jobId);
-
     void getEquipmentStatus();
     void getJobCompletionDetails(String jobId);
-
-
     void addJobCompletionDetails(String jobId, CompletionDetailsPost.CompletionDetail obj,int logType);
+    void loadFromServer();
     void getRecureDataList(String jobId, String recurType);
 }

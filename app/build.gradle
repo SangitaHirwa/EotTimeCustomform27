@@ -7,7 +7,7 @@ plugins {
 android {
     signingConfigs {
         release {
-            storeFile file('/home/aplite/Documents/keyStore/keystorefile')
+            storeFile file('/home/aplite/Desktop/Live_requirement/keystorefile')
             storePassword 'Eyeontask@1'
             keyPassword 'Eyeontask@1'
             keyAlias 'eyeontask'

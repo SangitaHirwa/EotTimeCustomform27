@@ -13,6 +13,7 @@ import com.eot_app.nav_menu.jobs.add_job.add_job_recr.RecurReqResModel;
 import com.eot_app.nav_menu.jobs.job_controller.ChatController;
 import com.eot_app.nav_menu.jobs.job_db.EquArrayModel;
 import com.eot_app.nav_menu.jobs.job_db.Job;
+import com.eot_app.nav_menu.jobs.job_db.JobListRequestModel;
 import com.eot_app.nav_menu.jobs.job_detail.JobDetailActivity;
 import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.model.InvoiceItemDataModel;
 import com.eot_app.nav_menu.jobs.job_detail.detail.job_detail_view.JobDetail_view;
@@ -20,7 +21,7 @@ import com.eot_app.nav_menu.jobs.job_detail.detail.jobdetial_model.CompletionDet
 import com.eot_app.nav_menu.jobs.job_detail.detail.jobdetial_model.CompletionDetailsPost;
 import com.eot_app.nav_menu.jobs.job_detail.detail.jobdetial_model.JobStatusModelNew;
 import com.eot_app.nav_menu.jobs.job_detail.detail.jobdetial_model.Jobdetail_status_res;
-import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.GetFileList_Res;
+import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.Attachments;
 import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.GetFileList_req_Model;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_db.model_pkg.ItembyJobModel;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.model.EquipmentStatusReq;
@@ -102,9 +103,9 @@ public class JobDetail_pc implements JobDetail_pi {
                                         try {
                                             count = jsonObject.get("count").getAsInt();
                                             String convert = new Gson().toJson(jsonObject.get("data").getAsJsonArray());
-                                            Type listType = new TypeToken<List<GetFileList_Res>>() {
+                                            Type listType = new TypeToken<List<Attachments>>() {
                                             }.getType();
-                                            ArrayList<GetFileList_Res> getFileList_res = new Gson().fromJson(convert, listType);
+                                            ArrayList<Attachments> getFileList_res = new Gson().fromJson(convert, listType);
                                             view.setList(getFileList_res, "");
                                         } catch (Exception exception) {
                                             exception.printStackTrace();
@@ -604,7 +605,7 @@ public class JobDetail_pc implements JobDetail_pi {
                     });
         }
     }
-
+    ArrayList<CompletionDetails> data = new ArrayList<>();
     @Override
     public void getJobCompletionDetails(String jobId) {
         if (AppUtility.isInternetConnected()) {
@@ -630,7 +631,7 @@ public class JobDetail_pc implements JobDetail_pi {
                                     String convert = jsonObject.get("data").getAsJsonArray().toString();
                                     Type listType = new TypeToken<List<CompletionDetails>>() {
                                     }.getType();
-                                    ArrayList<CompletionDetails> data = new Gson().fromJson(convert, listType);
+                                    data = new Gson().fromJson(convert, listType);
                                     view.setCompletionDetails(data);
                                 } catch (Exception e) {
                                     e.printStackTrace();
@@ -651,6 +652,8 @@ public class JobDetail_pc implements JobDetail_pi {
                             AppUtility.progressBarDissMiss();
                         }
                     });
+        }else {
+            view.setOfflineData();
         }
     }
 
@@ -763,5 +766,100 @@ public class JobDetail_pc implements JobDetail_pi {
 
     private void networkDialog() {
         AppUtility.alertDialog((((Fragment) view).getActivity()), LanguageController.getInstance().getMobileMsgByKey(AppConstant.dialog_alert), LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_check_network), LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), "", () -> null);
+    }
+
+    /**
+     * Load Job list from server when Pull to refresh
+     */
+    @Override
+    synchronized public void loadFromServer() {
+        if (AppUtility.isInternetConnected()) {
+
+            LogModel logModel = ActivityLogController
+                    .getObj(ActivityLogController.JOB_MODULE, ActivityLogController.JOB_LIST, ActivityLogController.JOB_MODULE);
+            ActivityLogController.saveOfflineTable(logModel);
+
+            JobListRequestModel jobListRequestModel = new JobListRequestModel(Integer.parseInt(App_preference.getSharedprefInstance().getLoginRes().getUsrId()),
+                    updatelimit, updateindex, App_preference.getSharedprefInstance().getJobSyncTime());
+
+
+            // for storing the date time when the api call started
+            String startJobSyncTime = AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT);
+
+            String data = new Gson().toJson(jobListRequestModel);
+            ApiClient.getservices().eotServiceCall(Service_apis.getUserJobList, AppUtility.getApiHeaders(), AppUtility.getJsonObject(data))
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<JsonObject>() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
+
+                        }
+
+                        @Override
+                        public void onNext(JsonObject jsonObject) {
+                            if (jsonObject.get("success").getAsBoolean()) {
+                                count = jsonObject.get("count").getAsInt();
+                                String convert = new Gson().toJson(jsonObject.get("data").getAsJsonArray());
+                                Type listType = new TypeToken<List<Job>>() {
+                                }.getType();
+                                List<Job> data = new Gson().fromJson(convert, listType);
+                                addRecordsToDB(data);
+                            } else if (jsonObject.get("statusCode") != null && jsonObject.get("statusCode").getAsString().equals(AppConstant.SESSION_EXPIRE)) {
+                                view.sessionExpire(LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
+                            }
+                        }
+
+
+                        @Override
+                        public void onError(Throwable e) {
+                            Log.e("TAG", e.getMessage());
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            if ((updateindex + updatelimit) <= count) {
+                                updateindex += updatelimit;
+                                loadFromServer();
+                            } else {
+                                if (count != 0) {
+                                    if(App_preference.getSharedprefInstance().getJobStartSyncTime().isEmpty()
+                                            &&startJobSyncTime!=null && !startJobSyncTime.isEmpty()){
+//                                        App_preference.getSharedprefInstance().setJobSyncTime(AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT));
+                                        App_preference.getSharedprefInstance().setJobSyncTime(startJobSyncTime);
+                                        Log.v("MainSync","startJobSyncTime JobList"+" --" +App_preference.getSharedprefInstance().getJobSyncTime());
+                                    }
+                                    else if(App_preference.getSharedprefInstance().getJobStartSyncTime().isEmpty()){
+//                                        App_preference.getSharedprefInstance().setJobSyncTime(AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT));
+                                        App_preference.getSharedprefInstance().setJobSyncTime(startJobSyncTime);
+                                        Log.v("MainSync","startJobSyncTime JobList"+" --" +App_preference.getSharedprefInstance().getJobSyncTime());
+                                    }
+                                    else {
+                                        App_preference.getSharedprefInstance().setJobSyncTime(App_preference.getSharedprefInstance().getJobStartSyncTime());
+                                    }
+//                                    App_preference.getSharedprefInstance().setJobSyncTime(AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT));
+                                }
+                                updateindex = 0;
+                                count = 0;
+                                AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().deleteJobByIsDelete();
+                            }
+                        }
+                    });
+        }
+    }
+    public void addRecordsToDB(List<Job> data) {
+        AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().inserJob(data);
+//        for add/remove listener.
+        for (Job item : data) {
+            if (item.getIsdelete().equals("0")
+                    || item.getStatus().equals(AppConstant.Cancel)
+                    || item.getStatus().equals(AppConstant.Closed)
+                    || item.getStatus().equals(AppConstant.Reject)) {
+                ChatController.getInstance().removeListnerByJobID(item.getJobId());
+            } else {
+                ChatController.getInstance().registerChatListner(item);
+            }
+        }
+        view.setOfflineData();
     }
 }

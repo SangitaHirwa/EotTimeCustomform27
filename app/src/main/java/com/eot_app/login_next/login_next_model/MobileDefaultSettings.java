@@ -81,6 +81,26 @@ public class MobileDefaultSettings {
     private String AdminIdsWithFBasePerm;
     private String isHideContactOnDispatch;
 
+    public String getIsCompleShowMarkDone() {
+        return isCompleShowMarkDone;
+    }
+
+    public void setIsCompleShowMarkDone(String isCompleShowMarkDone) {
+        this.isCompleShowMarkDone = isCompleShowMarkDone;
+    }
+
+    public CompleMoFldVisiblty getCompleMoFldVisiblty() {
+        return compleMoFldVisiblty;
+    }
+
+    public void setCompleMoFldVisiblty(CompleMoFldVisiblty compleMoFldVisiblty) {
+        this.compleMoFldVisiblty = compleMoFldVisiblty;
+    }
+
+    private String isCompleShowMarkDone;
+    private CompleMoFldVisiblty compleMoFldVisiblty;
+
+
     public String getIsHideContactOnDispatch() {
         return isHideContactOnDispatch;
     }

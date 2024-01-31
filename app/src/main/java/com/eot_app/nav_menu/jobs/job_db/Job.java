@@ -113,6 +113,27 @@ public class Job implements Parcelable {//
     //add param for leader
     private String isLeader;
 
+    @TypeConverters(CompliAnsArrayConvrtr.class)
+    private List<CompliAnsArray> compliAnsArray;
+    @TypeConverters(IsMarkDoneConvrtr.class)
+    private List<IsMarkDoneWithJtid> isMarkDoneWithJtId =new ArrayList<>();
+    public List<IsMarkDoneWithJtid> getIsMarkDoneWithJtId() {
+        return isMarkDoneWithJtId;
+    }
+
+    public void setIsMarkDoneWithJtId(List<IsMarkDoneWithJtid> isMarkDoneWithJtId) {
+        this.isMarkDoneWithJtId = isMarkDoneWithJtId;
+    }
+
+
+    public List<CompliAnsArray> getCompliAnsArray() {
+        return compliAnsArray;
+    }
+
+    public void setCompliAnsArray(List<CompliAnsArray> compliAnsArray) {
+        this.compliAnsArray = compliAnsArray;
+    }
+
     public String getDesWithoutHtml() {
         return desWithoutHtml;
     }
@@ -185,6 +206,8 @@ public class Job implements Parcelable {//
         isAddisDiscBefore=in.readString();
         invType=in.readString();
         isLeader =in.readString();
+        compliAnsArray =in.createTypedArrayList(CompliAnsArray.CREATOR);
+        isMarkDoneWithJtId = in.createTypedArrayList(IsMarkDoneWithJtid.CREATOR);
     }
 
     public static Creator<Job> getCREATOR() {
@@ -708,6 +731,8 @@ public class Job implements Parcelable {//
         dest.writeString(isAddisDiscBefore);
         dest.writeString(invType);
         dest.writeString(isLeader);
+        dest.writeTypedList(compliAnsArray);
+        dest.writeTypedList(isMarkDoneWithJtId);
     }
 
     public String getPono() {

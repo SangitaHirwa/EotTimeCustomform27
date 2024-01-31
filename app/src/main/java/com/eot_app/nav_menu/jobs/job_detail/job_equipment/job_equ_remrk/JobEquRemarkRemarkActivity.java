@@ -58,7 +58,7 @@ import com.eot_app.nav_menu.jobs.job_detail.detail.NotifyForEquipmentCountRemark
 import com.eot_app.nav_menu.jobs.job_detail.detail.NotifyForItemCount;
 import com.eot_app.nav_menu.jobs.job_detail.documents.DocumentListAdapter;
 import com.eot_app.nav_menu.jobs.job_detail.documents.PathUtils;
-import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.GetFileList_Res;
+import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.Attachments;
 import com.eot_app.nav_menu.jobs.job_detail.form_form.get_qus_list.MyFormInterFace;
 import com.eot_app.nav_menu.jobs.job_detail.form_form.get_qus_list.ans_model.Ans_Req;
 import com.eot_app.nav_menu.jobs.job_detail.form_form.get_qus_list.ans_model.Answer;
@@ -135,7 +135,7 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
     TextView image_txt, chip_txt, tv_text_for_replace, tv_replace;
     ImageView deleteChip;
     Job mParam2;
-    ArrayList<GetFileList_Res> allAttachmentsList = new ArrayList<>();
+    ArrayList<Attachments> allAttachmentsList = new ArrayList<>();
     InvoiceItemList2Adpter invoice_list_adpter;
     boolean isRemarkUpdated = false;
     LinearLayout ll_replace;
@@ -1260,7 +1260,7 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
     }
 
 
-    private void setAttachments(ArrayList<GetFileList_Res> attachments) {
+    private void setAttachments(ArrayList<Attachments> attachments) {
         allAttachmentsList = attachments;
         if (equipment != null) {
             if (attachments != null) {
@@ -1307,8 +1307,8 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
                         }
                        /* String fileNameExt = AppUtility.getFileNameWithExtension(myObject.getPath());*/
                         fileNameExt=data.getStringExtra("image_name");
-                        GetFileList_Res obj = new GetFileList_Res("0", fileNameExt, fileNameExt, bitmapString);
-                        ArrayList<GetFileList_Res> updateList = new ArrayList<>();
+                        Attachments obj = new Attachments("0", fileNameExt, fileNameExt, bitmapString);
+                        ArrayList<Attachments> updateList = new ArrayList<>();
                         updateList.add(obj);
                         updateList.addAll(allAttachmentsList);
                         setAttachments(updateList);
@@ -1382,10 +1382,10 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
     @Override
     public void attchmentUpload(String convert) {
         if (convert != null && !convert.isEmpty()) {
-            ArrayList<GetFileList_Res> equipmentList = new ArrayList<>();
+            ArrayList<Attachments> equipmentList = new ArrayList<>();
             jobEquimPi.getEquipmentList(equipment.getType(), cltId, jobId, equipment.getEquId());
             try {
-                Type listType = new TypeToken<List<GetFileList_Res>>() {
+                Type listType = new TypeToken<List<Attachments>>() {
                 }.getType();
                 equipmentList = new Gson().fromJson(convert, listType);
                 if (equipment != null && equipment.getAttachments() != null && equipment.getAttachments().size() > 0) {
@@ -1438,9 +1438,9 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
     }
 
     @Override
-    public void OnItemClick_Document(GetFileList_Res getFileList_res) {
-        if (getFileList_res != null)
-            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(App_preference.getSharedprefInstance().getBaseURL() + "" + getFileList_res.getAttachFileName())));
+    public void OnItemClick_Document(Attachments attachments) {
+        if (attachments != null)
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(App_preference.getSharedprefInstance().getBaseURL() + "" + attachments.getAttachFileName())));
     }
 
     /**

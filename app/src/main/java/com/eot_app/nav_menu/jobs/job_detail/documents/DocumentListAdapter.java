@@ -17,9 +17,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.eot_app.R;
 import com.eot_app.nav_menu.jobs.job_complation.JobCompletionActivity;
-import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.GetFileList_Res;
+import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.Attachments;
+import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.AppUtility;
 import com.eot_app.utility.App_preference;
+import com.eot_app.utility.language_support.LanguageController;
+
 import java.util.ArrayList;
 
 
@@ -28,11 +31,11 @@ import java.util.ArrayList;
  */
 
 public class DocumentListAdapter extends RecyclerView.Adapter<DocumentListAdapter.MyView_Holder> implements Filterable {
-    final ArrayList<GetFileList_Res> suggestions = new ArrayList<>();
+    final ArrayList<Attachments> suggestions = new ArrayList<>();
     private final FileDesc_Item_Selected fileDesc_item_selected;
     private final String jobId;
-    private ArrayList<GetFileList_Res> getFileList_res = new ArrayList<>();
-    private ArrayList<GetFileList_Res> tempFileList;
+    private ArrayList<Attachments> getFileList_res = new ArrayList<>();
+    private ArrayList<Attachments> tempFileList;
     boolean isClickDisabled = false;
     String isEqu="0";
 
@@ -40,9 +43,9 @@ public class DocumentListAdapter extends RecyclerView.Adapter<DocumentListAdapte
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
             FilterResults results = new FilterResults();        // Holds the results of a filtering operation in values
-            ArrayList<GetFileList_Res> FilteredArrList = new ArrayList<>();
+            ArrayList<Attachments> FilteredArrList = new ArrayList<>();
             if (tempFileList == null) {
-                tempFileList = new ArrayList<GetFileList_Res>(getFileList_res); // saves the original data in mOriginalValues
+                tempFileList = new ArrayList<Attachments>(getFileList_res); // saves the original data in mOriginalValues
             }
             FilteredArrList.clear();
             if (constraint == null || constraint.length() == 0) {
@@ -52,7 +55,7 @@ public class DocumentListAdapter extends RecyclerView.Adapter<DocumentListAdapte
                 results.values = tempFileList;
             } else {
                 constraint = constraint.toString().toLowerCase();
-                for (GetFileList_Res fileList : getFileList_res) {
+                for (Attachments fileList : getFileList_res) {
                     if (fileList.getAttachFileActualName().toLowerCase().startsWith(constraint.toString().toLowerCase())) {
                         FilteredArrList.add(fileList);
                     }
@@ -66,22 +69,31 @@ public class DocumentListAdapter extends RecyclerView.Adapter<DocumentListAdapte
 
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
-            getFileList_res = (ArrayList<GetFileList_Res>) results.values;
+            getFileList_res = (ArrayList<Attachments>) results.values;
             notifyDataSetChanged();  // notifies the
         }
     };
     private Context context;
     private JobCompletionActivity jobCompletionActivity;
+    private DocumentsFragment documentsFragment;
 
 
-    public DocumentListAdapter(FileDesc_Item_Selected fileDesc_item_selected, ArrayList<GetFileList_Res> getFileList_res, String jobId) {
+    public DocumentListAdapter(FileDesc_Item_Selected fileDesc_item_selected, ArrayList<Attachments> getFileList_res, String jobId) {
         this.getFileList_res = getFileList_res;
         this.fileDesc_item_selected = fileDesc_item_selected;
         tempFileList = new ArrayList<>();
         this.tempFileList = getFileList_res;
         this.jobId = jobId;
     }
-    public DocumentListAdapter(FileDesc_Item_Selected fileDesc_item_selected, ArrayList<GetFileList_Res> getFileList_res, String jobId,String isEqu) {
+    public DocumentListAdapter(FileDesc_Item_Selected fileDesc_item_selected, ArrayList<Attachments> getFileList_res, String jobId,DocumentsFragment documentsFragment) {
+        this.getFileList_res = getFileList_res;
+        this.fileDesc_item_selected = fileDesc_item_selected;
+        tempFileList = new ArrayList<>();
+        this.tempFileList = getFileList_res;
+        this.jobId = jobId;
+        this.documentsFragment = documentsFragment;
+    }
+    public DocumentListAdapter(FileDesc_Item_Selected fileDesc_item_selected, ArrayList<Attachments> getFileList_res, String jobId, String isEqu) {
         this.getFileList_res = getFileList_res;
         this.fileDesc_item_selected = fileDesc_item_selected;
         tempFileList = new ArrayList<>();
@@ -89,7 +101,7 @@ public class DocumentListAdapter extends RecyclerView.Adapter<DocumentListAdapte
         this.jobId = jobId;
         this.isEqu = isEqu;
     }
-    public DocumentListAdapter(FileDesc_Item_Selected fileDesc_item_selected, ArrayList<GetFileList_Res> getFileList_res, String jobId, boolean isClickDisabled) {
+    public DocumentListAdapter(FileDesc_Item_Selected fileDesc_item_selected, ArrayList<Attachments> getFileList_res, String jobId, boolean isClickDisabled) {
         this.getFileList_res = getFileList_res;
         this.fileDesc_item_selected = fileDesc_item_selected;
         tempFileList = new ArrayList<>();
@@ -98,7 +110,7 @@ public class DocumentListAdapter extends RecyclerView.Adapter<DocumentListAdapte
         this.isClickDisabled = isClickDisabled;
     }
 
-    public DocumentListAdapter(FileDesc_Item_Selected fileDesc_item_selected, ArrayList<GetFileList_Res> getFileList_res, JobCompletionActivity jobCompletionActivity, String jobId) {
+    public DocumentListAdapter(FileDesc_Item_Selected fileDesc_item_selected, ArrayList<Attachments> getFileList_res, JobCompletionActivity jobCompletionActivity, String jobId) {
         this.getFileList_res = getFileList_res;
         this.fileDesc_item_selected = fileDesc_item_selected;
         tempFileList = new ArrayList<>();
@@ -107,7 +119,7 @@ public class DocumentListAdapter extends RecyclerView.Adapter<DocumentListAdapte
         this.jobId = jobId;
     }
 
-    public void updateFileList(ArrayList<GetFileList_Res> getFileListres,boolean firstCall) {
+    public void updateFileList(ArrayList<Attachments> getFileListres, boolean firstCall) {
         if (this.getFileList_res != null) {
             if (firstCall) this.getFileList_res.clear();
             this.getFileList_res.addAll(getFileListres);
@@ -133,7 +145,7 @@ public class DocumentListAdapter extends RecyclerView.Adapter<DocumentListAdapte
 
     @Override
     public void onBindViewHolder(@NonNull final MyView_Holder holder, final int pos) {
-        GetFileList_Res fileList = getFileList_res.get(pos);
+        Attachments fileList = getFileList_res.get(pos);
 
 
         final String ext = fileList.getImage_name().substring((fileList.getImage_name().lastIndexOf(".")) + 1).toLowerCase();
@@ -150,7 +162,7 @@ public class DocumentListAdapter extends RecyclerView.Adapter<DocumentListAdapte
                 if(fileList.getAttachmentId().equalsIgnoreCase("0")&&fileList.getBitmap1()!=null)
                 {
                     holder.image_thumb_nail.setImageBitmap(fileList.getBitmap1());
-                }else if(fileList.getAttachmentId().equalsIgnoreCase("0")&&fileList.getBitmap()!=null)
+                }else if(fileList.getAttachmentId().equalsIgnoreCase("0")&&fileList.getBitmap()!=null|| fileList.getBitmap()!=null && !fileList.getBitmap().isEmpty())
                 {
                     Bitmap bitmap1= AppUtility.StringToBitMap(fileList.getBitmap());
                     holder.image_thumb_nail.setImageBitmap(bitmap1);
@@ -181,7 +193,7 @@ public class DocumentListAdapter extends RecyclerView.Adapter<DocumentListAdapte
                 holder.image_thumb_nail.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
             }
 
-            if(fileList.getAttachmentId().equalsIgnoreCase("0"))
+            if(fileList.getAttachmentId().equalsIgnoreCase("0") || !fileList.getBitmap().isEmpty())
             {
                 holder.image_loader.setVisibility(View.VISIBLE);
                 Glide.with(context).load("")
@@ -192,14 +204,13 @@ public class DocumentListAdapter extends RecyclerView.Adapter<DocumentListAdapte
             }
         }
         holder.layout_doc.setOnClickListener(view -> {
-
+            if(AppUtility.isInternetConnected()) {
                 if (!TextUtils.isEmpty(getFileList_res.get(pos).getType())) {
                     if (getFileList_res.get(pos).getType() != null && getFileList_res.get(pos).getType().equals("2") || getFileList_res.get(pos).getType().equals("6")) {
                         DialogUpdateDocuments
                                 dialogUpdateDocuments = new DialogUpdateDocuments();
 
-                        if (!TextUtils.isEmpty(ext) && ext.equals("jpg") || ext.equals("jpeg") || ext.equals("png"))
-                        {
+                        if (!TextUtils.isEmpty(ext) && ext.equals("jpg") || ext.equals("jpeg") || ext.equals("png")) {
                             dialogUpdateDocuments.setIsFileImage(true);
                         }
 
@@ -209,14 +220,14 @@ public class DocumentListAdapter extends RecyclerView.Adapter<DocumentListAdapte
                                 holder.file_name.getText().toString().trim(),
                                 getFileList_res.get(pos).getDes(),
                                 getFileList_res.get(pos).getType(),
-                                jobId,isClickDisabled);
+                                jobId, isClickDisabled);
 
 
-                        dialogUpdateDocuments.setOnDocumentUpdate((desc,name) -> {
+                        dialogUpdateDocuments.setOnDocumentUpdate((desc, name) -> {
                             if (desc != null) {
                                 getFileList_res.get(pos).setDes(desc);
                             }
-                            if(name != null) {
+                            if (name != null) {
                                 getFileList_res.get(pos).setAtt_docName(name);
                                 holder.file_name.setText(fileList.getAtt_docName() + "." + ext);
                             }
@@ -229,6 +240,11 @@ public class DocumentListAdapter extends RecyclerView.Adapter<DocumentListAdapte
                         fileDesc_item_selected.OnItemClick_Document(getFileList_res.get(holder.getBindingAdapterPosition()));
                 } else
                     fileDesc_item_selected.OnItemClick_Document(getFileList_res.get(holder.getBindingAdapterPosition()));
+            }else {
+                if(documentsFragment != null) {
+                    documentsFragment.showErrorDialog(LanguageController.getInstance().getMobileMsgByKey(AppConstant.offline_feature_alert));
+                }
+            }
         });
     }
 
@@ -243,7 +259,7 @@ public class DocumentListAdapter extends RecyclerView.Adapter<DocumentListAdapte
     }
 
     public interface FileDesc_Item_Selected {
-        void OnItemClick_Document(GetFileList_Res getFileList_res);
+        void OnItemClick_Document(Attachments attachments);
     }
 
     class MyView_Holder extends RecyclerView.ViewHolder {

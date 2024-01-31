@@ -11,17 +11,17 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DecodeFormat;
 import com.eot_app.R;
-import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.GetFileList_Res;
+import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.Attachments;
 import com.eot_app.utility.App_preference;
 
 import java.util.List;
 
 public class EqipAttchAdpter extends RecyclerView.Adapter<EqipAttchAdpter.MyViewHolder> {
-    private final List<GetFileList_Res> jobdata;
+    private final List<Attachments> jobdata;
     private final Context context;
 
 
-    public EqipAttchAdpter(List<GetFileList_Res> arrayList, Context context) {
+    public EqipAttchAdpter(List<Attachments> arrayList, Context context) {
         this.jobdata = arrayList;
         this.context = context;
     }

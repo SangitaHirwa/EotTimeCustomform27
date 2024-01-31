@@ -32,12 +32,11 @@ import com.eot_app.databinding.ActivityJobCardViewBinding;
 import com.eot_app.eoteditor.EotEditor;
 import com.eot_app.eoteditor.Utils;
 import com.eot_app.nav_menu.appointment.Keepar;
-import com.eot_app.nav_menu.jobs.job_detail.JobDetailActivity;
 import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.model.InvoiceItemDataModel;
 import com.eot_app.nav_menu.jobs.job_detail.detail.adapter.JobCardAttachmentAdapter;
 import com.eot_app.nav_menu.jobs.job_detail.detail.jobdetial_model.JobCardAttachmentModel;
 import com.eot_app.nav_menu.jobs.job_detail.documents.PathUtils;
-import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.GetFileList_Res;
+import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.Attachments;
 import com.eot_app.nav_menu.jobs.job_detail.documents.fileattach_mvp.Doc_Attch_Pc;
 import com.eot_app.nav_menu.jobs.job_detail.documents.fileattach_mvp.Doc_Attch_Pi;
 import com.eot_app.nav_menu.jobs.job_detail.documents.fileattach_mvp.Doc_Attch_View;
@@ -98,7 +97,7 @@ public class JobCardViewActivity extends AppCompatActivity  implements
     private JobCardAttachmentAdapter jobCardAttachmentAdapter;
     List<JobCardAttachmentModel> reqAttachmentList  = new ArrayList<>();
     List<JobCardAttachmentModel> list  = new ArrayList<>();
-    private ArrayList<GetFileList_Res> fileList_res = new ArrayList<>();
+    private ArrayList<Attachments> fileList_res = new ArrayList<>();
     ArrayList<String> arrUserId=new ArrayList<>();
 
     Doc_Attch_Pi doc_attch_pi;
@@ -130,11 +129,11 @@ public class JobCardViewActivity extends AppCompatActivity  implements
             Type type = new TypeToken<List<InvoiceEmaliTemplate>>() {}.getType();
             templateList = new Gson().fromJson(getIntent().getStringExtra("toJsonTemplateString"),type);
         }
-           if(jobId != null && !jobId.isEmpty()){
-               if(invoice_email_pi != null){
-                   invoice_email_pi.getJobCardEmailMessageChatList(jobId);
-               }
-           }
+        if(jobId != null && !jobId.isEmpty()){
+            if(invoice_email_pi != null){
+                invoice_email_pi.getJobCardEmailMessageChatList(jobId);
+            }
+        }
         initViews();
 
     }
@@ -142,7 +141,7 @@ public class JobCardViewActivity extends AppCompatActivity  implements
 
 
         // Log.e("fwList",new Gson().toJson(fwList));
-           binding.jobCardEditor.setVerticalScrollBarEnabled(false);
+        binding.jobCardEditor.setVerticalScrollBarEnabled(false);
         if (fwList != null && fwList.length > 0) {
             kprList = new String[fwList.length];
             AppUtility.spinnerPopUpWindow(binding.signatureDp);
@@ -256,7 +255,7 @@ public class JobCardViewActivity extends AppCompatActivity  implements
                 binding.signatureDp.performClick();
                 break;
             case R.id.txt_lblAddAttachment:
-                selectFile();
+                selectFiles();
                /* if (AppUtility.askGalaryTakeImagePermiSsion(this)) {
                     takeimageFromGalary();//only for drive documents
                 }
@@ -277,25 +276,25 @@ public class JobCardViewActivity extends AppCompatActivity  implements
                 }
                 break;
             case R.id.remove_techSignature:
-                 binding.signatureTxt.setText("");
-                 binding.hintSignatureTxt.setVisibility(View.GONE);
-                 binding.removeTechSignature.setVisibility(View.GONE);
+                binding.signatureTxt.setText("");
+                binding.hintSignatureTxt.setVisibility(View.GONE);
+                binding.removeTechSignature.setVisibility(View.GONE);
         }
     }
 
-  public void setInvoiceTmpList(ArrayList<InvoiceEmaliTemplate> templateList) {
-      this.templateList = templateList;
-      Log.e("TemplateData::", "setList:"+new Gson().toJson(this.templateList));
-      if (templateList != null && templateList.size() > 0) {
-          for (InvoiceEmaliTemplate model : templateList) {
-              if (model.getDefaultTemp() != null && model.getDefaultTemp().equals("1")) {
-                  tempId = model.getInvTempId();
-                  break;
-              }
-          }
-      }
-      AppUtility.progressBarDissMiss();
-  }
+    public void setInvoiceTmpList(ArrayList<InvoiceEmaliTemplate> templateList) {
+        this.templateList = templateList;
+        Log.e("TemplateData::", "setList:"+new Gson().toJson(this.templateList));
+        if (templateList != null && templateList.size() > 0) {
+            for (InvoiceEmaliTemplate model : templateList) {
+                if (model.getDefaultTemp() != null && model.getDefaultTemp().equals("1")) {
+                    tempId = model.getInvTempId();
+                    break;
+                }
+            }
+        }
+        AppUtility.progressBarDissMiss();
+    }
 
     @Override
     public void setChatDataList(Get_Email_Message_Res_Model message_res_modle) {
@@ -354,10 +353,10 @@ public class JobCardViewActivity extends AppCompatActivity  implements
     }
     private void  setEmailData(String url) {
         if (jobId != null) {
-                invoice_email_pi.getJobCardEmailTemplate(jobId, tempId,url);
+            invoice_email_pi.getJobCardEmailTemplate(jobId, tempId,url);
 //            jobDetail_pi.getAttachFileList(jobId, "","");
-                doc_attch_pi.getAttachFileList(jobId, "", "", true);
-                jobCardAttachmentAdapter = new JobCardAttachmentAdapter(this);
+            doc_attch_pi.getAttachFileList(jobId, "", "", true);
+            jobCardAttachmentAdapter = new JobCardAttachmentAdapter(this);
 
         }
     }
@@ -437,7 +436,7 @@ public class JobCardViewActivity extends AppCompatActivity  implements
             }
         }
         binding.cbSign.setOnCheckedChangeListener((compoundButton, b) -> {
-              setEmailReplacedMessage(binding.jobCardEditor.getHtml(),b,binding.cbChat.isChecked());
+            setEmailReplacedMessage(binding.jobCardEditor.getHtml(),b,binding.cbChat.isChecked());
         });
         binding.cbChat.setOnCheckedChangeListener((compoundButton, b) -> {
             setEmailReplacedMessage(binding.jobCardEditor.getHtml(),binding.cbSign.isChecked(),b);
@@ -451,22 +450,22 @@ public class JobCardViewActivity extends AppCompatActivity  implements
 
     private void getVisibilityForCheckBox(String mailMessage) {
 
-            if(mailMessage.contains("esignUrl")){
-                binding.cbSign.setVisibility(View.VISIBLE);
-                binding.cbSign.setChecked(true);
-                isSignCheck=true;
-            }else {
-                binding.cbSign.setChecked(false);
-                binding.cbSign.setVisibility(View.GONE);
-            }
-            if(mailMessage.contains("chatUrl")){
-                binding.cbChat.setVisibility(View.VISIBLE);
-                binding.cbChat.setChecked(true);
-                isChatCheck = true;
-            }else {
-                binding.cbChat.setChecked(false);
-                binding.cbChat.setVisibility(View.GONE);
-            }
+        if(mailMessage.contains("esignUrl")){
+            binding.cbSign.setVisibility(View.VISIBLE);
+            binding.cbSign.setChecked(true);
+            isSignCheck=true;
+        }else {
+            binding.cbSign.setChecked(false);
+            binding.cbSign.setVisibility(View.GONE);
+        }
+        if(mailMessage.contains("chatUrl")){
+            binding.cbChat.setVisibility(View.VISIBLE);
+            binding.cbChat.setChecked(true);
+            isChatCheck = true;
+        }else {
+            binding.cbChat.setChecked(false);
+            binding.cbChat.setVisibility(View.GONE);
+        }
 
 
     }
@@ -490,18 +489,18 @@ public class JobCardViewActivity extends AppCompatActivity  implements
         } if(isChatCheck){
             if(chat){
                 String[] htmlMsgSplit = htlmMessage.split("<p");
-               for(String msgContainP:htmlMsgSplit){
-                   if(msgContainP.contains("Start chatting")){
-                                String[] msgContainPSplit= msgContainP.split(" </p>");
-                                for(String msgContainCloseP : msgContainPSplit){
-                                    if(msgContainCloseP.contains("Start chatting")){
-                                        msgForChat = "<p"+msgContainCloseP+" </p>";
-                                         break;
-                                    }
-                                }
-                           break;
-                   }
-               }
+                for(String msgContainP:htmlMsgSplit){
+                    if(msgContainP.contains("Start chatting")){
+                        String[] msgContainPSplit= msgContainP.split(" </p>");
+                        for(String msgContainCloseP : msgContainPSplit){
+                            if(msgContainCloseP.contains("Start chatting")){
+                                msgForChat = "<p"+msgContainCloseP+" </p>";
+                                break;
+                            }
+                        }
+                        break;
+                    }
+                }
                 String msgSignWithUrl = editedMsg.replaceAll("<p id=\"chatUrl\"> </p>", msgForChat);
                 editedMsg=msgSignWithUrl;
                 binding.jobCardEditor.setHtml(editedMsg);
@@ -528,13 +527,13 @@ public class JobCardViewActivity extends AppCompatActivity  implements
 
     @Override
     public void showErrorAlertDialog(String error) {
-            AppUtility.alertDialog(this, "", LanguageController.getInstance().getServerMsgByKey(error), LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), "", new Callable<Boolean>() {
-                @Override
-                public Boolean call() {
-                    onBackPressed();
-                    return null;
-                }
-            });
+        AppUtility.alertDialog(this, "", LanguageController.getInstance().getServerMsgByKey(error), LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), "", new Callable<Boolean>() {
+            @Override
+            public Boolean call() {
+                onBackPressed();
+                return null;
+            }
+        });
     }
 
     @Override
@@ -543,7 +542,7 @@ public class JobCardViewActivity extends AppCompatActivity  implements
 
     }
     @Override
-    public void selectFile() {
+    public void selectFiles() {
         if (!Utils.isOnline(JobCardViewActivity.this)) {
 
             AppUtility.alertDialog(JobCardViewActivity.this, LanguageController.getInstance().getMobileMsgByKey(AppConstant.dialog_error_title),  LanguageController.getInstance().getMobileMsgByKey(AppConstant.feature_not_available), LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), "", new Callable<Boolean>() {
@@ -616,6 +615,11 @@ public class JobCardViewActivity extends AppCompatActivity  implements
 
     }
 
+    @Override
+    public void selectFilesForCompletion(boolean isCompletion) {
+
+    }
+
     private void takePictureFromCamera() {
 
         if (!AppUtility.askCameraTakePicture(JobCardViewActivity.this)) {
@@ -669,14 +673,14 @@ public class JobCardViewActivity extends AppCompatActivity  implements
         startActivityForResult(galleryIntent, CAPTURE_IMAGE_GALLARY);
     }
     @Override
-    public void setList(ArrayList<GetFileList_Res> getFileList_res, String isAttachCompletionNotes, boolean firstCall) {
+    public void setList(ArrayList<Attachments> getFileList_res, String isAttachCompletionNotes, boolean firstCall) {
 
         Log.e("Attachment List", ""+getFileList_res.size()+""+isAttachCompletionNotes);
         list.clear();
         this.fileList_res = getFileList_res;
         JobCardAttachmentModel jobCardAttachmentModel = new JobCardAttachmentModel("-1","2",LanguageController.getInstance().getMobileMsgByKey(AppConstant.job_card)+".pdf",true);
         list.add(jobCardAttachmentModel);
-        for (GetFileList_Res item : fileList_res) {
+        for (Attachments item : fileList_res) {
             final String ext = item.getImage_name().substring((item.getImage_name().lastIndexOf(".")) + 1).toLowerCase();
             String name ="";
             if(item.getAtt_docName()==null || item.getAtt_docName().isEmpty()){
@@ -702,7 +706,12 @@ public class JobCardViewActivity extends AppCompatActivity  implements
     }
 
     @Override
-    public void addNewItemToAttachmentList(ArrayList<GetFileList_Res> getFileList_res, String isAttachCompletionNotes) {
+    public void setMultiList(ArrayList<Attachments> getFileList_res, String isAttachCompletionNotes, boolean firstCall) {
+
+    }
+
+    @Override
+    public void addNewItemToAttachmentList(ArrayList<Attachments> getFileList_res, String isAttachCompletionNotes) {
         // remove the temporary added item for showing loader
         if (fileList_res != null&&!fileList_res.isEmpty()) {
             int position = -1;
@@ -812,8 +821,8 @@ public class JobCardViewActivity extends AppCompatActivity  implements
                 if (item.getId().equals(jobCardAttachmentModel.getId())) {
                     reqAttachmentList.remove(item);
                     break;}
-                     }
-                }
+            }
+        }
 
 //            }
 
@@ -835,8 +844,8 @@ public class JobCardViewActivity extends AppCompatActivity  implements
                             Bitmap bitmap = AppUtility.getBitmapFromPath(data.getStringExtra("imgPath"));
                             bitmapString = AppUtility.BitMapToString(bitmap);
                         }
-                        GetFileList_Res obj=new GetFileList_Res("0",fileNameExt,fileNameExt,bitmapString);
-                        ArrayList<GetFileList_Res> getFileList_res =new ArrayList<>();
+                        Attachments obj=new Attachments("0",fileNameExt,fileNameExt,bitmapString);
+                        ArrayList<Attachments> getFileList_res =new ArrayList<>();
                         if (fileList_res != null) {
                             getFileList_res.addAll(fileList_res);
                         }
@@ -955,8 +964,8 @@ public class JobCardViewActivity extends AppCompatActivity  implements
             }
             String[] split = fileNameExt.split("\\.");
             String imageNameWithOutExt = split[0];
-            GetFileList_Res obj=new GetFileList_Res("0",fileNameExt,fileNameExt,bitmapString);
-            ArrayList<GetFileList_Res> getFileList_res =new ArrayList<>();
+            Attachments obj=new Attachments("0",fileNameExt,fileNameExt,bitmapString);
+            ArrayList<Attachments> getFileList_res =new ArrayList<>();
             if (fileList_res != null) {
                 getFileList_res.addAll(fileList_res);
             }
@@ -964,22 +973,22 @@ public class JobCardViewActivity extends AppCompatActivity  implements
 
             setList(getFileList_res, "",true);
 
-                try
-                {
-                    doc_attch_pi.uploadDocuments(jobId, savedImagePath,
-                            imageNameWithOutExt,
-                            "",
-                            "2" ,
-                            "0");
+            try
+            {
+                doc_attch_pi.uploadDocuments(jobId, savedImagePath,
+                        imageNameWithOutExt,
+                        "",
+                        "2" ,
+                        "0");
+            }
+            catch (Exception e)
+            {
+                if (getFileList_res.size()==1) {
+                    fileList_res.remove(getFileList_res.get(0));
+                    setList(fileList_res, "",true);
                 }
-                catch (Exception e)
-                {
-                    if (getFileList_res.size()==1) {
-                        fileList_res.remove(getFileList_res.get(0));
-                        setList(fileList_res, "",true);
-                    }
-                    e.printStackTrace();
-                }
+                e.printStackTrace();
+            }
 
         }
     }

@@ -12,6 +12,9 @@ import android.util.Log;
 import android.widget.Toast;
 import com.eot_app.login_next.Login2Activity;
 import com.eot_app.nav_menu.appointment.AppointmentItem_Observer;
+import com.eot_app.nav_menu.jobs.job_complation.compla_model.NotifyForcompletion;
+import com.eot_app.nav_menu.jobs.job_complation.compla_model.NotifyForcompletionInDetail;
+import com.eot_app.nav_menu.jobs.job_complation.compla_model.NotifyForcompletionInJob;
 import com.eot_app.nav_menu.jobs.job_controller.ChatController;
 import com.eot_app.nav_menu.jobs.job_detail.JobDetailActivity;
 import com.eot_app.nav_menu.jobs.job_detail.detail.NotifyForAddJob;
@@ -64,6 +67,9 @@ public class EotApp extends Application implements Application.ActivityLifecycle
     private NotifyForInvoiceGenr notifyForInvoiceGenr;
     private AppointmentItem_Observer appointmentItem_observer;
     private NotifyForMultiDocAdd notifyForMultiDocAdd;
+    private NotifyForcompletion notifyForcompletion;
+    private NotifyForcompletionInJob notifyForcompletionInJob;
+    private NotifyForcompletionInDetail notifyForcompletionInDetail;
     public static synchronized EotApp getAppinstance() {
         return INSTANCE;
     }
@@ -151,8 +157,32 @@ public class EotApp extends Application implements Application.ActivityLifecycle
         this.notifyForAddJob = notifyForAddJob;
     }
 
+    public void getNotifyForcompletion(String apiName, String jobId) {
+        if(this.notifyForcompletion != null){
+            notifyForcompletion.upateForCompletion(apiName,jobId);
+        }
+    }
+    public void setNotifyForcompletion(NotifyForcompletion notifyForcompletion) {
+        this.notifyForcompletion = notifyForcompletion;
+    }
+    public void getNotifyForcompletionInJob(String apiName, String jobId) {
+        if(this.notifyForcompletionInJob != null){
+            notifyForcompletionInJob.upateForCompletion(apiName,jobId);
+        }
+    }
+    public void setNotifyForcompletionInJob(NotifyForcompletionInJob notifyForcompletionInJob) {
+        this.notifyForcompletionInJob = notifyForcompletionInJob;
+    }
+    public void getNotifyForcompletionInDetail(String apiName, String jobId) {
+        if(this.notifyForcompletionInDetail != null){
+            notifyForcompletionInDetail.upateForCompletion(apiName,jobId);
+        }
+    }
+    public void setNotifyForcompletionInDetail(NotifyForcompletionInDetail notifyForcompletionInDetail) {
+        this.notifyForcompletionInDetail = notifyForcompletionInDetail;
+    }
 
-    public void getAddMultiDocObserver(String apiName,String jobId){
+    public void getAddMultiDocObserver(String apiName, String jobId){
         if(this.notifyForMultiDocAdd != null){
             notifyForMultiDocAdd.updateMultiDoc(apiName, jobId);
         }

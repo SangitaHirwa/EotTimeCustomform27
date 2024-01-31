@@ -80,6 +80,29 @@ public class ResLoginData {
     private String taxShowType;
     private List<AdminID> AdminIdsWithFBasePerm;
     private String isHideContactOnDispatch;
+    private String isCompleShowMarkDone;
+    private CompleMoFldVisiblty compleMoFldVisiblty;
+
+    public void setUsrId(String usrId) {
+        this.usrId = usrId;
+    }
+
+    public String getIsCompleShowMarkDone() {
+        return isCompleShowMarkDone;
+    }
+
+    public void setIsCompleShowMarkDone(String isCompleShowMarkDone) {
+        this.isCompleShowMarkDone = isCompleShowMarkDone;
+    }
+
+    public CompleMoFldVisiblty getCompleMoFldVisiblty() {
+        return compleMoFldVisiblty;
+    }
+
+    public void setCompleMoFldVisiblty(CompleMoFldVisiblty compleMoFldVisiblty) {
+        this.compleMoFldVisiblty = compleMoFldVisiblty;
+    }
+
     public String getIsHideContactOnDispatch() {
         return isHideContactOnDispatch;
     }
@@ -518,6 +541,9 @@ public class ResLoginData {
         this.isJobCompCustSignEnable = mobileDefaultSettings.getIsJobCompCustSignEnable();
         this.AdminIdsWithFBasePerm = ConvertStringToJsonArray(mobileDefaultSettings.getAdminIdsWithFBasePerm());
         this.isHideContactOnDispatch = mobileDefaultSettings.getIsHideContactOnDispatch();
+        this.isCompleShowMarkDone = mobileDefaultSettings.getIsCompleShowMarkDone();
+        this.compleMoFldVisiblty = mobileDefaultSettings.getCompleMoFldVisiblty();
+
 
     }
 

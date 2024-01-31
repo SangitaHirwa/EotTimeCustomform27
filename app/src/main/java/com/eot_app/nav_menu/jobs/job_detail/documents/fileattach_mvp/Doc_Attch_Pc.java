@@ -9,8 +9,9 @@ import androidx.fragment.app.Fragment;
 
 import com.eot_app.activitylog.ActivityLogController;
 import com.eot_app.nav_menu.jobs.job_db.Job;
+import com.eot_app.nav_menu.jobs.job_db.JobListRequestModel;
+import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.Attachments;
 import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.DocUpdateRequest;
-import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.GetFileList_Res;
 import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.GetFileList_req_Model;
 import com.eot_app.services.ApiClient;
 import com.eot_app.services.Service_apis;
@@ -51,6 +52,7 @@ public class Doc_Attch_Pc implements Doc_Attch_Pi {
     Doc_Attch_View doc_attch_view;
     private int count;
     private int updateindex;
+    private String startAttachmetSyncTime;
 
     public Doc_Attch_Pc(Doc_Attch_View doc_attch_view) {
         this.doc_attch_view = doc_attch_view;
@@ -86,13 +88,13 @@ public class Doc_Attch_Pc implements Doc_Attch_Pi {
                                     if (jsonObject.get("data").getAsJsonArray().size() > 0) {
                                         count = jsonObject.get("count").getAsInt();
                                         String convert = new Gson().toJson(jsonObject.get("data").getAsJsonArray());
-                                        Type listType = new TypeToken<List<GetFileList_Res>>() {
+                                        Type listType = new TypeToken<List<Attachments>>() {
                                         }.getType();
-                                        ArrayList<GetFileList_Res> getFileList_res = new Gson().fromJson(convert, listType);
+                                        ArrayList<Attachments> getFileList_res = new Gson().fromJson(convert, listType);
                                         doc_attch_view.setList(getFileList_res, "",firstCall);
                                     } else {
                                         doc_attch_view.addView();
-                                        doc_attch_view.setList(new ArrayList<GetFileList_Res>(), "",firstCall);
+                                        doc_attch_view.setList(new ArrayList<Attachments>(), "",firstCall);
                                     }
                                 } else if (jsonObject.get("statusCode") != null && jsonObject.get("statusCode").getAsString().equals(AppConstant.SESSION_EXPIRE)) {
                                     doc_attch_view.onSessionExpire(LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
@@ -128,6 +130,90 @@ public class Doc_Attch_Pc implements Doc_Attch_Pi {
         }
 
     }
+ @Override
+    public void getMultiAttachFileList(final String jobId, final String usrId, final String type, boolean firstCall) {
+     startAttachmetSyncTime=AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT);
+     App_preference.getSharedprefInstance().setAttachmentStartSyncTime(startAttachmetSyncTime);
+     JobListRequestModel jobListRequestModel = new JobListRequestModel(Integer.parseInt(usrId), updatelimit, updateindex, App_preference.getSharedprefInstance().getAttachmentStartSyncTime(), jobId);
+        JsonObject jsonObject = AppUtility.getJsonObject(new Gson().toJson(jobListRequestModel));
+
+        if (AppUtility.isInternetConnected()) {
+
+
+            
+                ActivityLogController.saveActivity(ActivityLogController.JOB_MODULE, ActivityLogController.JOB_DOCUMENT_LIST, ActivityLogController.JOB_MODULE);
+                ApiClient.getservices().eotServiceCall(Service_apis.getSyncJobAttachments, AppUtility.getApiHeaders(), jsonObject)
+
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Observer<JsonObject>() {
+                            @Override
+                            public void onSubscribe(Disposable d) {
+
+                            }
+
+                            @Override
+                            public void onNext(JsonObject jsonObject) {
+                                Log.e("FileList", "" + jsonObject.toString());
+                                if (jsonObject.get("success").getAsBoolean()) {
+                                    if (jsonObject.get("data").getAsJsonArray().size() > 0) {
+                                        count = jsonObject.get("count").getAsInt();
+                                        String convert = new Gson().toJson(jsonObject.get("data").getAsJsonArray());
+                                        Type listType = new TypeToken<List<Attachments>>() {
+                                        }.getType();
+                                        ArrayList<Attachments> attachments = new Gson().fromJson(convert, listType);
+                                        doc_attch_view.setMultiList(attachments, "",firstCall);
+                                    } else {
+                                        doc_attch_view.addView();
+                                        doc_attch_view.setMultiList(new ArrayList<Attachments>(), "",firstCall);
+                                    }
+                                } else if (jsonObject.get("statusCode") != null && jsonObject.get("statusCode").getAsString().equals(AppConstant.SESSION_EXPIRE)) {
+                                    doc_attch_view.onSessionExpire(LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
+                                }
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                Log.e("", e.getMessage());
+                                // AppUtility.progressBarDissMiss();
+                                doc_attch_view.hideProgressBar();
+                            }
+
+                            @Override
+                            public void onComplete() {
+                                doc_attch_view.hideProgressBar();
+                                Log.e("onComplete", "onComplete");
+                                //  AppUtility.progressBarDissMiss();
+                                if ((updateindex + updatelimit) <= count) {
+                                    updateindex += updatelimit;
+                                    getAttachFileList(jobId, usrId, type,false);
+                                }else {
+                                    if (count != 0) {
+                                        if(App_preference.getSharedprefInstance().getAttachmentStartSyncTime().isEmpty()
+                                                &&startAttachmetSyncTime!=null && !startAttachmetSyncTime.isEmpty()){
+                                            App_preference.getSharedprefInstance().setAttachmentStartSyncTime(startAttachmetSyncTime);
+                                            Log.v("MainSync","startJobSyncTime JobList"+" --" +App_preference.getSharedprefInstance().getJobSyncTime());
+                                        }
+                                        else if(App_preference.getSharedprefInstance().getAttachmentStartSyncTime().isEmpty()){
+
+                                            App_preference.getSharedprefInstance().setAttachmentStartSyncTime(startAttachmetSyncTime);
+                                            Log.v("MainSync","startJobSyncTime JobList"+" --" +App_preference.getSharedprefInstance().getJobSyncTime());
+                                        }
+                                        else {
+                                            App_preference.getSharedprefInstance().setAttachmentStartSyncTime(App_preference.getSharedprefInstance().getAttachmentStartSyncTime());
+                                        }
+
+                                    }
+                                    updateindex = 0;
+                                }
+                            }
+                        });
+
+        } else {
+            networkDialog();
+        }
+
+    }
 
     @Override
     public void uploadMultipleDocuments(String job_Id, String file, String finalFname, String desc, String type, String isAddAttachAsCompletionNote,boolean lastCall) {
@@ -147,6 +233,8 @@ public class Doc_Attch_Pc implements Doc_Attch_Pi {
                 body = MultipartBody.Part.createFormData("ja", finalFname + file.substring(file.lastIndexOf(".")), requestFile);
             }
             final RequestBody jobId = RequestBody.create(job_Id, MultipartBody.FORM);
+            final RequestBody queId = RequestBody.create("", MultipartBody.FORM);
+            final RequestBody jtId = RequestBody.create("", MultipartBody.FORM);
             RequestBody docName = RequestBody.create(finalFname, MultipartBody.FORM);
             RequestBody descBody = RequestBody.create(desc, MultipartBody.FORM);
             RequestBody userId = RequestBody.create(App_preference.getSharedprefInstance().getLoginRes().getUsrId(), MultipartBody.FORM);
@@ -160,7 +248,7 @@ public class Doc_Attch_Pc implements Doc_Attch_Pi {
             //     AppUtility.progressBarShow(((Fragment) doc_attch_view).getActivity());
             String finalIsAddAttachAsCompletionNote = isAddAttachAsCompletionNote;
             ApiClient.getservices().uploadDocements(AppUtility.getApiHeaders(),
-                            jobId, userId, descBody, typeId, docName,
+                            jobId, queId, jtId,userId, descBody, typeId, docName,
                             isAddAttachAsCompletionNoteBody, body)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -174,9 +262,9 @@ public class Doc_Attch_Pc implements Doc_Attch_Pi {
                             Log.e("Responce", jsonObject.toString());
                             if (jsonObject.get("success").getAsBoolean()) {
                                 String convert = new Gson().toJson(jsonObject.get("data").getAsJsonArray());
-                                Type listType = new TypeToken<List<GetFileList_Res>>() {
+                                Type listType = new TypeToken<List<Attachments>>() {
                                 }.getType();
-                                ArrayList<GetFileList_Res> docList = new Gson().fromJson(convert, listType);
+                                ArrayList<Attachments> docList = new Gson().fromJson(convert, listType);
 //                                if (finalIsAddAttachAsCompletionNote.equals("1")) {
 //                                    AppDataBase.getInMemoryDatabase(EotApp.getAppinstance())
 //                                            .jobModel().updateComplitionNotes(docList.get(0).getComplNote(), job_Id);
@@ -234,6 +322,8 @@ public class Doc_Attch_Pc implements Doc_Attch_Pi {
                 body = MultipartBody.Part.createFormData("ja", finalFname + file.substring(file.lastIndexOf(".")), requestFile);
             }
             final RequestBody jobId = RequestBody.create(job_Id, MultipartBody.FORM);
+            final RequestBody queId = RequestBody.create("", MultipartBody.FORM);
+            final RequestBody jtId = RequestBody.create("", MultipartBody.FORM);
             RequestBody docName = RequestBody.create(finalFname, MultipartBody.FORM);
             RequestBody descBody = RequestBody.create(des, MultipartBody.FORM);
             RequestBody userId = RequestBody.create(App_preference.getSharedprefInstance().getLoginRes().getUsrId(), MultipartBody.FORM);
@@ -247,7 +337,7 @@ public class Doc_Attch_Pc implements Doc_Attch_Pi {
             //     AppUtility.progressBarShow(((Fragment) doc_attch_view).getActivity());
             String finalIsAddAttachAsCompletionNote = isAddAttachAsCompletionNote;
             ApiClient.getservices().uploadDocements(AppUtility.getApiHeaders(),
-                    jobId, userId, descBody, typeId, docName,
+                    jobId, queId, jtId,userId, descBody, typeId, docName,
                     isAddAttachAsCompletionNoteBody, body)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -261,9 +351,9 @@ public class Doc_Attch_Pc implements Doc_Attch_Pi {
                             Log.e("Responce", jsonObject.toString());
                             if (jsonObject.get("success").getAsBoolean()) {
                                 String convert = new Gson().toJson(jsonObject.get("data").getAsJsonArray());
-                                Type listType = new TypeToken<List<GetFileList_Res>>() {
+                                Type listType = new TypeToken<List<Attachments>>() {
                                 }.getType();
-                                ArrayList<GetFileList_Res> docList = new Gson().fromJson(convert, listType);
+                                ArrayList<Attachments> docList = new Gson().fromJson(convert, listType);
                                 if (finalIsAddAttachAsCompletionNote.equals("1")) {
                                     AppDataBase.getInMemoryDatabase(EotApp.getAppinstance())
                                             .jobModel().updateComplitionNotes(docList.get(0).getComplNote(), job_Id);

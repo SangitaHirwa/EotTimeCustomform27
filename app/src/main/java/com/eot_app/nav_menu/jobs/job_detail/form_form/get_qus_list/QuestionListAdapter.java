@@ -30,18 +30,22 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
-import android.widget.Toast;
 
-import androidx.core.content.res.ResourcesCompat;
+import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.eot_app.R;
+import com.eot_app.nav_menu.jobs.job_complation.JobCompletionActivity;
 import com.eot_app.nav_menu.jobs.job_detail.customform.MyAttachment;
+import com.eot_app.nav_menu.jobs.job_detail.detail.CompletionAdpterJobDteails1;
+import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.Attachments;
 import com.eot_app.nav_menu.jobs.job_detail.form_form.get_qus_list.qus_model.AnswerModel;
 import com.eot_app.nav_menu.jobs.job_detail.form_form.get_qus_list.qus_model.OptionModel;
 import com.eot_app.nav_menu.jobs.job_detail.form_form.get_qus_list.qus_model.QuesRspncModel;
@@ -65,7 +69,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import static com.eot_app.utility.AppUtility.captureImagePath;
 import static com.eot_app.utility.AppUtility.updateTime;
 
 
@@ -75,13 +78,17 @@ import static com.eot_app.utility.AppUtility.updateTime;
 
 
 public class QuestionListAdapter extends RecyclerView.Adapter<QuestionListAdapter.ViewHolder> {
-    private final ArrayList<QuesRspncModel> typeList;
+    private ArrayList<QuesRspncModel> typeList;
+    private final ArrayList<QuesRspncModel> typeList1 = new ArrayList<>();
     private final ArrayList<QuesRspncModel> duplicateCopy = new ArrayList<>();
-    private final Context context;
-    private final MyFormInterFace myFormInterFace;
+    private  Context context;
+    private  MyFormInterFace myFormInterFace;
     private boolean isLoadtoBottom = false;
     private String time = "", date = "";
     private MyAttachment myAttachment;
+    private boolean isCompletionForm = false;
+    private int parentPostion;
+
 
     /*****this for Activity***/
     public QuestionListAdapter(ArrayList<QuesRspncModel> typeList, Context context, MyFormInterFace myFormInterFace) {
@@ -108,7 +115,33 @@ public class QuestionListAdapter extends RecyclerView.Adapter<QuestionListAdapte
 
         setIndex();
     }
+    /*****this for group completion form***/
+    public QuestionListAdapter(ArrayList<QuesRspncModel> typeList, Context context, MyFormInterFace myFormInterFace,boolean isCompletionForm,int parentPostion) {
+        this.context = context;
+        this.typeList = typeList;
+        if (this.typeList != null)
+            duplicateCopy.addAll(typeList);
+        this.myFormInterFace = myFormInterFace;
+        this.isLoadtoBottom = false;
+        this.isCompletionForm = isCompletionForm;
+        this.parentPostion = parentPostion;
+        String currentDateTime = AppUtility.getDateByFormat(
+                AppUtility.dateTimeByAmPmFormate("dd-MMM-yyyy hh:mm a", "dd-MMM-yyyy HH:mm"));
+        String[] currentDateTimeArry = currentDateTime.split(" ");
+        date = currentDateTimeArry[0];
+        try {
+            if (App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable() != null &&
+                    App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable().equals("0"))
+                time = currentDateTimeArry[1] + " " + currentDateTimeArry[2];
+            else time = currentDateTimeArry[1] + "";
 
+        } catch (Exception e) {
+            AppCenterLogs.addLogToAppCenterOnAPIFail("CustomForm","","QuestionListAdapter(constructor)- "+e.getMessage(),"QuestionListAdapter","");
+            e.getMessage();
+        }
+
+        setIndex();
+    }
     /*****this for Fragment***/
     public QuestionListAdapter(ArrayList<QuesRspncModel> typeList, Context context,
                                MyFormInterFace myFormInterFace, MyAttachment myAttachment) {
@@ -156,21 +189,39 @@ public class QuestionListAdapter extends RecyclerView.Adapter<QuestionListAdapte
     public ArrayList<QuesRspncModel> getTypeList() {
         return typeList;
     }
+    public void UpdateList(ArrayList<QuesRspncModel> typeList){
+        this.typeList.clear();
+        this.typeList.addAll(typeList);
+        notifyDataSetChanged();
+
+    }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
-        View view = inflater.inflate(R.layout.question_list_layout, parent, false);
+        View view;
+        if(isCompletionForm) {
+            view = inflater.inflate(R.layout.question_list_layout_for_group, parent, false);
+        }else {
+            view = inflater.inflate(R.layout.question_list_layout, parent, false);
+        }
         ViewHolder viewHolder = new ViewHolder(view, context);
         return viewHolder;
     }
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, @SuppressLint("RecyclerView") final int position) {
+
+        holder.view.setVisibility(View.GONE);
+
         if ((typeList.get(position).getIndex() > 0)) {
             //count++;
-            holder.que_no.setVisibility(View.VISIBLE);
-            holder.que_no.setText(typeList.get(position).getIndex() + ".");
+            if(isCompletionForm){
+                holder.que_no.setVisibility(View.GONE);
+            }else {
+                holder.que_no.setVisibility(View.VISIBLE);
+                holder.que_no.setText(typeList.get(position).getIndex() + ".");
+            }
         } else {
             holder.que_no.setText("");
             holder.que_no.setVisibility(View.GONE);
@@ -203,6 +254,10 @@ public class QuestionListAdapter extends RecyclerView.Adapter<QuestionListAdapte
                 holder.signature_layout.setVisibility(View.GONE);
                 holder.Attchment_layout.setVisibility(View.GONE);
                 holder.type_Number.setVisibility(View.GONE);
+                holder.que_no.setVisibility(View.VISIBLE);
+                holder.tvQuestion.setVisibility(View.VISIBLE);
+                holder.fm_multiattachment.setVisibility(View.GONE);
+                holder.txt_upload.setVisibility(View.GONE);
 
 
                 holder.type_text.setTag(position);
@@ -227,6 +282,10 @@ public class QuestionListAdapter extends RecyclerView.Adapter<QuestionListAdapte
                 holder.Attchment_layout.setVisibility(View.GONE);
                 holder.type_text_area.setTag(position);
                 holder.type_Number.setVisibility(View.GONE);
+                holder.que_no.setVisibility(View.VISIBLE);
+                holder.tvQuestion.setVisibility(View.VISIBLE);
+                holder.fm_multiattachment.setVisibility(View.GONE);
+                holder.txt_upload.setVisibility(View.GONE);
 
 
                 if (typeList.get(position).getAns().isEmpty())
@@ -248,6 +307,10 @@ public class QuestionListAdapter extends RecyclerView.Adapter<QuestionListAdapte
                 holder.signature_layout.setVisibility(View.GONE);
                 holder.Attchment_layout.setVisibility(View.GONE);
                 holder.type_Number.setVisibility(View.GONE);
+                holder.que_no.setVisibility(View.VISIBLE);
+                holder.tvQuestion.setVisibility(View.VISIBLE);
+                holder.fm_multiattachment.setVisibility(View.GONE);
+                holder.txt_upload.setVisibility(View.GONE);
 
                 setCheckBoxOption(holder, position);
 
@@ -265,6 +328,10 @@ public class QuestionListAdapter extends RecyclerView.Adapter<QuestionListAdapte
                 holder.signature_layout.setVisibility(View.GONE);
                 holder.Attchment_layout.setVisibility(View.GONE);
                 holder.type_Number.setVisibility(View.GONE);
+                holder.que_no.setVisibility(View.VISIBLE);
+                holder.tvQuestion.setVisibility(View.VISIBLE);
+                holder.fm_multiattachment.setVisibility(View.GONE);
+                holder.txt_upload.setVisibility(View.GONE);
 
                 setDropDownOptions(holder, position);
                 break;
@@ -281,6 +348,10 @@ public class QuestionListAdapter extends RecyclerView.Adapter<QuestionListAdapte
                 holder.signature_layout.setVisibility(View.GONE);
                 holder.Attchment_layout.setVisibility(View.GONE);
                 holder.type_Number.setVisibility(View.GONE);
+                holder.que_no.setVisibility(View.VISIBLE);
+                holder.tvQuestion.setVisibility(View.VISIBLE);
+                holder.fm_multiattachment.setVisibility(View.GONE);
+                holder.txt_upload.setVisibility(View.GONE);
 
 
                 holder.tvDate.setTag(position);
@@ -328,6 +399,10 @@ public class QuestionListAdapter extends RecyclerView.Adapter<QuestionListAdapte
                 holder.signature_layout.setVisibility(View.GONE);
                 holder.Attchment_layout.setVisibility(View.GONE);
                 holder.type_Number.setVisibility(View.GONE);
+                holder.que_no.setVisibility(View.VISIBLE);
+                holder.tvQuestion.setVisibility(View.VISIBLE);
+                holder.fm_multiattachment.setVisibility(View.GONE);
+                holder.txt_upload.setVisibility(View.GONE);
 
                 holder.tvTime.setTag(position);
                 if (typeList.get(position).getAns().isEmpty())
@@ -365,6 +440,10 @@ public class QuestionListAdapter extends RecyclerView.Adapter<QuestionListAdapte
                 holder.signature_layout.setVisibility(View.GONE);
                 holder.Attchment_layout.setVisibility(View.GONE);
                 holder.type_Number.setVisibility(View.GONE);
+                holder.que_no.setVisibility(View.VISIBLE);
+                holder.tvQuestion.setVisibility(View.VISIBLE);
+                holder.fm_multiattachment.setVisibility(View.GONE);
+                holder.txt_upload.setVisibility(View.GONE);
 
                 holder.tvTimeDate.setTag(position);
                 if (typeList.get(position).getAns().isEmpty())
@@ -400,6 +479,8 @@ public class QuestionListAdapter extends RecyclerView.Adapter<QuestionListAdapte
                 holder.signature_layout.setVisibility(View.GONE);
                 holder.Attchment_layout.setVisibility(View.GONE);
                 holder.type_Number.setVisibility(View.GONE);
+                holder.fm_multiattachment.setVisibility(View.GONE);
+                holder.txt_upload.setVisibility(View.GONE);
 
 
                 holder.tvQuestion.setVisibility(View.GONE);
@@ -438,6 +519,8 @@ public class QuestionListAdapter extends RecyclerView.Adapter<QuestionListAdapte
                 holder.linearTime.setVisibility(View.GONE);
                 holder.linearDateTime.setVisibility(View.GONE);
                 holder.type_Number.setVisibility(View.GONE);
+                holder.fm_multiattachment.setVisibility(View.GONE);
+                holder.txt_upload.setVisibility(View.GONE);
 
                 try {
                     holder.tvQuestion.setTypeface(holder.tvQuestion.getTypeface(), Typeface.BOLD);
@@ -445,6 +528,7 @@ public class QuestionListAdapter extends RecyclerView.Adapter<QuestionListAdapte
                     AppCenterLogs.addLogToAppCenterOnAPIFail("CustomForm","","onBindViewHolder(q.9) "+exception.getMessage(),"QuestionListAdapter","");
                     exception.printStackTrace();
                 }
+                holder.que_no.setVisibility(View.VISIBLE);
                 holder.tvQuestion.setVisibility(View.VISIBLE);
                 holder.checkbox_single.setVisibility(View.GONE);
                 holder.signature_layout.setVisibility(View.GONE);
@@ -463,10 +547,12 @@ public class QuestionListAdapter extends RecyclerView.Adapter<QuestionListAdapte
                 holder.signature_layout.setVisibility(View.VISIBLE);
                 holder.Attchment_layout.setVisibility(View.GONE);
                 holder.type_Number.setVisibility(View.GONE);
+                holder.fm_multiattachment.setVisibility(View.GONE);
+                holder.txt_upload.setVisibility(View.GONE);
 
                 holder.add_sign_lable.setText(holder.que_no.getText().toString() + " " + holder.tvQuestion.getText().toString());
-                holder.que_no.setText("");
-                holder.tvQuestion.setText("");
+                holder.que_no.setVisibility(View.GONE);
+                holder.tvQuestion.setVisibility(View.GONE);
                 holder.add_sign.setTag(position);
                 holder.delete_sign.setTag(position);
 
@@ -474,7 +560,7 @@ public class QuestionListAdapter extends RecyclerView.Adapter<QuestionListAdapte
                 if (typeList.get(position).getAns().size() > 0 && !typeList.get(position).getAns().get(0).getValue().isEmpty()) {
                     holder.signature_set.setVisibility(View.VISIBLE);
                     holder.delete_sign.setVisibility(View.VISIBLE);
-                   String path =typeList.get(position).getAns().get(0).getValue();
+                    String path =typeList.get(position).getAns().get(0).getValue();
                     if (typeList.get(position).getAns().get(0).getValue().contains("/data/user/"))
                     {
                         File file=new File(path);
@@ -486,8 +572,16 @@ public class QuestionListAdapter extends RecyclerView.Adapter<QuestionListAdapte
                             holder.signature_set.setScaleType(ImageView.ScaleType.FIT_XY);
                         }
                     }else {
-                        Glide.with(context).load(App_preference.getSharedprefInstance().getBaseURL() +
-                                typeList.get(position).getAns().get(0).getValue())
+                        String url;
+                        if(isCompletionForm){
+                            url = App_preference.getSharedprefInstance().getBaseURL()
+                                    +"uploads/comp"+App_preference.getSharedprefInstance().getLoginRes().getCompId()
+                                    +"/customFormFiles/signature/thumbnail/"+typeList.get(position).getAns().get(0).getValue();
+                        }else {
+                            url = App_preference.getSharedprefInstance().getBaseURL()
+                                    + typeList.get(position).getAns().get(0).getValue();
+                        }
+                        Glide.with(context).load(url)
                                 .thumbnail(Glide.with(context).load(R.raw.loader_eot))
                                 .placeholder(R.drawable.picture).into(holder.signature_set);
                         holder.signature_set.setScaleType(ImageView.ScaleType.FIT_XY);
@@ -534,58 +628,68 @@ public class QuestionListAdapter extends RecyclerView.Adapter<QuestionListAdapte
                 holder.type_Number.setVisibility(View.GONE);
                 holder.Attchment_layout.setVisibility(View.VISIBLE);
                 holder.Attchment_lable.setText(holder.que_no.getText().toString() + " " + holder.tvQuestion.getText().toString());
-                holder.que_no.setText("");
-                holder.tvQuestion.setText("");
+                holder.que_no.setVisibility(View.GONE);
+                holder.tvQuestion.setVisibility(View.GONE);
                 holder.buttonAttchment.setTag(position);
                 holder.delete_attchment.setTag(position);
+                holder.fm_multiattachment.setVisibility(View.GONE);
+                holder.txt_upload.setVisibility(View.GONE);
 
                 if (typeList.get(position).getAns().size() > 0 && !typeList.get(position).getAns().get(0).getValue().isEmpty()) {
-                  String fileurl= typeList.get(position).getAns().get(0).getValue();
-                  if (fileurl.contains("/storage/emulated/")){
-                      holder.attchment_set.setVisibility(View.VISIBLE);
-                      holder.delete_attchment.setVisibility(View.VISIBLE);
-                      holder.buttonAttchment.setVisibility(View.GONE);
-                      File imgFile = new  File(fileurl);
-                      if(imgFile.exists()){
-                          Glide.with(context).load(imgFile)
-                                  .thumbnail(Glide.with(context).load(R.raw.loader_eot))
-                                  .placeholder(R.drawable.picture).into(holder.attchment_set);
-                          holder.attchment_set.setScaleType(ImageView.ScaleType.FIT_XY);
-                      }
-                  }else {
-                      final String ext = typeList.get(position).getAns().get(0).getValue().
-                              substring((typeList.get(position).getAns().get(0).getValue().lastIndexOf(".")) + 1).toLowerCase();
-                      holder.attchment_set.setVisibility(View.VISIBLE);
-                      holder.delete_attchment.setVisibility(View.VISIBLE);
-                      holder.buttonAttchment.setVisibility(View.GONE);
-                      //  holder.buttonAttchment.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit_attchment));
-                      if (!ext.isEmpty()) {
-                          if (ext.equals("jpg") || ext.equals("jpeg") || ext.equals("png")) {
-                              Glide.with(context).load(App_preference.getSharedprefInstance().getBaseURL()
-                                      + typeList.get(position).getAns().get(0).getValue())
-                                      .thumbnail(Glide.with(context).load(R.raw.loader_eot))
-                                      .placeholder(R.drawable.picture).into(holder.attchment_set);
-                              holder.attchment_set.setScaleType(ImageView.ScaleType.FIT_XY);
-                          } else if (ext.equals("doc") || ext.equals("docx")) {
-                              holder.attchment_set.setImageResource(R.drawable.word);
-                              holder.attchment_set.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                    String fileurl= typeList.get(position).getAns().get(0).getValue();
+                    if (fileurl.contains("/storage/emulated/")){
+                        holder.attchment_set.setVisibility(View.VISIBLE);
+                        holder.delete_attchment.setVisibility(View.VISIBLE);
+                        holder.buttonAttchment.setVisibility(View.GONE);
+                        File imgFile = new  File(fileurl);
+                        if(imgFile.exists()){
+                            Glide.with(context).load(imgFile)
+                                    .thumbnail(Glide.with(context).load(R.raw.loader_eot))
+                                    .placeholder(R.drawable.picture).into(holder.attchment_set);
+                            holder.attchment_set.setScaleType(ImageView.ScaleType.FIT_XY);
+                        }
+                    }else {
+                        final String ext = typeList.get(position).getAns().get(0).getValue().
+                                substring((typeList.get(position).getAns().get(0).getValue().lastIndexOf(".")) + 1).toLowerCase();
+                        holder.attchment_set.setVisibility(View.VISIBLE);
+                        holder.delete_attchment.setVisibility(View.VISIBLE);
+                        holder.buttonAttchment.setVisibility(View.GONE);
+                        //  holder.buttonAttchment.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit_attchment));
+                        if (!ext.isEmpty()) {
+                            if (ext.equals("jpg") || ext.equals("jpeg") || ext.equals("png")) {
+                                String url ;
+                                if(isCompletionForm){
+                                    url = App_preference.getSharedprefInstance().getBaseURL()
+                                            +"uploads/comp"+App_preference.getSharedprefInstance().getLoginRes().getCompId()
+                                            +"/customFormFiles/thumbnail/"+typeList.get(position).getAns().get(0).getValue();
+                                }else {
+                                    url = App_preference.getSharedprefInstance().getBaseURL()
+                                            + typeList.get(position).getAns().get(0).getValue();
+                                }
+                                Glide.with(context).load(url)
+                                        .thumbnail(Glide.with(context).load(R.raw.loader_eot))
+                                        .placeholder(R.drawable.picture).into(holder.attchment_set);
+                                holder.attchment_set.setScaleType(ImageView.ScaleType.FIT_XY);
+                            } else if (ext.equals("doc") || ext.equals("docx")) {
+                                holder.attchment_set.setImageResource(R.drawable.word);
+                                holder.attchment_set.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
 
-                          } else if (ext.equals("pdf")) {
-                              holder.attchment_set.setImageResource(R.drawable.pdf);
-                              holder.attchment_set.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                            } else if (ext.equals("pdf")) {
+                                holder.attchment_set.setImageResource(R.drawable.pdf);
+                                holder.attchment_set.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
 
-                          } else if (ext.equals("xlsx") || ext.equals("xls")) {
-                              holder.attchment_set.setImageResource(R.drawable.excel);
-                              holder.attchment_set.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-                          } else if (ext.equals("csv")) {
-                              holder.attchment_set.setImageResource(R.drawable.csv);
-                              holder.attchment_set.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-                          } else {
-                              holder.attchment_set.setImageResource(R.drawable.doc);
-                              holder.attchment_set.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-                          }
-                      }
-                  }
+                            } else if (ext.equals("xlsx") || ext.equals("xls")) {
+                                holder.attchment_set.setImageResource(R.drawable.excel);
+                                holder.attchment_set.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                            } else if (ext.equals("csv")) {
+                                holder.attchment_set.setImageResource(R.drawable.csv);
+                                holder.attchment_set.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                            } else {
+                                holder.attchment_set.setImageResource(R.drawable.doc);
+                                holder.attchment_set.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                            }
+                        }
+                    }
                 } else {
                     holder.buttonAttchment.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_attachment));
                     holder.delete_attchment.setVisibility(View.GONE);
@@ -626,6 +730,8 @@ public class QuestionListAdapter extends RecyclerView.Adapter<QuestionListAdapte
                 holder.checkbox_single.setVisibility(View.GONE);
                 holder.signature_layout.setVisibility(View.GONE);
                 holder.Attchment_layout.setVisibility(View.GONE);
+                holder.fm_multiattachment.setVisibility(View.GONE);
+                holder.txt_upload.setVisibility(View.GONE);
 
 
                 holder.type_Number.setTag(position);
@@ -633,6 +739,34 @@ public class QuestionListAdapter extends RecyclerView.Adapter<QuestionListAdapte
                     holder.type_Number.setText("");
                 else if (typeList.get(position).getAns().size() > 0)
                     holder.type_Number.setText(typeList.get(position).getAns().get(0).getValue());
+
+
+                break;
+            case "13":
+                holder.type_Number.setVisibility(View.GONE);
+                holder.type_text.setVisibility(View.GONE);
+                holder.type_text_area.setVisibility(View.GONE);
+                holder.linearCheck.setVisibility(View.GONE);
+                holder.linearSpinner.setVisibility(View.GONE);
+                holder.linearDate.setVisibility(View.GONE);
+                holder.linearTime.setVisibility(View.GONE);
+                holder.linearDateTime.setVisibility(View.GONE);
+                holder.checkbox_single.setVisibility(View.GONE);
+                holder.signature_layout.setVisibility(View.GONE);
+                holder.Attchment_layout.setVisibility(View.GONE);
+                holder.fm_multiattachment.setVisibility(View.VISIBLE);
+                holder.txt_upload.setVisibility(View.VISIBLE);
+                GridLayoutManager gridLayoutManager = new GridLayoutManager(context,3);
+                holder.attachmentRecyclerView.setLayoutManager(gridLayoutManager);
+                holder.jobCompletionAdpter = new CompletionAdpterJobDteails1((ArrayList<Attachments>) typeList.get(position).getAttachmentsList(), (JobCompletionActivity)context, (JobCompletionActivity)context,position,parentPostion);
+//                jobCompletionAdpter = new CompletionAdpterJobDteails((ArrayList<Attachments>) new ArrayList<Attachments>(), (JobCompletionActivity)context, (JobCompletionActivity)context);
+                holder.attachmentRecyclerView.setAdapter(holder.jobCompletionAdpter);
+                holder.txt_upload.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        ((JobCompletionActivity) context).addAttachment(position,parentPostion,typeList.get(position).getQueId(), typeList.get(position).getJtId());
+                    }
+                });
 
 
                 break;
@@ -665,8 +799,8 @@ public class QuestionListAdapter extends RecyclerView.Adapter<QuestionListAdapte
             checkBox.setTag(optionModel);
 
 
-            checkBox.setTextAppearance(context, R.style.header_text_style);
-            checkBox.setTypeface(ResourcesCompat.getFont(context, R.font.arimo_regular));
+            checkBox.setTextAppearance(context, R.style.header_text_style2);
+//            checkBox.setTypeface(ResourcesCompat.getFont(context, R.font.arimo_medium));
             checkBox.setButtonTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.txt_sub_color)));
 
             checkBox.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
@@ -1032,7 +1166,12 @@ public class QuestionListAdapter extends RecyclerView.Adapter<QuestionListAdapte
         Button buttonAttchment;
         ImageView signature_set, edit_sign, delete_sign, add_sign, attchment_set, delete_attchment;
         LinearLayout signature_layout, Attchment_layout;
-        TextView add_sign_lable, Attchment_lable;
+        TextView add_sign_lable, Attchment_lable, txt_upload;
+        CardView cv_parent;
+        FrameLayout fm_multiattachment;
+        RecyclerView attachmentRecyclerView;
+        View view;
+        public  CompletionAdpterJobDteails1 jobCompletionAdpter;
         //   private String img_url = "";
 
 
@@ -1040,11 +1179,16 @@ public class QuestionListAdapter extends RecyclerView.Adapter<QuestionListAdapte
             super(itemView);
             //  this.mlistener = (ClientChat_View) context;
             Attchment_layout = itemView.findViewById(R.id.Attchment_layout);
+            cv_parent = itemView.findViewById(R.id.cv_parent);
             Attchment_lable = itemView.findViewById(R.id.Attchment_lable);
             buttonAttchment = itemView.findViewById(R.id.buttonAttchment);
             attchment_set = itemView.findViewById(R.id.attchment_set);
             delete_attchment = itemView.findViewById(R.id.delete_attchment);
             type_Number = itemView.findViewById(R.id.type_Number);
+            view = itemView.findViewById(R.id.view);
+            txt_upload = itemView.findViewById(R.id.txt_upload);
+            fm_multiattachment = itemView.findViewById(R.id.fm_multiattachment);
+            attachmentRecyclerView = itemView.findViewById(R.id.recyclerView);
             buttonAttchment.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -1054,6 +1198,8 @@ public class QuestionListAdapter extends RecyclerView.Adapter<QuestionListAdapte
                             myAttachment.selectFileWithoutAttchment(position, attchment_set, delete_attchment, buttonAttchment);
                         else if (context instanceof FormQueAns_Activity) {
                             ((FormQueAns_Activity) context).selectFile(position, attchment_set, delete_attchment, buttonAttchment);
+                        }else if (context instanceof JobCompletionActivity) {
+                            ((JobCompletionActivity) context).selectFile(position, attchment_set, delete_attchment, buttonAttchment,parentPostion);
                         }
                     }
                 }
@@ -1477,5 +1623,38 @@ public class QuestionListAdapter extends RecyclerView.Adapter<QuestionListAdapte
             }
         }
 
+    }
+
+    private boolean isInList(QuesRspncModel question) {
+        boolean isIt = false;
+
+        for (QuesRspncModel item : typeList1
+        ) {
+            if(item.getQueId().equals(question.getQueId())){
+                isIt = true;
+                break;
+            }
+        }
+        return isIt;
+    }
+
+    private void addAns(QuesRspncModel question){
+        if(typeList1.size()==0){
+            typeList1.add(question);
+        } else if (isInList(question)) {
+
+            for(QuesRspncModel item : typeList1){
+                if(item.getQueId().equals(question.getQueId())){
+                    if(item.getAns().get(0).getValue().isEmpty()){
+                        typeList1.remove(item);
+                        break;
+                    }else {
+                        item.setAns(question.getAns());
+                    }
+                }
+            }
+        }else {
+            typeList1.add(question);
+        }
     }
 }

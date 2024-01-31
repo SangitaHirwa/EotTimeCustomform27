@@ -166,9 +166,11 @@ public class SettingUrls {
                             count = 0;
                             if (TextUtils.isEmpty(App_preference.getSharedprefInstance().getLoginRes().getToken())) {
                                 callbacksSync.getCallBackOfComplete(SESSION_EXPIRE, FAIL_MSG);
-                            } else
-                                isFirstCall=true;
+                            } else {
+                                isFirstCall = true;
+                            }
                                 getFieldWorkerList(isFirstCall);
+
                         }
                     }
                 });
@@ -360,6 +362,9 @@ public class SettingUrls {
                             String convert = jsonObject.get("data").getAsJsonObject().toString();
                             Log.d("customData", convert);
                             CustOmFiledResModel resModel = new Gson().fromJson(convert, CustOmFiledResModel.class);
+                            if(type.equals("4")){
+                                App_preference.getSharedprefInstance().setJobCompletionForm(convert);
+                            }
                             getCustomFieldByFormId(resModel.getFrmId(), type);
                         } else if (jsonObject.get("statusCode") != null && jsonObject.get("statusCode").getAsString().equals(AppConstant.SESSION_EXPIRE)) {
                             App_preference.getSharedprefInstance().setBlankTokenOnSessionExpire();
@@ -417,6 +422,9 @@ public class SettingUrls {
                                 getCustomFrom("1");
                             } else if (type.equals("1")) {
                                 App_preference.getSharedprefInstance().setJobCustomField(convert);
+                                getCustomFrom("4");
+                            } else if (type.equals("4")) {
+                                App_preference.getSharedprefInstance().setJobCompletionFormField(convert);
                                 getCompanySettingDetails();
                             }
 

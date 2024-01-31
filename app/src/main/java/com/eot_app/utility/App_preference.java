@@ -5,7 +5,10 @@ import android.content.SharedPreferences;
 import com.eot_app.login_next.login_next_model.Login_Responce_Model;
 import com.eot_app.login_next.login_next_model.ResLoginData;
 import com.eot_app.nav_menu.audit.audit_list.equipment.model.EquipmentStatus;
+import com.eot_app.nav_menu.custom_fileds.custom_model.CustOmFiledResModel;
 import com.eot_app.nav_menu.custom_fileds.custom_model.CustOmFormQuestionsRes;
+import com.eot_app.nav_menu.jobs.job_complation.complation_form.model.CompletionFormQuestionModel;
+import com.eot_app.nav_menu.jobs.job_detail.form_form.get_qus_list.qus_model.QuesRspncModel;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.add_job_equip.model_pkg.BrandData;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.add_job_equip.model_pkg.GetCatgData;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.add_job_equip.model_pkg.GetgrpData;
@@ -47,6 +50,7 @@ public class App_preference implements Sp_model {
     private final String CONTACT_SITE_SYNCED = "contact_site_synced";
     private final String JOBLIST_TIME = "joblist_time";
     private final String JOBSTARTLIST_TIME = "job_startlist_time";
+    private final String ATTACHSTARTLIST_TIME = "attach_startlist_time";
     private final String AUDITLIST_TIME = "auditlist_time";
     private final String EQUIPMENT_TIME = "equpmentlist_time";
     private final String APPOINTMENT_LIST_TIME = "appointmentlist_time";
@@ -65,6 +69,8 @@ public class App_preference implements Sp_model {
     private final String AUDITCUSTOMFILED = "auditCustomFiled";
     private final String EQUIPMENTSTATUS = "equipmentStatus";
     private final String JOBCUSTOMFIELD = "jobcustomFields";
+    private final String JOBCOMPLETIONFORMFIELD = "jobCopleionFormFields";
+    private final String JOBCOMPLETIONFORM = "jobCopleionForm";
     private final String REGISTRATION_TOKEN = "registration_toekn";
     private final String SHOW_SITE_NAME = "show_site_name";
     private final String TAX_LOCATION = "tax_location";
@@ -153,6 +159,34 @@ public class App_preference implements Sp_model {
     public ArrayList<CustOmFormQuestionsRes> getJobCustomFields() {
         String convert = sp.getString(JOBCUSTOMFIELD, "");
         Type listType = new TypeToken<List<CustOmFormQuestionsRes>>() {
+        }.getType();
+        return new Gson().fromJson(convert, listType);
+    }
+
+    @Override
+    public void setJobCompletionFormField(String completionFormField) {
+        editor.putString(JOBCOMPLETIONFORMFIELD, completionFormField);
+        editor.commit();
+    }
+
+    @Override
+    public ArrayList<QuesRspncModel> getJobCompletionFormFields() {
+        String convert = sp.getString(JOBCOMPLETIONFORMFIELD, "");
+        Type listType = new TypeToken<List<QuesRspncModel>>() {
+        }.getType();
+        return new Gson().fromJson(convert, listType);
+    }
+
+    @Override
+    public void setJobCompletionForm(String completionForm) {
+        editor.putString(JOBCOMPLETIONFORM, completionForm);
+        editor.commit();
+    }
+
+    @Override
+    public CustOmFiledResModel getJobCompletionForm() {
+        String convert = sp.getString(JOBCOMPLETIONFORM, "");
+        Type listType = new TypeToken<CustOmFiledResModel>() {
         }.getType();
         return new Gson().fromJson(convert, listType);
     }
@@ -419,6 +453,16 @@ public class App_preference implements Sp_model {
         editor.commit();
     }
 
+    @Override
+    public String getAttachmentStartSyncTime() {
+        return sp.getString(ATTACHSTARTLIST_TIME, "");
+    }
+
+    @Override
+    public void setAttachmentStartSyncTime(String dateTime) {
+        editor.putString(ATTACHSTARTLIST_TIME, dateTime);
+        editor.commit();
+    }
 
     @Override
     public String getAuditSyncTime() {

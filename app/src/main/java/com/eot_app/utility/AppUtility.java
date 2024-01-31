@@ -2315,8 +2315,13 @@ public static void askAllPerMission(Context context) {
         }
         return time;
     }
-    public static String getParam(String job_Id, String file, String finalFname, String desc, String type, String isAddAttachAsCompletionNote, boolean lastCall){
-        MultiDocUpdateRequest multi_DocUpdateRequest = new MultiDocUpdateRequest(job_Id,file,finalFname,desc,type,isAddAttachAsCompletionNote,lastCall);
+    public static String getParam(String job_Id, String que_Id, String jtId,String file, String finalFname, String desc, String type, String isAddAttachAsCompletionNote, boolean lastCall){
+        MultiDocUpdateRequest multi_DocUpdateRequest;
+        if(que_Id.equals("") && que_Id.isEmpty()) {
+            multi_DocUpdateRequest = new MultiDocUpdateRequest(job_Id, file, finalFname, desc, type, isAddAttachAsCompletionNote, lastCall);
+        }else {
+            multi_DocUpdateRequest = new MultiDocUpdateRequest(job_Id, que_Id, jtId,file, finalFname, desc, type, isAddAttachAsCompletionNote, lastCall);
+        }
         Gson gson = new Gson();
         String multiDocUpdateRequest = gson.toJson(multi_DocUpdateRequest);
         return multiDocUpdateRequest;

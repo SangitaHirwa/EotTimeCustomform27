@@ -1137,9 +1137,9 @@ public class RemarkActivity extends UploadDocumentActivity implements JobAudit_V
             }
                /* if (data.hasExtra("code")) {
                     String barcode = data.getStringExtra("code");
-                    ArrayList<GetFileList_Res> equipmentList = new ArrayList<>();
+                    ArrayList<Attachments> equipmentList = new ArrayList<>();
                     try {
-                        Type listType = new TypeToken<List<GetFileList_Res>>() {
+                        Type listType = new TypeToken<List<Attachments>>() {
                         }.getType();
                         equipmentList = new Gson().fromJson(barcode, listType);
                         if (equipment != null && equipment.getAttachments() != null && equipment.getAttachments().size() > 0) {

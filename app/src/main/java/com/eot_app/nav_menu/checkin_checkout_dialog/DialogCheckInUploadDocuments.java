@@ -21,7 +21,7 @@ import android.widget.Toast;
 import com.eot_app.R;
 import com.eot_app.databinding.CheckinCheckoutDialogBinding;
 import com.eot_app.home_screens.MainActivity;
-import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.GetFileList_Res;
+import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.Attachments;
 import com.eot_app.nav_menu.jobs.job_detail.documents.fileattach_mvp.Doc_Attch_Pc;
 import com.eot_app.nav_menu.jobs.job_detail.documents.fileattach_mvp.Doc_Attch_Pi;
 import com.eot_app.nav_menu.jobs.job_detail.documents.fileattach_mvp.Doc_Attch_View;
@@ -368,17 +368,27 @@ public class DialogCheckInUploadDocuments extends DialogFragment implements View
     }
 
     @Override
-    public void selectFile() {
+    public void selectFiles() {
 
     }
 
     @Override
-    public void setList(ArrayList<GetFileList_Res> getFileList_res, String isAttch,boolean firstCall) {
+    public void selectFilesForCompletion(boolean isCompletion) {
 
     }
 
     @Override
-    public void addNewItemToAttachmentList(ArrayList<GetFileList_Res> getFileList_res, String isAttachCompletionNotes) {
+    public void setList(ArrayList<Attachments> getFileList_res, String isAttch, boolean firstCall) {
+
+    }
+
+    @Override
+    public void setMultiList(ArrayList<Attachments> getFileList_res, String isAttachCompletionNotes, boolean firstCall) {
+
+    }
+
+    @Override
+    public void addNewItemToAttachmentList(ArrayList<Attachments> getFileList_res, String isAttachCompletionNotes) {
 
     }
 

@@ -9,12 +9,26 @@ public class JobListRequestModel {
      int limit;
      int index;
      String dateTime;
+     String jobId;
 
     public JobListRequestModel(int usrId, int limit, int index, String dateTime) {
         this.usrId = usrId;
         this.limit = limit;
         this.index = index;
         this.dateTime = dateTime;
+    }
+    public JobListRequestModel(int usrId, int limit, int index) {
+        this.usrId = usrId;
+        this.limit = limit;
+        this.index = index;
+    }
+
+    public JobListRequestModel(int usrId, int limit, int index, String dateTime, String jobId) {
+        this.usrId = usrId;
+        this.limit = limit;
+        this.index = index;
+        this.dateTime = dateTime;
+        this.jobId = jobId;
     }
 
     public int getUsrId() {

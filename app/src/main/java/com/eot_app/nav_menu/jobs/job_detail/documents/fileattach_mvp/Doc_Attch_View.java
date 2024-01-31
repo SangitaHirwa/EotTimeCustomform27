@@ -1,6 +1,6 @@
 package com.eot_app.nav_menu.jobs.job_detail.documents.fileattach_mvp;
 
-import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.GetFileList_Res;
+import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.Attachments;
 
 import java.util.ArrayList;
 
@@ -9,10 +9,12 @@ import java.util.ArrayList;
  */
 
 public interface Doc_Attch_View {
-    void selectFile();
+    void selectFiles();
+    void selectFilesForCompletion(boolean isCompletion);
 
-    void setList(ArrayList<GetFileList_Res> getFileList_res,String isAttachCompletionNotes,boolean firstCall);
-    void addNewItemToAttachmentList(ArrayList<GetFileList_Res> getFileList_res,String isAttachCompletionNotes);
+    void setList(ArrayList<Attachments> getFileList_res, String isAttachCompletionNotes, boolean firstCall);
+    void setMultiList(ArrayList<Attachments> getFileList_res, String isAttachCompletionNotes, boolean firstCall);
+    void addNewItemToAttachmentList(ArrayList<Attachments> getFileList_res, String isAttachCompletionNotes);
 
     void addView();
 
@@ -25,5 +27,5 @@ public interface Doc_Attch_View {
     void hideProgressBar();
     void showProgressBar();
 
-    //   void setUploadNewDocList(ArrayList<GetFileList_Res> getFileList_res);
+    //   void setUploadNewDocList(ArrayList<Attachments> getFileList_res);
 }

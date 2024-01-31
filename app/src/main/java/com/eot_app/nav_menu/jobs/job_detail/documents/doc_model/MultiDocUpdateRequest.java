@@ -3,6 +3,8 @@ package com.eot_app.nav_menu.jobs.job_detail.documents.doc_model;
 public class MultiDocUpdateRequest {
 
     String job_Id;
+    String que_Id="";
+    String jtId= "";
     String file;
     String finalFname;
     String desc;
@@ -12,6 +14,18 @@ public class MultiDocUpdateRequest {
 
     public MultiDocUpdateRequest(String job_Id, String file, String finalFname, String desc, String type, String isAddAttachAsCompletionNote, boolean lastCall) {
         this.job_Id = job_Id;
+        this.file = file;
+        this.finalFname = finalFname;
+        this.desc = desc;
+        this.type = type;
+        this.isAddAttachAsCompletionNote = isAddAttachAsCompletionNote;
+        this.lastCall = lastCall;
+    }
+
+    public MultiDocUpdateRequest(String job_Id, String que_Id, String jtId, String file, String finalFname, String desc, String type, String isAddAttachAsCompletionNote, boolean lastCall) {
+        this.job_Id = job_Id;
+        this.que_Id = que_Id;
+        this.jtId = jtId;
         this.file = file;
         this.finalFname = finalFname;
         this.desc = desc;
@@ -74,5 +88,21 @@ public class MultiDocUpdateRequest {
 
     public void setLastCall(boolean lastCall) {
         this.lastCall = lastCall;
+    }
+
+    public String getQue_Id() {
+        return que_Id;
+    }
+
+    public void setQue_Id(String que_Id) {
+        this.que_Id = que_Id;
+    }
+
+    public String getJtId() {
+        return jtId;
+    }
+
+    public void setJtId(String jtId) {
+        this.jtId = jtId;
     }
 }

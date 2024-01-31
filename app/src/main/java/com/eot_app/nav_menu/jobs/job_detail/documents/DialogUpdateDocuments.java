@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,7 +26,7 @@ import androidx.appcompat.widget.AppCompatTextView;
 import androidx.fragment.app.DialogFragment;
 import com.bumptech.glide.Glide;
 import com.eot_app.R;
-import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.GetFileList_Res;
+import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.Attachments;
 import com.eot_app.nav_menu.jobs.job_detail.documents.fileattach_mvp.Doc_Attch_Pc;
 import com.eot_app.nav_menu.jobs.job_detail.documents.fileattach_mvp.Doc_Attch_Pi;
 import com.eot_app.nav_menu.jobs.job_detail.documents.fileattach_mvp.Doc_Attch_View;
@@ -37,10 +36,7 @@ import com.eot_app.utility.App_preference;
 import com.eot_app.utility.EotApp;
 import com.eot_app.utility.language_support.LanguageController;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.Callable;
 
 public class DialogUpdateDocuments extends DialogFragment implements View.OnClickListener, Doc_Attch_View {
@@ -297,17 +293,27 @@ public class DialogUpdateDocuments extends DialogFragment implements View.OnClic
     }
 
     @Override
-    public void selectFile() {
+    public void selectFiles() {
 
     }
 
     @Override
-    public void setList(ArrayList<GetFileList_Res> getFileList_res, String isAttch, boolean firstCall) {
+    public void selectFilesForCompletion(boolean isCompletion) {
 
     }
 
     @Override
-    public void addNewItemToAttachmentList(ArrayList<GetFileList_Res> getFileList_res, String isAttachCompletionNotes) {
+    public void setList(ArrayList<Attachments> getFileList_res, String isAttch, boolean firstCall) {
+
+    }
+
+    @Override
+    public void setMultiList(ArrayList<Attachments> getFileList_res, String isAttachCompletionNotes, boolean firstCall) {
+
+    }
+
+    @Override
+    public void addNewItemToAttachmentList(ArrayList<Attachments> getFileList_res, String isAttachCompletionNotes) {
 
     }
 

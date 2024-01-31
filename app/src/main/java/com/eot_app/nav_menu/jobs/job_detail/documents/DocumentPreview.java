@@ -11,7 +11,7 @@ import android.webkit.WebViewClient;
 import android.widget.TextView;
 
 import com.eot_app.R;
-import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.GetFileList_Res;
+import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.Attachments;
 import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.App_preference;
 import com.eot_app.utility.language_support.LanguageController;
@@ -36,7 +36,7 @@ public class DocumentPreview extends AppCompatActivity {
         webView.setWebViewClient(new WebViewClient());
         webView.setWebChromeClient(new WebChromeClient());
 
-        GetFileList_Res doc = (GetFileList_Res) getIntent().getSerializableExtra("doc");
+        Attachments doc = (Attachments) getIntent().getSerializableExtra("doc");
         if (doc != null) {
             tv_title.setText(doc.getImage_name());
         webView.loadUrl(App_preference.getSharedprefInstance().getBaseURL() + "" + doc.getAttachFileName());
