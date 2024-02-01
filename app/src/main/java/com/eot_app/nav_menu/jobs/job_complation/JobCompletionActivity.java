@@ -1109,7 +1109,9 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
             }
         }
         Log.e("All Item",""+allItem.toString());
-        backgroundTaskExecutor.createInstance(groupedQuestions.size());
+        if(groupedQuestions.size()>0) {
+            backgroundTaskExecutor.createInstance(groupedQuestions.size());
+        }
         completionFormAdapter.updateAdapter(allItem);
 //        CompletionFormAdapter.DefaultViewHolder defaultViewHolder = (CompletionFormAdapter.DefaultViewHolder) completionRecyclerView.findViewHolderForAdapterPosition(completionFormAdapter.getPostionDefaultViewHolder());
 //        defaultViewHolder.jobCompletionAdpter.updateFileList((ArrayList<Attachments>) DetailFragment.getInstance().getCompAttachmentList(),true);
