@@ -875,6 +875,7 @@ public class DetailFragment extends Fragment
         View v = vi.inflate(R.layout.job_lable_dynamic_layout, null);
         TextView textView = v.findViewById(R.id.job_lables);
         textView.setText(jtildModel.getTitle());
+        chipGroup.setChipSpacing(10);
         chipGroup.addView(v, 0, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
     }
 
