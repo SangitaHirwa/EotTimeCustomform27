@@ -871,7 +871,7 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
 //                }
             }
         }
-        if(AppDataBase.getInMemoryDatabase(this).attachments_dao().getAttachmentsById(jobData.getJobId(), "","") != null){
+        if(AppDataBase.getInMemoryDatabase(this).attachments_dao().getAttachmentsByJobId(jobData.getJobId()) != null){
             for (QuesRspncModel questItem : filterList
             ) {
                 if(questItem.getType().equals("13")) {
@@ -1372,7 +1372,7 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
                                         data.getStringExtra("fileName"),
                                         data.getStringExtra("desc"),
                                         data.getStringExtra("type"),
-                                        data.getStringExtra("isAttach"), true), AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT));
+                                        data.getStringExtra("isAttach"), true, false), AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT));
                             } catch (Exception e) {
                                 AppCenterLogs.addLogToAppCenterOnAPIFail("JobCompletion","","onActivityResult()"+e.getMessage(),"JobCompletionActivity","");
 //                                if (updateList.size() == 1) {
@@ -1577,7 +1577,7 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
                 String[] fileName = fileNameExt.split("\\.");
                 imgPathArray[i] = PathUtils.getRealPath(this, uri);
                 Bitmap bitmap = AppUtility.getBitmapFromPath(PathUtils.getRealPath(this, uri));
-                String bitmapString = AppUtility.BitMapToString(bitmap);
+//                String bitmapString = AppUtility.BitMapToString(bitmap);
 //                Attachments obj=new Attachments("0",fileNameExt,fileNameExt,bitmap);
 //                ArrayList<Attachments> getFileList_res =new ArrayList<>();
 //                if (fileList_res != null) {
@@ -1585,7 +1585,7 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
 //                    getFileList_res.addAll(fileList_res);
 //                }
 //                getFileList_res.add(obj);
-                Attachments attachments = new Attachments("TempAttach-"+fileName[0],fileNameExt,fileNameExt,imgPathArray[i],queId, jtId,"",jobData.getJobId(),"6",bitmapString);
+                Attachments attachments = new Attachments("TempAttach-"+fileName[0],fileNameExt,fileNameExt,imgPathArray[i],queId, jtId,"",jobData.getJobId(),"6");
                 AppDataBase.getInMemoryDatabase(this).attachments_dao().insertSingleAttachments(attachments);
 
                 new Handler(Looper.getMainLooper()).post(()->{
@@ -1610,6 +1610,7 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
         builder.putString("jobId",jobId);
         builder.putString("queId",queId);
         builder.putString("jtId",jtId);
+        builder.putBoolean("isAttachmentSection",false);
 
         mWorkManager = WorkManager.getInstance(this);
 

@@ -94,7 +94,7 @@ public class CompletionAdpterJobDteails1 extends RecyclerView.Adapter<Completion
         final String ext = fileList.getImage_name().substring((fileList.getImage_name().lastIndexOf(".")) + 1).toLowerCase();
         if (!ext.isEmpty()) {
             if (ext.equals("jpg") || ext.equals("jpeg") || ext.equals("png")) {
-                if(!fileList.getBitmap().isEmpty()){
+                if(fileList.getBitmap()!= null && !fileList.getBitmap().isEmpty()){
                     Bitmap bitmap1= AppUtility.StringToBitMap(fileList.getBitmap());
                     viewHolder.image_thumb_nail.setImageBitmap(bitmap1);
                 }else
@@ -152,7 +152,7 @@ public class CompletionAdpterJobDteails1 extends RecyclerView.Adapter<Completion
 
             });
 
-            if(fileList.getAttachmentId().equalsIgnoreCase("0") || !fileList.getBitmap().isEmpty())
+            if(fileList.getAttachmentId().equalsIgnoreCase("0") || fileList.getBitmap()!= null && !fileList.getBitmap().isEmpty())
             {
                 viewHolder.image_loader.setVisibility(View.VISIBLE);
                 Glide.with(context).load("")

@@ -707,8 +707,8 @@ public abstract class AppDataBase extends RoomDatabase {
                     "'attchParentId' TEXT," +
                     "'isLinked' TEXT," +
                     "'isdelete' TEXT," +
-                    "'bitmap' TEXT," +
                      " PRIMARY KEY(`attachmentId`)) ");
+//            "'bitmap' TEXT," +
 
         }
     };

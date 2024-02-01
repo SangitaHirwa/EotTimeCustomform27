@@ -27,4 +27,7 @@ public interface  Attachments_Dao {
     void deleteAttachmentById(String attachmentId);
     @Query("delete from Attachments where isdelete = '0'")
     void deleteAttachments();
+    @Query("delete from Attachments")
+    void deleteTable();
+
 }

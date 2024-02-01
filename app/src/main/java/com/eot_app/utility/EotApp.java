@@ -25,6 +25,7 @@ import com.eot_app.nav_menu.jobs.job_detail.detail.NotifyForEquipmentCountRemark
 import com.eot_app.nav_menu.jobs.job_detail.detail.NotifyForItemCount;
 import com.eot_app.nav_menu.jobs.job_detail.detail.NotifyForItemCountRemark;
 import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.NotifyForMultiDocAdd;
+import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.NotifyForMultiDocAddForAttach;
 import com.eot_app.nav_menu.jobs.job_detail.generate_invoice.InvoiceItemObserver;
 import com.eot_app.nav_menu.jobs.joboffline_db.JobItem_Observer;
 import com.eot_app.nav_menu.jobs.joboffline_db.JobOverViewNotify;
@@ -70,6 +71,7 @@ public class EotApp extends Application implements Application.ActivityLifecycle
     private NotifyForcompletion notifyForcompletion;
     private NotifyForcompletionInJob notifyForcompletionInJob;
     private NotifyForcompletionInDetail notifyForcompletionInDetail;
+    private NotifyForMultiDocAddForAttach notifyForMultiDocAddForAttach;
     public static synchronized EotApp getAppinstance() {
         return INSTANCE;
     }
@@ -180,6 +182,14 @@ public class EotApp extends Application implements Application.ActivityLifecycle
     }
     public void setNotifyForcompletionInDetail(NotifyForcompletionInDetail notifyForcompletionInDetail) {
         this.notifyForcompletionInDetail = notifyForcompletionInDetail;
+    }
+    public void getNotifyForMultiDocAddForAttach(String apiName, String jobId) {
+        if(this.notifyForMultiDocAddForAttach != null){
+            notifyForMultiDocAddForAttach.updateMultiDoc(apiName,jobId);
+        }
+    }
+    public void setNotifyForMultiDocAddForAttach(NotifyForMultiDocAddForAttach notifyForMultiDocAddForAttach) {
+        this.notifyForMultiDocAddForAttach = notifyForMultiDocAddForAttach;
     }
 
     public void getAddMultiDocObserver(String apiName, String jobId){

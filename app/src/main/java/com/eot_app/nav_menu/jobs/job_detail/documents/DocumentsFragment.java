@@ -39,8 +39,11 @@ import androidx.work.WorkInfo;
 import androidx.work.WorkManager;
 
 import com.eot_app.R;
+import com.eot_app.home_screens.MainActivity;
+import com.eot_app.nav_menu.jobs.job_detail.JobDetailActivity;
 import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.Attachments;
 import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.NotifyForMultiDocAdd;
+import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.NotifyForMultiDocAddForAttach;
 import com.eot_app.nav_menu.jobs.job_detail.documents.fileattach_mvp.Doc_Attch_Pc;
 import com.eot_app.nav_menu.jobs.job_detail.documents.fileattach_mvp.Doc_Attch_Pi;
 import com.eot_app.nav_menu.jobs.job_detail.documents.fileattach_mvp.Doc_Attch_View;
@@ -72,7 +75,7 @@ import java.util.concurrent.Executors;
 import ja.burhanrashid52.photoeditor.OnPhotoEditorListener;
 import ja.burhanrashid52.photoeditor.ViewType;
 
-public class DocumentsFragment extends Fragment implements Doc_Attch_View, DocumentListAdapter.FileDesc_Item_Selected, OnPhotoEditorListener, NotifyForMultiDocAdd {
+public class DocumentsFragment extends Fragment implements Doc_Attch_View, DocumentListAdapter.FileDesc_Item_Selected, OnPhotoEditorListener, NotifyForMultiDocAddForAttach {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -153,14 +156,15 @@ public class DocumentsFragment extends Fragment implements Doc_Attch_View, Docum
 
 //        doc_attch_pi.getAttachFileList(jobId, "", "",true);
         List<QuesRspncModel> queList = App_preference.getSharedprefInstance().getJobCompletionFormFields();
-        for (QuesRspncModel item : queList
-             ) {
-            if(item.getIsLinkWithService().equalsIgnoreCase("0") && item.getType().equals("13")&& item.getJtId().isEmpty()){
-                queId = item.getQueId();
-                break;
+        if(queList!= null && queList.size()>0) {
+            for (QuesRspncModel item : queList
+            ) {
+                if (item.getIsLinkWithService().equalsIgnoreCase("0") && item.getType().equals("13") && item.getJtId().isEmpty()) {
+                    queId = item.getQueId();
+                    break;
+                }
             }
         }
-        EotApp.getAppinstance().setNotifyForMultiDocAdd(this);
         setList((ArrayList<Attachments>) AppDataBase.getInMemoryDatabase(getActivity()).attachments_dao().getAllAttachmentsOfJob(jobId),"",true);
         return view;
     }
@@ -221,6 +225,8 @@ public class DocumentsFragment extends Fragment implements Doc_Attch_View, Docum
             doc_attch_pi.getAttachFileList(jobId, "", "",true);
         });
 
+
+        EotApp.getAppinstance().setNotifyForMultiDocAddForAttach(this);
     }
 
 
@@ -507,7 +513,7 @@ public class DocumentsFragment extends Fragment implements Doc_Attch_View, Docum
                                         data.getStringExtra("fileName"),
                                         data.getStringExtra("desc"),
                                         data.getStringExtra("type"),
-                                        data.getStringExtra("isFromCmpletion"), true), AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT));
+                                        data.getStringExtra("isFromCmpletion"), true,true), AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT));
                             }
                             catch (Exception e)
                             {
@@ -754,6 +760,7 @@ public class DocumentsFragment extends Fragment implements Doc_Attch_View, Docum
         builder.putBoolean("imgPath",true);
         builder.putBoolean("isCompNotes",false);
         builder.putString("jobId",jobId);
+        builder.putBoolean("isAttachmentSection",true);
 
         mWorkManager = WorkManager.getInstance(getActivity().getApplication());
 

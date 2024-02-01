@@ -14,7 +14,12 @@
         android:layout_height="match_parent"
         android:paddingVertical="10dp"
         >
-
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/cl_serviceHeaderParent"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:layout_constraintTop_toTopOf="parent"
+    >
         <TextView
             android:id="@+id/tv_groupedHeader"
             style="@style/header_text_style1"
@@ -23,10 +28,19 @@
             android:gravity="start|top"
             android:text="@string/dynamic_question_add"
             android:layout_marginStart="10dp"
-            app:layout_constraintEnd_toStartOf="@+id/cl_btnMark"
+            app:layout_constraintEnd_toStartOf="@+id/cl_btnMarkParent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            />
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/cl_btnMarkParent"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginEnd="10dp"
+    app:layout_constraintTop_toTopOf="@id/tv_groupedHeader"
 
+    app:layout_constraintEnd_toEndOf="parent">
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/cl_btnMark"
             android:background="@drawable/bg_mark_as_completion_cancel"
@@ -34,9 +48,7 @@
             android:layout_height="wrap_content"
             android:paddingHorizontal="8dp"
             android:paddingVertical="4dp"
-            android:layout_marginEnd="10dp"
-            app:layout_constraintTop_toTopOf="@id/tv_groupedHeader"
-            app:layout_constraintBottom_toBottomOf="@id/tv_groupedHeader"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             >
 
@@ -79,7 +91,6 @@
             android:id="@+id/cl_btnCompelete"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="10dp"
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -108,7 +119,8 @@
                 app:layout_constraintTop_toTopOf="@+id/img_completedBtn" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-
+</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_groupItem"
             android:layout_width="0dp"
@@ -118,7 +130,7 @@
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_groupedHeader" />
+            app:layout_constraintTop_toBottomOf="@+id/cl_serviceHeaderParent" />
 <!--    <LinearLayout-->
 <!--        android:layout_width="match_parent"-->
 <!--        android:layout_height="wrap_content"-->

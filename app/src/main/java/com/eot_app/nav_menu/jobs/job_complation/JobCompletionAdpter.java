@@ -161,7 +161,7 @@ public class JobCompletionAdpter extends RecyclerView.Adapter<RecyclerView.ViewH
                     holder.image_thumb_nail.setImageResource(R.drawable.doc);
                     holder.image_thumb_nail.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
                 }
-                if(fileList.getAttachmentId().equalsIgnoreCase("0") || !fileList.getBitmap().isEmpty())
+                if(fileList.getAttachmentId().equalsIgnoreCase("0") || fileList.getBitmap()!= null && !fileList.getBitmap().isEmpty())
                 {
                     holder.image_loader.setVisibility(View.VISIBLE);
                     Glide.with(context).load("")

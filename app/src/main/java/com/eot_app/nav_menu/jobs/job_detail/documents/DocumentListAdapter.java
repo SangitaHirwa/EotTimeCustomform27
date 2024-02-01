@@ -193,7 +193,7 @@ public class DocumentListAdapter extends RecyclerView.Adapter<DocumentListAdapte
                 holder.image_thumb_nail.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
             }
 
-            if(fileList.getAttachmentId().equalsIgnoreCase("0") || !fileList.getBitmap().isEmpty())
+            if(fileList.getAttachmentId().equalsIgnoreCase("0") || fileList.getBitmap() != null && !fileList.getBitmap().isEmpty())
             {
                 holder.image_loader.setVisibility(View.VISIBLE);
                 Glide.with(context).load("")

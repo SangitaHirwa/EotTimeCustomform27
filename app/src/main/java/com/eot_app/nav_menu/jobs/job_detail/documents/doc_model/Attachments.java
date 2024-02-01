@@ -64,6 +64,7 @@ public class Attachments implements Parcelable {
     private String isdelete;
     @Ignore
     private String complNote;
+    @Ignore
     String  bitmap="";
     @Ignore
     Bitmap bitmap1;

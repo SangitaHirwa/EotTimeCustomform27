@@ -30,7 +30,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class UploadMultiImgWorker extends Worker {
-    boolean lastUpload;
+    boolean lastUpload, isAttachmentSection;
     String dateTime ;
     int pos =0;
     String desc = "";
@@ -57,6 +57,7 @@ Context context;
              jobId = getInputData().getString("jobId");
              queId = getInputData().getString("queId");
              jtId = getInputData().getString("jtId");
+             isAttachmentSection = getInputData().getBoolean("isAttachmentSection",false);
             if(jobId == null ){
                 jobId = "";
             }
@@ -99,7 +100,7 @@ Context context;
                                         fileName[0],
                                         desc,
                                         type,
-                                        isFromCompletion, lastUpload), dateTime);
+                                        isFromCompletion, lastUpload,isAttachmentSection), dateTime);
                                 pos++;
                                 doWork();
                             }
@@ -112,7 +113,7 @@ Context context;
                             fileName[0],
                             desc,
                             type,
-                            isFromCompletion, lastUpload), dateTime);
+                            isFromCompletion, lastUpload,isAttachmentSection), dateTime);
                     pos++;
                     doWork();
 
@@ -123,8 +124,8 @@ Context context;
             return Result.failure();
         }
     }
-    public String getParam(String job_Id,String queId,String jtId, String file, String finalFname, String desc, String type, String isAddAttachAsCompletionNote,boolean lastCall){
-        MultiDocUpdateRequest multi_DocUpdateRequest = new MultiDocUpdateRequest(job_Id, queId, jtId,file,finalFname,desc,type,isAddAttachAsCompletionNote,lastCall);
+    public String getParam(String job_Id,String queId,String jtId, String file, String finalFname, String desc, String type, String isAddAttachAsCompletionNote,boolean lastCall, boolean isAttachmentSection){
+        MultiDocUpdateRequest multi_DocUpdateRequest = new MultiDocUpdateRequest(job_Id, queId, jtId,file,finalFname,desc,type,isAddAttachAsCompletionNote,lastCall, isAttachmentSection);
         Gson gson = new Gson();
         String multiDocUpdateRequest = gson.toJson(multi_DocUpdateRequest);
 
