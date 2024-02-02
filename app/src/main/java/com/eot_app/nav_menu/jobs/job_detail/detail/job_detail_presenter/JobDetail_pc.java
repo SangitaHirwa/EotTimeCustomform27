@@ -845,6 +845,8 @@ public class JobDetail_pc implements JobDetail_pi {
                             }
                         }
                     });
+        }else {
+            view.setOfflineData();
         }
     }
     public void addRecordsToDB(List<Job> data) {

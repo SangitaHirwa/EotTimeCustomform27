@@ -292,9 +292,11 @@ public class OfflineDataController {
                break;
             case Service_apis.setCompletionNotes:
                 // for resolving the issue of completion notes not updating on client side for some clients
+                JsonObject jsonObject = getJsonObject(data.getParams());
                 try
                 {
                     EotApp.getAppinstance().notifyApiObserver(Service_apis.getUserJobList);
+                    EotApp.getAppinstance().getNotifyForcompletionInDetail(Service_apis.getUserJobList,jsonObject.get("jobId").getAsString());
                 }
                 catch (Exception e){
                     e.printStackTrace();

@@ -3095,11 +3095,11 @@ public void setCompletionDetail(){
 //                }else {
 //                    btnComplationView.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add));
 //                }
-                if(AppUtility.isInternetConnected()) {
-                    jobDetail_pi.loadFromServer();
-                }else {
-                    setOfflineData();
-                }
+//                if(AppUtility.isInternetConnected()) {
+//                    jobDetail_pi.loadFromServer();
+//                }else {
+//                    setOfflineData();
+//                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -3344,7 +3344,7 @@ public void setCompletionDetail(){
 
 //            jobDetail_pi.getAttachFileList(jobId, App_preference.getSharedprefInstance().getLoginRes().getUsrId()
 //                    , "6");
-//            jobDetail_pi.loadFromServer();
+            jobDetail_pi.loadFromServer();
     }
 
 

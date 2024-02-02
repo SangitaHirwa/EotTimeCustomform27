@@ -195,8 +195,8 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
                 setJobData(jobData);
             }
         }
-        JobList jobList = new JobList();
-        jobList.setNotifyForCompletion(jobList);
+//        JobList jobList = new JobList();
+//        jobList.setNotifyForCompletion(jobList);
         EotApp.getAppinstance().setNotifyForMultiDocAdd(this);
         EotApp.getAppinstance().setNotifyForcompletion(this);
         initializeMyViews();
@@ -1683,13 +1683,17 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
             if (completionFormAdapter != null) {
                 if (allItem.get(parentPositon) instanceof QuesRspncModel) {
                     CompletionFormAdapter.SingleViewHolder singleViewHolder = (CompletionFormAdapter.SingleViewHolder) completionRecyclerView.findViewHolderForAdapterPosition(position);
-                    singleViewHolder.jobCompletionAdpter.updateFileList((ArrayList<Attachments>) AppDataBase.getInMemoryDatabase(this).attachments_dao().getAttachmentsById(jobData.getJobId(), queId, jtId));
+                    if(singleViewHolder != null) {
+                        singleViewHolder.jobCompletionAdpter.updateFileList((ArrayList<Attachments>) AppDataBase.getInMemoryDatabase(this).attachments_dao().getAttachmentsById(jobData.getJobId(), queId, jtId));
+                    }
 //                singleViewHolder.showAttchmentView(position, path, attchmentView, deleteAttchment, addAttchment);//, attchmentView,deleteAttchment
                 } else if (allItem.get(parentPositon) instanceof List) {
                     CompletionFormAdapter.GroupedViewHolder groupedViewHolder = (CompletionFormAdapter.GroupedViewHolder) completionRecyclerView.findViewHolderForAdapterPosition(parentPositon);
 //                groupedViewHolder.questionListAdapter.showAttchmentView(position,path,attchmentView,deleteAttchment,addAttchment);
-                    QuestionListAdapter.ViewHolder viewHolder = (QuestionListAdapter.ViewHolder) groupedViewHolder.rv_groupItem.findViewHolderForAdapterPosition(position);
-                    viewHolder.jobCompletionAdpter.updateFileList((ArrayList<Attachments>) AppDataBase.getInMemoryDatabase(this).attachments_dao().getAttachmentsById(jobData.getJobId(), queId, jtId));
+                    if(groupedViewHolder != null) {
+                        QuestionListAdapter.ViewHolder viewHolder = (QuestionListAdapter.ViewHolder) groupedViewHolder.rv_groupItem.findViewHolderForAdapterPosition(position);
+                        viewHolder.jobCompletionAdpter.updateFileList((ArrayList<Attachments>) AppDataBase.getInMemoryDatabase(this).attachments_dao().getAttachmentsById(jobData.getJobId(), queId, jtId));
+                    }
                 }
             }
 
