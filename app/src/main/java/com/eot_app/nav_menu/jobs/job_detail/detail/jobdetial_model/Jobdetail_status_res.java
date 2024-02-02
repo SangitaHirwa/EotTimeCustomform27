@@ -17,9 +17,11 @@ public class Jobdetail_status_res implements Serializable {
     String lng;
     String isMailSentToClt;
     String isLeaderChgKprsStatus;
+    String jobLable;
+     String jobType;
 
     public Jobdetail_status_res(String jobId, String usrId, String type, String status, String dateTime, String lat, String lng
-            , String isMailSentToClt, String isLeaderChgKprsStatus
+            , String isMailSentToClt, String isLeaderChgKprsStatus, String jobLable , String jobType
     ) {
         this.jobId = jobId;
         this.usrId = usrId;
@@ -31,6 +33,8 @@ public class Jobdetail_status_res implements Serializable {
         this.lng = lng;
         this.isMailSentToClt = isMailSentToClt;
         this.isLeaderChgKprsStatus = isLeaderChgKprsStatus;
+        this.jobLable = jobLable;
+        this.jobType = jobType;
     }
 
     public String getIsMailSentToClt() {
@@ -111,5 +115,21 @@ public class Jobdetail_status_res implements Serializable {
 
     public void setIsLeaderChgKprsStatus(String isLeaderChgKprsStatus) {
         this.isLeaderChgKprsStatus = isLeaderChgKprsStatus;
+    }
+
+    public String getJobLable() {
+        return jobLable;
+    }
+
+    public void setJobLable(String jobLable) {
+        this.jobLable = jobLable;
+    }
+
+    public String getJobType() {
+        return jobType;
+    }
+
+    public void setJobType(String jobType) {
+        this.jobType = jobType;
     }
 }

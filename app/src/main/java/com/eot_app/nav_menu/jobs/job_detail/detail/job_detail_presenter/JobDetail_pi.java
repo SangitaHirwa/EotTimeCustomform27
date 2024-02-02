@@ -9,7 +9,8 @@ import com.eot_app.nav_menu.jobs.job_detail.detail.jobdetial_model.JobStatusMode
  */
 
 public interface JobDetail_pi {
-    void changeJobStatusAlertInvisible(String jobId, String type, JobStatusModelNew status, String lat, String lng, String isMailSentToClt,String isLeaderChgKprsStatus);//,String cltMailConfirmEnable);
+    void changeJobStatusAlertInvisible(String jobId, String type, JobStatusModelNew status, String lat, String lng,
+                                       String isMailSentToClt,String isLeaderChgKprsStatus, String jobLable ,String jobType);//,String cltMailConfirmEnable);
 
     String getStatusName(String status);
     boolean isOldStaus(String status_no, String jobId);
