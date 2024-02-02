@@ -24,6 +24,7 @@ import com.eot_app.UploadDocumentActivity;
 import com.eot_app.login_next.login_next_model.CompPermission;
 import com.eot_app.nav_menu.audit.audit_list.audit_mvp.model.AuditList_Res;
 import com.eot_app.nav_menu.audit.audit_list.equipment.model.Equipment_Res;
+import com.eot_app.nav_menu.client.clientlist.client_detail.site.sitelist.editsite.editsitedb.SpinnerCountrySite;
 import com.eot_app.nav_menu.equipment.View.AuditDetailEquActivity;
 import com.eot_app.nav_menu.equipment.View.JobdetailsEquActivity;
 import com.eot_app.nav_menu.equipment.adpter.AdpterAuditHistory;
@@ -59,11 +60,11 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
         Audit_Job_History_View, AdpterAuditHistory.OnAuditSelection, AdpterJobHistory.OnJobSelection {
     TextView equipment_name, barnd_name, model_no, serial_no,
             traiff_rate, warrenty_expiry_date, manufacture_date,
-            purchase_date, installed_date, type, equipment_group;
+            purchase_date, installed_date, type, equipment_group, equipment_location;
     TextView barnd_name_detail, model_no_detail, serial_no_detail,
             traiff_rate_detail,
             warrenty_expiry_date_detail, manufacture_date_detail, purchase_date_detail, install_date_detail,
-            type_detail, equipment_group_detail;
+            type_detail, equipment_group_detail,client_name_detail,location_detail,site_detail;
     RoundedImageView profile_img;
     InvoiceItemList2Adpter invoice_list_adpter;
     Button button_job, button_audit, go_to_addjob;
@@ -85,7 +86,7 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
     EquipmentPartRemarkAdapter equipmentPartAdapter;
     AppCompatTextView tv_network_error, tv_label_part, tv_label_item;
     private LinearLayout ll_audit_job;
-    private LinearLayout job_ll, audit_ll;
+    private LinearLayout job_ll, audit_ll, equipment_location_detail;
     TextView custom_filed_1, custom_filed_2,
             custom_filed_txt_1, custom_filed_txt_2,supplier_txt,supplier;
     private boolean REFRESH = false;
@@ -243,7 +244,7 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
         purchase_date.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.purchase_date));
 
         installed_date = findViewById(R.id.installed_date);
-        installed_date.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.installed_date));
+      //  installed_date.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.installed_date));
 
         type = findViewById(R.id.type);
         type.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.type));
@@ -293,6 +294,12 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
         recyclerView_part = findViewById(R.id.recyclerView_part);
         recyclerView_item = findViewById(R.id.recyclerView_item);
 
+        equipment_location = findViewById(R.id.equipment_location);
+        client_name_detail = findViewById(R.id.client_name_detail);
+        location_detail = findViewById(R.id.location_detail);
+        site_detail = findViewById(R.id.site_detail);
+        equipment_location_detail = findViewById(R.id.equipment_location_detail);
+      equipment_location.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.equipment+" "+AppConstant.location));
 
         ShowHideEqupHistory();
     }
@@ -450,6 +457,7 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
     }
 
     private void setJobEquipment(EquArrayModel equipment) {
+        String clientArd ="";
         equipmentID = equipment.getEquId();
         equipment_name.setText(equipment.getEqunm());
 
@@ -459,6 +467,26 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
         custom_filed_txt_1.setText(equipment.getExtraField1());
         custom_filed_txt_2.setText(equipment.getExtraField2());
         supplier.setText(equipment.getSupplier());
+        if(equipment.getCltId() != null && !equipment.getCltId().equals("")) {
+            String clientNm= AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).clientModel().getClientNmByClientId(equipment.getCltId());
+            client_name_detail.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.client_name) + ":- " +clientNm);
+        }
+        if(equipment.getSiteId() !=null && !equipment.getSiteId().equals("")) {
+            String snmBySiteId = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).sitemodel().getSnmBySiteId(equipment.getSiteId());
+            site_detail.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.site_name) + ":-" + snmBySiteId);
+        }
+        if( equipment.getAdr()  != null && !equipment.getAdr().equals("") ){
+            clientArd = clientArd.concat(equipment.getAdr());
+        }if(equipment.getCity()  != null && !equipment.getCity().equals("")){
+            clientArd =   clientArd.concat(","+equipment.getCity());
+        }if(equipment.getState()  != null && !equipment.getState().equals("") ){
+            clientArd =  clientArd.concat(","+ SpinnerCountrySite.getStatenameById(equipment.getCtry(),equipment.getState()));
+        }if(equipment.getCtry()  != null && !equipment.getCtry().equals("") ){
+            clientArd = clientArd.concat(","+SpinnerCountrySite.getCountryNameById(equipment.getCtry()));
+        }if(equipment.getZip()  != null && !equipment.getZip().equals("")){
+            clientArd = clientArd.concat(","+equipment.getZip());
+        }
+        location_detail.setText(clientArd);
         try {
             if (TextUtils.isEmpty(equipment.getRate()))
                 traiff_rate_detail.setText("");
@@ -519,6 +547,7 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
     }
 
     private void setAuditEquipment(Equipment_Res equipment) {
+        String clientArd="";
         equipmentID = equipment.getEquId();
         equipment_name.setText(equipment.getEqunm());
         barnd_name_detail.setText(equipment.getBrand());
@@ -527,6 +556,35 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
         custom_filed_txt_1.setText(equipment.getExtraField1());
         custom_filed_txt_2.setText(equipment.getExtraField2());
         supplier.setText(equipment.getSupplier());
+        if(equipment.getEquId() !=null) {
+            Equipment equipmentById = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).equipmentDao().getEquipmentById(equipment.getEquId());
+
+            if (equipmentById.getCltId() != null && !equipmentById.getCltId().equals("")) {
+                String clientNm = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).clientModel().getClientNmByClientId(equipmentById.getCltId());
+                client_name_detail.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.client_name) + ":- " + clientNm);
+            }
+            if (equipment.getSiteId() != null && !equipment.getSiteId().equals("")) {
+                String snmBySiteId = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).sitemodel().getSnmBySiteId(equipment.getSiteId());
+                site_detail.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.site_name) + ":-" + snmBySiteId);
+            }
+
+            if (equipmentById.getAdr() != null && !equipmentById.getAdr().equals("")) {
+                clientArd = clientArd.concat(equipmentById.getAdr());
+            }
+            if (equipmentById.getCity() != null && !equipmentById.getCity().equals("")) {
+                clientArd = clientArd.concat("," + equipmentById.getCity());
+            }
+            if (equipmentById.getState() != null && !equipmentById.getState().equals("")) {
+                clientArd = clientArd.concat("," + SpinnerCountrySite.getStatenameById(equipmentById.getCtry(), equipmentById.getState()));
+            }
+            if (equipmentById.getCtry() != null && !equipmentById.getCtry().equals("")) {
+                clientArd = clientArd.concat("," + SpinnerCountrySite.getCountryNameById(equipmentById.getCtry()));
+            }
+            if (equipmentById.getZip() != null && !equipmentById.getZip().equals("")) {
+                clientArd = clientArd.concat("," + equipmentById.getZip());
+            }
+            location_detail.setText(clientArd);
+        }
         try {
             if (TextUtils.isEmpty(equipment.getRate()))
                 traiff_rate_detail.setText("");
@@ -591,6 +649,7 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
      * equipment details which is not linked with any job or audit
      */
     private void setEquipmentDetails(Equipment equipment) {
+        String clientArd ="";
         equipmentID = equipment.getEquId();
         equipment_name.setText(equipment.getEqunm());
         barnd_name_detail.setText(equipment.getBrand());
@@ -598,6 +657,22 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
         serial_no_detail.setText(equipment.getSno());
         custom_filed_txt_1.setText(equipment.getExtraField1());
         custom_filed_txt_2.setText(equipment.getExtraField2());
+        if(equipment.getCltId() != null && !equipment.getCltId().equals("")) {
+           String clientNm= AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).clientModel().getClientNmByClientId(equipment.getCltId());
+            client_name_detail.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.client_name) + ":- " +clientNm);
+        }
+        if( equipment.getAdr()  != null && !equipment.getAdr().equals("") ){
+            clientArd =  clientArd.concat(equipment.getAdr());
+        }if(equipment.getCity()  != null && !equipment.getCity().equals("")){
+            clientArd = clientArd.concat(","+equipment.getCity());
+        }if(equipment.getState()  != null && !equipment.getState().equals("") ){
+            clientArd = clientArd.concat(","+ SpinnerCountrySite.getStatenameById(equipment.getCtry(),equipment.getState()));
+        }if(equipment.getCtry()  != null && !equipment.getCtry().equals("") ){
+            clientArd = clientArd.concat(","+SpinnerCountrySite.getCountryNameById(equipment.getCtry()));
+        }if(equipment.getZip()  != null && !equipment.getZip().equals("")){
+            clientArd =  clientArd.concat(","+equipment.getZip());
+        }
+        location_detail.setText(clientArd);
         supplier.setText(equipment.getSupplier());
         try {
             if (TextUtils.isEmpty(equipment.getRate()))

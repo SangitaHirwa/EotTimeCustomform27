@@ -25,10 +25,9 @@ public interface JobDetail_pi {
     void getItemListByJobFromDB(String jobId);
     String getImg();
     void getEquipmentList(String auditId);
-    void refreshList(String auditID, String jobId);
     void getEquipmentStatus();
     void getJobCompletionDetails(String jobId);
     void addJobCompletionDetails(String jobId, CompletionDetailsPost.CompletionDetail obj,int logType);
-    void loadFromServer();
+    void loadFromServer(String jobId);
     void getRecureDataList(String jobId, String recurType);
 }

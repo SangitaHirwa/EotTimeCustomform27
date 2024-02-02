@@ -6,10 +6,14 @@ import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.eot_app.activitylog.ActivityLogController;
+import com.eot_app.activitylog.LogModel;
 import com.eot_app.nav_menu.audit.audit_list.equipment.model.EquipmentStatus;
 import com.eot_app.nav_menu.client.clientlist.client_detail.site.sitelist.editsite.editsitedb.SpinnerCountrySite;
+import com.eot_app.nav_menu.jobs.job_controller.ChatController;
 import com.eot_app.nav_menu.jobs.job_db.EquArrayModel;
 import com.eot_app.nav_menu.jobs.job_db.Job;
+import com.eot_app.nav_menu.jobs.job_db.JobListRequestModel;
 import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.model.InvoiceItemDataModel;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_db.model_pkg.ItembyJobModel;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.add_job_equip.clientEqu.ClientEquReq;
@@ -340,67 +344,69 @@ public class AddJobEqu_Pc implements AddJobEqu_Pi {
 
         if (AppUtility.isInternetConnected()) {
 
-            HashMap<String, String> auditListRequestModel = new HashMap<>();
-            auditListRequestModel.put("limit", ""+updatelimit);
-            auditListRequestModel.put("index", ""+updateindex);
-            auditListRequestModel.put("audId", ""+jobId);
-            auditListRequestModel.put("isJob", "1");
-            auditListRequestModel.put("isParent", "1");
+            LogModel logModel = ActivityLogController
+                    .getObj(ActivityLogController.JOB_MODULE, ActivityLogController.JOB_LIST, ActivityLogController.JOB_MODULE);
+            ActivityLogController.saveOfflineTable(logModel);
 
-//            AuditEquipmentRequestModel auditListRequestModel = new AuditEquipmentRequestModel(auditID,
-//                    updatelimit, updateindex, "");
-//            auditListRequestModel.setIsJob(1);
-            AppUtility.progressBarShow((Context) addJobEquView);
+            JobListRequestModel jobListRequestModel = new JobListRequestModel(Integer.parseInt(App_preference.getSharedprefInstance().getLoginRes().getUsrId()),
+                    updatelimit, updateindex, App_preference.getSharedprefInstance().getJobSyncTime());
 
-            String data = new Gson().toJson(auditListRequestModel);
-            ApiClient.getservices().eotServiceCall(Service_apis.getEquipmentList,
-                    AppUtility.getApiHeaders(), AppUtility.getJsonObject(data))
+
+            // for storing the date time when the api call started
+            String startJobSyncTime = AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT);
+
+            String data = new Gson().toJson(jobListRequestModel);
+            ApiClient.getservices().eotServiceCall(Service_apis.getUserJobList, AppUtility.getApiHeaders(), AppUtility.getJsonObject(data))
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Observer<JsonObject>() {
                         @Override
                         public void onSubscribe(Disposable d) {
+
                         }
 
                         @Override
                         public void onNext(JsonObject jsonObject) {
-                            Log.e("", "");
-                            try {
-//                                Log.d("mahi", jsonObject.toString());
-                                AppUtility.progressBarDissMiss();
-                                if (jsonObject.get("success").getAsBoolean()) {
-                                    count = jsonObject.get("count").getAsInt();
-                                    String convert = new Gson().toJson(jsonObject.get("data").getAsJsonArray());
-                                    Type listType = new com.google.common.reflect.TypeToken<List<EquArrayModel>>() {
-                                    }.getType();
-                                    List<EquArrayModel> data = new Gson().fromJson(convert, listType);
-                                    if (data != null && data.size() > 0) {
-                                        Log.e("EquipmentList::",new Gson().toJson(data));
-                                        updateEquipmentDataInDb(jobId, data);
-                                    }
-
-                                }
-                            } catch (Exception ex) {
-                                ex.printStackTrace();
+                            if (jsonObject.get("success").getAsBoolean()) {
+                                count = jsonObject.get("count").getAsInt();
+                                String convert = new Gson().toJson(jsonObject.get("data").getAsJsonArray());
+                                Type listType = new TypeToken<List<Job>>() {
+                                }.getType();
+                                List<Job> data = new Gson().fromJson(convert, listType);
+                                updateEquipmentDataInDb(data, jobId);
+                            } else if (jsonObject.get("statusCode") != null && jsonObject.get("statusCode").getAsString().equals(AppConstant.SESSION_EXPIRE)) {
+                                addJobEquView.sessionExpire(LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
                             }
                         }
 
+
                         @Override
                         public void onError(Throwable e) {
-                            Log.e("", "");
                             Log.e("TAG", e.getMessage());
                         }
 
                         @Override
                         public void onComplete() {
-
                             if ((updateindex + updatelimit) <= count) {
                                 updateindex += updatelimit;
                                 refreshList(jobId);
                             } else {
                                 if (count != 0) {
-                                    Log.v("MainSync", "startJobSyncTime AddJob" + " --" + App_preference.getSharedprefInstance().getJobSyncTime());
-                                    App_preference.getSharedprefInstance().setJobSyncTime(AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT));
+                                    if(App_preference.getSharedprefInstance().getJobStartSyncTime().isEmpty()
+                                            &&startJobSyncTime!=null && !startJobSyncTime.isEmpty()){
+//                                        App_preference.getSharedprefInstance().setJobSyncTime(AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT));
+                                        App_preference.getSharedprefInstance().setJobSyncTime(startJobSyncTime);
+                                        Log.v("MainSync","startJobSyncTime JobList"+" --" +App_preference.getSharedprefInstance().getJobSyncTime());
+                                    }
+                                    else if(App_preference.getSharedprefInstance().getJobStartSyncTime().isEmpty()){
+//                                        App_preference.getSharedprefInstance().setJobSyncTime(AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT));
+                                        App_preference.getSharedprefInstance().setJobSyncTime(startJobSyncTime);
+                                        Log.v("MainSync","startJobSyncTime JobList"+" --" +App_preference.getSharedprefInstance().getJobSyncTime());
+                                    }
+                                    else {
+                                        App_preference.getSharedprefInstance().setJobSyncTime(App_preference.getSharedprefInstance().getJobStartSyncTime());
+                                    }
+//                                    App_preference.getSharedprefInstance().setJobSyncTime(AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT));
                                 }
                                 updateindex = 0;
                                 count = 0;
@@ -411,25 +417,24 @@ public class AddJobEqu_Pc implements AddJobEqu_Pi {
         }
     }
 
-    private void updateEquipmentDataInDb(String jobId, List<EquArrayModel> data) {
+    private void updateEquipmentDataInDb(List<Job> data, String jobId) {
         try {
-            Job job = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(jobId);
-            /* *****Notify JOB overView for Equipmetn Added first time ****/
-            if (job.getEquArray() != null && job.getEquArray().size() == 0) {
-                job.setEquArray(data);
-                AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().updateJobequipArray(jobId, data);
-                EotApp.getAppinstance().getJobFlagOverView();
-            } else {
-                /* **Refresh job Table in Exiting Equ. lisy***/
-                job.setEquArray(data);
-                AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().updateJobequipArray(jobId, data);
-                if (job.getEquArray() != null && job.getEquArray().size() == 0)
-                    EotApp.getAppinstance().getJobFlagOverView();
+            AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().inserJob(data);
+//        for add/remove listener.
+            for (Job item : data) {
+                if (item.getIsdelete().equals("0")
+                        || item.getStatus().equals(AppConstant.Cancel)
+                        || item.getStatus().equals(AppConstant.Closed)
+                        || item.getStatus().equals(AppConstant.Reject)) {
+                    ChatController.getInstance().removeListnerByJobID(item.getJobId());
+                } else {
+                    ChatController.getInstance().registerChatListner(item);
+                }
             }
+            getEquipmentList(jobId);
             EotApp.getAppinstance().getNotifyForEquipmentCount();
             EotApp.getAppinstance().getNotifyForEquipmentCountRemark();
             EotApp.getAppinstance().getNotifyForEquipmentCountList();
-            Log.e("EquipmentListLocal::",new Gson().toJson(job.getEquArray()));
 
         } catch (Exception ex) {
             ex.printStackTrace();

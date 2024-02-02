@@ -245,7 +245,7 @@ public class JobEquipmentScanActivity extends AppCompatActivity implements ScanE
     }
 
     @Override
-    public void refreshEquipmentList(boolean isReturn) {
+    public void refreshEquipmentList(boolean isReturn , boolean eqiAdd) {
 
     }
 

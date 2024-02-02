@@ -362,7 +362,7 @@ public class JobDetail_pc implements JobDetail_pi {
         }
     }
 
-    @Override
+   /* @Override
     public void refreshList(String auditID, final String jobId) {
         if (AppUtility.isInternetConnected()) {
             HashMap<String, String> auditListRequestModel = new HashMap<>();
@@ -426,7 +426,7 @@ public class JobDetail_pc implements JobDetail_pi {
             getEquipmentList(jobId);
 
         }
-    }
+    }*/
 
 
     @Override
@@ -772,7 +772,7 @@ public class JobDetail_pc implements JobDetail_pi {
      * Load Job list from server when Pull to refresh
      */
     @Override
-    synchronized public void loadFromServer() {
+    synchronized public void loadFromServer(String jobId) {
         if (AppUtility.isInternetConnected()) {
 
             LogModel logModel = ActivityLogController
@@ -804,7 +804,7 @@ public class JobDetail_pc implements JobDetail_pi {
                                 Type listType = new TypeToken<List<Job>>() {
                                 }.getType();
                                 List<Job> data = new Gson().fromJson(convert, listType);
-                                addRecordsToDB(data);
+                                addRecordsToDB(data, jobId);
                             } else if (jsonObject.get("statusCode") != null && jsonObject.get("statusCode").getAsString().equals(AppConstant.SESSION_EXPIRE)) {
                                 view.sessionExpire(LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
                             }
@@ -820,7 +820,7 @@ public class JobDetail_pc implements JobDetail_pi {
                         public void onComplete() {
                             if ((updateindex + updatelimit) <= count) {
                                 updateindex += updatelimit;
-                                loadFromServer();
+                                loadFromServer(jobId);
                             } else {
                                 if (count != 0) {
                                     if(App_preference.getSharedprefInstance().getJobStartSyncTime().isEmpty()
@@ -847,7 +847,7 @@ public class JobDetail_pc implements JobDetail_pi {
                     });
         }
     }
-    public void addRecordsToDB(List<Job> data) {
+    public void addRecordsToDB(List<Job> data, String jobId) {
         AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().inserJob(data);
 //        for add/remove listener.
         for (Job item : data) {
@@ -860,6 +860,7 @@ public class JobDetail_pc implements JobDetail_pi {
                 ChatController.getInstance().registerChatListner(item);
             }
         }
+        getEquipmentList(jobId);
         view.setOfflineData();
     }
 }
