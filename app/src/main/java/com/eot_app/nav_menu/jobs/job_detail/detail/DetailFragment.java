@@ -1121,8 +1121,8 @@ public class DetailFragment extends Fragment
         // for equipment
 
         setEuqipmentList(mParam2.getEquArray());
-       /* if (jobDetail_pi != null)
-            jobDetail_pi.refreshList(mParam2.getJobId(), mParam2.getJobId());*/
+        if (jobDetail_pi != null)
+            jobDetail_pi.loadFromServer(mParam2.getJobId());
         // for completion details
         if (jobDetail_pi != null)
             jobDetail_pi.getJobCompletionDetails(mParam2.getJobId());

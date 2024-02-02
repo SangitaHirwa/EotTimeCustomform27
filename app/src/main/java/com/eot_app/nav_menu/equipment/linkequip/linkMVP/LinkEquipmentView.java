@@ -11,7 +11,7 @@ public interface LinkEquipmentView {
 
     void showHideProgressBar(boolean isShowProgress);
 
-    void refreshEquipmentList(boolean isReturn);
+    void refreshEquipmentList(boolean isReturn, boolean equiAdd);
 
     void onSessionExpired(String msg);
 

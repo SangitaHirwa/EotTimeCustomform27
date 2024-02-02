@@ -54,9 +54,8 @@ public class EquArrayModel implements Parcelable {
     private String image;
     private String ecId;
     private String usrManualDoc;
-    private String isPart;
+    private String isPart = "0";
     private String snm;
-    @Ignore
     private String adr;
     private String extraField1;
     private String extraField2;
@@ -72,6 +71,12 @@ public class EquArrayModel implements Parcelable {
     private String itemId;
     private String supId;
     private String supplier;
+    private String city;
+    private String state;
+    private String ctry;
+    private String zip;
+    private String cltId;
+    private String siteId;
 
     public String getSupId() {
         return supId;
@@ -220,6 +225,12 @@ public class EquArrayModel implements Parcelable {
         itemId = in.readString();
         supId = in.readString();
         supplier = in.readString();
+        city = in.readString();
+       state = in.readString();
+         ctry = in.readString();
+        zip = in.readString();
+        cltId = in.readString();
+        siteId = in.readString();
     }
 
     public static Creator<EquArrayModel> getCREATOR() {
@@ -268,7 +279,14 @@ public class EquArrayModel implements Parcelable {
                 Objects.equals(getStatusUpdateDate(), that.getStatusUpdateDate())&&
                 Objects.equals(getItemId(), that.getItemId())&&
                 Objects.equals(getSupId(), that.getSupId())&&
-                Objects.equals(getSupplier(), that.getSupplier());
+                Objects.equals(getSupplier(), that.getSupplier())&&
+                Objects.equals(getAdr(), that.getAdr())&&
+                Objects.equals(getCity(), that.getCity())&&
+                Objects.equals(getCtry(), that.getCtry())&&
+                Objects.equals(getState(), that.getState())&&
+                Objects.equals(getSiteId(), that.getSiteId())&&
+                Objects.equals(getCltId(), that.getCltId())&&
+                Objects.equals(getZip(), that.getZip());
     }
 
     @Override
@@ -323,12 +341,17 @@ public class EquArrayModel implements Parcelable {
         dest.writeString(itemId);
         dest.writeString(supId);
         dest.writeString(supplier);
-
+        dest.writeString(city);
+        dest.writeString(ctry);
+        dest.writeString(state);
+        dest.writeString(zip);
+        dest.writeString(cltId);
+        dest.writeString(siteId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getEquId(), getEqunm(), getMno(), getSno(), getAudId(), getRemark(), getChangeBy(), getStatus(), getUpdateData(), getLat(), getLng(), getLocation(), getContrid(), getAttachments(), getType(), getBrand(), getRate(), getExpiryDate(), getManufactureDate(), getPurchaseDate(), getBarcode(), getEquipment_group(), getImage(),getInstalledDate(),getServIntvalType(),getServIntvalValue(),getLastJobDate(),getEquStatus(),getStatusUpdateDate(),getItemId(),getSupId(),getSupplier());
+        return Objects.hash(getEquId(), getEqunm(), getMno(), getSno(), getAudId(), getRemark(), getChangeBy(), getStatus(), getUpdateData(), getLat(), getLng(), getLocation(), getContrid(), getAttachments(), getType(), getBrand(), getRate(), getExpiryDate(), getManufactureDate(), getPurchaseDate(), getBarcode(), getEquipment_group(), getImage(),getInstalledDate(),getServIntvalType(),getServIntvalValue(),getLastJobDate(),getEquStatus(),getStatusUpdateDate(),getItemId(),getSupId(),getSupplier(),getAdr(),getCity(),getCtry(),getState(),getZip(),getSiteId());
     }
 
     @Override
@@ -363,6 +386,12 @@ public class EquArrayModel implements Parcelable {
                 ", installedDate='" + installedDate + '\'' +
                 ", parentName='" + parentName + '\'' +
                 ", usrManualDoc='" + usrManualDoc + '\'' +
+                ", usrManualDoc='" + adr + '\'' +
+                ", usrManualDoc='" + city + '\'' +
+                ", usrManualDoc='" + ctry + '\'' +
+                ", usrManualDoc='" + state + '\'' +
+                ", usrManualDoc='" + zip + '\'' +
+                ", usrManualDoc='" + siteId + '\'' +
 
                 '}';
     }
@@ -637,5 +666,53 @@ public class EquArrayModel implements Parcelable {
 
     public void setDatetime(String datetime) {
         this.datetime = datetime;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public String getCtry() {
+        return ctry;
+    }
+
+    public void setCtry(String ctry) {
+        this.ctry = ctry;
+    }
+
+    public String getZip() {
+        return zip;
+    }
+
+    public void setZip(String zip) {
+        this.zip = zip;
+    }
+
+    public String getCltId() {
+        return cltId;
+    }
+
+    public void setCltId(String cltId) {
+        this.cltId = cltId;
+    }
+
+    public String getSiteId() {
+        return siteId;
+    }
+
+    public void setSiteId(String siteId) {
+        this.siteId = siteId;
     }
 }
