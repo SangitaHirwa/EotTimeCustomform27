@@ -8,7 +8,7 @@ public interface LinkEquipmentPI {
 
     void getEquipmentList(String type, String cltId, String jobId);
 
-    void getAttachedEquipmentList(String jobId, String contrId);
+    void getAttachedEquipmentList(String jobId, String contrId,boolean isReturn);
 
     void addAuditEquipment(List<String> equId, String jobId, String contrId);
 

@@ -264,6 +264,11 @@ public class JobEquipmentScanActivity extends AppCompatActivity implements ScanE
 
     }
 
+    @Override
+    public void refreshEquList(boolean isReturn) {
+
+    }
+
     private void showDialog(String msg) {
         AppUtility.alertDialog(this, LanguageController.getInstance().getMobileMsgByKey(AppConstant.dialog_error_title), msg, LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), "", () -> {
             EotApp.getAppinstance().sessionExpired();

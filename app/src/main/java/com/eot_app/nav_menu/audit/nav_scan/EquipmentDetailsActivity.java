@@ -467,13 +467,17 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
         custom_filed_txt_1.setText(equipment.getExtraField1());
         custom_filed_txt_2.setText(equipment.getExtraField2());
         supplier.setText(equipment.getSupplier());
-        if(equipment.getCltId() != null && !equipment.getCltId().equals("")) {
+        if(equipment.getCltId() != null && !equipment.getCltId().equals("0")) {
             String clientNm= AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).clientModel().getClientNmByClientId(equipment.getCltId());
             client_name_detail.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.client_name) + ":- " +clientNm);
+        }else {
+            client_name_detail.setVisibility(View.GONE);
         }
         if(equipment.getSiteId() !=null && !equipment.getSiteId().equals("")) {
             String snmBySiteId = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).sitemodel().getSnmBySiteId(equipment.getSiteId());
-            site_detail.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.site_name) + ":-" + snmBySiteId);
+            site_detail.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.project_site_name) + ":-" + snmBySiteId);
+        }else {
+            site_detail.setVisibility(View.GONE);
         }
         if( equipment.getAdr()  != null && !equipment.getAdr().equals("") ){
             clientArd = clientArd.concat(equipment.getAdr());
@@ -559,13 +563,17 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
         if(equipment.getEquId() !=null) {
             Equipment equipmentById = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).equipmentDao().getEquipmentById(equipment.getEquId());
 
-            if (equipmentById.getCltId() != null && !equipmentById.getCltId().equals("")) {
+            if (equipmentById.getCltId() != null && !equipmentById.getCltId().equals("0")) {
                 String clientNm = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).clientModel().getClientNmByClientId(equipmentById.getCltId());
                 client_name_detail.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.client_name) + ":- " + clientNm);
+            }else {
+                client_name_detail.setVisibility(View.GONE);
             }
             if (equipment.getSiteId() != null && !equipment.getSiteId().equals("")) {
                 String snmBySiteId = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).sitemodel().getSnmBySiteId(equipment.getSiteId());
-                site_detail.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.site_name) + ":-" + snmBySiteId);
+                site_detail.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.project_site_name) + ":-" + snmBySiteId);
+            }else {
+                site_detail.setVisibility(View.GONE);
             }
 
             if (equipmentById.getAdr() != null && !equipmentById.getAdr().equals("")) {
@@ -657,9 +665,12 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
         serial_no_detail.setText(equipment.getSno());
         custom_filed_txt_1.setText(equipment.getExtraField1());
         custom_filed_txt_2.setText(equipment.getExtraField2());
-        if(equipment.getCltId() != null && !equipment.getCltId().equals("")) {
+        if(equipment.getCltId() != null && !equipment.getCltId().equals("0")) {
            String clientNm= AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).clientModel().getClientNmByClientId(equipment.getCltId());
             client_name_detail.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.client_name) + ":- " +clientNm);
+        }else {
+            client_name_detail.setVisibility(View.GONE);
+            site_detail.setVisibility(View.GONE);
         }
         if( equipment.getAdr()  != null && !equipment.getAdr().equals("") ){
             clientArd =  clientArd.concat(equipment.getAdr());

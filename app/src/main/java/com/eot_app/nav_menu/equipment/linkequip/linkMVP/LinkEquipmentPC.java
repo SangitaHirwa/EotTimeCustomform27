@@ -117,7 +117,7 @@ public class LinkEquipmentPC implements LinkEquipmentPI {
                             } else {
                                 index = 0;
                                 count = 0;
-                                getAttachedEquipmentList(jobId, "");
+                                getAttachedEquipmentList(jobId, "",false);
                             }
                             view.showHideProgressBar(false);
                         }
@@ -127,7 +127,7 @@ public class LinkEquipmentPC implements LinkEquipmentPI {
     }
 
     @Override
-    public void getAttachedEquipmentList(String jobId, final String contrId) {
+    public void getAttachedEquipmentList(String jobId, final String contrId, boolean isReturn) {
 
         if (AppUtility.isInternetConnected()) {
 
@@ -180,7 +180,7 @@ public class LinkEquipmentPC implements LinkEquipmentPI {
                         public void onComplete() {
                             if ((updateindex + updatelimit) <= count) {
                                 updateindex += updatelimit;
-                                getAttachedEquipmentList(jobId,contrId);
+                                getAttachedEquipmentList(jobId,contrId,false);
                             } else {
                                 if (count != 0) {
                                     if(App_preference.getSharedprefInstance().getJobStartSyncTime().isEmpty()
@@ -202,6 +202,9 @@ public class LinkEquipmentPC implements LinkEquipmentPI {
                                 updateindex = 0;
                                 count = 0;
                                 AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().deleteJobByIsDelete();
+                            }
+                            if(isReturn){
+                                view.refreshEquList(isReturn);
                             }
                             mergeTheListForLinkedEquipment(!TextUtils.isEmpty(contrId));
                         }
@@ -361,7 +364,7 @@ public class LinkEquipmentPC implements LinkEquipmentPI {
                             } else {
                                 index = 0;
                                 count = 0;
-                                getAttachedEquipmentList(req.getJobId(), req.getContrId());
+                                getAttachedEquipmentList(req.getJobId(), req.getContrId(),false);
                             }
                         }
                     });

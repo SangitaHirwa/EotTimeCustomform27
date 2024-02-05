@@ -18,4 +18,5 @@ public interface LinkEquipmentView {
     void setEquStatusList(List<EquipmentStatus> list);
 
     void updateLinkUnlinkEqu();
+    void refreshEquList(boolean isReturn);
 }
