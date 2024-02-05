@@ -337,6 +337,7 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
             ll_attachment.setVisibility(View.GONE);
             setLists();
         }
+
     }
 
     private void filterJobServices() {
@@ -1818,6 +1819,7 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
                 case "7":
                 case "1":
                 case "12":
+                case "":
                     if (quesRspncModelList.get(i).getAns() != null && quesRspncModelList.get(i).getAns().size() > 0) {
                         if (quesRspncModelList.get(i).getType().equals("5")) {
                             if (!TextUtils.isEmpty(quesRspncModelList.get(i).getAns().get(0).getValue())) {
@@ -1845,7 +1847,7 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
                             if (TextUtils.isEmpty(ans))
                                 isMandatoryNotFill = true;
 
-                        AnswerModel answerModel = new AnswerModel(key, ans);
+                        AnswerModel answerModel = new AnswerModel(quesRspncModelList.get(i).getAns().get(0).getKey(), ans);
                         ansArrayList.add(answerModel);
                         answer = new Answer(quesRspncModelList.get(i).getJtId(),quesRspncModelList.get(i).getQueId(),
                                 quesRspncModelList.get(i).getType(), ansArrayList);
@@ -1882,6 +1884,12 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
                         answerArrayList.add(answer);
                     }
                     break;
+                case "13":
+                    if (quesRspncModelList.get(i).getAttachmentsList().size() == 0)
+                        if (quesRspncModelList.get(i).getMandatory().equals("1"))
+                            isMandatoryNotFill = true;
+                    break;
+
             }
         }
     }
