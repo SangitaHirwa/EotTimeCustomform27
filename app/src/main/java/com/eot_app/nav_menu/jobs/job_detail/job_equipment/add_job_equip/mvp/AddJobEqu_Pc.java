@@ -301,7 +301,6 @@ public class AddJobEqu_Pc implements AddJobEqu_Pi {
                         @Override
                         public void onNext(JsonObject jsonObject) {
                             if (jsonObject.get("success").getAsBoolean()) {
-                                updateEquipmentCount(addEquReq.getJobId());
                                 updateJobItemData(addEquReq.getJobId(), LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
 
                             } else if (jsonObject.get("statusCode") != null && jsonObject.get("statusCode").getAsString().equals(AppConstant.SESSION_EXPIRE)) {
@@ -316,11 +315,12 @@ public class AddJobEqu_Pc implements AddJobEqu_Pi {
                         public void onError(Throwable e) {
                             Log.e("TAG : error----", e.getMessage());
                             AppUtility.progressBarDissMiss();
-                            addJobEquView.finishActivity();
+//                            addJobEquView.finishActivity();
                         }
 
                         @Override
                         public void onComplete() {
+                            updateEquipmentCount(addEquReq.getJobId());
                             AppUtility.progressBarDissMiss();
                             Log.e("TAG onComplete------", "onComplete");
                         }
@@ -406,6 +406,7 @@ public class AddJobEqu_Pc implements AddJobEqu_Pi {
                                 count = 0;
                                 AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().deleteJobByIsDelete();
                             }
+                            addJobEquView.finishActivity();
                         }
                     });
         }

@@ -302,6 +302,15 @@ public class ActivityLinkEquipment extends AppCompatActivity implements View.OnC
 
     }
 
+    @Override
+    public void refreshEquList(boolean isReturn) {
+        if (isReturn) {
+            Intent intent=new Intent();
+            setResult(RESULT_OK,intent);
+            finish();
+        }
+    }
+
     @SuppressLint("SetTextI18n")
     @Override
     public void setEquipmentList(List<EquArrayModel> list) {
@@ -348,8 +357,11 @@ public class ActivityLinkEquipment extends AppCompatActivity implements View.OnC
 
         if(isReturn) {
             onBackPressed();
+        if(equiAdd){
+            linkEquipmentPI.getAttachedEquipmentList(id,contrId,isReturn);
         }
     }
+
 
     @Override
     public void onSessionExpired(String message) {

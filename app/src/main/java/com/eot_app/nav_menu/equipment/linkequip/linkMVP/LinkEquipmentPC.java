@@ -109,7 +109,9 @@ public class LinkEquipmentPC implements LinkEquipmentPI {
                             } else {
                                 index = 0;
                                 count = 0;
-                                getAttachedEquipmentList(audId, "");
+
+                                getAttachedEquipmentList(jobId, "",false);
+
                             }
                             view.showHideProgressBar(false);
                         }
@@ -119,7 +121,8 @@ public class LinkEquipmentPC implements LinkEquipmentPI {
     }
 
     @Override
-    public void getAttachedEquipmentList(String audId, final String contrId) {
+    public void getAttachedEquipmentList(String jobId, final String contrId, boolean isReturn) {
+
         if (AppUtility.isInternetConnected()) {
             if (updateindex == 0) listLinked.clear();
             HashMap<String, String> auditListRequestModel = new HashMap<>();
@@ -171,12 +174,37 @@ public class LinkEquipmentPC implements LinkEquipmentPI {
                         public void onComplete() {
                             if ((updateindex + updatelimit) <= countlimit) {
                                 updateindex += updatelimit;
-                            } else {
-                                updateindex = 0;
-                                countlimit = 0;
-                                mergeTheListForLinkedEquipment(!TextUtils.isEmpty(contrId));
 
+                                getAttachedEquipmentList(jobId,contrId,false);
+
+                            } else {
+                                if (count != 0) {
+                                    if(App_preference.getSharedprefInstance().getJobStartSyncTime().isEmpty()
+                                            &&startJobSyncTime!=null && !startJobSyncTime.isEmpty()){
+//                                        App_preference.getSharedprefInstance().setJobSyncTime(AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT));
+                                        App_preference.getSharedprefInstance().setJobSyncTime(startJobSyncTime);
+                                        Log.v("MainSync","startJobSyncTime JobList"+" --" +App_preference.getSharedprefInstance().getJobSyncTime());
+                                    }
+                                    else if(App_preference.getSharedprefInstance().getJobStartSyncTime().isEmpty()){
+//                                        App_preference.getSharedprefInstance().setJobSyncTime(AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT));
+                                        App_preference.getSharedprefInstance().setJobSyncTime(startJobSyncTime);
+                                        Log.v("MainSync","startJobSyncTime JobList"+" --" +App_preference.getSharedprefInstance().getJobSyncTime());
+                                    }
+                                    else {
+                                        App_preference.getSharedprefInstance().setJobSyncTime(App_preference.getSharedprefInstance().getJobStartSyncTime());
+                                    }
+//                                    App_preference.getSharedprefInstance().setJobSyncTime(AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT));
+                                }
+                                updateindex = 0;
+                                count = 0;
+                                AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().deleteJobByIsDelete();
                             }
+
+                            if(isReturn){
+                                view.refreshEquList(isReturn);
+                            }
+                            mergeTheListForLinkedEquipment(!TextUtils.isEmpty(contrId));
+
                         }
                     });
         } else {
@@ -329,7 +357,7 @@ public class LinkEquipmentPC implements LinkEquipmentPI {
                             } else {
                                 index = 0;
                                 count = 0;
-                                getAttachedEquipmentList(req.getJobId(), req.getContrId());
+                                getAttachedEquipmentList(req.getJobId(), req.getContrId(),false);
                             }
                         }
                     });
