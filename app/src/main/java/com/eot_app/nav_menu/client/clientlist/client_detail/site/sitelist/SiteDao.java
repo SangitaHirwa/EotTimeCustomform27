@@ -84,5 +84,9 @@ public interface SiteDao {
     // to set the is active param as 1 for all the previously stored contacts and make all as enabeld by default
     @Query("update Site_model set isactive = 1")
     void updateSiteAsEnabled();
+
+    @Query("select snm from Site_model where siteId = :siteId ")
+    String getSnmBySiteId(String siteId);
+
 }
 

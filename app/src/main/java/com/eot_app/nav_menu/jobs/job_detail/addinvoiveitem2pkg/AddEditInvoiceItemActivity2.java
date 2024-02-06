@@ -1196,13 +1196,15 @@ public class AddEditInvoiceItemActivity2 extends
             edt_item_supplier.setText(AppUtility.getRoundoff_amount(itemselected.getSupplierCost()));
         }
         if(getDisCalculationType.equals("1")) {
+            if(itemselected.getDiscount().isEmpty()){
+                itemselected.setDiscount("0");
+            }
             double calculaterateDis = 0;
                 double qty = Double.parseDouble(edt_item_qty.getText().toString());
                 double rate = Double.parseDouble(edt_item_rate.getText().toString());
                 double dis = Double.parseDouble(itemselected.getDiscount());
                 calculaterateDis = (rate * qty * dis) / 100;
             edt_item_disc.setText(AppUtility.getRoundoff_amount(""+calculaterateDis));
-
         }else
         {
             edt_item_disc.setText(AppUtility.getRoundoff_amount(itemselected.getDiscount()));

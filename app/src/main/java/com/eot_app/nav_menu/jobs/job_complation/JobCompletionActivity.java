@@ -13,6 +13,8 @@ import android.os.Handler;
 import android.os.Looper;
 import android.provider.MediaStore;
 import android.text.Editable;
+import android.text.Html;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -337,6 +339,7 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
             ll_attachment.setVisibility(View.GONE);
             setLists();
         }
+
     }
 
     private void filterJobServices() {
@@ -1534,8 +1537,10 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
         else if (type == 3
                 &&  jobData.getDes() != null
                 && !jobData.getDes().isEmpty()){
-            s=AppUtility.html2text(getJobData().getDes());
-            stringBuffer.append(" " + s);
+            Spanned spannedText = Html.fromHtml(getJobData().getDes());
+            String plainText = TextUtils.replace(spannedText, new String[] {"<br>"}, new CharSequence[] {"\n"}).toString();
+            /*  s=AppUtility.html2text(getJobData().getDes());*/
+            stringBuffer.append(" " + plainText);
         } else if (type==4)
             stringBuffer.append(" "+AppUtility.getCurrentDateByFormats(AppConstant.DATE_FORMAT+" hh:mm a"));
 
@@ -1822,6 +1827,7 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
                 case "7":
                 case "1":
                 case "12":
+                case "":
                     if (quesRspncModelList.get(i).getAns() != null && quesRspncModelList.get(i).getAns().size() > 0) {
                         if (quesRspncModelList.get(i).getType().equals("5")) {
                             if (!TextUtils.isEmpty(quesRspncModelList.get(i).getAns().get(0).getValue())) {
@@ -1849,7 +1855,7 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
                             if (TextUtils.isEmpty(ans))
                                 isMandatoryNotFill = true;
 
-                        AnswerModel answerModel = new AnswerModel(key, ans);
+                        AnswerModel answerModel = new AnswerModel(quesRspncModelList.get(i).getAns().get(0).getKey(), ans);
                         ansArrayList.add(answerModel);
                         answer = new Answer(quesRspncModelList.get(i).getJtId(),quesRspncModelList.get(i).getQueId(),
                                 quesRspncModelList.get(i).getType(), ansArrayList);
@@ -1886,6 +1892,12 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
                         answerArrayList.add(answer);
                     }
                     break;
+                case "13":
+                    if (quesRspncModelList.get(i).getAttachmentsList().size() == 0)
+                        if (quesRspncModelList.get(i).getMandatory().equals("1"))
+                            isMandatoryNotFill = true;
+                    break;
+
             }
         }
     }

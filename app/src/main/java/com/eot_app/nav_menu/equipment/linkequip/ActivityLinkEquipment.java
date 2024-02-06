@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -42,6 +43,7 @@ import com.eot_app.nav_menu.equipment.linkequip.linkMVP.LinkEquipmentPI;
 import com.eot_app.nav_menu.equipment.linkequip.linkMVP.LinkEquipmentView;
 import com.eot_app.nav_menu.equipment.linkequip.linkMVP.model.ContractEquipmentReq;
 import com.eot_app.nav_menu.jobs.job_db.EquArrayModel;
+import com.eot_app.nav_menu.jobs.job_detail.job_equipment.JobEquipmentActivity;
 import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.AppUtility;
 import com.eot_app.utility.EotApp;
@@ -89,7 +91,7 @@ public class ActivityLinkEquipment extends AppCompatActivity implements View.OnC
 
         type = getIntent().getStringExtra("type");
         cltId = getIntent().getStringExtra("cltId");
-        id = getIntent().getStringExtra("id");
+        id = getIntent().getStringExtra("idJob");
         contrId = getIntent().getStringExtra("contrId");
         siteId=getIntent().getStringExtra("siteid");
 
@@ -197,7 +199,7 @@ public class ActivityLinkEquipment extends AppCompatActivity implements View.OnC
                     contrId = tempContrId;
                 }
                 setContractMsg(contractMsg);
-                refreshEquipmentList(false);
+                refreshEquipmentList(false,false);
             }
 
             @Override
@@ -302,6 +304,15 @@ public class ActivityLinkEquipment extends AppCompatActivity implements View.OnC
 
     }
 
+    @Override
+    public void refreshEquList(boolean isReturn) {
+        if (isReturn) {
+            Intent intent=new Intent();
+            setResult(RESULT_OK,intent);
+            finish();
+        }
+    }
+
     @SuppressLint("SetTextI18n")
     @Override
     public void setEquipmentList(List<EquArrayModel> list) {
@@ -341,15 +352,15 @@ public class ActivityLinkEquipment extends AppCompatActivity implements View.OnC
     }
 
     @Override
-    public void refreshEquipmentList(boolean isReturn) {
+    public void refreshEquipmentList(boolean isReturn,boolean equiAdd) {
         if (TextUtils.isEmpty(contrId))
             linkEquipmentPI.getEquipmentList(type, cltId, id);
         else linkEquipmentPI.getContractList(new ContractEquipmentReq(type, id, contrId));
-
-        if(isReturn) {
-            onBackPressed();
+        if(equiAdd){
+            linkEquipmentPI.getAttachedEquipmentList(id,contrId,isReturn);
         }
     }
+
 
     @Override
     public void onSessionExpired(String message) {
@@ -378,7 +389,6 @@ public class ActivityLinkEquipment extends AppCompatActivity implements View.OnC
 
     @Override
     public void onEquipmentSelected(List<String> linkedEquipments) {
-        setResult(RESULT_OK);
         save_btn.setVisibility(View.VISIBLE);
         this.linkedEquipments.clear();
         this.linkedEquipments=linkedEquipments;
