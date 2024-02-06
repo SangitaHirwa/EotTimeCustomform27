@@ -267,7 +267,7 @@ public class DocumentsFragment extends Fragment implements Doc_Attch_View, Docum
     }
 
     @Override
-    public void setMultiList(ArrayList<Attachments> getFileList_res, String isAttachCompletionNotes, boolean firstCall, int parentPositon, int position) {
+    public void setMultiList(ArrayList<Attachments> getFileList_res, String isAttachCompletionNotes, boolean firstCall, int parentPositon, int position, String queId, String jtId) {
         AppDataBase.getInMemoryDatabase(getActivity()).attachments_dao().insertAttachments(getFileList_res);
         AppDataBase.getInMemoryDatabase(getActivity()).attachments_dao().deleteAttachments();
         documentListAdapter.updateFileList((ArrayList<Attachments>) AppDataBase.getInMemoryDatabase(getActivity()).attachments_dao().getAllAttachmentsOfJob(jobId),true);
@@ -784,7 +784,7 @@ public class DocumentsFragment extends Fragment implements Doc_Attch_View, Docum
         switch (apiName) {
             case Service_apis.upload_document:
                          if(doc_attch_pi != null) {
-                             doc_attch_pi.getMultiAttachFileList(jobId,  App_preference.getSharedprefInstance().getLoginRes().getUsrId(), "",true,-1,-1);
+                             doc_attch_pi.getMultiAttachFileList(jobId,  App_preference.getSharedprefInstance().getLoginRes().getUsrId(), "",true,-1,-1,"0","0");
                          }
                             break;
                          }

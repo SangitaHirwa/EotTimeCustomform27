@@ -260,7 +260,7 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
     @Override
     public void uploadDocDelete(String msg) {
 //        doc_attch_pi.getAttachFileList(jobId, App_preference.getSharedprefInstance().getLoginRes().getUsrId(), "6",true);
-        doc_attch_pi.getMultiAttachFileList(jobId, App_preference.getSharedprefInstance().getLoginRes().getUsrId(), "6",true,parentPositon,position);
+        doc_attch_pi.getMultiAttachFileList(jobId, App_preference.getSharedprefInstance().getLoginRes().getUsrId(), "6",true,parentPositon,position, "0","0");
     }
 
 
@@ -741,10 +741,10 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
     }
 
     @Override
-    public void setMultiList(ArrayList<Attachments> attachments, String isAttachCompletionNotes, boolean firstCall, int parentPositon, int position) {
+    public void setMultiList(ArrayList<Attachments> attachments, String isAttachCompletionNotes, boolean firstCall, int parentPositon, int position, String queId, String jtId) {
         AppDataBase.getInMemoryDatabase(this).attachments_dao().insertAttachments(attachments);
         AppDataBase.getInMemoryDatabase(this).attachments_dao().deleteAttachments();
-        onDocumentSelected("","",false,parentPositon, position);
+        onDocumentSelected("","",false,parentPositon, position, queId, jtId);
     }
 
     @Override
@@ -1360,7 +1360,7 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
 //                        updateList.add(obj);
                         String isAttach = data.getStringExtra("isAttach");
                         isFileImage = data.getBooleanExtra("isFileImage", false);
-                        onDocumentSelected("","",false,parentPositon, position);
+                        onDocumentSelected("","",false,parentPositon, position,this.queId, this.jtId);
                         if (isAttach.equals("1") && isFileImage) {
 //                            CompletionFormAdapter.DefaultViewHolder defaultViewHolderr = (CompletionFormAdapter.DefaultViewHolder) completionRecyclerView.findViewHolderForAdapterPosition(competionNotesPostion);
 //                            desc.append(defaultViewHolderr.compedt.getText().toString().trim());
@@ -1384,7 +1384,7 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
 //                                        data.getStringExtra("desc"),
 //                                        data.getStringExtra("type"),
 //                                        data.getStringExtra("isAttach"));
-                                OfflineDataController.getInstance().addInOfflineDB(Service_apis.upload_document, AppUtility.getParam(jobId, queId, jtId,data.getStringExtra("imgPath"),
+                                OfflineDataController.getInstance().addInOfflineDB(Service_apis.upload_document, AppUtility.getParam(jobId, this.queId, this.jtId,data.getStringExtra("imgPath"),
                                         data.getStringExtra("fileName"),
                                         data.getStringExtra("desc"),
                                         data.getStringExtra("type"),
@@ -1403,9 +1403,13 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
             case CAMERA_CODE:
                 if (resultCode == RESULT_OK) {
                     try {
-                        File file = AppUtility.scaleToActualAspectRatio(captureImagePath, 1024f, 1024f);
-                        if (file != null) {
-                            imageEditing(Uri.fromFile(file), true);
+                        if(captureImagePath != null) {
+                            File file = AppUtility.scaleToActualAspectRatio(captureImagePath, 1024f, 1024f);
+                            if (file != null) {
+                                imageEditing(Uri.fromFile(file), true);
+                            }
+                        }else {
+
                         }
                     } catch (Exception e) {
                         AppCenterLogs.addLogToAppCenterOnAPIFail("JobCompletion","","onActivityResult()-->CAMERA_CODE"+e.getMessage(),"JobCompletionActivity","");
@@ -1435,14 +1439,14 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
                                 imageEditing(data.getClipData().getItemAt(0).getUri(), true);
                             }
                             else {
-                                uploadMultipleImges(data,true, jobId, queId, jtId);
+                                uploadMultipleImges(data,true, jobId, this.queId, this.jtId);
                             }
                         } else {
                             if(!isMultipleImages) {
                                 uploadFileDialog(gallery_image_Path);
                             }
                             else {
-                                uploadMultipleImges(data,false, jobId, queId, jtId);
+                                uploadMultipleImges(data,false, jobId, this.queId, this.jtId);
                             }
                         }
                     } catch (Exception e) {
@@ -1464,7 +1468,7 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
                             imageEditing(data.getData(), true);
                         } else {
                             String filename = gallery_image_Path.substring(gallery_image_Path.lastIndexOf("/") + 1);
-                            onDocumentSelected(gallery_image_Path, filename, false,parentPositon, position);
+                            onDocumentSelected(gallery_image_Path, filename, false,parentPositon, position, this.queId, this.jtId);
                         }
                     } catch (Exception e) {
                         AppCenterLogs.addLogToAppCenterOnAPIFail("JobCompletion","","onActivityResult()-->ATTACHFILE_CODE"+e.getMessage(),"JobCompletionActivity","");
@@ -1479,7 +1483,7 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
                 if (data != null && data.hasExtra("path")) {
                     String path = data.getStringExtra("path");
                     String name = data.getStringExtra("name");
-                    onDocumentSelected(path, name, true,parentPositon, position);
+                    onDocumentSelected(path, name, true,parentPositon, position, this.queId, this.jtId);
                 }
                 break;
         }
@@ -1521,7 +1525,7 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
 
     public void setUpdatedDesc(String desc) {
         if(doc_attch_pi != null) {
-            doc_attch_pi.getMultiAttachFileList(jobId, App_preference.getSharedprefInstance().getLoginRes().getUsrId(), "6",true,-1,-1);
+            doc_attch_pi.getMultiAttachFileList(jobId, App_preference.getSharedprefInstance().getLoginRes().getUsrId(), "6",true,-1,-1,"0","0");
         }
 //        StringBuffer data = new StringBuffer(compedt.getText().toString().trim());
 //        if (!TextUtils.isEmpty(desc))
@@ -1592,7 +1596,7 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
                 String fileNameExt = AppUtility.getFileNameWithExtension(PathUtils.getRealPath(this, uri));
                 String[] fileName = fileNameExt.split("\\.");
                 imgPathArray[i] = PathUtils.getRealPath(this, uri);
-                Bitmap bitmap = AppUtility.getBitmapFromPath(PathUtils.getRealPath(this, uri));
+//                Bitmap bitmap = AppUtility.getBitmapFromPath(PathUtils.getRealPath(this, uri));
 //                String bitmapString = AppUtility.BitMapToString(bitmap);
 //                Attachments obj=new Attachments("0",fileNameExt,fileNameExt,bitmap);
 //                ArrayList<Attachments> getFileList_res =new ArrayList<>();
@@ -1605,7 +1609,7 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
                 AppDataBase.getInMemoryDatabase(this).attachments_dao().insertSingleAttachments(attachments);
 
                 new Handler(Looper.getMainLooper()).post(()->{
-                    onDocumentSelected("","",false,parentPositon,position);
+                    onDocumentSelected("","",false,parentPositon,position,queId,jtId);
                 });
             }
             new Handler(Looper.getMainLooper()).post(()->{
@@ -1648,11 +1652,11 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
     }
 
     @Override
-    public void updateMultiDoc(String apiName, String jobId, int parentPositon, int position) {
+    public void updateMultiDoc(String apiName, String jobId, int parentPositon, int position, String queId, String jtId) {
         switch (apiName) {
             case Service_apis.upload_document:
                 if(doc_attch_pi != null) {
-                    doc_attch_pi.getMultiAttachFileList(jobId, App_preference.getSharedprefInstance().getLoginRes().getUsrId(), "6",true, parentPositon, position);
+                    doc_attch_pi.getMultiAttachFileList(jobId, App_preference.getSharedprefInstance().getLoginRes().getUsrId(), "6",true, parentPositon, position,queId, jtId);
                 }
                 break;
         }
@@ -1689,7 +1693,7 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
         }
     }
 
-    public void onDocumentSelected(String path, String name, boolean isImage, int parentPositon, int position) {
+    public void onDocumentSelected(String path, String name, boolean isImage, int parentPositon, int position, String queId, String jtId) {
         Log.e("AdapterPostion",""+position);
         this.parentPositon = parentPositon;
         this.position = position;

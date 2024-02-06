@@ -192,9 +192,9 @@ public class EotApp extends Application implements Application.ActivityLifecycle
         this.notifyForMultiDocAddForAttach = notifyForMultiDocAddForAttach;
     }
 
-    public void getAddMultiDocObserver(String apiName, String jobId, int parentPostion, int postion){
+    public void getAddMultiDocObserver(String apiName, String jobId, int parentPostion, int postion, String queId, String jtId){
         if(this.notifyForMultiDocAdd != null){
-            notifyForMultiDocAdd.updateMultiDoc(apiName, jobId, parentPostion, postion);
+            notifyForMultiDocAdd.updateMultiDoc(apiName, jobId, parentPostion, postion, queId, jtId);
         }
     }
     public void getAddJobObserver(String tempId,String jobId) {

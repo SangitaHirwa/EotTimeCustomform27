@@ -706,7 +706,7 @@ public class JobCardViewActivity extends AppCompatActivity  implements
     }
 
     @Override
-    public void setMultiList(ArrayList<Attachments> getFileList_res, String isAttachCompletionNotes, boolean firstCall, int parentPositon, int position) {
+    public void setMultiList(ArrayList<Attachments> getFileList_res, String isAttachCompletionNotes, boolean firstCall, int parentPositon, int position, String queId, String jtId) {
 
     }
 

@@ -13,7 +13,7 @@ public interface Doc_Attch_View {
     void selectFilesForCompletion(boolean isCompletion);
 
     void setList(ArrayList<Attachments> getFileList_res, String isAttachCompletionNotes, boolean firstCall);
-    void setMultiList(ArrayList<Attachments> getFileList_res, String isAttachCompletionNotes, boolean firstCall, int parentPosition, int position);
+    void setMultiList(ArrayList<Attachments> getFileList_res, String isAttachCompletionNotes, boolean firstCall, int parentPosition, int position, String queId, String jtId);
     void addNewItemToAttachmentList(ArrayList<Attachments> getFileList_res, String isAttachCompletionNotes);
 
     void addView();

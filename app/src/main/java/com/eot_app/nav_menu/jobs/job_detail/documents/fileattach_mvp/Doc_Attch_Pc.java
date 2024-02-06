@@ -131,7 +131,7 @@ public class Doc_Attch_Pc implements Doc_Attch_Pi {
 
     }
  @Override
-    public void getMultiAttachFileList(final String jobId, final String usrId, final String type, boolean firstCall, int parentPosition, int position) {
+    public void getMultiAttachFileList(final String jobId, final String usrId, final String type, boolean firstCall, int parentPosition, int position,String queId, String jtId) {
      startAttachmetSyncTime=AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT);
      App_preference.getSharedprefInstance().setAttachmentStartSyncTime(startAttachmetSyncTime);
      JobListRequestModel jobListRequestModel = new JobListRequestModel(Integer.parseInt(usrId), updatelimit, updateindex, App_preference.getSharedprefInstance().getAttachmentStartSyncTime(), jobId);
@@ -162,10 +162,10 @@ public class Doc_Attch_Pc implements Doc_Attch_Pi {
                                         Type listType = new TypeToken<List<Attachments>>() {
                                         }.getType();
                                         ArrayList<Attachments> attachments = new Gson().fromJson(convert, listType);
-                                        doc_attch_view.setMultiList(attachments, "",firstCall, parentPosition, position);
+                                        doc_attch_view.setMultiList(attachments, "",firstCall, parentPosition, position,queId, jtId);
                                     } else {
                                         doc_attch_view.addView();
-                                        doc_attch_view.setMultiList(new ArrayList<Attachments>(), "",firstCall, parentPosition, position);
+                                        doc_attch_view.setMultiList(new ArrayList<Attachments>(), "",firstCall, parentPosition, position, queId, jtId);
                                     }
                                 } else if (jsonObject.get("statusCode") != null && jsonObject.get("statusCode").getAsString().equals(AppConstant.SESSION_EXPIRE)) {
                                     doc_attch_view.onSessionExpire(LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
@@ -186,7 +186,7 @@ public class Doc_Attch_Pc implements Doc_Attch_Pi {
                                 //  AppUtility.progressBarDissMiss();
                                 if ((updateindex + updatelimit) <= count) {
                                     updateindex += updatelimit;
-                                    getMultiAttachFileList(jobId, usrId, type,false,parentPosition,position);
+                                    getMultiAttachFileList(jobId, usrId, type,false,parentPosition,position,queId, jtId);
                                 }else {
                                     if (count != 0) {
                                         if(App_preference.getSharedprefInstance().getAttachmentStartSyncTime().isEmpty()

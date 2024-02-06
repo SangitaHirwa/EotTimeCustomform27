@@ -330,12 +330,13 @@ public class OfflineDataController {
     private void updateDocument(Offlinetable data, JsonObject obj){
         MultiDocUpdateRequest multiDocUpdateRequest = new Gson().fromJson(data.getParams(), MultiDocUpdateRequest.class);
         AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).attachments_dao().deleteAttachmentById("TempAttach-"+multiDocUpdateRequest.getFinalFname());
+        Log.e("Delete ====","TempAttach-"+multiDocUpdateRequest.getFinalFname());
         if(multiDocUpdateRequest.isLastCall()) {
             if(multiDocUpdateRequest.isAttachmentSection()){
                 EotApp.getAppinstance().getNotifyForMultiDocAddForAttach(data.getService_name(), multiDocUpdateRequest.getJob_Id());
             }
             else {
-                EotApp.getAppinstance().getAddMultiDocObserver(data.getService_name(), multiDocUpdateRequest.getJob_Id(), multiDocUpdateRequest.getParentPostion(), multiDocUpdateRequest.getPosition());
+                EotApp.getAppinstance().getAddMultiDocObserver(data.getService_name(), multiDocUpdateRequest.getJob_Id(), multiDocUpdateRequest.getParentPostion(), multiDocUpdateRequest.getPosition(), multiDocUpdateRequest.getQue_Id(), multiDocUpdateRequest.getJtId());
             }
         }
     }

@@ -2,6 +2,7 @@ package com.eot_app.nav_menu.jobs.job_complation;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -125,6 +126,11 @@ public class JobCompletionAdpter extends RecyclerView.Adapter<RecyclerView.ViewH
 
             final String ext = fileList.getImage_name().substring((fileList.getImage_name()                       .lastIndexOf(".")) + 1).toLowerCase();
             if (!ext.isEmpty()) {
+                if(fileList.getAttachmentId().contains("TempAttach-") && fileList.getAttachThumnailFileName() != null){
+                    Glide.with(context).load(fileList.getAttachThumnailFileName())
+                            .format(DecodeFormat.PREFER_ARGB_8888)
+                            .thumbnail(Glide.with(context).load(R.raw.loader_eot)).placeholder(R.drawable.picture).into(holder.image_thumb_nail);
+                }else
                 if (ext.equals("jpg") || ext.equals("jpeg") || ext.equals("png")) {
 
                     if(fileList.getAttachmentId().equalsIgnoreCase("0")&&fileList.getBitmap1()!=null)
@@ -161,7 +167,7 @@ public class JobCompletionAdpter extends RecyclerView.Adapter<RecyclerView.ViewH
                     holder.image_thumb_nail.setImageResource(R.drawable.doc);
                     holder.image_thumb_nail.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
                 }
-                if(fileList.getAttachmentId().equalsIgnoreCase("0") || fileList.getBitmap()!= null && !fileList.getBitmap().isEmpty())
+                if(fileList.getAttachmentId().equalsIgnoreCase("0") || fileList.getBitmap()!= null && !fileList.getBitmap().isEmpty() || fileList.getAttachmentId().contains("TempAttach-"))
                 {
                     holder.image_loader.setVisibility(View.VISIBLE);
                     Glide.with(context).load("")

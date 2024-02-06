@@ -1196,7 +1196,7 @@ public class DetailFragment extends Fragment
 
     @Override
     public void setList(ArrayList<Attachments> getFileList_res, String isAttachCommpletionNotes) {
-//        (jobCompletionAdpter).updateFileList(getFileList_res);
+        (jobCompletionAdpter).updateFileList(getFileList_res);
     }
 
     @SuppressLint("SetTextI18n")
@@ -3120,6 +3120,7 @@ public void setCompletionDetail(){
 //                }else {
 //                    setOfflineData();
 //                }
+                addComplationButtonTxt();
             } catch (Exception e) {
                 e.printStackTrace();
             }

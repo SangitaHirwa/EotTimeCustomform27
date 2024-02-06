@@ -94,6 +94,11 @@ public class CompletionAdpterJobDteails1 extends RecyclerView.Adapter<Completion
         final String ext = fileList.getImage_name().substring((fileList.getImage_name().lastIndexOf(".")) + 1).toLowerCase();
         if (!ext.isEmpty()) {
             if (ext.equals("jpg") || ext.equals("jpeg") || ext.equals("png")) {
+                if(fileList.getAttachmentId().contains("TempAttach-") && fileList.getAttachThumnailFileName() != null){
+                    Glide.with(context).load(fileList.getAttachThumnailFileName())
+                            .format(DecodeFormat.PREFER_ARGB_8888)
+                            .thumbnail(Glide.with(context).load(R.raw.loader_eot)).placeholder(R.drawable.picture).into(viewHolder.image_thumb_nail);
+                }else
                 if(fileList.getBitmap()!= null && !fileList.getBitmap().isEmpty()){
                     Bitmap bitmap1= AppUtility.StringToBitMap(fileList.getBitmap());
                     viewHolder.image_thumb_nail.setImageBitmap(bitmap1);
@@ -152,7 +157,7 @@ public class CompletionAdpterJobDteails1 extends RecyclerView.Adapter<Completion
 
             });
 
-            if(fileList.getAttachmentId().equalsIgnoreCase("0") || fileList.getBitmap()!= null && !fileList.getBitmap().isEmpty())
+            if(fileList.getAttachmentId().equalsIgnoreCase("0") || fileList.getBitmap()!= null && !fileList.getBitmap().isEmpty() || fileList.getAttachmentId().contains("TempAttach-"))
             {
                 viewHolder.image_loader.setVisibility(View.VISIBLE);
                 Glide.with(context).load("")
