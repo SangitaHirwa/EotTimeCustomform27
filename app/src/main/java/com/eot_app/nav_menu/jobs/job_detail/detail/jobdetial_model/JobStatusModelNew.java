@@ -119,5 +119,12 @@ public class JobStatusModelNew implements DropdownListBean, Serializable {
         return getStatus_name();
     }
 
+    @NonNull
+    public String getId() {
+        return id;
+    }
 
+    public void setId(@NonNull String id) {
+        this.id = id;
+    }
 }
