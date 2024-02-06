@@ -2910,7 +2910,16 @@ public void setCompletionDetail(){
             //  ((JobDetailActivity) getActivity()).openFormForEvent(jobstatus.getStatus_no());
             try {
                 HyperLog.i("", "Resume states found");
-                ((JobDetailActivity) requireActivity()).openFormForEvent(jobstatus.getStatus_no(),"0","");
+                if(jobstatus.getId().equals("9")) {
+                for (int i=0; i<=statusArray.length; i++){
+                    if(statusArray[i].equals(LanguageController.getInstance().getMobileMsgByKey(AppConstant.completed))){
+                        checkForIsLeader(i);
+                        break;
+                    }
+                }
+                }else {
+                    ((JobDetailActivity) requireActivity()).openFormForEvent(jobstatus.getStatus_no(),"0","");
+                }
             } catch (Exception e) {
                 e.printStackTrace();
                 HyperLog.i("", "Resume states Exception handle" + e.getMessage());
