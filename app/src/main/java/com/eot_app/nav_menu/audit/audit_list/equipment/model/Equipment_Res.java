@@ -48,7 +48,7 @@ public class Equipment_Res implements Parcelable {
     private String equipment_group;
     private String image;
     private String ecId;
-    private String isPart;
+    private String isPart = "0";
     private String extraField1;
     private String extraField2;
     private String usrManualDoc;
@@ -60,6 +60,13 @@ public class Equipment_Res implements Parcelable {
     private String lastJobDate;
     private String supId;
     private String supplier;
+    private String city;
+    private String state;
+    private String ctry;
+    private String zip;
+    private String cltId;
+    private String adr;
+    private String siteId;
 
     public String getSupId() {
         return supId;
@@ -148,6 +155,13 @@ public class Equipment_Res implements Parcelable {
         lastJobDate = in.readString();
         supId = in.readString();
         supplier = in.readString();
+        city = in.readString();
+        state = in.readString();
+        ctry = in.readString();
+        zip = in.readString();
+        cltId = in.readString();
+        adr = in.readString();
+        siteId = in.readString();
     }
 
     @Override
@@ -187,7 +201,13 @@ public class Equipment_Res implements Parcelable {
         dest.writeString(lastJobDate);
         dest.writeString(supId);
         dest.writeString(supplier);
-
+        dest.writeString(city);
+        dest.writeString(ctry);
+        dest.writeString(state);
+        dest.writeString(zip);
+        dest.writeString(cltId);
+        dest.writeString(adr);
+        dest.writeString(siteId);
     }
 
     @Override
@@ -429,5 +449,61 @@ public class Equipment_Res implements Parcelable {
 
     public void setDatetime(String datetime) {
         this.datetime = datetime;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public String getCtry() {
+        return ctry;
+    }
+
+    public void setCtry(String ctry) {
+        this.ctry = ctry;
+    }
+
+    public String getZip() {
+        return zip;
+    }
+
+    public void setZip(String zip) {
+        this.zip = zip;
+    }
+
+    public String getCltId() {
+        return cltId;
+    }
+
+    public void setCltId(String cltId) {
+        this.cltId = cltId;
+    }
+
+    public String getAdr() {
+        return adr;
+    }
+
+    public void setAdr(String adr) {
+        this.adr = adr;
+    }
+
+    public String getSiteId() {
+        return siteId;
+    }
+
+    public void setSiteId(String siteId) {
+        this.siteId = siteId;
     }
 }
