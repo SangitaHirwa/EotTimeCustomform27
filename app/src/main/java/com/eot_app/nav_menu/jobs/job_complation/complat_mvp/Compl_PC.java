@@ -62,7 +62,7 @@ public class Compl_PC implements Compl_PI {
                                 Log.e("", "");
                                 EotApp.getAppinstance().showToastmsg(LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
                                 complaView.uploadDocDelete("");
-                                EotApp.getAppinstance().getNotifyForAttchCount();
+//                                EotApp.getAppinstance().getNotifyForAttchCount();
                             } else if (jsonObject.get("statusCode") != null && jsonObject.get("statusCode").getAsString().equals(AppConstant.SESSION_EXPIRE)) {
                                 Log.e("", "");
                                 complaView.sessionexpire(LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));

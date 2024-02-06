@@ -1849,6 +1849,11 @@ public class CompletionFormAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         public void bindDefaultQuestion(QuesRspncModel question, int position, DefaultViewHolder holder) {
             holder.setIsRecyclable(false);
             QuesRspncModel finalQuestion = question;
+            if(finalQuestion.getMandatory().equals("1")){
+                tv_label_des.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.completion_note)+"*");
+            }else {
+                tv_label_des.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.completion_note));
+            }
             JobCompletionActivity jobCompletionActivity = (JobCompletionActivity) context;
             if (question.getType().equals("") && question.getType().isEmpty()) {
 

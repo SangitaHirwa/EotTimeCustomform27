@@ -362,7 +362,7 @@ public class JobDetail_pc implements JobDetail_pi {
         }
     }
 
-   /* @Override
+    @Override
     public void refreshList(String auditID, final String jobId) {
         if (AppUtility.isInternetConnected()) {
             HashMap<String, String> auditListRequestModel = new HashMap<>();
@@ -426,7 +426,7 @@ public class JobDetail_pc implements JobDetail_pi {
             getEquipmentList(jobId);
 
         }
-    }*/
+    }
 
 
     @Override
@@ -804,7 +804,7 @@ public class JobDetail_pc implements JobDetail_pi {
                                 Type listType = new TypeToken<List<Job>>() {
                                 }.getType();
                                 List<Job> data = new Gson().fromJson(convert, listType);
-                                addRecordsToDB(data, jobId);
+                                addRecordsToDB(data);
                             } else if (jsonObject.get("statusCode") != null && jsonObject.get("statusCode").getAsString().equals(AppConstant.SESSION_EXPIRE)) {
                                 view.sessionExpire(LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
                             }
@@ -849,7 +849,7 @@ public class JobDetail_pc implements JobDetail_pi {
             view.setOfflineData();
         }
     }
-    public void addRecordsToDB(List<Job> data, String jobId) {
+    public void addRecordsToDB(List<Job> data) {
         AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().inserJob(data);
 //        for add/remove listener.
         for (Job item : data) {
@@ -862,7 +862,6 @@ public class JobDetail_pc implements JobDetail_pi {
                 ChatController.getInstance().registerChatListner(item);
             }
         }
-        getEquipmentList(jobId);
         view.setOfflineData();
     }
 }

@@ -67,6 +67,4 @@ public interface ClientDao {
     @Query("select  c.cltId,c.nm,c.pymtType,c.gstNo,c.tinNo,c.industry,c.note,c.isactive,c.accid,c.acctype,c.siteId,c.snm,c.adr,c.city,c.state,c.ctry,c.conId,c.cnm,c.email,cd.mob1,cd.mob2,c.isdelete,c.tempId,c.zip,c.lat,c.lng,c.extra,c.industryName,c.referral,c.altEmail from client  as c left join contactdata  as cd on c.cltId==cd.cltId where cd.def=1  and (c.nm like:query or cd.mob1 like:query or cd.mob2 like:query) order by LOWER(nm) ASC")
     List<Client> getClientsWithMobile(String query);
 
-    @Query("select nm from Client where cltId = :cltId")
-    String getClientNmByClientId(String cltId);
 }

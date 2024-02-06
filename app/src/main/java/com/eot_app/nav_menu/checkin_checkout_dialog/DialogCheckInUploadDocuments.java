@@ -383,7 +383,7 @@ public class DialogCheckInUploadDocuments extends DialogFragment implements View
     }
 
     @Override
-    public void setMultiList(ArrayList<Attachments> getFileList_res, String isAttachCompletionNotes, boolean firstCall) {
+    public void setMultiList(ArrayList<Attachments> getFileList_res, String isAttachCompletionNotes, boolean firstCall, int parentPositon, int position) {
 
     }
 

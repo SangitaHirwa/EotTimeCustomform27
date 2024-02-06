@@ -12,6 +12,8 @@ public class MultiDocUpdateRequest {
     String isAddAttachAsCompletionNote;
     boolean lastCall;
     boolean isAttachmentSection;
+    int parentPostion;
+    int position;
 
     public MultiDocUpdateRequest(String job_Id, String file, String finalFname, String desc, String type, String isAddAttachAsCompletionNote, boolean lastCall, boolean isAttachmentSection) {
         this.job_Id = job_Id;
@@ -36,7 +38,7 @@ public class MultiDocUpdateRequest {
         this.lastCall = lastCall;
     }
 
-    public MultiDocUpdateRequest(String job_Id, String que_Id, String jtId, String file, String finalFname, String desc, String type, String isAddAttachAsCompletionNote, boolean lastCall, boolean isAttachmentSection) {
+    public MultiDocUpdateRequest(String job_Id, String que_Id, String jtId, String file, String finalFname, String desc, String type, String isAddAttachAsCompletionNote, boolean lastCall, boolean isAttachmentSection, int parentPostion, int position) {
         this.job_Id = job_Id;
         this.que_Id = que_Id;
         this.jtId = jtId;
@@ -47,6 +49,8 @@ public class MultiDocUpdateRequest {
         this.isAddAttachAsCompletionNote = isAddAttachAsCompletionNote;
         this.lastCall = lastCall;
         this.isAttachmentSection = isAttachmentSection;
+        this.parentPostion = parentPostion;
+        this.position =position;
     }
 
     public String getJob_Id() {
@@ -127,5 +131,21 @@ public class MultiDocUpdateRequest {
 
     public void setAttachmentSection(boolean attachmentSection) {
         isAttachmentSection = attachmentSection;
+    }
+
+    public int getParentPostion() {
+        return parentPostion;
+    }
+
+    public void setParentPostion(int parentPostion) {
+        this.parentPostion = parentPostion;
+    }
+
+    public int getPosition() {
+        return position;
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
     }
 }

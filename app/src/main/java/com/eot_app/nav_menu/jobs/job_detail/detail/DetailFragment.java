@@ -290,6 +290,7 @@ public class DetailFragment extends Fragment
         if (jobDetail_pi != null) {
             jobDetail_pi.getAttachFileList(mParam2.getJobId(), App_preference.getSharedprefInstance().getLoginRes().getUsrId()
                     , "6");
+            jobDetail_pi.loadFromServer(mParam2.getJobId());
         }
     }
 
@@ -1120,8 +1121,8 @@ public class DetailFragment extends Fragment
         // for equipment
 
         setEuqipmentList(mParam2.getEquArray());
-        if (jobDetail_pi != null)
-            jobDetail_pi.loadFromServer(mParam2.getJobId());
+       /* if (jobDetail_pi != null)
+            jobDetail_pi.refreshList(mParam2.getJobId(), mParam2.getJobId());*/
         // for completion details
         if (jobDetail_pi != null)
             jobDetail_pi.getJobCompletionDetails(mParam2.getJobId());
@@ -3100,7 +3101,7 @@ public void setCompletionDetail(){
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_COMPLETION_NOTE) {
             try {
-                cl_pbCompletion.setVisibility(View.VISIBLE);
+                cl_pbCompletion.setVisibility(View.GONE);
                 if (data != null && data.hasExtra("note")) {
                     if (mParam2 != null)
                         mParam2.setComplNote(data.getStringExtra("note"));
@@ -3363,7 +3364,7 @@ public void setCompletionDetail(){
 
 //            jobDetail_pi.getAttachFileList(jobId, App_preference.getSharedprefInstance().getLoginRes().getUsrId()
 //                    , "6");
-            jobDetail_pi.loadFromServer();
+            jobDetail_pi.loadFromServer(jobId);
     }
 
 

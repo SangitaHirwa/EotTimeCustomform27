@@ -194,6 +194,7 @@
             android:name=".nav_menu.jobs.job_complation.JobCompletionActivity"
             android:parentActivityName=".nav_menu.jobs.job_detail.JobDetailActivity"
             android:exported="false"
+            android:screenOrientation="portrait"
             />
         <activity
             android:name=".nav_menu.jobs.job_detail.reschedule.RescheduleActivity"

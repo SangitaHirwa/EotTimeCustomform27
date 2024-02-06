@@ -13,8 +13,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.provider.MediaStore;
 import android.text.Editable;
-import android.text.Html;
-import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -152,8 +150,8 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
     private List<QuesRspncModel> quesRspncModelList = new ArrayList<>();
     private ImageView attchmentView, deleteAttchment;
     private Button addAttchment;
-    int position = 0;
-    int parentPositon = 0;
+    int position = -1;
+    int parentPositon = -1;
     String queId, jtId;
     Map<String, List<QuesRspncModel>> groupedQuestions = new HashMap<>();
     List<QuesRspncModel> singleQuestions = new ArrayList<>();
@@ -262,7 +260,7 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
     @Override
     public void uploadDocDelete(String msg) {
 //        doc_attch_pi.getAttachFileList(jobId, App_preference.getSharedprefInstance().getLoginRes().getUsrId(), "6",true);
-        doc_attch_pi.getMultiAttachFileList(jobId, App_preference.getSharedprefInstance().getLoginRes().getUsrId(), "6",true);
+        doc_attch_pi.getMultiAttachFileList(jobId, App_preference.getSharedprefInstance().getLoginRes().getUsrId(), "6",true,parentPositon,position);
     }
 
 
@@ -339,7 +337,6 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
             ll_attachment.setVisibility(View.GONE);
             setLists();
         }
-
     }
 
     private void filterJobServices() {
@@ -457,17 +454,14 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
             case R.id.save_txt:
                 AppUtility.hideSoftKeyboard(this);
                 String complNotes ="";
-                List<Answer> compQueAns = new ArrayList<>();
                 for (QuesRspncModel item : completionFormAdapter.getTypeList()
                 ) {
-                    if(!item.getType().isEmpty()&&item.getType().equals("")) {
-                        compQueAns.add(new Answer(item.getJtId()
-                                , item.getQueId(), item.getType(), item.getAns()));
-                    }else {
                         if(item.getType().isEmpty()){
+                            if(item.getMandatory().equals("1"))
+                                if(item.getAns().get(0).getValue().isEmpty())
+                                    isMandatoryNotFill = true;
                             complNotes = item.getAns().get(0).getValue();
                         }
-                    }
                 }
 //                complPi.addEditJobComplation(jobData.getJobId(), complNotes, compQueAns);
 
@@ -475,6 +469,35 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
                 ansAnsQuesRspncModel(completionFormAdapter.getTypeList());
 
                 /**    if question is mandatory but not fill   ***/
+                for (Object item :allItem
+                     ) {
+                    if (item instanceof QuesRspncModel) {
+                        if (((QuesRspncModel) item).getType().equals("13") && ((QuesRspncModel) item).getMandatory().equals("1")){
+                            String jobId = jobData.getJobId();
+                            String queId = ((QuesRspncModel) item).getQueId();
+                            String jtId = ((QuesRspncModel) item).getJtId();
+
+                            List<Attachments> attachmentsList = AppDataBase.getInMemoryDatabase(this).attachments_dao().getAttachmentsById(jobId,queId,jtId);
+                            if (attachmentsList.size()<=0) {
+                                isMandatoryNotFill = true;
+                            }
+                    }
+                    } else if (item instanceof List) {
+                        for (QuesRspncModel listItem : (ArrayList<QuesRspncModel>) item
+                        ) {
+                            if (((QuesRspncModel) listItem).getType().equals("13") && ((QuesRspncModel) listItem).getMandatory().equals("1")){
+                                String jobId = jobData.getJobId();
+                                String queId = ((QuesRspncModel) listItem).getQueId();
+                                String jtId = ((QuesRspncModel) listItem).getJtId();
+
+                                List<Attachments> attachmentsList = AppDataBase.getInMemoryDatabase(this).attachments_dao().getAttachmentsById(jobId,queId,jtId);
+                                if (attachmentsList.size()<=0) {
+                                    isMandatoryNotFill = true;
+                                }
+                            }
+                        }
+                    }
+                }
                 if (isMandatoryNotFill) {
                     isMandatoryNotFill = false;
                     AppUtility.alertDialog(this, "", LanguageController.getInstance().getMobileMsgByKey(AppConstant.fill_all_mandatory_questions), LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), "", new Callable<Boolean>() {
@@ -490,18 +513,6 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
                         emptyAnsFieldError();
                         return;
                     }
-
-//                List<String> getfinalarray = AppDataBase.getInMemoryDatabase(this).customFormDao().getfinalarray(jobId, customFormList.getFrmId());
-//                if (getfinalarray!=null) {
-//                    for (int i = 0; i < getfinalarray.size(); i++) {
-//                        Type listType = new TypeToken<List<Answer>>() {
-//                        }.getType();
-//                        answerfinal = new Gson().fromJson(getfinalarray.get(i), listType);
-//                        if (answerfinal != null && !answerfinal.isEmpty()) {
-//                            answerArrayList.addAll(answerfinal);
-//                        }
-//                    }
-//                }
 
                 if (answerArrayList.size() > 0) {
                     Ans_Req ans_req = new Ans_Req(App_preference.getSharedprefInstance().getLoginRes().getUsrId(), answerArrayList,
@@ -730,10 +741,10 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
     }
 
     @Override
-    public void setMultiList(ArrayList<Attachments> attachments, String isAttachCompletionNotes, boolean firstCall) {
+    public void setMultiList(ArrayList<Attachments> attachments, String isAttachCompletionNotes, boolean firstCall, int parentPositon, int position) {
         AppDataBase.getInMemoryDatabase(this).attachments_dao().insertAttachments(attachments);
         AppDataBase.getInMemoryDatabase(this).attachments_dao().deleteAttachments();
-        onDocumentSelected("","",false);
+        onDocumentSelected("","",false,parentPositon, position);
     }
 
     @Override
@@ -1349,7 +1360,7 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
 //                        updateList.add(obj);
                         String isAttach = data.getStringExtra("isAttach");
                         isFileImage = data.getBooleanExtra("isFileImage", false);
-                        onDocumentSelected("","",false);
+                        onDocumentSelected("","",false,parentPositon, position);
                         if (isAttach.equals("1") && isFileImage) {
 //                            CompletionFormAdapter.DefaultViewHolder defaultViewHolderr = (CompletionFormAdapter.DefaultViewHolder) completionRecyclerView.findViewHolderForAdapterPosition(competionNotesPostion);
 //                            desc.append(defaultViewHolderr.compedt.getText().toString().trim());
@@ -1377,7 +1388,7 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
                                         data.getStringExtra("fileName"),
                                         data.getStringExtra("desc"),
                                         data.getStringExtra("type"),
-                                        data.getStringExtra("isAttach"), true, false), AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT));
+                                        data.getStringExtra("isAttach"), true, false,this.parentPositon, this.position), AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT));
                             } catch (Exception e) {
                                 AppCenterLogs.addLogToAppCenterOnAPIFail("JobCompletion","","onActivityResult()"+e.getMessage(),"JobCompletionActivity","");
 //                                if (updateList.size() == 1) {
@@ -1453,7 +1464,7 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
                             imageEditing(data.getData(), true);
                         } else {
                             String filename = gallery_image_Path.substring(gallery_image_Path.lastIndexOf("/") + 1);
-                            onDocumentSelected(gallery_image_Path, filename, false);
+                            onDocumentSelected(gallery_image_Path, filename, false,parentPositon, position);
                         }
                     } catch (Exception e) {
                         AppCenterLogs.addLogToAppCenterOnAPIFail("JobCompletion","","onActivityResult()-->ATTACHFILE_CODE"+e.getMessage(),"JobCompletionActivity","");
@@ -1468,7 +1479,7 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
                 if (data != null && data.hasExtra("path")) {
                     String path = data.getStringExtra("path");
                     String name = data.getStringExtra("name");
-                    onDocumentSelected(path, name, true);
+                    onDocumentSelected(path, name, true,parentPositon, position);
                 }
                 break;
         }
@@ -1510,7 +1521,7 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
 
     public void setUpdatedDesc(String desc) {
         if(doc_attch_pi != null) {
-            doc_attch_pi.getMultiAttachFileList(jobId, App_preference.getSharedprefInstance().getLoginRes().getUsrId(), "6",true);
+            doc_attch_pi.getMultiAttachFileList(jobId, App_preference.getSharedprefInstance().getLoginRes().getUsrId(), "6",true,-1,-1);
         }
 //        StringBuffer data = new StringBuffer(compedt.getText().toString().trim());
 //        if (!TextUtils.isEmpty(desc))
@@ -1537,10 +1548,8 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
         else if (type == 3
                 &&  jobData.getDes() != null
                 && !jobData.getDes().isEmpty()){
-            Spanned spannedText = Html.fromHtml(getJobData().getDes());
-            String plainText = TextUtils.replace(spannedText, new String[] {"<br>"}, new CharSequence[] {"\n"}).toString();
-            /*  s=AppUtility.html2text(getJobData().getDes());*/
-            stringBuffer.append(" " + plainText);
+            s=AppUtility.html2text(getJobData().getDes());
+            stringBuffer.append(" " + s);
         } else if (type==4)
             stringBuffer.append(" "+AppUtility.getCurrentDateByFormats(AppConstant.DATE_FORMAT+" hh:mm a"));
 
@@ -1596,7 +1605,7 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
                 AppDataBase.getInMemoryDatabase(this).attachments_dao().insertSingleAttachments(attachments);
 
                 new Handler(Looper.getMainLooper()).post(()->{
-                    onDocumentSelected("","",false);
+                    onDocumentSelected("","",false,parentPositon,position);
                 });
             }
             new Handler(Looper.getMainLooper()).post(()->{
@@ -1618,6 +1627,8 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
         builder.putString("queId",queId);
         builder.putString("jtId",jtId);
         builder.putBoolean("isAttachmentSection",false);
+        builder.putInt("parentPosition",parentPositon);
+        builder.putInt("position",position);
 
         mWorkManager = WorkManager.getInstance(this);
 
@@ -1637,11 +1648,11 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
     }
 
     @Override
-    public void updateMultiDoc(String apiName, String jobId) {
+    public void updateMultiDoc(String apiName, String jobId, int parentPositon, int position) {
         switch (apiName) {
             case Service_apis.upload_document:
                 if(doc_attch_pi != null) {
-                    doc_attch_pi.getMultiAttachFileList(jobId, App_preference.getSharedprefInstance().getLoginRes().getUsrId(), "6",true);
+                    doc_attch_pi.getMultiAttachFileList(jobId, App_preference.getSharedprefInstance().getLoginRes().getUsrId(), "6",true, parentPositon, position);
                 }
                 break;
         }
@@ -1678,29 +1689,32 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
         }
     }
 
-    public void onDocumentSelected(String path, String name, boolean isImage) {
+    public void onDocumentSelected(String path, String name, boolean isImage, int parentPositon, int position) {
         Log.e("AdapterPostion",""+position);
+        this.parentPositon = parentPositon;
+        this.position = position;
 
-
-        if(isShowingImg){
-            hideView(isShowingImg,jobData.getJobId(),queId,jtId,position,parentPositon);
+        if(isShowingImg || showOnlyImg){
+            hideView(isShowingImg,jobData.getJobId(),queId,jtId,this.position,this.parentPositon);
         }
-            if (completionFormAdapter != null) {
-                if (allItem.get(parentPositon) instanceof QuesRspncModel) {
-                    CompletionFormAdapter.SingleViewHolder singleViewHolder = (CompletionFormAdapter.SingleViewHolder) completionRecyclerView.findViewHolderForAdapterPosition(position);
-                    if(singleViewHolder != null) {
+        if(parentPositon != -1 || position != -1 ) {
+            if (completionFormAdapter != null && allItem.size()>0) {
+                if (allItem.get(this.parentPositon) instanceof QuesRspncModel) {
+                    CompletionFormAdapter.SingleViewHolder singleViewHolder = (CompletionFormAdapter.SingleViewHolder) completionRecyclerView.findViewHolderForAdapterPosition(this.parentPositon);
+                    if (singleViewHolder != null) {
                         singleViewHolder.jobCompletionAdpter.updateFileList((ArrayList<Attachments>) AppDataBase.getInMemoryDatabase(this).attachments_dao().getAttachmentsById(jobData.getJobId(), queId, jtId));
                     }
 //                singleViewHolder.showAttchmentView(position, path, attchmentView, deleteAttchment, addAttchment);//, attchmentView,deleteAttchment
-                } else if (allItem.get(parentPositon) instanceof List) {
-                    CompletionFormAdapter.GroupedViewHolder groupedViewHolder = (CompletionFormAdapter.GroupedViewHolder) completionRecyclerView.findViewHolderForAdapterPosition(parentPositon);
+                } else if (allItem.get(this.parentPositon) instanceof List) {
+                    CompletionFormAdapter.GroupedViewHolder groupedViewHolder = (CompletionFormAdapter.GroupedViewHolder) completionRecyclerView.findViewHolderForAdapterPosition(this.parentPositon);
 //                groupedViewHolder.questionListAdapter.showAttchmentView(position,path,attchmentView,deleteAttchment,addAttchment);
-                    if(groupedViewHolder != null) {
-                        QuestionListAdapter.ViewHolder viewHolder = (QuestionListAdapter.ViewHolder) groupedViewHolder.rv_groupItem.findViewHolderForAdapterPosition(position);
+                    if (groupedViewHolder != null) {
+                        QuestionListAdapter.ViewHolder viewHolder = (QuestionListAdapter.ViewHolder) groupedViewHolder.rv_groupItem.findViewHolderForAdapterPosition(this.position);
                         viewHolder.jobCompletionAdpter.updateFileList((ArrayList<Attachments>) AppDataBase.getInMemoryDatabase(this).attachments_dao().getAttachmentsById(jobData.getJobId(), queId, jtId));
                     }
                 }
             }
+        }
 
         this.isCompletion = false;
     }
@@ -1827,7 +1841,6 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
                 case "7":
                 case "1":
                 case "12":
-                case "":
                     if (quesRspncModelList.get(i).getAns() != null && quesRspncModelList.get(i).getAns().size() > 0) {
                         if (quesRspncModelList.get(i).getType().equals("5")) {
                             if (!TextUtils.isEmpty(quesRspncModelList.get(i).getAns().get(0).getValue())) {
@@ -1855,7 +1868,7 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
                             if (TextUtils.isEmpty(ans))
                                 isMandatoryNotFill = true;
 
-                        AnswerModel answerModel = new AnswerModel(quesRspncModelList.get(i).getAns().get(0).getKey(), ans);
+                        AnswerModel answerModel = new AnswerModel(key, ans);
                         ansArrayList.add(answerModel);
                         answer = new Answer(quesRspncModelList.get(i).getJtId(),quesRspncModelList.get(i).getQueId(),
                                 quesRspncModelList.get(i).getType(), ansArrayList);
@@ -1871,13 +1884,15 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
                         List<AnswerModel> ans1 = quesRspncModelList.get(i).getAns();
                         if (ans1 != null)
                             for (AnswerModel am : ans1) {
-                                key = am.getKey();
-                                ans = am.getValue();
-                                AnswerModel answerModel = new AnswerModel(key, ans);
-                                ansArrayList.add(answerModel);
-                                if (quesRspncModelList.get(i).getMandatory().equals("1"))
-                                    if (TextUtils.isEmpty(ans))
-                                        isMandatoryNotFill = true;
+                                    key = am.getKey();
+                                    ans = am.getValue();
+                                    if(!ans.isEmpty()) {
+                                        AnswerModel answerModel = new AnswerModel(key, ans);
+                                        ansArrayList.add(answerModel);
+                                    }
+                                    if (quesRspncModelList.get(i).getMandatory().equals("1"))
+                                        if (TextUtils.isEmpty(ans))
+                                            isMandatoryNotFill = true;
                             }
                     }
                     if (ansArrayList.size() > 0) {
@@ -1892,12 +1907,6 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
                         answerArrayList.add(answer);
                     }
                     break;
-                case "13":
-                    if (quesRspncModelList.get(i).getAttachmentsList().size() == 0)
-                        if (quesRspncModelList.get(i).getMandatory().equals("1"))
-                            isMandatoryNotFill = true;
-                    break;
-
             }
         }
     }
@@ -1932,9 +1941,14 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
         this.jtId = jtId;
         this.position = posiotion;
         this.parentPositon = parentPostion;
-       ll_attachment.setVisibility(View.VISIBLE);
+        ll_attachment.setVisibility(View.VISIBLE);
         ll_completionForm.setVisibility(View.GONE);
-        jobCompletionAdpter.updateFileList((ArrayList<Attachments>) AppDataBase.getInMemoryDatabase(this).attachments_dao().getAttachmentsById(jobId,queId,jtId),true);
+        if(showOnlyImg){
+            jobCompletionAdpter.updateFileList((ArrayList<Attachments>) AppDataBase.getInMemoryDatabase(this).attachments_dao().getAttachmentsByJobId(jobId), true);
+        }
+        else {
+            jobCompletionAdpter.updateFileList((ArrayList<Attachments>) AppDataBase.getInMemoryDatabase(this).attachments_dao().getAttachmentsById(jobId, queId, jtId), true);
+        }
 
     }
 

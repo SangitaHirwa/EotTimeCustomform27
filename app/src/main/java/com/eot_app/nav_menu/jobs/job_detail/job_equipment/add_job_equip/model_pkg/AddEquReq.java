@@ -35,7 +35,7 @@ public class AddEquReq {
     private String contrId;
     private String itemId;
     /***1 for part 0 for equipment*****/
-    private String isPart = "0";
+    private String isPart;
     private String invId = "";
     private String siteId;
     private MultipartBody.Part[] image;

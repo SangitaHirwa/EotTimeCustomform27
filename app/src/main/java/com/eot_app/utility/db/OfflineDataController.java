@@ -335,7 +335,7 @@ public class OfflineDataController {
                 EotApp.getAppinstance().getNotifyForMultiDocAddForAttach(data.getService_name(), multiDocUpdateRequest.getJob_Id());
             }
             else {
-                EotApp.getAppinstance().getAddMultiDocObserver(data.getService_name(), multiDocUpdateRequest.getJob_Id());
+                EotApp.getAppinstance().getAddMultiDocObserver(data.getService_name(), multiDocUpdateRequest.getJob_Id(), multiDocUpdateRequest.getParentPostion(), multiDocUpdateRequest.getPosition());
             }
         }
     }
