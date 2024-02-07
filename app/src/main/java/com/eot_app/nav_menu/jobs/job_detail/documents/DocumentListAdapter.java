@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DecodeFormat;
 import com.eot_app.R;
 import com.eot_app.nav_menu.jobs.job_complation.JobCompletionActivity;
 import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.Attachments;
@@ -159,6 +160,11 @@ public class DocumentListAdapter extends RecyclerView.Adapter<DocumentListAdapte
 
         if (!ext.isEmpty()) {
             if (ext.equals("jpg") || ext.equals("jpeg") || ext.equals("png")) {
+                if(fileList.getAttachmentId().contains("TempAttach-") && fileList.getAttachThumnailFileName() != null){
+                    Glide.with(context).load(fileList.getAttachThumnailFileName())
+                            .format(DecodeFormat.PREFER_ARGB_8888)
+                            .thumbnail(Glide.with(context).load(R.raw.loader_eot)).placeholder(R.drawable.picture).into(holder.image_thumb_nail);
+                }else
                 if(fileList.getAttachmentId().equalsIgnoreCase("0")&&fileList.getBitmap1()!=null)
                 {
                     holder.image_thumb_nail.setImageBitmap(fileList.getBitmap1());
@@ -193,7 +199,7 @@ public class DocumentListAdapter extends RecyclerView.Adapter<DocumentListAdapte
                 holder.image_thumb_nail.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
             }
 
-            if(fileList.getAttachmentId().equalsIgnoreCase("0") || fileList.getBitmap() != null && !fileList.getBitmap().isEmpty())
+            if(fileList.getAttachmentId().equalsIgnoreCase("0") || fileList.getBitmap() != null && !fileList.getBitmap().isEmpty() || fileList.getAttachmentId().contains("TempAttach-"))
             {
                 holder.image_loader.setVisibility(View.VISIBLE);
                 Glide.with(context).load("")
