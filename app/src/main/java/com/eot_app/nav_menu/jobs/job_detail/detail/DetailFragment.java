@@ -1196,7 +1196,14 @@ public class DetailFragment extends Fragment
 
     @Override
     public void setList(ArrayList<Attachments> getFileList_res, String isAttachCommpletionNotes) {
-        (jobCompletionAdpter).updateFileList(getFileList_res);
+        if(isAttachCommpletionNotes.equals("6")){
+            if(jobDetail_pi != null) {
+                jobDetail_pi.loadFromServer(mParam2.getJobId());
+            }
+        }
+        if(jobCompletionAdpter != null) {
+            (jobCompletionAdpter).updateFileList(getFileList_res);
+        }
     }
 
     @SuppressLint("SetTextI18n")

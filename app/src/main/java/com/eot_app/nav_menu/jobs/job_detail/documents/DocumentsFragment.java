@@ -41,6 +41,7 @@ import androidx.work.WorkManager;
 import com.eot_app.R;
 import com.eot_app.home_screens.MainActivity;
 import com.eot_app.nav_menu.jobs.job_detail.JobDetailActivity;
+import com.eot_app.nav_menu.jobs.job_detail.detail.DetailFragment;
 import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.Attachments;
 import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.NotifyForMultiDocAdd;
 import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.NotifyForMultiDocAddForAttach;
@@ -271,6 +272,7 @@ public class DocumentsFragment extends Fragment implements Doc_Attch_View, Docum
         AppDataBase.getInMemoryDatabase(getActivity()).attachments_dao().insertAttachments(getFileList_res);
         AppDataBase.getInMemoryDatabase(getActivity()).attachments_dao().deleteAttachments();
         documentListAdapter.updateFileList((ArrayList<Attachments>) AppDataBase.getInMemoryDatabase(getActivity()).attachments_dao().getAllAttachmentsOfJob(jobId),true);
+        DetailFragment.getInstance().setList((ArrayList<Attachments>) AppDataBase.getInMemoryDatabase(getActivity()).attachments_dao().getAttachmentsByJobId(jobId),isAttachCompletionNotes);
     }
 
     @Override
@@ -508,7 +510,11 @@ public class DocumentsFragment extends Fragment implements Doc_Attch_View, Docum
 //                                        data.getStringExtra("desc"),
 //                                        data.getStringExtra("type") ,
 //                                        data.getStringExtra("isFromCmpletion"));
-                                OfflineDataController.getInstance().addInOfflineDB(Service_apis.upload_document, AppUtility.getParam(jobId, queId,"",
+                                String _queId = "";
+                                if(data.getStringExtra("type").equals("6")){
+                                    _queId = queId;
+                                }
+                                OfflineDataController.getInstance().addInOfflineDB(Service_apis.upload_document, AppUtility.getParam(jobId, _queId,"",
                                         data.getStringExtra("imgPath"),
                                         data.getStringExtra("fileName"),
                                         data.getStringExtra("desc"),
@@ -780,11 +786,11 @@ public class DocumentsFragment extends Fragment implements Doc_Attch_View, Docum
     }
 
     @Override
-    public void updateMultiDoc(String apiName, String jobId) {
+    public void updateMultiDoc(String apiName, String jobId, String type) {
         switch (apiName) {
             case Service_apis.upload_document:
                          if(doc_attch_pi != null) {
-                             doc_attch_pi.getMultiAttachFileList(jobId,  App_preference.getSharedprefInstance().getLoginRes().getUsrId(), "",true,-1,-1,"0","0");
+                             doc_attch_pi.getMultiAttachFileList(jobId,  App_preference.getSharedprefInstance().getLoginRes().getUsrId(), type,true,-1,-1,"0","0");
                          }
                             break;
                          }

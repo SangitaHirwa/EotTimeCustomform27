@@ -162,10 +162,10 @@ public class Doc_Attch_Pc implements Doc_Attch_Pi {
                                         Type listType = new TypeToken<List<Attachments>>() {
                                         }.getType();
                                         ArrayList<Attachments> attachments = new Gson().fromJson(convert, listType);
-                                        doc_attch_view.setMultiList(attachments, "",firstCall, parentPosition, position,queId, jtId);
+                                        doc_attch_view.setMultiList(attachments, type,firstCall, parentPosition, position,queId, jtId);
                                     } else {
                                         doc_attch_view.addView();
-                                        doc_attch_view.setMultiList(new ArrayList<Attachments>(), "",firstCall, parentPosition, position, queId, jtId);
+                                        doc_attch_view.setMultiList(new ArrayList<Attachments>(), type,firstCall, parentPosition, position, queId, jtId);
                                     }
                                 } else if (jsonObject.get("statusCode") != null && jsonObject.get("statusCode").getAsString().equals(AppConstant.SESSION_EXPIRE)) {
                                     doc_attch_view.onSessionExpire(LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
