@@ -1554,9 +1554,9 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
         else if(type==2)
             stringBuffer.append(" "+"\u274c");
         else if (type == 3
-                &&  jobData.getDes() != null
-                && !jobData.getDes().isEmpty()){
-            Spanned spannedText = Html.fromHtml(getJobData().getDes());
+                &&  jobData.getDesWithoutHtml() != null
+                && !jobData.getDesWithoutHtml().isEmpty()){
+            Spanned spannedText = Html.fromHtml(getJobData().getDesWithoutHtml());
             String plainText = TextUtils.replace(spannedText, new String[] {"<br>"}, new CharSequence[] {"\n"}).toString();
             /*  s=AppUtility.html2text(getJobData().getDes());*/
             stringBuffer.append(" " + plainText);
