@@ -14,5 +14,5 @@ import okhttp3.MultipartBody;
  */
 public interface Compl_PI {
     void addEditJobComplation(String jobId, String complNote, ArrayList<Answer> compQueAns, List<String>signAnsPath, List<String>docAnsPath, List<Answer>signQueIdArray, List<Answer>docQueIdArray, List<IsMarkDoneWithJtid> markDoneWithJtids);
-    void removeUploadAttchment(String jaId);
+    void removeUploadAttchment(String jaId,String queId, String jtId);
 }

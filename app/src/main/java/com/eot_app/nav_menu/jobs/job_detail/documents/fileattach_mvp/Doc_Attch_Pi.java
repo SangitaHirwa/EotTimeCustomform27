@@ -12,6 +12,6 @@ public interface Doc_Attch_Pi {
     void uploadMultipleDocuments(String job_Id, String file, String finalFname, String desc,String type,String isAddAttachAsCompletionNote, boolean lastCall);
 
 
-    void updateDocuments(String docId, String des, String rename,String isAddAttachAsCompletionNote, String jobId);
+    void updateDocuments(String docId, String des, String rename,String isAddAttachAsCompletionNote, String jobId, String queId, String jtId);
 }
 

@@ -41,7 +41,7 @@ public class Compl_PC implements Compl_PI {
     }
 
     @Override
-    public void removeUploadAttchment(final String jaId) {
+    public void removeUploadAttchment(final String jaId, String queId, String jtId) {
         if (AppUtility.isInternetConnected()) {
 
             RemoveAttchment jobListRequestModel = new RemoveAttchment(jaId);
@@ -61,20 +61,20 @@ public class Compl_PC implements Compl_PI {
                             if (jsonObject.get("success").getAsBoolean()) {
                                 Log.e("", "");
                                 EotApp.getAppinstance().showToastmsg(LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
-                                complaView.uploadDocDelete("");
+                                complaView.uploadDocDelete("",queId,jtId);
 //                                EotApp.getAppinstance().getNotifyForAttchCount();
                             } else if (jsonObject.get("statusCode") != null && jsonObject.get("statusCode").getAsString().equals(AppConstant.SESSION_EXPIRE)) {
                                 Log.e("", "");
                                 complaView.sessionexpire(LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
                             } else {
-                                complaView.uploadDocDelete(jsonObject.get("message").getAsString());
+                                complaView.uploadDocDelete(jsonObject.get("message").getAsString(),queId,jtId);
                             }
                         }
 
 
                         @Override
                         public void onError(Throwable e) {
-                            complaView.uploadDocDelete(e.getMessage());
+                            complaView.uploadDocDelete(e.getMessage(),queId,jtId);
                             Log.e("TAG", e.getMessage());
                         }
 

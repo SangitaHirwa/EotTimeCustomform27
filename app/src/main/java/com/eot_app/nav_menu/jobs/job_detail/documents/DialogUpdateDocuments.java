@@ -63,6 +63,7 @@ public class DialogUpdateDocuments extends DialogFragment implements View.OnClic
     LinearLayout llBottom;
     Bitmap bitmap;
     String[] splitTxt;
+    String  queId, jtId;
 
     public void setIsFileImage(boolean b) {
         this.isFileImage = b;
@@ -84,13 +85,15 @@ public class DialogUpdateDocuments extends DialogFragment implements View.OnClic
         isFromClientHistory = fromClientHistory;
     }
 
-    public void setImgPath(String docId, String imgPath, String fileName, String desc, String type, String jobId) {
+    public void setImgPath(String docId, String imgPath, String fileName, String desc, String type, String jobId,String queId, String jtId) {
         this.docId = docId;
         this.imgPath = imgPath;
         this.fileName = fileName;
         this.desc = desc;
         this.type = type;
         this.jobId = jobId;
+        this.queId = queId;
+        this.jtId = jtId;
     }
     public void setImgPath(String docId, String imgPath, String fileName, String desc, String type, String jobId,boolean isClickDisabled) {
         this.docId = docId;
@@ -244,7 +247,7 @@ public class DialogUpdateDocuments extends DialogFragment implements View.OnClic
             } else {
                 AppUtility.progressBarShow(getActivity());
                splitTxt = updateName.split("\\.");
-                doc_attch_pi.updateDocuments(docId, updateDesc, splitTxt[0],isAddAttachAsCompletionNote, jobId);
+                doc_attch_pi.updateDocuments(docId, updateDesc, splitTxt[0],isAddAttachAsCompletionNote, jobId, queId, jtId);
             }
         }
 
@@ -275,7 +278,7 @@ public class DialogUpdateDocuments extends DialogFragment implements View.OnClic
     @Override
     public void onDocumentUpdate(String msg, boolean isSuccess) {
         if (isSuccess && onDocumentUpdate != null) {
-            onDocumentUpdate.onUpdateDes(ed_doc_desc.getText().toString(),splitTxt[0]);
+            onDocumentUpdate.onUpdateDes(ed_doc_desc.getText().toString(),splitTxt[0],queId, jtId);
             dismiss();
 
         } else if (msg != null)
@@ -354,6 +357,6 @@ public class DialogUpdateDocuments extends DialogFragment implements View.OnClic
     }
 
     public interface OnDocumentUpdate {
-        void onUpdateDes(String desc,String name);
+        void onUpdateDes(String desc,String name,String queId, String jtId);
     }
 }

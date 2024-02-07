@@ -223,7 +223,7 @@ public class DocumentListAdapter extends RecyclerView.Adapter<DocumentListAdapte
                                 jobId, isClickDisabled);
 
 
-                        dialogUpdateDocuments.setOnDocumentUpdate((desc, name) -> {
+                        dialogUpdateDocuments.setOnDocumentUpdate((desc, name,queId,jtId) -> {
                             if (desc != null) {
                                 getFileList_res.get(pos).setDes(desc);
                             }
@@ -232,7 +232,7 @@ public class DocumentListAdapter extends RecyclerView.Adapter<DocumentListAdapte
                                 holder.file_name.setText(fileList.getAtt_docName() + "." + ext);
                             }
                             if (jobCompletionActivity != null)
-                                jobCompletionActivity.setUpdatedDesc(desc);
+                                jobCompletionActivity.setUpdatedDesc(desc,queId,jtId);
 
                         });
                         dialogUpdateDocuments.show(((AppCompatActivity) context).getSupportFragmentManager(), "dialog");

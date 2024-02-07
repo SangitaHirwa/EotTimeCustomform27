@@ -213,8 +213,10 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
         ArrayList<Object> allItem = new ArrayList<>();
         backgroundTaskExecutor = new BackgroundTaskExecutor();
         jobCompletionAdpter = new JobCompletionAdpter(this, getFileList_res, JobCompletionActivity.this, jobId
-                , jaId -> {
+                ,( jaId, queId, jtId) -> {
             Log.e("", "");
+            this.queId = queId;
+            this.jtId = jtId;
             if(AppUtility.isInternetConnected()) {
                 if (complPi != null) {
                     showDialogForRemoveAttch(jaId);
@@ -243,7 +245,7 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
                     @Override
                     public void onPossitiveCall() {
                         try {
-                            complPi.removeUploadAttchment(jaId);
+                            complPi.removeUploadAttchment(jaId, queId, jtId);
                         } catch (Exception ex) {
                             AppCenterLogs.addLogToAppCenterOnAPIFail("JobCompletion","","showDialogForRemoveAttch()"+ex.getMessage(),"JobCompletionActivity","");
                             ex.printStackTrace();
@@ -258,9 +260,9 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
     }
 
     @Override
-    public void uploadDocDelete(String msg) {
+    public void uploadDocDelete(String msg,String queId, String jtId) {
 //        doc_attch_pi.getAttachFileList(jobId, App_preference.getSharedprefInstance().getLoginRes().getUsrId(), "6",true);
-        doc_attch_pi.getMultiAttachFileList(jobId, App_preference.getSharedprefInstance().getLoginRes().getUsrId(), "6",true,parentPositon,position, "0","0");
+        doc_attch_pi.getMultiAttachFileList(jobId, App_preference.getSharedprefInstance().getLoginRes().getUsrId(), "6",true,parentPositon,position, queId,jtId);
     }
 
 
@@ -736,7 +738,7 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
 //        else
             this.fileList_res = getFileList_res;
         if (jobCompletionAdpter != null) {
-            (jobCompletionAdpter).updateFileList((ArrayList<Attachments>) AppDataBase.getInMemoryDatabase(this).attachments_dao().getAttachmentsByJobId(jobId),firstCall);
+            (jobCompletionAdpter).updateFileList((ArrayList<Attachments>) AppDataBase.getInMemoryDatabase(this).attachments_dao().getAttachmentsByJobId(jobId),firstCall,"","");
             }
     }
 
@@ -1362,18 +1364,18 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
                         isFileImage = data.getBooleanExtra("isFileImage", false);
                         onDocumentSelected("","",false,parentPositon, position,this.queId, this.jtId);
                         if (isAttach.equals("1") && isFileImage) {
-//                            CompletionFormAdapter.DefaultViewHolder defaultViewHolderr = (CompletionFormAdapter.DefaultViewHolder) completionRecyclerView.findViewHolderForAdapterPosition(competionNotesPostion);
-//                            desc.append(defaultViewHolderr.compedt.getText().toString().trim());
-//                            defaultViewHolderr.compedt.getText().clear();
-//                            if (!TextUtils.isEmpty(desc))
-//                                desc.append(System.lineSeparator());
-//
-//                            if (data.getStringExtra("desc") != null)
-//                                desc.append(data.getStringExtra("desc"));
-//                            defaultViewHolderr.compedt.setText(desc);
-//                            String tempnotes=desc.toString().replace("null","");
-//                            defaultViewHolderr.compedt.setText(tempnotes);
-//                            defaultViewHolderr.compedt.setSelection(defaultViewHolderr.compedt.getText().toString().length());
+                            CompletionFormAdapter.DefaultViewHolder defaultViewHolderr = (CompletionFormAdapter.DefaultViewHolder) completionRecyclerView.findViewHolderForAdapterPosition(competionNotesPostion);
+                            desc.append(defaultViewHolderr.compedt.getText().toString().trim());
+                            defaultViewHolderr.compedt.getText().clear();
+                            if (!TextUtils.isEmpty(desc))
+                                desc.append(System.lineSeparator());
+
+                            if (data.getStringExtra("desc") != null)
+                                desc.append(data.getStringExtra("desc"));
+                            defaultViewHolderr.compedt.setText(desc);
+                            String tempnotes=desc.toString().replace("null","");
+                            defaultViewHolderr.compedt.setText(tempnotes);
+                            defaultViewHolderr.compedt.setSelection(defaultViewHolderr.compedt.getText().toString().length());
                             desc.setLength(0);
 //                            setList(updateList, "",true);
                         }
@@ -1523,9 +1525,9 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
         this.startActivityForResult(intent, DOUCMENT_UPLOAD_CODE);
     }
 
-    public void setUpdatedDesc(String desc) {
+    public void setUpdatedDesc(String desc, String queId, String jtId) {
         if(doc_attch_pi != null) {
-            doc_attch_pi.getMultiAttachFileList(jobId, App_preference.getSharedprefInstance().getLoginRes().getUsrId(), "6",true,-1,-1,"0","0");
+            doc_attch_pi.getMultiAttachFileList(jobId, App_preference.getSharedprefInstance().getLoginRes().getUsrId(), "6",true,-1,-1,queId,jtId);
         }
 //        StringBuffer data = new StringBuffer(compedt.getText().toString().trim());
 //        if (!TextUtils.isEmpty(desc))
@@ -1948,10 +1950,10 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
         ll_attachment.setVisibility(View.VISIBLE);
         ll_completionForm.setVisibility(View.GONE);
         if(showOnlyImg){
-            jobCompletionAdpter.updateFileList((ArrayList<Attachments>) AppDataBase.getInMemoryDatabase(this).attachments_dao().getAttachmentsByJobId(jobId), true);
+            jobCompletionAdpter.updateFileList((ArrayList<Attachments>) AppDataBase.getInMemoryDatabase(this).attachments_dao().getAttachmentsByJobId(jobId), true, queId, jtId);
         }
         else {
-            jobCompletionAdpter.updateFileList((ArrayList<Attachments>) AppDataBase.getInMemoryDatabase(this).attachments_dao().getAttachmentsById(jobId, queId, jtId), true);
+            jobCompletionAdpter.updateFileList((ArrayList<Attachments>) AppDataBase.getInMemoryDatabase(this).attachments_dao().getAttachmentsByQueId(jobId, queId), true, queId, jtId);
         }
 
     }

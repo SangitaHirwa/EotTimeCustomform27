@@ -34,6 +34,7 @@ public class JobCompletionAdpter extends RecyclerView.Adapter<RecyclerView.ViewH
     private final RemoveAttchment removeAttchment;
     private ArrayList<Attachments> attachments = new ArrayList<>();
     private ArrayList<Attachments> tempFileList;
+    String  queId, jtId;
     Filter nameFilter = new Filter() {
 
 
@@ -89,10 +90,13 @@ public class JobCompletionAdpter extends RecyclerView.Adapter<RecyclerView.ViewH
         this.removeAttchment = removeAttchment;
     }
 
-    public void updateFileList(ArrayList<Attachments> getFileListres, boolean firstCall) {
+    public void updateFileList(ArrayList<Attachments> getFileListres, boolean firstCall, String queId, String jtId) {
+        this.queId = queId;
+        this.jtId = jtId;
         if(firstCall) this.attachments.clear();
         this.attachments.addAll(getFileListres);
         notifyDataSetChanged();
+
     }
 
     @Override
@@ -198,16 +202,16 @@ public class JobCompletionAdpter extends RecyclerView.Adapter<RecyclerView.ViewH
                                 img_name,
                                 attachments.get(position).getDes(),
                                 attachments.get(position).getType(),
-                                jobId);
+                                jobId,queId,jtId);
 
-                        dialogUpdateDocuments.setOnDocumentUpdate((desc, name) -> {
+                        dialogUpdateDocuments.setOnDocumentUpdate((desc, name, queId, jtId) -> {
                             if (desc != null)
                                 attachments.get(position).setDes(desc);
                             if (name != null)
                                 attachments.get(position).setAtt_docName(name);
 
                             if (jobCompletionActivity != null)
-                                jobCompletionActivity.setUpdatedDesc(desc);
+                                jobCompletionActivity.setUpdatedDesc(desc,queId,jtId);
 
                         });
                         dialogUpdateDocuments.show(((AppCompatActivity) context).getSupportFragmentManager(), "dialog");
@@ -218,7 +222,7 @@ public class JobCompletionAdpter extends RecyclerView.Adapter<RecyclerView.ViewH
                 }
             });
 
-            holder.image_txt.setOnClickListener(v -> removeAttchment.removeAttchment(attachments.get(position).getAttachmentId()));
+            holder.image_txt.setOnClickListener(v -> removeAttchment.removeAttchment(attachments.get(position).getAttachmentId(),queId, jtId));
 
         } else if (viewHolder instanceof UploadViewHolder) {
             UploadViewHolder holder = (UploadViewHolder) viewHolder;
@@ -249,7 +253,7 @@ public class JobCompletionAdpter extends RecyclerView.Adapter<RecyclerView.ViewH
     }
 
     public interface RemoveAttchment {
-        void removeAttchment(String id);
+        void removeAttchment(String id, String queId, String jtId);
     }
 
     static class MyView_Holder extends RecyclerView.ViewHolder {

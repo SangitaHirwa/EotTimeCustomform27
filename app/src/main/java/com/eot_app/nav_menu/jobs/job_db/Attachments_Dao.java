@@ -23,6 +23,8 @@ public interface  Attachments_Dao {
     List<Attachments> getAttachmentsByJobId(String jobId);
     @Query("select * from Attachments where jobId = :jobId")
     List<Attachments> getAllAttachmentsOfJob(String jobId);
+    @Query("select * from Attachments where jobId = :jobId and queId = :queId")
+    List<Attachments> getAttachmentsByQueId(String jobId, String queId);
     @Query("delete from Attachments where attachmentId=:attachmentId")
     void deleteAttachmentById(String attachmentId);
     @Query("delete from Attachments where isdelete = '0'")

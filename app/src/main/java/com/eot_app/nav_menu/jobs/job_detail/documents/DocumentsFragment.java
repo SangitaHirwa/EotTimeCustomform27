@@ -513,7 +513,7 @@ public class DocumentsFragment extends Fragment implements Doc_Attch_View, Docum
                                         data.getStringExtra("fileName"),
                                         data.getStringExtra("desc"),
                                         data.getStringExtra("type"),
-                                        data.getStringExtra("isFromCmpletion"), true,true,-1,-1), AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT));
+                                        data.getStringExtra("isAttach"), true,true,-1,-1), AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT));
                             }
                             catch (Exception e)
                             {

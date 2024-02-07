@@ -404,7 +404,7 @@ public class Doc_Attch_Pc implements Doc_Attch_Pi {
     }
 
     @Override
-    public void updateDocuments(String docId, String des, String rename,final String isAddAttachAsCompletionNote, final String jobId) {
+    public void updateDocuments(String docId, String des, String rename,final String isAddAttachAsCompletionNote, final String jobId, String queId, String jtId) {
         if (AppUtility.isInternetConnected()) {
 
             DocUpdateRequest docUpdateRequest = new DocUpdateRequest(docId, des, rename,isAddAttachAsCompletionNote);
