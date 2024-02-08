@@ -7,7 +7,7 @@ plugins {
 android {
     signingConfigs {
         release {
-            storeFile file('/home/aplite/Desktop/Live_requirement/keystorefile')
+            storeFile file('/home/aplite/Desktop/Savan Project/Backup/JKS File/Live_requirement/keystorefile')
             storePassword 'Eyeontask@1'
             keyPassword 'Eyeontask@1'
             keyAlias 'eyeontask'
@@ -19,8 +19,8 @@ android {
         applicationId "com.eot_app"
         minSdk 21
         targetSdk 34
-        versionCode 112
-        versionName "2.911"
+        versionCode 113
+        versionName "2.93"
         testInstrumentationRunner 'androidx.test.reyeontask@123' +
                 'unner.AndroidJUnitRunner'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
