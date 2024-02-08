@@ -534,7 +534,7 @@ public class DetailFragment extends Fragment
                     if(App_preference.getSharedprefInstance().getLoginRes().getCompPermission().get(0).getIsLeaderChgAllUsrStatusOnJb().equals("0")) {
                         AppUtility.alertDialog2(getActivity(), LanguageController.getInstance()
                                         .getMobileMsgByKey(AppConstant.status_dialog),
-                                LanguageController.getInstance().getMobileMsgByKey(AppConstant.status_complete_for_all_fw),
+                                LanguageController.getInstance().getMobileMsgByKey(AppConstant.leader_change_completed_status_all_members),
                                 LanguageController.getInstance().getMobileMsgByKey(AppConstant.yes),
                                 LanguageController.getInstance().getMobileMsgByKey(AppConstant.no), new Callback_AlertDialog() {
                                     @Override
