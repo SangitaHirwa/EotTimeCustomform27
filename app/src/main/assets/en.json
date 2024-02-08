@@ -1842,7 +1842,7 @@
     "status_complete_for_all_fw": "Are you want to Completed Your Job for All Fieldworkers",
     "not_synced_at": "Not synced at",
     "equipment_location": "Equipment Location",
-    "leader_change_completed_status_all_members.": "Change the status completed for all my team members."
+    "leader_change_completed_status_all_members": "Change the status completed for all my team members."
   }
 }
 
