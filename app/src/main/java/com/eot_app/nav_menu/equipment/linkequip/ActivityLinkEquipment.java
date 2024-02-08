@@ -358,11 +358,6 @@ public class ActivityLinkEquipment extends AppCompatActivity implements View.OnC
         else linkEquipmentPI.getContractList(new ContractEquipmentReq(type, id, contrId));
         if(equiAdd){
             linkEquipmentPI.getAttachedEquipmentList(id,contrId,isReturn);
-            if (isReturn) {
-                Intent intent=new Intent();
-                setResult(RESULT_OK,intent);
-                finish();
-            }
         }
     }
 
