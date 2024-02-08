@@ -972,6 +972,8 @@ public class AppConstant {
     public static String services_done = "services_done";
     public static String status_complete_for_all_fw = "status_complete_for_all_fw";
     public static String not_synced_at = "not_synced_at";
+    public static String equipment_location = "equipment_location";
+    public static String leader_change_completed_status_all_members = "leader_change_completed_status_all_members";
 
 
 
