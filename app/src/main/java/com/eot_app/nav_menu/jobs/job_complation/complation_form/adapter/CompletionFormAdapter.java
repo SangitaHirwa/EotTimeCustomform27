@@ -73,6 +73,9 @@ import com.eot_app.utility.settings.setting_db.JobTitle;
 import com.eot_app.utility.util_interfaces.JoBServSuggAdpter;
 import com.eot_app.utility.util_interfaces.MyAdapter;
 import com.eot_app.utility.util_interfaces.NoDefaultSpinner;
+
+import org.checkerframework.checker.units.qual.A;
+
 import java.io.File;
 import java.text.DecimalFormat;
 import java.text.ParseException;
@@ -307,6 +310,7 @@ public class CompletionFormAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             dateImg = itemView.findViewById(R.id.dateImg);
             view = itemView.findViewById(R.id.view);
             txt_upload = itemView.findViewById(R.id.txt_upload);
+            txt_upload.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.expense_upload));
             fm_multiattachment = itemView.findViewById(R.id.fm_multiattachment);
             attachmentRecyclerView = itemView.findViewById(R.id.recyclerView);
 
@@ -1706,14 +1710,14 @@ public class CompletionFormAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                     cl_btnMark.setBackground(context.getResources().getDrawable(R.drawable.bg_mark_as_completion_cancel));
                     img_markBtn.setImageTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.green1)));
                     img_crossBtn.setVisibility(View.GONE);
-                    tv_markBtn.setText("Mark as done");
+                    tv_markBtn.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.mark_as_done));
                     tv_markBtn.setTextColor(context.getResources().getColor(R.color.green1));
                     isDone = false;
                 }else {
                     cl_btnMark.setBackground(context.getResources().getDrawable(R.drawable.bg_mark_as_completion_done));
                     img_markBtn.setImageTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.white)));
                     img_crossBtn.setVisibility(View.VISIBLE);
-                    tv_markBtn.setText("Done");
+                    tv_markBtn.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.done));
                     tv_markBtn.setTextColor(context.getResources().getColor(R.color.white));
                     isDone =true;
                 }
@@ -1759,7 +1763,7 @@ public class CompletionFormAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                         cl_btnMark.setBackground(context.getResources().getDrawable(R.drawable.bg_mark_as_completion_done));
                         img_markBtn.setImageTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.white)));
                         img_crossBtn.setVisibility(View.VISIBLE);
-                        tv_markBtn.setText("Done");
+                        tv_markBtn.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.mark_as_done));
                         tv_markBtn.setTextColor(context.getResources().getColor(R.color.white));
                         questionList.get(0).setIsMarkAsDone("1");
                         clickListener.setMarkAsDoneService(questionList.get(0).getJtId(),"1");
@@ -1768,7 +1772,7 @@ public class CompletionFormAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                         cl_btnMark.setBackground(context.getResources().getDrawable(R.drawable.bg_mark_as_completion_cancel));
                         img_markBtn.setImageTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.green1)));
                         img_crossBtn.setVisibility(View.GONE);
-                        tv_markBtn.setText("Mark as done");
+                        tv_markBtn.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.mark_as_done));
                         tv_markBtn.setTextColor(context.getResources().getColor(R.color.green1));
                         questionList.get(0).setIsMarkAsDone("0");
                         clickListener.setMarkAsDoneService(questionList.get(0).getJtId(),"0");
@@ -1841,6 +1845,7 @@ public class CompletionFormAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             ll_completion = itemView.findViewById(R.id.ll_compNotes);
             ll_attachment = itemView.findViewById(R.id.ll_attachment);
             txt_upload = itemView.findViewById(R.id.txt_upload);
+            txt_upload.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.expense_upload));
             recyclerView = itemView.findViewById(R.id.recyclerView);
 
             compedt.setOnTouchListener(this);

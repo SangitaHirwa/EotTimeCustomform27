@@ -1449,7 +1449,7 @@ public void setCompletionDetail(){
         cl_serviceMarkAsDone.setVisibility(View.GONE);
     }else {
         if(isAllServicesDone()){
-            txt_serviceHeader.setText("All Services Done");
+            txt_serviceHeader.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.all)+" "+LanguageController.getInstance().getMobileMsgByKey(AppConstant.services_done));
             cl_serviceMarkAsDone.setVisibility(View.VISIBLE);
             serviceMarkDoneAdapter.updatList(list);
         }else {
@@ -1461,9 +1461,9 @@ public void setCompletionDetail(){
                 }
             }
             if(doneMark == 1) {
-                txt_serviceHeader.setText("" + doneMark + " Service Done");
+                txt_serviceHeader.setText("" + doneMark + " "+LanguageController.getInstance().getMobileMsgByKey(AppConstant._services_done));
             }else {
-                txt_serviceHeader.setText("" + doneMark + " Services Done");
+                txt_serviceHeader.setText("" + doneMark + " "+LanguageController.getInstance().getMobileMsgByKey(AppConstant.services_done));
             }
             if(doneMark==0){
                 cl_serviceMarkAsDone.setVisibility(View.GONE);

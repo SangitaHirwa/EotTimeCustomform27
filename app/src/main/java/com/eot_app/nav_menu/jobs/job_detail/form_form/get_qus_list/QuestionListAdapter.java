@@ -1187,6 +1187,7 @@ public class QuestionListAdapter extends RecyclerView.Adapter<QuestionListAdapte
             type_Number = itemView.findViewById(R.id.type_Number);
             view = itemView.findViewById(R.id.view);
             txt_upload = itemView.findViewById(R.id.txt_upload);
+            txt_upload.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.expense_upload));
             fm_multiattachment = itemView.findViewById(R.id.fm_multiattachment);
             attachmentRecyclerView = itemView.findViewById(R.id.recyclerView);
             buttonAttchment.setOnClickListener(new View.OnClickListener() {
