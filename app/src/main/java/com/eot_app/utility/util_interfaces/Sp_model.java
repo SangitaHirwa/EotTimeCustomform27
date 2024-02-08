@@ -220,6 +220,7 @@ public interface Sp_model {
 //    String getLastAppKillTime();
 //
 //    void setLastAppKillTime(String dateTime);
-
+    void setCapturePath(String imgPath);
+    String getCapturePath();
 
 }

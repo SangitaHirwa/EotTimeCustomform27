@@ -72,7 +72,6 @@ import com.eot_app.nav_menu.jobs.job_detail.form_form.get_qus_list.qus_model.Ans
 import com.eot_app.nav_menu.jobs.job_detail.form_form.get_qus_list.qus_model.OptionModel;
 import com.eot_app.nav_menu.jobs.job_detail.form_form.get_qus_list.qus_model.QuesGetModel;
 import com.eot_app.nav_menu.jobs.job_detail.form_form.get_qus_list.qus_model.QuesRspncModel;
-import com.eot_app.nav_menu.jobs.job_list.JobList;
 import com.eot_app.services.Service_apis;
 import com.eot_app.utility.AppCenterLogs;
 import com.eot_app.utility.AppConstant;
@@ -92,7 +91,6 @@ import com.google.gson.reflect.TypeToken;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
 import com.hypertrack.hyperlog.HyperLog;
-
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -108,7 +106,6 @@ import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -117,7 +114,6 @@ import okhttp3.RequestBody;
 public class JobCompletionActivity extends AppCompatActivity implements View.OnClickListener,Que_View
         , TextWatcher, Compla_View, Doc_Attch_View, JobCompletionAdpter.FileDesc_Item_Selected, NotifyForMultiDocAdd
         , CompletionAdpterJobDteails1.CallBAckFormAttchemntToCompl, CompletionFormAdapter.ClickListener, NotifyForcompletion {
-    String jsonArrayString = "[{\"queId\":\"1568\",\"parentId\":\"-1\",\"parentAnsId\":\"-1\",\"frmId\":\"1090\",\"des\":\"Completionnotes\",\"type\":\"1\",\"mandatory\":\"0\",\"frmType\":\"2\",\"internalLabel\":\"texttype\",\"queWidth\":\"100%\",\"linkToLead\":\"0\",\"linkToJob\":\"0\",\"isShowOnSite\":\"1\",\"isDisable\":\"0\",\"isLinkWithService\":\"0\",\"jtId\":\"\",\"sysFieldType\":\"1\",\"linkTo\":\"5\",\"systemField\":\"1\",\"isAnswered\":1,\"ans\":[]},{\"queId\":\"1569\",\"parentId\":\"-1\",\"parentAnsId\":\"-1\",\"frmId\":\"1090\",\"des\":\"Attachment\",\"type\":\"13\",\"mandatory\":\"0\",\"frmType\":\"2\",\"internalLabel\":\"texttype\",\"queWidth\":\"100%\",\"linkToLead\":\"0\",\"linkToJob\":\"0\",\"isShowOnSite\":\"1\",\"isDisable\":\"0\",\"isLinkWithService\":\"0\",\"jtId\":\"\",\"sysFieldType\":\"2\",\"linkTo\":\"5\",\"systemField\":\"1\",\"isAnswered\":1,\"ans\":[]},{\"queId\":\"1570\",\"parentId\":\"-1\",\"parentAnsId\":\"-1\",\"frmId\":\"1090\",\"des\":\"FullName\",\"type\":\"1\",\"mandatory\":\"0\",\"frmType\":\"2\",\"internalLabel\":\"texttype\",\"queWidth\":\"100%\",\"linkToLead\":\"0\",\"linkToJob\":\"0\",\"isShowOnSite\":\"1\",\"isDisable\":\"0\",\"isLinkWithService\":\"0\",\"jtId\":\"\",\"sysFieldType\":\"0\",\"linkTo\":\"5\",\"systemField\":\"0\",\"isAnswered\":1,\"ans\":[]},{\"queId\":\"1571\",\"parentId\":\"-1\",\"parentAnsId\":\"-1\",\"frmId\":\"1090\",\"des\":\"PhoneNumber\",\"type\":\"1\",\"mandatory\":\"0\",\"frmType\":\"2\",\"internalLabel\":\"texttype\",\"queWidth\":\"100%\",\"linkToLead\":\"0\",\"linkToJob\":\"0\",\"isShowOnSite\":\"1\",\"isDisable\":\"0\",\"isLinkWithService\":\"0\",\"jtId\":\"\",\"sysFieldType\":\"0\",\"linkTo\":\"5\",\"systemField\":\"0\",\"isAnswered\":1,\"ans\":[]},{\"queId\":\"1572\",\"parentId\":\"-1\",\"parentAnsId\":\"-1\",\"frmId\":\"1090\",\"des\":\"Email\",\"type\":\"1\",\"mandatory\":\"0\",\"frmType\":\"2\",\"internalLabel\":\"texttype\",\"queWidth\":\"100%\",\"linkToLead\":\"0\",\"linkToJob\":\"0\",\"isShowOnSite\":\"1\",\"isDisable\":\"0\",\"isLinkWithService\":\"0\",\"jtId\":\"\",\"sysFieldType\":\"0\",\"linkTo\":\"5\",\"systemField\":\"0\",\"isAnswered\":1,\"ans\":[]},{\"queId\":\"1582\",\"parentId\":\"-1\",\"parentAnsId\":\"-1\",\"frmId\":\"1090\",\"des\":\"TotalSquareFeet\",\"type\":\"1\",\"mandatory\":\"1\",\"frmType\":\"2\",\"internalLabel\":\"\",\"queWidth\":\"100%\",\"linkToLead\":\"0\",\"linkToJob\":\"0\",\"isShowOnSite\":\"1\",\"isDisable\":\"0\",\"isLinkWithService\":\"0\",\"jtId\":\"161\",\"sysFieldType\":\"0\",\"linkTo\":\"5\",\"systemField\":\"0\",\"isAnswered\":0,\"ans\":[]},{\"queId\":\"1583\",\"parentId\":\"-1\",\"parentAnsId\":\"-1\",\"frmId\":\"1090\",\"des\":\"NumberofRooms:\",\"type\":\"1\",\"mandatory\":\"1\",\"frmType\":\"2\",\"internalLabel\":\"\",\"queWidth\":\"100%\",\"linkToLead\":\"0\",\"linkToJob\":\"0\",\"isShowOnSite\":\"1\",\"isDisable\":\"0\",\"isLinkWithService\":\"0\",\"jtId\":\"161\",\"sysFieldType\":\"0\",\"linkTo\":\"5\",\"systemField\":\"0\",\"isAnswered\":0,\"ans\":[]},{\"queId\":\"1584\",\"parentId\":\"-1\",\"parentAnsId\":\"-1\",\"frmId\":\"1090\",\"des\":\"AreasCleaned\",\"type\":\"2\",\"mandatory\":\"1\",\"frmType\":\"2\",\"internalLabel\":\"\",\"queWidth\":\"100%\",\"linkToLead\":\"0\",\"linkToJob\":\"0\",\"isShowOnSite\":\"1\",\"isDisable\":\"0\",\"isLinkWithService\":\"0\",\"jtId\":\"161\",\"sysFieldType\":\"0\",\"linkTo\":\"5\",\"systemField\":\"0\",\"isAnswered\":0,\"ans\":[]},{\"queId\":\"1585\",\"parentId\":\"-1\",\"parentAnsId\":\"-1\",\"frmId\":\"1090\",\"des\":\"TotalSquareFeet\",\"type\":\"1\",\"mandatory\":\"1\",\"frmType\":\"2\",\"internalLabel\":\"\",\"queWidth\":\"100%\",\"linkToLead\":\"0\",\"linkToJob\":\"0\",\"isShowOnSite\":\"1\",\"isDisable\":\"0\",\"isLinkWithService\":\"0\",\"jtId\":\"153\",\"sysFieldType\":\"0\",\"linkTo\":\"5\",\"systemField\":\"0\",\"isAnswered\":0,\"ans\":[]},{\"queId\":\"1586\",\"parentId\":\"-1\",\"parentAnsId\":\"-1\",\"frmId\":\"1090\",\"des\":\"NumberofAreacleaned:\",\"type\":\"1\",\"mandatory\":\"1\",\"frmType\":\"2\",\"internalLabel\":\"\",\"queWidth\":\"100%\",\"linkToLead\":\"0\",\"linkToJob\":\"0\",\"isShowOnSite\":\"1\",\"isDisable\":\"0\",\"isLinkWithService\":\"0\",\"jtId\":\"153\",\"sysFieldType\":\"0\",\"linkTo\":\"5\",\"systemField\":\"0\",\"isAnswered\":0,\"ans\":[]},{\"queId\":\"1587\",\"parentId\":\"-1\",\"parentAnsId\":\"-1\",\"frmId\":\"1090\",\"des\":\"AdditionalNotesonProjectSite\",\"type\":\"2\",\"mandatory\":\"1\",\"frmType\":\"2\",\"internalLabel\":\"\",\"queWidth\":\"100%\",\"linkToLead\":\"0\",\"linkToJob\":\"0\",\"isShowOnSite\":\"1\",\"isDisable\":\"0\",\"isLinkWithService\":\"1\",\"jtId\":\"\",\"sysFieldType\":\"0\",\"linkTo\":\"5\",\"systemField\":\"0\",\"isAnswered\":0,\"ans\":[]}]";
     private final static int CAPTURE_IMAGE_GALLARY = 222;
     private static final int DOUCMENT_UPLOAD_CODE = 156;
     private static final int PHOTO_EDIT_CODE = 147;
@@ -1303,7 +1299,7 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
     private File createImageFile() throws IOException {
         Calendar calendar = Calendar.getInstance();
         long imageFileName = calendar.getTime().getTime();
-        File storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment            .DIRECTORY_PICTURES), "Eot Directory");
+        File storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "Eot Directory");
 
         File directoryPath = new File(storageDir.getPath());
         File image = File.createTempFile(
@@ -1312,6 +1308,7 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
                 directoryPath   /* directory */
         );
         captureImagePath = image.getAbsolutePath();
+        App_preference.getSharedprefInstance().setCapturePath(captureImagePath);
         return new File(image.getPath());
     }
 
@@ -1407,14 +1404,10 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
             case CAMERA_CODE:
                 if (resultCode == RESULT_OK) {
                     try {
-                        if(captureImagePath != null) {
-                            File file = AppUtility.scaleToActualAspectRatio(captureImagePath, 1024f, 1024f);
+                            File file = AppUtility.scaleToActualAspectRatio(App_preference.getSharedprefInstance().getCapturePath(), 1024f, 1024f);
                             if (file != null) {
                                 imageEditing(Uri.fromFile(file), true);
                             }
-                        }else {
-
-                        }
                     } catch (Exception e) {
                         AppCenterLogs.addLogToAppCenterOnAPIFail("JobCompletion","","onActivityResult()-->CAMERA_CODE"+e.getMessage(),"JobCompletionActivity","");
                         e.printStackTrace();

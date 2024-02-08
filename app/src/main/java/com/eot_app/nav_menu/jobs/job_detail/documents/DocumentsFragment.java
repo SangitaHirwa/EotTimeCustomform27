@@ -472,6 +472,7 @@ public class DocumentsFragment extends Fragment implements Doc_Attch_View, Docum
                 directoryPath   /* directory */
         );
         captureImagePath = image.getAbsolutePath();
+        App_preference.getSharedprefInstance().setCapturePath(captureImagePath);
         HyperLog.i("UploadDocumentActivity", "captureImagePath " + captureImagePath);
 
         HyperLog.i("UploadDocumentActivity", "createImageFile Stop(M)");
@@ -536,7 +537,7 @@ public class DocumentsFragment extends Fragment implements Doc_Attch_View, Docum
 
                 if (resultCode == RESULT_OK) {
                     try {
-                        File file = AppUtility.scaleToActualAspectRatio(captureImagePath, 1024f, 1024f);
+                        File file = AppUtility.scaleToActualAspectRatio(App_preference.getSharedprefInstance().getCapturePath(), 1024f, 1024f);
                         if (file != null) {
                             imageEditing(Uri.fromFile(file), true);
                         }
