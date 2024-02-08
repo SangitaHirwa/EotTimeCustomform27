@@ -1067,6 +1067,7 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
             for (QuesRspncModel systemItem : systemFieldQuestions){
                 if(item.getType().equals("")&& item.getType().isEmpty()){
                     allItem.addAll(systemFieldQuestions);
+                    setCompletionNotesPosition(allItem.size()-1);
                     break;
                 }
             }
@@ -1364,18 +1365,44 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
                         onDocumentSelected("","",false,parentPositon, position,this.queId, this.jtId);
                         if (isAttach.equals("1") && isFileImage) {
                             CompletionFormAdapter.DefaultViewHolder defaultViewHolderr = (CompletionFormAdapter.DefaultViewHolder) completionRecyclerView.findViewHolderForAdapterPosition(competionNotesPostion);
-                            desc.append(defaultViewHolderr.compedt.getText().toString().trim());
-                            defaultViewHolderr.compedt.getText().clear();
-                            if (!TextUtils.isEmpty(desc))
-                                desc.append(System.lineSeparator());
+                            if(data.getStringExtra("desc") != null && !data.getStringExtra("desc").isEmpty()) {
+                               try {
+                                   if (defaultViewHolderr.compedt != null) {
+                                       desc.append(defaultViewHolderr.compedt.getText().toString().trim());
+                                       defaultViewHolderr.compedt.getText().clear();
+                                       if (!TextUtils.isEmpty(desc))
+                                           desc.append(System.lineSeparator());
 
-                            if (data.getStringExtra("desc") != null)
-                                desc.append(data.getStringExtra("desc"));
-                            defaultViewHolderr.compedt.setText(desc);
-                            String tempnotes=desc.toString().replace("null","");
-                            defaultViewHolderr.compedt.setText(tempnotes);
-                            defaultViewHolderr.compedt.setSelection(defaultViewHolderr.compedt.getText().toString().length());
-                            desc.setLength(0);
+                                       if (data.getStringExtra("desc") != null)
+                                           desc.append(data.getStringExtra("desc"));
+                                       defaultViewHolderr.compedt.setText(desc);
+                                       String tempnotes = desc.toString().replace("null", "");
+                                       defaultViewHolderr.compedt.setText(tempnotes);
+                                       defaultViewHolderr.compedt.setSelection(defaultViewHolderr.compedt.getText().toString().length());
+                                       desc.setLength(0);
+                                   }
+                               }catch (Exception e){
+                                   Log.e("Exception",e.getMessage());
+                                    for (Object item :
+                                         allItem) {
+                                        if(item instanceof QuesRspncModel){
+                                            if(((QuesRspncModel) item).getType().equals("")){
+
+                                                desc.append(((QuesRspncModel) item).getAns().get(0).getValue().toString().trim());
+                                                if (!TextUtils.isEmpty(desc))
+                                                    desc.append(System.lineSeparator());
+
+                                                if (data.getStringExtra("desc") != null)
+                                                    desc.append(data.getStringExtra("desc"));
+
+                                                String tempnotes = desc.toString().replace("null", "");
+                                                ((QuesRspncModel) item).getAns().get(0).setValue(tempnotes);
+                                                desc.setLength(0);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
 //                            setList(updateList, "",true);
                         }
                         if (data.getStringExtra("fileName") != null) {
