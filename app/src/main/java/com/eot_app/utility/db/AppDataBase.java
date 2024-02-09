@@ -686,7 +686,7 @@ public abstract class AppDataBase extends RoomDatabase {
                     "'isMarkDoneWithJtId' TEXT," +
                      " PRIMARY KEY(`jobId`)) ");
              /***CREATE Table for Attachments List**/
-            database.execSQL("CREATE TABLE IF NOT EXISTS `OfflieCompleQueAns` (`attachmentId` TEXT NOT NULL UNIQUE,'deleteTable' TEXT," +
+            database.execSQL("CREATE TABLE IF NOT EXISTS `Attachments` (`attachmentId` TEXT NOT NULL UNIQUE,'deleteTable' TEXT," +
                     "'image_name' TEXT," +
                     "'userId' TEXT," +
                     "'attachFileName' TEXT," +

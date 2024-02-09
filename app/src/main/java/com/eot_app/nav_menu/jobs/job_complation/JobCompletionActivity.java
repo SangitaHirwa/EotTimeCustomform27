@@ -508,13 +508,13 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
                     });
                     return;
                 }
-                if (!isfilled)
+//                if (!isfilled)
                     if (!emptyCheckFormValidation()) {
                         emptyAnsFieldError();
                         return;
                     }
 
-                if (answerArrayList.size() > 0) {
+                if (answerArrayList.size() > 0 || !complNotes.isEmpty()) {
                     Ans_Req ans_req = new Ans_Req(App_preference.getSharedprefInstance().getLoginRes().getUsrId(), answerArrayList,
                             App_preference.getSharedprefInstance().getJobCompletionForm().getFrmId(), jobData.getJobId());
                     if (!AppUtility.isInternetConnected())
