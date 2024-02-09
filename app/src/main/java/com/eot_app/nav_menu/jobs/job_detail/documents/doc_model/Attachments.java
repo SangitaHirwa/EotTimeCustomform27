@@ -17,49 +17,54 @@ import com.google.gson.annotations.SerializedName;
 /**
  * Created by ubuntu on 9/10/18.
  */
-@Entity(indices = {@Index(value = "attachmentId", unique = true)})
+@Entity
 public class Attachments implements Parcelable {
 
-    @SerializedName("isLinked")
-    private String isLinked;
-    @SerializedName("attchParentId")
-    private String attchParentId;
-    @SerializedName("size")
-    private int size;
-    @SerializedName("attchOriginId")
-    private String attchOriginId;
-    @SerializedName("des")
-    private String des;
-    @SerializedName("att_docName")
-    private String att_docName;
-    @SerializedName("name")
-    private String name;
-    @SerializedName("attFolderNm")
-    private String attFolderNm;
-    @SerializedName("createdate")
-    private String createdate;
-    @SerializedName("type")
-    private String type;
-    @SerializedName("attachFileActualName")
-    private String attachFileActualName;
-    @SerializedName("attachThumnailFileName")
-    private String attachThumnailFileName;
-    @SerializedName("attachFileName")
-    private String attachFileName;
-    @SerializedName("userId")
-    private String userId;
-    @SerializedName("image_name")
-    private String image_name;
-    @SerializedName("deleteTable")
-    private String deleteTable;
     @PrimaryKey
     @NonNull
     @SerializedName("attachmentId")
     private String attachmentId;
+    @SerializedName("deleteTable")
+    private String deleteTable;
+    @SerializedName("image_name")
+    private String image_name;
+    @SerializedName("userId")
+    private String userId;
+    @SerializedName("attachFileName")
+    private String attachFileName;
+    @SerializedName("attachThumnailFileName")
+    private String attachThumnailFileName;
+    @SerializedName("attachFileActualName")
+    private String attachFileActualName;
+    @SerializedName("type")
+    private String type;
+    @SerializedName("createdate")
+    private String createdate;
+    @SerializedName("attFolderNm")
+    private String attFolderNm;
+    @SerializedName("queId")
+    private String queId;
+    @SerializedName("jtId")
+    private String jtId;
+    @SerializedName("name")
+    private String name;
+    @SerializedName("att_docName")
+    private String att_docName;
+    @SerializedName("des")
+    private String des;
+    @SerializedName("attchOriginId")
+    private String attchOriginId;
     @SerializedName("isFeedback")
     private String isFeedback;
     @SerializedName("jobId")
     private String jobId;
+    @NonNull
+    @SerializedName("size")
+    private int size;
+    @SerializedName("attchParentId")
+    private String attchParentId;
+    @SerializedName("isLinked")
+    private String isLinked;
     @SerializedName("isdelete")
     private String isdelete;
     @Ignore
@@ -68,10 +73,7 @@ public class Attachments implements Parcelable {
     String  bitmap="";
     @Ignore
     Bitmap bitmap1;
-    @SerializedName("queId")
-    private String queId;
-    @SerializedName("jtId")
-    private String jtId;
+
 
     //    private String attachmentId;
 //    private String deleteTable;
@@ -205,7 +207,7 @@ public class Attachments implements Parcelable {
         this.attachFileActualName = attachFileActualName;
     }
 
-
+    @NonNull
     public String getAttachmentId() {
         return attachmentId;
     }

@@ -1109,17 +1109,19 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
                     }
                 }
             }
-        for (String key : addedKeys
-             ) {
-            if(isNotAdded(key)) {
-                if(groupedQuestions.get(key).size()>0) {
-                    setServiceMarkasDone(groupedQuestions.get(key));
-                    allItem.add(groupedQuestions.get(key));
-                }else {
-                    QuesRspncModel quesRspncModel = new QuesRspncModel("temp","","","","","-1","",false,new ArrayList<OptionModel>(),new ArrayList<AnswerModel>(),-1,"","","","","","","","",key,"","","",-1,new ArrayList<Attachments>());
-                    groupedQuestions.get(key).add(quesRspncModel);
-                    setServiceMarkasDone(groupedQuestions.get(key));
-                    allItem.add(groupedQuestions.get(key));
+        if(App_preference.getSharedprefInstance().getLoginRes().getIsCompleShowMarkDone().equals("1")) {
+            for (String key : addedKeys
+            ) {
+                if (isNotAdded(key)) {
+                    if (groupedQuestions.get(key).size() > 0) {
+                        setServiceMarkasDone(groupedQuestions.get(key));
+                        allItem.add(groupedQuestions.get(key));
+                    } else {
+                        QuesRspncModel quesRspncModel = new QuesRspncModel("temp", "", "", "", "", "-1", "", false, new ArrayList<OptionModel>(), new ArrayList<AnswerModel>(), -1, "", "", "", "", "", "", "", "", key, "", "", "", -1, new ArrayList<Attachments>());
+                        groupedQuestions.get(key).add(quesRspncModel);
+                        setServiceMarkasDone(groupedQuestions.get(key));
+                        allItem.add(groupedQuestions.get(key));
+                    }
                 }
             }
         }

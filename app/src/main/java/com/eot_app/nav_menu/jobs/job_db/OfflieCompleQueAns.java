@@ -10,7 +10,7 @@ import com.eot_app.nav_menu.jobs.job_detail.form_form.get_qus_list.qus_model.Que
 
 import java.util.ArrayList;
 import java.util.List;
-@Entity(indices = {@Index(value = "jobId", unique = true)})
+@Entity
 public class OfflieCompleQueAns {
     @PrimaryKey
     @NonNull

@@ -114,7 +114,7 @@ public class Job implements Parcelable {//
     private String isLeader;
 
     @TypeConverters(CompliAnsArrayConvrtr.class)
-    private List<CompliAnsArray> compliAnsArray;
+    private List<CompliAnsArray> compliAnsArray = new ArrayList<>() ;
     @TypeConverters(IsMarkDoneConvrtr.class)
     private List<IsMarkDoneWithJtid> isMarkDoneWithJtId =new ArrayList<>();
     public List<IsMarkDoneWithJtid> getIsMarkDoneWithJtId() {

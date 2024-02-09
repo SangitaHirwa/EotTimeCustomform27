@@ -1309,6 +1309,10 @@ public class DetailFragment extends Fragment
                 txt_notesHeader.setVisibility(View.GONE);
                 complation_notes.setVisibility(View.GONE);
                 btnComplationView.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit));
+            }else if(mParam2.getComplNote() != null && mParam2.getComplNote().isEmpty()){
+                txt_notesHeader.setVisibility(View.GONE);
+                complation_notes.setVisibility(View.GONE);
+                btnComplationView.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add));
             }else {
                 String tempstring=mParam2.getComplNote().replace("null", "");
                 tempstring.replace("<br>","");
@@ -1335,6 +1339,10 @@ public class DetailFragment extends Fragment
                 txt_notesHeader.setVisibility(View.GONE);
                 complation_notes.setVisibility(View.GONE);
                 btnComplationView.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit));
+            }else if(mParam2.getComplNote() != null && mParam2.getComplNote().isEmpty()){
+                txt_notesHeader.setVisibility(View.GONE);
+                complation_notes.setVisibility(View.GONE);
+                btnComplationView.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add));
             }else {
                 String tempstring=mParam2.getComplNote().replace("null", "");
                 tempstring.replace("<br>","");
@@ -1362,6 +1370,10 @@ public class DetailFragment extends Fragment
                 txt_notesHeader.setVisibility(View.GONE);
                 complation_notes.setVisibility(View.GONE);
                 btnComplationView.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit));
+            }else if(mParam2.getComplNote() != null && mParam2.getComplNote().isEmpty()){
+                txt_notesHeader.setVisibility(View.GONE);
+                complation_notes.setVisibility(View.GONE);
+                btnComplationView.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add));
             }else {
                 String tempstring=mParam2.getComplNote().replace("null", "");
                 tempstring.replace("<br>","");
@@ -1405,6 +1417,10 @@ public class DetailFragment extends Fragment
             txt_notesHeader.setVisibility(View.GONE);
             complation_notes.setVisibility(View.GONE);
             btnComplationView.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit));
+        }else if(mParam2.getComplNote() != null && mParam2.getComplNote().isEmpty()){
+            txt_notesHeader.setVisibility(View.GONE);
+            complation_notes.setVisibility(View.GONE);
+            btnComplationView.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add));
         } else {
             txt_notesHeader.setVisibility(View.VISIBLE);
             complation_notes.setVisibility(View.VISIBLE);

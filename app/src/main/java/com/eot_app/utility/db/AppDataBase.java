@@ -703,7 +703,7 @@ public abstract class AppDataBase extends RoomDatabase {
                     "'attchOriginId' TEXT," +
                     "'isFeedback' TEXT," +
                     "'jobId' TEXT," +
-                    "'size' TEXT," +
+                    "'size' INTEGER NOT NULL," +
                     "'attchParentId' TEXT," +
                     "'isLinked' TEXT," +
                     "'isdelete' TEXT," +
