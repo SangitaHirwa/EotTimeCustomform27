@@ -235,7 +235,7 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
             @Override
             public void run() {
                 setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.title_add_job));
-                initializelables();
+
                 if(getIntent()!=null&&getIntent().getStringExtra("CalenderDate")!=null)
                 {
                     calenderDate=getIntent().getStringExtra("CalenderDate");
@@ -254,20 +254,21 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-
+                        initializelables();
                         initializeView();
                         jobPrioritySet();
                         setTaskPriority();
                         /*find Recur View's****/
                         findRecurView();
+                        mEditor.setPlaceholder(LanguageController.getInstance().getMobileMsgByKey(AppConstant              .job_desc));
+                        mEditor.setTextColor(Color.parseColor("#8C9293"));
+                        mEditor.setBackgroundColor(Color.TRANSPARENT);
+                        mEditor.focusEditor();
                     }
                 });
 
 
-                mEditor.setPlaceholder(LanguageController.getInstance().getMobileMsgByKey(AppConstant              .job_desc));
-                mEditor.setTextColor(Color.parseColor("#8C9293"));
-                mEditor.setBackgroundColor(Color.TRANSPARENT);
-                mEditor.focusEditor();
+
                 SettingUrls settingurl = new SettingUrls(Integer.parseInt(App_preference.getSharedprefInstance().getLoginRes().getCompId()), (success_no, msg) -> {
                 });
                 settingurl.getTagList();
