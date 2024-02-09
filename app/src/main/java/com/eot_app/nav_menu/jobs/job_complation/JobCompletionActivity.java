@@ -176,6 +176,7 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
     BackgroundTaskExecutor backgroundTaskExecutor;
     ConstraintLayout cl_notSyncParent;
     int competionNotesPostion = -1;
+    String complNotes ="";
 
 
     @Override
@@ -453,7 +454,6 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
                 break;
             case R.id.save_txt:
                 AppUtility.hideSoftKeyboard(this);
-                String complNotes ="";
                 for (QuesRspncModel item : completionFormAdapter.getTypeList()
                 ) {
                         if(item.getType().isEmpty()){
@@ -1962,6 +1962,9 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
                         isChangeDetected = true;
                 }
             }
+        }
+        if(complNotes != null && !complNotes.isEmpty()){
+            isChangeDetected = true;
         }
         return isChangeDetected;
     }
