@@ -145,6 +145,8 @@ public class JobDetailActivity extends AppCompatActivity implements
     JobCardViewActivity jobCardViewActivity;
     private boolean keyboardListenersAttached = false;
     private ViewGroup rootLayout;
+    private String completeFor;
+    private String jobType;
     BroadcastReceiver loadfromforserver=new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -859,7 +861,7 @@ public class JobDetailActivity extends AppCompatActivity implements
                 switch (resultCode) {
                     case Activity.RESULT_OK:
                         if (detailFragment != null) {
-                            detailFragment.onFormSuccess("0","");
+                            detailFragment.onFormSuccess(completeFor,jobType);
                         }
                         break;
                     case Activity.RESULT_CANCELED:
@@ -1016,6 +1018,8 @@ public class JobDetailActivity extends AppCompatActivity implements
     }
 
     public void openFormForEvent(String eventId , String completeFor, String jobType) {
+        this.completeFor = completeFor;
+        this.jobType = jobType;
         HyperLog.i(TAG, "openFormForEvent(M) check custom form permission");
 
         if (App_preference.getSharedprefInstance().getLoginRes().getCustomFormEnable().equals("1")) {
