@@ -748,6 +748,11 @@ public class JobCardViewActivity extends AppCompatActivity  implements
     }
 
     @Override
+    public void progressBarDissmissForThread() {
+
+    }
+
+    @Override
     public void setInvoiceDetails() {
 
     }
