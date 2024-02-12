@@ -1594,7 +1594,7 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
             compedt.setSelection(cursorpostion+2);
             pos = cursorpostion+2;
         } else if(type==3){
-            s=AppUtility.html2text(jobData.getDes());
+            s=AppUtility.html2text(jobData.getDesWithoutHtml());
             if(s.isEmpty()) {
                 compedt.setSelection(cursorpostion + s.length());
                 pos = cursorpostion + s.length();
