@@ -110,8 +110,23 @@
                     android:backgroundTint="@color/flag_color"
                     android:src="@drawable/ic_equipement"
                     android:tint="@color/flag_color"
-                    android:visibility="gone"
+                    android:visibility="visible"
                     tools:ignore="ContentDescription" />
+                <TextView
+                    android:id="@+id/tv_badge_count"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="3dp"
+                    android:layout_marginTop="0dp"
+                    android:background="@drawable/add_bdges_count"
+                    android:gravity="center"
+                    android:padding="5dp"
+                    android:text="10+"
+                    android:textColor="@color/white"
+                    android:textSize="6dp"
+                    android:textStyle="normal"
+                    android:visibility="visible"
+                    />
             </LinearLayout>
 
 

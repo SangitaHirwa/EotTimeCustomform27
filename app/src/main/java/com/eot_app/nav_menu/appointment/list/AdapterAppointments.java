@@ -15,8 +15,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.eot_app.R;
 import com.eot_app.nav_menu.appointment.list.common.CommonAppointmentModel;
+import com.eot_app.nav_menu.jobs.job_controller.ChatController;
 import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.AppUtility;
+import com.eot_app.utility.db.AppDataBase;
 import com.eot_app.utility.language_support.LanguageController;
 
 import java.util.ArrayList;
@@ -100,7 +102,17 @@ public class AdapterAppointments extends RecyclerView.Adapter<AdapterAppointment
             } else {
                 holder.equi_flag.setVisibility(View.GONE);
             }
-
+            /*For badge count*/
+            int batchCount = ChatController.getInstance().getbatchCount(appointment.getId())
+                    + ChatController.getInstance().getClientChatBatchCount(appointment.getId());
+            if (batchCount > 0) {
+                holder.tv_badge_count.setVisibility(View.VISIBLE);
+                holder.tv_badge_count.setText(String.valueOf(batchCount));
+            } else {
+                holder.tv_badge_count.setVisibility(View.GONE);
+            }
+            //Chat notification
+            ChatController.getInstance().registerChatListner(AppDataBase.getInMemoryDatabase(mContext).jobModel().getJobsById(appointment.getId()));
 
         } else if (appointment.getType() == AUDIT_VIEW) {
             holder.tv_type.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.audit_nav));
@@ -177,7 +189,7 @@ public class AdapterAppointments extends RecyclerView.Adapter<AdapterAppointment
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        TextView tv_start_time, tv_type, tv_title, tv_address, tv_not_sync;
+        TextView tv_start_time, tv_type, tv_title, tv_address, tv_not_sync, tv_badge_count;
         ConstraintLayout status_constraints;
         AppCompatImageView img_appointment_status;
         ImageView item_flag, equi_flag, attachmemt_flag;
@@ -194,6 +206,7 @@ public class AdapterAppointments extends RecyclerView.Adapter<AdapterAppointment
             item_flag = itemView.findViewById(R.id.item_flag);
             equi_flag = itemView.findViewById(R.id.equi_flag);
             attachmemt_flag = itemView.findViewById(R.id.attachmemt_flag);
+            tv_badge_count = itemView.findViewById(R.id.tv_badge_count);
 
         }
     }

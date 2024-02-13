@@ -198,7 +198,8 @@ public class AppointmentListViewModel extends AndroidViewModel implements Server
                     Type listType = new TypeToken<List<Job>>() {
                     }.getType();
                     List<Job> data = new Gson().fromJson(convert, listType);
-                    AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().inserJob(data);
+//                    AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().inserJob(data);
+                    addRecordsToDB(data);
                     if ((updateindex + updatelimit) <= count) {
                         updateindex += updatelimit;
                         loadJob();
