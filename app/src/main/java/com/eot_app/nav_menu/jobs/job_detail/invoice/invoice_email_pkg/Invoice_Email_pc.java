@@ -348,8 +348,8 @@ public class Invoice_Email_pc implements Invoice_Email_pi {
     }
 
     @Override
-    public void sendInvoiceEmailTempApi(String invId, String compId, String messageInHtml, String emailSubject, String emailTo, String emailCc, String isProformaInv, String tempId,Object stripLink) {
-        Send_Email_ReQ_Model reQ_model = new Send_Email_ReQ_Model(invId, compId, messageInHtml, emailSubject, emailTo, emailCc,stripLink);
+    public void sendInvoiceEmailTempApi(String invId, String compId, String messageInHtml, String emailSubject, String emailTo, String emailCc, String isProformaInv, String tempId,Object stripLink, List<JobCardAttachmentModel> Attachment) {
+        Send_Email_ReQ_Model reQ_model = new Send_Email_ReQ_Model(invId, compId, messageInHtml, emailSubject, emailTo, emailCc,stripLink,Attachment);
         reQ_model.setIsProformaInv(isProformaInv);
         reQ_model.setTempId(tempId);
         JsonObject jsonObject = AppUtility.getJsonObject(new Gson().toJson(reQ_model));

@@ -8,7 +8,7 @@ public interface Invoice_Email_pi {
     void getInvoiceEmailTempApi(String invId, String isProformaInv);
 
     void sendInvoiceEmailTempApi(String invId, String compId, String messageInHtml, String emailSubject, String emailTo, String emailCc,
-                                 String isProformaInv, String tempId,Object stripLink);
+                                 String isProformaInv, String tempId,Object stripLink, List<JobCardAttachmentModel> Attachment);
 
     boolean isInputFieldDataValid(String emailTo, String emailCc, String emailSubject, String emailMessage);
 

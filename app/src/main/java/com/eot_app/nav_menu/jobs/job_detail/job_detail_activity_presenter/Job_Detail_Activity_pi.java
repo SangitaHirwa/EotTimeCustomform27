@@ -12,5 +12,7 @@ public interface Job_Detail_Activity_pi {
 
     void uploadCustomerSign(String jobId, File file);
     void getJobCardetemplateList();
+    void getGenerateInvoicePdf(String invId, String isProformaInv,String tempId);
+
 
 }

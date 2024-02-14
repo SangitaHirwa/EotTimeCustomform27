@@ -69,6 +69,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
+import com.hypertrack.hyperlog.HyperLog;
 
 
 import java.io.File;
@@ -83,7 +84,6 @@ import java.util.concurrent.Callable;
 public class JobCardViewActivity extends AppCompatActivity  implements
         View.OnClickListener, Spinner.OnItemSelectedListener, Invoice_Email_View, JobCardAttachmentAdapter.Listener, Doc_Attch_View, Job_Detail_Activity_View, EotEditor.OnTextChangeListener {
     Job_Detail_Activity_pi detail_activity_pi=new Job_Detail_Activity_pc(this);
-    private ItemList_PI itemListPi;
     Quo_Invo_Pi quo_invo_pi;
     String jobId = "";
     String tempId = "";
@@ -92,6 +92,7 @@ public class JobCardViewActivity extends AppCompatActivity  implements
     ArrayList<InvoiceEmaliTemplate> templateList;
     String[] kprList;
     String quotId;
+    String invId;
     private InvoiceItemDetailsModel invoice_Details;
     private Invoice_Email_pi invoice_email_pi;
     private JobCardAttachmentAdapter jobCardAttachmentAdapter;
@@ -113,26 +114,57 @@ public class JobCardViewActivity extends AppCompatActivity  implements
     Boolean isChatCheck = false;
     Boolean isSignCheck = false;
     private static String htlmMessage="";
-
-
+    private String isProformaInv = "0";
+    private Get_Email_ReS_Model email_reS_model;
+    private Object stripLink;
+    String invJobId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_job_card_view);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.preview_and_send_jobcard));
         invoice_email_pi = new Invoice_Email_pc(this, JobCardViewActivity.this);
+        jobCardAttachmentAdapter = new JobCardAttachmentAdapter(this);
         doc_attch_pi = new Doc_Attch_Pc(this);
-        if(getIntent().hasExtra("DataForJobCardView")){
+        Bundle bundle = getIntent().getExtras();
+        if(getIntent().hasExtra("JobId")){
+            getSupportActionBar().setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.preview_and_send_jobcard));
             jobId = getIntent().getStringExtra("JobId");
             fwList = getIntent().getStringArrayExtra("FwList");
             Type type = new TypeToken<List<InvoiceEmaliTemplate>>() {}.getType();
             templateList = new Gson().fromJson(getIntent().getStringExtra("toJsonTemplateString"),type);
-        }
-        if(jobId != null && !jobId.isEmpty()){
-            if(invoice_email_pi != null){
-                invoice_email_pi.getJobCardEmailMessageChatList(jobId);
+        } if (getIntent().hasExtra("invId")) {
+            getSupportActionBar().setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.preview_and_send_invoice));
+            invId = bundle.getString("invId");
+            jobId = bundle.getString("jobId");
+            invoice_Details = bundle.getParcelable("invoiceDetail");
+            fwList = getIntent().getStringArrayExtra("FwList");
+            Type type = new TypeToken<List<InvoiceEmaliTemplate>>() {}.getType();
+            templateList = new Gson().fromJson(getIntent().getStringExtra("templateList"),type);
+            if (bundle.getString("isShowInList") != null) {
+                if (bundle.getString("isShowInList").equals("0"))
+                    isProformaInv = "1";
+                else isProformaInv = "0";
             }
+            HyperLog.i("", "invoice intent received:" + invId);
+        }
+        if (getIntent().hasExtra("quotId")) {
+            getSupportActionBar().setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.preview_and_send_quote));
+            quotId = bundle.getString("quotId");
+            HyperLog.i("", "quotation intent received:" + quotId);
+
+        }
+
+        if(invId==null && jobId != null && !jobId.isEmpty() ){
+                invoice_email_pi.getJobCardEmailMessageChatList(jobId);
+        }else if (invId != null && !invId.isEmpty()) {
+            setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.email_invoice));
+            invoice_email_pi.getJobInvoicetemplateList();
+            invoice_email_pi.getInvoiceEmailTempApi(invId, isProformaInv);
+        } else if (quotId != null && !quotId.isEmpty()) {
+            setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.email_quotes));
+            invoice_email_pi.getQuotesInvoicetemplateList();
+            invoice_email_pi.getQuotationEmailTemplate(quotId);
         }
         initViews();
 
@@ -140,6 +172,9 @@ public class JobCardViewActivity extends AppCompatActivity  implements
     void initViews() {
 
 
+        binding.rvJobCardAttachment.setLayoutManager(new LinearLayoutManager(this));
+        binding.rvJobCardAttachment.setAdapter(jobCardAttachmentAdapter);
+        doc_attch_pi.getAttachFileList(jobId, "", "", true);
         // Log.e("fwList",new Gson().toJson(fwList));
         binding.jobCardEditor.setVerticalScrollBarEnabled(false);
         if (fwList != null && fwList.length > 0) {
@@ -224,27 +259,46 @@ public class JobCardViewActivity extends AppCompatActivity  implements
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.send_jobcard_btn:
-                if (jobId != null&&!jobId.isEmpty()) {
-                    invoice_email_pi.sendJobCardEmailTemplate(jobId,
-                            getIntent().getStringExtra("pdfPath"),
-                            binding.jobCardEditor.getHtml(),
-                            binding.edtEmailSubject.getText().toString(),
-                            binding.edtEmailTo.getText().toString(),
-                            binding.edtEmailCc.getText().toString(),tempId,fwId,reqAttachmentList);
+                if (invoice_email_pi.isInputFieldDataValid(   binding.edtEmailTo.getText().toString(), binding.edtEmailCc.getText().toString()
+                        , binding.edtEmailSubject.getText().toString(), binding.jobCardEditor.getHtml())) {
+                    String messageInHtml =  binding.jobCardEditor.getHtml().replaceAll("\n", "<br>");
+                    if (jobId != null && !jobId.isEmpty() && invId == null) {
+                        invoice_email_pi.sendJobCardEmailTemplate(jobId,
+                                getIntent().getStringExtra("pdfPath"),
+                                binding.jobCardEditor.getHtml(),
+                                binding.edtEmailSubject.getText().toString(),
+                                binding.edtEmailTo.getText().toString(),
+                                binding.edtEmailCc.getText().toString(), tempId, fwId, reqAttachmentList);
+                    } else if (invId != null) {
+                        invoice_email_pi.sendInvoiceEmailTempApi(invId,
+                                App_preference.getSharedprefInstance().getLoginRes().getCompId(),
+                                messageInHtml,
+                                binding.edtEmailSubject.getText().toString(),
+                                binding.edtEmailTo.getText().toString(),
+                                binding.edtEmailCc.getText().toString(), isProformaInv, tempId,stripLink,reqAttachmentList);
+                    } else if (quotId != null) {
+                        invoice_email_pi.sendQuotationEmailTemplate(quotId,
+                                messageInHtml,
+                                binding.edtEmailSubject.getText().toString(),
+                                binding.edtEmailTo.getText().toString(),
+                                binding.edtEmailCc.getText().toString(),
+                                "",
+                                email_reS_model.getFrom(),
+                                email_reS_model.getFromnm(), tempId);
+                    }
                 }
                 break;
             case R.id.download_jobcard_btn:
-
-                if (detail_activity_pi != null && jobId != null)
+                if (detail_activity_pi != null && jobId != null && invId==null)
                     detail_activity_pi.printJobCard(jobId, tempId,fwId);
                 else if (quo_invo_pi != null && quotId != null)
                     quo_invo_pi.generateQuotPDF(quotId,tempId);
-                else if (itemListPi!=null&&invoice_Details != null) {
+                else if (detail_activity_pi!=null&&invoice_Details != null) {
                     String isProformaInv = "0";
                     if (invoice_Details.getIsShowInList() != null && invoice_Details.getIsShowInList().equals("0"))
                         isProformaInv = "1";
                     else isProformaInv = "0";
-                    itemListPi.getGenerateInvoicePdf(invoice_Details.getInvId(), isProformaInv,tempId);
+                    detail_activity_pi.getGenerateInvoicePdf(invoice_Details.getInvId(), isProformaInv,tempId);
                 }
                 break;
             case R.id.linearLayout_templat:
@@ -352,13 +406,10 @@ public class JobCardViewActivity extends AppCompatActivity  implements
         }
     }
     private void  setEmailData(String url) {
-        if (jobId != null) {
-            invoice_email_pi.getJobCardEmailTemplate(jobId, tempId,url);
-//            jobDetail_pi.getAttachFileList(jobId, "","");
-            doc_attch_pi.getAttachFileList(jobId, "", "", true);
-            jobCardAttachmentAdapter = new JobCardAttachmentAdapter(this);
-
+        if (url != null && !url.isEmpty()) {
+            invoice_email_pi.getJobCardEmailTemplate(jobId, tempId, url);
         }
+//            jobDetail_pi.getAttachFileList(jobId, "","");
     }
     private void askTedPermission(int type,String[] permissions) {
         TedPermission.with(EotApp.getAppinstance())
@@ -411,6 +462,7 @@ public class JobCardViewActivity extends AppCompatActivity  implements
 
     @Override
     public void onGetEmailTempData(Get_Email_ReS_Model email_reS_model) {
+        this.email_reS_model = email_reS_model;
         binding.tvLabelTo.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.to));
         binding.tvLabelCc.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.cc));
         binding.tvLabelSub.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.subject));
@@ -434,6 +486,8 @@ public class JobCardViewActivity extends AppCompatActivity  implements
             else{
                 setEmailReplacedMessage(htlmMessage,checkedSing,checkedChat);
             }
+        }  if (email_reS_model.getStripLink()!=null) {
+            this.stripLink = email_reS_model.getStripLink();
         }
         binding.cbSign.setOnCheckedChangeListener((compoundButton, b) -> {
             setEmailReplacedMessage(binding.jobCardEditor.getHtml(),b,binding.cbChat.isChecked());
@@ -442,11 +496,7 @@ public class JobCardViewActivity extends AppCompatActivity  implements
             setEmailReplacedMessage(binding.jobCardEditor.getHtml(),binding.cbSign.isChecked(),b);
         });
 
-//        this.email_reS_model = email_reS_model;
-//
-//        if (email_reS_model.getStripLink()!=null)
-//            this.stripLink=email_reS_model.getStripLink();
-    }
+   }
 
     private void getVisibilityForCheckBox(String mailMessage) {
 
@@ -523,6 +573,7 @@ public class JobCardViewActivity extends AppCompatActivity  implements
                 return null;
             }
         });
+        AppUtility.hideSoftKeyboard(JobCardViewActivity.this);
     }
 
     @Override
@@ -530,7 +581,6 @@ public class JobCardViewActivity extends AppCompatActivity  implements
         AppUtility.alertDialog(this, "", LanguageController.getInstance().getServerMsgByKey(error), LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), "", new Callable<Boolean>() {
             @Override
             public Boolean call() {
-                onBackPressed();
                 return null;
             }
         });
@@ -678,7 +728,14 @@ public class JobCardViewActivity extends AppCompatActivity  implements
         Log.e("Attachment List", ""+getFileList_res.size()+""+isAttachCompletionNotes);
         list.clear();
         this.fileList_res = getFileList_res;
-        JobCardAttachmentModel jobCardAttachmentModel = new JobCardAttachmentModel("-1","2",LanguageController.getInstance().getMobileMsgByKey(AppConstant.job_card)+".pdf",true);
+        JobCardAttachmentModel jobCardAttachmentModel=null;
+        if(getIntent().hasExtra("invId")){
+            jobCardAttachmentModel = new JobCardAttachmentModel("-1","2","Invoice"+".pdf",true);
+        }else if(getIntent().hasExtra("JobId") && invId == null){
+             jobCardAttachmentModel = new JobCardAttachmentModel("-1","2",LanguageController.getInstance().getMobileMsgByKey(AppConstant.job_card)+".pdf",true);
+        }else if(getIntent().hasExtra("quotId")){
+            jobCardAttachmentModel = new JobCardAttachmentModel("-1","2",LanguageController.getInstance().getMobileMsgByKey(AppConstant.quotes)+".pdf",true);
+        }
         list.add(jobCardAttachmentModel);
         for (Attachments item : fileList_res) {
             final String ext = item.getImage_name().substring((item.getImage_name().lastIndexOf(".")) + 1).toLowerCase();
@@ -695,8 +752,6 @@ public class JobCardViewActivity extends AppCompatActivity  implements
             reqAttachmentList.add(list.get(0));
         }
         jobCardAttachmentAdapter.updateList(list);
-        binding.rvJobCardAttachment.setLayoutManager(new LinearLayoutManager(this));
-        binding.rvJobCardAttachment.setAdapter(jobCardAttachmentAdapter);
         if (jobCardAttachmentAdapter.getItemCount() <= 3) {
             binding.rvJobCardAttachment.getLayoutParams().height = RecyclerView.LayoutParams.WRAP_CONTENT;
         } else {
@@ -739,6 +794,7 @@ public class JobCardViewActivity extends AppCompatActivity  implements
 
     @Override
     public void finishActivityWithSetResult() {
+
 
     }
 

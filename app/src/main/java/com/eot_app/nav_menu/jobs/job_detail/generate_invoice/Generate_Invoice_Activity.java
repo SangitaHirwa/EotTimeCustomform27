@@ -40,6 +40,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.eot_app.R;
 import com.eot_app.login_next.FooterMenu;
+import com.eot_app.nav_menu.jobs.job_card_view.JobCardViewActivity;
 import com.eot_app.nav_menu.jobs.job_db.Job;
 import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.AddEditInvoiceItemActivity2;
 import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.model.InvoiceItemDataModel;
@@ -132,7 +133,9 @@ public class Generate_Invoice_Activity extends AppCompatActivity implements MyLi
     private InvoiceTaxAdapter invoiceTaxAdapter;
     private String getDisCalculationType,getTaxCalculationType;
     String End_Date = "End_Date";
+    private String toJsonTemplate;
     static Dialog dialog;
+    Job mjob;
     private final DatePickerDialog.OnDateSetListener datePickerListener = new DatePickerDialog.OnDateSetListener() {
         @Override
         public void onDateSet(DatePicker view, int selectedYear, int selectedMonth, int selectedDay) {
@@ -187,8 +190,8 @@ public class Generate_Invoice_Activity extends AppCompatActivity implements MyLi
 
     private void getTaxDisType(String jobId){
         if(jobId != null && !jobId.equals("")){
-            Job job = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(jobId);
-            if(job.getCanInvoiceCreated().equals("1")) {
+           mjob = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(jobId);
+            if(mjob.getCanInvoiceCreated().equals("1")) {
                 getDisCalculationType = AppDataBase.getInMemoryDatabase(this).jobModel().disCalculationType(jobId);
                 getTaxCalculationType = AppDataBase.getInMemoryDatabase(this).jobModel().taxCalculationType(jobId);
             }else {
@@ -257,7 +260,7 @@ public class Generate_Invoice_Activity extends AppCompatActivity implements MyLi
         rm_invice_im = findViewById(R.id.rm_invice_im);
         invoiceFab = findViewById(R.id.invoiceFab);
         linearFabEmail = findViewById(R.id.linearFabEmail);
-        linearFabPrintInvoice = findViewById(R.id.linearFabPrintInvoice);
+//        linearFabPrintInvoice = findViewById(R.id.linearFabPrintInvoice);
         linearFabAddNewItem = findViewById(R.id.linearFabAddNewItem);
 
         backgroundView = findViewById(R.id.backgroundView);
@@ -277,12 +280,12 @@ public class Generate_Invoice_Activity extends AppCompatActivity implements MyLi
         empty_inv_txt.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.item_not_found));
 
         tv_fab_email = findViewById(R.id.tv_fab_email);
-        tv_fab_email.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.email_invoice));
+        tv_fab_email.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.preview_and_send_invoice));
         tv_fab_add_new_item = findViewById(R.id.tv_fab_add_new_item);
         tv_fab_add_new_item.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_new_item));
 
-        tv_fab_print_invoice = findViewById(R.id.tv_fab_print_invoice);
-        tv_fab_print_invoice.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.print_invoice));
+      /*  tv_fab_print_invoice = findViewById(R.id.tv_fab_print_invoice);
+        tv_fab_print_invoice.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.print_invoice));*/
 
         tv_create_date = findViewById(R.id.tv_create_date);
         tv_create_date.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.invoice_date));      //change when json file updated.
@@ -344,7 +347,7 @@ public class Generate_Invoice_Activity extends AppCompatActivity implements MyLi
 
         invoiceFab.setOnClickListener(this);
         linearFabEmail.setOnClickListener(this);
-        linearFabPrintInvoice.setOnClickListener(this);
+      //  linearFabPrintInvoice.setOnClickListener(this);
         backgroundView.setOnClickListener(this);
         linearFabAddNewItem.setOnClickListener(this);
 
@@ -672,7 +675,7 @@ public class Generate_Invoice_Activity extends AppCompatActivity implements MyLi
                 }
                 break;
             case R.id.linearFabEmail:
-                if (invoice_Details != null) {
+               /* if (invoice_Details != null) {
                     Intent emailIntent = new Intent(Generate_Invoice_Activity.this, Invoice_Email_Activity.class);
                     emailIntent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                     emailIntent.putExtra("invId", invoice_Details.getInvId());
@@ -711,8 +714,61 @@ public class Generate_Invoice_Activity extends AppCompatActivity implements MyLi
                         }
                     }, 500);
                     closeFABMenu();
+                }*/
+                 /** This change for ui change for email**/
+                if (invoice_Details != null) {
+                    if(templateList!=null && !templateList.isEmpty()){
+                        toJsonTemplate = new Gson().toJson(templateList);
+                    }
+                    //Intent emailIntent = new Intent(Generate_Invoice_Activity.this, Invoice_Email_Activity.class);
+                    Intent emailIntent = new Intent(Generate_Invoice_Activity.this, JobCardViewActivity.class);
+                    emailIntent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                    emailIntent.putExtra("invId", invoice_Details.getInvId());
+                    emailIntent.putExtra("compId", invoice_Details.getCompId());
+                    emailIntent.putExtra("jobId", invoice_Details.getJobId());
+                    emailIntent.putExtra("invoiceDetail",invoice_Details);
+                    emailIntent.putExtra("templateList",toJsonTemplate);
+                    emailIntent.putExtra("isShowInList", invoice_Details.getIsShowInList());
+                    if(mjob.getKpr()!=null)
+                    {
+                        String[] fwList2=mjob.getKpr().split(",");
+                        emailIntent.putExtra("FwList",fwList2);
+                    }
+                    startActivity(emailIntent);
                 }
+                closeFABMenu();
                 break;
+        /*    case R.id.linearFabPrintInvoice:
+                if (templateList != null && !templateList.isEmpty() && templateList.size()>1) {
+                    dialogJobCardDocuments = new DialogJobCardDocuments();
+                    dialogJobCardDocuments.setContext(this);
+                    dialogJobCardDocuments.setitemListPi(itemListPi);
+                    dialogJobCardDocuments.setinvoice_Details(invoice_Details);
+                    dialogJobCardDocuments.setInvoiceTmpList(templateList);
+                    dialogJobCardDocuments.show(getSupportFragmentManager(), "dialog");
+                    closeFABMenu();
+                } else {
+                    String tempId="";
+                    if(templateList != null && !templateList.isEmpty() && templateList.size()==1){
+                        tempId=templateList.get(0).getInvTempId();
+                    }
+                    linearFabPrintInvoice.setClickable(false);
+                    if (invoice_Details != null) {
+                        String isProformaInv = "0";
+                        if (invoice_Details.getIsShowInList() != null && invoice_Details.getIsShowInList().equals("0"))
+                            isProformaInv = "1";
+                        else isProformaInv = "0";
+//                        itemListPi.getGenerateInvoicePdf(invoice_Details.getInvId(), isProformaInv,tempId);
+                    }
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            linearFabPrintInvoice.setClickable(true);
+                        }
+                    }, 500);
+                    closeFABMenu();
+                }
+                break;*/
             case R.id.backgroundView:
                 closeFABMenu();
                 break;
@@ -940,7 +996,7 @@ public class Generate_Invoice_Activity extends AppCompatActivity implements MyLi
         actionBar.setStackedBackgroundDrawable(new ColorDrawable(Color.parseColor("#90ffffff")));
         backgroundView.setVisibility(View.VISIBLE);
         linearFabEmail.setVisibility(View.VISIBLE);
-        linearFabPrintInvoice.setVisibility(View.VISIBLE);
+//        linearFabPrintInvoice.setVisibility(View.VISIBLE);
 
 
         for (FooterMenu serverList : App_preference.getSharedprefInstance().getLoginRes().getFooterMenu()) {
@@ -951,13 +1007,13 @@ public class Generate_Invoice_Activity extends AppCompatActivity implements MyLi
                             &&
                             App_preference.getSharedprefInstance().getLoginRes().getCompPermission().get(0).getIsItemEnable().equals("0")) {
                         linearFabAddNewItem.setVisibility(View.VISIBLE);
-                        linearFabEmail.animate().translationY(getResources().getDimension(R.dimen.standard_145));
-                        linearFabPrintInvoice.animate().translationY(getResources().getDimension(R.dimen.standard_100));
+                        linearFabEmail.animate().translationY(getResources().getDimension(R.dimen.standard_100));
+//                      linearFabPrintInvoice.animate().translationY(getResources().getDimension(R.dimen.standard_100));
                         linearFabAddNewItem.animate().translationY(getResources().getDimension(R.dimen.standard_55));
                     } else {
                         linearFabAddNewItem.setVisibility(View.GONE);
-                        linearFabEmail.animate().translationY(getResources().getDimension(R.dimen.standard_100));
-                        linearFabPrintInvoice.animate().translationY(getResources().getDimension(R.dimen.standard_55));
+                        linearFabEmail.animate().translationY(getResources().getDimension(R.dimen.standard_55));
+//                        linearFabPrintInvoice.animate().translationY(getResources().getDimension(R.dimen.standard_55));
                     }
                 }
         }
@@ -970,7 +1026,7 @@ public class Generate_Invoice_Activity extends AppCompatActivity implements MyLi
         linearFabEmail.animate().translationY(0);
         linearFabAddNewItem.animate().translationY(0);
 
-        linearFabPrintInvoice.animate().translationY(0).setListener(new Animator.AnimatorListener() {
+        linearFabEmail.animate().translationY(0).setListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animator) {
 
@@ -981,7 +1037,7 @@ public class Generate_Invoice_Activity extends AppCompatActivity implements MyLi
                 if (!isFABOpen) {
                     backgroundView.setVisibility(View.GONE);
                     linearFabEmail.setVisibility(View.GONE);
-                    linearFabPrintInvoice.setVisibility(View.GONE);
+//                    linearFabPrintInvoice.setVisibility(View.GONE);
                     linearFabAddNewItem.setVisibility(View.GONE);
                     actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorPrimary)));
                 }

@@ -213,7 +213,7 @@ public class Invoice_Email_Activity extends AppCompatActivity implements View.On
                             emailSubject,
                             emailTo,
                             emailCc,
-                            isProformaInv, tempId,stripLink);
+                            isProformaInv, tempId,stripLink,reqAttachmentList);
                 }
                 break;
         }
@@ -325,7 +325,7 @@ public class Invoice_Email_Activity extends AppCompatActivity implements View.On
                                 messageInHtml,
                                 emailSubject,
                                 emailTo,
-                                emailCc, isProformaInv, tempId,stripLink);
+                                emailCc, isProformaInv, tempId,stripLink,reqAttachmentList);
                     } else if (quotId != null) {
                         invoice_email_pi.sendQuotationEmailTemplate(quotId,
                                 messageInHtml,
