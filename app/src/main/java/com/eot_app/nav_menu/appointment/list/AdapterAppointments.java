@@ -112,6 +112,7 @@ public class AdapterAppointments extends RecyclerView.Adapter<AdapterAppointment
                 holder.tv_badge_count.setVisibility(View.GONE);
             }
             //Chat notification
+            if(!appointment.getId().equals(appointment.getTempId()))
             ChatController.getInstance().registerChatListner(AppDataBase.getInMemoryDatabase(mContext).jobModel().getJobsById(appointment.getId()));
 
         } else if (appointment.getType() == AUDIT_VIEW) {
