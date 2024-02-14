@@ -1117,19 +1117,8 @@ public class DetailFragment extends Fragment
         }
 
         addComplationButtonTxt();
+        setDataToView();
 
-        // for equipment
-
-        setEuqipmentList(mParam2.getEquArray());
-        if (jobDetail_pi != null)
-            jobDetail_pi.loadFromServer(mParam2.getJobId());
-        // for completion details
-        if (jobDetail_pi != null)
-            jobDetail_pi.getJobCompletionDetails(mParam2.getJobId());
-
-        // for completion details
-        if (jobDetail_pi != null)
-            jobDetail_pi.getEquipmentStatus();
 
         //permission for showing completion details edit actual and travel time
         try {
@@ -1190,7 +1179,18 @@ public class DetailFragment extends Fragment
         if (!mParam2.getJobId().equals(mParam2.getTempId()))
             showRecurmsg();
         else recur_parent_view.setVisibility(View.GONE);*/
-        setDataToView();
+        // for equipment
+
+        setEuqipmentList(mParam2.getEquArray());
+        if (jobDetail_pi != null)
+            jobDetail_pi.loadFromServer(mParam2.getJobId());
+        // for completion details
+        if (jobDetail_pi != null)
+            jobDetail_pi.getJobCompletionDetails(mParam2.getJobId());
+
+        // for completion details
+        if (jobDetail_pi != null)
+            jobDetail_pi.getEquipmentStatus();
     }
 
 
