@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.ext.SdkExtensions;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.Html;
@@ -1274,10 +1275,19 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
 //            Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
 //            startActivityForResult(galleryIntent, ATTACHFILE_CODE);
 //        }else {
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && SdkExtensions.getExtensionVersion(Build.VERSION_CODES.R) >= 2){
+
+            Intent galleryIntent = new Intent(MediaStore.ACTION_PICK_IMAGES);
+            galleryIntent.setType("image/*");
+            galleryIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+            galleryIntent.putExtra(MediaStore.EXTRA_PICK_IMAGES_MAX,MediaStore.getPickImagesMaxLimit());
+            startActivityForResult(Intent.createChooser(galleryIntent,"Select Picture"), CAPTURE_IMAGE_GALLARY);
+        }else {
             Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            galleryIntent.setType("image/*");
             galleryIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
             this.startActivityForResult(galleryIntent, CAPTURE_IMAGE_GALLARY);
-//        }
+        }
 
 
     }
@@ -1594,7 +1604,7 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
             compedt.setSelection(cursorpostion+2);
             pos = cursorpostion+2;
         } else if(type==3){
-            s=AppUtility.html2text(jobData.getDes());
+            s=AppUtility.html2text(jobData.getDesWithoutHtml());
             if(s.isEmpty()) {
                 compedt.setSelection(cursorpostion + s.length());
                 pos = cursorpostion + s.length();

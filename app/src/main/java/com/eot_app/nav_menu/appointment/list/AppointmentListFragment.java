@@ -22,6 +22,8 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.eot_app.R;
 import com.eot_app.databinding.AppoinmentFragmentLayoutBinding;
 import com.eot_app.home_screens.MainActivity;
@@ -36,6 +38,7 @@ import com.eot_app.nav_menu.audit.addAudit.AddAuditActivity;
 import com.eot_app.nav_menu.audit.audit_list.AuditDetails;
 import com.eot_app.nav_menu.audit.audit_list.audit_mvp.model.AuditList_Res;
 import com.eot_app.nav_menu.jobs.add_job.Add_job_activity;
+import com.eot_app.nav_menu.jobs.job_controller.ChatController;
 import com.eot_app.nav_menu.jobs.job_db.Job;
 import com.eot_app.nav_menu.jobs.job_detail.JobDetailActivity;
 import com.eot_app.utility.AppConstant;
@@ -119,6 +122,15 @@ public class AppointmentListFragment extends
         return binding.getRoot();
     }
 
+    @Override
+    public void onResume() {
+        ChatController.getInstance().setCalendarJObListener(this);
+        super.onResume();
+    }
+
+    public RecyclerView.Adapter getAdapter(){
+        return adapterAppointments;
+    }
     private void setUILables() {
         Objects.requireNonNull(getActivity()).setTitle("");
         binding.nolistTxt.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.appointment_not_found));
@@ -465,6 +477,7 @@ public class AppointmentListFragment extends
     @Override
     public void onDestroy() {
         Log.e("", "");
+        ChatController.getInstance().setCalendarJObListener(null);
         super.onDestroy();
     }
 }

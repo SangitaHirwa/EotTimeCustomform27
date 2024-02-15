@@ -426,8 +426,8 @@ public class DetailFragment extends Fragment
         if (mParam2.getJobId()!=null&&!mParam2.getJobId().isEmpty())
         {
             if(mParam2.getCanInvoiceCreated()!=null && mParam2.getCanInvoiceCreated().equals("1")) {
-                    getDisCalculationType = AppDataBase.getInMemoryDatabase(getActivity()).jobModel().disCalculationType(mParam2.getJobId());
-                    getTaxCalculationType = AppDataBase.getInMemoryDatabase(getActivity()).jobModel().taxCalculationType(mParam2.getJobId());
+                    getDisCalculationType = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().disCalculationType(mParam2.getJobId());
+                    getTaxCalculationType = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().taxCalculationType(mParam2.getJobId());
                 }
                 else{
                 getDisCalculationType= App_preference.getSharedprefInstance().getLoginRes().getDisCalculationType();
@@ -1300,7 +1300,7 @@ public class DetailFragment extends Fragment
     public void setOfflineData() {
         isMarkDoneWithJtidsList.clear();
         if(AppUtility.isInternetConnected()) {
-            mParam2 = AppDataBase.getInMemoryDatabase(getActivity()).jobModel().getJobsById(mParam2.getJobId());
+            mParam2 = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(mParam2.getJobId());
             if(mParam2.getComplNote() != null && mParam2.getComplNote().isEmpty() && mParam2.getCompliAnsArray() != null && mParam2.getCompliAnsArray().isEmpty()){
                 txt_notesHeader.setVisibility(View.GONE);
                 complation_notes.setVisibility(View.GONE);
@@ -1328,9 +1328,9 @@ public class DetailFragment extends Fragment
             }else {
                 cl_serviceMarkAsDone.setVisibility(View.GONE);
             }
-        }else if(AppDataBase.getInMemoryDatabase(getContext()).offline_completion_ans_dao().getComplQueAnsById(mParam2.getJobId()) != null){
-            OfflieCompleQueAns offlieCompleQueAns = AppDataBase.getInMemoryDatabase(getContext()).offline_completion_ans_dao().getComplQueAnsById(mParam2.getJobId());
-            mParam2 = AppDataBase.getInMemoryDatabase(getActivity()).jobModel().getJobsById(mParam2.getJobId());
+        }else if(AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).offline_completion_ans_dao().getComplQueAnsById(mParam2.getJobId()) != null){
+            OfflieCompleQueAns offlieCompleQueAns = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).offline_completion_ans_dao().getComplQueAnsById(mParam2.getJobId());
+            mParam2 = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(mParam2.getJobId());
             if(mParam2.getComplNote() != null && mParam2.getComplNote().isEmpty() && offlieCompleQueAns.getAllQuestionAnswer().isEmpty()){
                 txt_notesHeader.setVisibility(View.GONE);
                 complation_notes.setVisibility(View.GONE);
@@ -1361,7 +1361,7 @@ public class DetailFragment extends Fragment
             }
 
         }else {
-            mParam2 = AppDataBase.getInMemoryDatabase(getActivity()).jobModel().getJobsById(mParam2.getJobId());
+            mParam2 = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(mParam2.getJobId());
             if(mParam2.getComplNote() !=null && mParam2.getComplNote().isEmpty() && mParam2.getCompliAnsArray() != null &&  mParam2.getCompliAnsArray().isEmpty()){
                 txt_notesHeader.setVisibility(View.GONE);
                 complation_notes.setVisibility(View.GONE);
@@ -1491,7 +1491,7 @@ public void setCompletionDetail(){
 
     }
     //show attachment of completion of job
-    ArrayList <Attachments> attachmentsArrayList = new ArrayList<>((ArrayList<Attachments>) AppDataBase.getInMemoryDatabase(requireActivity()).attachments_dao().getAttachmentsByJobId(mParam2.getJobId()));
+    ArrayList <Attachments> attachmentsArrayList = new ArrayList<>((ArrayList<Attachments>) AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).attachments_dao().getAttachmentsByJobId(mParam2.getJobId()));
     if(attachmentsArrayList.size() == 0){
         recyclerView.setVisibility(View.GONE);
     }else {
@@ -2239,7 +2239,7 @@ public void setCompletionDetail(){
             rv_fw_list.setAdapter(filedworkerListAdapter);*/
 
             for (String id : kprList) {
-                FieldWorker fieldWorker = AppDataBase.getInMemoryDatabase(getActivity()).fieldWorkerModel().getFieldWorkerByID(id);
+                FieldWorker fieldWorker = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).fieldWorkerModel().getFieldWorkerByID(id);
                 if (fieldWorker != null) {
                     list.add(fieldWorker);
 
@@ -3446,7 +3446,7 @@ public void setCompletionDetail(){
         ArrayList<IsMarkDoneWithJtid> convertList = new ArrayList<>();
         convertList.addAll(list);
 
-        AppDataBase.getInMemoryDatabase(getContext()).jobModel().updateServiceMarkDoneList(mParam2.getIsMarkDoneWithJtId(),mParam2.getJobId());
+        AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().updateServiceMarkDoneList(mParam2.getIsMarkDoneWithJtId(),mParam2.getJobId());
     }
 //    public Set<IsMarkDoneWithJtid> getServicMarkDoneList(){
 //        return isMarkDoneWithJtidsList;
