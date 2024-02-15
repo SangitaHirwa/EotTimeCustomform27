@@ -52,6 +52,7 @@ import com.eot_app.nav_menu.jobs.job_detail.documents.fileattach_mvp.Doc_Attch_V
 import com.eot_app.nav_menu.jobs.job_detail.documents.work_manager.UploadMultiImgWorker;
 import com.eot_app.nav_menu.jobs.job_detail.form_form.get_qus_list.qus_model.QuesRspncModel;
 import com.eot_app.services.Service_apis;
+import com.eot_app.utility.AppCenterLogs;
 import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.AppUtility;
 import com.eot_app.utility.App_preference;
@@ -567,31 +568,48 @@ public class DocumentsFragment extends Fragment implements Doc_Attch_View, Docum
             case CAPTURE_IMAGE_GALLARY:
                 if (resultCode == RESULT_OK) {
                     try {
-                        boolean isMultipleImages = false;
+                        if(data.getClipData() != null) {
+                            boolean isMultipleImages = false;
 
-                        Uri galreyImguriUri = data.getClipData().getItemAt(0).getUri();
-                        //  String gallery_image_Path = PathUtils.getPath(getActivity(), galreyImguriUri);
-                        String gallery_image_Path = PathUtils.getRealPath(getActivity(), galreyImguriUri);
-                        String img_extension = gallery_image_Path.substring(gallery_image_Path.lastIndexOf("."));
-                        if(data.getClipData().getItemCount()>1){
-                            isMultipleImages = true;
+                            Uri galreyImguriUri = data.getClipData().getItemAt(0).getUri();
+                            //  String gallery_image_Path = PathUtils.getPath(getActivity(), galreyImguriUri);
+                            String gallery_image_Path = PathUtils.getRealPath(getActivity(), galreyImguriUri);
+                            String img_extension = gallery_image_Path.substring(gallery_image_Path.lastIndexOf("."));
+                            if (data.getClipData().getItemCount() > 1) {
+                                isMultipleImages = true;
+                            } else {
+                                isMultipleImages = false;
+                            }
+                            //('jpg','png','jpeg','pdf','doc','docx','xlsx','csv','xls'); supporting extensions
+                            if (img_extension.equals(".jpg") || img_extension.equals(".png") || img_extension.equals(".jpeg")) {
+                                if (!isMultipleImages) {
+                                    imageEditing(data.getClipData().getItemAt(0).getUri(), true);
+                                } else {
+                                    uploadMultipleImges(data, true);
+                                }
+                            } else {
+                                if (!isMultipleImages) {
+                                    uploadFileDialog(gallery_image_Path);
+                                } else {
+                                    uploadMultipleImges(data, false);
+                                }
+                            }
                         }else {
-                            isMultipleImages = false;
-                        }
-                        //('jpg','png','jpeg','pdf','doc','docx','xlsx','csv','xls'); supporting extensions
-                        if (img_extension.equals(".jpg") || img_extension.equals(".png") || img_extension.equals(".jpeg")) {
-                            if(!isMultipleImages) {
-                                imageEditing(data.getClipData().getItemAt(0).getUri(), true);
-                            }
-                            else {
-                                uploadMultipleImges(data,true);
-                            }
-                        } else {
-                            if(!isMultipleImages) {
-                                uploadFileDialog(gallery_image_Path);
-                            }
-                            else {
-                                uploadMultipleImges(data,false);
+                            try {
+                                Uri galreyImguriUri = data.getData();
+                                String gallery_image_Path = PathUtils.getRealPath(requireActivity(), galreyImguriUri);
+                                String img_extension = gallery_image_Path.substring(gallery_image_Path.lastIndexOf("."));
+                                //('jpg','png','jpeg','pdf','doc','docx','xlsx','csv','xls'); supporting extensions
+                                if (img_extension.equals(".jpg") || img_extension.equals(".png") || img_extension.equals(".jpeg")) {
+                                    imageEditing(data.getData(), true);
+                                }
+//                                else {
+//                                    String filename = gallery_image_Path.substring(gallery_image_Path.lastIndexOf("/") + 1);
+//                                    onDocumentSelected(gallery_image_Path, filename, false,parentPositon, position, this.queId, this.jtId);
+//                                }
+                            } catch (Exception e) {
+                                AppCenterLogs.addLogToAppCenterOnAPIFail("JobCompletion","","onActivityResult()-->ATTACHFILE_CODE"+e.getMessage(),"JobCompletionActivity","");
+                                e.printStackTrace();
                             }
                         }
                     } catch (Exception e) {
