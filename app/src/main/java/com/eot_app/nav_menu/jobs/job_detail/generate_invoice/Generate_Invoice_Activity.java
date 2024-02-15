@@ -715,7 +715,7 @@ public class Generate_Invoice_Activity extends AppCompatActivity implements MyLi
                     }, 500);
                     closeFABMenu();
                 }*/
-                 /** This change for ui change for email**/
+                 /** This change in ui for preview and email**/
                 if (invoice_Details != null) {
                     if(templateList!=null && !templateList.isEmpty()){
                         toJsonTemplate = new Gson().toJson(templateList);
