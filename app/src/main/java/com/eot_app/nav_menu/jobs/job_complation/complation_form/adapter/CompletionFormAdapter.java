@@ -1763,7 +1763,7 @@ public class CompletionFormAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                         cl_btnMark.setBackground(context.getResources().getDrawable(R.drawable.bg_mark_as_completion_done));
                         img_markBtn.setImageTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.white)));
                         img_crossBtn.setVisibility(View.VISIBLE);
-                        tv_markBtn.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.mark_as_done));
+                        tv_markBtn.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.done));
                         tv_markBtn.setTextColor(context.getResources().getColor(R.color.white));
                         questionList.get(0).setIsMarkAsDone("1");
                         clickListener.setMarkAsDoneService(questionList.get(0).getJtId(),"1");

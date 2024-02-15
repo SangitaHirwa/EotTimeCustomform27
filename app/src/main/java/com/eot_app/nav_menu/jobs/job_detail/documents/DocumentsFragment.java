@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.ext.SdkExtensions;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -399,9 +400,22 @@ public class DocumentsFragment extends Fragment implements Doc_Attch_View, Docum
                 .check();
     }
     private void getImageFromGallray() {
-        Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        galleryIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-        startActivityForResult(galleryIntent, CAPTURE_IMAGE_GALLARY);
+//        Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+//        galleryIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+//        startActivityForResult(galleryIntent, CAPTURE_IMAGE_GALLARY);
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && SdkExtensions.getExtensionVersion(Build.VERSION_CODES.R) >= 2){
+
+            Intent galleryIntent = new Intent(MediaStore.ACTION_PICK_IMAGES);
+            galleryIntent.setType("image/*");
+            galleryIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+            galleryIntent.putExtra(MediaStore.EXTRA_PICK_IMAGES_MAX,MediaStore.getPickImagesMaxLimit());
+            startActivityForResult(Intent.createChooser(galleryIntent,"Select Picture"), CAPTURE_IMAGE_GALLARY);
+        }else {
+            Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            galleryIntent.setType("image/*");
+            galleryIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+            this.startActivityForResult(galleryIntent, CAPTURE_IMAGE_GALLARY);
+        }
     }
 
     private void takeimageFromGalary() {
