@@ -2002,9 +2002,10 @@ public class CompletionFormAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 view.getParent().requestDisallowInterceptTouchEvent(true);
             } else if (view.getId() == R.id.type_text_area) {
                 view.getParent().requestDisallowInterceptTouchEvent(true);
-            }else if(view.getId() == R.id.compedt){
-                view.getParent().requestDisallowInterceptTouchEvent(true);
             }
+//            else if(view.getId() == R.id.compedt){
+//                view.getParent().requestDisallowInterceptTouchEvent(true);
+//            }
             switch (motionEvent.getAction() & MotionEvent.ACTION_MASK) {
                 case MotionEvent.ACTION_UP:
                     view.getParent().requestDisallowInterceptTouchEvent(false);
