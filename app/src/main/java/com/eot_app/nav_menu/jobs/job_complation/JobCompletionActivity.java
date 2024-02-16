@@ -24,10 +24,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
-import android.widget.Spinner;
 import android.widget.TextView;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.FileProvider;
@@ -38,7 +35,6 @@ import androidx.work.Data;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkInfo;
 import androidx.work.WorkManager;
-
 import com.eot_app.R;
 import com.eot_app.nav_menu.jobs.job_complation.compla_model.NotifyForcompletion;
 import com.eot_app.nav_menu.jobs.job_complation.complat_mvp.Compl_PC;
@@ -66,12 +62,9 @@ import com.eot_app.nav_menu.jobs.job_detail.form_form.get_qus_list.MyFormInterFa
 import com.eot_app.nav_menu.jobs.job_detail.form_form.get_qus_list.QuestionListAdapter;
 import com.eot_app.nav_menu.jobs.job_detail.form_form.get_qus_list.ans_model.Ans_Req;
 import com.eot_app.nav_menu.jobs.job_detail.form_form.get_qus_list.ans_model.Answer;
-import com.eot_app.nav_menu.jobs.job_detail.form_form.get_qus_list.form_ques_mvp.Que_View;
-import com.eot_app.nav_menu.jobs.job_detail.form_form.get_qus_list.form_ques_mvp.Que_pi;
 import com.eot_app.nav_menu.jobs.job_detail.form_form.get_qus_list.qus_model.AllTypeFieldClone;
 import com.eot_app.nav_menu.jobs.job_detail.form_form.get_qus_list.qus_model.AnswerModel;
 import com.eot_app.nav_menu.jobs.job_detail.form_form.get_qus_list.qus_model.OptionModel;
-import com.eot_app.nav_menu.jobs.job_detail.form_form.get_qus_list.qus_model.QuesGetModel;
 import com.eot_app.nav_menu.jobs.job_detail.form_form.get_qus_list.qus_model.QuesRspncModel;
 import com.eot_app.services.Service_apis;
 import com.eot_app.utility.AppCenterLogs;
@@ -85,16 +78,12 @@ import com.eot_app.utility.language_support.LanguageController;
 import com.eot_app.utility.settings.setting_db.JobTitle;
 import com.eot_app.utility.settings.setting_db.Suggestion;
 import com.eot_app.utility.util_interfaces.Callback_AlertDialog;
-import com.eot_app.utility.util_interfaces.JoBServSuggAdpter;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
-import com.hypertrack.hyperlog.HyperLog;
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -112,41 +101,31 @@ import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 
 
-public class JobCompletionActivity extends AppCompatActivity implements View.OnClickListener,Que_View
+public class JobCompletionActivity extends AppCompatActivity implements View.OnClickListener
         , TextWatcher, Compla_View, Doc_Attch_View, JobCompletionAdpter.FileDesc_Item_Selected, NotifyForMultiDocAdd
         , CompletionAdpterJobDteails1.CallBAckFormAttchemntToCompl, CompletionFormAdapter.ClickListener, NotifyForcompletion {
     private final static int CAPTURE_IMAGE_GALLARY = 222;
     private static final int DOUCMENT_UPLOAD_CODE = 156;
     private static final int PHOTO_EDIT_CODE = 147;
-    final String JOBCOMPLATIONTYPE = "";
     private final int CAMERA_CODE = 100;
     private final int ATTACHFILE_CODE = 101;
     private final StringBuffer desc = new StringBuffer();
     private final List<Suggestion> suggestionList = new ArrayList<>();
     Job jobData;
-    JoBServSuggAdpter suggestionAdapter;
     String captureImagePath;
     boolean isFileImage = false;
     RecyclerView.LayoutManager layoutManager;
     Doc_Attch_Pi doc_attch_pi;
     String[] suggestionsArray = new String[suggestionList.size()];
-    TextView cancel_txt, complHeader, save_txt, tv_label_des, txt_notSyncLabel;
-    ImageView suggestion_img;
-    TextView tvCancel, tvDone, tvFetchDes,tvtimestemp;
-//    private EditText compedt;
+    TextView cancel_txt, complHeader, save_txt, txt_notSyncLabel;
     private Compl_PI complPi;
     private RecyclerView recyclerView, completionRecyclerView;
     private JobCompletionAdpter jobCompletionAdpter;
     private String jobId;
     private EditImageDialog currentDialog = null;
     private ArrayList<Attachments> fileList_res = new ArrayList<>();
-    private ProgressBar progressBar;
-    private Spinner job_suggestion_spinner;
     private WorkManager mWorkManager;
     private CompletionFormAdapter completionFormAdapter;
-    private QuesGetModel quesGetModel;
-    private Que_pi queAns_pi;
-    private List<QuesRspncModel> quesRspncModelList = new ArrayList<>();
     private ImageView attchmentView, deleteAttchment;
     private Button addAttchment;
     int position = -1;
@@ -156,7 +135,6 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
     List<QuesRspncModel> singleQuestions = new ArrayList<>();
     List<QuesRspncModel> systemFieldQuestions = new ArrayList<>();
     List<QuesRspncModel> allFieldQuestions = new ArrayList<>();
-    List<QuesRspncModel> filterList ;
     List<QuesRspncModel> removeItemPositon = new ArrayList<>();
     List<QuesRspncModel> questions = new ArrayList<>();
     List<QuesRspncModel> sortQuestinsList;
@@ -169,11 +147,9 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
     private List<String> docanspath=new ArrayList<>();
     private List<String> signanspath=new ArrayList<>();
     private final ArrayList<Answer> answerArrayList = new ArrayList<>();
-    private List<Attachments> attchmentList ;
     private boolean isShowingImg = false, showOnlyImg = false;
     private LinearLayout ll_attachment,ll_completionForm;
     private List<IsMarkDoneWithJtid> isMarkDoneList = new ArrayList<>();
-    private boolean isCompletion = false;
     BackgroundTaskExecutor backgroundTaskExecutor;
     ConstraintLayout cl_notSyncParent;
     int competionNotesPostion = -1;
@@ -195,8 +171,7 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
                 setJobData(jobData);
             }
         }
-//        JobList jobList = new JobList();
-//        jobList.setNotifyForCompletion(jobList);
+
         EotApp.getAppinstance().setNotifyForMultiDocAdd(this);
         EotApp.getAppinstance().setNotifyForcompletion(this);
         initializeMyViews();
@@ -226,11 +201,8 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
             }
         });
         recyclerView.setAdapter(jobCompletionAdpter);
-        completionFormAdapter = new CompletionFormAdapter(JobCompletionActivity.this, allItem, new MyFormInterFace() {
-            @Override
-            public void getAnsId(String ansId) {
+        completionFormAdapter = new CompletionFormAdapter(JobCompletionActivity.this, allItem, ansId -> {
 
-            }
         },this,backgroundTaskExecutor);
         completionRecyclerView.setAdapter(completionFormAdapter);
 
@@ -261,7 +233,6 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
 
     @Override
     public void uploadDocDelete(String msg,String queId, String jtId) {
-//        doc_attch_pi.getAttachFileList(jobId, App_preference.getSharedprefInstance().getLoginRes().getUsrId(), "6",true);
         doc_attch_pi.getMultiAttachFileList(jobId, App_preference.getSharedprefInstance().getLoginRes().getUsrId(), "6",true,parentPositon,position, queId,jtId);
     }
 
@@ -276,20 +247,13 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
     }
 
     private void initializeMyViews() {
-        tv_label_des = findViewById(R.id.tv_label_des);
-        tv_label_des.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.completion_note));
-        progressBar = findViewById(R.id.progressBar);
         recyclerView = findViewById(R.id.recyclerView);
         layoutManager = new GridLayoutManager(this, 2);
-//        CustomLinearLayoutManager customLayoutManager = new CustomLinearLayoutManager(this, LinearLayoutManager.VERTICAL
-//                , false);
 
         recyclerView.setLayoutManager(layoutManager);
         completionRecyclerView = findViewById(R.id.rv_completion_form);
         initializeAdapter();
         doc_attch_pi = new Doc_Attch_Pc(this);
-//        doc_attch_pi.getAttachFileList(jobId, App_preference.getSharedprefInstance().getLoginRes().getUsrId(), "6",true);
-
         cancel_txt = findViewById(R.id.cancel_txt);
         complHeader = findViewById(R.id.complHeader);
         save_txt = findViewById(R.id.save_txt);
@@ -302,34 +266,10 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
         cl_notSyncParent = findViewById(R.id.cl_notSyncParent);
         txt_notSyncLabel = findViewById(R.id.txt_notSyncLabel);
         txt_notSyncLabel.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.not_synced_at));
-
-
-        suggestion_img = findViewById(R.id.suggestion_img);
-        job_suggestion_spinner = findViewById(R.id.job_suggestion_spinner);
-        suggestion_img.setOnClickListener(v -> {
-            if (suggestionList != null && suggestionList.size() > 0)
-                job_suggestion_spinner.performClick();
-            else {
-                AppUtility.alertDialog(JobCompletionActivity.this,
-                        "", LanguageController.getInstance()
-                                .getMobileMsgByKey(AppConstant.no_suggesstion)
-                        , LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok),"", () -> null);
-            }
-
-        });
         viewClickListner();
-
         setComplationView();
-
         complPi = new Compl_PC(this);
-
         filterJobServices();
-
-        if (AppUtility.isInternetConnected()) {
-            progressBar.setVisibility(View.VISIBLE);
-        } else {
-            progressBar.setVisibility(View.GONE);
-        }
         if(showOnlyImg){
             ll_completionForm.setVisibility(View.GONE);
             ll_attachment.setVisibility(View.VISIBLE);
@@ -355,13 +295,12 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
                 }
 
                 List<String> tempList = new ArrayList<>();
-//                suggestionsArray = new String[suggestionList.size()];
                 for (int i = 0; i < Objects.requireNonNull(suggestionList).size(); i++) {
                     try {
                         if (suggestionList.get(i).getComplNoteSugg() != null &&
                                 suggestionList.get(i).getComplNoteSugg().length() > 0) {
                             tempList.add(suggestionList.get(i).getComplNoteSugg());
-                            //     suggestionsArray[i] = suggestionList.get(i).getComplNoteSugg();
+
                         }
                     } catch (Exception e) {
                         AppCenterLogs.addLogToAppCenterOnAPIFail("JobCompletion","","filterJobServices()"+e.getMessage(),"JobCompletionActivity","");
@@ -378,17 +317,6 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
                     AppCenterLogs.addLogToAppCenterOnAPIFail("JobCompletion","","filterJobServices()"+e.getMessage(),"JobCompletionActivity","");
                     e.printStackTrace();
                 }
-//                try {
-//                    if (suggestionAdapter == null) {
-//                        AppUtility.spinnerPopUpWindow(job_suggestion_spinner);
-//                        suggestionAdapter = new JoBServSuggAdpter(JobCompletionActivity.this, suggestionsArray
-//                                , nm -> setSelectedSuggeston(nm));
-//                        job_suggestion_spinner.setAdapter(suggestionAdapter);
-//                    }
-//                } catch (Exception e) {
-//                    AppCenterLogs.addLogToAppCenterOnAPIFail("JobCompletion","","filterJobServices()"+e.getMessage(),"JobCompletionActivity","");
-//                    e.printStackTrace();
-//                }
             }
         } catch (Exception exception) {
             AppCenterLogs.addLogToAppCenterOnAPIFail("JobCompletion","","filterJobServices()"+exception.getMessage(),"JobCompletionActivity","");
@@ -403,25 +331,6 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
     public String[] getSuggestionsArray(){
         return suggestionsArray;
     }
-    private void setSelectedSuggeston(String nm) {
-        try {
-//            String str = "";
-//            int cursorpostion=compedt.getText().toString().length();
-//            if (compedt.getText().toString().trim().length() > 0) {
-//                str = compedt.getText().toString() + "\n" + nm;
-//            } else {
-//                str = nm;
-//            }
-//            compedt.setText(str);
-//            str.replace("<br>","");
-//            str.replace("null","");
-//            compedt.setText(str);
-//            compedt.setSelection(cursorpostion+nm.length()+1);
-        } catch (Exception e) {
-            AppCenterLogs.addLogToAppCenterOnAPIFail("JobCompletion","","setSelectedSuggeston()"+e.getMessage(),"JobCompletionActivity","");
-            e.printStackTrace();
-        }
-    }
 
     private void setComplationView() {
         if (TextUtils.isEmpty(jobData.getComplNote())) {
@@ -435,7 +344,7 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
         cancel_txt.setOnClickListener(this);
         save_txt.setOnClickListener(this);
     }
-    boolean isfilled;
+
     @SuppressLint("NonConstantResourceId")
     @Override
     public void onClick(View v) {
@@ -464,8 +373,6 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
                             complNotes = item.getAns().get(0).getValue();
                         }
                 }
-//                complPi.addEditJobComplation(jobData.getJobId(), complNotes, compQueAns);
-
 
                 ansAnsQuesRspncModel(completionFormAdapter.getTypeList());
 
@@ -509,7 +416,7 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
                     });
                     return;
                 }
-//                if (!isfilled)
+
                     if (!emptyCheckFormValidation()) {
                         emptyAnsFieldError();
                         return;
@@ -532,57 +439,18 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
                         OfflieCompleQueAns offlieCompleQueAns = new OfflieCompleQueAns(jobData.getJobId(),offLineQueAns,isMarkDoneList);
                         OfflieCompleQueAns_Dao offlieCompleQueAnsDao = AppDataBase.getInMemoryDatabase(this).offline_completion_ans_dao();
                         offlieCompleQueAnsDao.inserOfflineAns(offlieCompleQueAns);
-//                        List<Fragment> fragments = getSupportFragmentManager().getFragments();
-//                        if (fragments.isEmpty()||(fragments.size()<=1||(fragments.get(0)instanceof CustomFormFragment)))
-//                        {
-//                            setFormDraft("-1",answerArrayList);
-//                        }else{
-//                            for (int i=0;i<fragments.size();i++) {
-//                                if (fragments.get(i) instanceof CustomFormFragment) {
-//                                    String pid = ((CustomFormFragment) fragments.get(i)).optionid;
-//                                    ((CustomFormFragment) fragments.get(i)).getAnsListSaveBtn();
-//                                    ArrayList<Answer> childanswerArrayList = ((CustomFormFragment) fragments.get(i)).answerArrayList;
-//                                    setFormDraft(pid, childanswerArrayList);
-//                                }else{
-//                                    continue;
-//                                }
-//                            }
-//                        }
+
                     }
-//                    queAns_pi.addAnswerWithAttachments(ans_req, signAns, docAns, signQueIdArray, docQueIdArray,docanspath,signanspath);
                     complPi.addEditJobComplation(jobData.getJobId(), complNotes, answerArrayList,signanspath,docanspath,signQueIdArray,docQueIdArray,isMarkDoneList);
                 }
-                if (AppUtility.isInternetConnected()) {
-//                    AppDataBase.getInMemoryDatabase(this).customFormDao().deleterecode(customFormList.getFrmId(), jobId);
-//                    Intent intent = new Intent();
-//                    intent.putExtra("fmid", customFormList.getFrmId());
-//                    intent.putExtra("isDelete", true);
-//                    setResult(RESULT_OK, intent);
-//                    if (answer != null)
-//                        answer.clear();
-                }
-                break;
-            case R.id.tvDone:
-//                setUpdatedDesc(1);
-                break;
-            case R.id.tvCancel:
-//                setUpdatedDesc(2);
-                break;
-            case R.id.tvFetchDes:
-//                setUpdatedDesc(3);
-                break;
-            case R.id.tvtimestemp:
-//                setUpdatedDesc(4);
                 break;
         }
     }
 
     @Override
     public void selectFilesForCompletion(boolean isCompletion) {
-        this.isCompletion =isCompletion;
-//        if (!Utils.isOnline(this)) {
-//            AppUtility.alertDialog(this, LanguageController.getInstance().getMobileMsgByKey(AppConstant.dialog_error_title), LanguageController.getInstance().getMobileMsgByKey(AppConstant.feature_not_available), LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), "", () -> null);
-//        } else {
+
+
         final BottomSheetDialog dialog = new BottomSheetDialog(this);
         dialog.setContentView(R.layout.bottom_image_chooser);
         TextView camera = dialog.findViewById(R.id.camera);
@@ -727,14 +595,11 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
 
     @Override
     public void setList(ArrayList<Attachments> getFileList_res, String isAttachCommpletionNotes, boolean firstCall) {
-        progressBar.setVisibility(View.GONE);
         if (currentDialog != null) {
             currentDialog.dismiss();
             currentDialog = null;
         }
-//        if (getFileList_res.size() == 1)
-//            this.fileList_res.addAll(getFileList_res);
-//        else
+        //Show only Job Completion Images
             this.fileList_res = getFileList_res;
         if (jobCompletionAdpter != null) {
             (jobCompletionAdpter).updateFileList((ArrayList<Attachments>) AppDataBase.getInMemoryDatabase(this).attachments_dao().getAttachmentsByJobId(jobId),firstCall,"","");
@@ -782,41 +647,6 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
         //  nolist_linear.setVisibility(View.GONE);
     }
 
-    @Override
-    public void questionlist(List<QuesRspncModel> quesRspncModelList) {
-        if(AppUtility.isInternetConnected()) {
-            this.quesRspncModelList = quesRspncModelList;
-            if (quesRspncModelList.size() > 0) {
-                AppCenterLogs.addLogToAppCenterOnAPIFail("Customform", "", "listsize- " + quesRspncModelList.size(), "FormQueAns_Activity", "");
-                HyperLog.i("customform", "Questionlist() ::" + quesRspncModelList.size());
-                String getfrombyid = App_preference.getSharedprefInstance().getJobCompletionForm().getFrmId();
-                Type listType = new TypeToken<List<Answer>>() {
-                }.getType();
-//            answer = new Gson().fromJson(getfrombyid, listType);
-//
-//
-//            if (answer!=null) {
-//                for (int i = 0; i < quesRspncModelList.size(); i++) {
-//                    for (int j = 0; j < answer.size(); j++) {
-//                        if (quesRspncModelList.get(i).getQueId().equals(answer.get(j).getQueId())) {
-//                            quesRspncModelList.get(i).setAns(answer.get(j).getAns());
-//                        }
-//                    }
-//                }
-//            }
-//                setAdapeter(quesRspncModelList);
-                isFormPreFilled();
-            } else {
-//            em_layout.setVisibility(View.VISIBLE);
-//            rl.setVisibility(View.GONE);
-//            AppCenterLogs.addLogToAppCenterOnAPIFail("CustomForm","","questionlist()-> listsize - "+quesRspncModelList.size(),"FormQueAns_Activity","");
-//            HyperLog.i("customform","Questionlist()else ::"+quesRspncModelList.size());
-//            nolist_txt.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.custom_form_list));
-            }
-        }else {
-//            setAdapeter(App_preference.getSharedprefInstance().getJobCompletionFormFields());
-        }
-    }
     HashMap<String,Boolean> groupedAddedList = new HashMap<>();
     private void setLists(){
         List<String> addedKeys = new ArrayList<>();
@@ -826,7 +656,9 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
         boolean isNotSynced = false;
         if(!AppUtility.isInternetConnected()){
             OfflieCompleQueAns notSyncedList = AppDataBase.getInMemoryDatabase(this).offline_completion_ans_dao().getComplQueAnsById(jobData.getJobId());
+             /**Get Questions List.*/
             if(notSyncedList != null){
+                /** If ans already filled by user in offline mode*/
                 cl_notSyncParent.setVisibility(View.VISIBLE);
                filterList = notSyncedList.getAllQuestionAnswer();
                isMarkDoneWithJtids.addAll(notSyncedList.getIsMarkDoneWithJtId());
@@ -842,22 +674,17 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
              isMarkDoneWithJtids = new HashSet<>(jobData.getIsMarkDoneWithJtId());
         }
 
-        //        List<QuesRspncModel> offlineCompletionFormList = App_preference.getSharedprefInstance().getJobCompletionFormFields();
-//        Gson gson = new Gson();
-//        Type questionListType = new TypeToken<List<QuesRspncModel>>(){}.getType();
-//        List<QuesRspncModel> filterList = gson.fromJson(jsonArrayString, questionListType);
-//        List<QuesRspncModel> filterList = DetailFragment.getInstance().getCompFormList();
 
         if(isMarkDoneWithJtids.size()> 0){
             isMarkDoneList.addAll(isMarkDoneWithJtids);
         }
-//        Job job = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(jobId);
+
+        /** Put ans in questions*/
         if(jobData.getCompliAnsArray()!=null && !jobData.getCompliAnsArray().isEmpty() && !isNotSynced){
             for (CompliAnsArray ansItem : jobData.getCompliAnsArray()
                  ) {
                 for (QuesRspncModel questItem : filterList
                      ) {
-//                    if(!questItem.getType().equals("13")) {
                     if(questItem.getQueId().equals(ansItem.getQueId())){
                             if (questItem.getAns().size() == 0) {
                                 AnswerModel answerModel = new AnswerModel(ansItem.getKey(), ansItem.getValue(), ansItem.getJtId());
@@ -873,19 +700,9 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
                             }
                         }
                         }
-//                else {
-//                        List<Attachments> list = new ArrayList<>();
-//                        if(questItem.getIsLinkWithService().equals("0")){
-//                            list.addAll(AppDataBase.getInMemoryDatabase(this).attachments_dao().getAttachmentsById(jobData.getJobId(), questItem.getQueId(),questItem.getJtId()));
-//                            questItem.setAttachmentsList(list);
-//                        }else if(questItem.getIsLinkWithService().equals("1") && !questItem.getJtId().isEmpty()){
-//                            list.addAll(AppDataBase.getInMemoryDatabase(this).attachments_dao().getAttachmentsById(jobData.getJobId(), questItem.getQueId(), questItem.getJtId()));
-//                            questItem.setAttachmentsList(list);
-//                        }
-//                    }
-//                }
             }
         }
+        /** Put ans of attachment in questions of type 13 (Attachment type)*/
         if(AppDataBase.getInMemoryDatabase(this).attachments_dao().getAttachmentsByJobId(jobData.getJobId()) != null){
             for (QuesRspncModel questItem : filterList
             ) {
@@ -901,6 +718,7 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
                 }
             }
         }
+        /** Filter questions list according services that assing to job*/
         List<JtId> jtIdList = jobData.getJtId();
         for(QuesRspncModel takeItem : filterList){
             if(!takeItem.getJtId().isEmpty()){
@@ -914,41 +732,32 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
                 questions.add(takeItem);
             }
         }
+        /** Separate and Grouping questions in list according question link with service or without service or default*/
         for (int i= 0 ;i< questions.size() ; i++) {
             String jtid = questions.get(i).getJtId();
             if (jtid.equals("") && jtid.isEmpty() && questions.get(i).getIsLinkWithService().equals("0") && !questions.get(i).getType().isEmpty()) {
-                // Handle single item
+                /** Handle single or not linked questions*/
                 singleQuestions.add(questions.get(i));
             } else if (questions.get(i).getIsLinkWithService().equals("1") && questions.get(i).getJtId().isEmpty()) {
+                /** Handle all type questions*/
                 if(allFieldQuestions.size()>0){
                     removeItemPositon.add(questions.get(i));
                 }
                 allFieldQuestions.add(questions.get(i));
 
             } else if (questions.get(i).getType().equals("") && questions.get(i).getType().isEmpty()) {
-//                if (groupedQuestions.containsKey("SystemField")) {
-//                    groupedQuestions.get("SystemField").add(questions.get(i));
-//                    removeItemPositon.add(questions.get(i));
-//                } else {
-//                    List<QuesRspncModel> questionList = new ArrayList<>();
-//                    questionList.add(questions.get(i));
-//                    groupedQuestions.put("SystemField", questionList);
-//                }
-//                if(questions.get(i).getSysFieldType().equals("1")){
+                /** Handle completion notes and default system field questions*/
                     String notes=jobData.getComplNote().replace("null","");
                     notes.replace("<br>","");
                     AnswerModel ans = new AnswerModel("0",notes);
                     List<AnswerModel> list = new ArrayList<>();
                     list.add(ans);
                     questions.get(i).setAns(list);
-//                }
-//                if(systemFieldQuestions.size()>0){
-//                    removeItemPositon.add(questions.get(i));
-//                }
+
                 systemFieldQuestions.add(questions.get(i));
 
             } else {
-                // Handle grouped item
+                /** Handle grouped question*/
                 if (groupedQuestions.containsKey(jtid)) {
                     groupedQuestions.get(jtid).add(questions.get(i));
                     removeItemPositon.add(questions.get(i));
@@ -959,6 +768,7 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
                 }
             }
         }
+        /** Handle grouped question that have not any linked question. It have only all type linked questions*/
         for (JtId jtId : jobData.getJtId()
              ) {
             if(isNotKey(jtId.getJtId())){
@@ -1025,31 +835,6 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
                     }catch (Exception e){
 
                     }
-//                    QuesRspncModel quesRspncModel = new QuesRspncModel(allFieldItem.getQueId(),
-//                            allFieldItem.getParentId(),
-//                            allFieldItem.getParentAnsId(),
-//                            allFieldItem.getFrmId(),
-//                            allFieldItem.getDes(),
-//                            allFieldItem.getFrmType(),
-//                            allFieldItem.getMandatory(),
-//                            false,
-//                            allFieldItem.getOpt(),
-//                            allFieldItem.getAns(),
-//                            allFieldItem.getIndex(),
-//                            allFieldItem.getFrmType(),
-//                            allFieldItem.getInternalLabel(),
-//                            allFieldItem.getQueWidth(),
-//                            allFieldItem.getLinkToLead(),
-//                            allFieldItem.getLinkToJob(),
-//                            allFieldItem.getIsShowOnSite(),
-//                            allFieldItem.getIsDisable(),
-//                            allFieldItem.getIsLinkWithService(),
-//                            key,
-//                            allFieldItem.getSysFieldType(),
-//                            allFieldItem.getLinkTo(),
-//                            allFieldItem.getSystemField(),
-//                            allFieldItem.getIsAnswered()
-//                    );
 
 
                 }
@@ -1059,12 +844,10 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
         sortQuestinsList.removeAll(removeItemPositon);
         allItem.clear();
         boolean isAllField = false;
+        /** Set questions according form question priority*/
         for (QuesRspncModel item : sortQuestinsList
         ) {
-//            if(item.getSystemField().equals("1")){
-//                allItem.addAll(systemFieldQuestions);
-//                break;
-//            }
+
             for (QuesRspncModel systemItem : systemFieldQuestions){
                 if(item.getType().equals("")&& item.getType().isEmpty()){
                     allItem.addAll(systemFieldQuestions);
@@ -1083,10 +866,7 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
 
                 for (String key : groupedQuestions.keySet()
                 ) {
-//                if(item.getSystemField().equals("1")){
-//                    allItem.add(groupedQuestions.get("SystemField"));
-//                    break;
-//                }else
+
                     if(isNotAdded(key)) {
                         for (QuesRspncModel queItem : groupedQuestions.get(key)
                         ) {
@@ -1131,15 +911,6 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
             backgroundTaskExecutor.createInstance(groupedQuestions.size());
         }
         completionFormAdapter.updateAdapter(allItem);
-//        CompletionFormAdapter.DefaultViewHolder defaultViewHolder = (CompletionFormAdapter.DefaultViewHolder) completionRecyclerView.findViewHolderForAdapterPosition(completionFormAdapter.getPostionDefaultViewHolder());
-//        defaultViewHolder.jobCompletionAdpter.updateFileList((ArrayList<Attachments>) DetailFragment.getInstance().getCompAttachmentList(),true);
-//        completionFormAdapter = new CompletionFormAdapter(JobCompletionActivity.this, allItem, new MyFormInterFace() {
-//            @Override
-//            public void getAnsId(String ansId) {
-//
-//            }
-//        });
-//        completionRecyclerView.setAdapter(completionFormAdapter);
     }
 
     public boolean isNotAdded(String key){
@@ -1164,35 +935,6 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
         return isNot;
     }
 
-    private void isFormPreFilled() {
-        if (completionFormAdapter != null && completionFormAdapter.getTypeList() != null) {
-            ArrayList<QuesRspncModel> checkList = completionFormAdapter.getTypeList();
-            for (QuesRspncModel qm : checkList) {
-                List<AnswerModel> ans = qm.getAns();
-                if (ans != null && ans.size() > 0) {
-                    AnswerModel model = ans.get(0);
-                    if (model != null && !TextUtils.isEmpty(model.getValue()))
-                        isfilled = true;
-                }
-            }
-        }
-    }
-
-    @Override
-    public void onSubmitSuccess(String msg) {
-
-    }
-
-    @Override
-    public void onSubmitSuccessOffline() {
-
-    }
-
-    @Override
-    public void addfragmentDynamically(List<QuesRspncModel> quesRspncModelList, String option) {
-
-    }
-
     @Override
     public void onSessionExpire(String msg) {
         AppUtility.alertDialog(this, LanguageController.getInstance().getMobileMsgByKey              (AppConstant.dialog_error_title), msg, LanguageController.getInstance().getMobileMsgByKey            (AppConstant.ok), "",
@@ -1201,22 +943,6 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
                     return null;
                 });
     }
-
-    @Override
-    public void showOfflineAlert(String msg) {
-
-    }
-
-    @Override
-    public void showofflineAlertchild() {
-
-    }
-
-    @Override
-    public void finishMuAvtivity() {
-
-    }
-
     @Override
     public void fileExtensionNotSupport(String msg) {
     }
@@ -1227,12 +953,10 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
 
     @Override
     public void hideProgressBar() {
-        progressBar.setVisibility(View.GONE);
     }
 
     @Override
     public void showProgressBar() {
-        progressBar.setVisibility(View.VISIBLE);
     }
 
     /**
@@ -1271,10 +995,7 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
     }
 
     private void getImageFromGallray(boolean isCompletion) {
-//        if(isCompletion){
-//            Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-//            startActivityForResult(galleryIntent, ATTACHFILE_CODE);
-//        }else {
+
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && SdkExtensions.getExtensionVersion(Build.VERSION_CODES.R) >= 2){
 
             Intent galleryIntent = new Intent(MediaStore.ACTION_PICK_IMAGES);
@@ -1365,13 +1086,7 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
                         }
                         Attachments attachments = new Attachments("TempAttach-"+data.getStringExtra("fileName"),fileNameExt,fileNameExt,data.getStringExtra("imgPath"),queId, jtId,"",jobData.getJobId(),"6",bitmapString);
                         AppDataBase.getInMemoryDatabase(this).attachments_dao().insertSingleAttachments(attachments);
-//                        Attachments obj = new Attachments("0", fileNameExt, fileNameExt, bitmapString);
-//                        ArrayList<Attachments> updateList = new ArrayList<>();
-//
-//                        if (fileList_res != null) {
-//                            updateList.addAll(fileList_res);
-//                        }
-//                        updateList.add(obj);
+
                         String isAttach = data.getStringExtra("isAttach");
                         isFileImage = data.getBooleanExtra("isFileImage", false);
                         onDocumentSelected("","",false,parentPositon, position,this.queId, this.jtId);
@@ -1415,15 +1130,11 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
                                     }
                                 }
                             }
-//                            setList(updateList, "",true);
+
                         }
                         if (data.getStringExtra("fileName") != null) {
                             try {
-//                                doc_attch_pi.uploadDocuments(jobId, data.getStringExtra("imgPath"),
-//                                        data.getStringExtra("fileName"),
-//                                        data.getStringExtra("desc"),
-//                                        data.getStringExtra("type"),
-//                                        data.getStringExtra("isAttach"));
+
                                 OfflineDataController.getInstance().addInOfflineDB(Service_apis.upload_document, AppUtility.getParam(jobId, this.queId, this.jtId,data.getStringExtra("imgPath"),
                                         data.getStringExtra("fileName"),
                                         data.getStringExtra("desc"),
@@ -1431,10 +1142,7 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
                                         data.getStringExtra("isAttach"), true, false,this.parentPositon, this.position), AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT));
                             } catch (Exception e) {
                                 AppCenterLogs.addLogToAppCenterOnAPIFail("JobCompletion","","onActivityResult()"+e.getMessage(),"JobCompletionActivity","");
-//                                if (updateList.size() == 1) {
-//                                    fileList_res.remove(updateList.get(0));
-//                                    setList(fileList_res, "",true);
-//                                }
+
                                 e.printStackTrace();
                             }
                         }
@@ -1494,10 +1202,7 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
                                 if (img_extension.equals(".jpg") || img_extension.equals(".png") || img_extension.equals(".jpeg")) {
                                     imageEditing(data.getData(), true);
                                 }
-//                                else {
-//                                    String filename = gallery_image_Path.substring(gallery_image_Path.lastIndexOf("/") + 1);
-//                                    onDocumentSelected(gallery_image_Path, filename, false,parentPositon, position, this.queId, this.jtId);
-//                                }
+
                             } catch (Exception e) {
                                 AppCenterLogs.addLogToAppCenterOnAPIFail("JobCompletion","","onActivityResult()-->ATTACHFILE_CODE"+e.getMessage(),"JobCompletionActivity","");
                                 e.printStackTrace();
@@ -1547,20 +1252,14 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
     //upload image edit highlighting feature for image
     private void imageEditing(Uri uri, boolean isImage) {
         try {
-//            if(isCompletion){
-//                Intent intent = new Intent(this, ActivityEditImageDialog.class);
-//                intent.putExtra("uri", uri);
-//                intent.putExtra("allowOffline", true);
-//                startActivityForResult(intent, PHOTO_EDIT_CODE);
-//            }
-//            else {
+
                 Intent intent = new Intent(this, ActivityDocumentSaveUpload.class);
                 intent.putExtra("uri", uri);
                 intent.putExtra("isImage", true);
                 intent.putExtra("jobid", jobId);
                 intent.putExtra("SAVEASCOMPLETION", true);
                 this.startActivityForResult(intent, DOUCMENT_UPLOAD_CODE);
-//            }
+
         } catch (Exception e) {
             AppCenterLogs.addLogToAppCenterOnAPIFail("JobCompletion","","imageEditing()"+e.getMessage(),"JobCompletionActivity","");
             e.printStackTrace();
@@ -1581,13 +1280,7 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
         if(doc_attch_pi != null) {
             doc_attch_pi.getMultiAttachFileList(jobId, App_preference.getSharedprefInstance().getLoginRes().getUsrId(), "6",true,-1,-1,queId,jtId);
         }
-//        StringBuffer data = new StringBuffer(compedt.getText().toString().trim());
-//        if (!TextUtils.isEmpty(desc))
-//            data.append(System.lineSeparator());
-//        data.append(desc);
-////        compedt.setText(data);
-//        compedt.setText(AppUtility.html2text(data.toString()));
-//        data.setLength(0);
+
     }
 
     public Map<String,String> setUpdatedDesc(EditText compedt,int type) {
@@ -1652,15 +1345,7 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
                 String fileNameExt = AppUtility.getFileNameWithExtension(PathUtils.getRealPath(this, uri));
                 String[] fileName = fileNameExt.split("\\.");
                 imgPathArray[i] = PathUtils.getRealPath(this, uri);
-//                Bitmap bitmap = AppUtility.getBitmapFromPath(PathUtils.getRealPath(this, uri));
-//                String bitmapString = AppUtility.BitMapToString(bitmap);
-//                Attachments obj=new Attachments("0",fileNameExt,fileNameExt,bitmap);
-//                ArrayList<Attachments> getFileList_res =new ArrayList<>();
-//                if (fileList_res != null) {
-//                    getFileList_res.clear();
-//                    getFileList_res.addAll(fileList_res);
-//                }
-//                getFileList_res.add(obj);
+
                 Attachments attachments = new Attachments("TempAttach-"+fileName[0],fileNameExt,fileNameExt,imgPathArray[i],queId, jtId,"",jobData.getJobId(),"6");
                 AppDataBase.getInMemoryDatabase(this).attachments_dao().insertSingleAttachments(attachments);
 
@@ -1776,17 +1461,11 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
             }
         }
 
-        this.isCompletion = false;
+
     }
 
     public void ansAnsQuesRspncModel(List<QuesRspncModel> quesRspncModelList) {
 
-//        signAns.clear();
-//        docAns.clear();
-//        dosanspath.clear();
-//        signanspath.clear();
-//        signQueIdArray.clear();
-//        docQueIdArray.clear();
         for (int i = 0; i < quesRspncModelList.size(); i++) {
             String key = "";
             String ans = "";
@@ -1824,14 +1503,8 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
                                     quesRspncModelList.get(i).getType(), ansArrayList);
                             answerArrayList.add(answer);
 
-                        } else {
-//                            AnswerModel answerModels = new AnswerModel("0", "");
-//                            ansArrayList.add(answerModels);
-//                            answer = new Answer(this.quesRspncModelList.get(i).getQueId(),
-//                                    this.quesRspncModelList.get(i).getType(), ansArrayList,
-//                                    this.quesRspncModelList.get(i).getFrmId());
-//                            answerArrayList.add(answer);
                         }
+
 
                     } else if (quesRspncModelList.get(i).getAns().size() == 0)
                         if (quesRspncModelList.get(i).getMandatory().equals("1"))
@@ -1868,14 +1541,8 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
                             answer = new Answer(quesRspncModelList.get(i).getJtId(),quesRspncModelList.get(i).getQueId(),
                                     quesRspncModelList.get(i).getType(), ansArrayList);
                             answerArrayList.add(answer);
-                        } else {
-//                            AnswerModel answerModels = new AnswerModel("0", "");
-//                            ansArrayList.add(answerModels);
-//                            answer = new Answer(this.quesRspncModelList.get(i).getQueId(),
-//                                    this.quesRspncModelList.get(i).getType(), ansArrayList,
-//                                    this.quesRspncModelList.get(i).getFrmId());
-//                            answerArrayList.add(answer);
                         }
+
                     } else if (quesRspncModelList.get(i).getAns().size() == 0)
                         if (quesRspncModelList.get(i).getMandatory().equals("1"))
                             isMandatoryNotFill = true;
