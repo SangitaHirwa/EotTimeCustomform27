@@ -331,7 +331,7 @@ public class Job_Detail_Activity_pc implements Job_Detail_Activity_pi {
                     ActivityLogController.JOB_GET_INVOICE_TEMP,
                     ActivityLogController.JOB_MODULE
             );
-            AppUtility.progressBarShow((Context) activity_view);
+          //  AppUtility.progressBarShow((Context) activity_view);
 
             ApiClient.getservices().eotServiceCall2(Service_apis.getJobCardTemplates, AppUtility.getApiHeaders())
                     .subscribeOn(Schedulers.io())
@@ -431,6 +431,8 @@ public class Job_Detail_Activity_pc implements Job_Detail_Activity_pi {
 //                            AppUtility.progressBarDissMiss();
                         }
                     });
+        }else {
+            activity_view.progressBarDissmissForThread();
         }
     }
 
