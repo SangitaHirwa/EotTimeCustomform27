@@ -657,7 +657,6 @@ public class OfflineDataController {
                         public void onComplete() {
                             AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).offline_completion_ans_dao().deleteComplQueAnsById(jobComplation.getJobId());
                             EotApp.getAppinstance().getNotifyForcompletionInJob(table.getService_name(), jobComplation.getJobId());
-                            EotApp.getAppinstance().getNotifyForcompletionInDetail(table.getService_name(),jobComplation.getJobId());
                             EotApp.getAppinstance().getNotifyForcompletion(table.getService_name(),jobComplation.getJobId());
                         }
                     });
