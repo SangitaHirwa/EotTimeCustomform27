@@ -98,11 +98,13 @@ public class AdapterAuditList extends RecyclerView.Adapter<AdapterAuditList.MyVi
             }
 
             txtFrst.setSpan(new ForegroundColorSpan(Color.parseColor("#00848d")), 0, txtFrst.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            holder.job_time.setText(date[1]);
+            String[] time_am_pm = date[1].split(" ");
+            holder.job_time.setText(time_am_pm[0]);
+
             try {
                 if (App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable() != null &&
                         App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable().equals("0"))
-                    holder.job_am_pm.setText(date[2]);
+                    holder.job_am_pm.setText(time_am_pm[1]);
             } catch (Exception e) {
                 e.printStackTrace();
             }
