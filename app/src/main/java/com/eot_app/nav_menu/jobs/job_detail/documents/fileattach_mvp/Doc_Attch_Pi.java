@@ -13,5 +13,6 @@ public interface Doc_Attch_Pi {
 
 
     void updateDocuments(String docId, String des, String rename,String isAddAttachAsCompletionNote, String jobId, String queId, String jtId);
+    void uploadQuoteDocument(String file,String fileName, String quotId,String type,String usrId,String des);
 }
 

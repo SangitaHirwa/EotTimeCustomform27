@@ -296,6 +296,11 @@ public class DialogUpdateDocuments extends DialogFragment implements View.OnClic
     }
 
     @Override
+    public void addDocumentInQuote(boolean attechmentUpload) {
+
+    }
+
+    @Override
     public void selectFiles() {
 
     }

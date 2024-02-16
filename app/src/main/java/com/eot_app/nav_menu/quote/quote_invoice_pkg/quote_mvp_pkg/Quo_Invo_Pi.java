@@ -11,4 +11,5 @@ public interface Quo_Invo_Pi {
 
     void convertQuotationToJob(String quotId);
     void getQuotesInvoicetemplateList();
+
 }

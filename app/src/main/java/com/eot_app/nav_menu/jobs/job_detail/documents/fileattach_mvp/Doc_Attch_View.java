@@ -26,6 +26,7 @@ public interface Doc_Attch_View {
 
     void hideProgressBar();
     void showProgressBar();
+    void addDocumentInQuote(boolean attechmentUpload);
 
     //   void setUploadNewDocList(ArrayList<Attachments> getFileList_res);
 }

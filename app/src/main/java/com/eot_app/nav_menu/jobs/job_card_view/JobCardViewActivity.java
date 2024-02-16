@@ -78,6 +78,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.Callable;
 
@@ -117,7 +118,9 @@ public class JobCardViewActivity extends AppCompatActivity  implements
     private String isProformaInv = "0";
     private Get_Email_ReS_Model email_reS_model;
     private Object stripLink;
-    String invJobId;
+
+    ArrayList<String> quoteAttachmentArray=new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -164,7 +167,7 @@ public class JobCardViewActivity extends AppCompatActivity  implements
             invoice_email_pi.getInvoiceEmailTempApi(invId, isProformaInv);
         } else if (quotId != null && !quotId.isEmpty()) {
             setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.email_quotes));
-            invoice_email_pi.getQuotationEmailTemplate(quotId);
+            invoice_email_pi.getQuotationEmailTemplate(quotId,false);
         }
         initViews();
 
@@ -298,7 +301,7 @@ public class JobCardViewActivity extends AppCompatActivity  implements
                                 binding.edtEmailCc.getText().toString(),
                                 "",
                                 email_reS_model.getFrom(),
-                                email_reS_model.getFromnm(), tempId);
+                                email_reS_model.getFromnm(), tempId,quoteAttachmentArray);
                     }
                 }
                 break;
@@ -466,6 +469,11 @@ public class JobCardViewActivity extends AppCompatActivity  implements
     @Override
     public void onGetEmailTempData(Get_Email_ReS_Model email_reS_model) {
         this.email_reS_model = email_reS_model;
+        if(quotId != null && !quotId.isEmpty()){
+            fileList_res = email_reS_model.getAttachment();
+            setList(fileList_res,"",false);
+        }
+
         binding.tvLabelTo.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.to));
         binding.tvLabelCc.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.cc));
         binding.tvLabelSub.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.subject));
@@ -729,6 +737,7 @@ public class JobCardViewActivity extends AppCompatActivity  implements
     public void setList(ArrayList<Attachments> getFileList_res, String isAttachCompletionNotes, boolean firstCall) {
 
         Log.e("Attachment List", ""+getFileList_res.size()+""+isAttachCompletionNotes);
+
         list.clear();
         this.fileList_res = getFileList_res;
         JobCardAttachmentModel jobCardAttachmentModel=null;
@@ -753,6 +762,8 @@ public class JobCardViewActivity extends AppCompatActivity  implements
         if(list!=null && list.size()>0 && list.get(0).getChecked()){
             reqAttachmentList.clear();
             reqAttachmentList.add(list.get(0));
+            quoteAttachmentArray.add(list.get(0).getId());
+
         }
         jobCardAttachmentAdapter.updateList(list);
         if (jobCardAttachmentAdapter.getItemCount() <= 3) {
@@ -856,6 +867,11 @@ public class JobCardViewActivity extends AppCompatActivity  implements
     }
 
     @Override
+    public void addDocumentInQuote(boolean attechmentUpload) {
+        invoice_email_pi.getQuotationEmailTemplate(quotId,attechmentUpload);
+    }
+
+    @Override
     public void cbClickListener(JobCardAttachmentModel jobCardAttachmentModel) {
       /*  String isJobCardPdfSend= "1";
         if(jobCardAttachmentModel.getId().equals("-1")){
@@ -872,15 +888,18 @@ public class JobCardViewActivity extends AppCompatActivity  implements
                     item.setChecked(jobCardAttachmentModel.getChecked());
                     JobCardAttachmentModel attachmentModel = new JobCardAttachmentModel(jobCardAttachmentModel.getId(), jobCardAttachmentModel.getType());
                     reqAttachmentList.add(attachmentModel);
+                    quoteAttachmentArray.add(jobCardAttachmentModel.getId());
                     break;
                 }
             }
         }else {
+            quoteAttachmentArray.remove(jobCardAttachmentModel.getId());
             for (JobCardAttachmentModel item : reqAttachmentList) {
                 if (item.getId().equals(jobCardAttachmentModel.getId())) {
                     reqAttachmentList.remove(item);
                     break;}
             }
+
         }
 
 //            }
@@ -1034,11 +1053,16 @@ public class JobCardViewActivity extends AppCompatActivity  implements
 
             try
             {
-                doc_attch_pi.uploadDocuments(jobId, savedImagePath,
-                        imageNameWithOutExt,
-                        "",
-                        "2" ,
-                        "0");
+                if(quotId != null && !quotId.isEmpty()){
+                           doc_attch_pi.uploadQuoteDocument(savedImagePath,imageNameWithOutExt,quotId,
+                           "2","","");
+                }else {
+                    doc_attch_pi.uploadDocuments(jobId, savedImagePath,
+                            imageNameWithOutExt,
+                            "",
+                            "2",
+                            "0");
+                }
             }
             catch (Exception e)
             {
