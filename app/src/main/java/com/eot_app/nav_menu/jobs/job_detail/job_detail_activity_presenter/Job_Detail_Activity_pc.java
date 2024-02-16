@@ -434,5 +434,114 @@ public class Job_Detail_Activity_pc implements Job_Detail_Activity_pi {
         }
     }
 
+    @Override
+    public void getGenerateInvoicePdf(String invId, String isProformaInv, String tempId) {
+        final Map<String, String> jsonMap = new HashMap<>();
+        jsonMap.put("invId", invId);
+
+        if(tempId!=null&&!tempId.isEmpty())
+            jsonMap.put("tempId", tempId);
+
+        jsonMap.put("isProformaInv", isProformaInv);
+        JsonObject jsonObject = AppUtility.getJsonObject(new Gson().toJson(jsonMap));
+        if (AppUtility.isInternetConnected()) {
+            ActivityLogController.saveActivity(
+                    ActivityLogController.JOB_MODULE,
+                    ActivityLogController.JOB_GENERATE_INVOICE_PDF,
+                    ActivityLogController.JOB_MODULE
+            );
+            AppUtility.progressBarShow((Context) activity_view);
+            ApiClient.getservices().eotServiceCall(Service_apis.generateInvoicePDF, AppUtility.getApiHeaders(), jsonObject)
+
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<JsonObject>() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
+
+                        }
+
+                        @Override
+                        public void onNext(JsonObject jsonObject) {
+                            Log.e("Responce--->>>", "" + jsonObject.toString());
+                            if (jsonObject.get("success").getAsBoolean()) {
+                                activity_view.onGetPdfPath(jsonObject.getAsJsonObject("data").get("path").getAsString());
+                            } else if (jsonObject.get("statusCode") != null && jsonObject.get("statusCode").getAsString().equals(AppConstant.SESSION_EXPIRE)) {
+                                activity_view.onSessionExpire(LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
+                            }
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            AppUtility.progressBarDissMiss();
+                            Log.e("", e.getMessage());
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            AppUtility.progressBarDissMiss();
+                        }
+                    });
+
+        } else {
+            networkError();
+        }
+    }
+
+    @Override
+    public void generateQuotPDF(String quotId, String tempId) {
+        Map<String, String> param = new HashMap<>();
+
+        if(tempId!=null&&!tempId.isEmpty())
+            param.put("tempId", tempId);
+
+        param.put("quotId", quotId);
+        JsonObject jsonObject = AppUtility.getJsonObject(new Gson().toJson(param));
+
+        if (AppUtility.isInternetConnected()) {
+            ActivityLogController.saveActivity(
+                    ActivityLogController.QUOTE_MODULE,
+                    ActivityLogController.QUOTE_GENERATE_PDF,
+                    ActivityLogController.QUOTE_MODULE
+            );
+            AppUtility.progressBarShow((Context) activity_view);
+            ApiClient.getservices().eotServiceCall(Service_apis.generateQuotPDF, AppUtility.getApiHeaders(), jsonObject)
+
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<JsonObject>() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
+
+                        }
+
+                        @Override
+                        public void onNext(JsonObject jsonObject) {
+                            Log.e("Responce--->>>", "" + jsonObject.toString());
+                            if (jsonObject.get("success").getAsBoolean()) {
+                                activity_view.onGetPdfPath(jsonObject.getAsJsonObject("data").get("path").getAsString());
+                            } else if (jsonObject.get("statusCode") != null && jsonObject.get("statusCode").getAsString().equals(AppConstant.SESSION_EXPIRE)) {
+                                activity_view.onSessionExpire(LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
+                            }
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            AppUtility.progressBarDissMiss();
+                            Log.e("", e.getMessage());
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            AppUtility.progressBarDissMiss();
+                        }
+                    });
+
+
+        } else {
+            networkError();
+        }
+    }
+
 
 }

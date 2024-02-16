@@ -27,6 +27,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.eot_app.R;
 import com.eot_app.login_next.FooterMenu;
 import com.eot_app.nav_menu.client.clientlist.client_detail.site.sitelist.editsite.editsitedb.SpinnerCountrySite;
+import com.eot_app.nav_menu.jobs.job_card_view.JobCardViewActivity;
 import com.eot_app.nav_menu.jobs.job_detail.detail.DialogJobCardDocuments;
 import com.eot_app.nav_menu.jobs.job_detail.generate_invoice.invoice_adpter_pkg.Sipping_Adpter;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_detail_pkg.inv_detail_model.ShippingItem;
@@ -89,6 +90,7 @@ public class Quote_Invoice_Details_Activity extends AppCompatActivity implements
     private RecyclerView rvShowTax;
     private InvoiceTaxAdapter invoiceTaxAdapter;
     private int listCount = 0;
+    private String toJsonTemplate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,7 +119,7 @@ public class Quote_Invoice_Details_Activity extends AppCompatActivity implements
         invoiceFab = findViewById(R.id.invoiceFab);
 
         linearFabEmail = findViewById(R.id.linearFabEmail);
-        linearFabPrintInvoice = findViewById(R.id.linearFabPrintInvoice);
+//        linearFabPrintInvoice = findViewById(R.id.linearFabPrintInvoice);
         linearFabAddNewItem = findViewById(R.id.linearFabAddNewItem);
         linearFabQuotesInJob = findViewById(R.id.linearFabQuotesInJob);
 
@@ -133,11 +135,11 @@ public class Quote_Invoice_Details_Activity extends AppCompatActivity implements
         quote_due_dt = findViewById(R.id.quote_due_dt);
 
         tv_fab_email = findViewById(R.id.tv_fab_email);
-        tv_fab_email.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.email_quote));
+        tv_fab_email.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.preview_and_send_quote));
         tv_fab_add_new_item = findViewById(R.id.tv_fab_add_new_item);
         tv_fab_add_new_item.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_new_item));
-        tv_fab_print_invoice = findViewById(R.id.tv_fab_print_invoice);
-        tv_fab_print_invoice.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.print_quote));
+//        tv_fab_print_invoice = findViewById(R.id.tv_fab_print_invoice);
+//        tv_fab_print_invoice.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.print_quote));
         tv_fab_QuotesToJob = findViewById(R.id.tv_fab_QuotesToJob);
         tv_fab_QuotesToJob.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.quote_to_job));
 
@@ -197,7 +199,7 @@ public class Quote_Invoice_Details_Activity extends AppCompatActivity implements
 
         invoiceFab.setOnClickListener(this);
         linearFabEmail.setOnClickListener(this);
-        linearFabPrintInvoice.setOnClickListener(this);
+//        linearFabPrintInvoice.setOnClickListener(this);
         linearFabAddNewItem.setOnClickListener(this);
         linearFabQuotesInJob.setOnClickListener(this);
 
@@ -412,7 +414,7 @@ public class Quote_Invoice_Details_Activity extends AppCompatActivity implements
 
                 closeFABMenu();
                 break;
-
+              /*
             case R.id.linearFabEmail:
                 if (quotes_Details_Inv != null) {
                     Intent emailIntent = new Intent(this, Invoice_Email_Activity.class);
@@ -448,7 +450,49 @@ public class Quote_Invoice_Details_Activity extends AppCompatActivity implements
 
                     closeFABMenu();
                 }
+                break;*/
+                /**change in ui for preview and email**/
+
+            case R.id.linearFabEmail:
+                if(templateList!=null && !templateList.isEmpty()){
+                    toJsonTemplate = new Gson().toJson(templateList);
+                }
+                if (quotes_Details_Inv != null) {
+                    Intent emailIntent = new Intent(this, JobCardViewActivity.class);
+                    emailIntent.putExtra("quotId", quotId);
+                    emailIntent.putExtra("templateList",toJsonTemplate);
+                    emailIntent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+//                    emailIntent.putExtra("compId", invoice_Details.getCompId());
+                    startActivity(emailIntent);
+                }
+                closeFABMenu();
                 break;
+           /* case R.id.linearFabPrintInvoice:
+                if (templateList != null && !templateList.isEmpty()&& templateList.size()>1) {
+                    dialogJobCardDocuments = new DialogJobCardDocuments();
+                    dialogJobCardDocuments.setContext(this);
+                    dialogJobCardDocuments.setQuoteId(quotId);
+                    dialogJobCardDocuments.setquo_invo_pi(quo_invo_pi);
+                    dialogJobCardDocuments.setInvoiceTmpList(templateList);
+                    dialogJobCardDocuments.show(getSupportFragmentManager(), "dialog");
+                    closeFABMenu();
+                } else {
+                    String tempId="";
+                    if(templateList != null && !templateList.isEmpty() && templateList.size()==1){
+                        tempId=templateList.get(0).getInvTempId();
+                    }
+                    linearFabPrintInvoice.setClickable(false);
+                    quo_invo_pi.generateQuotPDF(quotId,tempId);
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            linearFabPrintInvoice.setClickable(true);
+                        }
+                    }, 500);
+
+                    closeFABMenu();
+                }
+                break;*/
             case R.id.rm_quote_im:
 
                 if (quotes_Details_Inv != null) {
@@ -519,12 +563,12 @@ public class Quote_Invoice_Details_Activity extends AppCompatActivity implements
         backgroundView.setVisibility(View.VISIBLE);*/
         //chnages for overlap buttons
         linearFabQuotesInJob.setVisibility(View.VISIBLE);
-        linearFabQuotesInJob.animate().translationY(getResources().getDimension(R.dimen.standard_145));
+        linearFabQuotesInJob.animate().translationY(getResources().getDimension(R.dimen.standard_100));
         linearFabEmail.setVisibility(View.VISIBLE);
-        linearFabEmail.animate().translationY(getResources().getDimension(R.dimen.standard_100));
+        linearFabEmail.animate().translationY(getResources().getDimension(R.dimen.standard_55));
         // linearFabAddNewItem.setVisibility(View.VISIBLE);
-        linearFabPrintInvoice.setVisibility(View.VISIBLE);
-        linearFabPrintInvoice.animate().translationY(getResources().getDimension(R.dimen.standard_55));
+//        linearFabPrintInvoice.setVisibility(View.VISIBLE);
+//      linearFabPrintInvoice.animate().translationY(getResources().getDimension(R.dimen.standard_55));
         backgroundView.setVisibility(View.VISIBLE);
 
 
@@ -536,15 +580,15 @@ public class Quote_Invoice_Details_Activity extends AppCompatActivity implements
                             &&
                             App_preference.getSharedprefInstance().getLoginRes().getCompPermission().get(0).getIsItemEnable().equals("0")) {
                         linearFabAddNewItem.setVisibility(View.VISIBLE);
-                        linearFabQuotesInJob.animate().translationY(getResources().getDimension(R.dimen.standard_200));
-                        linearFabEmail.animate().translationY(getResources().getDimension(R.dimen.standard_145));
-                        linearFabPrintInvoice.animate().translationY(getResources().getDimension(R.dimen.standard_100));
+                        linearFabQuotesInJob.animate().translationY(getResources().getDimension(R.dimen.standard_145));
+                        linearFabEmail.animate().translationY(getResources().getDimension(R.dimen.standard_100));
+//                        linearFabPrintInvoice.animate().translationY(getResources().getDimension(R.dimen.standard_100));
                         linearFabAddNewItem.animate().translationY(getResources().getDimension(R.dimen.standard_55));
                     } else {
                         linearFabAddNewItem.setVisibility(View.GONE);
-                        linearFabQuotesInJob.animate().translationY(getResources().getDimension(R.dimen.standard_145));
-                        linearFabEmail.animate().translationY(getResources().getDimension(R.dimen.standard_100));
-                        linearFabPrintInvoice.animate().translationY(getResources().getDimension(R.dimen.standard_55));
+                        linearFabQuotesInJob.animate().translationY(getResources().getDimension(R.dimen.standard_100));
+                        linearFabEmail.animate().translationY(getResources().getDimension(R.dimen.standard_55));
+//                        linearFabPrintInvoice.animate().translationY(getResources().getDimension(R.dimen.standard_55));
                     }
                 }
         }
@@ -558,7 +602,7 @@ public class Quote_Invoice_Details_Activity extends AppCompatActivity implements
         linearFabEmail.animate().translationY(0);
         linearFabAddNewItem.animate().translationY(0);
 
-        linearFabPrintInvoice.animate().translationY(0).setListener(new Animator.AnimatorListener() {
+        linearFabEmail.animate().translationY(0).setListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animator) {
 
@@ -569,7 +613,7 @@ public class Quote_Invoice_Details_Activity extends AppCompatActivity implements
                 if (!isFABOpen) {
                     linearFabQuotesInJob.setVisibility(View.GONE);
                     linearFabEmail.setVisibility(View.GONE);
-                    linearFabPrintInvoice.setVisibility(View.GONE);
+//                    linearFabPrintInvoice.setVisibility(View.GONE);
                     linearFabAddNewItem.setVisibility(View.GONE);
                     backgroundView.setVisibility(View.GONE);
                     actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorPrimary)));

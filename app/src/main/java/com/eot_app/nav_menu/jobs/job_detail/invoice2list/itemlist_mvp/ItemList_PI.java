@@ -18,7 +18,7 @@ public interface ItemList_PI {
 
     void getinvoicedetails(final String jobId);
 
-    void getGenerateInvoicePdf(String invId, String isProformaInv,String tempId);
+//    void getGenerateInvoicePdf(String invId, String isProformaInv,String tempId);
 
     void getloctaxexList();
 

@@ -2,19 +2,20 @@ package com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_email_pkg;
 
 import com.eot_app.nav_menu.jobs.job_detail.detail.jobdetial_model.JobCardAttachmentModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public interface Invoice_Email_pi {
     void getInvoiceEmailTempApi(String invId, String isProformaInv);
 
     void sendInvoiceEmailTempApi(String invId, String compId, String messageInHtml, String emailSubject, String emailTo, String emailCc,
-                                 String isProformaInv, String tempId,Object stripLink);
+                                 String isProformaInv, String tempId,Object stripLink, List<JobCardAttachmentModel> Attachment);
 
     boolean isInputFieldDataValid(String emailTo, String emailCc, String emailSubject, String emailMessage);
 
-    void getQuotationEmailTemplate(String quotId);
+    void getQuotationEmailTemplate(String quotId, boolean attechmentUpload);
 
-    void sendQuotationEmailTemplate(String quotId, String message, String subject, String to, String cc, String bcc, String from, String fromnm, String tempId);
+    void sendQuotationEmailTemplate(String quotId, String message, String subject, String to, String cc, String bcc, String from, String fromnm, String tempId, ArrayList<String> quoteAttachmentArray);
 
     void getJobDocEmailTemplate(String jobId);
 

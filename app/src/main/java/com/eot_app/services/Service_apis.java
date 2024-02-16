@@ -229,7 +229,6 @@ public interface Service_apis {
     String getJobStatus = "JobController/getJobStatusList";
     String get_supplier_list = "SupplierController/getSupplierList";
     String upload_document = "JobController/uploadDocument";
-
     String getRecurDataOfJob = "JobController/getRecurDataOfJob";
     String getSyncJobAttachments = "JobController/syncJobAttachments";
 
@@ -306,6 +305,17 @@ public interface Service_apis {
                     @Part("docNm") RequestBody docNm,
                     @Part("isAddAttachAsCompletionNote") RequestBody isAddAttachAsCompletionNote,
                     @Part MultipartBody.Part file);
+
+    @Multipart
+    @POST("QuotationController/uploadQuotDocument")
+    Observable<JsonObject>
+    uploadQuoteDocuments(@HeaderMap Map<String, String> map,
+                         @Part("quotId") RequestBody queId,
+                         @Part("usrId") RequestBody userId,
+                         @Part("des") RequestBody des,
+                         @Part("type") RequestBody type,
+                         @Part MultipartBody.Part file);
+
 
     @Multipart
     @POST("jobController/uploadJobCardSign")
