@@ -297,7 +297,7 @@ public class DialogJobCardDocuments extends DialogFragment
                     if (invoice_Details.getIsShowInList() != null && invoice_Details.getIsShowInList().equals("0"))
                         isProformaInv = "1";
                     else isProformaInv = "0";
-                    itemListPi.getGenerateInvoicePdf(invoice_Details.getInvId(), isProformaInv,tempId);
+               //     itemListPi.getGenerateInvoicePdf(invoice_Details.getInvId(), isProformaInv,tempId);
                 }
                 break;
             case R.id.linearLayout_templat:
@@ -547,6 +547,11 @@ public class DialogJobCardDocuments extends DialogFragment
 
     @Override
     public void showProgressBar() {
+
+    }
+
+    @Override
+    public void addDocumentInQuote(boolean attechmentUpload) {
 
     }
 

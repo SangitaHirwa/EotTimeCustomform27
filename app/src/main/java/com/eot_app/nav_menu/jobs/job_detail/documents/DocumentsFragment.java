@@ -724,6 +724,11 @@ public class DocumentsFragment extends Fragment implements Doc_Attch_View, Docum
         swipeRefreshLayout.setRefreshing(true);
     }
 
+    @Override
+    public void addDocumentInQuote(boolean attechmentUpload) {
+
+    }
+
 
     @Override
     public void onEditTextChangeListener(View rootView, String text, int colorCode) {

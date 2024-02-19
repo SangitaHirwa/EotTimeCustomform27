@@ -13,6 +13,7 @@ import com.eot_app.nav_menu.jobs.job_db.JobListRequestModel;
 import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.Attachments;
 import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.DocUpdateRequest;
 import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.GetFileList_req_Model;
+import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_email_pkg.get_email_temp_model.Get_Email_ReS_Model;
 import com.eot_app.services.ApiClient;
 import com.eot_app.services.Service_apis;
 import com.eot_app.utility.AppConstant;
@@ -29,7 +30,9 @@ import java.io.File;
 import java.lang.reflect.Type;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 
 import io.reactivex.Observer;
@@ -454,6 +457,67 @@ public class Doc_Attch_Pc implements Doc_Attch_Pi {
                         }
                     });
 
+        } else {
+            AppUtility.progressBarDissMiss();
+            networkDialog();
+        }
+    }
+
+    @Override
+    public void uploadQuoteDocument(String file,String fileName, String quotId, String type, String usrId, String des) {
+        if (AppUtility.isInternetConnected()) {
+            ActivityLogController.saveActivity(ActivityLogController.JOB_MODULE, ActivityLogController.JOB_UPLOAD_DOC, ActivityLogController.JOB_MODULE);
+            String mimeType = "";
+            MultipartBody.Part body = null;
+            File file1 = new File(file);
+            if (file1 != null) {
+                mimeType = URLConnection.guessContentTypeFromName(file1.getName());
+                if (mimeType == null) {
+                    mimeType = fileName;
+                }
+                RequestBody requestFile = RequestBody.create(file1, MediaType.parse(mimeType));
+                body = MultipartBody.Part.createFormData("qa", fileName + file.substring(file.lastIndexOf(".")), requestFile);
+            }
+            final RequestBody _quotId = RequestBody.create(quotId, MultipartBody.FORM);
+            RequestBody descBody = RequestBody.create(des, MultipartBody.FORM);
+            RequestBody userId = RequestBody.create(App_preference.getSharedprefInstance().getLoginRes().getUsrId(), MultipartBody.FORM);
+            RequestBody typeId = RequestBody.create(type, MultipartBody.FORM);
+            //     AppUtility.progressBarShow(((Fragment) doc_attch_view).getActivity());
+            ApiClient.getservices().uploadQuoteDocuments(AppUtility.getApiHeaders(),
+                            _quotId,userId,descBody,typeId,body)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<JsonObject>() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
+                        }
+
+                        @Override
+                        public void onNext(JsonObject jsonObject) {
+                            Log.e("Responce", jsonObject.toString());
+                            if (jsonObject.get("success").getAsBoolean()) {
+                                String convert = new Gson().toJson(jsonObject.get("data").getAsJsonArray());
+                                EotApp.getAppinstance().showToastmsg(LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
+                                doc_attch_view.addDocumentInQuote(true);
+                            } else if (jsonObject.get("statusCode") != null && jsonObject.get("statusCode").getAsString().equals(AppConstant.SESSION_EXPIRE)) {
+                                doc_attch_view.onSessionExpire(LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
+                            } else {
+                                doc_attch_view.fileExtensionNotSupport(LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
+                            }
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            AppUtility.progressBarDissMiss();
+                            Log.e("Error", e.getMessage());
+                            EotApp.getAppinstance().showToastmsg(e.getMessage());
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            AppUtility.progressBarDissMiss();
+                        }
+                    });
         } else {
             AppUtility.progressBarDissMiss();
             networkDialog();

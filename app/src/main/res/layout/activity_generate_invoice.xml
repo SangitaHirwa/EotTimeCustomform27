@@ -562,7 +562,7 @@
             tools:ignore="ContentDescription" />
     </LinearLayout>
 
-    <LinearLayout
+    <!--<LinearLayout
         android:id="@+id/linearFabPrintInvoice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -587,7 +587,7 @@
             app:fabSize="mini"
             app:srcCompat="@drawable/ic_print_invoice"
             tools:ignore="ContentDescription" />
-    </LinearLayout>
+    </LinearLayout>-->
 
     <LinearLayout
         android:id="@+id/linearFabAddNewItem"
