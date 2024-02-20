@@ -247,6 +247,7 @@ public class DetailFragment extends Fragment
     private  static DetailFragment instanse;
     ConstraintLayout cl_serviceMarkAsDone, cl_pbCompletion;
     ServiceMarkDoneAdapter serviceMarkDoneAdapter;
+    boolean isAskForCompleteJob = false;
 
     public DetailFragment() {
         // Required empty public constructor
@@ -1397,7 +1398,10 @@ public class DetailFragment extends Fragment
         if(App_preference.getSharedprefInstance().getLoginRes().getIsCompleShowMarkDone().equals("1")) {
             if (App_preference.getSharedprefInstance().getLoginRes().getIsJobCompCustSignEnable().equals("0")) {
                 if(mParam2.getStatus() != null && !mParam2.getStatus().equalsIgnoreCase("9")) {
-                    checkMarkServices();
+                    if(isAskForCompleteJob) {
+                        checkMarkServices();
+                        isAskForCompleteJob = false;
+                    }
                 }
             }
         }
@@ -3134,6 +3138,7 @@ public void setCompletionDetail(){
         if (requestCode == REQUEST_COMPLETION_NOTE) {
             try {
                 cl_pbCompletion.setVisibility(View.GONE);
+                isAskForCompleteJob = true;
                 if (data != null && data.hasExtra("note")) {
                     if (mParam2 != null)
                         mParam2.setComplNote(data.getStringExtra("note"));
