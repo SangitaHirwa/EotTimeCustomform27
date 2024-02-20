@@ -46,7 +46,8 @@ public interface Service_apis {
     String changeJobStatus = "JobController/changeJobStatus";
     String addJob = "JobController/addJob";
     String addClient = "CompanyController/addClient";
-    String getTermsCondition = "CompanyController/getQuatSetting";
+    /** Change quotation term & condition api after discussion with Rani and Jit Sir*/
+    String getTermsCondition = "QuotationController/getTermAndConditionList";
     String forgotPasswordKey = "AuthenticationController/forgotPasswordKey";
     String forgotPassword = "AuthenticationController/forgotPassword";
     String forgotPasswordReset = "AuthenticationController/forgotPasswordReset";
