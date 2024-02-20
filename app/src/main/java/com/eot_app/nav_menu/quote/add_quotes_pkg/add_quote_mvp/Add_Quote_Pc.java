@@ -8,7 +8,9 @@ import com.eot_app.activitylog.ActivityLogController;
 import com.eot_app.nav_menu.client.client_db.Client;
 import com.eot_app.nav_menu.client.clientlist.client_detail.site.sitelist.editsite.editsitedb.SpinnerCountrySite;
 import com.eot_app.nav_menu.jobs.job_controller.ChatController;
+import com.eot_app.nav_menu.jobs.job_db.Job;
 import com.eot_app.nav_menu.quote.add_quotes_pkg.model_pkg.Add_Quote_ReQ;
+import com.eot_app.nav_menu.quote.quotes_add_item_pkg.item_model_pkg.Quote_Term_Conditon_Model;
 import com.eot_app.nav_menu.quote.quotes_list_pkg.qoute_model_pkg.Quote_ReQ;
 import com.eot_app.services.ApiClient;
 import com.eot_app.services.Service_apis;
@@ -30,6 +32,7 @@ import com.hypertrack.hyperlog.HyperLog;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.lang.reflect.Type;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,9 +50,15 @@ public class Add_Quote_Pc implements Add_Quote_Pi {
     private final Add_Quote_View add_quote_view;
     private List<States> statesList = new ArrayList<>();
     private List<Country> countryList = new ArrayList<>();
+    private final int updatelimit;
+    private int count;
+    private int updateindex;
 
     public Add_Quote_Pc(Add_Quote_View add_quote_view) {
+
         this.add_quote_view = add_quote_view;
+        this.updatelimit = AppConstant.LIMIT_MID;
+        updateindex = 0;
     }
 
     @Override
@@ -238,7 +247,7 @@ public class Add_Quote_Pc implements Add_Quote_Pi {
     }
 
     @Override
-    public void getTermsConditions() {
+    public void getTermsConditions(boolean isFirstCall) {
         if (AppUtility.isInternetConnected()) {
             ActivityLogController.saveActivity(
                     ActivityLogController.QUOTE_MODULE,
@@ -246,7 +255,7 @@ public class Add_Quote_Pc implements Add_Quote_Pi {
                     ActivityLogController.QUOTE_MODULE
             );
             AppUtility.progressBarShow((Context) add_quote_view);
-            String data = new Gson().toJson(new Quote_ReQ(1, 1));
+            String data = new Gson().toJson(new Quote_ReQ(updateindex, updatelimit));
 
 
             ApiClient.getservices().eotServiceCall(Service_apis.getTermsCondition, AppUtility.getApiHeaders(), AppUtility.getJsonObject(data))
@@ -262,8 +271,13 @@ public class Add_Quote_Pc implements Add_Quote_Pi {
                         public void onNext(@NotNull JsonObject jsonObject) {
                             if (jsonObject.get("success").getAsBoolean()) {
                                 if (jsonObject.has("data")) {
-                                    String termsConditions = jsonObject.getAsJsonObject("data").get("quotTerms").getAsString();
-                                    add_quote_view.setTermsConditions(termsConditions);
+
+                                    count = jsonObject.get("count").getAsInt();
+                                    String convert = new Gson().toJson(jsonObject.get("data").getAsJsonArray());
+                                    Type listType = new com.google.gson.reflect.TypeToken<List<Quote_Term_Conditon_Model>>() {
+                                    }.getType();
+                                    List<Quote_Term_Conditon_Model> termsConditions = new Gson().fromJson(convert, listType);
+                                    add_quote_view.setTermsConditions(termsConditions,isFirstCall);
                                     //  EotApp.getAppinstance().showToastmsg(LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
                                 }
                             } else if (jsonObject.get("statusCode") != null && jsonObject.get("statusCode").getAsString().equals(AppConstant.SESSION_EXPIRE)) {
@@ -285,8 +299,16 @@ public class Add_Quote_Pc implements Add_Quote_Pi {
 
                         @Override
                         public void onComplete() {
-                            AppUtility.progressBarDissMiss();
-                            Log.e("TAG", "");
+                            if ((updateindex + updatelimit) <= count) {
+                                updateindex += updatelimit;
+                                getTermsConditions(false);
+                            } else {
+                                updateindex = 0;
+                                count = 0;
+                                AppUtility.progressBarDissMiss();
+                                Log.e("TAG", "");
+                            }
+
                         }
                     });
         } else {

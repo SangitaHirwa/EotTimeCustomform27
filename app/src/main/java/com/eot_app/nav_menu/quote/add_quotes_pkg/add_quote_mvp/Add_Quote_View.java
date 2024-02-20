@@ -3,6 +3,7 @@ package com.eot_app.nav_menu.quote.add_quotes_pkg.add_quote_mvp;
 import com.eot_app.nav_menu.client.client_db.Client;
 import com.eot_app.nav_menu.client.clientlist.client_detail.contact.client_dao.ContactData;
 import com.eot_app.nav_menu.client.clientlist.client_detail.site.sitelist.Site_model;
+import com.eot_app.nav_menu.quote.quotes_add_item_pkg.item_model_pkg.Quote_Term_Conditon_Model;
 import com.eot_app.utility.Country;
 import com.eot_app.utility.States;
 import com.eot_app.utility.settings.setting_db.FieldWorker;
@@ -46,7 +47,7 @@ public interface Add_Quote_View {
 
     void errorMsg(String error);
 
-    void setTermsConditions(String termsConditions);
+    void setTermsConditions(List<Quote_Term_Conditon_Model> termsConditions, boolean isFirstCall);
 
     void finishActivity();
 }

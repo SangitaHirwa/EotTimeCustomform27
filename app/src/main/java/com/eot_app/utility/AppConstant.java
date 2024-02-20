@@ -975,6 +975,7 @@ public class AppConstant {
     public static String not_synced_at = "not_synced_at";
     public static String equipment_location = "equipment_location";
     public static String leader_change_completed_status_all_members = "leader_change_completed_status_all_members";
+    public static String no_term_condition = "no_term_condition";
 
 
 

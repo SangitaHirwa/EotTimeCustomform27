@@ -937,11 +937,11 @@
                     android:singleLine="true"
                     tools:ignore="Autofill,LabelFor" />
             </com.google.android.material.textfield.TextInputLayout>
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="5dp"
-                android:background="@color/border_font_color" />
+<!--            <View-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="1dp"-->
+<!--                android:layout_marginTop="5dp"-->
+<!--                android:background="@color/border_font_color" />-->
 
            <!-- <LinearLayout
                 android:id="@+id/appointmentItemType_relative"
@@ -984,15 +984,50 @@
                 android:layout_height="1dp"
                 android:layout_marginTop="5dp"
                 android:background="@color/border_font_color" />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:layout_marginTop="2dp"
+                >
 
+                <com.eot_app.utility.util_interfaces.NoDefaultSpinner
+                    android:id="@+id/quote_tc_suggestion_spinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/quote_tc_suggestion_img"
+                    android:layout_alignParentEnd="true"
+                    android:background="@android:color/transparent"
+                    android:popupBackground="@drawable/popupbg"
+                    android:visibility="invisible" />
+
+                <TextView
+                    android:id="@+id/hint_txt_term_condition"
+                    style="@style/text_hint"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:layout_alignParentStart="true"
+                    android:text="@string/term_condition"
+                    android:textStyle="normal"
+                    android:visibility="visible" />
+                <ImageView
+                    android:id="@+id/quote_tc_suggestion_img"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_gravity="end"
+                    android:layout_marginRight="5dp"
+                    android:src="@drawable/ic_boost"
+                    tools:ignore="ContentDescription" />
+            </RelativeLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/quote_term_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:paddingTop="5dp"
-                app:hintAnimationEnabled="true"
+                android:paddingTop="0dp"
+                app:hintAnimationEnabled="false"
                 app:hintEnabled="false"
                 app:hintTextAppearance="@style/TextInputLayoutHintText">
 
