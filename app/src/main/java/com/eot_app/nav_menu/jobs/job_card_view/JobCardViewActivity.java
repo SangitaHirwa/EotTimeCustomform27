@@ -173,9 +173,11 @@ public class JobCardViewActivity extends AppCompatActivity  implements
 
     }
     void initViews() {
-        if(quotId != null && !quotId.isEmpty()){
+        if(getIntent().hasExtra("invId") || getIntent().hasExtra("quotId")){
             binding.signatureView.setVisibility(View.GONE);
-            setList(fileList_res,"",false);
+            if(getIntent().hasExtra("quotId")) {
+                setList(fileList_res, "", false);
+            }
         }else {
             binding.signatureView.setVisibility(View.VISIBLE);
         }
@@ -213,7 +215,6 @@ public class JobCardViewActivity extends AppCompatActivity  implements
                 statusList[pos] = status.getInputValue();
                 if (status.getDefaultTemp() != null && status.getDefaultTemp().equals("1")) {
                     tempId = status.getInvTempId();
-                    break;
                 }
                 pos++;
             }
@@ -404,7 +405,11 @@ public class JobCardViewActivity extends AppCompatActivity  implements
         String selectedValue = templateList.get(pos).getInputValue();
         binding.templatTxt.setText(selectedValue);
         if(templateList.get(pos).isTechSignature()&&jobId!=null){
-            binding.signatureView.setVisibility(View.VISIBLE);
+            if(getIntent().hasExtra("invId") || getIntent().hasExtra("quotId")){
+                binding.signatureView.setVisibility(View.GONE);
+            }else {
+                binding.signatureView.setVisibility(View.VISIBLE);
+            }
         }
         else {
             fwId="";
