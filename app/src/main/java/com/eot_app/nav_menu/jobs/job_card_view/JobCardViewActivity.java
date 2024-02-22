@@ -742,9 +742,6 @@ public class JobCardViewActivity extends AppCompatActivity  implements
     public void setList(ArrayList<Attachments> getFileList_res, String isAttachCompletionNotes, boolean firstCall) {
 
         Log.e("Attachment List", ""+getFileList_res.size()+""+isAttachCompletionNotes);
-
-        list.clear();
-        this.fileList_res = getFileList_res;
         JobCardAttachmentModel jobCardAttachmentModel=null;
         if(getIntent().hasExtra("invId")){
             jobCardAttachmentModel = new JobCardAttachmentModel("-1","2","Invoice"+".pdf",true);
@@ -753,8 +750,10 @@ public class JobCardViewActivity extends AppCompatActivity  implements
         }else if(getIntent().hasExtra("quotId")){
             jobCardAttachmentModel = new JobCardAttachmentModel("-1","2",LanguageController.getInstance().getMobileMsgByKey(AppConstant.quotes)+".pdf",true);
         }
-        list.add(jobCardAttachmentModel);
-        for (Attachments item : fileList_res) {
+        if(list.size()==0){
+            list.add(jobCardAttachmentModel);
+        }
+        for (Attachments item : getFileList_res) {
             final String ext = item.getImage_name().substring((item.getImage_name().lastIndexOf(".")) + 1).toLowerCase();
             String name ="";
             if(item.getAtt_docName()==null || item.getAtt_docName().isEmpty()){
@@ -765,9 +764,8 @@ public class JobCardViewActivity extends AppCompatActivity  implements
             list.add(new JobCardAttachmentModel(item.getAttachmentId(),"2",name,false));
         }
         if(list!=null && list.size()>0 && list.get(0).getChecked()){
-            reqAttachmentList.clear();
-            reqAttachmentList.add(list.get(0));
-            quoteAttachmentArray.add(list.get(0).getId());
+            reqAttachmentList.add(0,list.get(0));
+            quoteAttachmentArray.add(0,list.get(0).getId());
 
         }
         jobCardAttachmentAdapter.updateList(list);
@@ -799,9 +797,9 @@ public class JobCardViewActivity extends AppCompatActivity  implements
                 fileList_res.remove(fileList_res.get(position));
         }
         // to add the new entry into existing list
-        if (getFileList_res != null&&fileList_res!=null) {
-            fileList_res.addAll(getFileList_res);
-            setList(fileList_res, "",true);
+        if (getFileList_res != null) {
+            setList(getFileList_res, "",true);
+            binding.progressBarCyclic.setVisibility(View.GONE);
         }
 
     }
@@ -819,6 +817,7 @@ public class JobCardViewActivity extends AppCompatActivity  implements
 
     @Override
     public void onSessionExpire(String msg) {
+        binding.progressBarCyclic.setVisibility(View.GONE);
 
     }
 
@@ -876,10 +875,6 @@ public class JobCardViewActivity extends AppCompatActivity  implements
 
     }
 
-    @Override
-    public void addDocumentInQuote(boolean attechmentUpload) {
-        invoice_email_pi.getQuotationEmailTemplate(quotId,attechmentUpload);
-    }
 
     @Override
     public void cbClickListener(JobCardAttachmentModel jobCardAttachmentModel) {
@@ -966,6 +961,7 @@ public class JobCardViewActivity extends AppCompatActivity  implements
                     try {
                         //get uri from current created path
                         if(captureImagePath!=null) {
+                            binding.progressBarCyclic.setVisibility(View.VISIBLE);
                             File file = AppUtility.scaleToActualAspectRatio(captureImagePath, 1024f, 1024f);
                             if (file != null)
                                 imageEditing(Uri.fromFile(file), true);
@@ -981,6 +977,7 @@ public class JobCardViewActivity extends AppCompatActivity  implements
                 break;
             case CAPTURE_IMAGE_GALLARY:
                 if (resultCode == RESULT_OK) {
+                    binding.progressBarCyclic.setVisibility(View.VISIBLE);
                     Uri galreyImguriUri = data.getData();
                     //   String gallery_image_Path = com.eot_app.nav_menu.jobs.job_detail.documents.PathUtils.getPath(getActivity(), galreyImguriUri);
                     String gallery_image_Path = com.eot_app.nav_menu.jobs.job_detail.documents.PathUtils.getRealPath(JobCardViewActivity.this, galreyImguriUri);
@@ -1000,6 +997,7 @@ public class JobCardViewActivity extends AppCompatActivity  implements
             case ATTACHFILE_CODE:
                 if (resultCode == RESULT_OK) {
                     try {
+                        binding.progressBarCyclic.setVisibility(View.VISIBLE);
                         Uri galreyImguriUri = data.getData();
                         //  String gallery_image_Path = PathUtils.getPath(getActivity(), galreyImguriUri);
                         String gallery_image_Path = PathUtils.getRealPath(this, galreyImguriUri);
@@ -1044,6 +1042,9 @@ public class JobCardViewActivity extends AppCompatActivity  implements
 
     private void uploadDocumentsJobCard(String savedImagePath) {
         if (doc_attch_pi != null&&savedImagePath!=null) {
+            File file = new File(savedImagePath);
+            long length = file.length();
+            Log.e("job time","size of image "+length/1024);
             String fileNameExt = AppUtility.getFileNameWithExtension(savedImagePath);
             String bitmapString="";
             if(isImage) {
@@ -1052,21 +1053,22 @@ public class JobCardViewActivity extends AppCompatActivity  implements
             }
             String[] split = fileNameExt.split("\\.");
             String imageNameWithOutExt = split[0];
-            Attachments obj=new Attachments("0",fileNameExt,fileNameExt,bitmapString);
-            ArrayList<Attachments> getFileList_res =new ArrayList<>();
-            if (fileList_res != null) {
+         /*   Attachments obj=new Attachments("0",fileNameExt,fileNameExt,bitmapString);
+            ArrayList<Attachments> getFileList_res =new ArrayList<>();*/
+            /*if (fileList_res != null) {
                 getFileList_res.addAll(fileList_res);
-            }
-            getFileList_res.add(obj);
+            }*/
+         /*   getFileList_res.add(obj);
 
-            setList(getFileList_res, "",true);
+            setList(getFileList_res, "",true);*/
 
             try
             {
                 if(quotId != null && !quotId.isEmpty()){
-                           doc_attch_pi.uploadQuoteDocument(savedImagePath,imageNameWithOutExt,quotId,
+                    doc_attch_pi.uploadQuoteDocument(savedImagePath,imageNameWithOutExt,quotId,
                            "2","","");
                 }else {
+                    Log.e("job time","request genreted "+Calendar.getInstance().getTime());
                     doc_attch_pi.uploadDocuments(jobId, savedImagePath,
                             imageNameWithOutExt,
                             "",
@@ -1076,10 +1078,10 @@ public class JobCardViewActivity extends AppCompatActivity  implements
             }
             catch (Exception e)
             {
-                if (getFileList_res.size()==1) {
+               /* if (getFileList_res.size()==1) {
                     fileList_res.remove(getFileList_res.get(0));
                     setList(fileList_res, "",true);
-                }
+                }*/
                 e.printStackTrace();
             }
 

@@ -551,11 +551,6 @@ public class DialogJobCardDocuments extends DialogFragment
     }
 
     @Override
-    public void addDocumentInQuote(boolean attechmentUpload) {
-
-    }
-
-    @Override
     public void cbClickListener(JobCardAttachmentModel jobCardAttachmentModel) {
         String isJobCardPdfSend= "1";
         if(jobCardAttachmentModel.getId().equals("-1")){

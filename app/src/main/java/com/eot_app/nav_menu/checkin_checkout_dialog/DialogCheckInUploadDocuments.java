@@ -367,10 +367,7 @@ public class DialogCheckInUploadDocuments extends DialogFragment implements View
 
     }
 
-    @Override
-    public void addDocumentInQuote(boolean attechmentUpload) {
 
-    }
 
     @Override
     public void selectFiles() {
