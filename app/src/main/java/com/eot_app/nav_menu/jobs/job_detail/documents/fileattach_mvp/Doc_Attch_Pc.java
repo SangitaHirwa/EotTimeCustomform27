@@ -374,9 +374,8 @@ public class Doc_Attch_Pc implements Doc_Attch_Pi {
 
                         @Override
                         public void onError(Throwable e) {
-                            AppUtility.progressBarDissMiss();
+                            doc_attch_view.onSessionExpire(LanguageController.getInstance().getServerMsgByKey(e.getMessage()));
                             Log.e("Error", e.getMessage());
-                            EotApp.getAppinstance().showToastmsg(e.getMessage());
                         }
 
                         @Override
@@ -497,8 +496,11 @@ public class Doc_Attch_Pc implements Doc_Attch_Pi {
                             Log.e("Responce", jsonObject.toString());
                             if (jsonObject.get("success").getAsBoolean()) {
                                 String convert = new Gson().toJson(jsonObject.get("data").getAsJsonArray());
-                                EotApp.getAppinstance().showToastmsg(LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
-                                doc_attch_view.addDocumentInQuote(true);
+                                Type listType = new TypeToken<List<Attachments>>() {
+                                }.getType();
+                                ArrayList<Attachments> docList = new Gson().fromJson(convert, listType);
+                                doc_attch_view.addNewItemToAttachmentList(docList, "");
+                               EotApp.getAppinstance().showToastmsg(LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
                             } else if (jsonObject.get("statusCode") != null && jsonObject.get("statusCode").getAsString().equals(AppConstant.SESSION_EXPIRE)) {
                                 doc_attch_view.onSessionExpire(LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
                             } else {
@@ -510,7 +512,7 @@ public class Doc_Attch_Pc implements Doc_Attch_Pi {
                         public void onError(Throwable e) {
                             AppUtility.progressBarDissMiss();
                             Log.e("Error", e.getMessage());
-                            EotApp.getAppinstance().showToastmsg(e.getMessage());
+                            doc_attch_view.onSessionExpire(LanguageController.getInstance().getServerMsgByKey(e.getMessage()));
                         }
 
                         @Override

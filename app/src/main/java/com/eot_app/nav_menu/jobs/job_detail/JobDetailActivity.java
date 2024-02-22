@@ -796,19 +796,27 @@ public class JobDetailActivity extends AppCompatActivity implements
         }
         else if (item.getItemId() == R.id.miJobCard) {
 
-            if(templateList!=null && !templateList.isEmpty()){
-                toJsonTemplate = new Gson().toJson(templateList);
+            if(AppUtility.isInternetConnected()) {
+                if (templateList != null && !templateList.isEmpty()) {
+                    toJsonTemplate = new Gson().toJson(templateList);
+                }
+                Intent intent = new Intent(this, JobCardViewActivity.class);
+                intent.putExtra("DataForJobCardView", true);
+                intent.putExtra("JobId", dataJob.getJobId());
+                intent.putExtra("toJsonTemplateString", toJsonTemplate);
+                if (dataJob.getKpr() != null) {
+                    String[] fwList2 = dataJob.getKpr().split(",");
+                    intent.putExtra("FwList", fwList2);
+                }
+                startActivity(intent);
+            }else {
+                AppUtility.alertDialog(this, LanguageController.getInstance().getMobileMsgByKey(AppConstant.dialog_error_title),
+                        LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_check_network), LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), "", () -> {
+                            return null;
+
+                        });
+
             }
-           Intent intent=new Intent(this,JobCardViewActivity.class);
-           intent.putExtra("DataForJobCardView",true);
-           intent.putExtra("JobId",dataJob.getJobId());
-           intent.putExtra("toJsonTemplateString",toJsonTemplate);
-            if(dataJob.getKpr()!=null)
-            {
-                String[] fwList2=dataJob.getKpr().split(",");
-               intent.putExtra("FwList",fwList2);
-            }
-           startActivity(intent);
             /*dialogJobCardDocuments = new DialogJobCardDocuments();
             dialogJobCardDocuments.setContext(this);
             dialogJobCardDocuments.setJobId(dataJob.getJobId());

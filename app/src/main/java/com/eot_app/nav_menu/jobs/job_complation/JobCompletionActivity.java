@@ -959,11 +959,6 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
     public void showProgressBar() {
     }
 
-    @Override
-    public void addDocumentInQuote(boolean attechmentUpload) {
-
-    }
-
     /**
      * get image from camera & edit & croping functinallity
      */

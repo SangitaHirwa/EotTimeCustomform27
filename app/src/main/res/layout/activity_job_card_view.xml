@@ -295,6 +295,35 @@
 
                 </LinearLayout>
 
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/progressbar_rl"
+                    >
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/progressBar_cyclic"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="gone"
+                    android:layout_centerInParent="true"
+                    android:elevation="10dp"
+                    android:background="#50A39D9D"
+                    android:clickable="true"
+                    android:layout_alignTop="@+id/rv_jobCardAttachment"
+                    android:layout_alignBottom="@+id/rv_jobCardAttachment"
+                    android:focusable="true">
+                    <ProgressBar
+                        style="@style/progressbarstyle"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:layout_gravity="center"
+                        android:shadowColor="@color/colorPrimaryDark"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_jobCardAttachment"
                     android:layout_width="match_parent"
@@ -306,7 +335,7 @@
                     android:padding="10dp"
 
                     />
-
+                </RelativeLayout>
                 <RelativeLayout
                     android:id="@+id/signature_view"
                     android:layout_width="match_parent"
