@@ -76,6 +76,7 @@ public class ForegroundService2 extends Service {
     public static final String F_STATUS_FIELD = "gpsStatus";
     public static final String F_ISONLINE_FIELD = "isOnline";
     public static final String F_ISBACKGROUND_FIELD = "isBackground";
+    private static final int NOTIFICATION_ID = 1;
     public static String STARTFOREGROUND_ACTION = "com.eot_app.action.startforeground";
     public static String STOPFOREGROUND_ACTION = "com.eot_app.action.stopforeground";
     public static String STOPFOREGROUND_ADMINDENIED_ACTION = "com.eot_app.action.stopadmindenied";
@@ -210,6 +211,12 @@ public class ForegroundService2 extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         return null;
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        startForeground(NOTIFICATION_ID, generateNotification(this,""));
     }
 
     @Override

@@ -687,6 +687,14 @@ public class MainActivity extends UploadDocumentActivity implements MainActivity
     protected void onResume() {
         //        set user online offline in in app version
         ChatController.getInstance().setAppUserOnline(1);
+        //   after getting permission of location from device setting of app and it's save locally
+           if (App_preference.getSharedprefInstance().getLoginRes().getIsFWgpsEnable().equals("1")) {
+            if (ActivityCompat.checkSelfPermission(Objects.requireNonNull(this), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                    && ActivityCompat.checkSelfPermission(Objects.requireNonNull(this), Manifest.permission.ACCESS_COARSE_LOCATION)
+                    == PackageManager.PERMISSION_GRANTED) {
+               onFWTrackingStart();
+            }
+        }
         Log.e("MainActivity","OnResumeCalled");
         super.onResume();
     }
