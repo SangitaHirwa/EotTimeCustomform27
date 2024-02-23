@@ -771,7 +771,7 @@ public class JobDetailActivity extends AppCompatActivity implements
             ChatController.getInstance().setChatScreenState(3, "");
         }
 
-        if (position < navigation.getMenu().size() && mypagerAdapter.getPageTitle(position).
+        if (navigation!= null && position < navigation.getMenu().size() && mypagerAdapter.getPageTitle(position).
                 equals(LanguageController.getInstance().getMobileMsgByKey(AppConstant.title_chat))) {
             ChatController.getInstance().setChatScreenState(1, dataJob.getJobId());
             ChatController.getInstance().setUnreadCountZeroByJobId(dataJob.getLabel(), dataJob.getJobId(),
