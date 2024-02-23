@@ -48,12 +48,15 @@ import com.eot_app.nav_menu.jobs.add_job.adapters.FilterCountry;
 import com.eot_app.nav_menu.jobs.add_job.adapters.FilterStates;
 import com.eot_app.nav_menu.jobs.job_controller.ChatController;
 import com.eot_app.nav_menu.jobs.job_db.JtId;
+import com.eot_app.nav_menu.quote.adapter.Term_Condtion_Adapter;
 import com.eot_app.nav_menu.quote.add_quotes_pkg.add_quote_mvp.Add_Quote_Pc;
 import com.eot_app.nav_menu.quote.add_quotes_pkg.add_quote_mvp.Add_Quote_Pi;
 import com.eot_app.nav_menu.quote.add_quotes_pkg.add_quote_mvp.Add_Quote_View;
 import com.eot_app.nav_menu.quote.add_quotes_pkg.model_pkg.Add_Quote_ReQ;
 import com.eot_app.nav_menu.quote.add_quotes_pkg.quotes_adpter.Dynamic_Adpter;
+import com.eot_app.nav_menu.quote.quote_invoice_pkg.Quote_Details_Adpter;
 import com.eot_app.nav_menu.quote.quote_invoice_pkg.quote_model_pkg.QuotesDetails;
+import com.eot_app.nav_menu.quote.quotes_add_item_pkg.item_model_pkg.Quote_Term_Conditon_Model;
 import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.AppUtility;
 import com.eot_app.utility.App_preference;
@@ -101,10 +104,10 @@ public class AddQuotes_Activity extends UploadDocumentActivity implements View.O
     CustomDPController customDPController;
     CustomEditor mEditor;
     TextView quotesdeshint;
-    ImageView action_insert_image;
+    ImageView action_insert_image, quote_tc_suggestion_img;
     TextView quote_title_hint_tv, quote_title_set, schel_start, schel_end, date_start, time_start, date_end, time_end,texDisTypeText;
     LinearLayout ll_status_notes,texDidTypeLayout;
-    TextView hint_txt_fw_Nm, hint_txt_status_Nm,hint_txt_taxType, tv_spinner_Fw, tv_spinner_status;
+    TextView hint_txt_fw_Nm, hint_txt_status_Nm,hint_txt_taxType, tv_spinner_Fw, tv_spinner_status, hint_txt_term_condition;
     private TextInputLayout quote_instr_layout, quote_mobile_layout, quote_mob2_layout, quote_email_layout, quote_adr_layout, quote_city_layout, quote_postal_layout, client_quote_layout, contact_quote_layout, site_quote_layout, quote_country_layout, quote_state_layout, quote_notes_layout, quote_status_notes_layout, quote_term_layout;
     //quote_desc_layout,
     private EditText quote_instr_edt, quote_mob_no_edt, quote_at_mob_edt, quote_email_edt, quote_adrs_edt, quote_city_edt, quote_post_code_edt, quote_notes_edt, quote_status_notes_edt, quote_term_edt;
@@ -160,7 +163,7 @@ public class AddQuotes_Activity extends UploadDocumentActivity implements View.O
     private LinearLayout linearLayout_Fw, linearLayout_status, ll_status;
     private List<FieldWorker> fw_List = new ArrayList<>();
     private MyAdapter2 myAdapter;
-    private Spinner spinner_Fw, spinner_status,typeSpinner;
+    private Spinner spinner_Fw, spinner_status,typeSpinner,quote_tc_suggestion_spinner;
     private boolean isUpdate;
     private String[] id_array;
     private String appId;
@@ -168,6 +171,8 @@ public class AddQuotes_Activity extends UploadDocumentActivity implements View.O
     ContactData selectedContactData;
     Site_model selectedSiteData;
     private ImageView site_dp_img, contact_dp_img;
+    Term_Condtion_Adapter termCondtionAdapter ;
+    List<Quote_Term_Conditon_Model> termsConditionsList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -202,7 +207,7 @@ public class AddQuotes_Activity extends UploadDocumentActivity implements View.O
             //addQuotesData();
             getCurrentdate();
             add_quote_pi.getJobServices();
-            add_quote_pi.getTermsConditions();
+            add_quote_pi.getTermsConditions(true);
 
 
             String appointmentId = getIntent().getStringExtra("appointmentId");
@@ -277,7 +282,7 @@ public class AddQuotes_Activity extends UploadDocumentActivity implements View.O
             setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_quote));
             submit_btn.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.create_quote));
             addQuotesData();
-            add_quote_pi.getTermsConditions();
+            add_quote_pi.getTermsConditions(true);
         }
 
 
@@ -659,8 +664,13 @@ public class AddQuotes_Activity extends UploadDocumentActivity implements View.O
         submit_btn = findViewById(R.id.submit_btn);
         submit_btn.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.submit_btn));
         typeSpinner = findViewById(R.id.type_spinner);
-       texDisTypeText = findViewById(R.id.type_label);
+        texDisTypeText = findViewById(R.id.type_label);
         texDidTypeLayout = findViewById(R.id.appointmentItemType_relative);
+
+        quote_tc_suggestion_spinner = findViewById(R.id.quote_tc_suggestion_spinner);
+        quote_tc_suggestion_img = findViewById(R.id.quote_tc_suggestion_img);
+        hint_txt_term_condition = findViewById(R.id.hint_txt_term_condition);
+        hint_txt_term_condition.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.term_condition));
 
         initializeView();
     }
@@ -695,6 +705,7 @@ public class AddQuotes_Activity extends UploadDocumentActivity implements View.O
         linearLayout_Fw.setOnClickListener(this);
         linearLayout_status.setOnClickListener(this);
         texDidTypeLayout.setOnClickListener(this);
+        quote_tc_suggestion_img.setOnClickListener(this);
 
         textInputLayoutHint();
 
@@ -721,6 +732,25 @@ public class AddQuotes_Activity extends UploadDocumentActivity implements View.O
                 taxType="0";
                 else if(position==1)
                     taxType="1";
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        AppUtility.spinnerPopUpWindow(quote_tc_suggestion_spinner);
+        quote_tc_suggestion_spinner.setSelected(false);
+        termCondtionAdapter = new Term_Condtion_Adapter(this, termsConditionsList);
+        quote_tc_suggestion_spinner.setAdapter(termCondtionAdapter);
+        quote_tc_suggestion_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                if(termsConditionsList != null && termsConditionsList.size()>0){
+                   quote_term_edt.getText().clear();
+                   quote_term_edt.setText(termsConditionsList.get(position).getTermAndCondition());
+                }
             }
 
             @Override
@@ -893,6 +923,17 @@ public class AddQuotes_Activity extends UploadDocumentActivity implements View.O
                 break;
             case R.id.appointmentItemType_relative:
                 typeSpinner.performClick();
+                break;
+                case R.id.quote_tc_suggestion_img:
+                    if(termsConditionsList != null && termsConditionsList.size() >0) {
+                        quote_tc_suggestion_spinner.performClick();
+                    }else {
+                            AppUtility.alertDialog(this,
+                                    LanguageController.getInstance()
+                                            .getMobileMsgByKey(AppConstant.term_condition)
+                                    ,LanguageController.getInstance().getMobileMsgByKey(AppConstant.no_suggesstion),
+                                    LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok),"", () -> null);
+                    }
                 break;
 
         }
@@ -1200,9 +1241,20 @@ public class AddQuotes_Activity extends UploadDocumentActivity implements View.O
     }
 
     @Override
-    public void setTermsConditions(String termsConditions) {
-        if (termsConditions != null) {
-            quote_term_edt.setText(Html.fromHtml(termsConditions));
+    public void setTermsConditions(List<Quote_Term_Conditon_Model> termsConditions, boolean isFirstCall) {
+        if (termsConditions != null && termsConditions.size() > 0) {
+            if(isFirstCall){
+                termsConditionsList.clear();
+            }
+                termsConditionsList.addAll(termsConditions);
+            termCondtionAdapter.updtaeList(termsConditionsList);
+            for (Quote_Term_Conditon_Model item : termsConditions
+                 ) {
+                if(item.getIsDefault().equals("1")){
+                    quote_term_edt.setText(Html.fromHtml(item.getTermAndCondition()));
+                }
+            }
+
         }
     }
 
@@ -1678,8 +1730,10 @@ public class AddQuotes_Activity extends UploadDocumentActivity implements View.O
                 quote_notes_layout.setHintEnabled(true);
             if (charSequence.hashCode() == quote_status_notes_edt.getText().hashCode())
                 quote_status_notes_layout.setHintEnabled(true);
-            if (charSequence.hashCode() == quote_term_edt.getText().hashCode())
-                quote_term_layout.setHintEnabled(true);
+            if (charSequence.hashCode() == quote_term_edt.getText().hashCode()) {
+                quote_term_layout.setHintEnabled(false);
+                hint_txt_term_condition.setVisibility(View.VISIBLE);
+            }
 
         } else if (charSequence.length() <= 0) {
 
@@ -1704,8 +1758,10 @@ public class AddQuotes_Activity extends UploadDocumentActivity implements View.O
                 quote_notes_layout.setHintEnabled(false);
             if (charSequence.hashCode() == quote_status_notes_edt.getText().hashCode())
                 quote_status_notes_layout.setHintEnabled(true);
-            if (charSequence.hashCode() == quote_term_edt.getText().hashCode())
+            if (charSequence.hashCode() == quote_term_edt.getText().hashCode()) {
                 quote_term_layout.setHintEnabled(false);
+                hint_txt_term_condition.setVisibility(View.INVISIBLE);
+            }
         }
 
     }
