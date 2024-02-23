@@ -13,6 +13,8 @@
         android:background="@drawable/custom_chackbox_effect_for_jobcard"
         android:drawableRight="?android:attr/listChoiceIndicatorMultiple"
         android:text="Job.pdf"
+        style="@style/style_sec_sec"
+        android:textStyle="normal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
