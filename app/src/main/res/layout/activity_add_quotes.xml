@@ -986,7 +986,7 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="20dp"
-                android:layout_marginTop="2dp"
+                android:layout_marginTop="5dp"
                 >
 
                 <com.eot_app.utility.util_interfaces.NoDefaultSpinner
@@ -1006,9 +1006,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="0dp"
                     android:layout_alignParentStart="true"
-                    android:text="@string/term_condition"
                     android:textStyle="normal"
-                    android:visibility="visible" />
+                    android:visibility="invisible" />
                 <ImageView
                     android:id="@+id/quote_tc_suggestion_img"
                     android:layout_width="wrap_content"
@@ -1016,8 +1015,9 @@
                     android:layout_alignParentEnd="true"
                     android:layout_gravity="end"
                     android:layout_marginRight="5dp"
-                    android:src="@drawable/ic_boost"
+                    android:src="@drawable/terms_condition_icon"
                     tools:ignore="ContentDescription" />
+
             </RelativeLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -1041,6 +1041,7 @@
                     android:inputType="textMultiLine"
                     tools:ignore="Autofill,LabelFor" />
             </com.google.android.material.textfield.TextInputLayout>
+
         </LinearLayout>
     </ScrollView>
 

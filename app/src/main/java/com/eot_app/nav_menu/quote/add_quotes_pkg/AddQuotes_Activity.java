@@ -807,6 +807,8 @@ public class AddQuotes_Activity extends UploadDocumentActivity implements View.O
             }
         });
 
+
+
         action_insert_image.setOnClickListener(v -> {
             mEditor.focusEditor();
             selectFile(true);
@@ -929,9 +931,10 @@ public class AddQuotes_Activity extends UploadDocumentActivity implements View.O
                         quote_tc_suggestion_spinner.performClick();
                     }else {
                             AppUtility.alertDialog(this,
-                                    "", LanguageController.getInstance()
+                                    LanguageController.getInstance()
                                             .getMobileMsgByKey(AppConstant.term_condition)
-                                    , LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok),"", () -> null);
+                                    ,LanguageController.getInstance().getMobileMsgByKey(AppConstant.no_suggesstion),
+                                    LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok),"", () -> null);
                     }
                 break;
 
@@ -1729,8 +1732,10 @@ public class AddQuotes_Activity extends UploadDocumentActivity implements View.O
                 quote_notes_layout.setHintEnabled(true);
             if (charSequence.hashCode() == quote_status_notes_edt.getText().hashCode())
                 quote_status_notes_layout.setHintEnabled(true);
-            if (charSequence.hashCode() == quote_term_edt.getText().hashCode())
+            if (charSequence.hashCode() == quote_term_edt.getText().hashCode()) {
                 quote_term_layout.setHintEnabled(false);
+                hint_txt_term_condition.setVisibility(View.VISIBLE);
+            }
 
         } else if (charSequence.length() <= 0) {
 
@@ -1755,8 +1760,10 @@ public class AddQuotes_Activity extends UploadDocumentActivity implements View.O
                 quote_notes_layout.setHintEnabled(false);
             if (charSequence.hashCode() == quote_status_notes_edt.getText().hashCode())
                 quote_status_notes_layout.setHintEnabled(true);
-            if (charSequence.hashCode() == quote_term_edt.getText().hashCode())
+            if (charSequence.hashCode() == quote_term_edt.getText().hashCode()) {
                 quote_term_layout.setHintEnabled(false);
+                hint_txt_term_condition.setVisibility(View.INVISIBLE);
+            }
         }
 
     }
