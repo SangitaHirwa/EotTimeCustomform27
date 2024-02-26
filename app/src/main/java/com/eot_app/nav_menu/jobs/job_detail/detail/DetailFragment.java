@@ -470,7 +470,7 @@ public class DetailFragment extends Fragment
                 //After discussion with Ayush sir, Add new condition for check signature of customer (27/Sep/2023)
 
                 if(App_preference.getSharedprefInstance().getLoginRes().getIsJobCompCustSignEnable().equals("1")) {
-                    if (statusArray[i].equals(LanguageController.getInstance().getMobileMsgByKey(AppConstant.completed))) {
+                    if (statusArray[i].equalsIgnoreCase(LanguageController.getInstance().getMobileMsgByKey(AppConstant.completed))) {
                         if (mParam2.getSignature() == null || mParam2.getSignature().equals("")) {
                             showErrorDialog(LanguageController.getInstance().getMobileMsgByKey(AppConstant.signature_alert));
                         }else {
@@ -529,7 +529,7 @@ public class DetailFragment extends Fragment
     private void checkForIsLeader(int statusArrayForId ){
         String[] kprArr = mParam2.getKpr().split(",");
         if (kprArr.length > 1) {
-        if(statusArray[statusArrayForId].equals(LanguageController.getInstance().getMobileMsgByKey(AppConstant.completed))) {
+        if(statusArray[statusArrayForId].equalsIgnoreCase(LanguageController.getInstance().getMobileMsgByKey(AppConstant.completed))) {
             if (mParam2.getIsLeader().equals(App_preference.getSharedprefInstance().getLoginRes().getUsrId())) {
                     if(App_preference.getSharedprefInstance().getLoginRes().getCompPermission().get(0).getIsLeaderChgAllUsrStatusOnJb().equals("0")) {
                         AppUtility.alertDialog2(getActivity(), LanguageController.getInstance()
@@ -2454,7 +2454,7 @@ public void setCompletionDetail(){
                 stopRecurpattern();
                 break;
             case R.id.btn_add_signature:
-                ((JobDetailActivity) requireActivity()).openCustomSignatureDialog();
+                ((JobDetailActivity) requireActivity()).openCustomSignatureDialog(jobstatus.getStatus_no());
                 break;
             case R.id.customfiled_btn:
                 Intent intent1 = new Intent(getActivity(), CustomFiledListActivity.class);
@@ -2934,8 +2934,8 @@ public void setCompletionDetail(){
             try {
                 HyperLog.i("", "Resume states found");
                 if(jobstatus.getId().equals("9")) {
-                for (int i=0; i<=statusArray.length; i++){
-                    if(statusArray[i].equals(LanguageController.getInstance().getMobileMsgByKey(AppConstant.completed))){
+                for (int i=0; i<=statusArray.length-1; i++){
+                    if(statusArray[i].equalsIgnoreCase(LanguageController.getInstance().getMobileMsgByKey(AppConstant.completed))){
                         checkForIsLeader(i);
                         break;
                     }
