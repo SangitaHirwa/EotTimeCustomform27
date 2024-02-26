@@ -196,7 +196,7 @@ public class AddQuotes_Activity extends UploadDocumentActivity implements View.O
             isUpdate = true;
             setDefaultValuesOfQuoteS(quotesDetails);//set view for update Quotes
             add_quote_pi.getJobServices();
-
+            add_quote_pi.getTermsConditions(true);
         } else if (getIntent().hasExtra("appointmentId")) {
             HyperLog.i("", "EditQuotes from appointment details");
 
@@ -688,6 +688,7 @@ public class AddQuotes_Activity extends UploadDocumentActivity implements View.O
     }
 
 
+    @SuppressLint("ClickableViewAccessibility")
     private void initializeView() {
         //   quote_title_spinner = findViewById(R.id.quote_title_spinner);
 
@@ -791,11 +792,15 @@ public class AddQuotes_Activity extends UploadDocumentActivity implements View.O
         });
 
         mEditor.setBackgroundColor(Color.TRANSPARENT);
-        mEditor.focusEditor();
-
+//        mEditor.focusEditor();
+         mEditor.setOnTouchListener((v, event) -> {
+             mEditor.focusEditor();
+             quotesdeshint.setVisibility(View.VISIBLE);
+             return false;
+         });
         mEditor.setOnFocusChangeListener((v, hasFocus) -> {
             if (hasFocus) {
-                quotesdeshint.setVisibility(View.VISIBLE);
+                quotesdeshint.setVisibility(View.INVISIBLE);
             } else {
                 if (mEditor.getHtml() != null) {
                     if (mEditor.getHtml().length() != 0) {
@@ -811,6 +816,7 @@ public class AddQuotes_Activity extends UploadDocumentActivity implements View.O
 
         action_insert_image.setOnClickListener(v -> {
             mEditor.focusEditor();
+            quotesdeshint.setVisibility(View.VISIBLE);
             selectFile(true);
         });
 
@@ -933,7 +939,7 @@ public class AddQuotes_Activity extends UploadDocumentActivity implements View.O
                             AppUtility.alertDialog(this,
                                     LanguageController.getInstance()
                                             .getMobileMsgByKey(AppConstant.term_condition)
-                                    ,LanguageController.getInstance().getMobileMsgByKey(AppConstant.no_suggesstion),
+                                    ,LanguageController.getInstance().getMobileMsgByKey(AppConstant.no_term_condition),
                                     LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok),"", () -> null);
                     }
                 break;
