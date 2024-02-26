@@ -1,5 +1,6 @@
 package com.eot_app.nav_menu.drag_and_drop_functinality;
 
+import android.annotation.SuppressLint;
 import android.content.ClipData;
 import android.content.ClipDescription;
 import android.content.Context;
@@ -25,8 +26,10 @@ public class Drop_Item_Adapter extends RecyclerView.Adapter<Drop_Item_ViewHolder
     Context context;
     List<String> list1=new ArrayList<>();
 
-    public Drop_Item_Adapter(Context context) {
+    public Drop_Item_Adapter(Context context,List<String> list ) {
         this.context = context;
+        this.list1 = list;
+
     }
 
     @NonNull
@@ -44,7 +47,7 @@ public class Drop_Item_Adapter extends RecyclerView.Adapter<Drop_Item_ViewHolder
         holder.linearLayoutItemList.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                    ClipData.Item item = new ClipData.Item("image1");
+                    ClipData.Item item = new ClipData.Item(String.valueOf(position));
                     ClipData dragData = new ClipData("dragData", new String[]{ClipDescription.MIMETYPE_TEXT_PLAIN}, item);
                     View.DragShadowBuilder myShadow = new View.DragShadowBuilder(v);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -61,8 +64,10 @@ public class Drop_Item_Adapter extends RecyclerView.Adapter<Drop_Item_ViewHolder
         return list1.size();
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     public void setList(List<String> list){
         this.list1=list;
+        notifyDataSetChanged();
     }
 }
 class Drop_Item_ViewHolder extends RecyclerView.ViewHolder{

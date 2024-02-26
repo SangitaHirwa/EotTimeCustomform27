@@ -23,7 +23,8 @@ import com.eot_app.eoteditor.Utils;
 import com.eot_app.nav_menu.jobs.job_card_view.JobCardViewActivity;
 import com.eot_app.nav_menu.jobs.job_detail.documents.ActivityDocumentSaveUpload;
 import com.eot_app.nav_menu.jobs.job_detail.documents.PathUtils;
-import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.GetFileList_Res;
+import com.eot_app.nav_menu.audit.audit_list.documents.doc_model.GetFileList_Res;
+import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.Attachments;
 import com.eot_app.nav_menu.jobs.job_detail.documents.fileattach_mvp.Doc_Attch_View;
 import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.AppUtility;
@@ -77,7 +78,7 @@ public class Take_Picture_For_Drag_Drop extends AppCompatActivity implements Vie
                 this.finish();
                 break;
             case R.id.tv_take_picture:
-                selectFile();
+              selectFiles();
                 break;
             case R.id.tv_drop_on_map:
                 sendImageForMap();
@@ -103,79 +104,7 @@ public class Take_Picture_For_Drag_Drop extends AppCompatActivity implements Vie
         }
     }
 
-    @Override
-    public void selectFile() {
-        if (!Utils.isOnline(Take_Picture_For_Drag_Drop.this)) {
 
-            AppUtility.alertDialog(Take_Picture_For_Drag_Drop.this, LanguageController.getInstance().getMobileMsgByKey(AppConstant.dialog_error_title),  LanguageController.getInstance().getMobileMsgByKey(AppConstant.feature_not_available), LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), "", new Callable<Boolean>() {
-                @Override
-                public Boolean call() throws Exception {
-                    return null;
-                }
-            });
-        } else {
-            final BottomSheetDialog dialog = new BottomSheetDialog(Take_Picture_For_Drag_Drop.this);
-            dialog.setContentView(R.layout.bottom_image_chooser);
-            TextView camera = dialog.findViewById(R.id.camera);
-            camera.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.camera));
-            TextView gallery = dialog.findViewById(R.id.gallery);
-            gallery.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.gallery));
-            TextView drive_document = dialog.findViewById(R.id.drive_document);
-            drive_document.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.document));
-            camera.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (AppUtility.askCameraTakePicture(Take_Picture_For_Drag_Drop.this)) {
-                        takePictureFromCamera();
-                    }else {
-                        // Sdk version 33
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU ) {
-                            askTedPermission(0, AppConstant.cameraPermissions33);
-                        }else {
-                            askTedPermission(0, AppConstant.cameraPermissions);
-                        }
-                    }
-                    dialog.dismiss();
-                }
-            });
-
-            gallery.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (AppUtility.askGalaryTakeImagePermiSsion(Take_Picture_For_Drag_Drop.this)) {
-                        getImageFromGallray();
-                    }else {
-                        // Sdk version 33
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU ) {
-                            askTedPermission(1, AppConstant.galleryPermissions33);
-                        }else {
-                            askTedPermission(1, AppConstant.galleryPermissions);
-                        }
-                    }
-                    dialog.dismiss();
-                }
-            });
-
-            drive_document.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (AppUtility.askGalaryTakeImagePermiSsion(Take_Picture_For_Drag_Drop.this)) {
-                        takeimageFromGalary();//only for drive documents
-                    }else {
-                        // Sdk version 33
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU ) {
-                            askTedPermission(2, AppConstant.galleryPermissions33);
-                        }else {
-                            askTedPermission(2, AppConstant.galleryPermissions);
-                        }
-                    }
-                    dialog.dismiss();
-                }
-            });
-            dialog.show();
-        }
-
-    }
     private void takePictureFromCamera() {
 
         if (!AppUtility.askCameraTakePicture(Take_Picture_For_Drag_Drop.this)) {
@@ -413,13 +342,101 @@ public class Take_Picture_For_Drag_Drop extends AppCompatActivity implements Vie
 
 
     }
+
+
     @Override
-    public void setList(ArrayList<GetFileList_Res> getFileList_res, String isAttachCompletionNotes, boolean firstCall) {
+    public void selectFiles()
+        {
+            if (!Utils.isOnline(Take_Picture_For_Drag_Drop.this)) {
+
+                AppUtility.alertDialog(Take_Picture_For_Drag_Drop.this, LanguageController.getInstance().getMobileMsgByKey(AppConstant.dialog_error_title),  LanguageController.getInstance().getMobileMsgByKey(AppConstant.feature_not_available), LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), "", new Callable<Boolean>() {
+                    @Override
+                    public Boolean call() throws Exception {
+                        return null;
+                    }
+                });
+            } else {
+                final BottomSheetDialog dialog = new BottomSheetDialog(Take_Picture_For_Drag_Drop.this);
+                dialog.setContentView(R.layout.bottom_image_chooser);
+                TextView camera = dialog.findViewById(R.id.camera);
+                camera.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.camera));
+                TextView gallery = dialog.findViewById(R.id.gallery);
+                gallery.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.gallery));
+                TextView drive_document = dialog.findViewById(R.id.drive_document);
+                drive_document.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.document));
+                camera.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (AppUtility.askCameraTakePicture(Take_Picture_For_Drag_Drop.this)) {
+                            takePictureFromCamera();
+                        }else {
+                            // Sdk version 33
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU ) {
+                                askTedPermission(0, AppConstant.cameraPermissions33);
+                            }else {
+                                askTedPermission(0, AppConstant.cameraPermissions);
+                            }
+                        }
+                        dialog.dismiss();
+                    }
+                });
+
+                gallery.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (AppUtility.askGalaryTakeImagePermiSsion(Take_Picture_For_Drag_Drop.this)) {
+                            getImageFromGallray();
+                        }else {
+                            // Sdk version 33
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU ) {
+                                askTedPermission(1, AppConstant.galleryPermissions33);
+                            }else {
+                                askTedPermission(1, AppConstant.galleryPermissions);
+                            }
+                        }
+                        dialog.dismiss();
+                    }
+                });
+
+                drive_document.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (AppUtility.askGalaryTakeImagePermiSsion(Take_Picture_For_Drag_Drop.this)) {
+                            takeimageFromGalary();//only for drive documents
+                        }else {
+                            // Sdk version 33
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU ) {
+                                askTedPermission(2, AppConstant.galleryPermissions33);
+                            }else {
+                                askTedPermission(2, AppConstant.galleryPermissions);
+                            }
+                        }
+                        dialog.dismiss();
+                    }
+                });
+                dialog.show();
+            }
+
 
     }
 
     @Override
-    public void addNewItemToAttachmentList(ArrayList<GetFileList_Res> getFileList_res, String isAttachCompletionNotes) {
+    public void selectFilesForCompletion(boolean isCompletion) {
+
+    }
+
+    @Override
+    public void setList(ArrayList<Attachments> getFileList_res, String isAttachCompletionNotes, boolean firstCall) {
+
+    }
+
+    @Override
+    public void setMultiList(ArrayList<Attachments> getFileList_res, String isAttachCompletionNotes, boolean firstCall, int parentPosition, int position, String queId, String jtId) {
+
+    }
+
+    @Override
+    public void addNewItemToAttachmentList(ArrayList<Attachments> getFileList_res, String isAttachCompletionNotes) {
 
     }
 

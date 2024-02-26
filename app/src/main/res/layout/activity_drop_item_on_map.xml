@@ -107,12 +107,21 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView12">
 
-        <ScrollView
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fillViewport="true"
             android:layout_gravity="center">
-            <FrameLayout
+            <HorizontalScrollView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent">
+
+            <LinearLayout
+                android:id="@+id/framLayout_Container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+         <!--   <FrameLayout
                 android:id="@+id/framLayout_Container"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -122,28 +131,33 @@
                 app:layout_constraintBottom_toTopOf="@+id/map_save_btn"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/imageView12">
+                app:layout_constraintTop_toBottomOf="@+id/imageView12">-->
 
-            <ImageView
-                android:id="@+id/imageForDropItem"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="centerCrop"
-                android:elevation="10dp"
-                android:clickable="true"
-                app:srcCompat="@drawable/picture" />
-            </FrameLayout>
-        </ScrollView>
+                <ImageView
+                    android:id="@+id/imageForDropItem"
+                    android:layout_width="900dp"
+                    android:layout_height="900dp"
+                    android:adjustViewBounds="true"
+                    android:clickable="true"
+                    android:elevation="10dp"
+                    android:focusable="true"
+                    android:scaleType="fitCenter"
+                    app:srcCompat="@drawable/picture" />
+            </LinearLayout>
+            </HorizontalScrollView>
+           <!-- </FrameLayout>-->
+        </androidx.core.widget.NestedScrollView>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_itemList"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:layout_height="match_parent"
             android:layout_gravity="end"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             android:visibility="gone"
             android:elevation="10dp"
-            android:layout_marginRight="40dp"
+
            />
     </FrameLayout>
 
