@@ -96,57 +96,45 @@
         app:srcCompat="@drawable/assign_icon" />
 
     <FrameLayout
-        android:id="@+id/mapimageLayout"
-        android:layout_width="0dp"
+        android:id="@+id/framLayout_Container"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="5dp"
         android:layout_marginEnd="8dp"
+        android:elevation="10dp"
         app:layout_constraintBottom_toTopOf="@+id/map_save_btn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView12">
-
-        <androidx.core.widget.NestedScrollView
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fillViewport="true"
-            android:layout_gravity="center">
+            android:layout_height="match_parent">
 
-            <FrameLayout
-                android:id="@+id/framLayout_Container"
-                android:layout_width="match_parent"
-                android:layout_gravity="center"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-         <!--   <FrameLayout
-                android:id="@+id/framLayout_Container"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginEnd="8dp"
-                app:layout_constraintBottom_toTopOf="@+id/map_save_btn"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/imageView12">-->
+            <HorizontalScrollView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
 
-                <com.github.chrisbanes.photoview.PhotoView
-                    android:id="@+id/imageForDropItem"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:adjustViewBounds="true"
-                    android:layout_gravity="center"
-                    android:clickable="true"
-                    android:elevation="10dp"
-                    android:focusable="true"
-                    android:scaleType="fitCenter"
-                    app:srcCompat="@drawable/picture" />
-            </FrameLayout>
+                <RelativeLayout
+                    android:id="@+id/framLayout_Container1"
+                    android:layout_width="800dp"
+                    android:layout_height="800dp">
 
-           <!-- </FrameLayout>-->
-        </androidx.core.widget.NestedScrollView>
+                    <ImageView
+                        android:id="@+id/imageForDropItem"
+                        android:layout_width="800dp"
+                        android:layout_height="800dp"
+                        android:clickable="true"
+                        android:elevation="10dp"
+                        android:focusable="true"
+                        android:scaleType="fitXY"
+                        app:srcCompat="@drawable/picture" />
 
+                </RelativeLayout>
+
+            </HorizontalScrollView>
+
+        </ScrollView>
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_itemList"
             android:layout_width="wrap_content"
@@ -154,22 +142,22 @@
             android:layout_height="match_parent"
             android:layout_gravity="end"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            android:visibility="gone"
+            android:visibility="visible"
             android:elevation="10dp"
 
-           />
-    </FrameLayout>
+            />
+             </FrameLayout>
 
-    <Button
-        android:id="@+id/map_save_btn"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="46dp"
-        android:text="Button"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
+     <Button
+         android:id="@+id/map_save_btn"
+         android:layout_width="0dp"
+         android:layout_height="wrap_content"
+         android:layout_marginStart="8dp"
+         android:layout_marginTop="46dp"
+         android:text="Button"
+         app:layout_constraintEnd_toEndOf="parent"
+         app:layout_constraintStart_toStartOf="parent"
+         app:layout_constraintBottom_toBottomOf="parent" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
-</layout>
+ </androidx.constraintlayout.widget.ConstraintLayout>
+ </layout>

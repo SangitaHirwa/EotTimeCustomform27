@@ -25,12 +25,14 @@ import java.util.List;
 
 public class Drop_Item_Adapter extends RecyclerView.Adapter<Drop_Item_ViewHolder> {
     Context context;
-    List<String> list1=new ArrayList<>();
-
-    public Drop_Item_Adapter(Context context,List<String> list ) {
+    List<MapItemModel> list1 = new ArrayList<>();
+     RemoveItem removeItem;
+    @SuppressLint("NotifyDataSetChanged")
+    public Drop_Item_Adapter(Context context, List<MapItemModel> list, RemoveItem removeItem1) {
         this.context = context;
         this.list1 = list;
-
+        removeItem =  removeItem1;
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -42,13 +44,14 @@ public class Drop_Item_Adapter extends RecyclerView.Adapter<Drop_Item_ViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull Drop_Item_ViewHolder holder, int position) {
-        String itemString = list1.get(position);
-        holder.item.setText(itemString);
-        holder.equipment.setText(itemString);
+        MapItemModel itemModel = list1.get(position);
+        holder.item.setText(itemModel.getName());
+        holder.equipment.setText(itemModel.getName());
 
         holder.linearLayoutItemList.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
+                    removeItem.removeSelectedEqu(itemModel);
                     ClipData.Item item = new ClipData.Item(""+position);
                     ClipData dragData = new ClipData("dragData", new String[]{ClipDescription.MIMETYPE_TEXT_PLAIN}, item);
                     View.DragShadowBuilder myShadow = new View.DragShadowBuilder(v);
@@ -60,6 +63,10 @@ public class Drop_Item_Adapter extends RecyclerView.Adapter<Drop_Item_ViewHolder
             }
 
         });
+
+
+
+
     }
 
 
@@ -69,9 +76,12 @@ public class Drop_Item_Adapter extends RecyclerView.Adapter<Drop_Item_ViewHolder
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    public void setList(List<String> list){
+    public void setList(List<MapItemModel> list){
         this.list1=list;
         notifyDataSetChanged();
+    }
+    public interface RemoveItem{
+        void removeSelectedEqu(MapItemModel itemModel);
     }
 }
 class Drop_Item_ViewHolder extends RecyclerView.ViewHolder{
@@ -79,12 +89,13 @@ class Drop_Item_ViewHolder extends RecyclerView.ViewHolder{
       RelativeLayout relativeLayout;
       TextView item,equipment;
       CardView cardView;
-      ImageView cross;
+      ImageView cross,itemremove;
     public Drop_Item_ViewHolder(@NonNull View itemView) {
         super(itemView);
         linearLayoutItemList =itemView.findViewById(R.id.linear_layout_itemList);
         item = itemView.findViewById(R.id.tv_item);
         equipment = itemView.findViewById(R.id.tv_droped_item);
         cardView= itemView.findViewById(R.id.card_layout_dragdrop);
+       itemremove = itemView.findViewById(R.id.equipment_close_icon);
     }
 }
