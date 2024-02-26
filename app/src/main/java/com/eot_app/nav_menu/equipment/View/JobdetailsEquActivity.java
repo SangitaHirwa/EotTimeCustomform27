@@ -45,6 +45,7 @@ import com.eot_app.nav_menu.equipment.View.Job_Equipment_MVP.Job_EquipmentPC;
 import com.eot_app.nav_menu.equipment.View.Job_Equipment_MVP.Job_Equipment_PI;
 import com.eot_app.nav_menu.equipment.View.Job_Equipment_MVP.Job_Equipment_View;
 import com.eot_app.nav_menu.equipment.model.Keeper;
+import com.eot_app.nav_menu.jobs.add_job.add_job_recr.RecurReqResModel;
 import com.eot_app.nav_menu.jobs.job_db.EquArrayModel;
 import com.eot_app.nav_menu.jobs.job_db.Job;
 import com.eot_app.nav_menu.jobs.job_db.JtId;
@@ -52,7 +53,7 @@ import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.model.InvoiceItem
 import com.eot_app.nav_menu.jobs.job_detail.detail.jobdetial_model.CompletionDetails;
 import com.eot_app.nav_menu.jobs.job_detail.detail.jobdetial_model.JobStatusModelNew;
 import com.eot_app.nav_menu.jobs.job_detail.documents.DocumentListAdapter;
-import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.GetFileList_Res;
+import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.Attachments;
 import com.eot_app.nav_menu.jobs.job_detail.form_form.get_qus_list.qus_model.AnswerModel;
 import com.eot_app.nav_menu.jobs.job_detail.job_status_pkg.JobStatus_Controller;
 import com.eot_app.utility.AppConstant;
@@ -85,7 +86,7 @@ public class JobdetailsEquActivity extends AppCompatActivity implements
     TextView custom_filed_txt, tv_item_list,tv_attachment_list;
     private CardView customField_view;
     private LinearLayout ll_custom_views;
-    ArrayList<GetFileList_Res> fileList_res = new ArrayList<>();
+    ArrayList<Attachments> fileList_res = new ArrayList<>();
     DocumentListAdapter documentListAdapter;
 
     private Job_Equipment_PI jobDetail_pi;
@@ -220,7 +221,7 @@ public class JobdetailsEquActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void setList(ArrayList<GetFileList_Res> getFileList_res, String isAttachCompletionNotes) {
+    public void setList(ArrayList<Attachments> getFileList_res, String isAttachCompletionNotes) {
         this.fileList_res = getFileList_res;
         documentListAdapter = new DocumentListAdapter(this, getFileList_res, job.getJobId(),true);
         recyclerView_job_attachment.setAdapter(documentListAdapter);
@@ -231,6 +232,15 @@ public class JobdetailsEquActivity extends AppCompatActivity implements
         }
     }
 
+    @Override
+    public void setRecurData(RecurReqResModel recurData) {
+
+    }
+
+    @Override
+    public void notDataFoundInRecureData(String msg) {
+
+    }
 
 
     public void setDataToView(Job job) {
@@ -777,7 +787,11 @@ public class JobdetailsEquActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void OnItemClick_Document(GetFileList_Res getFileList_res) {
-        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(App_preference.getSharedprefInstance().getBaseURL() + "" + getFileList_res.getAttachFileName())));
+    public void OnItemClick_Document(Attachments attachments) {
+        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(App_preference.getSharedprefInstance().getBaseURL() + "" + attachments.getAttachFileName())));
+    }
+    @Override
+    public void setOfflineData() {
+
     }
 }

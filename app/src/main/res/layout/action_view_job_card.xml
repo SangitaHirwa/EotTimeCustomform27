@@ -6,7 +6,6 @@
         android:layout_height="match_parent"
         android:orientation="horizontal">
 
-
         <Button
             android:textColor="@color/colorPrimary"
             android:id="@+id/btnCustomAction"

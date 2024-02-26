@@ -44,6 +44,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatCheckBox;
 import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -62,12 +63,16 @@ import com.eot_app.login_next.login_next_model.CompPermission;
 import com.eot_app.nav_menu.client.clientlist.client_detail.site.sitelist.editsite.editsitedb.SpinnerCountrySite;
 import com.eot_app.nav_menu.custom_fileds.CustomFiledListActivity;
 import com.eot_app.nav_menu.custom_fileds.custom_model.CustOmFormQuestionsRes;
+import com.eot_app.nav_menu.jobs.add_job.add_job_recr.RecurReqResModel;
 import com.eot_app.nav_menu.jobs.job_complation.DocDeleteNotfy;
 import com.eot_app.nav_menu.jobs.job_complation.JobCompletionActivity;
 import com.eot_app.nav_menu.jobs.job_complation.JobCompletionAdpter;
+import com.eot_app.nav_menu.jobs.job_complation.compla_model.NotifyForcompletionInDetail;
 import com.eot_app.nav_menu.jobs.job_db.EquArrayModel;
+import com.eot_app.nav_menu.jobs.job_db.IsMarkDoneWithJtid;
 import com.eot_app.nav_menu.jobs.job_db.Job;
 import com.eot_app.nav_menu.jobs.job_db.JtId;
+import com.eot_app.nav_menu.jobs.job_db.OfflieCompleQueAns;
 import com.eot_app.nav_menu.jobs.job_detail.JobDetailActivity;
 import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.model.InvoiceItemDataModel;
 import com.eot_app.nav_menu.jobs.job_detail.customform.CustomFormCompletionCallBack;
@@ -77,8 +82,10 @@ import com.eot_app.nav_menu.jobs.job_detail.detail.job_detail_presenter.JobDetai
 import com.eot_app.nav_menu.jobs.job_detail.detail.job_detail_view.JobDetail_view;
 import com.eot_app.nav_menu.jobs.job_detail.detail.jobdetial_model.CompletionDetails;
 import com.eot_app.nav_menu.jobs.job_detail.detail.jobdetial_model.JobStatusModelNew;
-import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.GetFileList_Res;
+import com.eot_app.nav_menu.jobs.job_detail.detail.jobdetial_model.ServiceMarkDoneAdapter;
+import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.Attachments;
 import com.eot_app.nav_menu.jobs.job_detail.form_form.get_qus_list.qus_model.AnswerModel;
+import com.eot_app.nav_menu.jobs.job_detail.form_form.get_qus_list.qus_model.QuesRspncModel;
 import com.eot_app.nav_menu.jobs.job_detail.invoice2list.InvoiceItemList2Adpter;
 import com.eot_app.nav_menu.jobs.job_detail.invoice2list.JoBInvoiceItemList2Activity;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.JobDetailEquipmentAdapter;
@@ -118,15 +125,16 @@ import java.io.InputStream;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.Callable;
 
 public class DetailFragment extends Fragment
@@ -140,7 +148,7 @@ public class DetailFragment extends Fragment
         OnMapReadyCallback,
         JobCompletionAdpter.FileDesc_Item_Selected, EotApp.NotifyForEquipmentStatusList,
         NotifyForEquipmentCount
-        , NotifyForAttchCount, DocDeleteNotfy {
+        , NotifyForAttchCount, DocDeleteNotfy, NotifyForcompletionInDetail {
 
     public static final int MY_PERMISSIONS_REQUEST_CALL_PHONE = 1234;
     public static final int CUSTOMFILED = 222;
@@ -159,20 +167,21 @@ public class DetailFragment extends Fragment
     String[] statusArray = new String[arraystatus.size()];
     String[] statusArrayForIds = new String[arraystatusvalue.size()];
     CustomLinearLayoutManager customLayoutManager;
+    GridLayoutManager gridLayoutManager;
     FrameLayout frameView;
     TextView person_name, textViewJobCode, textViewTime, textViewPriority,
             textViewJobStatus, textViewAddress, textViewPONumber, textViewDescription,
             textViewContactperson, textViewTitle,
             textViewInstruction, txtViewHeader, textViewTags, txt_fw_nm_list,
             tv_description, tv_instruction, complation_txt, item_txt, eq_txt,
-            complation_notes, tv_tag, fw_Nm_List;
+            complation_notes, tv_tag, fw_Nm_List, txt_serviceHeader, txt_notesHeader;
     String mParam1;
     RelativeLayout map_layout;
     TextView custom_filed_txt, btnStopRecurView, btnComplationView,
              btn_add_item, btn_add_eq, recur_txt, txt_recur_msg, contact_name_lable, schdule_details_txt, job_status_lable;
     TextView customfiled_btn, signature_pad, btn_add_signature, quotes_details_txt, quotes_details_number_txt, quotes_details_number;
     String strAddress = "";
-    RecyclerView recyclerView;
+    RecyclerView recyclerView, rv_mark_done;
     InvoiceItemList2Adpter invoice_list_adpter;
     TextView text_misc;
     View ll_item, ll_equipment;
@@ -187,7 +196,7 @@ public class DetailFragment extends Fragment
     TextView tvTravelJobTime, tvActualJobTime, btnActualEdit, btnTravelEdit;
     ImageView ivEditAc;
     RelativeLayout ll_actual_date_time, ll_travel_date_time;
-    LinearLayout ll_completion_detail;
+    LinearLayout ll_completion_detail, liner_layout_for_recurmsg, recurMsgShow, recurMsgHide;
     RelativeLayout rl_Collapse1, rl_Collapse2;
     String firstTrvlBrkTime, lastTrvlBrkTime;
     String firstBrkTime, lastBrkTime;
@@ -220,17 +229,31 @@ public class DetailFragment extends Fragment
     // job actual and travel time
     private ChipGroup chipGroup;
     private CardView ll_po_number;
-    private CompletionAdpterJobDteails jobCompletionAdpter;
+    private CompletionAdpterJobDteails1 jobCompletionAdpter;
     private JobDetailEquipmentAdapter adapter;
     private TextView site_name;
     private String isMailSentToClt = "1";
+    private String isKprChgStatusFalse = "0";
+    private String isKprChgStatusTrue = "1";
+    private String multipleKpr ="2";
+    private String singelKpr = "";
     boolean accept=true,reject=true,travel=true,onhold=true,brack=true;
     String getDisCalculationType, getTaxCalculationType;
     GoogleMap mMap;
-
+   ConstraintLayout progressBar_cyclic;
+    ArrayList<QuesRspncModel> complQuestionList;
+    List<Attachments> attachmentsList;
+    Set<IsMarkDoneWithJtid> isMarkDoneWithJtidsList = new HashSet<>();
+    private  static DetailFragment instanse;
+    ConstraintLayout cl_serviceMarkAsDone, cl_pbCompletion;
+    ServiceMarkDoneAdapter serviceMarkDoneAdapter;
+    boolean isAskForCompleteJob = false;
 
     public DetailFragment() {
         // Required empty public constructor
+    }
+    public static DetailFragment getInstance() {
+        return instanse;
     }
 
     public static DetailFragment newInstance(String param1, String param3) {
@@ -253,7 +276,7 @@ public class DetailFragment extends Fragment
 
 
     @Override
-    public void OnItemClick_Document(GetFileList_Res getFileList_res) {
+    public void OnItemClick_Document(Attachments getFileList_res) {
         startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(App_preference.getSharedprefInstance().getBaseURL() + "" + getFileList_res.getAttachFileName())));
     }
 
@@ -268,6 +291,7 @@ public class DetailFragment extends Fragment
         if (jobDetail_pi != null) {
             jobDetail_pi.getAttachFileList(mParam2.getJobId(), App_preference.getSharedprefInstance().getLoginRes().getUsrId()
                     , "6");
+            jobDetail_pi.loadFromServer(mParam2.getJobId());
         }
     }
 
@@ -343,7 +367,7 @@ public class DetailFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-
+        instanse = this;
         layout = inflater.inflate(R.layout.fragment_detail2, container, false);
 
 
@@ -402,9 +426,9 @@ public class DetailFragment extends Fragment
 
         if (mParam2.getJobId()!=null&&!mParam2.getJobId().isEmpty())
         {
-            if(mParam2.getCanInvoiceCreated().equals("1")) {
-                    getDisCalculationType = AppDataBase.getInMemoryDatabase(getActivity()).jobModel().disCalculationType(mParam2.getJobId());
-                    getTaxCalculationType = AppDataBase.getInMemoryDatabase(getActivity()).jobModel().taxCalculationType(mParam2.getJobId());
+            if(mParam2.getCanInvoiceCreated()!=null && mParam2.getCanInvoiceCreated().equals("1")) {
+                    getDisCalculationType = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().disCalculationType(mParam2.getJobId());
+                    getTaxCalculationType = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().taxCalculationType(mParam2.getJobId());
                 }
                 else{
                 getDisCalculationType= App_preference.getSharedprefInstance().getLoginRes().getDisCalculationType();
@@ -451,14 +475,18 @@ public class DetailFragment extends Fragment
                         if (mParam2.getSignature() == null || mParam2.getSignature().equals("")) {
                             showErrorDialog(LanguageController.getInstance().getMobileMsgByKey(AppConstant.signature_alert));
                         }else {
-                            changeStatus(i);
+                            checkForIsLeader(i);
+//                            changeStatus(i);
                         }
                     }else {
-                        changeStatus(i);
+                        checkForIsLeader(i);
+//                        changeStatus(i);
                     }
                 }
                 else{
-                    changeStatus(i);
+                    checkForIsLeader(i);
+//                    changeStatus(i);
+
 //                    JobStatusModelNew statusModel = JobStatus_Controller.getInstance().getStatusObjectById(statusArrayForIds[i]);
 //                    if (statusModel != null) {
 //                        HyperLog.i(TAG, "Selected status:" + statusModel.getStatus_name());
@@ -499,8 +527,42 @@ public class DetailFragment extends Fragment
 
         return layout;
     }
+    private void checkForIsLeader(int statusArrayForId ){
+        String[] kprArr = mParam2.getKpr().split(",");
+        if (kprArr.length > 1) {
+        if(statusArray[statusArrayForId].equals(LanguageController.getInstance().getMobileMsgByKey(AppConstant.completed))) {
+            if (mParam2.getIsLeader().equals(App_preference.getSharedprefInstance().getLoginRes().getUsrId())) {
+                    if(App_preference.getSharedprefInstance().getLoginRes().getCompPermission().get(0).getIsLeaderChgAllUsrStatusOnJb().equals("0")) {
+                        AppUtility.alertDialog2(getActivity(), LanguageController.getInstance()
+                                        .getMobileMsgByKey(AppConstant.status_dialog),
+                                LanguageController.getInstance().getMobileMsgByKey(AppConstant.leader_change_completed_status_all_members),
+                                LanguageController.getInstance().getMobileMsgByKey(AppConstant.yes),
+                                LanguageController.getInstance().getMobileMsgByKey(AppConstant.no), new Callback_AlertDialog() {
+                                    @Override
+                                    public void onPossitiveCall() {
+                                        changeStatus(statusArrayForId, isKprChgStatusTrue,multipleKpr);
+                                    }
 
-    private void changeStatus(int i){
+                                    @Override
+                                    public void onNegativeCall() {
+                                        changeStatus(statusArrayForId,isKprChgStatusFalse,multipleKpr);
+                                    }
+                                });
+                    }else{
+                        changeStatus(statusArrayForId, isKprChgStatusFalse,multipleKpr);
+                    }
+            } else {
+                changeStatus(statusArrayForId, isKprChgStatusFalse,multipleKpr);
+            }
+        }else{
+            changeStatus(statusArrayForId, isKprChgStatusFalse,multipleKpr);
+        }
+        }else {
+            changeStatus(statusArrayForId, isKprChgStatusFalse,singelKpr);
+        }
+
+    }
+    private void changeStatus(int i, String completeFor, String jobType){
         JobStatusModelNew statusModel = JobStatus_Controller.getInstance().getStatusObjectById(statusArrayForIds[i]);
         if (statusModel != null) {
             HyperLog.i(TAG, "Selected status:" + statusModel.getStatus_name());
@@ -520,7 +582,7 @@ public class DetailFragment extends Fragment
                         @Override
                         public void onPossitiveCall() {
                             HyperLog.i(TAG, "Request change status start");
-                            ((JobDetailActivity) requireActivity()).openFormForEvent(jobstatus.getStatus_no());
+                            ((JobDetailActivity) requireActivity()).openFormForEvent(jobstatus.getStatus_no(),completeFor,jobType);
                         }
 
                         @Override
@@ -650,8 +712,14 @@ public class DetailFragment extends Fragment
 
         complation_txt = layout.findViewById(R.id.complation_txt);
         complation_notes = layout.findViewById(R.id.complation_notes);
-        complation_txt.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.completion_note));
+        txt_notesHeader = layout.findViewById(R.id.txt_notesHeader);
+        txt_notesHeader.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.notes));
+        complation_txt.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.completion_details));
         btnComplationView = layout.findViewById(R.id.btnComplationView);
+        cl_pbCompletion = layout.findViewById(R.id.cl_pbCompletion);
+        rv_mark_done = layout.findViewById(R.id.rv_mark_done);
+        txt_serviceHeader = layout.findViewById(R.id.txt_serviceHeader);
+        cl_serviceMarkAsDone = layout.findViewById(R.id.cl_serviceMarkAsDone);
 
 
         item_txt = layout.findViewById(R.id.item_txt);
@@ -683,9 +751,15 @@ public class DetailFragment extends Fragment
         equi_flag = layout.findViewById(R.id.equi_flag);
 
         recur_parent_view = layout.findViewById(R.id.recur_parent_view);
+        recurMsgShow = layout.findViewById(R.id.liner_layout_for_recurmsg_show);
+        recurMsgHide = layout.findViewById(R.id.liner_layout_for_recurmsg_hide);
+        progressBar_cyclic = layout.findViewById(R.id.progressBar_cyclic);
         recur_txt = layout.findViewById(R.id.recur_txt);
         txt_recur_msg = layout.findViewById(R.id.txt_recur_msg);
         btnStopRecurView = layout.findViewById(R.id.btnStopRecurView);
+        liner_layout_for_recurmsg = layout.findViewById(R.id.liner_layout_for_recurmsg);
+        recurMsgShow.setOnClickListener(this);
+        recurMsgHide.setOnClickListener(this);
         btn_add_signature = layout.findViewById(R.id.btn_add_signature);
         btnStopRecurView.setOnClickListener(this);
         btn_add_signature.setOnClickListener(this);
@@ -745,11 +819,12 @@ public class DetailFragment extends Fragment
         quotes_details_number_txt.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.quotes_num));
         text_misc.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.misc));
 
-        customLayoutManager = new CustomLinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL
-                , false);
-        recyclerView.setLayoutManager(customLayoutManager);
-        jobCompletionAdpter = new CompletionAdpterJobDteails(new ArrayList<>()
-                , () -> ((JobDetailActivity) requireActivity()).getAttchmentFragment());
+//        customLayoutManager = new CustomLinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL
+//                , false);
+        gridLayoutManager = new GridLayoutManager(getActivity(),3);
+        recyclerView.setLayoutManager(gridLayoutManager);
+        jobCompletionAdpter = new CompletionAdpterJobDteails1(new ArrayList<>()
+                , () -> /*((JobDetailActivity) requireActivity()).getAttchmentFragment()*/showComplationViewDialog(true));
         recyclerView.setAdapter(jobCompletionAdpter);
 
 
@@ -762,6 +837,13 @@ public class DetailFragment extends Fragment
         invoice_list_adpter = new InvoiceItemList2Adpter(getActivity(), new ArrayList<>(), true, mParam2.getJobId(),getDisCalculationType,getTaxCalculationType);//, this, this
         recyclerView_job_item.setAdapter(invoice_list_adpter);
         recyclerView_job_item.setNestedScrollingEnabled(false);
+
+        //set service data
+        rv_mark_done.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL
+                , false));
+        serviceMarkDoneAdapter = new ServiceMarkDoneAdapter(new ArrayList<>(),getContext());
+        rv_mark_done.setAdapter(serviceMarkDoneAdapter);
+
 
         if (mParam2.getItemData() != null && invoice_list_adpter != null && !mParam2.getItemData().isEmpty()) {
             invoice_list_adpter.updateitemlist(mParam2.getItemData());
@@ -783,6 +865,13 @@ public class DetailFragment extends Fragment
         EotApp.getAppinstance().setNotifyForItemCount(this);
         EotApp.getAppinstance().setNotifyForEquipmentCount(this);
         EotApp.getAppinstance().setNotifyForEquipmentStatusList(this);
+        EotApp.getAppinstance().setNotifyForcompletionInDetail(this);
+
+        if (mParam2.getRecurType() != null && App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsRecur().equals("0") && !mParam2.getRecurType().equals("0")){
+            recur_parent_view.setVisibility(View.VISIBLE);
+        }else{
+            recur_parent_view.setVisibility(View.GONE);
+        }
 
     }
 
@@ -791,6 +880,7 @@ public class DetailFragment extends Fragment
         View v = vi.inflate(R.layout.job_lable_dynamic_layout, null);
         TextView textView = v.findViewById(R.id.job_lables);
         textView.setText(jtildModel.getTitle());
+        chipGroup.setChipSpacing(10);
         chipGroup.addView(v, 0, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
     }
 
@@ -877,7 +967,7 @@ public class DetailFragment extends Fragment
 
     @SuppressLint("SetTextI18n")
     private void showRecurmsg() {
-        try {
+        /*try {
             if (App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsRecur().equals("0")
                     && mParam2.getIsRecur() != null && mParam2.getIsRecur().equals("1") && mParam2.getRecurData().size() > 0) {
                 recur_parent_view.setVisibility(View.VISIBLE);
@@ -960,7 +1050,7 @@ public class DetailFragment extends Fragment
             }
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
     private void flagVisibility() {
@@ -1028,19 +1118,8 @@ public class DetailFragment extends Fragment
         }
 
         addComplationButtonTxt();
+        setDataToView();
 
-        // for equipment
-
-        if (jobDetail_pi != null)
-            jobDetail_pi.refreshList(mParam2.getJobId(), mParam2.getJobId());
-
-        // for completion details
-        if (jobDetail_pi != null)
-            jobDetail_pi.getJobCompletionDetails(mParam2.getJobId());
-
-        // for completion details
-        if (jobDetail_pi != null)
-            jobDetail_pi.getEquipmentStatus();
 
         //permission for showing completion details edit actual and travel time
         try {
@@ -1097,37 +1176,335 @@ public class DetailFragment extends Fragment
         });
         /* **** Equipment Item & attachment visibility***/
         flagVisibility();
-
+/*
         if (!mParam2.getJobId().equals(mParam2.getTempId()))
             showRecurmsg();
-        else recur_parent_view.setVisibility(View.GONE);
-        setDataToView();
+        else recur_parent_view.setVisibility(View.GONE);*/
+        // for equipment
+
+        setEuqipmentList(mParam2.getEquArray());
+        if (jobDetail_pi != null)
+            jobDetail_pi.loadFromServer(mParam2.getJobId());
+        // for completion details
+        if (jobDetail_pi != null)
+            jobDetail_pi.getJobCompletionDetails(mParam2.getJobId());
+
+        // for completion details
+        if (jobDetail_pi != null)
+            jobDetail_pi.getEquipmentStatus();
     }
 
 
     @Override
-    public void setList(ArrayList<GetFileList_Res> getFileList_res, String isAttachCommpletionNotes) {
-        (jobCompletionAdpter).updateFileList(getFileList_res);
+    public void setList(ArrayList<Attachments> getFileList_res, String isAttachCommpletionNotes) {
+        if(isAttachCommpletionNotes.equals("6")){
+            if(jobDetail_pi != null) {
+                jobDetail_pi.loadFromServer(mParam2.getJobId());
+            }
+        }
+        if(jobCompletionAdpter != null) {
+            (jobCompletionAdpter).updateFileList(getFileList_res);
+        }
     }
 
+    @SuppressLint("SetTextI18n")
+    @Override
+    public void setRecurData(RecurReqResModel recurData) {
+        progressBar_cyclic.setVisibility(View.GONE);
+        recurMsgHide.setVisibility(View.VISIBLE);
+        recurMsgShow.setVisibility(View.GONE);
+        liner_layout_for_recurmsg.setVisibility(View.VISIBLE);
+        try {
+            if ( recurData != null) {
+
+                if (mParam2.getRecurType() != null && mParam2.getRecurType().equals("1")) {
+                    if (recurData.getJobRecurModel().getMode() != null &&recurData.getJobRecurModel().getMode().equals("1") && recurData.getJobRecurModel().getEndRecurMode() != null
+                            && recurData.getJobRecurModel().getEndRecurMode().equals("0")) {
+                        txt_recur_msg.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.custom_recur_msg1) + " " +
+                                recurData.getJobRecurModel().getInterval() + " " + LanguageController.getInstance().getMobileMsgByKey(AppConstant.starting_on) +
+                                " " + recurData.getJobRecurModel().getStartDate() + " " +
+                                LanguageController.getInstance().getMobileMsgByKey(AppConstant.custom_recur_msg2) + " " +
+                                LanguageController.getInstance().getMobileMsgByKey(AppConstant.infinity));
+                    } else {
+                        txt_recur_msg.setText
+                                (LanguageController.getInstance().getMobileMsgByKey(AppConstant.custom_recur_msg1) + " " +
+                                        " " + recurData.getJobRecurModel().getInterval() +
+                                        " " + LanguageController.getInstance().getMobileMsgByKey(AppConstant.starting_on)
+                                        + " " + recurData.getJobRecurModel().getStartDate() + " " +
+                                        LanguageController.getInstance().getMobileMsgByKey(AppConstant.custom_recur_msg2)
+                                        + " " + recurData.getJobRecurModel().getOccurences() +
+                                        " " + LanguageController.getInstance().getMobileMsgByKey(AppConstant.custom_recur_msg3)
+                                        + " " + recurData.getJobRecurModel().getEndDate());
+                    }
+                } else if (mParam2.getRecurType() != null && mParam2.getRecurType().equals("2") && recurData.getJobRecurModel().getOccur_days() != null
+                        && recurData.getJobRecurModel().getInterval() != null) {
+                    if (recurData.getJobRecurModel().getEndRecurMode() != null && recurData.getJobRecurModel().getEndRecurMode().equals("0")) {
+                        txt_recur_msg.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.weekly_msg1) + " " +
+                                recurData.getJobRecurModel().getOccur_days() + " " +
+                                LanguageController.getInstance().getMobileMsgByKey(AppConstant.every) + " " +
+                                recurData.getJobRecurModel().getInterval() + " " +
+                                LanguageController.getInstance().getMobileMsgByKey(AppConstant.weeks) + " " +
+                                recurData.getJobRecurModel().getStartDate() + " " +
+                                LanguageController.getInstance().getMobileMsgByKey(AppConstant.custom_recur_msg2)
+                                + " " + LanguageController.getInstance().getMobileMsgByKey(AppConstant.infinity));
+                    } else {
+                        txt_recur_msg.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.weekly_msg1) + " " +
+                                recurData.getJobRecurModel().getOccur_days() + " " +
+                                LanguageController.getInstance().getMobileMsgByKey(AppConstant.every) + " " +
+                                recurData.getJobRecurModel().getInterval() + " " +
+                                LanguageController.getInstance().getMobileMsgByKey(AppConstant.weeks) + " " +
+                                recurData.getJobRecurModel().getStartDate() + " " +
+                                LanguageController.getInstance().getMobileMsgByKey(AppConstant.custom_recur_msg2)
+                                + " " + recurData.getJobRecurModel().getOccurences() +
+                                " " + LanguageController.getInstance().getMobileMsgByKey(AppConstant.custom_recur_msg3) +
+                                " " + recurData.getJobRecurModel().getEndDate());
+                    }
+
+                } else if (mParam2.getRecurType() != null && mParam2.getRecurType().equals("3")
+                        && recurData.getJobRecurModel().getEndRecurMode() != null && recurData.getJobRecurModel().getWeek_num() != null && recurData.getJobRecurModel().getInterval() != null) {
+                    if (recurData.getJobRecurModel().getEndRecurMode() != null && recurData.getJobRecurModel().getEndRecurMode().equals("0")) {
+                        txt_recur_msg.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.custom_recur_msg1) + " " +
+                                recurData.getJobRecurModel().getInterval() + " " + LanguageController.getInstance().getMobileMsgByKey(AppConstant.starting_on) +
+                                " " + recurData.getJobRecurModel().getStartDate() + " " +
+                                LanguageController.getInstance().getMobileMsgByKey(AppConstant.custom_recur_msg2) + " " +
+                                LanguageController.getInstance().getMobileMsgByKey(AppConstant.infinity));
+                    } else
+                        txt_recur_msg.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.weekly_msg1) + " " +
+                                recurData.getJobRecurModel().getWeek_num() + " " + LanguageController.getInstance().getMobileMsgByKey(AppConstant.every) + " " +
+                                recurData.getJobRecurModel().getInterval() + " " + LanguageController.getInstance().getMobileMsgByKey(AppConstant.months_starting_on) + " "
+                                + recurData.getJobRecurModel().getStartDate() + " " + LanguageController.getInstance().getMobileMsgByKey(AppConstant.custom_recur_msg2) + " "
+                                + recurData.getJobRecurModel().getOccurences() +
+                                " " + LanguageController.getInstance().getMobileMsgByKey(AppConstant.custom_recur_msg3) + " " +
+                                recurData.getJobRecurModel().getEndDate());
+                }
+            } else {
+                recurMsgHide.setVisibility(View.GONE);
+                recurMsgShow.setVisibility(View.VISIBLE);
+                liner_layout_for_recurmsg.setVisibility(View.GONE);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void notDataFoundInRecureData(String msg) {
+        progressBar_cyclic.setVisibility(View.GONE);
+        AppUtility.alertDialog(getActivity(), LanguageController.getInstance().getMobileMsgByKey(AppConstant.dialog_error_title),
+                msg, LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), "", () -> {
+            return null;
+
+        });
+    }
+
+    @Override
+    public void setOfflineData() {
+        isMarkDoneWithJtidsList.clear();
+        if(AppUtility.isInternetConnected()) {
+            mParam2 = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(mParam2.getJobId());
+            if(mParam2.getComplNote() != null && mParam2.getComplNote().isEmpty() && mParam2.getCompliAnsArray() != null && mParam2.getCompliAnsArray().isEmpty()){
+                txt_notesHeader.setVisibility(View.GONE);
+                complation_notes.setVisibility(View.GONE);
+                btnComplationView.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add));
+            }else if(mParam2.getComplNote() != null && mParam2.getComplNote().isEmpty() &&  mParam2.getCompliAnsArray() != null && !mParam2.getCompliAnsArray().isEmpty()){
+                txt_notesHeader.setVisibility(View.GONE);
+                complation_notes.setVisibility(View.GONE);
+                btnComplationView.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit));
+            }else if(mParam2.getComplNote() != null && mParam2.getComplNote().isEmpty()){
+                txt_notesHeader.setVisibility(View.GONE);
+                complation_notes.setVisibility(View.GONE);
+                btnComplationView.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add));
+            }else {
+                String tempstring=mParam2.getComplNote().replace("null", "");
+                tempstring.replace("<br>","");
+                complation_notes.setText(tempstring);
+                btnComplationView.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit));
+                txt_notesHeader.setVisibility(View.VISIBLE);
+                complation_notes.setVisibility(View.VISIBLE);
+            }
+            if(mParam2.getIsMarkDoneWithJtId() !=null && mParam2.getIsMarkDoneWithJtId().size()>0) {
+                cl_serviceMarkAsDone.setVisibility(View.VISIBLE);
+                isMarkDoneWithJtidsList.addAll(mParam2.getIsMarkDoneWithJtId());
+                serviceMarkDoneAdapter.updatList(mParam2.getIsMarkDoneWithJtId());
+            }else {
+                cl_serviceMarkAsDone.setVisibility(View.GONE);
+            }
+        }else if(AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).offline_completion_ans_dao().getComplQueAnsById(mParam2.getJobId()) != null){
+            OfflieCompleQueAns offlieCompleQueAns = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).offline_completion_ans_dao().getComplQueAnsById(mParam2.getJobId());
+            mParam2 = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(mParam2.getJobId());
+            if(mParam2.getComplNote() != null && mParam2.getComplNote().isEmpty() && offlieCompleQueAns.getAllQuestionAnswer().isEmpty()){
+                txt_notesHeader.setVisibility(View.GONE);
+                complation_notes.setVisibility(View.GONE);
+                btnComplationView.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add));
+            }else if(mParam2.getComplNote() != null && mParam2.getComplNote().isEmpty() && mParam2.getCompliAnsArray() != null &&  !mParam2.getCompliAnsArray().isEmpty()){
+                txt_notesHeader.setVisibility(View.GONE);
+                complation_notes.setVisibility(View.GONE);
+                btnComplationView.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit));
+            }else if(mParam2.getComplNote() != null && mParam2.getComplNote().isEmpty()){
+                txt_notesHeader.setVisibility(View.GONE);
+                complation_notes.setVisibility(View.GONE);
+                btnComplationView.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add));
+            }else {
+                String tempstring=mParam2.getComplNote().replace("null", "");
+                tempstring.replace("<br>","");
+                complation_notes.setText(tempstring);
+                btnComplationView.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit));
+                txt_notesHeader.setVisibility(View.VISIBLE);
+                complation_notes.setVisibility(View.VISIBLE);
+            }
+
+            if(offlieCompleQueAns.getIsMarkDoneWithJtId().size()>0) {
+                cl_serviceMarkAsDone.setVisibility(View.VISIBLE);
+                isMarkDoneWithJtidsList.addAll(offlieCompleQueAns.getIsMarkDoneWithJtId());
+                serviceMarkDoneAdapter.updatList(offlieCompleQueAns.getIsMarkDoneWithJtId());
+            }else {
+                cl_serviceMarkAsDone.setVisibility(View.GONE);
+            }
+
+        }else {
+            mParam2 = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(mParam2.getJobId());
+            if(mParam2.getComplNote() !=null && mParam2.getComplNote().isEmpty() && mParam2.getCompliAnsArray() != null &&  mParam2.getCompliAnsArray().isEmpty()){
+                txt_notesHeader.setVisibility(View.GONE);
+                complation_notes.setVisibility(View.GONE);
+                btnComplationView.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add));
+            }else if(mParam2.getComplNote() != null&& mParam2.getComplNote().isEmpty() && mParam2.getCompliAnsArray() != null &&  !mParam2.getCompliAnsArray().isEmpty()){
+                txt_notesHeader.setVisibility(View.GONE);
+                complation_notes.setVisibility(View.GONE);
+                btnComplationView.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit));
+            }else if(mParam2.getComplNote() != null && mParam2.getComplNote().isEmpty()){
+                txt_notesHeader.setVisibility(View.GONE);
+                complation_notes.setVisibility(View.GONE);
+                btnComplationView.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add));
+            }else {
+                String tempstring=mParam2.getComplNote().replace("null", "");
+                tempstring.replace("<br>","");
+                complation_notes.setText(tempstring);
+                btnComplationView.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit));
+                txt_notesHeader.setVisibility(View.VISIBLE);
+                complation_notes.setVisibility(View.VISIBLE);
+            }
+            if(mParam2.getIsMarkDoneWithJtId() !=null && mParam2.getIsMarkDoneWithJtId().size()>0) {
+                cl_serviceMarkAsDone.setVisibility(View.VISIBLE);
+                isMarkDoneWithJtidsList.addAll(mParam2.getIsMarkDoneWithJtId());
+                serviceMarkDoneAdapter.updatList(mParam2.getIsMarkDoneWithJtId());
+            }else {
+                cl_serviceMarkAsDone.setVisibility(View.GONE);
+            }
+        }
+        cl_pbCompletion.setVisibility(View.GONE);
+        setCompletionDetail();
+//        (jobCompletionAdpter).updateFileList((ArrayList<Attachments>) AppDataBase.getInMemoryDatabase(requireActivity()).attachments_dao().getAttachmentsByJobId(mParam2.getJobId()));
+//        addComplationButtonTxt();
+        if(App_preference.getSharedprefInstance().getLoginRes().getIsCompleShowMarkDone().equals("1")) {
+            if (App_preference.getSharedprefInstance().getLoginRes().getIsJobCompCustSignEnable().equals("0")) {
+                if(mParam2.getStatus() != null && !mParam2.getStatus().equalsIgnoreCase("9")) {
+                    if(isAskForCompleteJob) {
+                        checkMarkServices();
+                        isAskForCompleteJob = false;
+                    }
+                }
+            }
+        }
+
+    }
 
     /*** add completion button view ****/
     private void addComplationButtonTxt() {
+        String tempstring ="";
         HyperLog.i(TAG, "addComplationButtonTxt(M) start");
         HyperLog.i(TAG, mParam2.getComplNote());
-        if (TextUtils.isEmpty(mParam2.getComplNote())) {
+        if (mParam2.getComplNote() !=null && TextUtils.isEmpty(mParam2.getComplNote()) && mParam2.getCompliAnsArray() != null &&  mParam2.getCompliAnsArray().isEmpty()) {
+            txt_notesHeader.setVisibility(View.GONE);
+            complation_notes.setVisibility(View.GONE);
+            btnComplationView.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add));
+        }else if(mParam2.getComplNote() !=null && mParam2.getComplNote().isEmpty() && mParam2.getCompliAnsArray() != null && !mParam2.getCompliAnsArray().isEmpty()){
+            txt_notesHeader.setVisibility(View.GONE);
+            complation_notes.setVisibility(View.GONE);
+            btnComplationView.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit));
+        }else if(mParam2.getComplNote() != null && mParam2.getComplNote().isEmpty()){
+            txt_notesHeader.setVisibility(View.GONE);
+            complation_notes.setVisibility(View.GONE);
             btnComplationView.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add));
         } else {
+            txt_notesHeader.setVisibility(View.VISIBLE);
+            complation_notes.setVisibility(View.VISIBLE);
             btnComplationView.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit));
-            String tempstring=mParam2.getComplNote().replace("null", "");
-            tempstring.replace("<br>","");
+            if(mParam2.getComplNote() != null) {
+                tempstring = mParam2.getComplNote().replace("null", "");
+                tempstring.replace("<br>","");
+            }
             complation_notes.setText(tempstring);
         }
-        jobDetail_pi.getAttachFileList(mParam2.getJobId(), App_preference.getSharedprefInstance().getLoginRes().getUsrId()
-                , "6");
+       setCompletionDetail();
         HyperLog.i(TAG, "addComplationButtonTxt(M) Stop");
     }
+    int doneMark =0;
+public void setCompletionDetail(){
+    isMarkDoneWithJtidsList.clear();
+    if(mParam2.getIsMarkDoneWithJtId() != null && mParam2.getIsMarkDoneWithJtId().size()>0){
+        isMarkDoneWithJtidsList.addAll(mParam2.getIsMarkDoneWithJtId());
+        if(mParam2.getJtId() != null) {
+            for (JtId jtId : mParam2.getJtId()) {
+                if (!checkInList(jtId.getJtId())) {
+                    isMarkDoneWithJtidsList.add(new IsMarkDoneWithJtid("0", jtId.getJtId(), jtId.getTitle()));
+                }
+            }
+        }
+        setServiceMarkDoneList(isMarkDoneWithJtidsList);
+    }else {
+        if(mParam2.getJtId() != null)
+        for (JtId jtid: mParam2.getJtId()
+        ) {
+            IsMarkDoneWithJtid isMarkDoneWithJtid = new IsMarkDoneWithJtid("0",jtid.getJtId(),jtid.getTitle());
+            isMarkDoneWithJtidsList.add(isMarkDoneWithJtid);
+        }
+        setServiceMarkDoneList(isMarkDoneWithJtidsList);
+    }
 
+    List<IsMarkDoneWithJtid> list = new ArrayList<>();
+    list.addAll(isMarkDoneWithJtidsList);
+
+    //show done service
+    if(App_preference.getSharedprefInstance().getLoginRes().getIsCompleShowMarkDone().equals("0")){
+        cl_serviceMarkAsDone.setVisibility(View.GONE);
+    }else {
+        if(isAllServicesDone()){
+            txt_serviceHeader.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.all)+" "+LanguageController.getInstance().getMobileMsgByKey(AppConstant.services_done));
+            cl_serviceMarkAsDone.setVisibility(View.VISIBLE);
+            serviceMarkDoneAdapter.updatList(list);
+        }else {
+            doneMark = 0;
+            for (IsMarkDoneWithJtid item: isMarkDoneWithJtidsList
+            ) {
+                if(item.getStatus().equals("1")){
+                    doneMark++;
+                }
+            }
+            if(doneMark == 1) {
+                txt_serviceHeader.setText("" + doneMark + " "+LanguageController.getInstance().getMobileMsgByKey(AppConstant._services_done));
+            }else {
+                txt_serviceHeader.setText("" + doneMark + " "+LanguageController.getInstance().getMobileMsgByKey(AppConstant.services_done));
+            }
+            if(doneMark==0){
+                cl_serviceMarkAsDone.setVisibility(View.GONE);
+            }else {
+                cl_serviceMarkAsDone.setVisibility(View.VISIBLE);
+                serviceMarkDoneAdapter.updatList(list);
+            }
+        }
+
+    }
+    //show attachment of completion of job
+    ArrayList <Attachments> attachmentsArrayList = new ArrayList<>((ArrayList<Attachments>) AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).attachments_dao().getAttachmentsByJobId(mParam2.getJobId()));
+    if(attachmentsArrayList.size() == 0){
+        recyclerView.setVisibility(View.GONE);
+    }else {
+        recyclerView.setVisibility(View.VISIBLE);
+        (jobCompletionAdpter).updateFileList(attachmentsArrayList);
+    }
+//        jobDetail_pi.getAttachFileList(mParam2.getJobId(), App_preference.getSharedprefInstance().getLoginRes().getUsrId()
+//                , "6");
+}
     /***update form list after Ans Submit***/
     public void getUpdateForm() {
         if (jobDetail_pi != null) {
@@ -1866,7 +2243,7 @@ public class DetailFragment extends Fragment
             rv_fw_list.setAdapter(filedworkerListAdapter);*/
 
             for (String id : kprList) {
-                FieldWorker fieldWorker = AppDataBase.getInMemoryDatabase(getActivity()).fieldWorkerModel().getFieldWorkerByID(id);
+                FieldWorker fieldWorker = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).fieldWorkerModel().getFieldWorkerByID(id);
                 if (fieldWorker != null) {
                     list.add(fieldWorker);
 
@@ -2062,7 +2439,7 @@ public class DetailFragment extends Fragment
     }
 
 
-    private void showErrorDialog(String msg) {
+    public void showErrorDialog(String msg) {
         AppUtility.error_Alert_Dialog(getActivity(), msg, LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok)
                 , () -> null);
     }
@@ -2093,7 +2470,7 @@ public class DetailFragment extends Fragment
                 startActivityForResult(intent1, CUSTOMFILED);
                 break;
             case R.id.btnComplationView:
-                showComplationViewDialog();
+                showComplationViewDialog(false);
                 break;
 
             case R.id.btn_add_eq:
@@ -2401,6 +2778,22 @@ public class DetailFragment extends Fragment
                     isClickedActual = true;
                 }
                 break;
+            case R.id.liner_layout_for_recurmsg_show:
+                if(AppUtility.isInternetConnected()){
+                    if (jobDetail_pi != null) {
+                        progressBar_cyclic.setVisibility(View.VISIBLE);
+                        /*AppUtility.progressBarShow(getActivity());*/
+                        jobDetail_pi.getRecureDataList(mParam2.getJobId(),mParam2.getRecurType());
+                    }
+                }else {
+                    showErrorDialog(LanguageController.getInstance().getMobileMsgByKey(AppConstant.offline_feature_alert));
+                }
+                 break;
+            case R.id.liner_layout_for_recurmsg_hide:
+                recurMsgHide.setVisibility(View.GONE);
+                recurMsgShow.setVisibility(View.VISIBLE);
+                liner_layout_for_recurmsg.setVisibility(View.GONE);
+                break;
         }
     }
 
@@ -2452,11 +2845,12 @@ public class DetailFragment extends Fragment
     }
 
 
-    private void showComplationViewDialog() {
+    private void showComplationViewDialog(boolean showAttachment) {
         String jobdata = new Gson().toJson(mParam2);
         Intent intent = new Intent(getActivity(), JobCompletionActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         intent.putExtra("Complation", jobdata);
+        intent.putExtra("showAttachment",showAttachment);
         startActivityForResult(intent, REQUEST_COMPLETION_NOTE);
     }
 
@@ -2543,7 +2937,16 @@ public class DetailFragment extends Fragment
             //  ((JobDetailActivity) getActivity()).openFormForEvent(jobstatus.getStatus_no());
             try {
                 HyperLog.i("", "Resume states found");
-                ((JobDetailActivity) requireActivity()).openFormForEvent(jobstatus.getStatus_no());
+                if(jobstatus.getId().equals("9")) {
+                for (int i=0; i<=statusArray.length; i++){
+                    if(statusArray[i].equals(LanguageController.getInstance().getMobileMsgByKey(AppConstant.completed))){
+                        checkForIsLeader(i);
+                        break;
+                    }
+                }
+                }else {
+                    ((JobDetailActivity) requireActivity()).openFormForEvent(jobstatus.getStatus_no(),"0","");
+                }
             } catch (Exception e) {
                 e.printStackTrace();
                 HyperLog.i("", "Resume states Exception handle" + e.getMessage());
@@ -2567,17 +2970,17 @@ public class DetailFragment extends Fragment
                         mParam2 = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(param3);
                         jobstatus = new JobStatusModelNew(mParam2.getStatus(), jobDetail_pi.getStatusName(mParam2.getStatus()));
                     }
-                    ((JobDetailActivity) requireActivity()).openFormForEvent(jobstatus.getStatus_no());
+                    ((JobDetailActivity) requireActivity()).openFormForEvent(jobstatus.getStatus_no(),"0","");
                 } catch (Exception exception) {
                     exception.printStackTrace();
                     HyperLog.i("", "Exception" + exception.getMessage());
                     mParam2 = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(param3);
                     jobstatus = new JobStatusModelNew(mParam2.getStatus(), jobDetail_pi.getStatusName(mParam2.getStatus()));
-                    ((JobDetailActivity) requireActivity()).openFormForEvent(jobstatus.getStatus_no());
+                    ((JobDetailActivity) requireActivity()).openFormForEvent(jobstatus.getStatus_no(),"0","");
                 }
             }
         } else {
-            onFormSuccess();
+            onFormSuccess("","");
         }
     }
 
@@ -2605,7 +3008,7 @@ public class DetailFragment extends Fragment
 
     /***** Method call for custom form success ******/
     @Override
-    public void onFormSuccess() {
+    public void onFormSuccess(String statusCompleteFor, String jobType) {
         HyperLog.i(TAG, "onFormSuccess(M) Start");
          if (jobstatus != null) {
              if (jobDetail_pi.checkContactHideOrNot()) {
@@ -2626,31 +3029,33 @@ public class DetailFragment extends Fragment
 
             if (App_preference.getSharedprefInstance().getLoginRes().getConfirmationTrigger() != null) {
                 if (jobstatus != null && jobstatus.getStatus_no() != null && App_preference.getSharedprefInstance().getLoginRes().getConfirmationTrigger().contains(jobstatus.getStatus_no())) {
-                    showDialogForSendMailToClt();
+                    showDialogForSendMailToClt(statusCompleteFor,jobType);
                 } else {
                     isMailSentToClt = "1";
-                    updateStatusApiCall();
+                    updateStatusApiCall(statusCompleteFor,jobType);
                 }
             } else {
                 isMailSentToClt = "1";
-                updateStatusApiCall();
+                updateStatusApiCall(statusCompleteFor,jobType);
             }
         }
         HyperLog.i(TAG, "onFormSuccess(M) Stop");
     }
 
     /***** This is synchronized because the status should get updated one by one* *****/
-    synchronized private void updateStatusApiCall() {
+    synchronized private void updateStatusApiCall(String statusCompleteFor,String jobType) {
         if (LatLngSycn_Controller.getInstance().getLat() != null
                 && !LatLngSycn_Controller.getInstance().getLat().isEmpty()
                 && LatLngSycn_Controller.getInstance().getLng() != null
                 && !LatLngSycn_Controller.getInstance().getLng().isEmpty()
         ) {
             HyperLog.e("Location  enable", "Location providing data success");
-            jobDetail_pi.changeJobStatusAlertInvisible(mParam2.getJobId(), mParam2.getType(), jobstatus, LatLngSycn_Controller.getInstance().getLat(), LatLngSycn_Controller.getInstance().getLng(), isMailSentToClt);
+            jobDetail_pi.changeJobStatusAlertInvisible(mParam2.getJobId(), mParam2.getType(), jobstatus, LatLngSycn_Controller.getInstance().getLat(),
+                    LatLngSycn_Controller.getInstance().getLng(), isMailSentToClt,statusCompleteFor,mParam2.getLabel(),jobType);
         } else {
             HyperLog.e("Location not enable", "Location not providing data");
-            jobDetail_pi.changeJobStatusAlertInvisible(mParam2.getJobId(), mParam2.getType(), jobstatus, "0.0", "0.0", isMailSentToClt);
+            jobDetail_pi.changeJobStatusAlertInvisible(mParam2.getJobId(), mParam2.getType(), jobstatus, "0.0", "0.0", isMailSentToClt,
+                    statusCompleteFor,mParam2.getLabel(),jobType);
         }
 
         new Handler().postDelayed(() -> {
@@ -2661,7 +3066,7 @@ public class DetailFragment extends Fragment
     /***** popup for asking the user for send mail confirmation
      * This works on permission basis from admin
      * *****/
-    private void showDialogForSendMailToClt() {
+    private void showDialogForSendMailToClt(String statusCompleteFor, String jobType) {
         // added by shivani for resolving the double tap issue
         final Dialog dialog = new Dialog(getActivity());
         TextView dialog_msg, dialog_yes, dialog_no;
@@ -2682,7 +3087,7 @@ public class DetailFragment extends Fragment
             dialog_no.setClickable(false);
             dialog.dismiss();
             isMailSentToClt = "1";
-            updateStatusApiCall();
+            updateStatusApiCall(statusCompleteFor,jobType);
         });
         dialog_no.setOnClickListener(view -> {
             dialog_yes.setEnabled(false);
@@ -2691,7 +3096,7 @@ public class DetailFragment extends Fragment
             dialog_no.setClickable(false);
             dialog.dismiss();
             isMailSentToClt = "0";
-            updateStatusApiCall();
+            updateStatusApiCall(statusCompleteFor,jobType);
         });
         dialog.show();
     }
@@ -2732,17 +3137,27 @@ public class DetailFragment extends Fragment
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_COMPLETION_NOTE) {
             try {
+                cl_pbCompletion.setVisibility(View.GONE);
+                isAskForCompleteJob = true;
                 if (data != null && data.hasExtra("note")) {
                     if (mParam2 != null)
                         mParam2.setComplNote(data.getStringExtra("note"));
                     String tempstring=data.getStringExtra("note").replace("null", "");
                     tempstring.replace("<br>","");
                     complation_notes.setText(tempstring);
-                    btnComplationView.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit));
-                }if(!mParam2.getComplNote().isEmpty()){
-                    btnComplationView.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit));
-                }else
-                    btnComplationView.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add));
+//                    btnComplationView.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit));
+                }
+//                if(!mParam2.getComplNote().isEmpty()){
+//                    btnComplationView.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit));
+//                }else {
+//                    btnComplationView.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add));
+//                }
+//                if(AppUtility.isInternetConnected()) {
+//                    jobDetail_pi.loadFromServer();
+//                }else {
+//                    setOfflineData();
+//                }
+                addComplationButtonTxt();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -2981,6 +3396,15 @@ public class DetailFragment extends Fragment
         }
     }
 
+    @Override
+    public void upateForCompletion(String apiName, String jobId) {
+        this.jobDetail_pi = new JobDetail_pc(this);
+
+//            jobDetail_pi.getAttachFileList(jobId, App_preference.getSharedprefInstance().getLoginRes().getUsrId()
+//                    , "6");
+            jobDetail_pi.loadFromServer(jobId);
+    }
+
 
     /***  method for loading image set into description editor ***/
     @SuppressLint("StaticFieldLeak")
@@ -3013,6 +3437,59 @@ public class DetailFragment extends Fragment
                 CharSequence t = textViewDescription.getText();
                 textViewDescription.setText(t);
             }
+        }
+    }
+
+//    public void setCompAttachmentList(List<Attachments> list){
+//        attachmentsList =list;
+//    }
+//    public List<Attachments> getCompAttachmentList(){
+//        return attachmentsList;
+//    }
+    public void setServiceMarkDoneList(Set<IsMarkDoneWithJtid> list){
+        mParam2.setIsMarkDoneWithJtId(new ArrayList<>(list));
+        ArrayList<IsMarkDoneWithJtid> convertList = new ArrayList<>();
+        convertList.addAll(list);
+
+        AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().updateServiceMarkDoneList(mParam2.getIsMarkDoneWithJtId(),mParam2.getJobId());
+    }
+//    public Set<IsMarkDoneWithJtid> getServicMarkDoneList(){
+//        return isMarkDoneWithJtidsList;
+//    }
+    public boolean checkInList (String jtid){
+        boolean isIn = false;
+        for (IsMarkDoneWithJtid item: isMarkDoneWithJtidsList
+             ) {
+            if(item.getJtId().equals(jtid)){
+                isIn = true;
+                break;
+            }
+        }
+        return isIn;
+    }
+    public boolean isAllServicesDone(){
+        boolean isIt = true;
+        for (IsMarkDoneWithJtid item: isMarkDoneWithJtidsList
+        ) {
+            if(item.getStatus().equals("0")){
+                isIt = false;
+                break;
+            }
+        }
+        return isIt;
+    }
+
+    public void checkMarkServices(){
+        if(isAllServicesDone()){
+            int i =0;
+            for (String s: statusArray
+                 ) {
+                if(s.equalsIgnoreCase(LanguageController.getInstance().getMobileMsgByKey(AppConstant.completed))){
+                    break;
+                }
+                i++;
+            }
+            checkForIsLeader(i);
         }
     }
 }

@@ -12,6 +12,9 @@ import android.util.Log;
 import android.widget.Toast;
 import com.eot_app.login_next.Login2Activity;
 import com.eot_app.nav_menu.appointment.AppointmentItem_Observer;
+import com.eot_app.nav_menu.jobs.job_complation.compla_model.NotifyForcompletion;
+import com.eot_app.nav_menu.jobs.job_complation.compla_model.NotifyForcompletionInDetail;
+import com.eot_app.nav_menu.jobs.job_complation.compla_model.NotifyForcompletionInJob;
 import com.eot_app.nav_menu.jobs.job_controller.ChatController;
 import com.eot_app.nav_menu.jobs.job_detail.JobDetailActivity;
 import com.eot_app.nav_menu.jobs.job_detail.detail.NotifyForAddJob;
@@ -22,6 +25,7 @@ import com.eot_app.nav_menu.jobs.job_detail.detail.NotifyForEquipmentCountRemark
 import com.eot_app.nav_menu.jobs.job_detail.detail.NotifyForItemCount;
 import com.eot_app.nav_menu.jobs.job_detail.detail.NotifyForItemCountRemark;
 import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.NotifyForMultiDocAdd;
+import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.NotifyForMultiDocAddForAttach;
 import com.eot_app.nav_menu.jobs.job_detail.generate_invoice.InvoiceItemObserver;
 import com.eot_app.nav_menu.jobs.joboffline_db.JobItem_Observer;
 import com.eot_app.nav_menu.jobs.joboffline_db.JobOverViewNotify;
@@ -64,6 +68,10 @@ public class EotApp extends Application implements Application.ActivityLifecycle
     private NotifyForInvoiceGenr notifyForInvoiceGenr;
     private AppointmentItem_Observer appointmentItem_observer;
     private NotifyForMultiDocAdd notifyForMultiDocAdd;
+    private NotifyForcompletion notifyForcompletion;
+    private NotifyForcompletionInJob notifyForcompletionInJob;
+    private NotifyForcompletionInDetail notifyForcompletionInDetail;
+    private NotifyForMultiDocAddForAttach notifyForMultiDocAddForAttach;
     public static synchronized EotApp getAppinstance() {
         return INSTANCE;
     }
@@ -151,10 +159,42 @@ public class EotApp extends Application implements Application.ActivityLifecycle
         this.notifyForAddJob = notifyForAddJob;
     }
 
+    public void getNotifyForcompletion(String apiName, String jobId) {
+        if(this.notifyForcompletion != null){
+            notifyForcompletion.upateForCompletion(apiName,jobId);
+        }
+    }
+    public void setNotifyForcompletion(NotifyForcompletion notifyForcompletion) {
+        this.notifyForcompletion = notifyForcompletion;
+    }
+    public void getNotifyForcompletionInJob(String apiName, String jobId) {
+        if(this.notifyForcompletionInJob != null){
+            notifyForcompletionInJob.upateForCompletion(apiName,jobId);
+        }
+    }
+    public void setNotifyForcompletionInJob(NotifyForcompletionInJob notifyForcompletionInJob) {
+        this.notifyForcompletionInJob = notifyForcompletionInJob;
+    }
+    public void getNotifyForcompletionInDetail(String apiName, String jobId) {
+        if(this.notifyForcompletionInDetail != null){
+            notifyForcompletionInDetail.upateForCompletion(apiName,jobId);
+        }
+    }
+    public void setNotifyForcompletionInDetail(NotifyForcompletionInDetail notifyForcompletionInDetail) {
+        this.notifyForcompletionInDetail = notifyForcompletionInDetail;
+    }
+    public void getNotifyForMultiDocAddForAttach(String apiName, String jobId, String type) {
+        if(this.notifyForMultiDocAddForAttach != null){
+            notifyForMultiDocAddForAttach.updateMultiDoc(apiName,jobId, type);
+        }
+    }
+    public void setNotifyForMultiDocAddForAttach(NotifyForMultiDocAddForAttach notifyForMultiDocAddForAttach) {
+        this.notifyForMultiDocAddForAttach = notifyForMultiDocAddForAttach;
+    }
 
-    public void getAddMultiDocObserver(String apiName,String jobId){
+    public void getAddMultiDocObserver(String apiName, String jobId, int parentPostion, int postion, String queId, String jtId){
         if(this.notifyForMultiDocAdd != null){
-            notifyForMultiDocAdd.updateMultiDoc(apiName, jobId);
+            notifyForMultiDocAdd.updateMultiDoc(apiName, jobId, parentPostion, postion, queId, jtId);
         }
     }
     public void getAddJobObserver(String tempId,String jobId) {

@@ -95,6 +95,7 @@ public class MainActivity_pc implements MainActivity_pi {
                                     // for syncing of contact and site
                                     App_preference.getSharedprefInstance().setContactSiteSynced(false);
                                     App_preference.getSharedprefInstance().setLoginResponse(new Gson().toJson(data));
+                                    AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).attachments_dao().deleteTable();
                                 }
                             }
 

@@ -1,6 +1,7 @@
 package com.eot_app.nav_menu.jobs.job_detail.form_form.get_qus_list.ans_model;
 
 import com.eot_app.nav_menu.jobs.job_detail.form_form.get_qus_list.qus_model.AnswerModel;
+import com.eot_app.utility.App_preference;
 
 import java.io.Serializable;
 import java.util.List;
@@ -16,6 +17,12 @@ public class Answer implements Serializable {
     private String type;
     private List<AnswerModel> ans = null;
     private String frmId;
+    private String jtId;
+
+    public Answer(String queId, String jtId) {
+        this.queId = queId;
+        this.jtId = jtId;
+    }
 
     public Answer(String queId, String type, List<AnswerModel> ans) {
         this.queId = queId;
@@ -28,6 +35,14 @@ public class Answer implements Serializable {
         this.type = type;
         this.ans = ans;
         this.frmId = frmId;
+    }
+
+    public Answer(String jtId, String queId, String type, List<AnswerModel> ans) {
+        this.jtId = jtId;
+        this.queId = queId;
+        this.type = type;
+        this.ans = ans;
+        this.frmId = App_preference.getSharedprefInstance().getJobCompletionForm().getFrmId();
     }
 
     public String getEncounterRoot() {
@@ -68,5 +83,13 @@ public class Answer implements Serializable {
 
     public void setFrmId(String frmId) {
         this.frmId = frmId;
+    }
+
+    public String getJtId() {
+        return jtId;
+    }
+
+    public void setJtId(String jtId) {
+        this.jtId = jtId;
     }
 }

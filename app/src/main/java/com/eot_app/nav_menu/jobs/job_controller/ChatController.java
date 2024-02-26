@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 
 import com.eot_app.login_next.FireStoreUserOnlineModel;
 import com.eot_app.login_next.login_next_model.AdminID;
+import com.eot_app.nav_menu.appointment.list.AppointmentListFragment;
 import com.eot_app.nav_menu.client_chat_pkg.client_chat_model.ClientChatReqModel;
 import com.eot_app.nav_menu.client_chat_pkg.client_chat_model.SendCLientAdminNotifica;
 import com.eot_app.nav_menu.jobs.job_db.Job;
@@ -82,6 +83,7 @@ public class ChatController {
     private final String[] clientChatStateArray = new String[]{"", "", ""};
     private NotificationUtils nNotificationUtils;
     private JobList joblistListener;
+    private AppointmentListFragment calendarJObListener;
     private JobDetailActivity jobdetailListener;
 
     public static ChatController getInstance() {
@@ -129,6 +131,10 @@ public class ChatController {
         this.joblistListener = joblistListener;
     }
 
+    public AppointmentListFragment getCalendarJObListener(){ return calendarJObListener;}
+    public void setCalendarJObListener(AppointmentListFragment calendarJObListener){
+        this.calendarJObListener = calendarJObListener;
+    }
     /*** Unread count for Admin msg ****/
     public void setUnreadCountZeroByJobId(String jobCode, final String jobId, int clUnread) {
         FirestoreFieldWorkerModel model = new FirestoreFieldWorkerModel();

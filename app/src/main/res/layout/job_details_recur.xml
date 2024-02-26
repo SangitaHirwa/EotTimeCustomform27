@@ -6,7 +6,6 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
         <androidx.cardview.widget.CardView
             android:id="@+id/recur_parent_view"
             android:layout_width="match_parent"
@@ -20,33 +19,99 @@
             app:cardUseCompatPadding="true">
             <!--        android:layout_marginBottom="8dp"
         -->
-            <RelativeLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/progressBar_cyclic"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone"
+                android:elevation="10dp">
+
+                <ProgressBar
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center"
+                    android:shadowColor="@color/color_gray"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white"
-                android:padding="12dp">
-
+                android:padding="12dp"
+                android:orientation="vertical"
+                >
+              <LinearLayout
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:orientation="horizontal">
                 <TextView
                     android:id="@+id/recur_txt"
                     style="@style/style_sec"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
-                    android:text=""
+                    android:text="fgghfgh"
                     android:textStyle="bold"
+                    android:layout_weight="1"
                     tools:ignore="RelativeOverlap" />
-
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@+id/recur_txt"
+                    >
+                <LinearLayout
+                    android:id="@+id/liner_layout_for_recurmsg_show"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="visible"
+                   >
+                <ImageView
+                    android:id="@+id/recurMsgShow"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_arrow_drop_down_black_24dp"
+                    android:layout_marginRight="5dp"
+                   />
+                </LinearLayout>
+                    <LinearLayout
+                        android:id="@+id/liner_layout_for_recurmsg_hide"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        >
+                        <ImageView
+                            android:id="@+id/recurMsgHide"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/ic_baseline_arrow_drop_up_24"
+                            android:layout_marginRight="5dp"
+                            />
+                    </LinearLayout>
+                </RelativeLayout>
+              </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/liner_layout_for_recurmsg"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:layout_below="@+id/liner_layout_for_recurmsg_hide_show"
+                    android:orientation="horizontal">
                 <TextView
                     android:id="@+id/txt_recur_msg"
                     style="@style/style_thrid_thrd"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/recur_txt"
+                    android:layout_below="@+id/liner_layout_for_recurmsg_hide_show"
                     android:layout_marginTop="8dp"
+                    android:inputType="textMultiLine"
                     android:layout_marginEnd="8dp"
+                    android:layout_weight="1"
                     android:text=""
                     android:textStyle="normal" />
-
                 <TextView
                     android:id="@+id/btnStopRecurView"
                     style="@style/subtext_style"
@@ -55,11 +120,14 @@
                     android:layout_alignParentEnd="true"
                     android:text="Edit"
                     android:textAllCaps="false"
-                    android:textColor="@color/colorPrimary"
+                    android:layout_marginStart="3dp"
+                    android:textColor="@color/red_color"
                     android:textSize="@dimen/medium_txt"
                     android:textStyle="bold"
+                    android:layout_marginTop="8dp"
                     tools:ignore="HardcodedText,SpUsage" />
-            </RelativeLayout>
+                </LinearLayout>
+            </LinearLayout>
         </androidx.cardview.widget.CardView>
 
 </RelativeLayout>

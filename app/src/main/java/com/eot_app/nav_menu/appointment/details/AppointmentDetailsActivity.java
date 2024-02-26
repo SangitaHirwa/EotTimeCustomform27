@@ -319,7 +319,7 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
         HyperLog.i("", "setDataInUI(M) start");
         if (model != null) {
 
-            binding.titleAppointmentCode.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.appointment_code+": "));
+            binding.titleAppointmentCode.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.appointment_code)+":");
             binding.tvAppointmentCode.setText(model.getLabel());
             setClientName(model);
             setAppointmentStatusList();

@@ -3,14 +3,19 @@ package com.eot_app.nav_menu.jobs.job_detail.documents.doc_model;
 public class MultiDocUpdateRequest {
 
     String job_Id;
+    String que_Id="";
+    String jtId= "";
     String file;
     String finalFname;
     String desc;
     String type;
     String isAddAttachAsCompletionNote;
     boolean lastCall;
+    boolean isAttachmentSection;
+    int parentPostion;
+    int position;
 
-    public MultiDocUpdateRequest(String job_Id, String file, String finalFname, String desc, String type, String isAddAttachAsCompletionNote, boolean lastCall) {
+    public MultiDocUpdateRequest(String job_Id, String file, String finalFname, String desc, String type, String isAddAttachAsCompletionNote, boolean lastCall, boolean isAttachmentSection) {
         this.job_Id = job_Id;
         this.file = file;
         this.finalFname = finalFname;
@@ -18,6 +23,34 @@ public class MultiDocUpdateRequest {
         this.type = type;
         this.isAddAttachAsCompletionNote = isAddAttachAsCompletionNote;
         this.lastCall = lastCall;
+        this.isAttachmentSection = isAttachmentSection;
+    }
+
+    public MultiDocUpdateRequest(String job_Id, String que_Id, String jtId, String file, String finalFname, String desc, String type, String isAddAttachAsCompletionNote, boolean lastCall) {
+        this.job_Id = job_Id;
+        this.que_Id = que_Id;
+        this.jtId = jtId;
+        this.file = file;
+        this.finalFname = finalFname;
+        this.desc = desc;
+        this.type = type;
+        this.isAddAttachAsCompletionNote = isAddAttachAsCompletionNote;
+        this.lastCall = lastCall;
+    }
+
+    public MultiDocUpdateRequest(String job_Id, String que_Id, String jtId, String file, String finalFname, String desc, String type, String isAddAttachAsCompletionNote, boolean lastCall, boolean isAttachmentSection, int parentPostion, int position) {
+        this.job_Id = job_Id;
+        this.que_Id = que_Id;
+        this.jtId = jtId;
+        this.file = file;
+        this.finalFname = finalFname;
+        this.desc = desc;
+        this.type = type;
+        this.isAddAttachAsCompletionNote = isAddAttachAsCompletionNote;
+        this.lastCall = lastCall;
+        this.isAttachmentSection = isAttachmentSection;
+        this.parentPostion = parentPostion;
+        this.position =position;
     }
 
     public String getJob_Id() {
@@ -74,5 +107,45 @@ public class MultiDocUpdateRequest {
 
     public void setLastCall(boolean lastCall) {
         this.lastCall = lastCall;
+    }
+
+    public String getQue_Id() {
+        return que_Id;
+    }
+
+    public void setQue_Id(String que_Id) {
+        this.que_Id = que_Id;
+    }
+
+    public String getJtId() {
+        return jtId;
+    }
+
+    public void setJtId(String jtId) {
+        this.jtId = jtId;
+    }
+
+    public boolean isAttachmentSection() {
+        return isAttachmentSection;
+    }
+
+    public void setAttachmentSection(boolean attachmentSection) {
+        isAttachmentSection = attachmentSection;
+    }
+
+    public int getParentPostion() {
+        return parentPostion;
+    }
+
+    public void setParentPostion(int parentPostion) {
+        this.parentPostion = parentPostion;
+    }
+
+    public int getPosition() {
+        return position;
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
     }
 }

@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,7 +26,7 @@ import androidx.appcompat.widget.AppCompatTextView;
 import androidx.fragment.app.DialogFragment;
 import com.bumptech.glide.Glide;
 import com.eot_app.R;
-import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.GetFileList_Res;
+import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.Attachments;
 import com.eot_app.nav_menu.jobs.job_detail.documents.fileattach_mvp.Doc_Attch_Pc;
 import com.eot_app.nav_menu.jobs.job_detail.documents.fileattach_mvp.Doc_Attch_Pi;
 import com.eot_app.nav_menu.jobs.job_detail.documents.fileattach_mvp.Doc_Attch_View;
@@ -37,10 +36,7 @@ import com.eot_app.utility.App_preference;
 import com.eot_app.utility.EotApp;
 import com.eot_app.utility.language_support.LanguageController;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.Callable;
 
 public class DialogUpdateDocuments extends DialogFragment implements View.OnClickListener, Doc_Attch_View {
@@ -67,6 +63,7 @@ public class DialogUpdateDocuments extends DialogFragment implements View.OnClic
     LinearLayout llBottom;
     Bitmap bitmap;
     String[] splitTxt;
+    String  queId, jtId;
 
     public void setIsFileImage(boolean b) {
         this.isFileImage = b;
@@ -88,13 +85,15 @@ public class DialogUpdateDocuments extends DialogFragment implements View.OnClic
         isFromClientHistory = fromClientHistory;
     }
 
-    public void setImgPath(String docId, String imgPath, String fileName, String desc, String type, String jobId) {
+    public void setImgPath(String docId, String imgPath, String fileName, String desc, String type, String jobId,String queId, String jtId) {
         this.docId = docId;
         this.imgPath = imgPath;
         this.fileName = fileName;
         this.desc = desc;
         this.type = type;
         this.jobId = jobId;
+        this.queId = queId;
+        this.jtId = jtId;
     }
     public void setImgPath(String docId, String imgPath, String fileName, String desc, String type, String jobId,boolean isClickDisabled) {
         this.docId = docId;
@@ -248,7 +247,7 @@ public class DialogUpdateDocuments extends DialogFragment implements View.OnClic
             } else {
                 AppUtility.progressBarShow(getActivity());
                splitTxt = updateName.split("\\.");
-                doc_attch_pi.updateDocuments(docId, updateDesc, splitTxt[0],isAddAttachAsCompletionNote, jobId);
+                doc_attch_pi.updateDocuments(docId, updateDesc, splitTxt[0],isAddAttachAsCompletionNote, jobId, queId, jtId);
             }
         }
 
@@ -279,7 +278,7 @@ public class DialogUpdateDocuments extends DialogFragment implements View.OnClic
     @Override
     public void onDocumentUpdate(String msg, boolean isSuccess) {
         if (isSuccess && onDocumentUpdate != null) {
-            onDocumentUpdate.onUpdateDes(ed_doc_desc.getText().toString(),splitTxt[0]);
+            onDocumentUpdate.onUpdateDes(ed_doc_desc.getText().toString(),splitTxt[0],queId, jtId);
             dismiss();
 
         } else if (msg != null)
@@ -296,18 +295,29 @@ public class DialogUpdateDocuments extends DialogFragment implements View.OnClic
 
     }
 
+
     @Override
-    public void selectFile() {
+    public void selectFiles() {
 
     }
 
     @Override
-    public void setList(ArrayList<GetFileList_Res> getFileList_res, String isAttch, boolean firstCall) {
+    public void selectFilesForCompletion(boolean isCompletion) {
 
     }
 
     @Override
-    public void addNewItemToAttachmentList(ArrayList<GetFileList_Res> getFileList_res, String isAttachCompletionNotes) {
+    public void setList(ArrayList<Attachments> getFileList_res, String isAttch, boolean firstCall) {
+
+    }
+
+    @Override
+    public void setMultiList(ArrayList<Attachments> getFileList_res, String isAttachCompletionNotes, boolean firstCall, int parentPositon, int position, String queId, String jtId) {
+
+    }
+
+    @Override
+    public void addNewItemToAttachmentList(ArrayList<Attachments> getFileList_res, String isAttachCompletionNotes) {
 
     }
 
@@ -348,6 +358,6 @@ public class DialogUpdateDocuments extends DialogFragment implements View.OnClic
     }
 
     public interface OnDocumentUpdate {
-        void onUpdateDes(String desc,String name);
+        void onUpdateDes(String desc,String name,String queId, String jtId);
     }
 }

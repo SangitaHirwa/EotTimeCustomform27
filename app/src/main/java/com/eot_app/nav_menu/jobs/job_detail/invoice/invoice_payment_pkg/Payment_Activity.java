@@ -13,7 +13,6 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.method.ScrollingMovementMethod;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -21,7 +20,6 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -30,7 +28,7 @@ import com.eot_app.UploadDocumentActivity;
 import com.eot_app.databinding.ActivityPaymentBinding;
 import com.eot_app.nav_menu.client.clientlist.client_detail.site.sitelist.editsite.editsitedb.SpinnerCountrySite;
 import com.eot_app.nav_menu.jobs.job_detail.documents.DocumentListAdapter;
-import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.GetFileList_Res;
+import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.Attachments;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_detail_pkg.inv_detail_model.Inv_Res_Model;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_payment_pkg.payment_mvp.PayMent_View;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_payment_pkg.payment_mvp.Payment_pc;
@@ -411,7 +409,7 @@ public class Payment_Activity extends UploadDocumentActivity implements  Documen
         return true;
     }
 
-    private void setAttachments(ArrayList<GetFileList_Res> attachments) {
+    private void setAttachments(ArrayList<Attachments> attachments) {
         if (attachments != null) {
             if (attachments.size() > 0) {
                 tv_label_attachment.setVisibility(View.VISIBLE);
@@ -436,9 +434,9 @@ public class Payment_Activity extends UploadDocumentActivity implements  Documen
         if (requestCode == SINGLEATTCHMENT) {
             if (data.hasExtra("code")) {
                 String barcode = data.getStringExtra("code");
-                ArrayList<GetFileList_Res> attachmentList = new ArrayList<>();
+                ArrayList<Attachments> attachmentList = new ArrayList<>();
                 try {
-                    Type listType = new TypeToken<List<GetFileList_Res>>() {
+                    Type listType = new TypeToken<List<Attachments>>() {
                     }.getType();
                     attachmentList = new Gson().fromJson(barcode, listType);
                         /*if (equipment != null && equipment.getAttachments() != null && equipment.getAttachments().size() > 0) {
@@ -457,9 +455,9 @@ public class Payment_Activity extends UploadDocumentActivity implements  Documen
 
 
     @Override
-    public void OnItemClick_Document(GetFileList_Res getFileList_res) {
-        if (getFileList_res != null)
-            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(App_preference.getSharedprefInstance().getBaseURL() + "" + getFileList_res.getAttachFileName())));
+    public void OnItemClick_Document(Attachments attachments) {
+        if (attachments != null)
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(App_preference.getSharedprefInstance().getBaseURL() + "" + attachments.getAttachFileName())));
     }
 
     @Override

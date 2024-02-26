@@ -11,19 +11,22 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.ext.SdkExtensions;
 import android.provider.MediaStore;
 import android.text.Editable;
+import android.text.Html;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
-import android.widget.Spinner;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.FileProvider;
 import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -32,23 +35,37 @@ import androidx.work.Data;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkInfo;
 import androidx.work.WorkManager;
-
 import com.eot_app.R;
-import com.eot_app.eoteditor.Utils;
+import com.eot_app.nav_menu.jobs.job_complation.compla_model.NotifyForcompletion;
 import com.eot_app.nav_menu.jobs.job_complation.complat_mvp.Compl_PC;
 import com.eot_app.nav_menu.jobs.job_complation.complat_mvp.Compl_PI;
 import com.eot_app.nav_menu.jobs.job_complation.complat_mvp.Compla_View;
+import com.eot_app.nav_menu.jobs.job_complation.complation_form.BackgroundTaskExecutor;
+import com.eot_app.nav_menu.jobs.job_complation.complation_form.adapter.CompletionFormAdapter;
+import com.eot_app.nav_menu.jobs.job_db.CompliAnsArray;
+import com.eot_app.nav_menu.jobs.job_db.IsMarkDoneWithJtid;
 import com.eot_app.nav_menu.jobs.job_db.Job;
 import com.eot_app.nav_menu.jobs.job_db.JtId;
+import com.eot_app.nav_menu.jobs.job_db.OfflieCompleQueAns;
+import com.eot_app.nav_menu.jobs.job_db.OfflieCompleQueAns_Dao;
+import com.eot_app.nav_menu.jobs.job_detail.detail.CompletionAdpterJobDteails1;
 import com.eot_app.nav_menu.jobs.job_detail.documents.ActivityDocumentSaveUpload;
 import com.eot_app.nav_menu.jobs.job_detail.documents.EditImageDialog;
 import com.eot_app.nav_menu.jobs.job_detail.documents.PathUtils;
-import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.GetFileList_Res;
+import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.Attachments;
 import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.NotifyForMultiDocAdd;
 import com.eot_app.nav_menu.jobs.job_detail.documents.fileattach_mvp.Doc_Attch_Pc;
 import com.eot_app.nav_menu.jobs.job_detail.documents.fileattach_mvp.Doc_Attch_Pi;
 import com.eot_app.nav_menu.jobs.job_detail.documents.fileattach_mvp.Doc_Attch_View;
 import com.eot_app.nav_menu.jobs.job_detail.documents.work_manager.UploadMultiImgWorker;
+import com.eot_app.nav_menu.jobs.job_detail.form_form.get_qus_list.MyFormInterFace;
+import com.eot_app.nav_menu.jobs.job_detail.form_form.get_qus_list.QuestionListAdapter;
+import com.eot_app.nav_menu.jobs.job_detail.form_form.get_qus_list.ans_model.Ans_Req;
+import com.eot_app.nav_menu.jobs.job_detail.form_form.get_qus_list.ans_model.Answer;
+import com.eot_app.nav_menu.jobs.job_detail.form_form.get_qus_list.qus_model.AllTypeFieldClone;
+import com.eot_app.nav_menu.jobs.job_detail.form_form.get_qus_list.qus_model.AnswerModel;
+import com.eot_app.nav_menu.jobs.job_detail.form_form.get_qus_list.qus_model.OptionModel;
+import com.eot_app.nav_menu.jobs.job_detail.form_form.get_qus_list.qus_model.QuesRspncModel;
 import com.eot_app.services.Service_apis;
 import com.eot_app.utility.AppCenterLogs;
 import com.eot_app.utility.AppConstant;
@@ -61,54 +78,83 @@ import com.eot_app.utility.language_support.LanguageController;
 import com.eot_app.utility.settings.setting_db.JobTitle;
 import com.eot_app.utility.settings.setting_db.Suggestion;
 import com.eot_app.utility.util_interfaces.Callback_AlertDialog;
-import com.eot_app.utility.util_interfaces.JoBServSuggAdpter;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.gson.Gson;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
-import com.microsoft.appcenter.AppCenter;
-
-import org.jsoup.Jsoup;
-
 import java.io.File;
 import java.io.IOException;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 
 
 public class JobCompletionActivity extends AppCompatActivity implements View.OnClickListener
-        , TextWatcher, Compla_View, Doc_Attch_View, JobCompletionAdpter.FileDesc_Item_Selected, NotifyForMultiDocAdd {
+        , TextWatcher, Compla_View, Doc_Attch_View, JobCompletionAdpter.FileDesc_Item_Selected, NotifyForMultiDocAdd
+        , CompletionAdpterJobDteails1.CallBAckFormAttchemntToCompl, CompletionFormAdapter.ClickListener, NotifyForcompletion {
     private final static int CAPTURE_IMAGE_GALLARY = 222;
     private static final int DOUCMENT_UPLOAD_CODE = 156;
-    final String JOBCOMPLATIONTYPE = "";
+    private static final int PHOTO_EDIT_CODE = 147;
     private final int CAMERA_CODE = 100;
     private final int ATTACHFILE_CODE = 101;
     private final StringBuffer desc = new StringBuffer();
     private final List<Suggestion> suggestionList = new ArrayList<>();
     Job jobData;
-    JoBServSuggAdpter suggestionAdapter;
     String captureImagePath;
     boolean isFileImage = false;
     RecyclerView.LayoutManager layoutManager;
     Doc_Attch_Pi doc_attch_pi;
     String[] suggestionsArray = new String[suggestionList.size()];
-    TextView cancel_txt, complHeader, save_txt, tv_label_des;
-    ImageView suggestion_img;
-    TextView tvCancel, tvDone, tvFetchDes,tvtimestemp;
-    private EditText compedt;
+    TextView cancel_txt, complHeader, save_txt, txt_notSyncLabel;
     private Compl_PI complPi;
-    private RecyclerView recyclerView;
+    private RecyclerView recyclerView, completionRecyclerView;
     private JobCompletionAdpter jobCompletionAdpter;
     private String jobId;
     private EditImageDialog currentDialog = null;
-    private ArrayList<GetFileList_Res> fileList_res = new ArrayList<>();
-    private ProgressBar progressBar;
-    private Spinner job_suggestion_spinner;
+    private ArrayList<Attachments> fileList_res = new ArrayList<>();
     private WorkManager mWorkManager;
+    private CompletionFormAdapter completionFormAdapter;
+    private ImageView attchmentView, deleteAttchment;
+    private Button addAttchment;
+    int position = -1;
+    int parentPositon = -1;
+    String queId, jtId;
+    Map<String, List<QuesRspncModel>> groupedQuestions = new HashMap<>();
+    List<QuesRspncModel> singleQuestions = new ArrayList<>();
+    List<QuesRspncModel> systemFieldQuestions = new ArrayList<>();
+    List<QuesRspncModel> allFieldQuestions = new ArrayList<>();
+    List<QuesRspncModel> removeItemPositon = new ArrayList<>();
+    List<QuesRspncModel> questions = new ArrayList<>();
+    List<QuesRspncModel> sortQuestinsList;
+    ArrayList<Object> allItem = new ArrayList<>();
+    private boolean isMandatoryNotFill;
+    private final List<MultipartBody.Part> docAns = new ArrayList<>();
+    private final List<MultipartBody.Part> signAns = new ArrayList<>();
+    private final ArrayList<Answer> signQueIdArray = new ArrayList<>();
+    private final ArrayList<Answer> docQueIdArray = new ArrayList<>();
+    private List<String> docanspath=new ArrayList<>();
+    private List<String> signanspath=new ArrayList<>();
+    private final ArrayList<Answer> answerArrayList = new ArrayList<>();
+    private boolean isShowingImg = false, showOnlyImg = false;
+    private LinearLayout ll_attachment,ll_completionForm;
+    private List<IsMarkDoneWithJtid> isMarkDoneList = new ArrayList<>();
+    BackgroundTaskExecutor backgroundTaskExecutor;
+    ConstraintLayout cl_notSyncParent;
+    int competionNotesPostion = -1;
+    String complNotes ="";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,27 +165,51 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
         if (bundle != null) {
             if (getIntent().hasExtra("Complation")) {
                 String jobDataStr = bundle.getString("Complation");
-                jobData = new Gson().fromJson(jobDataStr, Job.class);
+                Job jobData = new Gson().fromJson(jobDataStr, Job.class);
+                showOnlyImg = bundle.getBoolean("showAttachment",false);
                 jobId = jobData.getJobId();
+                setJobData(jobData);
             }
         }
+
         EotApp.getAppinstance().setNotifyForMultiDocAdd(this);
+        EotApp.getAppinstance().setNotifyForcompletion(this);
         initializeMyViews();
     }
 
+    public void setJobData(Job jobData){
+        this.jobData = jobData;
+    }
+    public Job getJobData (){
+        return jobData;
+    }
     private void initializeAdapter() {
-        ArrayList<GetFileList_Res> getFileList_res = new ArrayList<>();
-        jobCompletionAdpter = new JobCompletionAdpter(this, getFileList_res, this, jobId
-                , jaId -> {
+        ArrayList<Attachments> getFileList_res = new ArrayList<>();
+        ArrayList<Object> allItem = new ArrayList<>();
+        backgroundTaskExecutor = new BackgroundTaskExecutor();
+        jobCompletionAdpter = new JobCompletionAdpter(this, getFileList_res, JobCompletionActivity.this, jobId
+                ,( jaId, queId, jtId) -> {
             Log.e("", "");
-            if (complPi != null) {
-                showDialogForRemoveAttch(jaId);
+            this.queId = queId;
+            this.jtId = jtId;
+            if(AppUtility.isInternetConnected()) {
+                if (complPi != null) {
+                    showDialogForRemoveAttch(jaId);
+                }
+            }else {
+                    showErrorDialog(LanguageController.getInstance().getMobileMsgByKey(AppConstant.offline_feature_alert));
             }
         });
         recyclerView.setAdapter(jobCompletionAdpter);
+        completionFormAdapter = new CompletionFormAdapter(JobCompletionActivity.this, allItem, ansId -> {
+
+        },this,backgroundTaskExecutor);
+        completionRecyclerView.setAdapter(completionFormAdapter);
+
+
     }
 
-    private void showDialogForRemoveAttch(final String jaId) {
+    public void showDialogForRemoveAttch(final String jaId) {
         AppUtility.alertDialog2(this, LanguageController.getInstance().getMobileMsgByKey(AppConstant.are_you_sure),
                 LanguageController.getInstance().getMobileMsgByKey(AppConstant.doc_remove),
                 LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok),
@@ -147,7 +217,7 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
                     @Override
                     public void onPossitiveCall() {
                         try {
-                            complPi.removeUploadAttchment(jaId);
+                            complPi.removeUploadAttchment(jaId, queId, jtId);
                         } catch (Exception ex) {
                             AppCenterLogs.addLogToAppCenterOnAPIFail("JobCompletion","","showDialogForRemoveAttch()"+ex.getMessage(),"JobCompletionActivity","");
                             ex.printStackTrace();
@@ -162,8 +232,8 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
     }
 
     @Override
-    public void uploadDocDelete(String msg) {
-        doc_attch_pi.getAttachFileList(jobId, App_preference.getSharedprefInstance().getLoginRes().getUsrId(), "6",true);
+    public void uploadDocDelete(String msg,String queId, String jtId) {
+        doc_attch_pi.getMultiAttachFileList(jobId, App_preference.getSharedprefInstance().getLoginRes().getUsrId(), "6",true,parentPositon,position, queId,jtId);
     }
 
 
@@ -177,73 +247,37 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
     }
 
     private void initializeMyViews() {
-        tv_label_des = findViewById(R.id.tv_label_des);
-        tv_label_des.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.completion_note));
-        progressBar = findViewById(R.id.progressBar);
         recyclerView = findViewById(R.id.recyclerView);
         layoutManager = new GridLayoutManager(this, 2);
-//        CustomLinearLayoutManager customLayoutManager = new CustomLinearLayoutManager(this, LinearLayoutManager.VERTICAL
-//                , false);
 
         recyclerView.setLayoutManager(layoutManager);
+        completionRecyclerView = findViewById(R.id.rv_completion_form);
         initializeAdapter();
         doc_attch_pi = new Doc_Attch_Pc(this);
-        doc_attch_pi.getAttachFileList(jobId, App_preference.getSharedprefInstance().getLoginRes().getUsrId(), "6",true);
-
         cancel_txt = findViewById(R.id.cancel_txt);
         complHeader = findViewById(R.id.complHeader);
         save_txt = findViewById(R.id.save_txt);
 
         cancel_txt.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.cancel));
-        complHeader.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.completion_note));
+        complHeader.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.completion_details));
 
-        //    compleLayout = findViewById(R.id.compleLayout);
-        compedt = findViewById(R.id.compedt);
-        compedt.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.completion_note));
-
-        tvCancel = findViewById(R.id.tvCancel);
-        tvCancel.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.cancel));
-
-        tvDone = findViewById(R.id.tvDone);
-        tvDone.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.done));
-
-        tvFetchDes = findViewById(R.id.tvFetchDes);
-        tvFetchDes.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.fetch_des));
-
-        tvtimestemp=findViewById(R.id.tvtimestemp);
-        tvtimestemp.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.timestemp));
-
-        tvCancel.setOnClickListener(this);
-        tvDone.setOnClickListener(this);
-        tvFetchDes.setOnClickListener(this);
-        tvtimestemp.setOnClickListener(this);
-        //    compleLayout.getEditText().addTextChangedListener(this);
-
-        suggestion_img = findViewById(R.id.suggestion_img);
-        job_suggestion_spinner = findViewById(R.id.job_suggestion_spinner);
-        suggestion_img.setOnClickListener(v -> {
-            if (suggestionList != null && suggestionList.size() > 0)
-                job_suggestion_spinner.performClick();
-            else {
-                AppUtility.alertDialog(JobCompletionActivity.this,
-                        "", LanguageController.getInstance()
-                                .getMobileMsgByKey(AppConstant.no_suggesstion)
-                        , LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok),"", () -> null);
-            }
-
-        });
+        ll_attachment = findViewById(R.id.ll_attachment);
+        ll_completionForm = findViewById(R.id.ll_completionForm);
+        cl_notSyncParent = findViewById(R.id.cl_notSyncParent);
+        txt_notSyncLabel = findViewById(R.id.txt_notSyncLabel);
+        txt_notSyncLabel.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.not_synced_at));
         viewClickListner();
-
         setComplationView();
-
         complPi = new Compl_PC(this);
-
         filterJobServices();
-
-        if (AppUtility.isInternetConnected()) {
-            progressBar.setVisibility(View.VISIBLE);
-        } else {
-            progressBar.setVisibility(View.GONE);
+        if(showOnlyImg){
+            ll_completionForm.setVisibility(View.GONE);
+            ll_attachment.setVisibility(View.VISIBLE);
+            setList(new ArrayList<>(),"",true);
+        }else {
+            ll_completionForm.setVisibility(View.VISIBLE);
+            ll_attachment.setVisibility(View.GONE);
+            setLists();
         }
     }
 
@@ -261,13 +295,12 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
                 }
 
                 List<String> tempList = new ArrayList<>();
-//                suggestionsArray = new String[suggestionList.size()];
                 for (int i = 0; i < Objects.requireNonNull(suggestionList).size(); i++) {
                     try {
                         if (suggestionList.get(i).getComplNoteSugg() != null &&
                                 suggestionList.get(i).getComplNoteSugg().length() > 0) {
                             tempList.add(suggestionList.get(i).getComplNoteSugg());
-                            //     suggestionsArray[i] = suggestionList.get(i).getComplNoteSugg();
+
                         }
                     } catch (Exception e) {
                         AppCenterLogs.addLogToAppCenterOnAPIFail("JobCompletion","","filterJobServices()"+e.getMessage(),"JobCompletionActivity","");
@@ -279,17 +312,7 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
                     for (int i = 0; i < tempList.size(); i++) {
                         suggestionsArray[i] = tempList.get(i);
                     }
-                } catch (Exception e) {
-                    AppCenterLogs.addLogToAppCenterOnAPIFail("JobCompletion","","filterJobServices()"+e.getMessage(),"JobCompletionActivity","");
-                    e.printStackTrace();
-                }
-                try {
-                    if (suggestionAdapter == null) {
-                        AppUtility.spinnerPopUpWindow(job_suggestion_spinner);
-                        suggestionAdapter = new JoBServSuggAdpter(JobCompletionActivity.this, suggestionsArray
-                                , nm -> setSelectedSuggeston(nm));
-                        job_suggestion_spinner.setAdapter(suggestionAdapter);
-                    }
+                    setSuggestionsArray(suggestionsArray);
                 } catch (Exception e) {
                     AppCenterLogs.addLogToAppCenterOnAPIFail("JobCompletion","","filterJobServices()"+e.getMessage(),"JobCompletionActivity","");
                     e.printStackTrace();
@@ -301,25 +324,12 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
         }
     }
 
+    public void setSuggestionsArray(String[] suggestionsArray) {
+        this.suggestionsArray = suggestionsArray;
+    }
 
-    private void setSelectedSuggeston(String nm) {
-        try {
-            String str = "";
-            int cursorpostion=compedt.getText().toString().length();
-            if (compedt.getText().toString().trim().length() > 0) {
-                str = compedt.getText().toString() + "\n" + nm;
-            } else {
-                str = nm;
-            }
-            compedt.setText(str);
-            str.replace("<br>","");
-            str.replace("null","");
-            compedt.setText(str);
-            compedt.setSelection(cursorpostion+nm.length()+1);
-        } catch (Exception e) {
-            AppCenterLogs.addLogToAppCenterOnAPIFail("JobCompletion","","setSelectedSuggeston()"+e.getMessage(),"JobCompletionActivity","");
-            e.printStackTrace();
-        }
+    public String[] getSuggestionsArray(){
+        return suggestionsArray;
     }
 
     private void setComplationView() {
@@ -327,11 +337,6 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
             save_txt.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.save_btn));
         } else {
             save_txt.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.update));
-//            compedt.setText(jobData.getComplNote().replace("null", ""));
-  //          compedt.setText(AppUtility.html2text(jobData.getComplNote().replace("null", "")));// Log.d("notes",jobData.getComplNote());
-              String notes=jobData.getComplNote().replace("null","");
-              notes.replace("<br>","");
-            compedt.setText(notes);
         }
     }
 
@@ -345,75 +350,197 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.cancel_txt:
+                if(isShowingImg){
+                    ll_attachment.setVisibility(View.GONE);
+                    ll_completionForm.setVisibility(View.VISIBLE);
+                    isShowingImg = false;
+                }
+                else {
                 AppUtility.hideSoftKeyboard(this);
-                this.finish();
+                    Intent intent = new Intent();
+                    setResult(RESULT_OK, intent);
+                    finish();
+            }
                 break;
             case R.id.save_txt:
                 AppUtility.hideSoftKeyboard(this);
-                complPi.addEditJobComplation(jobData.getJobId(), compedt.getText().toString().trim());
-                break;
-            case R.id.tvDone:
-                setUpdatedDesc(1);
-                break;
-            case R.id.tvCancel:
-                setUpdatedDesc(2);
-                break;
-            case R.id.tvFetchDes:
-                setUpdatedDesc(3);
-                break;
-            case R.id.tvtimestemp:
-                setUpdatedDesc(4);
+                for (QuesRspncModel item : completionFormAdapter.getTypeList()
+                ) {
+                        if(item.getType().isEmpty()){
+                            if(item.getMandatory().equals("1"))
+                                if(item.getAns().get(0).getValue().isEmpty())
+                                    isMandatoryNotFill = true;
+                            complNotes = item.getAns().get(0).getValue();
+                        }
+                }
+
+                ansAnsQuesRspncModel(completionFormAdapter.getTypeList());
+
+                /**    if question is mandatory but not fill   ***/
+                for (Object item :allItem
+                     ) {
+                    if (item instanceof QuesRspncModel) {
+                        if (((QuesRspncModel) item).getType().equals("13") && ((QuesRspncModel) item).getMandatory().equals("1")){
+                            String jobId = jobData.getJobId();
+                            String queId = ((QuesRspncModel) item).getQueId();
+                            String jtId = ((QuesRspncModel) item).getJtId();
+
+                            List<Attachments> attachmentsList = AppDataBase.getInMemoryDatabase(this).attachments_dao().getAttachmentsById(jobId,queId,jtId);
+                            if (attachmentsList.size()<=0) {
+                                isMandatoryNotFill = true;
+                            }
+                    }
+                    } else if (item instanceof List) {
+                        for (QuesRspncModel listItem : (ArrayList<QuesRspncModel>) item
+                        ) {
+                            if (((QuesRspncModel) listItem).getType().equals("13") && ((QuesRspncModel) listItem).getMandatory().equals("1")){
+                                String jobId = jobData.getJobId();
+                                String queId = ((QuesRspncModel) listItem).getQueId();
+                                String jtId = ((QuesRspncModel) listItem).getJtId();
+
+                                List<Attachments> attachmentsList = AppDataBase.getInMemoryDatabase(this).attachments_dao().getAttachmentsById(jobId,queId,jtId);
+                                if (attachmentsList.size()<=0) {
+                                    isMandatoryNotFill = true;
+                                }
+                            }
+                        }
+                    }
+                }
+                if (isMandatoryNotFill) {
+                    isMandatoryNotFill = false;
+                    AppUtility.alertDialog(this, "", LanguageController.getInstance().getMobileMsgByKey(AppConstant.fill_all_mandatory_questions), LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), "", new Callable<Boolean>() {
+                        @Override
+                        public Boolean call() throws Exception {
+                            return null;
+                        }
+                    });
+                    return;
+                }
+
+                    if (!emptyCheckFormValidation()) {
+                        emptyAnsFieldError();
+                        return;
+                    }
+
+                if (answerArrayList.size() > 0 || !complNotes.isEmpty()) {
+                    Ans_Req ans_req = new Ans_Req(App_preference.getSharedprefInstance().getLoginRes().getUsrId(), answerArrayList,
+                            App_preference.getSharedprefInstance().getJobCompletionForm().getFrmId(), jobData.getJobId());
+                    if (!AppUtility.isInternetConnected())
+                    {
+                        List<QuesRspncModel> offLineQueAns = new ArrayList<>();
+                         for (Object item : allItem
+                             ) {
+                            if(item instanceof QuesRspncModel){
+                                offLineQueAns.add((QuesRspncModel) item);
+                            }else if(item instanceof List){
+                                offLineQueAns.addAll((List<QuesRspncModel>)item);
+                            }
+                        }
+                        OfflieCompleQueAns offlieCompleQueAns = new OfflieCompleQueAns(jobData.getJobId(),offLineQueAns,isMarkDoneList);
+                        OfflieCompleQueAns_Dao offlieCompleQueAnsDao = AppDataBase.getInMemoryDatabase(this).offline_completion_ans_dao();
+                        offlieCompleQueAnsDao.inserOfflineAns(offlieCompleQueAns);
+
+                    }
+                    complPi.addEditJobComplation(jobData.getJobId(), complNotes, answerArrayList,signanspath,docanspath,signQueIdArray,docQueIdArray,isMarkDoneList);
+                }
                 break;
         }
     }
 
-
     @Override
-    public void selectFile() {
+    public void selectFilesForCompletion(boolean isCompletion) {
+
+
+        final BottomSheetDialog dialog = new BottomSheetDialog(this);
+        dialog.setContentView(R.layout.bottom_image_chooser);
+        TextView camera = dialog.findViewById(R.id.camera);
+        assert camera != null;
+        camera.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.camera));
+        TextView gallery = dialog.findViewById(R.id.gallery);
+        assert gallery != null;
+        gallery.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.gallery));
+        ////After discussion with Shubham and Jit Sir hide attachment all code 19/12/23
+//            TextView drive_document = dialog.findViewById(R.id.drive_document);
+        LinearLayout drive_layout = dialog.findViewById(R.id.driveLayout);
+        drive_layout.setVisibility(View.GONE);
+//            assert drive_document != null;
+//            drive_document.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant              .document));
+        camera.setOnClickListener(view -> {
+            if (AppUtility.askCameraTakePicture(JobCompletionActivity.this)) {
+                takePictureFromCamera();
+            } else {
+                // Sdk version 33
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU ) {
+                    askTedPermission(0, AppConstant.cameraPermissions33);
+                }else {
+                    askTedPermission(0, AppConstant.cameraPermissions);
+                }
+            }
+            dialog.dismiss();
+        });
+
+        gallery.setOnClickListener(view -> {
+            if (AppUtility.askGalaryTakeImagePermiSsion(JobCompletionActivity.this)) {
+                getImageFromGallray(isCompletion);
+            } else {
+                // Sdk version 33
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU ) {
+                    askTedPermission(1, AppConstant.galleryPermissions33);
+                }else {
+                    askTedPermission(1, AppConstant.galleryPermissions);
+                }
+            }
+            dialog.dismiss();
+        });
+
+        dialog.show();
+    }
+    @Override
+    public void selectFiles() {
 //        if (!Utils.isOnline(this)) {
 //            AppUtility.alertDialog(this, LanguageController.getInstance().getMobileMsgByKey(AppConstant.dialog_error_title), LanguageController.getInstance().getMobileMsgByKey(AppConstant.feature_not_available), LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), "", () -> null);
 //        } else {
-            final BottomSheetDialog dialog = new BottomSheetDialog(this);
-            dialog.setContentView(R.layout.bottom_image_chooser);
-            TextView camera = dialog.findViewById(R.id.camera);
-            assert camera != null;
-            camera.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.camera));
-            TextView gallery = dialog.findViewById(R.id.gallery);
-            assert gallery != null;
-            gallery.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.gallery));
-             ////After discussion with Shubham and Jit Sir hide attachment all code 19/12/23
+        final BottomSheetDialog dialog = new BottomSheetDialog(this);
+        dialog.setContentView(R.layout.bottom_image_chooser);
+        TextView camera = dialog.findViewById(R.id.camera);
+        assert camera != null;
+        camera.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.camera));
+        TextView gallery = dialog.findViewById(R.id.gallery);
+        assert gallery != null;
+        gallery.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.gallery));
+        ////After discussion with Shubham and Jit Sir hide attachment all code 19/12/23
 //            TextView drive_document = dialog.findViewById(R.id.drive_document);
-            LinearLayout drive_layout = dialog.findViewById(R.id.driveLayout);
-            drive_layout.setVisibility(View.GONE);
+        LinearLayout drive_layout = dialog.findViewById(R.id.driveLayout);
+        drive_layout.setVisibility(View.GONE);
 //            assert drive_document != null;
 //            drive_document.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant              .document));
-            camera.setOnClickListener(view -> {
-                if (AppUtility.askCameraTakePicture(JobCompletionActivity.this)) {
-                    takePictureFromCamera();
-                } else {
-                    // Sdk version 33
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU ) {
-                        askTedPermission(0, AppConstant.cameraPermissions33);
-                    }else {
-                        askTedPermission(0, AppConstant.cameraPermissions);
-                    }
+        camera.setOnClickListener(view -> {
+            if (AppUtility.askCameraTakePicture(JobCompletionActivity.this)) {
+                takePictureFromCamera();
+            } else {
+                // Sdk version 33
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU ) {
+                    askTedPermission(0, AppConstant.cameraPermissions33);
+                }else {
+                    askTedPermission(0, AppConstant.cameraPermissions);
                 }
-                dialog.dismiss();
-            });
+            }
+            dialog.dismiss();
+        });
 
-            gallery.setOnClickListener(view -> {
-                if (AppUtility.askGalaryTakeImagePermiSsion(JobCompletionActivity.this)) {
-                    getImageFromGallray();
-                } else {
-                    // Sdk version 33
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU ) {
-                        askTedPermission(1, AppConstant.galleryPermissions33);
-                    }else {
-                        askTedPermission(1, AppConstant.galleryPermissions);
-                    }
+        gallery.setOnClickListener(view -> {
+            if (AppUtility.askGalaryTakeImagePermiSsion(JobCompletionActivity.this)) {
+                getImageFromGallray(false);
+            } else {
+                // Sdk version 33
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU ) {
+                    askTedPermission(1, AppConstant.galleryPermissions33);
+                }else {
+                    askTedPermission(1, AppConstant.galleryPermissions);
                 }
-                dialog.dismiss();
-            });
+            }
+            dialog.dismiss();
+        });
 ////After discussion with Shubham and Jit Sir hide attachment all code 19/12/23
 //            drive_document.setOnClickListener(view -> {
 //                if (AppUtility.askGalaryTakeImagePermiSsion(JobCompletionActivity.this)) {
@@ -428,7 +555,7 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
 //                }
 //                dialog.dismiss();
 //            });
-            dialog.show();
+        dialog.show();
 //        }
     }
 
@@ -440,7 +567,7 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
                         if (type == 0)
                             takePictureFromCamera();
                         else if (type == 1)
-                            getImageFromGallray();
+                            getImageFromGallray(false);
                         ////After discussion with Shubham and Jit Sir hide attachment all code 19/12/23
 //                        else if (type == 2)
 //                            takeimageFromGalary();
@@ -457,32 +584,37 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
     }
 
     @Override
-    public void OnItemClick_Document(GetFileList_Res getFileList_res) {
-        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(App_preference.getSharedprefInstance().getBaseURL() + "" + getFileList_res.getAttachFileName())));
+    public void OnItemClick_Document(Attachments attachments) {
+        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(App_preference.getSharedprefInstance().getBaseURL() + "" + attachments.getAttachFileName())));
     }
 
     @Override
     public void openAttachmentDialog() {
-        selectFile();
+        selectFiles();
     }
 
     @Override
-    public void setList(ArrayList<GetFileList_Res> getFileList_res, String isAttachCommpletionNotes,boolean firstCall) {
-        progressBar.setVisibility(View.GONE);
+    public void setList(ArrayList<Attachments> getFileList_res, String isAttachCommpletionNotes, boolean firstCall) {
         if (currentDialog != null) {
             currentDialog.dismiss();
             currentDialog = null;
         }
-//        if (getFileList_res.size() == 1)
-//            this.fileList_res.addAll(getFileList_res);
-//        else
+        //Show only Job Completion Images
             this.fileList_res = getFileList_res;
-        if (jobCompletionAdpter != null)
-            (jobCompletionAdpter).updateFileList(fileList_res,firstCall);
+        if (jobCompletionAdpter != null) {
+            (jobCompletionAdpter).updateFileList((ArrayList<Attachments>) AppDataBase.getInMemoryDatabase(this).attachments_dao().getAttachmentsByJobId(jobId),firstCall,"","");
+            }
     }
 
     @Override
-    public void addNewItemToAttachmentList(ArrayList<GetFileList_Res> getFileList_res, String isAttachCompletionNotes) {
+    public void setMultiList(ArrayList<Attachments> attachments, String isAttachCompletionNotes, boolean firstCall, int parentPositon, int position, String queId, String jtId) {
+        AppDataBase.getInMemoryDatabase(this).attachments_dao().insertAttachments(attachments);
+        AppDataBase.getInMemoryDatabase(this).attachments_dao().deleteAttachments();
+        onDocumentSelected("","",false,parentPositon, position, queId, jtId);
+    }
+
+    @Override
+    public void addNewItemToAttachmentList(ArrayList<Attachments> getFileList_res, String isAttachCompletionNotes) {
         if (isFileImage) {
             String bitmapString = "";
             // remove the temporary added item for showing loader
@@ -515,6 +647,294 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
         //  nolist_linear.setVisibility(View.GONE);
     }
 
+    HashMap<String,Boolean> groupedAddedList = new HashMap<>();
+    private void setLists(){
+        List<String> addedKeys = new ArrayList<>();
+        List<QuesRspncModel> filterList ;
+        Set<IsMarkDoneWithJtid> isMarkDoneWithJtids = new HashSet<>();
+//        List<Attachments> list11 = AppDataBase.getInMemoryDatabase(this).attachments_dao().getAttachmentsById(jobData.getJobId(),"384","");
+        boolean isNotSynced = false;
+        if(!AppUtility.isInternetConnected()){
+            OfflieCompleQueAns notSyncedList = AppDataBase.getInMemoryDatabase(this).offline_completion_ans_dao().getComplQueAnsById(jobData.getJobId());
+             /**Get Questions List.*/
+            if(notSyncedList != null){
+                /** If ans already filled by user in offline mode*/
+                cl_notSyncParent.setVisibility(View.VISIBLE);
+               filterList = notSyncedList.getAllQuestionAnswer();
+               isMarkDoneWithJtids.addAll(notSyncedList.getIsMarkDoneWithJtId());
+               isNotSynced = true;
+            }else {
+                cl_notSyncParent.setVisibility(View.GONE);
+                filterList = App_preference.getSharedprefInstance().getJobCompletionFormFields();
+                 isMarkDoneWithJtids = new HashSet<>(jobData.getIsMarkDoneWithJtId());
+            }
+        }else {
+            cl_notSyncParent.setVisibility(View.GONE);
+            filterList = App_preference.getSharedprefInstance().getJobCompletionFormFields();
+             isMarkDoneWithJtids = new HashSet<>(jobData.getIsMarkDoneWithJtId());
+        }
+
+
+        if(isMarkDoneWithJtids.size()> 0){
+            isMarkDoneList.addAll(isMarkDoneWithJtids);
+        }
+
+        /** Put ans in questions*/
+        if(jobData.getCompliAnsArray()!=null && !jobData.getCompliAnsArray().isEmpty() && !isNotSynced){
+            for (CompliAnsArray ansItem : jobData.getCompliAnsArray()
+                 ) {
+                for (QuesRspncModel questItem : filterList
+                     ) {
+                    if(questItem.getQueId().equals(ansItem.getQueId())){
+                            if (questItem.getAns().size() == 0) {
+                                AnswerModel answerModel = new AnswerModel(ansItem.getKey(), ansItem.getValue(), ansItem.getJtId());
+                                List<AnswerModel> answerModels = new ArrayList<>();
+                                answerModels.add(answerModel);
+                                questItem.setAns(answerModels);
+                            } else {
+                                AnswerModel answerModel = new AnswerModel(ansItem.getKey(), ansItem.getValue(), ansItem.getJtId());
+                                List<AnswerModel> answerModels = new ArrayList<>();
+                                answerModels.addAll(questItem.getAns());
+                                answerModels.add(answerModel);
+                                questItem.setAns(answerModels);
+                            }
+                        }
+                        }
+            }
+        }
+        /** Put ans of attachment in questions of type 13 (Attachment type)*/
+        if(AppDataBase.getInMemoryDatabase(this).attachments_dao().getAttachmentsByJobId(jobData.getJobId()) != null){
+            for (QuesRspncModel questItem : filterList
+            ) {
+                if(questItem.getType().equals("13")) {
+                    List<Attachments> list = new ArrayList<>();
+                    if(questItem.getIsLinkWithService().equals("0")){
+                        list.addAll(AppDataBase.getInMemoryDatabase(this).attachments_dao().getAttachmentsById(jobData.getJobId(), questItem.getQueId(),questItem.getJtId()));
+                        questItem.setAttachmentsList(list);
+                    }else if(questItem.getIsLinkWithService().equals("1") && !questItem.getJtId().isEmpty()){
+                        list.addAll(AppDataBase.getInMemoryDatabase(this).attachments_dao().getAttachmentsById(jobData.getJobId(), questItem.getQueId(), questItem.getJtId()));
+                        questItem.setAttachmentsList(list);
+                    }
+                }
+            }
+        }
+        /** Filter questions list according services that assing to job*/
+        List<JtId> jtIdList = jobData.getJtId();
+        for(QuesRspncModel takeItem : filterList){
+            if(!takeItem.getJtId().isEmpty()){
+                for (JtId jtid: jtIdList
+                ) {
+                    if(takeItem.getJtId().equals(jtid.getJtId())){
+                        questions.add(takeItem);
+                    }
+                }
+            }else {
+                questions.add(takeItem);
+            }
+        }
+        /** Separate and Grouping questions in list according question link with service or without service or default*/
+        for (int i= 0 ;i< questions.size() ; i++) {
+            String jtid = questions.get(i).getJtId();
+            if (jtid.equals("") && jtid.isEmpty() && questions.get(i).getIsLinkWithService().equals("0") && !questions.get(i).getType().isEmpty()) {
+                /** Handle single or not linked questions*/
+                singleQuestions.add(questions.get(i));
+            } else if (questions.get(i).getIsLinkWithService().equals("1") && questions.get(i).getJtId().isEmpty()) {
+                /** Handle all type questions*/
+                if(allFieldQuestions.size()>0){
+                    removeItemPositon.add(questions.get(i));
+                }
+                allFieldQuestions.add(questions.get(i));
+
+            } else if (questions.get(i).getType().equals("") && questions.get(i).getType().isEmpty()) {
+                /** Handle completion notes and default system field questions*/
+                    String notes=jobData.getComplNote().replace("null","");
+                    notes.replace("<br>","");
+                    AnswerModel ans = new AnswerModel("0",notes);
+                    List<AnswerModel> list = new ArrayList<>();
+                    list.add(ans);
+                    questions.get(i).setAns(list);
+
+                systemFieldQuestions.add(questions.get(i));
+
+            } else {
+                /** Handle grouped question*/
+                if (groupedQuestions.containsKey(jtid)) {
+                    groupedQuestions.get(jtid).add(questions.get(i));
+                    removeItemPositon.add(questions.get(i));
+                } else {
+                    List<QuesRspncModel> questionList = new ArrayList<>();
+                    questionList.add(questions.get(i));
+                    groupedQuestions.put(jtid, questionList);
+                }
+            }
+        }
+        /** Handle grouped question that have not any linked question. It have only all type linked questions*/
+        for (JtId jtId : jobData.getJtId()
+             ) {
+            if(isNotKey(jtId.getJtId())){
+                addedKeys.add(jtId.getJtId());
+            }
+        }
+        for (String key: addedKeys
+             ) {
+            groupedQuestions.put(key, new ArrayList<QuesRspncModel>());
+        }
+        for (String key : groupedQuestions.keySet()){
+            for (QuesRspncModel allFieldItem : allFieldQuestions) {
+                if(!key.equals("SystemField")) {
+                    try {
+                       AllTypeFieldClone allTypeFieldClone =  new AllTypeFieldClone(allFieldItem);
+                       AllTypeFieldClone cloned = (AllTypeFieldClone) allTypeFieldClone.clone();
+                       cloned.getQuesRspncModel().setJtId(key);
+                       if(allFieldItem.getType().equals("3")){
+                           boolean ansFilled = false;
+                           for (AnswerModel ans : allFieldItem.getAns()
+                           ) {
+                               if (ans.getJtId().equals(key)) {
+                                   if(!ansFilled) {
+                                       AnswerModel answerModel = new AnswerModel(ans.getKey(), ans.getValue(), ans.getJtId());
+                                       List<AnswerModel> listAns = new ArrayList<>();
+                                       listAns.add(answerModel);
+                                       cloned.getQuesRspncModel().setAns(listAns);
+                                       ansFilled = true;
+                                   }else {
+                                       AnswerModel answerModel = new AnswerModel(ans.getKey(), ans.getValue(), ans.getJtId());
+                                       cloned.getQuesRspncModel().getAns().add(answerModel);
+                                   }
+
+                               }
+                           }
+                           if(!ansFilled){
+                               AnswerModel answerModel = new AnswerModel("0", "", key);
+                               List<AnswerModel> listAns = new ArrayList<>();
+                               listAns.add(answerModel);
+                               cloned.getQuesRspncModel().setAns(listAns);
+                           }
+                       }else if(allFieldItem.getType().equals("13")){
+                           List<Attachments> list = new ArrayList<>();
+                           list.addAll(AppDataBase.getInMemoryDatabase(this).attachments_dao().getAttachmentsById(jobData.getJobId(), cloned.getQuesRspncModel().getQueId(),cloned.getQuesRspncModel().getJtId()));
+                           cloned.getQuesRspncModel().setAttachmentsList(list);
+                       }else {
+                           for (AnswerModel ans : allFieldItem.getAns()
+                           ) {
+                               if (ans.getJtId().equals(key)) {
+                                   AnswerModel answerModel = new AnswerModel(ans.getKey(), ans.getValue(), ans.getJtId());
+                                   List<AnswerModel> listAns = new ArrayList<>();
+                                   listAns.add(answerModel);
+                                   cloned.getQuesRspncModel().setAns(listAns);
+                                   break;
+                               } else {
+                                   AnswerModel answerModel = new AnswerModel("0", "", key);
+                                   List<AnswerModel> listAns = new ArrayList<>();
+                                   listAns.add(answerModel);
+                                   cloned.getQuesRspncModel().setAns(listAns);
+                               }
+                           }
+                       }
+                        groupedQuestions.get(key).add(cloned.getQuesRspncModel());
+                    }catch (Exception e){
+
+                    }
+
+
+                }
+            }
+        }
+        sortQuestinsList = questions;
+        sortQuestinsList.removeAll(removeItemPositon);
+        allItem.clear();
+        boolean isAllField = false;
+        /** Set questions according form question priority*/
+        for (QuesRspncModel item : sortQuestinsList
+        ) {
+
+            for (QuesRspncModel systemItem : systemFieldQuestions){
+                if(item.getType().equals("")&& item.getType().isEmpty()){
+                    allItem.addAll(systemFieldQuestions);
+                    setCompletionNotesPosition(allItem.size()-1);
+                    break;
+                }
+            }
+            for (QuesRspncModel singleItem: singleQuestions
+            ) {
+                if(singleItem.getQueId().equals(item.getQueId())){
+                    allItem.add(singleItem);
+                    break;
+                }
+            }
+
+
+                for (String key : groupedQuestions.keySet()
+                ) {
+
+                    if(isNotAdded(key)) {
+                        for (QuesRspncModel queItem : groupedQuestions.get(key)
+                        ) {
+                            if (queItem.getQueId().equals(item.getQueId())) {
+                                setServiceMarkasDone(groupedQuestions.get(key));
+                                allItem.add(groupedQuestions.get(key));
+                                groupedAddedList.put(key, true);
+                                isAllField = true;
+                                break;
+                            }
+                        }
+
+                        if (key.equals(item.getJtId())) {
+                            if (!isAllField) {
+                                setServiceMarkasDone(groupedQuestions.get(key));
+                                allItem.add(groupedQuestions.get(item.getJtId()));
+                                groupedAddedList.put(key, true);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        if(App_preference.getSharedprefInstance().getLoginRes().getIsCompleShowMarkDone().equals("1")) {
+            for (String key : addedKeys
+            ) {
+                if (isNotAdded(key)) {
+                    if (groupedQuestions.get(key).size() > 0) {
+                        setServiceMarkasDone(groupedQuestions.get(key));
+                        allItem.add(groupedQuestions.get(key));
+                    } else {
+                        QuesRspncModel quesRspncModel = new QuesRspncModel("temp", "", "", "", "", "-1", "", false, new ArrayList<OptionModel>(), new ArrayList<AnswerModel>(), -1, "", "", "", "", "", "", "", "", key, "", "", "", -1, new ArrayList<Attachments>());
+                        groupedQuestions.get(key).add(quesRspncModel);
+                        setServiceMarkasDone(groupedQuestions.get(key));
+                        allItem.add(groupedQuestions.get(key));
+                    }
+                }
+            }
+        }
+        Log.e("All Item",""+allItem.toString());
+        if(groupedQuestions.size()>0) {
+            backgroundTaskExecutor.createInstance(groupedQuestions.size());
+        }
+        completionFormAdapter.updateAdapter(allItem);
+    }
+
+    public boolean isNotAdded(String key){
+        boolean isNot  = true;
+        for(String item : groupedAddedList.keySet()){
+            if(item.equals(key)){
+                isNot = false;
+                break;
+            }
+        }
+        return isNot;
+    }
+    public boolean isNotKey(String jtid){
+        boolean isNot = true;
+        for (String key : groupedQuestions.keySet()
+             ) {
+            if(key.equals(jtid)){
+                isNot = false;
+                break;
+            }
+        }
+        return isNot;
+    }
+
     @Override
     public void onSessionExpire(String msg) {
         AppUtility.alertDialog(this, LanguageController.getInstance().getMobileMsgByKey              (AppConstant.dialog_error_title), msg, LanguageController.getInstance().getMobileMsgByKey            (AppConstant.ok), "",
@@ -523,7 +943,6 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
                     return null;
                 });
     }
-
     @Override
     public void fileExtensionNotSupport(String msg) {
     }
@@ -534,12 +953,10 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
 
     @Override
     public void hideProgressBar() {
-        progressBar.setVisibility(View.GONE);
     }
 
     @Override
     public void showProgressBar() {
-        progressBar.setVisibility(View.VISIBLE);
     }
 
     /**
@@ -574,13 +991,26 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
             String packageName = resolveInfo.activityInfo.packageName;
             this.grantUriPermission(packageName, uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
         }
-        startActivityForResult(takePictureIntent, CAMERA_CODE); // IMAGE_CAPTURE = 0
+        this.startActivityForResult(takePictureIntent, CAMERA_CODE); // IMAGE_CAPTURE = 0
     }
 
-    private void getImageFromGallray() {
-        Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        galleryIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-        startActivityForResult(galleryIntent, CAPTURE_IMAGE_GALLARY);
+    private void getImageFromGallray(boolean isCompletion) {
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && SdkExtensions.getExtensionVersion(Build.VERSION_CODES.R) >= 2){
+
+            Intent galleryIntent = new Intent(MediaStore.ACTION_PICK_IMAGES);
+            galleryIntent.setType("image/*");
+            galleryIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+            galleryIntent.putExtra(MediaStore.EXTRA_PICK_IMAGES_MAX,MediaStore.getPickImagesMaxLimit());
+            startActivityForResult(Intent.createChooser(galleryIntent,"Select Picture"), CAPTURE_IMAGE_GALLARY);
+        }else {
+            Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            galleryIntent.setType("image/*");
+            galleryIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+            this.startActivityForResult(galleryIntent, CAPTURE_IMAGE_GALLARY);
+        }
+
+
     }
 ////After discussion with Shubham and Jit Sir hide attachment all code 19/12/23
 //    private void takeimageFromGalary() {
@@ -603,7 +1033,7 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
     private File createImageFile() throws IOException {
         Calendar calendar = Calendar.getInstance();
         long imageFileName = calendar.getTime().getTime();
-        File storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment            .DIRECTORY_PICTURES), "Eot Directory");
+        File storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "Eot Directory");
 
         File directoryPath = new File(storageDir.getPath());
         File image = File.createTempFile(
@@ -612,6 +1042,7 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
                 directoryPath   /* directory */
         );
         captureImagePath = image.getAbsolutePath();
+        App_preference.getSharedprefInstance().setCapturePath(captureImagePath);
         return new File(image.getPath());
     }
 
@@ -653,48 +1084,65 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
                             Bitmap bitmap = AppUtility.getBitmapFromPath(data.getStringExtra("imgPath"));
                             bitmapString = AppUtility.BitMapToString(bitmap);
                         }
-                        GetFileList_Res obj = new GetFileList_Res("0", fileNameExt, fileNameExt, bitmapString);
-                        ArrayList<GetFileList_Res> updateList = new ArrayList<>();
+                        Attachments attachments = new Attachments("TempAttach-"+data.getStringExtra("fileName"),fileNameExt,fileNameExt,data.getStringExtra("imgPath"),queId, jtId,"",jobData.getJobId(),"6",bitmapString);
+                        AppDataBase.getInMemoryDatabase(this).attachments_dao().insertSingleAttachments(attachments);
 
-                        if (fileList_res != null) {
-                            updateList.addAll(fileList_res);
-                        }
-                        updateList.add(obj);
                         String isAttach = data.getStringExtra("isAttach");
                         isFileImage = data.getBooleanExtra("isFileImage", false);
+                        onDocumentSelected("","",false,parentPositon, position,this.queId, this.jtId);
                         if (isAttach.equals("1") && isFileImage) {
-                            desc.append(compedt.getText().toString().trim());
-                            compedt.getText().clear();
-                            if (!TextUtils.isEmpty(desc))
-                                desc.append(System.lineSeparator());
+                            CompletionFormAdapter.DefaultViewHolder defaultViewHolderr = (CompletionFormAdapter.DefaultViewHolder) completionRecyclerView.findViewHolderForAdapterPosition(competionNotesPostion);
+                            if(data.getStringExtra("desc") != null && !data.getStringExtra("desc").isEmpty()) {
+                               try {
+                                   if (defaultViewHolderr.compedt != null) {
+                                       desc.append(defaultViewHolderr.compedt.getText().toString().trim());
+                                       defaultViewHolderr.compedt.getText().clear();
+                                       if (!TextUtils.isEmpty(desc))
+                                           desc.append(System.lineSeparator());
 
-                            if (updateList.get(0).getDes() != null)
-                                desc.append(updateList.get(0).getDes());
-                            compedt.setText(desc);
-                            String tempnotes=desc.toString().replace("null","");
-                            compedt.setText(tempnotes);
-                            compedt.setSelection(compedt.getText().toString().length());
-                            desc.setLength(0);
-                            setList(updateList, "",true);
+                                       if (data.getStringExtra("desc") != null)
+                                           desc.append(data.getStringExtra("desc"));
+                                       defaultViewHolderr.compedt.setText(desc);
+                                       String tempnotes = desc.toString().replace("null", "");
+                                       defaultViewHolderr.compedt.setText(tempnotes);
+                                       defaultViewHolderr.compedt.setSelection(defaultViewHolderr.compedt.getText().toString().length());
+                                       desc.setLength(0);
+                                   }
+                               }catch (Exception e){
+                                   Log.e("Exception",e.getMessage());
+                                    for (Object item :
+                                         allItem) {
+                                        if(item instanceof QuesRspncModel){
+                                            if(((QuesRspncModel) item).getType().equals("")){
+
+                                                desc.append(((QuesRspncModel) item).getAns().get(0).getValue().toString().trim());
+                                                if (!TextUtils.isEmpty(desc))
+                                                    desc.append(System.lineSeparator());
+
+                                                if (data.getStringExtra("desc") != null)
+                                                    desc.append(data.getStringExtra("desc"));
+
+                                                String tempnotes = desc.toString().replace("null", "");
+                                                ((QuesRspncModel) item).getAns().get(0).setValue(tempnotes);
+                                                desc.setLength(0);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
                         }
                         if (data.getStringExtra("fileName") != null) {
                             try {
-//                                doc_attch_pi.uploadDocuments(jobId, data.getStringExtra("imgPath"),
-//                                        data.getStringExtra("fileName"),
-//                                        data.getStringExtra("desc"),
-//                                        data.getStringExtra("type"),
-//                                        data.getStringExtra("isAttach"));
-                                OfflineDataController.getInstance().addInOfflineDB(Service_apis.upload_document, AppUtility.getParam(jobId, data.getStringExtra("imgPath"),
+
+                                OfflineDataController.getInstance().addInOfflineDB(Service_apis.upload_document, AppUtility.getParam(jobId, this.queId, this.jtId,data.getStringExtra("imgPath"),
                                         data.getStringExtra("fileName"),
                                         data.getStringExtra("desc"),
                                         data.getStringExtra("type"),
-                                        data.getStringExtra("isAttach"), true), AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT));
+                                        data.getStringExtra("isAttach"), true, false,this.parentPositon, this.position), AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT));
                             } catch (Exception e) {
                                 AppCenterLogs.addLogToAppCenterOnAPIFail("JobCompletion","","onActivityResult()"+e.getMessage(),"JobCompletionActivity","");
-                                if (updateList.size() == 1) {
-                                    fileList_res.remove(updateList.get(0));
-                                    setList(fileList_res, "",true);
-                                }
+
                                 e.printStackTrace();
                             }
                         }
@@ -703,10 +1151,10 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
             case CAMERA_CODE:
                 if (resultCode == RESULT_OK) {
                     try {
-                        File file = AppUtility.scaleToActualAspectRatio(captureImagePath, 1024f, 1024f);
-                        if (file != null) {
-                            imageEditing(Uri.fromFile(file), true);
-                        }
+                            File file = AppUtility.scaleToActualAspectRatio(App_preference.getSharedprefInstance().getCapturePath(), 1024f, 1024f);
+                            if (file != null) {
+                                imageEditing(Uri.fromFile(file), true);
+                            }
                     } catch (Exception e) {
                         AppCenterLogs.addLogToAppCenterOnAPIFail("JobCompletion","","onActivityResult()-->CAMERA_CODE"+e.getMessage(),"JobCompletionActivity","");
                         e.printStackTrace();
@@ -717,32 +1165,47 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
                 break;
             case CAPTURE_IMAGE_GALLARY:
                 if (resultCode == RESULT_OK) {
-                    try {
-                        boolean isMultipleImages = false;
 
-                        Uri galreyImguriUri = data.getClipData().getItemAt(0).getUri();
-                        //  String gallery_image_Path = PathUtils.getPath(getActivity(), galreyImguriUri);
-                        String gallery_image_Path = PathUtils.getRealPath(this, galreyImguriUri);
-                        String img_extension = gallery_image_Path.substring(gallery_image_Path.lastIndexOf("."));
-                        if(data.getClipData().getItemCount()>1){
-                            isMultipleImages = true;
+                    try {
+                        if(data.getClipData() != null) {
+                            boolean isMultipleImages = false;
+
+                            Uri galreyImguriUri = data.getClipData().getItemAt(0).getUri();
+                            //  String gallery_image_Path = PathUtils.getPath(getActivity(), galreyImguriUri);
+                            String gallery_image_Path = PathUtils.getRealPath(this, galreyImguriUri);
+                            String img_extension = gallery_image_Path.substring(gallery_image_Path.lastIndexOf("."));
+                            if (data.getClipData().getItemCount() > 1) {
+                                isMultipleImages = true;
+                            } else {
+                                isMultipleImages = false;
+                            }
+                            //('jpg','png','jpeg','pdf','doc','docx','xlsx','csv','xls'); supporting extensions
+                            if (img_extension.equals(".jpg") || img_extension.equals(".png") || img_extension.equals(".jpeg")) {
+                                if (!isMultipleImages) {
+                                    imageEditing(data.getClipData().getItemAt(0).getUri(), true);
+                                } else {
+                                    uploadMultipleImges(data, true, jobId, this.queId, this.jtId);
+                                }
+                            } else {
+                                if (!isMultipleImages) {
+                                    uploadFileDialog(gallery_image_Path);
+                                } else {
+                                    uploadMultipleImges(data, false, jobId, this.queId, this.jtId);
+                                }
+                            }
                         }else {
-                            isMultipleImages = false;
-                        }
-                        //('jpg','png','jpeg','pdf','doc','docx','xlsx','csv','xls'); supporting extensions
-                        if (img_extension.equals(".jpg") || img_extension.equals(".png") || img_extension.equals(".jpeg")) {
-                            if(!isMultipleImages) {
-                                imageEditing(data.getClipData().getItemAt(0).getUri(), true);
-                            }
-                            else {
-                                uploadMultipleImges(data,true);
-                            }
-                        } else {
-                            if(!isMultipleImages) {
-                                uploadFileDialog(gallery_image_Path);
-                            }
-                            else {
-                                uploadMultipleImges(data,false);
+                            try {
+                                Uri galreyImguriUri = data.getData();
+                                String gallery_image_Path = PathUtils.getRealPath(this, galreyImguriUri);
+                                String img_extension = gallery_image_Path.substring(gallery_image_Path.lastIndexOf("."));
+                                //('jpg','png','jpeg','pdf','doc','docx','xlsx','csv','xls'); supporting extensions
+                                if (img_extension.equals(".jpg") || img_extension.equals(".png") || img_extension.equals(".jpeg")) {
+                                    imageEditing(data.getData(), true);
+                                }
+
+                            } catch (Exception e) {
+                                AppCenterLogs.addLogToAppCenterOnAPIFail("JobCompletion","","onActivityResult()-->ATTACHFILE_CODE"+e.getMessage(),"JobCompletionActivity","");
+                                e.printStackTrace();
                             }
                         }
                     } catch (Exception e) {
@@ -753,26 +1216,35 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
                 }
                 break;
             ////After discussion with Shubham and Jit Sir hide attachment all code 19/12/23
-//            case ATTACHFILE_CODE:
-//                if (resultCode == RESULT_OK) {
-//                    try {
-//                        Uri galreyImguriUri = data.getData();
-//                        String gallery_image_Path = PathUtils.getRealPath(this, galreyImguriUri);
-//                        String img_extension = gallery_image_Path.substring(gallery_image_Path.lastIndexOf("."));
-//                        //('jpg','png','jpeg','pdf','doc','docx','xlsx','csv','xls'); supporting extensions
-//                        if (img_extension.equals(".jpg") || img_extension.equals(".png") || img_extension.equals(".jpeg")) {
-//                            imageEditing(data.getData(), true);
-//                        } else {
-//                            uploadFileDialog(gallery_image_Path);
-//                        }
-//                    } catch (Exception e) {
-//                        AppCenterLogs.addLogToAppCenterOnAPIFail("JobCompletion","","onActivityResult()-->ATTACHFILE_CODE"+e.getMessage(),"JobCompletionActivity","");
-//                        e.printStackTrace();
-//                    }
-//                } else {
-//                    return;
-//                }
-//                break;
+            case ATTACHFILE_CODE:
+                if (resultCode == RESULT_OK) {
+                    try {
+                        Uri galreyImguriUri = data.getData();
+                        String gallery_image_Path = PathUtils.getRealPath(this, galreyImguriUri);
+                        String img_extension = gallery_image_Path.substring(gallery_image_Path.lastIndexOf("."));
+                        //('jpg','png','jpeg','pdf','doc','docx','xlsx','csv','xls'); supporting extensions
+                        if (img_extension.equals(".jpg") || img_extension.equals(".png") || img_extension.equals(".jpeg")) {
+                            imageEditing(data.getData(), true);
+                        } else {
+                            String filename = gallery_image_Path.substring(gallery_image_Path.lastIndexOf("/") + 1);
+                            onDocumentSelected(gallery_image_Path, filename, false,parentPositon, position, this.queId, this.jtId);
+                        }
+                    } catch (Exception e) {
+                        AppCenterLogs.addLogToAppCenterOnAPIFail("JobCompletion","","onActivityResult()-->ATTACHFILE_CODE"+e.getMessage(),"JobCompletionActivity","");
+                        e.printStackTrace();
+                    }
+                } else {
+                    return;
+                }
+                break;
+            case PHOTO_EDIT_CODE:
+                Log.v("Image File Name ", "Activity Result :::::");
+                if (data != null && data.hasExtra("path")) {
+                    String path = data.getStringExtra("path");
+                    String name = data.getStringExtra("name");
+                    onDocumentSelected(path, name, true,parentPositon, position, this.queId, this.jtId);
+                }
+                break;
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
@@ -780,12 +1252,14 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
     //upload image edit highlighting feature for image
     private void imageEditing(Uri uri, boolean isImage) {
         try {
-            Intent intent = new Intent(this, ActivityDocumentSaveUpload.class);
-            intent.putExtra("uri", uri);
-            intent.putExtra("isImage", true);
-            intent.putExtra("jobid", jobId);
-            intent.putExtra("SAVEASCOMPLETION", true);
-            startActivityForResult(intent, DOUCMENT_UPLOAD_CODE);
+
+                Intent intent = new Intent(this, ActivityDocumentSaveUpload.class);
+                intent.putExtra("uri", uri);
+                intent.putExtra("isImage", true);
+                intent.putExtra("jobid", jobId);
+                intent.putExtra("SAVEASCOMPLETION", true);
+                this.startActivityForResult(intent, DOUCMENT_UPLOAD_CODE);
+
         } catch (Exception e) {
             AppCenterLogs.addLogToAppCenterOnAPIFail("JobCompletion","","imageEditing()"+e.getMessage(),"JobCompletionActivity","");
             e.printStackTrace();
@@ -799,21 +1273,20 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
         intent.putExtra("isImage", false);
         intent.putExtra("jobid", jobId);
         intent.putExtra("SAVEASCOMPLETION", true);
-        startActivityForResult(intent, DOUCMENT_UPLOAD_CODE);
+        this.startActivityForResult(intent, DOUCMENT_UPLOAD_CODE);
     }
 
-    public void setUpdatedDesc(String desc) {
-        StringBuffer data = new StringBuffer(compedt.getText().toString().trim());
-        if (!TextUtils.isEmpty(desc))
-            data.append(System.lineSeparator());
-        data.append(desc);
-//        compedt.setText(data);
-        compedt.setText(AppUtility.html2text(data.toString()));
-        data.setLength(0);
+    public void setUpdatedDesc(String desc, String queId, String jtId) {
+        if(doc_attch_pi != null) {
+            doc_attch_pi.getMultiAttachFileList(jobId, App_preference.getSharedprefInstance().getLoginRes().getUsrId(), "6",true,-1,-1,queId,jtId);
+        }
+
     }
 
-    public void setUpdatedDesc(int type) {
+    public Map<String,String> setUpdatedDesc(EditText compedt,int type) {
+        HashMap<String,String> value = new HashMap<>();
         String s;
+        int pos = 0;
         int cursorpostion=compedt.getSelectionEnd();
         CharSequence enteredText = compedt.getText().toString();
         CharSequence cursorToStart=  enteredText.subSequence(0,cursorpostion);
@@ -824,56 +1297,64 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
         else if(type==2)
             stringBuffer.append(" "+"\u274c");
         else if (type == 3
-             &&  jobData.getDes() != null
-             && !jobData.getDes().isEmpty()){
-             s=AppUtility.html2text(jobData.getDes());
-             stringBuffer.append(" " + s);
+                &&  jobData.getDesWithoutHtml() != null
+                && !jobData.getDesWithoutHtml().isEmpty()){
+            Spanned spannedText = Html.fromHtml(getJobData().getDesWithoutHtml());
+            String plainText = TextUtils.replace(spannedText, new String[] {"<br>"}, new CharSequence[] {"\n"}).toString();
+            /*  s=AppUtility.html2text(getJobData().getDes());*/
+            stringBuffer.append(" " + plainText);
         } else if (type==4)
             stringBuffer.append(" "+AppUtility.getCurrentDateByFormats(AppConstant.DATE_FORMAT+" hh:mm a"));
 
-            StringBuffer finalstring = stringBuffer.append(cursorToEnd);
-            compedt.setText(finalstring);
+        StringBuffer finalstring = stringBuffer.append(cursorToEnd);
+        compedt.setText(finalstring);
+        value.put("Data", finalstring.toString());
 
         //setting cursor possition
         if (type==1||type==2) {
             compedt.setSelection(cursorpostion+2);
+            pos = cursorpostion+2;
         } else if(type==3){
-             s=AppUtility.html2text(jobData.getDes());
-             if(s.isEmpty())
-                  compedt.setSelection(cursorpostion+s.length());
-             else
-             compedt.setSelection(cursorpostion+s.length()+1);
+            s=AppUtility.html2text(jobData.getDesWithoutHtml());
+            if(s.isEmpty()) {
+                compedt.setSelection(cursorpostion + s.length());
+                pos = cursorpostion + s.length();
+            }
+            else {
+                compedt.setSelection(cursorpostion + s.length() + 1);
+                pos = cursorpostion+s.length()+1;
+            }
         }else if (type==4)
         {
             String time=AppUtility.getCurrentDateByFormats(AppConstant.DATE_FORMAT+" hh:mm a");
             compedt.setSelection(cursorpostion+time.length()+1);
+            pos = cursorpostion+time.length()+1;
         }
         stringBuffer.setLength(0);
+        value.put("pos",String.valueOf(pos));
+        return value;
+
     }
 
-    private void uploadMultipleImges(Intent data,boolean imgPath){
+    private void uploadMultipleImges(Intent data,boolean imgPath,String jobId, String queId, String jtId){
         String [] imgPathArray = new String[data.getClipData().getItemCount()];
         ExecutorService service = Executors.newSingleThreadExecutor();
         service.execute(()->{
             for(int i =0; i<data.getClipData().getItemCount();i++) {
                 Uri uri = data.getClipData().getItemAt(i).getUri();
-                String fileName = PathUtils.getRealPath(this, uri);
-                String fileNameExt = AppUtility.getFileNameWithExtension(fileName);
+                String fileNameExt = AppUtility.getFileNameWithExtension(PathUtils.getRealPath(this, uri));
+                String[] fileName = fileNameExt.split("\\.");
                 imgPathArray[i] = PathUtils.getRealPath(this, uri);
-                Bitmap bitmap = AppUtility.getBitmapFromPath(PathUtils.getRealPath(this, uri));
-                GetFileList_Res obj=new GetFileList_Res("0",fileNameExt,fileNameExt,bitmap);
-                ArrayList<GetFileList_Res> getFileList_res =new ArrayList<>();
-                if (fileList_res != null) {
-                    getFileList_res.clear();
-                    getFileList_res.addAll(fileList_res);
-                }
-                getFileList_res.add(obj);
+
+                Attachments attachments = new Attachments("TempAttach-"+fileName[0],fileNameExt,fileNameExt,imgPathArray[i],queId, jtId,"",jobData.getJobId(),"6");
+                AppDataBase.getInMemoryDatabase(this).attachments_dao().insertSingleAttachments(attachments);
+
                 new Handler(Looper.getMainLooper()).post(()->{
-                    setList(getFileList_res, "",true);
+                    onDocumentSelected("","",false,parentPositon,position,queId,jtId);
                 });
             }
             new Handler(Looper.getMainLooper()).post(()->{
-                uploadOffline(imgPathArray,true,false,jobId);
+                uploadOffline(imgPathArray,true,false,jobId,queId,jtId);
             });
 
         });
@@ -882,12 +1363,17 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
 
     }
 
-    public void uploadOffline(String[] imgPathArray,boolean imgPath, boolean isCompNotes, String jobId){
+    public void uploadOffline(String[] imgPathArray,boolean imgPath, boolean isCompNotes, String jobId, String queId, String jtId){
         Data.Builder builder = new Data.Builder();
         builder.putStringArray("imgPathArray",imgPathArray);
         builder.putBoolean("imgPath",true);
         builder.putBoolean("isCompNotes",true);
         builder.putString("jobId",jobId);
+        builder.putString("queId",queId);
+        builder.putString("jtId",jtId);
+        builder.putBoolean("isAttachmentSection",false);
+        builder.putInt("parentPosition",parentPositon);
+        builder.putInt("position",position);
 
         mWorkManager = WorkManager.getInstance(this);
 
@@ -907,13 +1393,341 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
     }
 
     @Override
-    public void updateMultiDoc(String apiName, String jobId) {
+    public void updateMultiDoc(String apiName, String jobId, int parentPositon, int position, String queId, String jtId) {
         switch (apiName) {
             case Service_apis.upload_document:
                 if(doc_attch_pi != null) {
-                    doc_attch_pi.getAttachFileList(jobId, App_preference.getSharedprefInstance().getLoginRes().getUsrId(), "6",true);
+                    doc_attch_pi.getMultiAttachFileList(jobId, App_preference.getSharedprefInstance().getLoginRes().getUsrId(), "6",true, parentPositon, position,queId, jtId);
                 }
                 break;
         }
+    }
+    public void selectFile(int position, ImageView attchmentView, ImageView deleteAttchment, Button addAttchment, int parentPostion) {//, ImageView attchmentView, ImageView item_View
+        this.deleteAttchment = deleteAttchment;
+        this.position = position;
+        this.attchmentView = attchmentView;
+        this.addAttchment = addAttchment;
+        this.parentPositon = parentPostion;
+
+
+        //parent class function in UploadDocumentActivity called for image and attachment selection
+        selectFilesForCompletion(true);
+
+    }
+    public void addAttachment(int position, int parentPositon, String queId, String jtId){
+        this.position = position;
+        this.parentPositon = parentPositon;
+        this.queId = queId;
+        this.jtId = jtId;
+        openAttachmentDialog();
+    }
+
+
+    public void onClickContinuarEvent(Uri uri) {
+        String path = "";
+        //    path = PathUtils.getPath(this, uri);
+        path = PathUtils.getRealPath(this, uri);
+        if (!path.isEmpty()) {
+
+            CompletionFormAdapter.SingleViewHolder singleViewHolder = (CompletionFormAdapter.SingleViewHolder) completionRecyclerView.findViewHolderForAdapterPosition(position);
+            singleViewHolder.showAttchmentView(position, path, attchmentView, deleteAttchment, addAttchment);//, attchmentView,deleteAttchment
+        }
+    }
+
+    public void onDocumentSelected(String path, String name, boolean isImage, int parentPositon, int position, String queId, String jtId) {
+        Log.e("AdapterPostion",""+position);
+        this.parentPositon = parentPositon;
+        this.position = position;
+
+        if(isShowingImg || showOnlyImg){
+            hideView(isShowingImg,jobData.getJobId(),queId,jtId,this.position,this.parentPositon);
+        }
+        if(parentPositon != -1 || position != -1 ) {
+            if (completionFormAdapter != null && allItem.size()>0) {
+                if (allItem.get(this.parentPositon) instanceof QuesRspncModel) {
+                    CompletionFormAdapter.SingleViewHolder singleViewHolder = (CompletionFormAdapter.SingleViewHolder) completionRecyclerView.findViewHolderForAdapterPosition(this.parentPositon);
+                    if (singleViewHolder != null) {
+                        singleViewHolder.jobCompletionAdpter.updateFileList((ArrayList<Attachments>) AppDataBase.getInMemoryDatabase(this).attachments_dao().getAttachmentsById(jobData.getJobId(), queId, jtId));
+                    }
+//                singleViewHolder.showAttchmentView(position, path, attchmentView, deleteAttchment, addAttchment);//, attchmentView,deleteAttchment
+                } else if (allItem.get(this.parentPositon) instanceof List) {
+                    CompletionFormAdapter.GroupedViewHolder groupedViewHolder = (CompletionFormAdapter.GroupedViewHolder) completionRecyclerView.findViewHolderForAdapterPosition(this.parentPositon);
+//                groupedViewHolder.questionListAdapter.showAttchmentView(position,path,attchmentView,deleteAttchment,addAttchment);
+                    if (groupedViewHolder != null) {
+                        QuestionListAdapter.ViewHolder viewHolder = (QuestionListAdapter.ViewHolder) groupedViewHolder.rv_groupItem.findViewHolderForAdapterPosition(this.position);
+                        viewHolder.jobCompletionAdpter.updateFileList((ArrayList<Attachments>) AppDataBase.getInMemoryDatabase(this).attachments_dao().getAttachmentsById(jobData.getJobId(), queId, jtId));
+                    }
+                }
+            }
+        }
+
+
+    }
+
+    public void ansAnsQuesRspncModel(List<QuesRspncModel> quesRspncModelList) {
+
+        for (int i = 0; i < quesRspncModelList.size(); i++) {
+            String key = "";
+            String ans = "";
+            ArrayList<AnswerModel> ansArrayList = new ArrayList<>();
+            Answer answer = null;
+            switch (quesRspncModelList.get(i).getType()) {
+
+                case "11":
+                    if (quesRspncModelList.get(i).getAns().size() > 0) {
+                        ans = quesRspncModelList.get(i).getAns().get(0).getValue();
+                        if (quesRspncModelList.get(i).getMandatory().equals("1"))
+                            if (TextUtils.isEmpty(ans))
+                                isMandatoryNotFill = true;
+
+                        String mimeType = "";
+                        MultipartBody.Part body = null;
+                        File file = new File(ans);
+
+                        if (file != null && file.exists()) {
+                            mimeType = URLConnection.guessContentTypeFromName(file.getName());
+                            if (mimeType == null) {
+                                mimeType = file.getName();
+                            }
+                            RequestBody requestFile = RequestBody.create(file, MediaType.parse(mimeType));
+                            // MultipartBody.Part is used to send also the actual file name
+                            body = MultipartBody.Part.createFormData("docAns[]", file.getName()
+                                    , requestFile);//ans.substring(ans.lastIndexOf(".")
+                            docanspath.add(ans);
+                            docAns.add(body);
+                            docQueIdArray.add(new Answer(quesRspncModelList.get(i).getQueId(),quesRspncModelList.get(i).getJtId()));
+
+                            AnswerModel answerModels = new AnswerModel("0", ans);
+                            ansArrayList.add(answerModels);
+                            answer = new Answer(quesRspncModelList.get(i).getJtId(),quesRspncModelList.get(i).getQueId(),
+                                    quesRspncModelList.get(i).getType(), ansArrayList);
+                            answerArrayList.add(answer);
+
+                        }
+
+
+                    } else if (quesRspncModelList.get(i).getAns().size() == 0)
+                        if (quesRspncModelList.get(i).getMandatory().equals("1"))
+                            isMandatoryNotFill = true;
+                    break;
+//                **case for Signature***
+                case "10":
+                    Log.e("", "");
+                    if (quesRspncModelList.get(i).getAns().size() > 0) {
+                        ans = quesRspncModelList.get(i).getAns().get(0).getValue();
+                        if (quesRspncModelList.get(i).getMandatory().equals("1"))
+                            if (TextUtils.isEmpty(ans))
+                                isMandatoryNotFill = true;
+
+                        String mimeType = "";
+                        MultipartBody.Part body = null;
+                        File file = new File(ans);
+
+                        if (file != null && file.exists()) {
+                            mimeType = URLConnection.guessContentTypeFromName(file.getName());
+                            if (mimeType == null) {
+                                mimeType = file.getName();
+                            }
+                            RequestBody requestFile = RequestBody.create(file,MediaType.parse(mimeType));
+                            // MultipartBody.Part is used to send also the actual file name
+                            body = MultipartBody.Part.createFormData("signAns[]", file.getName()
+                                    , requestFile);//ans.substring(ans.lastIndexOf(".")
+                            signanspath.add(ans);
+                            signAns.add(body);
+                            signQueIdArray.add(new Answer(quesRspncModelList.get(i).getQueId(),quesRspncModelList.get(i).getJtId()));
+
+                            AnswerModel docanswerModels = new AnswerModel("0", ans);
+                            ansArrayList.add(docanswerModels);
+                            answer = new Answer(quesRspncModelList.get(i).getJtId(),quesRspncModelList.get(i).getQueId(),
+                                    quesRspncModelList.get(i).getType(), ansArrayList);
+                            answerArrayList.add(answer);
+                        }
+
+                    } else if (quesRspncModelList.get(i).getAns().size() == 0)
+                        if (quesRspncModelList.get(i).getMandatory().equals("1"))
+                            isMandatoryNotFill = true;
+
+                    break;
+
+                case "8":
+                    if (quesRspncModelList.get(i).getAns() != null && quesRspncModelList.get(i).getAns().size() > 0) {
+                        ans = quesRspncModelList.get(i).getAns().get(0).getValue();
+                        AnswerModel answerModel = new AnswerModel(quesRspncModelList.get(i).getAns().get(0).getKey(), quesRspncModelList.get(i).getAns().get(0).getValue());
+                        ansArrayList.add(answerModel);
+                        answer = new Answer(quesRspncModelList.get(i).getJtId(),quesRspncModelList.get(i).getQueId(), quesRspncModelList.get(i).getType(), ansArrayList);
+                        answerArrayList.add(answer);
+                    }
+
+                    if (quesRspncModelList.get(i).getMandatory().equals("1"))
+                        if (ans.equals("0"))
+                            isMandatoryNotFill = true;
+                    break;
+                case "2":
+                case "5":
+                case "6":
+                case "7":
+                case "1":
+                case "12":
+                    if (quesRspncModelList.get(i).getAns() != null && quesRspncModelList.get(i).getAns().size() > 0) {
+                        if (quesRspncModelList.get(i).getType().equals("5")) {
+                            if (!TextUtils.isEmpty(quesRspncModelList.get(i).getAns().get(0).getValue())) {
+                                long l = Long.parseLong(quesRspncModelList.get(i).getAns().get(0).getValue());
+                                String date = AppUtility.getDates(l, "yyyy-MMM-dd hh:mm:ss");
+                                ans = date;
+                            }
+                        } else if (quesRspncModelList.get(i).getType().equals("6")) {
+                            if (!TextUtils.isEmpty(quesRspncModelList.get(i).getAns().get(0).getValue())) {
+                                long l = Long.parseLong(quesRspncModelList.get(i).getAns().get(0).getValue());
+                                String date = AppUtility.getDates(l,
+                                        AppUtility.dateTimeByAmPmFormate("hh:mm a", "HH:mm"));
+                                ans = date;
+                            }
+                        } else if (quesRspncModelList.get(i).getType().equals("7")) {
+                            if (!TextUtils.isEmpty(quesRspncModelList.get(i).getAns().get(0).getValue())) {
+                                long l = Long.parseLong(quesRspncModelList.get(i).getAns().get(0).getValue());
+                                String date = AppUtility.getDates(l, AppUtility.dateTimeByAmPmFormate(
+                                        "dd-MMM-yyyy hh:mm a","dd-MMM-yyyy HH:mm"));
+                                ans = date;
+                            }
+                        } else
+                            ans = quesRspncModelList.get(i).getAns().get(0).getValue();
+                        if (quesRspncModelList.get(i).getMandatory().equals("1"))
+                            if (TextUtils.isEmpty(ans))
+                                isMandatoryNotFill = true;
+
+                        AnswerModel answerModel = new AnswerModel(key, ans);
+                        ansArrayList.add(answerModel);
+                        answer = new Answer(quesRspncModelList.get(i).getJtId(),quesRspncModelList.get(i).getQueId(),
+                                quesRspncModelList.get(i).getType(), ansArrayList);
+                        answerArrayList.add(answer);
+
+                    } else if (quesRspncModelList.get(i).getMandatory().equals("1")) {
+                        isMandatoryNotFill = true;
+                    }
+                    break;
+                case "4":
+                case "3":
+                    if (quesRspncModelList.get(i).getAns() != null && quesRspncModelList.get(i).getAns().size() > 0) {
+                        List<AnswerModel> ans1 = quesRspncModelList.get(i).getAns();
+                        if (ans1 != null)
+                            for (AnswerModel am : ans1) {
+                                    key = am.getKey();
+                                    ans = am.getValue();
+                                    if(!ans.isEmpty()) {
+                                        AnswerModel answerModel = new AnswerModel(key, ans);
+                                        ansArrayList.add(answerModel);
+                                    }
+                                    if (quesRspncModelList.get(i).getMandatory().equals("1"))
+                                        if (TextUtils.isEmpty(ans))
+                                            isMandatoryNotFill = true;
+                            }
+                    }
+                    if (ansArrayList.size() > 0) {
+                        answer = new Answer(quesRspncModelList.get(i).getJtId(),quesRspncModelList.get(i).getQueId(),
+                                quesRspncModelList.get(i).getType(), ansArrayList);
+                        answerArrayList.add(answer);
+                    } else if (quesRspncModelList.get(i).getMandatory().equals("1")) {
+                        isMandatoryNotFill = true;
+                    } else {
+                        answer = new Answer(quesRspncModelList.get(i).getJtId(),quesRspncModelList.get(i).getQueId(),
+                                quesRspncModelList.get(i).getType(), ansArrayList);
+                        answerArrayList.add(answer);
+                    }
+                    break;
+            }
+        }
+    }
+    private void emptyAnsFieldError() {
+        AppUtility.alertDialog(this, "", LanguageController.getInstance().getMobileMsgByKey(AppConstant.enter_ans), LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), "", new Callable<Boolean>() {
+            @Override
+            public Boolean call() {
+                return null;
+            }
+        });
+    }
+    private boolean emptyCheckFormValidation() {
+        boolean isChangeDetected = false;
+        if (completionFormAdapter != null && completionFormAdapter.getTypeList() != null) {
+            ArrayList<QuesRspncModel> checkList = completionFormAdapter.getTypeList();
+            for (QuesRspncModel qm : checkList) {
+                List<AnswerModel> ans = qm.getAns();
+                if (ans != null && ans.size() > 0) {
+                    AnswerModel model = ans.get(0);
+                    if (model != null && !TextUtils.isEmpty(model.getValue()))
+                        isChangeDetected = true;
+                }
+            }
+        }
+        if(complNotes != null && !complNotes.isEmpty()){
+            isChangeDetected = true;
+        }
+        return isChangeDetected;
+    }
+
+    @Override
+    public void hideView(boolean hide,String jobId, String queId, String jtId, int posiotion, int parentPostion) {
+        isShowingImg = hide;
+        this.queId = queId;
+        this.jtId = jtId;
+        this.position = posiotion;
+        this.parentPositon = parentPostion;
+        ll_attachment.setVisibility(View.VISIBLE);
+        ll_completionForm.setVisibility(View.GONE);
+        if(showOnlyImg){
+            jobCompletionAdpter.updateFileList((ArrayList<Attachments>) AppDataBase.getInMemoryDatabase(this).attachments_dao().getAttachmentsByJobId(jobId), true, queId, jtId);
+        }
+        else {
+            jobCompletionAdpter.updateFileList((ArrayList<Attachments>) AppDataBase.getInMemoryDatabase(this).attachments_dao().getAttachmentsByQueId(jobId, queId), true, queId, jtId);
+        }
+
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(isShowingImg){
+            ll_attachment.setVisibility(View.GONE);
+            ll_completionForm.setVisibility(View.VISIBLE);
+            isShowingImg = false;
+        }else {
+            AppUtility.hideSoftKeyboard(this);
+            Intent intent = new Intent();
+            setResult(RESULT_OK, intent);
+            finish();
+        }
+    }
+
+    @Override
+    public void setMarkAsDoneService(String jtid, String status) {
+        for (IsMarkDoneWithJtid item : isMarkDoneList
+        ) {
+            if (item.getJtId().equals(jtid)) {
+                item.setStatus(status);
+                break;
+            }
+        }
+    }
+    public void setServiceMarkasDone(List<QuesRspncModel> list){
+
+            for (IsMarkDoneWithJtid item : isMarkDoneList
+            ) {
+                if(list.size()>0) {
+                    if (list.get(0).getJtId().equals(item.getJtId())) {
+                        list.get(0).setIsMarkAsDone(item.getStatus());
+                    }
+                }
+
+        }
+    }
+
+    @Override
+    public void upateForCompletion(String apiName, String jobId) {
+
+    }
+    public void showErrorDialog(String msg) {
+        AppUtility.error_Alert_Dialog(this, msg, LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok)
+                , () -> null);
+    }
+    public void setCompletionNotesPosition(int i){
+        this.competionNotesPostion = i;
     }
 }

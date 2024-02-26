@@ -416,7 +416,8 @@ public class ItemList_PC implements ItemList_PI {
 
 
     /*****Generate Invoice Pdf File*****/
-    @Override
+    /**this change for change ui for email in invoice **/
+   /* @Override
     public void getGenerateInvoicePdf(String invId, String isProformaInv,String tempId) {
         final Map<String, String> jsonMap = new HashMap<>();
         jsonMap.put("invId", invId);
@@ -471,7 +472,7 @@ public class ItemList_PC implements ItemList_PI {
         } else {
             networkError();
         }
-    }
+    }*/
     @Override
     public void getJobInvoicetemplateList() {
         if (AppUtility.isInternetConnected()) {
@@ -501,11 +502,11 @@ public class ItemList_PC implements ItemList_PI {
                                                 !jsonObject.get("data").getAsJsonArray().get(i).getAsJsonObject().get("cltTempNm").getAsString().equals("")) {
                                             invoiceEmaliTemplate = new InvoiceEmaliTemplate(jsonObject.get("data").getAsJsonArray().get(i).getAsJsonObject().get("invTempId").getAsString(),
                                                     jsonObject.get("data").getAsJsonArray().get(i).getAsJsonObject().get("cltTempNm").getAsString()
-                                                    , jsonObject.get("data").getAsJsonArray().get(i).getAsJsonObject().get("defaultTemp").getAsString(),false);
+                                                    , jsonObject.get("data").getAsJsonArray().get(i).getAsJsonObject().get("defaultTemp").getAsString(),true);
                                         } else {
                                             invoiceEmaliTemplate = new InvoiceEmaliTemplate(jsonObject.get("data").getAsJsonArray().get(i).getAsJsonObject().get("invTempId").getAsString(),
                                                     jsonObject.get("data").getAsJsonArray().get(i).getAsJsonObject().get("tempJson").getAsJsonObject().get("invDetail").getAsJsonArray().get(0).getAsJsonObject().get("inputValue").getAsString()
-                                                    , jsonObject.get("data").getAsJsonArray().get(i).getAsJsonObject().get("defaultTemp").getAsString(),false);
+                                                    , jsonObject.get("data").getAsJsonArray().get(i).getAsJsonObject().get("defaultTemp").getAsString(),true);
                                         }
                                         templateList.add(invoiceEmaliTemplate);
                                     }

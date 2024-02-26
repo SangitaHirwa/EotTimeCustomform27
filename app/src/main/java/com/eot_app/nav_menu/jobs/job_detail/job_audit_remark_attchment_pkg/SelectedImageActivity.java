@@ -4,14 +4,12 @@ import static com.eot_app.nav_menu.jobs.job_detail.job_equipment.job_equ_remrk.J
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -27,20 +25,17 @@ import android.widget.TextView;
 
 import com.eot_app.R;
 import com.eot_app.UploadDocumentActivity;
-import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.GetFileList_Res;
 import com.eot_app.nav_menu.jobs.job_detail.job_audit_remark_attchment_pkg.model_pkg.JobAuditSingleAttchReqModel;
 import com.eot_app.nav_menu.jobs.job_detail.job_audit_remark_attchment_pkg.mvp.JobAudit_PI;
 import com.eot_app.nav_menu.jobs.job_detail.job_audit_remark_attchment_pkg.mvp.JobAudit_Pc;
 import com.eot_app.nav_menu.jobs.job_detail.job_audit_remark_attchment_pkg.mvp.JobAudit_View;
 import com.eot_app.utility.AppConstant;
-import com.eot_app.utility.AppUtility;
 import com.eot_app.utility.language_support.LanguageController;
 import com.google.gson.Gson;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 
 public class SelectedImageActivity extends UploadDocumentActivity implements
         JobAudit_View, View.OnClickListener, RadioGroup.OnCheckedChangeListener {

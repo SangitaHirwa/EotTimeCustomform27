@@ -3,9 +3,6 @@ package com.eot_app.nav_menu.jobs.job_detail.documents;
 
 import static android.app.Activity.RESULT_OK;
 
-import android.annotation.SuppressLint;
-import android.content.ClipData;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -16,6 +13,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.ext.SdkExtensions;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -40,31 +38,30 @@ import androidx.work.Data;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkInfo;
 import androidx.work.WorkManager;
-import androidx.work.impl.WorkManagerImpl;
 
 import com.eot_app.R;
-import com.eot_app.eoteditor.Utils;
-import com.eot_app.nav_menu.jobs.job_detail.detail.NotifyForAttchCount;
-import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.CompressImg;
-import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.GetFileList_Res;
-import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.MultiDocUpdateRequest;
+import com.eot_app.home_screens.MainActivity;
+import com.eot_app.nav_menu.jobs.job_detail.JobDetailActivity;
+import com.eot_app.nav_menu.jobs.job_detail.detail.DetailFragment;
+import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.Attachments;
 import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.NotifyForMultiDocAdd;
+import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.NotifyForMultiDocAddForAttach;
 import com.eot_app.nav_menu.jobs.job_detail.documents.fileattach_mvp.Doc_Attch_Pc;
 import com.eot_app.nav_menu.jobs.job_detail.documents.fileattach_mvp.Doc_Attch_Pi;
 import com.eot_app.nav_menu.jobs.job_detail.documents.fileattach_mvp.Doc_Attch_View;
 import com.eot_app.nav_menu.jobs.job_detail.documents.work_manager.UploadMultiImgWorker;
+import com.eot_app.nav_menu.jobs.job_detail.form_form.get_qus_list.qus_model.QuesRspncModel;
 import com.eot_app.services.Service_apis;
+import com.eot_app.utility.AppCenterLogs;
 import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.AppUtility;
 import com.eot_app.utility.App_preference;
-import com.eot_app.utility.CompressImageInBack;
 import com.eot_app.utility.EotApp;
+import com.eot_app.utility.db.AppDataBase;
 import com.eot_app.utility.db.OfflineDataController;
 import com.eot_app.utility.language_support.LanguageController;
-import com.eot_app.utility.util_interfaces.OnImageCompressed;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.gson.Gson;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
 import com.hypertrack.hyperlog.HyperLog;
@@ -72,12 +69,8 @@ import com.hypertrack.hyperlog.HyperLog;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -85,7 +78,7 @@ import java.util.concurrent.Executors;
 import ja.burhanrashid52.photoeditor.OnPhotoEditorListener;
 import ja.burhanrashid52.photoeditor.ViewType;
 
-public class DocumentsFragment extends Fragment implements Doc_Attch_View, DocumentListAdapter.FileDesc_Item_Selected, OnPhotoEditorListener, NotifyForMultiDocAdd {
+public class DocumentsFragment extends Fragment implements Doc_Attch_View, DocumentListAdapter.FileDesc_Item_Selected, OnPhotoEditorListener, NotifyForMultiDocAddForAttach {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -107,10 +100,11 @@ public class DocumentsFragment extends Fragment implements Doc_Attch_View, Docum
     private EditText edtSearch;
     private ImageView imvCross;
     private String query = "";
-    private ArrayList<GetFileList_Res> fileList_res = new ArrayList<>();
+    private ArrayList<Attachments> fileList_res = new ArrayList<>();
     private EditImageDialog currentDialog = null;
     private SwipeRefreshLayout swipeRefreshLayout;
     private WorkManager mWorkManager;
+    String queId ="";
 
     public DocumentsFragment() {
 
@@ -156,20 +150,31 @@ public class DocumentsFragment extends Fragment implements Doc_Attch_View, Docum
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_documents, container, false);
         setHasOptionsMenu(true);
+        doc_attch_pi = new Doc_Attch_Pc(this);
         initiliazeView(view);
         //  storageUserPermission();
         layoutManager = new GridLayoutManager(getActivity(), 2);
         fileupload_rc.setLayoutManager(layoutManager);
         initializeAdapter();
-        doc_attch_pi = new Doc_Attch_Pc(this);
-        doc_attch_pi.getAttachFileList(jobId, "", "",true);
-        EotApp.getAppinstance().setNotifyForMultiDocAdd(this);
+
+//        doc_attch_pi.getAttachFileList(jobId, "", "",true);
+        List<QuesRspncModel> queList = App_preference.getSharedprefInstance().getJobCompletionFormFields();
+        if(queList!= null && queList.size()>0) {
+            for (QuesRspncModel item : queList
+            ) {
+                if (item.getIsLinkWithService().equalsIgnoreCase("0") && item.getType().equals("13") && item.getJtId().isEmpty()) {
+                    queId = item.getQueId();
+                    break;
+                }
+            }
+        }
+        setList((ArrayList<Attachments>) AppDataBase.getInMemoryDatabase(getActivity()).attachments_dao().getAllAttachmentsOfJob(jobId),"",true);
         return view;
     }
 
     private void initializeAdapter() {
-        ArrayList<GetFileList_Res> getFileList_res = new ArrayList<>();
-        documentListAdapter = new DocumentListAdapter(this, getFileList_res, jobId);
+        ArrayList<Attachments> getFileList_res = new ArrayList<>();
+        documentListAdapter = new DocumentListAdapter(this, getFileList_res, jobId,this);
         fileupload_rc.setAdapter(documentListAdapter);
     }
 
@@ -181,7 +186,7 @@ public class DocumentsFragment extends Fragment implements Doc_Attch_View, Docum
         noDocList.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.documet_appear));
 
         FloatingActionButton fab = view.findViewById(R.id.doc_att);
-        fab.setOnClickListener(view1 -> selectFile());
+        fab.setOnClickListener(view1 -> selectFiles());
 
         imvCross = view.findViewById(R.id.imvCross);
         edtSearch = view.findViewById(R.id.edtSearch);
@@ -223,12 +228,14 @@ public class DocumentsFragment extends Fragment implements Doc_Attch_View, Docum
             doc_attch_pi.getAttachFileList(jobId, "", "",true);
         });
 
+
+        EotApp.getAppinstance().setNotifyForMultiDocAddForAttach(this);
     }
 
 
     void filter(String text) {
-        ArrayList<GetFileList_Res> temp = new ArrayList();
-        for (GetFileList_Res d : fileList_res) {
+        ArrayList<Attachments> temp = new ArrayList();
+        for (Attachments d : fileList_res) {
             if (d.getAttachFileActualName().toLowerCase().startsWith(text)) {
                 temp.add(d);
             }
@@ -245,7 +252,7 @@ public class DocumentsFragment extends Fragment implements Doc_Attch_View, Docum
 
 
     @Override
-    public void setList(ArrayList<GetFileList_Res> getFileList_res, String isAttachCompletionNotes, boolean firstCall) {
+    public void setList(ArrayList<Attachments> getFileList_res, String isAttachCompletionNotes, boolean firstCall) {
 //        AppUtility.hideSoftKeyboard(getActivity());
         if (currentDialog != null) {
             currentDialog.dismiss();
@@ -263,7 +270,15 @@ public class DocumentsFragment extends Fragment implements Doc_Attch_View, Docum
     }
 
     @Override
-    public void addNewItemToAttachmentList(ArrayList<GetFileList_Res> getFileList_res, String isAttachCompletionNotes) {
+    public void setMultiList(ArrayList<Attachments> getFileList_res, String isAttachCompletionNotes, boolean firstCall, int parentPositon, int position, String queId, String jtId) {
+        AppDataBase.getInMemoryDatabase(getActivity()).attachments_dao().insertAttachments(getFileList_res);
+        AppDataBase.getInMemoryDatabase(getActivity()).attachments_dao().deleteAttachments();
+        documentListAdapter.updateFileList((ArrayList<Attachments>) AppDataBase.getInMemoryDatabase(getActivity()).attachments_dao().getAllAttachmentsOfJob(jobId),true);
+        DetailFragment.getInstance().setList((ArrayList<Attachments>) AppDataBase.getInMemoryDatabase(getActivity()).attachments_dao().getAttachmentsByJobId(jobId),isAttachCompletionNotes);
+    }
+
+    @Override
+    public void addNewItemToAttachmentList(ArrayList<Attachments> getFileList_res, String isAttachCompletionNotes) {
        // remove the temporary added item for showing loader
         if (fileList_res != null&&!fileList_res.isEmpty()) {
             int position = -1;
@@ -294,7 +309,7 @@ public class DocumentsFragment extends Fragment implements Doc_Attch_View, Docum
 
 
     @Override
-    public void selectFile() {
+    public void selectFiles() {
 //        if (!Utils.isOnline(getActivity())) {
 //
 //            AppUtility.alertDialog(getActivity(), LanguageController.getInstance().getMobileMsgByKey(AppConstant.dialog_error_title),  LanguageController.getInstance().getMobileMsgByKey(AppConstant.feature_not_available), LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), "", new Callable<Boolean>() {
@@ -358,6 +373,11 @@ public class DocumentsFragment extends Fragment implements Doc_Attch_View, Docum
 //        }
     }
 
+    @Override
+    public void selectFilesForCompletion(boolean isCompletion) {
+
+    }
+
     private void askTedPermission(int type,String[] permissions) {
         TedPermission.with(EotApp.getAppinstance())
                 .setPermissionListener(new PermissionListener() {
@@ -381,9 +401,22 @@ public class DocumentsFragment extends Fragment implements Doc_Attch_View, Docum
                 .check();
     }
     private void getImageFromGallray() {
-        Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        galleryIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-        startActivityForResult(galleryIntent, CAPTURE_IMAGE_GALLARY);
+//        Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+//        galleryIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+//        startActivityForResult(galleryIntent, CAPTURE_IMAGE_GALLARY);
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && SdkExtensions.getExtensionVersion(Build.VERSION_CODES.R) >= 2){
+
+            Intent galleryIntent = new Intent(MediaStore.ACTION_PICK_IMAGES);
+            galleryIntent.setType("image/*");
+            galleryIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+            galleryIntent.putExtra(MediaStore.EXTRA_PICK_IMAGES_MAX,MediaStore.getPickImagesMaxLimit());
+            startActivityForResult(Intent.createChooser(galleryIntent,"Select Picture"), CAPTURE_IMAGE_GALLARY);
+        }else {
+            Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            galleryIntent.setType("image/*");
+            galleryIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+            this.startActivityForResult(galleryIntent, CAPTURE_IMAGE_GALLARY);
+        }
     }
 
     private void takeimageFromGalary() {
@@ -454,6 +487,7 @@ public class DocumentsFragment extends Fragment implements Doc_Attch_View, Docum
                 directoryPath   /* directory */
         );
         captureImagePath = image.getAbsolutePath();
+        App_preference.getSharedprefInstance().setCapturePath(captureImagePath);
         HyperLog.i("UploadDocumentActivity", "captureImagePath " + captureImagePath);
 
         HyperLog.i("UploadDocumentActivity", "createImageFile Stop(M)");
@@ -473,14 +507,16 @@ public class DocumentsFragment extends Fragment implements Doc_Attch_View, Docum
                             Bitmap bitmap = AppUtility.getBitmapFromPath(data.getStringExtra("imgPath"));
                             bitmapString = AppUtility.BitMapToString(bitmap);
                         }
-                        GetFileList_Res obj=new GetFileList_Res("0",fileNameExt,fileNameExt,bitmapString);
-                        ArrayList<GetFileList_Res> getFileList_res =new ArrayList<>();
-                        if (fileList_res != null) {
-                            getFileList_res.addAll(fileList_res);
-                        }
-                        getFileList_res.add(obj);
+//                        Attachments obj=new Attachments("0",fileNameExt,fileNameExt,bitmapString);
+//                        ArrayList<Attachments> getFileList_res =new ArrayList<>();
+//                        if (fileList_res != null) {
+//                            getFileList_res.addAll(fileList_res);
+//                        }
+//                        getFileList_res.add(obj);
+                        Attachments attachments = new Attachments("TempAttach-"+data.getStringExtra("fileName"),fileNameExt,fileNameExt,data.getStringExtra("imgPath"),"", "",data.getStringExtra("desc"),jobId,data.getStringExtra("type"),bitmapString);
+                        AppDataBase.getInMemoryDatabase(getActivity()).attachments_dao().insertSingleAttachments(attachments);
 
-                        setList(getFileList_res, "",true);
+                        setList((ArrayList<Attachments>) AppDataBase.getInMemoryDatabase(getActivity()).attachments_dao().getAllAttachmentsOfJob(jobId), "",true);
 
                         if(data.getStringExtra("fileName")!=null){
                             try
@@ -490,18 +526,23 @@ public class DocumentsFragment extends Fragment implements Doc_Attch_View, Docum
 //                                        data.getStringExtra("desc"),
 //                                        data.getStringExtra("type") ,
 //                                        data.getStringExtra("isFromCmpletion"));
-                                OfflineDataController.getInstance().addInOfflineDB(Service_apis.upload_document, AppUtility.getParam(jobId, data.getStringExtra("imgPath"),
+                                String _queId = "";
+                                if(data.getStringExtra("type").equals("6")){
+                                    _queId = queId;
+                                }
+                                OfflineDataController.getInstance().addInOfflineDB(Service_apis.upload_document, AppUtility.getParam(jobId, _queId,"",
+                                        data.getStringExtra("imgPath"),
                                         data.getStringExtra("fileName"),
                                         data.getStringExtra("desc"),
                                         data.getStringExtra("type"),
-                                        data.getStringExtra("isFromCmpletion"), true), AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT));
+                                        data.getStringExtra("isAttach"), true,true,-1,-1), AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT));
                             }
                             catch (Exception e)
                             {
-                                if (getFileList_res.size()==1) {
-                                    fileList_res.remove(getFileList_res.get(0));
-                                    setList(fileList_res, "",true);
-                                }
+//                                if (getFileList_res.size()==1) {
+//                                    fileList_res.remove(getFileList_res.get(0));
+//                                    setList(fileList_res, "",true);
+//                                }
                                 e.printStackTrace();
                             }
                         }
@@ -511,7 +552,7 @@ public class DocumentsFragment extends Fragment implements Doc_Attch_View, Docum
 
                 if (resultCode == RESULT_OK) {
                     try {
-                        File file = AppUtility.scaleToActualAspectRatio(captureImagePath, 1024f, 1024f);
+                        File file = AppUtility.scaleToActualAspectRatio(App_preference.getSharedprefInstance().getCapturePath(), 1024f, 1024f);
                         if (file != null) {
                             imageEditing(Uri.fromFile(file), true);
                         }
@@ -527,31 +568,48 @@ public class DocumentsFragment extends Fragment implements Doc_Attch_View, Docum
             case CAPTURE_IMAGE_GALLARY:
                 if (resultCode == RESULT_OK) {
                     try {
-                        boolean isMultipleImages = false;
+                        if(data.getClipData() != null) {
+                            boolean isMultipleImages = false;
 
-                        Uri galreyImguriUri = data.getClipData().getItemAt(0).getUri();
-                        //  String gallery_image_Path = PathUtils.getPath(getActivity(), galreyImguriUri);
-                        String gallery_image_Path = PathUtils.getRealPath(getActivity(), galreyImguriUri);
-                        String img_extension = gallery_image_Path.substring(gallery_image_Path.lastIndexOf("."));
-                        if(data.getClipData().getItemCount()>1){
-                            isMultipleImages = true;
+                            Uri galreyImguriUri = data.getClipData().getItemAt(0).getUri();
+                            //  String gallery_image_Path = PathUtils.getPath(getActivity(), galreyImguriUri);
+                            String gallery_image_Path = PathUtils.getRealPath(getActivity(), galreyImguriUri);
+                            String img_extension = gallery_image_Path.substring(gallery_image_Path.lastIndexOf("."));
+                            if (data.getClipData().getItemCount() > 1) {
+                                isMultipleImages = true;
+                            } else {
+                                isMultipleImages = false;
+                            }
+                            //('jpg','png','jpeg','pdf','doc','docx','xlsx','csv','xls'); supporting extensions
+                            if (img_extension.equals(".jpg") || img_extension.equals(".png") || img_extension.equals(".jpeg")) {
+                                if (!isMultipleImages) {
+                                    imageEditing(data.getClipData().getItemAt(0).getUri(), true);
+                                } else {
+                                    uploadMultipleImges(data, true);
+                                }
+                            } else {
+                                if (!isMultipleImages) {
+                                    uploadFileDialog(gallery_image_Path);
+                                } else {
+                                    uploadMultipleImges(data, false);
+                                }
+                            }
                         }else {
-                            isMultipleImages = false;
-                        }
-                        //('jpg','png','jpeg','pdf','doc','docx','xlsx','csv','xls'); supporting extensions
-                        if (img_extension.equals(".jpg") || img_extension.equals(".png") || img_extension.equals(".jpeg")) {
-                            if(!isMultipleImages) {
-                                imageEditing(data.getClipData().getItemAt(0).getUri(), true);
-                            }
-                            else {
-                                uploadMultipleImges(data,true);
-                            }
-                        } else {
-                            if(!isMultipleImages) {
-                                uploadFileDialog(gallery_image_Path);
-                            }
-                            else {
-                                uploadMultipleImges(data,false);
+                            try {
+                                Uri galreyImguriUri = data.getData();
+                                String gallery_image_Path = PathUtils.getRealPath(requireActivity(), galreyImguriUri);
+                                String img_extension = gallery_image_Path.substring(gallery_image_Path.lastIndexOf("."));
+                                //('jpg','png','jpeg','pdf','doc','docx','xlsx','csv','xls'); supporting extensions
+                                if (img_extension.equals(".jpg") || img_extension.equals(".png") || img_extension.equals(".jpeg")) {
+                                    imageEditing(data.getData(), true);
+                                }
+//                                else {
+//                                    String filename = gallery_image_Path.substring(gallery_image_Path.lastIndexOf("/") + 1);
+//                                    onDocumentSelected(gallery_image_Path, filename, false,parentPositon, position, this.queId, this.jtId);
+//                                }
+                            } catch (Exception e) {
+                                AppCenterLogs.addLogToAppCenterOnAPIFail("JobCompletion","","onActivityResult()-->ATTACHFILE_CODE"+e.getMessage(),"JobCompletionActivity","");
+                                e.printStackTrace();
                             }
                         }
                     } catch (Exception e) {
@@ -612,8 +670,8 @@ public class DocumentsFragment extends Fragment implements Doc_Attch_View, Docum
     }
 
     @Override
-    public void OnItemClick_Document(GetFileList_Res getFileList_res) {
-        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(App_preference.getSharedprefInstance().getBaseURL() + "" + getFileList_res.getAttachFileName())));
+    public void OnItemClick_Document(Attachments attachments) {
+        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(App_preference.getSharedprefInstance().getBaseURL() + "" + attachments.getAttachFileName())));
     }
 
 
@@ -706,19 +764,22 @@ public class DocumentsFragment extends Fragment implements Doc_Attch_View, Docum
         service.execute(()->{
             for(int i =0; i<data.getClipData().getItemCount();i++) {
                 Uri uri = data.getClipData().getItemAt(i).getUri();
-                String fileName = PathUtils.getRealPath(getActivity(), uri);
-                String fileNameExt = AppUtility.getFileNameWithExtension(fileName);
+                String fileNameExt = AppUtility.getFileNameWithExtension(PathUtils.getRealPath(getActivity(), uri));
+                String[] fileName = fileNameExt.split("\\.");
                 imgPathArray[i] = PathUtils.getRealPath(getActivity(), uri);
                 Bitmap bitmap = AppUtility.getBitmapFromPath(PathUtils.getRealPath(getActivity(), uri));
-                GetFileList_Res obj=new GetFileList_Res("0",fileNameExt,fileNameExt,bitmap);
-                ArrayList<GetFileList_Res> getFileList_res =new ArrayList<>();
-                if (fileList_res != null) {
-                    getFileList_res.clear();
-                    getFileList_res.addAll(fileList_res);
-                }
-                getFileList_res.add(obj);
+                String bitmapString = AppUtility.BitMapToString(bitmap);
+                Attachments attachments = new Attachments("TempAttach-"+fileName[0],fileNameExt,fileNameExt,imgPathArray[i],"", "","",jobId,"2",bitmapString);
+//                Attachments obj=new Attachments("0",fileNameExt,fileNameExt,bitmap);
+//                ArrayList<Attachments> getFileList_res =new ArrayList<>();
+//                if (fileList_res != null) {
+//                    getFileList_res.clear();
+//                    getFileList_res.addAll(fileList_res);
+//                }
+//                getFileList_res.add(obj);
+                AppDataBase.getInMemoryDatabase(getActivity()).attachments_dao().insertSingleAttachments(attachments);
                 new Handler(Looper.getMainLooper()).post(()->{
-                    setList(getFileList_res, "",true);
+                    setList((ArrayList<Attachments>) AppDataBase.getInMemoryDatabase(getActivity()).attachments_dao().getAllAttachmentsOfJob(jobId), "",true);
                 });
             }
             new Handler(Looper.getMainLooper()).post(()->{
@@ -738,6 +799,7 @@ public class DocumentsFragment extends Fragment implements Doc_Attch_View, Docum
         builder.putBoolean("imgPath",true);
         builder.putBoolean("isCompNotes",false);
         builder.putString("jobId",jobId);
+        builder.putBoolean("isAttachmentSection",true);
 
         mWorkManager = WorkManager.getInstance(getActivity().getApplication());
 
@@ -757,15 +819,18 @@ public class DocumentsFragment extends Fragment implements Doc_Attch_View, Docum
     }
 
     @Override
-    public void updateMultiDoc(String apiName, String jobId) {
+    public void updateMultiDoc(String apiName, String jobId, String type) {
         switch (apiName) {
             case Service_apis.upload_document:
                          if(doc_attch_pi != null) {
-                             doc_attch_pi.getAttachFileList(jobId, "", "",true);
+                             doc_attch_pi.getMultiAttachFileList(jobId,  App_preference.getSharedprefInstance().getLoginRes().getUsrId(), type,true,-1,-1,"0","0");
                          }
                             break;
                          }
     }
-
+    public void showErrorDialog(String msg) {
+        AppUtility.error_Alert_Dialog(getActivity(), msg, LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok)
+                , () -> null);
+    }
 
 }

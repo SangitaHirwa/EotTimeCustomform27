@@ -1,5 +1,7 @@
 package com.eot_app.nav_menu.jobs.job_detail.detail.jobdetial_model;
 
+import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.Attachments;
+import com.eot_app.nav_menu.jobs.job_detail.form_form.get_qus_list.qus_model.QuesRspncModel;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
@@ -61,6 +63,16 @@ public class CompletionDetails {
     private String jobId;
     @SerializedName("usrId")
     private String usrId;
+ @SerializedName("answerArray")
+    private List<QuesRspncModel> answerArray;
+
+    public List<QuesRspncModel> getAnswerArray() {
+        return answerArray;
+    }
+
+    public void setAnswerArray(List<QuesRspncModel> answerArray) {
+        this.answerArray = answerArray;
+    }
 
     public List<Attachments> getAttachments() {
         return attachments;
@@ -278,176 +290,176 @@ public class CompletionDetails {
         this.usrId = usrId;
     }
 
-    public static class Attachments {
-        @SerializedName("isLinked")
-        private String isLinked;
-        @SerializedName("attchParentId")
-        private String attchParentId;
-        @SerializedName("size")
-        private int size;
-        @SerializedName("attchOriginId")
-        private String attchOriginId;
-        @SerializedName("des")
-        private String des;
-        @SerializedName("att_docName")
-        private String att_docName;
-        @SerializedName("name")
-        private String name;
-        @SerializedName("attFolderNm")
-        private String attFolderNm;
-        @SerializedName("createdate")
-        private String createdate;
-        @SerializedName("type")
-        private String type;
-        @SerializedName("attachFileActualName")
-        private String attachFileActualName;
-        @SerializedName("attachThumnailFileName")
-        private String attachThumnailFileName;
-        @SerializedName("attachFileName")
-        private String attachFileName;
-        @SerializedName("userId")
-        private String userId;
-        @SerializedName("image_name")
-        private String image_name;
-        @SerializedName("deleteTable")
-        private String deleteTable;
-        @SerializedName("attachmentId")
-        private String attachmentId;
-
-        public String getIsLinked() {
-            return isLinked;
-        }
-
-        public void setIsLinked(String isLinked) {
-            this.isLinked = isLinked;
-        }
-
-        public String getAttchParentId() {
-            return attchParentId;
-        }
-
-        public void setAttchParentId(String attchParentId) {
-            this.attchParentId = attchParentId;
-        }
-
-        public int getSize() {
-            return size;
-        }
-
-        public void setSize(int size) {
-            this.size = size;
-        }
-
-        public String getAttchOriginId() {
-            return attchOriginId;
-        }
-
-        public void setAttchOriginId(String attchOriginId) {
-            this.attchOriginId = attchOriginId;
-        }
-
-        public String getDes() {
-            return des;
-        }
-
-        public void setDes(String des) {
-            this.des = des;
-        }
-
-        public String getAtt_docName() {
-            return att_docName;
-        }
-
-        public void setAtt_docName(String att_docName) {
-            this.att_docName = att_docName;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public String getAttFolderNm() {
-            return attFolderNm;
-        }
-
-        public void setAttFolderNm(String attFolderNm) {
-            this.attFolderNm = attFolderNm;
-        }
-
-        public String getCreatedate() {
-            return createdate;
-        }
-
-        public void setCreatedate(String createdate) {
-            this.createdate = createdate;
-        }
-
-        public String getType() {
-            return type;
-        }
-
-        public void setType(String type) {
-            this.type = type;
-        }
-
-        public String getAttachFileActualName() {
-            return attachFileActualName;
-        }
-
-        public void setAttachFileActualName(String attachFileActualName) {
-            this.attachFileActualName = attachFileActualName;
-        }
-
-        public String getAttachThumnailFileName() {
-            return attachThumnailFileName;
-        }
-
-        public void setAttachThumnailFileName(String attachThumnailFileName) {
-            this.attachThumnailFileName = attachThumnailFileName;
-        }
-
-        public String getAttachFileName() {
-            return attachFileName;
-        }
-
-        public void setAttachFileName(String attachFileName) {
-            this.attachFileName = attachFileName;
-        }
-
-        public String getUserId() {
-            return userId;
-        }
-
-        public void setUserId(String userId) {
-            this.userId = userId;
-        }
-
-        public String getImage_name() {
-            return image_name;
-        }
-
-        public void setImage_name(String image_name) {
-            this.image_name = image_name;
-        }
-
-        public String getDeleteTable() {
-            return deleteTable;
-        }
-
-        public void setDeleteTable(String deleteTable) {
-            this.deleteTable = deleteTable;
-        }
-
-        public String getAttachmentId() {
-            return attachmentId;
-        }
-
-        public void setAttachmentId(String attachmentId) {
-            this.attachmentId = attachmentId;
-        }
-    }
+//    public static class Attachments {
+//        @SerializedName("isLinked")
+//        private String isLinked;
+//        @SerializedName("attchParentId")
+//        private String attchParentId;
+//        @SerializedName("size")
+//        private int size;
+//        @SerializedName("attchOriginId")
+//        private String attchOriginId;
+//        @SerializedName("des")
+//        private String des;
+//        @SerializedName("att_docName")
+//        private String att_docName;
+//        @SerializedName("name")
+//        private String name;
+//        @SerializedName("attFolderNm")
+//        private String attFolderNm;
+//        @SerializedName("createdate")
+//        private String createdate;
+//        @SerializedName("type")
+//        private String type;
+//        @SerializedName("attachFileActualName")
+//        private String attachFileActualName;
+//        @SerializedName("attachThumnailFileName")
+//        private String attachThumnailFileName;
+//        @SerializedName("attachFileName")
+//        private String attachFileName;
+//        @SerializedName("userId")
+//        private String userId;
+//        @SerializedName("image_name")
+//        private String image_name;
+//        @SerializedName("deleteTable")
+//        private String deleteTable;
+//        @SerializedName("attachmentId")
+//        private String attachmentId;
+//
+//        public String getIsLinked() {
+//            return isLinked;
+//        }
+//
+//        public void setIsLinked(String isLinked) {
+//            this.isLinked = isLinked;
+//        }
+//
+//        public String getAttchParentId() {
+//            return attchParentId;
+//        }
+//
+//        public void setAttchParentId(String attchParentId) {
+//            this.attchParentId = attchParentId;
+//        }
+//
+//        public int getSize() {
+//            return size;
+//        }
+//
+//        public void setSize(int size) {
+//            this.size = size;
+//        }
+//
+//        public String getAttchOriginId() {
+//            return attchOriginId;
+//        }
+//
+//        public void setAttchOriginId(String attchOriginId) {
+//            this.attchOriginId = attchOriginId;
+//        }
+//
+//        public String getDes() {
+//            return des;
+//        }
+//
+//        public void setDes(String des) {
+//            this.des = des;
+//        }
+//
+//        public String getAtt_docName() {
+//            return att_docName;
+//        }
+//
+//        public void setAtt_docName(String att_docName) {
+//            this.att_docName = att_docName;
+//        }
+//
+//        public String getName() {
+//            return name;
+//        }
+//
+//        public void setName(String name) {
+//            this.name = name;
+//        }
+//
+//        public String getAttFolderNm() {
+//            return attFolderNm;
+//        }
+//
+//        public void setAttFolderNm(String attFolderNm) {
+//            this.attFolderNm = attFolderNm;
+//        }
+//
+//        public String getCreatedate() {
+//            return createdate;
+//        }
+//
+//        public void setCreatedate(String createdate) {
+//            this.createdate = createdate;
+//        }
+//
+//        public String getType() {
+//            return type;
+//        }
+//
+//        public void setType(String type) {
+//            this.type = type;
+//        }
+//
+//        public String getAttachFileActualName() {
+//            return attachFileActualName;
+//        }
+//
+//        public void setAttachFileActualName(String attachFileActualName) {
+//            this.attachFileActualName = attachFileActualName;
+//        }
+//
+//        public String getAttachThumnailFileName() {
+//            return attachThumnailFileName;
+//        }
+//
+//        public void setAttachThumnailFileName(String attachThumnailFileName) {
+//            this.attachThumnailFileName = attachThumnailFileName;
+//        }
+//
+//        public String getAttachFileName() {
+//            return attachFileName;
+//        }
+//
+//        public void setAttachFileName(String attachFileName) {
+//            this.attachFileName = attachFileName;
+//        }
+//
+//        public String getUserId() {
+//            return userId;
+//        }
+//
+//        public void setUserId(String userId) {
+//            this.userId = userId;
+//        }
+//
+//        public String getImage_name() {
+//            return image_name;
+//        }
+//
+//        public void setImage_name(String image_name) {
+//            this.image_name = image_name;
+//        }
+//
+//        public String getDeleteTable() {
+//            return deleteTable;
+//        }
+//
+//        public void setDeleteTable(String deleteTable) {
+//            this.deleteTable = deleteTable;
+//        }
+//
+//        public String getAttachmentId() {
+//            return attachmentId;
+//        }
+//
+//        public void setAttachmentId(String attachmentId) {
+//            this.attachmentId = attachmentId;
+//        }
+//    }
 }

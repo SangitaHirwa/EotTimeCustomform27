@@ -46,7 +46,8 @@ public interface Service_apis {
     String changeJobStatus = "JobController/changeJobStatus";
     String addJob = "JobController/addJob";
     String addClient = "CompanyController/addClient";
-    String getTermsCondition = "CompanyController/getQuatSetting";
+    /** Change quotation term & condition api after discussion with Rani and Jit Sir*/
+    String getTermsCondition = "QuotationController/getTermAndConditionList";
     String forgotPasswordKey = "AuthenticationController/forgotPasswordKey";
     String forgotPassword = "AuthenticationController/forgotPassword";
     String forgotPasswordReset = "AuthenticationController/forgotPasswordReset";
@@ -56,7 +57,9 @@ public interface Service_apis {
      //Old api
      //    String getUserJobList = "JobController/getUserJobList";
     // new api for eq components
-    String getUserJobList = "JobController/getUserJobListNew";
+     //    after discussion with jit sir we replace this api at 19 jan 2024
+//         String getUserJobList = "JobController/getUserJobListNew";
+     String getUserJobList = "JobController/getUserJobListForMobile";
     String getTagList = "JobController/getTagList";
     String getLoginReport = "UserController/generateCheckInOutPDF";
     String getClientSink = "CompanyController/getClientSink";
@@ -227,6 +230,8 @@ public interface Service_apis {
     String getJobStatus = "JobController/getJobStatusList";
     String get_supplier_list = "SupplierController/getSupplierList";
     String upload_document = "JobController/uploadDocument";
+    String getRecurDataOfJob = "JobController/getRecurDataOfJob";
+    String getSyncJobAttachments = "JobController/syncJobAttachments";
 
 
     //no token required & header
@@ -293,12 +298,25 @@ public interface Service_apis {
     Observable<JsonObject>
     uploadDocements(@HeaderMap Map<String, String> map,
                     @Part("jobId") RequestBody jobId,
+                    @Part("queId") RequestBody queId,
+                    @Part("jtId") RequestBody jtId,
                     @Part("usrId") RequestBody userId,
                     @Part("des") RequestBody des,
                     @Part("type") RequestBody type,
                     @Part("docNm") RequestBody docNm,
                     @Part("isAddAttachAsCompletionNote") RequestBody isAddAttachAsCompletionNote,
                     @Part MultipartBody.Part file);
+
+    @Multipart
+    @POST("QuotationController/uploadQuotDocument")
+    Observable<JsonObject>
+    uploadQuoteDocuments(@HeaderMap Map<String, String> map,
+                         @Part("quotId") RequestBody queId,
+                         @Part("usrId") RequestBody userId,
+                         @Part("des") RequestBody des,
+                         @Part("type") RequestBody type,
+                         @Part MultipartBody.Part file);
+
 
     @Multipart
     @POST("jobController/uploadJobCardSign")
@@ -409,6 +427,18 @@ public interface Service_apis {
                                                @Part("jobId") RequestBody jobId,
                                                @Part("isdelete") RequestBody isdelete,
                                                @Part("type") RequestBody type);
+@Multipart
+    @POST("jobController/setCompletionNotes")
+    Observable<JsonObject> submitCopletionFormAns(@HeaderMap Map<String, String> map,
+                                               @Part List<MultipartBody.Part> signAns,
+                                               @Part List<MultipartBody.Part> docAns,
+                                                  @Part("signQueIdArray") RequestBody signQueIdArray,
+                                                  @Part("docQueIdArray") RequestBody docQueIdArray,
+                                                  @Part("answerArray") RequestBody answer,
+                                                  @Part("usrId") RequestBody usrId,
+                                                  @Part("complNote") RequestBody complNote,
+                                                  @Part("jobId") RequestBody jobId,
+                                                  @Part("isMarkDoneWithJtId") RequestBody isMarkDoneWithJtid);
 
 
     @Multipart

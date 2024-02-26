@@ -35,6 +35,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.eot_app.R;
 import com.eot_app.home_screens.MainActivity;
+import com.eot_app.nav_menu.jobs.job_complation.compla_model.NotifyForcompletionInJob;
 import com.eot_app.nav_menu.jobs.job_controller.ChatController;
 import com.eot_app.nav_menu.jobs.job_db.EquArrayModel;
 import com.eot_app.nav_menu.jobs.job_db.Job;
@@ -80,7 +81,7 @@ import java.util.concurrent.Executors;
  * Use the {@link JobList#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class JobList extends Fragment implements MyListItemSelected<Job>, Joblist_view, View.OnClickListener {
+public class JobList extends Fragment implements MyListItemSelected<Job>, Joblist_view, View.OnClickListener, NotifyForcompletionInJob  {
     public static final int UPDATE = 2;
     public static final int UPDATEAPPOINTMENT=77;
     // TODO: Rename parameter arguments, choose names that match
@@ -206,6 +207,9 @@ public class JobList extends Fragment implements MyListItemSelected<Job>, Joblis
         return fragment;
     }
 
+    public void  setNotifyForCompletion(JobList jobList){
+        EotApp.getAppinstance().setNotifyForcompletionInJob(jobList);
+    }
     public void refreshJobList() {
         if (jobListPi != null) {
             jobListPi.getJobList();
@@ -231,7 +235,6 @@ public class JobList extends Fragment implements MyListItemSelected<Job>, Joblis
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
-
     @Override
     public void onResume() {
         super.onResume();
@@ -298,9 +301,8 @@ public class JobList extends Fragment implements MyListItemSelected<Job>, Joblis
 
         }
 
-        LocalBroadcastManager.getInstance(Objects.requireNonNull(getActivity())).registerReceiver(myJobListfrefreshForNotif,
+        LocalBroadcastManager.getInstance(requireActivity()).registerReceiver(myJobListfrefreshForNotif,
                 new IntentFilter("job_refresh"));
-
         return view;
     }
 
@@ -308,7 +310,7 @@ public class JobList extends Fragment implements MyListItemSelected<Job>, Joblis
     public void onDestroyView() {
         try {
             if (myJobListfrefreshForNotif != null)
-                LocalBroadcastManager.getInstance(Objects.requireNonNull(getActivity())).unregisterReceiver(myJobListfrefreshForNotif);
+                LocalBroadcastManager.getInstance(requireActivity()).unregisterReceiver(myJobListfrefreshForNotif);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -443,6 +445,8 @@ public class JobList extends Fragment implements MyListItemSelected<Job>, Joblis
 
         fab_refresh.setOnClickListener(this);
         isAutoScrolled = false;
+
+        EotApp.getAppinstance().setNotifyForcompletionInJob(this);
     }
 
     private void initializeViews(View view) {
@@ -647,6 +651,7 @@ public class JobList extends Fragment implements MyListItemSelected<Job>, Joblis
     @Override
     public void setdata(List<Job> data, int visibilityFlag) {
         if (data != null)
+            if(myActivity != null)
             backGroundJobListListner(visibilityFlag, data);
     }
 
@@ -810,7 +815,7 @@ public class JobList extends Fragment implements MyListItemSelected<Job>, Joblis
             //intentJobDeatis.putExtra("JOBS", job);
             String strjob = new Gson().toJson(job);
             intentJobDeatis.putExtra("JOBS", strjob);
-            Objects.requireNonNull(getActivity()).startActivityForResult(intentJobDeatis, UPDATE);
+            requireActivity().startActivityForResult(intentJobDeatis, UPDATE);
         }
     }
 
@@ -835,8 +840,8 @@ public class JobList extends Fragment implements MyListItemSelected<Job>, Joblis
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        final InputMethodManager imm = (InputMethodManager) Objects.requireNonNull(getActivity()).getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(Objects.requireNonNull(getView()).getWindowToken(), 0);
+        final InputMethodManager imm = (InputMethodManager) requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(requireView().getWindowToken(), 0);
     }
 
     @Override
@@ -898,7 +903,7 @@ public class JobList extends Fragment implements MyListItemSelected<Job>, Joblis
     }
 
     private void addFilterName(final DropdownListBean chipItem) {
-        LayoutInflater vi = (LayoutInflater) Objects.requireNonNull(getActivity()).getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater vi = (LayoutInflater) requireActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View v = vi.inflate(R.layout.chip_layout, null);
         TextView textView = v.findViewById(R.id.chip_txt);
         textView.setText(chipItem.getName());
@@ -1137,5 +1142,15 @@ public class JobList extends Fragment implements MyListItemSelected<Job>, Joblis
                 }
             });
         });
+    }
+
+    @Override
+    public void upateForCompletion(String apiName, String jobId) {
+        if(jobListPi != null){
+        refreshJobList();
+        }else {
+            jobListPi = new JobList_pc(this,isFromScan);
+            jobListPi.getJobList();
+        }
     }
 }

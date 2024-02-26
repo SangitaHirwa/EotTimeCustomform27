@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/EyeOnTask.iml" filepath="$PROJECT_DIR$/.idea/modules/EyeOnTask.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/EyeOnTask.iml" filepath="$PROJECT_DIR$/.idea/EyeOnTask.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/EyeOnTask.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/EyeOnTask.app.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/EyeOnTask.app.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/EyeOnTask.app.androidTest.iml" />

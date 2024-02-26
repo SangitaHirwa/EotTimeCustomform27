@@ -2,6 +2,7 @@ package com.eot_app.nav_menu.jobs.job_complation;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,7 +19,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DecodeFormat;
 import com.eot_app.R;
 import com.eot_app.nav_menu.jobs.job_detail.documents.DialogUpdateDocuments;
-import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.GetFileList_Res;
+import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.Attachments;
 import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.AppUtility;
 import com.eot_app.utility.App_preference;
@@ -26,24 +27,25 @@ import com.eot_app.utility.language_support.LanguageController;
 import java.util.ArrayList;
 
 public class JobCompletionAdpter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements Filterable {
-    private final ArrayList<GetFileList_Res> suggestions = new ArrayList<>();
+    private final ArrayList<Attachments> suggestions = new ArrayList<>();
     private final FileDesc_Item_Selected fileDesc_item_selected;
     private final String jobId;
     private final JobCompletionActivity jobCompletionActivity;
     private final RemoveAttchment removeAttchment;
-    private ArrayList<GetFileList_Res> getFileList_res = new ArrayList<>();
-    private ArrayList<GetFileList_Res> tempFileList;
+    private ArrayList<Attachments> attachments = new ArrayList<>();
+    private ArrayList<Attachments> tempFileList;
+    String  queId, jtId;
     Filter nameFilter = new Filter() {
 
 
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
             FilterResults results = new FilterResults();        // Holds the results of a filtering operation in values
-            ArrayList<GetFileList_Res> FilteredArrList = new ArrayList<>();
+            ArrayList<Attachments> FilteredArrList = new ArrayList<>();
 
 
             if (tempFileList == null) {
-                tempFileList = new ArrayList<GetFileList_Res>(getFileList_res); // saves the original data in mOriginalValues
+                tempFileList = new ArrayList<Attachments>(attachments); // saves the original data in mOriginalValues
             }
             FilteredArrList.clear();
             if (constraint == null || constraint.length() == 0) {
@@ -54,7 +56,7 @@ public class JobCompletionAdpter extends RecyclerView.Adapter<RecyclerView.ViewH
             } else {
                 constraint = constraint.toString().toLowerCase();
 
-                for (GetFileList_Res fileList : getFileList_res) {
+                for (Attachments fileList : attachments) {
 
                     if (fileList.getAttachFileActualName().toLowerCase().startsWith(constraint.toString().toLowerCase())) {
                         FilteredArrList.add(fileList);
@@ -70,28 +72,31 @@ public class JobCompletionAdpter extends RecyclerView.Adapter<RecyclerView.ViewH
 
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
-            getFileList_res = (ArrayList<GetFileList_Res>) results.values;
+            attachments = (ArrayList<Attachments>) results.values;
             notifyDataSetChanged();  // notifies the
         }
     };
     private Context context;
 
-    public JobCompletionAdpter(FileDesc_Item_Selected fileDesc_item_selected, ArrayList<GetFileList_Res> getFileList_res,
+    public JobCompletionAdpter(FileDesc_Item_Selected fileDesc_item_selected, ArrayList<Attachments> attachments,
                                JobCompletionActivity jobCompletionActivity, String jobId
             , RemoveAttchment removeAttchment) {
-        this.getFileList_res = getFileList_res;
+        this.attachments = attachments;
         this.fileDesc_item_selected = fileDesc_item_selected;
         tempFileList = new ArrayList<>();
-        this.tempFileList = getFileList_res;
+        this.tempFileList = attachments;
         this.jobCompletionActivity = jobCompletionActivity;
         this.jobId = jobId;
         this.removeAttchment = removeAttchment;
     }
 
-    public void updateFileList(ArrayList<GetFileList_Res> getFileListres, boolean firstCall) {
-        if(firstCall) this.getFileList_res.clear();
-        this.getFileList_res.addAll(getFileListres);
+    public void updateFileList(ArrayList<Attachments> getFileListres, boolean firstCall, String queId, String jtId) {
+        this.queId = queId;
+        this.jtId = jtId;
+        if(firstCall) this.attachments.clear();
+        this.attachments.addAll(getFileListres);
         notifyDataSetChanged();
+
     }
 
     @Override
@@ -121,16 +126,21 @@ public class JobCompletionAdpter extends RecyclerView.Adapter<RecyclerView.ViewH
         if (viewHolder instanceof MyView_Holder) {
             final int position = pos - 1;
             final MyView_Holder holder = (MyView_Holder) viewHolder;
-            GetFileList_Res fileList = getFileList_res.get(position);
+            Attachments fileList = attachments.get(position);
 
             final String ext = fileList.getImage_name().substring((fileList.getImage_name()                       .lastIndexOf(".")) + 1).toLowerCase();
             if (!ext.isEmpty()) {
+                if(fileList.getAttachmentId().contains("TempAttach-") && fileList.getAttachThumnailFileName() != null){
+                    Glide.with(context).load(fileList.getAttachThumnailFileName())
+                            .format(DecodeFormat.PREFER_ARGB_8888)
+                            .thumbnail(Glide.with(context).load(R.raw.loader_eot)).placeholder(R.drawable.picture).into(holder.image_thumb_nail);
+                }else
                 if (ext.equals("jpg") || ext.equals("jpeg") || ext.equals("png")) {
 
                     if(fileList.getAttachmentId().equalsIgnoreCase("0")&&fileList.getBitmap1()!=null)
                     {
                         holder.image_thumb_nail.setImageBitmap(fileList.getBitmap1());
-                    }else if(fileList.getAttachmentId().equalsIgnoreCase("0")&&fileList.getBitmap()!=null)
+                    }else if(fileList.getAttachmentId().equalsIgnoreCase("0")&&fileList.getBitmap()!=null || fileList.getBitmap()!=null && !fileList.getBitmap().isEmpty())
                     {
                         Bitmap bitmap1= AppUtility.StringToBitMap(fileList.getBitmap());
                         holder.image_thumb_nail.setImageBitmap(bitmap1);
@@ -161,7 +171,7 @@ public class JobCompletionAdpter extends RecyclerView.Adapter<RecyclerView.ViewH
                     holder.image_thumb_nail.setImageResource(R.drawable.doc);
                     holder.image_thumb_nail.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
                 }
-                if(fileList.getAttachmentId().equalsIgnoreCase("0"))
+                if(fileList.getAttachmentId().equalsIgnoreCase("0") || fileList.getBitmap()!= null && !fileList.getBitmap().isEmpty() || fileList.getAttachmentId().contains("TempAttach-"))
                 {
                     holder.image_loader.setVisibility(View.VISIBLE);
                     Glide.with(context).load("")
@@ -172,43 +182,47 @@ public class JobCompletionAdpter extends RecyclerView.Adapter<RecyclerView.ViewH
                 }
             }
             holder.image_thumb_nail.setOnClickListener(view -> {
-                if (getFileList_res.get(position).getType() != null && getFileList_res.get(position).getType().equals("2") || getFileList_res.get(position).getType().equals("6")) {
-                    DialogUpdateDocuments
-                            dialogUpdateDocuments = new DialogUpdateDocuments();
+                if(AppUtility.isInternetConnected()){
+                    if (attachments.get(position).getType() != null && attachments.get(position).getType().equals("2") || attachments.get(position).getType().equals("6")) {
+                        DialogUpdateDocuments
+                                dialogUpdateDocuments = new DialogUpdateDocuments();
 
-                    if (!TextUtils.isEmpty(ext) && ext.equals("jpg") || ext.equals("jpeg") || ext.equals("png"))
-                        dialogUpdateDocuments.setIsFileImage(true);
-                    String img_name = "";
-                    if(getFileList_res.get(position).getAtt_docName()==null){
-                        img_name = getFileList_res.get(position).getAttachFileActualName();
-                    }else {
-                        img_name = getFileList_res.get(position).getAtt_docName()+"."+ext;
-                    }
+                        if (!TextUtils.isEmpty(ext) && ext.equals("jpg") || ext.equals("jpeg") || ext.equals("png"))
+                            dialogUpdateDocuments.setIsFileImage(true);
+                        String img_name = "";
+                        if (attachments.get(position).getAtt_docName() == null) {
+                            img_name = attachments.get(position).getAttachFileActualName();
+                        } else {
+                            img_name = attachments.get(position).getAtt_docName() + "." + ext;
+                        }
 
-                    dialogUpdateDocuments.setImgPath(
-                            getFileList_res.get(position).getAttachmentId(),
-                            getFileList_res.get(position).getAttachFileName(),
-                            img_name,
-                            getFileList_res.get(position).getDes(),
-                            getFileList_res.get(position).getType(),
-                            jobId);
+                        dialogUpdateDocuments.setImgPath(
+                                attachments.get(position).getAttachmentId(),
+                                attachments.get(position).getAttachFileName(),
+                                img_name,
+                                attachments.get(position).getDes(),
+                                attachments.get(position).getType(),
+                                jobId,queId,jtId);
 
-                    dialogUpdateDocuments.setOnDocumentUpdate((desc,name) -> {
-                        if (desc != null)
-                            getFileList_res.get(position).setDes(desc);
-                        if (name != null)
-                            getFileList_res.get(position).setAtt_docName(name);
+                        dialogUpdateDocuments.setOnDocumentUpdate((desc, name, queId, jtId) -> {
+                            if (desc != null)
+                                attachments.get(position).setDes(desc);
+                            if (name != null)
+                                attachments.get(position).setAtt_docName(name);
 
-                        if (jobCompletionActivity != null)
-                            jobCompletionActivity.setUpdatedDesc(desc);
+                            if (jobCompletionActivity != null)
+                                jobCompletionActivity.setUpdatedDesc(desc,queId,jtId);
 
-                    });
-                    dialogUpdateDocuments.show(((AppCompatActivity) context).getSupportFragmentManager(), "dialog");
-                } else
-                    fileDesc_item_selected.OnItemClick_Document(getFileList_res.get(holder.getBindingAdapterPosition()));
+                        });
+                        dialogUpdateDocuments.show(((AppCompatActivity) context).getSupportFragmentManager(), "dialog");
+                    } else
+                        fileDesc_item_selected.OnItemClick_Document(attachments.get(holder.getBindingAdapterPosition()));
+                }else {
+                    jobCompletionActivity.showErrorDialog(LanguageController.getInstance().getMobileMsgByKey(AppConstant.offline_feature_alert));
+                }
             });
 
-            holder.image_txt.setOnClickListener(v -> removeAttchment.removeAttchment(getFileList_res.get(position).getAttachmentId()));
+            holder.image_txt.setOnClickListener(v -> removeAttchment.removeAttchment(attachments.get(position).getAttachmentId(),queId, jtId));
 
         } else if (viewHolder instanceof UploadViewHolder) {
             UploadViewHolder holder = (UploadViewHolder) viewHolder;
@@ -221,10 +235,10 @@ public class JobCompletionAdpter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     @Override
     public int getItemCount() {
-        if (getFileList_res == null)
+        if (attachments == null)
             return 1;
         else
-            return getFileList_res.size() + 1;
+            return attachments.size() + 1;
     }
 
     @Override
@@ -233,13 +247,13 @@ public class JobCompletionAdpter extends RecyclerView.Adapter<RecyclerView.ViewH
     }
 
     public interface FileDesc_Item_Selected {
-        void OnItemClick_Document(GetFileList_Res getFileList_res);
+        void OnItemClick_Document(Attachments attachments);
 
         void openAttachmentDialog();
     }
 
-    interface RemoveAttchment {
-        void removeAttchment(String id);
+    public interface RemoveAttchment {
+        void removeAttchment(String id, String queId, String jtId);
     }
 
     static class MyView_Holder extends RecyclerView.ViewHolder {

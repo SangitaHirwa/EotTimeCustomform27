@@ -55,6 +55,7 @@ public class Invoice_Email_Activity extends AppCompatActivity implements View.On
     private RelativeLayout rl;
     private Object stripLink;
     List<JobCardAttachmentModel> reqAttachmentList;
+    ArrayList<String> quoteAttachmentArray = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,7 +104,7 @@ public class Invoice_Email_Activity extends AppCompatActivity implements View.On
         } else if (quotId != null) {
             setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.email_quotes));
             invoice_email_pi.getQuotesInvoicetemplateList();
-            invoice_email_pi.getQuotationEmailTemplate(quotId);
+            invoice_email_pi.getQuotationEmailTemplate(quotId,false);
         } else if (appId != null) {
             setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.email_document));
             invoice_email_pi.getJobDocEmailTemplate(appId);
@@ -213,7 +214,7 @@ public class Invoice_Email_Activity extends AppCompatActivity implements View.On
                             emailSubject,
                             emailTo,
                             emailCc,
-                            isProformaInv, tempId,stripLink);
+                            isProformaInv, tempId,stripLink,reqAttachmentList);
                 }
                 break;
         }
@@ -325,7 +326,7 @@ public class Invoice_Email_Activity extends AppCompatActivity implements View.On
                                 messageInHtml,
                                 emailSubject,
                                 emailTo,
-                                emailCc, isProformaInv, tempId,stripLink);
+                                emailCc, isProformaInv, tempId,stripLink,reqAttachmentList);
                     } else if (quotId != null) {
                         invoice_email_pi.sendQuotationEmailTemplate(quotId,
                                 messageInHtml,
@@ -334,7 +335,7 @@ public class Invoice_Email_Activity extends AppCompatActivity implements View.On
                                 emailCc,
                                 "",
                                 email_reS_model.getFrom(),
-                                email_reS_model.getFromnm(), tempId);
+                                email_reS_model.getFromnm(), tempId, quoteAttachmentArray);
                     } else if (appId != null) {
                         invoice_email_pi.sendJObDocEmailTemplate(appId,
                                 getIntent().getStringExtra("pdfPath"),

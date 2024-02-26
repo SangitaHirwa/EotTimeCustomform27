@@ -698,7 +698,22 @@ public class AddQutesItem_Activity extends AppCompatActivity implements TextWatc
         } else {
             edt_item_supplier.setText(AppUtility.getRoundoff_amount(itemselected.getSupplierCost()));
         }
-        edt_item_discount.setText(AppUtility.getRoundoff_amount(itemselected.getDiscount()));
+        if(getDisCalculationType.equals("1")) {
+            if(itemselected.getDiscount().isEmpty()){
+              itemselected.setDiscount("0");
+            }
+            double calculaterateDis = 0;
+            double qty = Double.parseDouble(edt_item_qty.getText().toString());
+            double rate = Double.parseDouble(edt_item_rate.getText().toString());
+            double dis = Double.parseDouble(itemselected.getDiscount());
+            calculaterateDis = (rate * qty * dis) / 100;
+            edt_item_discount.setText(AppUtility.getRoundoff_amount(""+calculaterateDis));
+
+        }else
+        {
+            edt_item_discount.setText(AppUtility.getRoundoff_amount(itemselected.getDiscount()));
+        }
+//        edt_item_discount.setText(AppUtility.getRoundoff_amount(itemselected.getDiscount()));
 
         total_Amount_cal();
     }

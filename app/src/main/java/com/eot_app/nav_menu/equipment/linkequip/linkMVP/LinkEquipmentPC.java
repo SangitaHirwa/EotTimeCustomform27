@@ -3,15 +3,23 @@ package com.eot_app.nav_menu.equipment.linkequip.linkMVP;
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
+
+import com.eot_app.activitylog.ActivityLogController;
+import com.eot_app.activitylog.LogModel;
 import com.eot_app.nav_menu.audit.audit_list.equipment.model.EquipmentStatus;
 import com.eot_app.nav_menu.equipment.linkequip.linkMVP.model.ContractEquipmentReq;
 import com.eot_app.nav_menu.equipment.linkequip.linkMVP.model.EquipmentListReq;
 import com.eot_app.nav_menu.jobs.job_db.EquArrayModel;
+import com.eot_app.nav_menu.jobs.job_db.Job;
+import com.eot_app.nav_menu.jobs.job_db.JobListRequestModel;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.model.EquipmentStatusReq;
 import com.eot_app.services.ApiClient;
 import com.eot_app.services.Service_apis;
 import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.AppUtility;
+import com.eot_app.utility.App_preference;
+import com.eot_app.utility.EotApp;
+import com.eot_app.utility.db.AppDataBase;
 import com.eot_app.utility.language_support.LanguageController;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -53,7 +61,7 @@ public class LinkEquipmentPC implements LinkEquipmentPI {
     }
 
     @Override
-    public void getEquipmentList(final String type, final String cltId, final String audId ) {
+    public void getEquipmentList(final String type, final String cltId, final String jobId) {
         if (AppUtility.isInternetConnected()) {
 
             if (index == 0) list.clear();
@@ -105,11 +113,13 @@ public class LinkEquipmentPC implements LinkEquipmentPI {
                         public void onComplete() {
                             if ((index + limit) <= count) {
                                 index += limit;
-                                getEquipmentList(type, cltId, audId);
+                                getEquipmentList(type, cltId, jobId);
                             } else {
                                 index = 0;
                                 count = 0;
-                                getAttachedEquipmentList(audId, "");
+
+                                getAttachedEquipmentList(jobId, "",false);
+
                             }
                             view.showHideProgressBar(false);
                         }
@@ -119,19 +129,23 @@ public class LinkEquipmentPC implements LinkEquipmentPI {
     }
 
     @Override
-    public void getAttachedEquipmentList(String audId, final String contrId) {
-        if (AppUtility.isInternetConnected()) {
-            if (updateindex == 0) listLinked.clear();
-            HashMap<String, String> auditListRequestModel = new HashMap<>();
-            auditListRequestModel.put("index", updateindex + "");
-            auditListRequestModel.put("activeRecord", "0");
-            auditListRequestModel.put("audId", audId);
-            auditListRequestModel.put("contrId", contrId);
-            auditListRequestModel.put("isJob", "1");
-            auditListRequestModel.put("isParent", "1");
+    public void getAttachedEquipmentList(String jobId, final String contrId, boolean isReturn) {
 
-            String data = new Gson().toJson(auditListRequestModel);
-            ApiClient.getservices().eotServiceCall(Service_apis.getEquipmentList, AppUtility.getApiHeaders(), AppUtility.getJsonObject(data))
+        if (AppUtility.isInternetConnected()) {
+
+            LogModel logModel = ActivityLogController
+                    .getObj(ActivityLogController.JOB_MODULE, ActivityLogController.JOB_LIST, ActivityLogController.JOB_MODULE);
+            ActivityLogController.saveOfflineTable(logModel);
+
+            JobListRequestModel jobListRequestModel = new JobListRequestModel(Integer.parseInt(App_preference.getSharedprefInstance().getLoginRes().getUsrId()),
+                    updatelimit, updateindex, App_preference.getSharedprefInstance().getJobSyncTime());
+
+
+            // for storing the date time when the api call started
+            String startJobSyncTime = AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT);
+
+            String data = new Gson().toJson(jobListRequestModel);
+            ApiClient.getservices().eotServiceCall(Service_apis.getUserJobList, AppUtility.getApiHeaders(), AppUtility.getJsonObject(data))
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Observer<JsonObject>() {
@@ -140,24 +154,20 @@ public class LinkEquipmentPC implements LinkEquipmentPI {
                         }
 
                         @Override
-                        public void onNext(@NotNull JsonObject jsonObject) {
-                            try {
-                                if (jsonObject.get("success").getAsBoolean()) {
-                                    countlimit = jsonObject.get("count").getAsInt();
-                                    String convert = new Gson().toJson(jsonObject.get("data").getAsJsonArray());
-                                    Type listType = new com.google.common.reflect.TypeToken<List<EquArrayModel>>() {
-                                    }.getType();
-                                    List<EquArrayModel> data = new Gson().fromJson(convert, listType);
-                                    if (data != null)
-                                        listLinked.addAll(data);
-
-                                } else if (jsonObject.get("statusCode") != null && jsonObject.get("statusCode").getAsString().equals(AppConstant.SESSION_EXPIRE)) {
-                                    view.onSessionExpired(LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
-                                }
-                            } catch (Exception ex) {
-                                ex.printStackTrace();
-                                view.showHideProgressBar(false);
-
+                        public void onNext(JsonObject jsonObject) {
+                            if (jsonObject.get("success").getAsBoolean()) {
+                                count = jsonObject.get("count").getAsInt();
+                                String convert = new Gson().toJson(jsonObject.get("data").getAsJsonArray());
+                                Type listType = new TypeToken<List<Job>>() {
+                                }.getType();
+                                List<Job> jobData = new Gson().fromJson(convert, listType);
+                                addRecordsToDB(jobData);
+                                Job jobsById = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(jobId);
+                                List<EquArrayModel> data = jobsById.getEquArray();
+                                if (data != null)
+                                    listLinked.addAll(data);
+                            } else if (jsonObject.get("statusCode") != null && jsonObject.get("statusCode").getAsString().equals(AppConstant.SESSION_EXPIRE)) {
+                                view.onSessionExpired(LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
                             }
                         }
 
@@ -169,19 +179,49 @@ public class LinkEquipmentPC implements LinkEquipmentPI {
 
                         @Override
                         public void onComplete() {
-                            if ((updateindex + updatelimit) <= countlimit) {
+                            if ((updateindex + updatelimit) <= count) {
                                 updateindex += updatelimit;
-                            } else {
-                                updateindex = 0;
-                                countlimit = 0;
-                                mergeTheListForLinkedEquipment(!TextUtils.isEmpty(contrId));
 
+                                getAttachedEquipmentList(jobId,contrId,false);
+
+                            } else {
+                                if (count != 0) {
+                                    if(App_preference.getSharedprefInstance().getJobStartSyncTime().isEmpty()
+                                            &&startJobSyncTime!=null && !startJobSyncTime.isEmpty()){
+//                                        App_preference.getSharedprefInstance().setJobSyncTime(AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT));
+                                        App_preference.getSharedprefInstance().setJobSyncTime(startJobSyncTime);
+                                        Log.v("MainSync","startJobSyncTime JobList"+" --" +App_preference.getSharedprefInstance().getJobSyncTime());
+                                    }
+                                    else if(App_preference.getSharedprefInstance().getJobStartSyncTime().isEmpty()){
+//                                        App_preference.getSharedprefInstance().setJobSyncTime(AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT));
+                                        App_preference.getSharedprefInstance().setJobSyncTime(startJobSyncTime);
+                                        Log.v("MainSync","startJobSyncTime JobList"+" --" +App_preference.getSharedprefInstance().getJobSyncTime());
+                                    }
+                                    else {
+                                        App_preference.getSharedprefInstance().setJobSyncTime(App_preference.getSharedprefInstance().getJobStartSyncTime());
+                                    }
+//                                    App_preference.getSharedprefInstance().setJobSyncTime(AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT));
+                                }
+                                updateindex = 0;
+                                count = 0;
+                                AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().deleteJobByIsDelete();
                             }
+
+                            if(isReturn){
+                                view.refreshEquList(isReturn);
+                            }
+                            mergeTheListForLinkedEquipment(!TextUtils.isEmpty(contrId));
+
                         }
                     });
         } else {
             networkError();
         }
+
+      }
+
+    private void addRecordsToDB(List<Job> data) {
+            AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().inserJob(data);
     }
 
     @Override
@@ -256,7 +296,7 @@ public class LinkEquipmentPC implements LinkEquipmentPI {
                         @Override
                         public void onNext(@NonNull JsonObject jsonObject) {
                             if (jsonObject.get("success").getAsBoolean()) {
-                                view.refreshEquipmentList(true);
+                                view.refreshEquipmentList(true,true);
                             } else if (jsonObject.get("statusCode") != null && jsonObject.get("statusCode").getAsString().equals(AppConstant.SESSION_EXPIRE)) {
                                 view.onSessionExpired(LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
                             }
@@ -329,7 +369,7 @@ public class LinkEquipmentPC implements LinkEquipmentPI {
                             } else {
                                 index = 0;
                                 count = 0;
-                                getAttachedEquipmentList(req.getJobId(), req.getContrId());
+                                getAttachedEquipmentList(req.getJobId(), req.getContrId(),false);
                             }
                         }
                     });
