@@ -1341,8 +1341,9 @@ public class JobDetailActivity extends AppCompatActivity implements
         return super.onPrepareOptionsMenu(menu);
     }
 
-    public void openCustomSignatureDialog() {
+    public void openCustomSignatureDialog(String statusId) {
         if (detail_activity_pi != null && dataJob != null) {
+            dataJob.setStatus(statusId);
             if (TextUtils.isEmpty(dataJob.getSignature())) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 View view = LayoutInflater.from(this).inflate(R.layout.item_customer_signature, null);

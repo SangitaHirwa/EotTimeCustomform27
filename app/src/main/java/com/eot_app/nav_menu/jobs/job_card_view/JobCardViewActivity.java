@@ -542,6 +542,7 @@ public class JobCardViewActivity extends AppCompatActivity  implements
         String msgForChat="";
         WebSettings mWebSettings = binding.jobCardEditor.getSettings();
         mWebSettings.setJavaScriptEnabled(true);
+
         if(isSignCheck) {
             if (sing) {
                 String msgSignWithUrl = editedMsg.replace("<p id=\"esignUrl\"> </p>", "<p id=\"esignUrl\"> <a href=\"_eSign_\" style=\"color:#15a0b3;\">E-Sign</a></p>");
@@ -552,7 +553,7 @@ public class JobCardViewActivity extends AppCompatActivity  implements
                 editedMsg=msgSignWithOutUrl;
                 binding.jobCardEditor.setHtml(editedMsg);
             }
-        } if(isChatCheck){
+        } else if(isChatCheck){
             if(chat){
                 String[] htmlMsgSplit = htlmMessage.split("<p");
                 for(String msgContainP:htmlMsgSplit){
@@ -575,6 +576,8 @@ public class JobCardViewActivity extends AppCompatActivity  implements
                 editedMsg =msgChatWithOutUrl;
                 binding.jobCardEditor.setHtml(editedMsg);
             }
+        }else {
+            binding.jobCardEditor.setHtml(webMessage);
         }
 
     }
