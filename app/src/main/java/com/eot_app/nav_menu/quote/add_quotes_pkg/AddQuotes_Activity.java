@@ -120,6 +120,7 @@ public class AddQuotes_Activity extends UploadDocumentActivity implements View.O
     private AutoCompleteTextView auto_quote_client, auto_sites, auto_quote_contact, auto_quote_country, auto_quote_state;
     private RelativeLayout relative_main;
     private String invDate = "", dueDate = "";
+    private boolean isFristTime = true;
 
     /*
      * select date from picker & concanate current time
@@ -196,6 +197,7 @@ public class AddQuotes_Activity extends UploadDocumentActivity implements View.O
             isUpdate = true;
             setDefaultValuesOfQuoteS(quotesDetails);//set view for update Quotes
             add_quote_pi.getJobServices();
+            add_quote_pi.getTermsConditions(true);
 
         } else if (getIntent().hasExtra("appointmentId")) {
             HyperLog.i("", "EditQuotes from appointment details");
@@ -748,8 +750,10 @@ public class AddQuotes_Activity extends UploadDocumentActivity implements View.O
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
                 if(termsConditionsList != null && termsConditionsList.size()>0){
-                   quote_term_edt.getText().clear();
-                   quote_term_edt.setText(termsConditionsList.get(position).getTermAndCondition());
+                    if(!isFristTime) {
+                        quote_term_edt.getText().clear();
+                        quote_term_edt.setText(termsConditionsList.get(position).getTermAndCondition());
+                    }
                 }
             }
 
@@ -927,6 +931,7 @@ public class AddQuotes_Activity extends UploadDocumentActivity implements View.O
                 case R.id.quote_tc_suggestion_img:
                     if(termsConditionsList != null && termsConditionsList.size() >0) {
                         quote_tc_suggestion_spinner.performClick();
+                        isFristTime = false;
                     }else {
                             AppUtility.alertDialog(this,
                                     LanguageController.getInstance()
@@ -1242,19 +1247,22 @@ public class AddQuotes_Activity extends UploadDocumentActivity implements View.O
 
     @Override
     public void setTermsConditions(List<Quote_Term_Conditon_Model> termsConditions, boolean isFirstCall) {
-        if (termsConditions != null && termsConditions.size() > 0) {
-            if(isFirstCall){
-                termsConditionsList.clear();
-            }
-                termsConditionsList.addAll(termsConditions);
-            termCondtionAdapter.updtaeList(termsConditionsList);
-            for (Quote_Term_Conditon_Model item : termsConditions
-                 ) {
-                if(item.getIsDefault().equals("1")){
-                    quote_term_edt.setText(Html.fromHtml(item.getTermAndCondition()));
-                }
-            }
 
+            if (termsConditions != null && termsConditions.size() > 0) {
+                if (isFirstCall) {
+                    termsConditionsList.clear();
+                }
+                termsConditionsList.addAll(termsConditions);
+                termCondtionAdapter.updtaeList(termsConditionsList);
+                if (!getIntent().hasExtra("EditQuotes")) {
+                for (Quote_Term_Conditon_Model item : termsConditions
+                ) {
+                    if (item.getIsDefault().equals("1")) {
+                        quote_term_edt.setText(Html.fromHtml(item.getTermAndCondition()));
+                    }
+                }
+
+            }
         }
     }
 
