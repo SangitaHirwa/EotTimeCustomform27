@@ -263,7 +263,7 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
                         mEditor.setPlaceholder(LanguageController.getInstance().getMobileMsgByKey(AppConstant              .job_desc));
                         mEditor.setTextColor(Color.parseColor("#8C9293"));
                         mEditor.setBackgroundColor(Color.TRANSPARENT);
-                        mEditor.focusEditor();
+//                        mEditor.focusEditor();
                     }
                 });
 
@@ -274,6 +274,7 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
                 settingurl.getTagList();
                 settingurl.getJobTitleList();
                 runOnUiThread(new Runnable() {
+                    @SuppressLint("ClickableViewAccessibility")
                     @Override
                     public void run() {
                         mEditor.setOnTextChangeListener(text -> {
@@ -282,6 +283,11 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
                             } else {
                                 jobdeshint.setVisibility(View.INVISIBLE);
                             }
+                        });
+                        mEditor.setOnTouchListener((v, event) -> {
+                            mEditor.focusEditor();
+                            jobdeshint.setVisibility(View.VISIBLE);
+                            return false;
                         });
                         mEditor.setOnFocusChangeListener((v, hasFocus) -> {
                             if (hasFocus) {
