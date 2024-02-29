@@ -7,7 +7,7 @@
 
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/relative_layout_dragdrop"
+        android:id="@+id/card_layout_dragdrop"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -51,20 +51,20 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="gone"
+            android:elevation="20dp"
             android:id="@+id/relative_layout_equipment_item"
             >
 
             <ImageView
                 android:id="@+id/equipment_droped_icon"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
                 app:srcCompat="@drawable/ic_launcher_foreground" />
 
             <ImageView
                 android:id="@+id/equipment_close_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="-10dp"
+                android:layout_width="10dp"
+                android:layout_height="10dp"
                 android:layout_toRightOf="@+id/equipment_droped_icon"
                 android:src="@drawable/cross_droped_equ_icon" />
             <TextView
@@ -76,8 +76,10 @@
                 android:visibility="visible"
                 android:layout_below="@+id/equipment_droped_icon"
                 android:paddingLeft="10dp"
-                android:textSize="20sp"
+                android:textColor="#21AC21"
+                android:textSize="11sp"
                 android:text="dfgfdg"
+                android:textStyle="bold"
                 tools:ignore="HardcodedText" />
 
         </RelativeLayout>

@@ -43,7 +43,7 @@
     <LinearLayout
         android:id="@+id/linearLayoutMapView"
         android:layout_width="0dp"
-        android:layout_height="80dp"
+        android:layout_height="60dp"
         android:layout_marginStart="3dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="3dp"
@@ -56,7 +56,7 @@
         <ImageView
             android:id="@+id/icon_mapview"
             android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_height="30dp"
             android:layout_gravity="center"
             android:layout_marginStart="25dp"
             app:srcCompat="@drawable/ic_back" />
@@ -65,7 +65,7 @@
             android:id="@+id/tv_mapView"
             style="@style/style_sec_sec"
             android:layout_width="wrap_content"
-            android:layout_height="50dp"
+            android:layout_height="30dp"
             android:layout_gravity="center"
             android:layout_weight="1"
             android:gravity="center"
@@ -78,7 +78,7 @@
     <ImageView
         android:id="@+id/imageView12"
         android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_height="30dp"
         android:layout_marginStart="32dp"
         android:layout_marginTop="16dp"
         app:layout_constraintStart_toStartOf="parent"
@@ -88,7 +88,7 @@
     <ImageView
         android:id="@+id/itemShowHide"
         android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_height="30dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="32dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -116,7 +116,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent">
 
-            <LinearLayout
+            <FrameLayout
                 android:id="@+id/framLayout_Container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -143,7 +143,7 @@
                     android:focusable="true"
                     android:scaleType="fitCenter"
                     app:srcCompat="@drawable/picture" />
-            </LinearLayout>
+            </FrameLayout>
             </HorizontalScrollView>
            <!-- </FrameLayout>-->
         </androidx.core.widget.NestedScrollView>

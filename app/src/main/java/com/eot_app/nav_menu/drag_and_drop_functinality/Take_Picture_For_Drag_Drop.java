@@ -75,7 +75,7 @@ public class Take_Picture_For_Drag_Drop extends AppCompatActivity implements Vie
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.tv_back:
-                this.finish();
+                onBackPressed();
                 break;
             case R.id.tv_take_picture:
               selectFiles();
