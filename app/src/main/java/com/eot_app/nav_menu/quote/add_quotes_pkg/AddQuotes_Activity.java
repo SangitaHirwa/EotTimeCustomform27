@@ -941,7 +941,7 @@ public class AddQuotes_Activity extends UploadDocumentActivity implements View.O
                             AppUtility.alertDialog(this,
                                     LanguageController.getInstance()
                                             .getMobileMsgByKey(AppConstant.term_condition)
-                                    ,LanguageController.getInstance().getMobileMsgByKey(AppConstant.no_suggesstion),
+                                    ,LanguageController.getInstance().getMobileMsgByKey(AppConstant.no_term_condition),
                                     LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok),"", () -> null);
                     }
                 break;

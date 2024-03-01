@@ -44,6 +44,7 @@ public class AppConstant {
     public static final String medium_caps = "Medium";
     public static final String Medium_id = "2";
     //     job states id
+    public static final String Reschedule = "0";
     public static final String Not_Started = "1";
     public static final String Accepted = "2";
     public static final String Reject = "3";
@@ -56,6 +57,7 @@ public class AppConstant {
     public static final String Closed = "10";
     public static final String Multi = "11";
     public static final String New_On_Hold = "12";
+    public static final String Revisit = "revisite";
     public static final String CUSTOM = "110";
     //   job Priority
     public static final String High = "High";
