@@ -442,9 +442,10 @@ public class DetailFragment extends Fragment
         mMapView.getMapAsync(this);
 
         // adapter for job status dropdown
-        mySpinnerAdapter = new Job_Status_Adpter(getActivity(), statusArray, i -> {
+        mySpinnerAdapter = new Job_Status_Adpter(getActivity(), statusArray,arraystatus, statusKey -> {
+
             Log.e("", "");
-            if (statusArray[i].equals(LanguageController.getInstance().getMobileMsgByKey(AppConstant.reschedule))) {
+            if (statusKey.equalsIgnoreCase(AppConstant.Reschedule)) {
                 if (mParam2.getJobId().equals(mParam2.getTempId())) {
                     showErrorDialog(LanguageController.getInstance().getMobileMsgByKey(AppConstant.job_not_sync));
                 } else if (jobstatus != null && jobstatus.getStatus_no().equals(AppConstant.Completed) ||
@@ -456,7 +457,7 @@ public class DetailFragment extends Fragment
                     String str = new Gson().toJson(mParam2);
                     startActivityForResult(open_reschedule.putExtra("job", str), REQUEST_RESCHEDULE);
                 }
-            } else if (statusArray[i].equals(LanguageController.getInstance().getMobileMsgByKey(AppConstant.require_revisit))) {
+            } else if (statusKey.equals(AppConstant.Revisit)) {
                 if (mParam2.getJobId().equals(mParam2.getTempId())) {
                     showErrorDialog(LanguageController.getInstance().getMobileMsgByKey(AppConstant.job_not_sync));
                 } else if (mParam2.getParentId() != null && mParam2.getParentId().equals("0")) {
@@ -470,20 +471,20 @@ public class DetailFragment extends Fragment
                 //After discussion with Ayush sir, Add new condition for check signature of customer (27/Sep/2023)
 
                 if(App_preference.getSharedprefInstance().getLoginRes().getIsJobCompCustSignEnable().equals("1")) {
-                    if (statusArray[i].equalsIgnoreCase(LanguageController.getInstance().getMobileMsgByKey(AppConstant.completed))) {
+                    if (statusKey.equalsIgnoreCase(AppConstant.Completed)) {
                         if (mParam2.getSignature() == null || mParam2.getSignature().equals("")) {
                             showErrorDialog(LanguageController.getInstance().getMobileMsgByKey(AppConstant.signature_alert));
                         }else {
-                            checkForIsLeader(i);
+                            checkForIsLeader(statusKey);
 //                            changeStatus(i);
                         }
                     }else {
-                        checkForIsLeader(i);
+                        checkForIsLeader(statusKey);
 //                        changeStatus(i);
                     }
                 }
                 else{
-                    checkForIsLeader(i);
+                    checkForIsLeader(statusKey);
 //                    changeStatus(i);
 
 //                    JobStatusModelNew statusModel = JobStatus_Controller.getInstance().getStatusObjectById(statusArrayForIds[i]);
@@ -526,10 +527,10 @@ public class DetailFragment extends Fragment
 
         return layout;
     }
-    private void checkForIsLeader(int statusArrayForId ){
+    private void checkForIsLeader(String statusId ){
         String[] kprArr = mParam2.getKpr().split(",");
         if (kprArr.length > 1) {
-        if(statusArray[statusArrayForId].equalsIgnoreCase(LanguageController.getInstance().getMobileMsgByKey(AppConstant.completed))) {
+        if(statusId.equalsIgnoreCase(AppConstant.Completed)) {
             if (mParam2.getIsLeader().equals(App_preference.getSharedprefInstance().getLoginRes().getUsrId())) {
                     if(App_preference.getSharedprefInstance().getLoginRes().getCompPermission().get(0).getIsLeaderChgAllUsrStatusOnJb().equals("0")) {
                         AppUtility.alertDialog2(getActivity(), LanguageController.getInstance()
@@ -539,30 +540,30 @@ public class DetailFragment extends Fragment
                                 LanguageController.getInstance().getMobileMsgByKey(AppConstant.no), new Callback_AlertDialog() {
                                     @Override
                                     public void onPossitiveCall() {
-                                        changeStatus(statusArrayForId, isKprChgStatusTrue,multipleKpr);
+                                        changeStatus(statusId, isKprChgStatusTrue,multipleKpr);
                                     }
 
                                     @Override
                                     public void onNegativeCall() {
-                                        changeStatus(statusArrayForId,isKprChgStatusFalse,multipleKpr);
+                                        changeStatus(statusId,isKprChgStatusFalse,multipleKpr);
                                     }
                                 });
                     }else{
-                        changeStatus(statusArrayForId, isKprChgStatusFalse,multipleKpr);
+                        changeStatus(statusId, isKprChgStatusFalse,multipleKpr);
                     }
             } else {
-                changeStatus(statusArrayForId, isKprChgStatusFalse,multipleKpr);
+                changeStatus(statusId, isKprChgStatusFalse,multipleKpr);
             }
         }else{
-            changeStatus(statusArrayForId, isKprChgStatusFalse,multipleKpr);
+            changeStatus(statusId, isKprChgStatusFalse,multipleKpr);
         }
         }else {
-            changeStatus(statusArrayForId, isKprChgStatusFalse,singelKpr);
+            changeStatus(statusId, isKprChgStatusFalse,singelKpr);
         }
 
     }
-    private void changeStatus(int i, String completeFor, String jobType){
-        JobStatusModelNew statusModel = JobStatus_Controller.getInstance().getStatusObjectById(statusArrayForIds[i]);
+    private void changeStatus(String statusId, String completeFor, String jobType){
+        JobStatusModelNew statusModel = JobStatus_Controller.getInstance().getStatusObjectById(statusId);
         if (statusModel != null) {
             HyperLog.i(TAG, "Selected status:" + statusModel.getStatus_name());
             HyperLog.i(TAG, "onItemSelected:" + "Select status From DropDown");
@@ -2008,7 +2009,7 @@ public void setCompletionDetail(){
             j++;
         }
         if (mySpinnerAdapter != null) {
-            mySpinnerAdapter.updtaeList(statusArray);
+            mySpinnerAdapter.updtaeList(statusArray,arraystatus);
         }
     }
 
@@ -2933,13 +2934,13 @@ public void setCompletionDetail(){
             //  ((JobDetailActivity) getActivity()).openFormForEvent(jobstatus.getStatus_no());
             try {
                 HyperLog.i("", "Resume states found");
-                if(jobstatus.getId().equals("9")) {
-                for (int i=0; i<=statusArray.length-1; i++){
-                    if(statusArray[i].equalsIgnoreCase(LanguageController.getInstance().getMobileMsgByKey(AppConstant.completed))){
-                        checkForIsLeader(i);
-                        break;
+                if(jobstatus.getKey().equals(AppConstant.Completed)) {
+                        for (Map.Entry mapElement : arraystatus.entrySet()) {
+                            if (mapElement.getKey().equals(AppConstant.Completed)) {
+                                    checkForIsLeader(mapElement.getKey().toString());
+                                  break;
+                            }
                     }
-                }
                 }else {
                     ((JobDetailActivity) requireActivity()).openFormForEvent(jobstatus.getStatus_no(),"0","");
                 }
@@ -3477,14 +3478,22 @@ public void setCompletionDetail(){
     public void checkMarkServices(){
         if(isAllServicesDone()){
             int i =0;
-            for (String s: statusArray
-                 ) {
-                if(s.equalsIgnoreCase(LanguageController.getInstance().getMobileMsgByKey(AppConstant.completed))){
+//            for (String s: statusArray
+//                 ) {
+//                if(s.equalsIgnoreCase(arraystatus.get("9"))){
+////                if(s.equalsIgnoreCase(LanguageController.getInstance().getMobileMsgByKey(AppConstant.completed))){
+//                    break;
+//                }
+//                i++;
+//            }
+//
+            for(Map.Entry item:arraystatus.entrySet()){
+                if(item.getKey().equals(AppConstant.Completed)){
+                    checkForIsLeader(item.getKey().toString());
                     break;
                 }
-                i++;
             }
-            checkForIsLeader(i);
+
         }
     }
 }
