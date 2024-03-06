@@ -24,6 +24,8 @@ import com.eot_app.databinding.ActivityDropItemOnMapBinding;
 import com.eot_app.utility.AppUtility;
 import com.eot_app.utility.CompressImageInBack;
 import com.eot_app.utility.util_interfaces.OnImageCompressed;
+import com.github.chrisbanes.photoview.OnScaleChangedListener;
+import com.github.chrisbanes.photoview.PhotoView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,6 +56,8 @@ public class Drop_Item_On_Map_Activity extends AppCompatActivity {
         list.add("equipment Icon 3");
         list.add("equipment Icon 4");
         list.add("equipment Icon 5");
+
+        binding.imageForDropItem.setMaximumScale(10);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         binding.rvItemList.setLayoutManager(linearLayoutManager);
         item_adapter = new Drop_Item_Adapter(this, list);
@@ -68,8 +72,6 @@ public class Drop_Item_On_Map_Activity extends AppCompatActivity {
                 binding.rvItemList.setVisibility(View.GONE);
             }
         });
-
-
 
         binding.imageForDropItem.setOnDragListener(new View.OnDragListener() {
             @Override
@@ -107,8 +109,6 @@ public class Drop_Item_On_Map_Activity extends AppCompatActivity {
                                 // Handle invalid drop area (e.g., show a message)
                                 Toast.makeText(getApplicationContext(), "Invalid Drop Area", Toast.LENGTH_SHORT).show();
                             }
-
-
                              cardViewParentView = (View) event.getLocalState();
                              equipmentDropedRl = cardViewParentView.findViewById(R.id.relative_layout_equipment_item);
                              linearItemListView = cardViewParentView.findViewById(R.id.linear_layout_itemList);
@@ -136,7 +136,7 @@ public class Drop_Item_On_Map_Activity extends AppCompatActivity {
                                  list.add(removeDropedText);
                                  item_adapter.setList(list);
                              });
-                            equipmentDropedRl.setOnTouchListener(new View.OnTouchListener() {
+                           /* equipmentDropedRl.setOnTouchListener(new View.OnTouchListener() {
                                 private float lastX, lastY;
                                 private int parentWidth, parentHeight;
 
@@ -184,11 +184,45 @@ public class Drop_Item_On_Map_Activity extends AppCompatActivity {
                                     return true;
                                 }
                             });
-
-
+*/
                         }
                 }
                 return true;
+            }
+        });
+
+
+        binding.imageForDropItem.setOnTouchListener(new View.OnTouchListener() {
+            private float startX, startY;
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        startX = event.getX();
+                        startY = event.getY();
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        float dx = event.getX() - startX;
+                        float dy = event.getY() - startY;
+                        // Move the added view by the same amount as the PhotoView
+                        equipmentDropedRl.setX(equipmentDropedRl.getX() + dx);
+                        equipmentDropedRl.setY(equipmentDropedRl.getY() + dy);
+                        startX = event.getX();
+                        startY = event.getY();
+                        break;
+                }
+                return true;
+            }
+        });
+
+        // Set up scale listener to detect zooming on the PhotoView
+        binding.imageForDropItem.setOnScaleChangeListener(new OnScaleChangedListener(){
+
+            @Override
+            public void onScaleChange(float scaleFactor, float focusX, float focusY) {
+                equipmentDropedRl.setScaleX(equipmentDropedRl.getScaleX() * scaleFactor);
+                equipmentDropedRl.setScaleY(equipmentDropedRl.getScaleY() * scaleFactor);
             }
         });
     }

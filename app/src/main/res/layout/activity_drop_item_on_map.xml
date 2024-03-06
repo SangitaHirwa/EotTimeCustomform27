@@ -112,13 +112,11 @@
             android:layout_height="match_parent"
             android:fillViewport="true"
             android:layout_gravity="center">
-            <HorizontalScrollView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent">
 
             <FrameLayout
                 android:id="@+id/framLayout_Container"
                 android:layout_width="match_parent"
+                android:layout_gravity="center"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
          <!--   <FrameLayout
@@ -133,18 +131,19 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/imageView12">-->
 
-                <ImageView
+                <com.github.chrisbanes.photoview.PhotoView
                     android:id="@+id/imageForDropItem"
-                    android:layout_width="900dp"
-                    android:layout_height="900dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:adjustViewBounds="true"
+                    android:layout_gravity="center"
                     android:clickable="true"
                     android:elevation="10dp"
                     android:focusable="true"
                     android:scaleType="fitCenter"
                     app:srcCompat="@drawable/picture" />
             </FrameLayout>
-            </HorizontalScrollView>
+
            <!-- </FrameLayout>-->
         </androidx.core.widget.NestedScrollView>
 
