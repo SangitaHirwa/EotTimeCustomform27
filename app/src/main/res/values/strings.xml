@@ -297,7 +297,7 @@
     <string name="discount_type">Discount Type</string>
     <string name="term_condition">Term &amp; Condition</string>
     <string name="prominent_header">Use Your Location</string>
-    <string name="prominent_data">EyeOnTask determine your current location to assign the jobs near by you even when app is closed or not in use</string>
+    <string name="prominent_data">EyeOnTask determine your current location to assign the jobs near by you even when app is closed or not in use.</string>
     <string name="no_thanks">No thanks</string>
     <string name="turn_on">Turn on</string>
 
