@@ -395,6 +395,9 @@
             android:screenOrientation="portrait"
             android:exported="false"
             android:windowSoftInputMode="stateHidden|adjustResize" />
+        <activity android:name=".home_screens.ProminentScreen"
+            android:screenOrientation="portrait"
+            android:exported="false"/>
 
         <meta-data
             android:name="com.google.android.gms.version"
