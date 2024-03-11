@@ -1843,7 +1843,11 @@
     "not_synced_at": "Not synced at",
     "equipment_location": "Equipment Location",
     "leader_change_completed_status_all_members": "Change the status completed for all my team members.",
-    "no_term_condition": "No Terms and Condition found, Admin can add Terms and Condition those will appear here."
+    "no_term_condition": "No Terms and Condition found, Admin can add Terms &amp; Condition those will appear here.",
+    "time_stemp":"Timestamp",
+    "fetch_des":"Fetch Des",
+    "dispatch":"Dispatch",
+    "schedule_text": "Schedule Text"
   }
 }
 

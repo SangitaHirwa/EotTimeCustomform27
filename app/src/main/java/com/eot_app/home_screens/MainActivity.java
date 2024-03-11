@@ -1582,6 +1582,7 @@ public class MainActivity extends UploadDocumentActivity implements MainActivity
         ChatController.getInstance().signOutUserFromFirebase();
 
         MyDigitalClock.getInstance().setMyTimerTime();
+        App_preference.getSharedprefInstance().setLaunchFirst();
 //        if (title_check_in_out.getText().toString().equals(LanguageController.getInstance().getMobileMsgByKey(AppConstant.check_out)))
 //            App_preference.getSharedprefInstance().setLastAppKillTime(AppUtility.getCurrentDateByFormat("hh:mm a"));
 

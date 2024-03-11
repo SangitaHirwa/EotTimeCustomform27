@@ -222,5 +222,7 @@ public interface Sp_model {
 //    void setLastAppKillTime(String dateTime);
     void setCapturePath(String imgPath);
     String getCapturePath();
+    void setLaunchFirst();
+    boolean isLaunchFirst();
 
 }
