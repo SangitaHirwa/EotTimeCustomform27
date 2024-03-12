@@ -1847,7 +1847,11 @@
     "time_stemp":"Timestamp",
     "fetch_des":"Fetch Des",
     "dispatch":"Dispatch",
-    "schedule_text": "Schedule Text"
+    "schedule_text": "Schedule Text",
+    "remove_stock_from_inventory":"Remove stock from inventory",
+    "request_Item": "Request Item",
+    "add_request_Item": "Add Request Item",
+    "no_brand": "No brand found, Admin can add brand and those will appear here."
   }
 }
 

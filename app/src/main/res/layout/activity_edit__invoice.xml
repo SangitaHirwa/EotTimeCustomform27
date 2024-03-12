@@ -667,7 +667,24 @@ Choose an item from the inventory Choose an item from the inventory yy"
 
 
                     </RadioGroup>
+                    <View
+                        android:id="@+id/stock_checkbox_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="5dp"
+                        android:background="@color/border_font_color" />
 
+                    <CheckBox
+                        android:id="@+id/add_stock_checkBox"
+                        style="@style/style_sec_sec"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/input_field_height"
+                        android:layout_marginStart="-5dp"
+                        android:checked="true"
+                        android:paddingTop="5dp"
+                        android:visibility="gone"
+                        android:gravity="center|start"
+                       />
 
                     <androidx.cardview.widget.CardView
                         android:layout_marginVertical="10dp"

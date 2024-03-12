@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -130,6 +131,9 @@ public class ReplaceItemEquipmentActivity extends
     TextView tvLabelStep1,tv_skip;
     RelativeLayout ll_note;
     private ImageButton tax_cancel;
+    CheckBox add_stock_checkBox;
+    String isRemoveStock ="1";
+    boolean show_stock_checkbox = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -145,6 +149,7 @@ public class ReplaceItemEquipmentActivity extends
                 // for replacing the equipment parts
                 if (getIntent().hasExtra("comeFrom")) {
                     comeFrom = bundle.getString("comeFrom");
+                    show_stock_checkbox = true;
                     if (getIntent().hasExtra("equipment")) {
                         String strEquipment = getIntent().getExtras().getString("equipment");
                         equipment = new Gson().fromJson(strEquipment, EquArrayModel.class);
@@ -173,6 +178,7 @@ public class ReplaceItemEquipmentActivity extends
             if (getIntent().hasExtra("jobId")) {
                 jobId = bundle.getString("jobId");
                 invId = bundle.getString("invId");
+                show_stock_checkbox = true;
                 addItemOnInvoice = bundle.getBoolean("addItemOnInvoice");
                 setDefaultValuesForAddNewItem();
                 /* we have to get a new tax items from the server */
@@ -180,6 +186,7 @@ public class ReplaceItemEquipmentActivity extends
             } else if (getIntent().hasExtra("InvoiceItemDataModel")) {
                 jobId = bundle.getString("edit_jobId");
                 invId = bundle.getString("invId");
+                show_stock_checkbox = true;
                 addItemOnInvoice = bundle.getBoolean("addItemOnInvoice");
                 updateItemDataModel = bundle.getParcelable("InvoiceItemDataModel");
                 Log.e("InvoiceItemDataModel1",new Gson().toJson(updateItemDataModel));
@@ -344,6 +351,20 @@ public class ReplaceItemEquipmentActivity extends
         itemType = updateItemDataModel.getItemType();
         inm = updateItemDataModel.getInm();
         jtId = updateItemDataModel.getJtId();
+
+        if(updateItemDataModel.getItemType() != null && updateItemDataModel.getItemType().equals("0")){
+            if(updateItemDataModel.getIsRemoveStock() != null && updateItemDataModel.getIsRemoveStock().equals("0")){
+                add_stock_checkBox.setChecked(false);
+                isRemoveStock = "0";
+            }else {
+                add_stock_checkBox.setChecked(true);
+                isRemoveStock = "1";
+            }
+            add_stock_checkBox.setVisibility(View.VISIBLE);
+        }else {
+            add_stock_checkBox.setVisibility(View.GONE);
+
+        }
         try {
             if (!NONBILLABLE && updateItemDataModel.getDataType().equals("1")) {
                 if (updateItemDataModel.getIsBillable() != null) {
@@ -550,6 +571,8 @@ public class ReplaceItemEquipmentActivity extends
         radio_billable.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.billable));
         text_default.setText(" (" + LanguageController.getInstance().getMobileMsgByKey(AppConstant.text_default) + ")");
 
+        add_stock_checkBox = findViewById(R.id.add_stock_checkBox);
+        add_stock_checkBox.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.remove_stock_from_inventory));
         intializeViews();
     }
 
@@ -660,7 +683,11 @@ public class ReplaceItemEquipmentActivity extends
         if (!NONBILLABLE) {
             rediogrp.setVisibility(View.GONE);
         }
-
+        add_stock_checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if(!isChecked){
+                isRemoveStock = "0";
+            }
+        });
         invoiceItemPi = new AddEditInvoiceItem_PC(this);
         invoiceItemPi.getInventryItemList();
     }
@@ -787,7 +814,9 @@ public class ReplaceItemEquipmentActivity extends
 
         }
 
-
+        if(show_stock_checkbox) {
+            add_stock_checkBox.setVisibility(View.VISIBLE);
+        }
         /* 1 For Selected tax on Item************/
         if (itemselected.getTaxType() != null && itemselected.getTaxType().equals("1")) {
             setDefaultTax(itemselected.getTax());
@@ -833,6 +862,9 @@ public class ReplaceItemEquipmentActivity extends
         edt_item_desc.setText(itemselected.getIdes());
         edt_unit.setText(itemselected.getUnit());
         edt_serialNo.setText(itemselected.getSerialNo());
+        if(!add_stock_checkBox.isChecked()){
+            isRemoveStock = "0";
+        }
         Log.v("Rate:::", itemselected.getRate());
         if (itemselected.getRate().isEmpty()) {
             edt_item_rate.setText("0");
@@ -1103,6 +1135,7 @@ public class ReplaceItemEquipmentActivity extends
                 break;
             case R.id.item_select:
                 autocomplete_item.setTag("Item");
+                add_stock_checkBox.setVisibility(View.GONE);
                 invoiceItemPi.getInventryItemList();
                 setTxtBkgColor(1);
                 fw_service_filed_hide(1);
@@ -1118,6 +1151,7 @@ public class ReplaceItemEquipmentActivity extends
                 break;
             case R.id.service_select:
                 autocomplete_item.setTag("Services");
+                add_stock_checkBox.setVisibility(View.GONE);
                 setTxtBkgColor(3);
                 invoiceItemPi.getJobServiceTittle();
                 fw_service_filed_hide(3);
@@ -1207,7 +1241,7 @@ public class ReplaceItemEquipmentActivity extends
                             , edt_item_supplier.getText().toString().trim()
                             , taxListFilter, jtId,
                             edt_serialNo.getText().toString().trim(),
-                            isBillableChange,equId,"",partTempId,isPartParent,0);
+                            isBillableChange,equId,"",partTempId,isPartParent,0,isRemoveStock);
 
             try {
                 if (!isBillable.equals("")) {
@@ -1244,7 +1278,7 @@ public class ReplaceItemEquipmentActivity extends
                         , partsList.get(i).getTax(), "",
                         partsList.get(i).getSerialNo(),
                         partsList.get(i).getIsBillableChange(),
-                        equId,partsList.get(i).getIsBillable(),partTempId,0,1
+                        equId,partsList.get(i).getIsBillable(),partTempId,0,1,isRemoveStock
                 ));
             }
 
