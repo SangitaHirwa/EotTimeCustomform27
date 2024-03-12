@@ -91,6 +91,8 @@ import com.eot_app.nav_menu.jobs.job_detail.invoice2list.JoBInvoiceItemList2Acti
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.JobDetailEquipmentAdapter;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.JobEquipmentActivity;
 import com.eot_app.nav_menu.jobs.job_detail.job_status_pkg.JobStatus_Controller;
+import com.eot_app.nav_menu.jobs.job_detail.requested_item.AddUpdateRquestedItemActivity;
+import com.eot_app.nav_menu.jobs.job_detail.requested_item.RequestedItemListAdapter;
 import com.eot_app.nav_menu.jobs.job_detail.reschedule.RescheduleActivity;
 import com.eot_app.nav_menu.jobs.job_detail.revisit.RevisitActivity;
 import com.eot_app.nav_menu.jobs.job_list.JobList;
@@ -174,18 +176,19 @@ public class DetailFragment extends Fragment
             textViewContactperson, textViewTitle,
             textViewInstruction, txtViewHeader, textViewTags, txt_fw_nm_list,
             tv_description, tv_instruction, complation_txt, item_txt, eq_txt,
-            complation_notes, tv_tag, fw_Nm_List, txt_serviceHeader, txt_notesHeader;
+            complation_notes, tv_tag, fw_Nm_List, txt_serviceHeader, txt_notesHeader, requested_item_txt;
     String mParam1;
     RelativeLayout map_layout;
     TextView custom_filed_txt, btnStopRecurView, btnComplationView,
-             btn_add_item, btn_add_eq, recur_txt, txt_recur_msg, contact_name_lable, schdule_details_txt, job_status_lable;
+             btn_add_item, btn_add_eq, recur_txt, txt_recur_msg, contact_name_lable, schdule_details_txt, job_status_lable, btn_add_requested_item;
     TextView customfiled_btn, signature_pad, btn_add_signature, quotes_details_txt, quotes_details_number_txt, quotes_details_number;
     String strAddress = "";
     RecyclerView recyclerView, rv_mark_done;
     InvoiceItemList2Adpter invoice_list_adpter;
+    RequestedItemListAdapter requestedItemListAdapter;
     TextView text_misc;
-    View ll_item, ll_equipment;
-    RecyclerView recyclerView_job_item;
+    View ll_item, ll_equipment, ll_requested_item;
+    RecyclerView recyclerView_job_item, recyclerView_requested_item;
     RecyclerView recyclerView_job_eq,rv_fw_list;
     TextView tv_label_ac_job_time, date_ac_start;
     TextView date_ac_end;
@@ -194,7 +197,7 @@ public class DetailFragment extends Fragment
     String actualStart = "", actualFinish = "";
     String travelStart = "", travelFinish = "";
     TextView tvTravelJobTime, tvActualJobTime, btnActualEdit, btnTravelEdit;
-    ImageView ivEditAc;
+    ImageView ivEditAc, show_requested_list,hide_requested_list;
     RelativeLayout ll_actual_date_time, ll_travel_date_time;
     LinearLayout ll_completion_detail, liner_layout_for_recurmsg, recurMsgShow, recurMsgHide;
     RelativeLayout rl_Collapse1, rl_Collapse2;
@@ -374,6 +377,7 @@ public class DetailFragment extends Fragment
         ll_completion_detail = layout.findViewById(R.id.ll_completion_detail);
         ll_item = layout.findViewById(R.id.ll_item);
         ll_equipment = layout.findViewById(R.id.ll_equipment);
+        ll_requested_item = layout.findViewById(R.id.ll_requested_item);
 
 
         // permission checks for showing equipment and items
@@ -727,6 +731,17 @@ public class DetailFragment extends Fragment
         item_txt.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.item));
         btn_add_item = layout.findViewById(R.id.btn_add_item);
         btn_add_item.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add));
+
+        requested_item_txt = layout.findViewById(R.id.requested_item_txt);
+        requested_item_txt.setText("Item Requested");
+
+        show_requested_list = layout.findViewById(R.id.show_requested_list);
+        hide_requested_list = layout.findViewById(R.id.hide_requested_list);
+        show_requested_list.setOnClickListener(this);
+        hide_requested_list.setOnClickListener(this);
+        btn_add_requested_item = layout.findViewById(R.id.btn_add_requested_item);
+        btn_add_requested_item.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add));
+        btn_add_requested_item.setOnClickListener(this);
         if (App_preference.getSharedprefInstance().getLoginRes().getCompPermission().get(0).getIsItemEnable().equals("1")) {
             btn_add_item.setVisibility(View.GONE);
         }
@@ -791,6 +806,7 @@ public class DetailFragment extends Fragment
 
         recyclerView = layout.findViewById(R.id.recyclerView);
         recyclerView_job_item = layout.findViewById(R.id.recyclerView_job_item);
+        recyclerView_requested_item = layout.findViewById(R.id.recyclerView_requested_item);
         recyclerView_job_eq = layout.findViewById(R.id.recyclerView_job_eq);
         signature_pad = layout.findViewById(R.id.signature_pad);
         signature_pad.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.customer_signature));
@@ -873,7 +889,12 @@ public class DetailFragment extends Fragment
         }else{
             recur_parent_view.setVisibility(View.GONE);
         }
-
+        //set Requested item recyclerview in adapter
+        recyclerView_requested_item.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL
+                , false));
+        requestedItemListAdapter = new RequestedItemListAdapter();//, this, this
+        recyclerView_requested_item.setAdapter(requestedItemListAdapter);
+        recyclerView_requested_item.setNestedScrollingEnabled(false);
     }
 
     private void addJobServicesInChips(JtId jtildModel) {
@@ -2794,6 +2815,24 @@ public void setCompletionDetail(){
                 recurMsgHide.setVisibility(View.GONE);
                 recurMsgShow.setVisibility(View.VISIBLE);
                 liner_layout_for_recurmsg.setVisibility(View.GONE);
+                break;
+
+            case R.id.btn_add_requested_item:
+                Intent intent2 = new Intent(getActivity(), AddUpdateRquestedItemActivity.class);
+                intent2.putExtra("addReqItem",true);
+                intent2.putExtra("jobId",mParam2.getJobId());
+                startActivity(intent2);
+                break;
+
+            case R.id.show_requested_list:
+                show_requested_list.setVisibility(View.GONE);
+                recyclerView_requested_item.setVisibility(View.VISIBLE);
+                hide_requested_list.setVisibility(View.VISIBLE);
+                break;
+            case R.id.hide_requested_list:
+                show_requested_list.setVisibility(View.VISIBLE);
+                recyclerView_requested_item.setVisibility(View.GONE);
+                hide_requested_list.setVisibility(View.GONE);
                 break;
         }
     }

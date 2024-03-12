@@ -97,6 +97,10 @@
                     android:id="@+id/ll_item"
                     layout="@layout/item_job_detail" />
                 <include
+                    android:visibility="visible"
+                    android:id="@+id/ll_requested_item"
+                    layout="@layout/requested_item_job_detail" />
+                <include
                     android:visibility="gone"
                     android:id="@+id/ll_equipment"
                     layout="@layout/equipment_job_detail" />
