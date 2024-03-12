@@ -1341,7 +1341,7 @@ public class SyncDataJobService extends JobService {
                            }.getType();
                            List<BrandData> brandList = new Gson().fromJson(convert, listType);
                            if (brandList != null) {
-//                               AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).
+                               AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).brandDao().insertBrandDate(brandList);
                            }
                        }
                    }
@@ -1364,7 +1364,6 @@ public class SyncDataJobService extends JobService {
                            }
                            updateIndex = 0;
                            count = 0;
-                          /* AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).contractDao().deleteContractByIsDelete();*/
                            App_preference.getSharedprefInstance().setFirstSyncState(1);
                            startSyncFromStatus();
                            Log.v("MainSync","Sync completed "+" --" +"contract Sync Done");

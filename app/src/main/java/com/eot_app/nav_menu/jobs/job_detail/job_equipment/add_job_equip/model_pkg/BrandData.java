@@ -1,11 +1,15 @@
 package com.eot_app.nav_menu.jobs.job_detail.job_equipment.add_job_equip.model_pkg;
 
+import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.Index;
+import androidx.room.PrimaryKey;
 
-@Entity(indices = {@Index(value = "ebId", unique = true)}) // check user first name is not repeat.
+@Entity(tableName = "Brand") // check user first name is not repeat.
 public class BrandData {
 
+    @PrimaryKey
+    @NonNull
     private String ebId;
     private String name;
 

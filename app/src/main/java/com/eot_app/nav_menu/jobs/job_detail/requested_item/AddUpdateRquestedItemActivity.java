@@ -19,25 +19,32 @@ import android.widget.TextView;
 
 import com.eot_app.R;
 import com.eot_app.nav_menu.audit.audit_list.equipment.model.EquipmentStatus;
+import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.model.AddInvoiceItemReqModel;
 import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.mvp.AddEditInvoiceItem_PC;
 import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.mvp.AddEditInvoiceItem_PI;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.Auto_Inventry_Adpter;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.inventry_pkg.Inventry_ReS_Model;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.inventry_pkg.ItemParts;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.add_job_equip.model_pkg.BrandData;
+import com.eot_app.nav_menu.jobs.job_detail.requested_item.requested_itemModel.AddUpdateRequestedModel;
+import com.eot_app.services.Service_apis;
 import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.AppUtility;
 import com.eot_app.utility.EotApp;
 import com.eot_app.utility.db.AppDataBase;
+import com.eot_app.utility.db.OfflineDataController;
 import com.eot_app.utility.language_support.LanguageController;
 import com.eot_app.utility.util_interfaces.Callback_AlertDialog;
 import com.eot_app.utility.util_interfaces.MySpinnerAdapter;
 import com.eot_app.utility.util_interfaces.NoDefaultSpinner;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.gson.Gson;
+import com.hypertrack.hyperlog.HyperLog;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 public class AddUpdateRquestedItemActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener,AddUpdateReqItem_View {
@@ -50,11 +57,12 @@ public class AddUpdateRquestedItemActivity extends AppCompatActivity implements 
     private LinearLayout linearLayout_brand;
     private AddUpdateReqItem_PI reqItemPi;
     List<BrandData> brandList1 = new ArrayList<>();
-    private boolean IS_ITEM_MANDATRY;
+    private boolean IS_ITEM_MANDATRY,itemAdd;
     private Button add_edit_item_Btn;
     String[] brand_array =new String[brandList1.size()];
-    private String inm,iQty,modelNo, jobId;
-
+    LinkedHashMap<String,String> brand_mapArray =new LinkedHashMap<>(brandList1.size());
+    private String inm,iQty,modelNo, jobId,brand_id,itemId;
+    private String equId="";
 
     private List<Inventry_ReS_Model> itemsList = new ArrayList<>();
     @Override
@@ -63,6 +71,7 @@ public class AddUpdateRquestedItemActivity extends AppCompatActivity implements 
         setContentView(R.layout.add_update_rquested_item_activity);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         if(getIntent().getBooleanExtra("addReqItem",false)){
+            itemAdd = true;
             jobId = getIntent().getStringExtra("jobId");
             Objects.requireNonNull(getSupportActionBar()).setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_request_Item));
         }
@@ -166,18 +175,38 @@ public class AddUpdateRquestedItemActivity extends AppCompatActivity implements 
                 brand_spinner.performClick();
                 break;
             case R.id.add_edit_item_Btn:
-                addReqItem();
+                if (itemAdd) {
+                    itemAdd = false;
+                    addReqItem();
+                }
         }
     }
 
     private void addReqItem() {
 
+        AddUpdateRequestedModel addeRequestModel = new AddUpdateRequestedModel(
+                autocomplete_item.getText().toString(),brand_id,edt_item_qty.getText().toString(),edt_modelNo.getText().toString(),
+                equId,itemId,jobId);
+        if(AppUtility.isInternetConnected()){
+            reqItemPi.addReqItemApi(addeRequestModel);
+        }else {
+            String dateTime = AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT);
+            Gson gson = new Gson();
+            String addItemReqest = gson.toJson(addeRequestModel);
+            HyperLog.i("TAG addRequestItemReqest", new Gson().toJson(addeRequestModel));
+            OfflineDataController.getInstance().addInOfflineDB(Service_apis.addItemOnJob, addItemReqest, dateTime);
+        }
     }
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
       String brand_text= brand_array[position];
         brand_txt.setText(brand_text);
+        for(Map.Entry entry : brand_mapArray.entrySet()){
+            if(entry.getValue().equals(brand_text)){
+                brand_id = entry.getKey()+"";
+            }
+        }
     }
 
     @Override
@@ -241,6 +270,7 @@ public class AddUpdateRquestedItemActivity extends AppCompatActivity implements 
             int i = 0;
             for (BrandData brandData : brandList1) {
                 brand_array[i] = brandData.getName();
+                brand_mapArray.put(brandData.getEbId(),brandData.getName());
                 i++;
             }
             if(brand_array.length <= 0){

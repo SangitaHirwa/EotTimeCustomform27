@@ -982,6 +982,7 @@ public class AppConstant {
     public static String request_Item = "request_Item";
     public static String add_request_Item = "add_request_Item";
     public static String no_brand = "no_brand";
+    public static String update_request_Item = "update_request_Item";
 
 
 

@@ -9,6 +9,7 @@ import com.eot_app.nav_menu.jobs.job_detail.invoice.inventry_pkg.Inventry_ReQ_Mo
 import com.eot_app.nav_menu.jobs.job_detail.invoice.inventry_pkg.Inventry_ReS_Model;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.add_job_equip.model_pkg.BrandData;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.add_job_equip.model_pkg.GetListModel;
+import com.eot_app.nav_menu.jobs.job_detail.requested_item.requested_itemModel.AddUpdateRequestedModel;
 import com.eot_app.services.ApiClient;
 import com.eot_app.services.Service_apis;
 import com.eot_app.utility.AppConstant;
@@ -109,7 +110,45 @@ public class AddUpdateReqItem_PC implements AddUpdateReqItem_PI {
     }
     @Override
     public void getBrandList() {
-
+        List<BrandData> brandDataList = AppDataBase.getInMemoryDatabase(rquestedItemActivity).brandDao().getBrandDataList();
+        rquestedItemActivity.setBrandList(brandDataList);
     }
+
+    @Override
+    public void addReqItemApi(AddUpdateRequestedModel addeRequestModel) {
+        Log.e("data--->>>", "data--->>>");
+            String data = new Gson().toJson(addeRequestModel);
+            ApiClient.getservices().eotServiceCall(Service_apis.addItemRequest, AppUtility.getApiHeaders(), getJsonObject(data))
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<JsonObject>() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
+
+                        }
+
+                        @Override
+                        public void onNext(JsonObject jsonObject) {
+                            if (jsonObject.get("success").getAsBoolean()) {
+                                count = jsonObject.get("count").getAsInt();
+                                String convert = new Gson().toJson(jsonObject.get("data").getAsJsonArray());
+
+                            }
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            Log.e("TAG : error----", e.getMessage());
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            Log.e("TAG onComplete------", "onComplete");
+                            AppUtility.progressBarDissMiss();
+
+
+                        }
+                    });
+        }
 
 }
