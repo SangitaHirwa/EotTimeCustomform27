@@ -25,6 +25,7 @@ import com.eot_app.utility.AppUtility;
 import com.eot_app.utility.App_preference;
 import com.eot_app.utility.language_support.LanguageController;
 
+import java.io.File;
 import java.util.ArrayList;
 
 
@@ -136,7 +137,7 @@ public class OtherDocumentListAdapter extends RecyclerView.Adapter<OtherDocument
 //                            .format(DecodeFormat.PREFER_ARGB_8888)
 //                            .thumbnail(Glide.with(context).load(R.raw.loader_eot)).placeholder(R.drawable.picture).into(holder.image_thumb_nail);
 //                }else
-                    if( fileList.getBitmap()!=null && !fileList.getBitmap().isEmpty())
+                    if( fileList.getBitmap()!=null && !fileList.getBitmap().isEmpty() && new File(fileList.getBitmap()).exists())
                 {
                     Bitmap bitmap1= AppUtility.getBitmapFromPath(fileList.getBitmap());
                     holder.image_thumb_nail.setImageBitmap(bitmap1);
