@@ -1189,10 +1189,14 @@ public class DetailFragment extends Fragment
         // for completion details
         if (jobDetail_pi != null)
             jobDetail_pi.getJobCompletionDetails(mParam2.getJobId());
-
         // for completion details
         if (jobDetail_pi != null)
             jobDetail_pi.getEquipmentStatus();
+        // for get attachment
+        if (jobDetail_pi != null) {
+            jobDetail_pi.getAttachFileList(mParam2.getJobId(), App_preference.getSharedprefInstance().getLoginRes().getUsrId()
+                    , "");
+        }
     }
 
 
@@ -1204,7 +1208,13 @@ public class DetailFragment extends Fragment
             }
         }
         if(jobCompletionAdpter != null) {
-            (jobCompletionAdpter).updateFileList(getFileList_res);
+
+            if(getFileList_res.size() == 0){
+                recyclerView.setVisibility(View.GONE);
+            }else {
+                recyclerView.setVisibility(View.VISIBLE);
+                (jobCompletionAdpter).updateFileList(getFileList_res);
+            }
         }
     }
 

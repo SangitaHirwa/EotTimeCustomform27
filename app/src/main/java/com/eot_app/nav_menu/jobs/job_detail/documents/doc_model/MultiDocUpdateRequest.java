@@ -14,8 +14,9 @@ public class MultiDocUpdateRequest {
     boolean isAttachmentSection;
     int parentPostion;
     int position;
+    String tempId;
 
-    public MultiDocUpdateRequest(String job_Id, String file, String finalFname, String desc, String type, String isAddAttachAsCompletionNote, boolean lastCall, boolean isAttachmentSection) {
+    public MultiDocUpdateRequest(String job_Id, String file, String finalFname, String desc, String type, String isAddAttachAsCompletionNote, boolean lastCall, boolean isAttachmentSection, String tempId) {
         this.job_Id = job_Id;
         this.file = file;
         this.finalFname = finalFname;
@@ -24,6 +25,7 @@ public class MultiDocUpdateRequest {
         this.isAddAttachAsCompletionNote = isAddAttachAsCompletionNote;
         this.lastCall = lastCall;
         this.isAttachmentSection = isAttachmentSection;
+        this.tempId = tempId;
     }
 
     public MultiDocUpdateRequest(String job_Id, String que_Id, String jtId, String file, String finalFname, String desc, String type, String isAddAttachAsCompletionNote, boolean lastCall) {
@@ -38,7 +40,7 @@ public class MultiDocUpdateRequest {
         this.lastCall = lastCall;
     }
 
-    public MultiDocUpdateRequest(String job_Id, String que_Id, String jtId, String file, String finalFname, String desc, String type, String isAddAttachAsCompletionNote, boolean lastCall, boolean isAttachmentSection, int parentPostion, int position) {
+    public MultiDocUpdateRequest(String job_Id, String que_Id, String jtId, String file, String finalFname, String desc, String type, String isAddAttachAsCompletionNote, boolean lastCall, boolean isAttachmentSection, int parentPostion, int position, String tempId) {
         this.job_Id = job_Id;
         this.que_Id = que_Id;
         this.jtId = jtId;
@@ -51,6 +53,7 @@ public class MultiDocUpdateRequest {
         this.isAttachmentSection = isAttachmentSection;
         this.parentPostion = parentPostion;
         this.position =position;
+        this.tempId = tempId;
     }
 
     public String getJob_Id() {
@@ -147,5 +150,13 @@ public class MultiDocUpdateRequest {
 
     public void setPosition(int position) {
         this.position = position;
+    }
+
+    public String getTempId() {
+        return tempId;
+    }
+
+    public void setTempId(String tempId) {
+        this.tempId = tempId;
     }
 }

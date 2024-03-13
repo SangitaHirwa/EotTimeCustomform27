@@ -1847,7 +1847,9 @@
     "time_stemp":"Timestamp",
     "fetch_des":"Fetch Des",
     "dispatch":"Dispatch",
-    "schedule_text": "Schedule Text"
+    "schedule_text": "Schedule Text",
+    "others": "Others",
+    "offline_attachment_notes": "May be there are some more images, but it shows only in online mode."
   }
 }
 

@@ -978,6 +978,8 @@ public class AppConstant {
     public static String equipment_location = "equipment_location";
     public static String leader_change_completed_status_all_members = "leader_change_completed_status_all_members";
     public static String no_term_condition = "no_term_condition";
+    public static String others = "others";
+    public static String offline_attachment_notes = "offline_attachment_notes";
 
 
 

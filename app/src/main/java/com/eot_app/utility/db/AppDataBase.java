@@ -103,7 +103,7 @@ import com.eot_app.utility.settings.setting_db.TagData;
         TaxesLocation.class, ClientRefrenceModel.class, ShiftTimeReSModel.class, CustomForm.class, CustomFormQue.class,
         CustomFormSubmited.class, CustomFormListOffline.class, AuditStatusModel.class, AppointmentStatusModel.class, OfflieCompleQueAns.class,
         Attachments.class},
-        version = 46, exportSchema = false)
+        version = 47, exportSchema = false)
 @TypeConverters({TaxDataConverter.class, TagDataConverter.class, InvoiceItemDataModelConverter.class, TaxConverter.class
         , EquipmentTypeConverter.class, EquArrayConvrtr.class, EquCategoryConvrtr.class
         , SiteCustomFieldConverter.class, JobRecurTypeConvert.class, SelecetedDaysConverter.class
@@ -708,7 +708,15 @@ public abstract class AppDataBase extends RoomDatabase {
                     "'isLinked' TEXT," +
                     "'isdelete' TEXT," +
                      " PRIMARY KEY(`attachmentId`)) ");
-//            "'bitmap' TEXT," +
+
+        }
+    };
+    static final Migration MIGRATION_46_47 = new Migration(45, 46) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            /* **Alter Table for tempId **/
+            database.execSQL("ALTER TABLE Attachments ADD COLUMN tempId TEXT");
+            database.execSQL("ALTER TABLE Attachments ADD COLUMN bitmap TEXT");
 
         }
     };
@@ -772,6 +780,7 @@ public abstract class AppDataBase extends RoomDatabase {
                     .addMigrations(MIGRATION_43_44)
                     .addMigrations(MIGRATION_44_45)
                     .addMigrations(MIGRATION_45_46)
+                    .addMigrations(MIGRATION_46_47)
                     .fallbackToDestructiveMigration()
                     .build();
         }

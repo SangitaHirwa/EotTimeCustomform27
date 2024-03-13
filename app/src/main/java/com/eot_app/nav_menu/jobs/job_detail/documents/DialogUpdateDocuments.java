@@ -307,7 +307,7 @@ public class DialogUpdateDocuments extends DialogFragment implements View.OnClic
     }
 
     @Override
-    public void setList(ArrayList<Attachments> getFileList_res, String isAttch, boolean firstCall) {
+    public void setList(ArrayList<Attachments> getFileList_res, String isAttch, boolean firstCall, boolean isOnline) {
 
     }
 

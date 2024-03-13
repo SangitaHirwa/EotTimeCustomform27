@@ -936,6 +936,7 @@ public class JobDetailActivity extends AppCompatActivity implements
             case ID_DOCUMENTS:
                 DOCUMENTSELECT = false;
                 selectBottomMenu(ID_DOCUMENTS);
+                documentsFragment.updateDocList();
                 viewPager.setCurrentItem(DOCUMENT_VIEW, false);
                 break;
             case ID_PAYMENT:
@@ -1396,6 +1397,8 @@ public class JobDetailActivity extends AppCompatActivity implements
                     if (mSignature.isSignatureEmpty()) {
                         mfile = null;
                     }
+                    Log.e("Signature Param", "JobId = "+dataJob.getJobId());
+                    Log.e("Signature Param", "File = "+mfile);
                     detail_activity_pi.uploadCustomerSign(
                             dataJob.getJobId(),
                             mfile);

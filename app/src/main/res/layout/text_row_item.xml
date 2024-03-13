@@ -51,10 +51,11 @@
         <ImageView
             android:visibility="gone"
             android:id="@+id/image_loader"
-            android:layout_width="110dp"
-            android:layout_centerInParent="true"
+            android:layout_width="25dp"
+            android:layout_alignTop="@id/image_thumb_nail"
+            android:layout_alignEnd="@id/image_thumb_nail"
             android:background="@android:color/transparent"
-            android:layout_height="110dp"
+            android:layout_height="25dp"
             tools:ignore="ContentDescription" />
     </RelativeLayout>
 

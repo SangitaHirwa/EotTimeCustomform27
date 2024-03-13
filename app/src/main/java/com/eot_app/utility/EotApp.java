@@ -183,18 +183,18 @@ public class EotApp extends Application implements Application.ActivityLifecycle
     public void setNotifyForcompletionInDetail(NotifyForcompletionInDetail notifyForcompletionInDetail) {
         this.notifyForcompletionInDetail = notifyForcompletionInDetail;
     }
-    public void getNotifyForMultiDocAddForAttach(String apiName, String jobId, String type) {
+    public void getNotifyForMultiDocAddForAttach(String apiName, String jobId, String type, boolean isRefreshFromApi) {
         if(this.notifyForMultiDocAddForAttach != null){
-            notifyForMultiDocAddForAttach.updateMultiDoc(apiName,jobId, type);
+            notifyForMultiDocAddForAttach.updateMultiDoc(apiName,jobId, type, isRefreshFromApi);
         }
     }
     public void setNotifyForMultiDocAddForAttach(NotifyForMultiDocAddForAttach notifyForMultiDocAddForAttach) {
         this.notifyForMultiDocAddForAttach = notifyForMultiDocAddForAttach;
     }
 
-    public void getAddMultiDocObserver(String apiName, String jobId, int parentPostion, int postion, String queId, String jtId){
+    public void getAddMultiDocObserver(String apiName, String jobId, int parentPostion, int postion, String queId, String jtId, boolean isRefreshFromApi){
         if(this.notifyForMultiDocAdd != null){
-            notifyForMultiDocAdd.updateMultiDoc(apiName, jobId, parentPostion, postion, queId, jtId);
+            notifyForMultiDocAdd.updateMultiDoc(apiName, jobId, parentPostion, postion, queId, jtId,isRefreshFromApi);
         }
     }
     public void getAddJobObserver(String tempId,String jobId) {

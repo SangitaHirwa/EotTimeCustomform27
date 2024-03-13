@@ -231,7 +231,7 @@ public interface Service_apis {
     String get_supplier_list = "SupplierController/getSupplierList";
     String upload_document = "JobController/uploadDocument";
     String getRecurDataOfJob = "JobController/getRecurDataOfJob";
-    String getSyncJobAttachments = "JobController/syncJobAttachments";
+    String getSyncJobAttachments = "JobController/syncJobAttachmentsNew";
 
 
     //no token required & header
@@ -305,6 +305,7 @@ public interface Service_apis {
                     @Part("type") RequestBody type,
                     @Part("docNm") RequestBody docNm,
                     @Part("isAddAttachAsCompletionNote") RequestBody isAddAttachAsCompletionNote,
+                    @Part("tempId") RequestBody tempId,
                     @Part MultipartBody.Part file);
 
     @Multipart
