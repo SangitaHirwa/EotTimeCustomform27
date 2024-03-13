@@ -1029,6 +1029,8 @@ public class AddEditInvoiceItemActivity2 extends
         add_stock_checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if(!isChecked){
                 isRemoveStock = "0";
+            }else {
+                isRemoveStock = "1";
             }
         });
 

@@ -1852,7 +1852,10 @@
     "request_Item": "Request Item",
     "add_request_Item": "Add Request Item",
     "no_brand": "No brand found, Admin can add brand and those will appear here.",
-    "update_request_Item": "Update Request Item"
+    "update_request_Item": "Update Request Item",
+    "item_requested": "Item Requested",
+    "request_item_empty": "Please enter Item name",
+    "no_item_requested_found": "No Item Requested Found"
   }
 }
 

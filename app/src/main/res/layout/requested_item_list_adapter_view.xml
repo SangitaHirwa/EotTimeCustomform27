@@ -34,7 +34,7 @@
 
              >
              <TextView
-                 android:id="@+id/item_nm_invoice"
+                 android:id="@+id/item_nm"
                  style="@style/style_sec"
                  android:layout_width="0dp"
                  android:layout_height="wrap_content"
@@ -44,7 +44,7 @@
                  android:textStyle="bold"
                  tools:ignore="HardcodedText" />
              <TextView
-                 android:id="@+id/qty_invoice"
+                 android:id="@+id/qty_item"
                  style="@style/style_thrid"
                  android:layout_width="wrap_content"
                  android:layout_height="wrap_content"
@@ -65,7 +65,7 @@
                     android:paddingTop="5dp"
                     >
                 <TextView
-                    android:id="@+id/des"
+                    android:id="@+id/model_no_text"
                     style="@style/style_thrid_thrd"
                     android:layout_width="0dp"
                     android:layout_weight="1"
@@ -92,8 +92,9 @@
                 -->
             </RelativeLayout>
             <ImageView
+                android:id="@+id/remove_item"
                 android:layout_width="15dp"
-                android:layout_height="20dp"
+                android:layout_height="match_parent"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:src="@drawable/img_dialog_close"/>

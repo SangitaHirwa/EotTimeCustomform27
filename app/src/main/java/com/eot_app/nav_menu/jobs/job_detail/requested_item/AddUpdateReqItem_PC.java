@@ -115,10 +115,11 @@ public class AddUpdateReqItem_PC implements AddUpdateReqItem_PI {
     }
 
     @Override
-    public void addReqItemApi(AddUpdateRequestedModel addeRequestModel) {
+    public void updateReqItemApi(AddUpdateRequestedModel addeRequestModel) {
         Log.e("data--->>>", "data--->>>");
             String data = new Gson().toJson(addeRequestModel);
-            ApiClient.getservices().eotServiceCall(Service_apis.addItemRequest, AppUtility.getApiHeaders(), getJsonObject(data))
+            AppUtility.progressBarShow(rquestedItemActivity);
+            ApiClient.getservices().eotServiceCall(Service_apis.updateItemRequest, AppUtility.getApiHeaders(), getJsonObject(data))
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Observer<JsonObject>() {
@@ -130,23 +131,21 @@ public class AddUpdateReqItem_PC implements AddUpdateReqItem_PI {
                         @Override
                         public void onNext(JsonObject jsonObject) {
                             if (jsonObject.get("success").getAsBoolean()) {
-                                count = jsonObject.get("count").getAsInt();
-                                String convert = new Gson().toJson(jsonObject.get("data").getAsJsonArray());
-
+                                rquestedItemActivity.showMessage(String.valueOf(jsonObject.get("message")));
+                            }else {
+                                rquestedItemActivity.showAlertDailog();
                             }
                         }
 
                         @Override
-                        public void onError(Throwable e) {
+                        public void onError(Throwable e) { rquestedItemActivity.showAlertDailog();
+
                             Log.e("TAG : error----", e.getMessage());
                         }
-
                         @Override
                         public void onComplete() {
                             Log.e("TAG onComplete------", "onComplete");
                             AppUtility.progressBarDissMiss();
-
-
                         }
                     });
         }

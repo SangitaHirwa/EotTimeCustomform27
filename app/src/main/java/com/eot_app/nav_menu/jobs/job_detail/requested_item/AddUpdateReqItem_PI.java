@@ -6,5 +6,5 @@ public interface AddUpdateReqItem_PI {
     void getInventryItemList();
     void getDataFromServer(String search);
    void getBrandList();
-    void addReqItemApi(AddUpdateRequestedModel addeRequestModel);
+    void updateReqItemApi(AddUpdateRequestedModel updateRequestModel);
 }

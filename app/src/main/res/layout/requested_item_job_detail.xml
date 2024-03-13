@@ -16,6 +16,23 @@
         <!--        android:layout_marginBottom="8dp"
         -->
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/progressBar_itemRequest"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            android:elevation="10dp">
+
+        <ProgressBar
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="center"
+            android:shadowColor="@color/color_gray"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/white"
@@ -60,14 +77,14 @@
                 tools:ignore="MissingConstraints">
 
                 <ImageView
-                    android:id="@+id/hide_requested_list"
+                    android:id="@+id/show_requested_list"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:src="@drawable/ic_drop_down"
                     android:visibility="visible" />
 
                 <ImageView
-                    android:id="@+id/show_requested_list"
+                    android:id="@+id/hide_requested_list"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/ic_baseline_arrow_drop_up_24"

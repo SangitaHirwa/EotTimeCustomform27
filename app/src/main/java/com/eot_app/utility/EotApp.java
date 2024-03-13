@@ -24,6 +24,7 @@ import com.eot_app.nav_menu.jobs.job_detail.detail.NotifyForEquipmentCountList;
 import com.eot_app.nav_menu.jobs.job_detail.detail.NotifyForEquipmentCountRemark;
 import com.eot_app.nav_menu.jobs.job_detail.detail.NotifyForItemCount;
 import com.eot_app.nav_menu.jobs.job_detail.detail.NotifyForItemCountRemark;
+import com.eot_app.nav_menu.jobs.job_detail.detail.NotifyForRequestedItemList;
 import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.NotifyForMultiDocAdd;
 import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.NotifyForMultiDocAddForAttach;
 import com.eot_app.nav_menu.jobs.job_detail.generate_invoice.InvoiceItemObserver;
@@ -72,6 +73,7 @@ public class EotApp extends Application implements Application.ActivityLifecycle
     private NotifyForcompletionInJob notifyForcompletionInJob;
     private NotifyForcompletionInDetail notifyForcompletionInDetail;
     private NotifyForMultiDocAddForAttach notifyForMultiDocAddForAttach;
+    private NotifyForRequestedItemList notifyForRequestedItemList;
     public static synchronized EotApp getAppinstance() {
         return INSTANCE;
     }
@@ -262,6 +264,14 @@ public class EotApp extends Application implements Application.ActivityLifecycle
     }
     public void setNotifyForEquipmentCountList(NotifyForEquipmentCountList notifyForEquipmentCount) {
         this.notifyForEquipmentCountList = notifyForEquipmentCount;
+    }
+    public void setNotifyForRequestedItemList(NotifyForRequestedItemList notifyForRequestedItemList){
+        this.notifyForRequestedItemList = notifyForRequestedItemList;
+    }
+    public void getNotifyForRequestedItemList(String api_name,String message) {
+        if (notifyForRequestedItemList != null) {
+            notifyForRequestedItemList.updateReqItemList(api_name,message);
+        }
     }
 
     public void getNotifyForInvoiceGenr() {

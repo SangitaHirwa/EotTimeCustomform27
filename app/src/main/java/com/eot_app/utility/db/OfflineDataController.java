@@ -320,12 +320,21 @@ public class OfflineDataController {
             case Service_apis.upload_document:
                 updateDocument(data, obj);
                 break;
+
+            case Service_apis.addItemRequest:
+                updateRequestedItem(data, obj);
+                break;
+
         }
         int check = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).offlinemodel().deleteFromId(data.getId());
         if (check == 1) {
             getTotalRequest();
         }
     };
+
+    private void updateRequestedItem(Offlinetable data, JsonObject obj) {
+        EotApp.getAppinstance().getNotifyForRequestedItemList(data.getService_name(), String.valueOf(obj.get("message")));
+    }
 
     private void updateDocument(Offlinetable data, JsonObject obj){
         MultiDocUpdateRequest multiDocUpdateRequest = new Gson().fromJson(data.getParams(), MultiDocUpdateRequest.class);

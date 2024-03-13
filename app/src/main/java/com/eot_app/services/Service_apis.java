@@ -237,6 +237,7 @@ public interface Service_apis {
     String addItemRequest = "JobController/addItemRequest";
     String  updateItemRequest = "JobController/updateItemRequest";
     String deleteItemRequest = "JobController/deleteItemRequest";
+    String getListItemRequest ="JobController/listItemRequest";
 
     //no token required & header
     @POST

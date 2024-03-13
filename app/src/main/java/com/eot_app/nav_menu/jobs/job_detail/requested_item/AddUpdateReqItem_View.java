@@ -8,4 +8,6 @@ import java.util.List;
 public interface AddUpdateReqItem_View {
     void setItemdata(List<Inventry_ReS_Model> list);
     void setBrandList(List<BrandData> brandList);
+    void showMessage(String msg);
+    void showAlertDailog();
 }

@@ -75,6 +75,7 @@ import com.eot_app.nav_menu.jobs.job_db.JtId;
 import com.eot_app.nav_menu.jobs.job_db.OfflieCompleQueAns;
 import com.eot_app.nav_menu.jobs.job_detail.JobDetailActivity;
 import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.model.InvoiceItemDataModel;
+import com.eot_app.nav_menu.jobs.job_detail.chat.fire_Base_Model.Chat_Send_Msg_Model;
 import com.eot_app.nav_menu.jobs.job_detail.customform.CustomFormCompletionCallBack;
 import com.eot_app.nav_menu.jobs.job_detail.detail.filedworker_list.Filedworker_List_Adapter;
 import com.eot_app.nav_menu.jobs.job_detail.detail.job_detail_presenter.JobDetail_pc;
@@ -93,6 +94,7 @@ import com.eot_app.nav_menu.jobs.job_detail.job_equipment.JobEquipmentActivity;
 import com.eot_app.nav_menu.jobs.job_detail.job_status_pkg.JobStatus_Controller;
 import com.eot_app.nav_menu.jobs.job_detail.requested_item.AddUpdateRquestedItemActivity;
 import com.eot_app.nav_menu.jobs.job_detail.requested_item.RequestedItemListAdapter;
+import com.eot_app.nav_menu.jobs.job_detail.requested_item.requested_itemModel.RequestedItemModel;
 import com.eot_app.nav_menu.jobs.job_detail.reschedule.RescheduleActivity;
 import com.eot_app.nav_menu.jobs.job_detail.revisit.RevisitActivity;
 import com.eot_app.nav_menu.jobs.job_list.JobList;
@@ -124,6 +126,7 @@ import com.squareup.picasso.Picasso;
 import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -150,7 +153,9 @@ public class DetailFragment extends Fragment
         OnMapReadyCallback,
         JobCompletionAdpter.FileDesc_Item_Selected, EotApp.NotifyForEquipmentStatusList,
         NotifyForEquipmentCount
-        , NotifyForAttchCount, DocDeleteNotfy, NotifyForcompletionInDetail {
+        , NotifyForAttchCount, DocDeleteNotfy, NotifyForcompletionInDetail,NotifyForRequestedItemList, RequestedItemListAdapter.DeleteItem,
+        RequestedItemListAdapter.SelectedItemListener
+{
 
     public static final int MY_PERMISSIONS_REQUEST_CALL_PHONE = 1234;
     public static final int CUSTOMFILED = 222;
@@ -206,7 +211,7 @@ public class DetailFragment extends Fragment
     String lastStatus, lastStatusTime;
     //    check if travelling is enable or not
     //    for remove contact detail when permission not allowed from admin
-    CardView contact_card, recur_parent_view, tagcardView;//
+    CardView contact_card, recur_parent_view, tagcardView,requested_item_cardView;//
     DialogActualTravelDateTime dialogActualTravelDateTime;
     CompletionDetails completionDetails;
     boolean isClickedActual = false;
@@ -243,7 +248,7 @@ public class DetailFragment extends Fragment
     boolean accept=true,reject=true,travel=true,onhold=true,brack=true;
     String getDisCalculationType, getTaxCalculationType;
     GoogleMap mMap;
-   ConstraintLayout progressBar_cyclic;
+   ConstraintLayout progressBar_cyclic,progressBar_itemRequest;
     ArrayList<QuesRspncModel> complQuestionList;
     List<Attachments> attachmentsList;
     Set<IsMarkDoneWithJtid> isMarkDoneWithJtidsList = new HashSet<>();
@@ -251,6 +256,7 @@ public class DetailFragment extends Fragment
     ConstraintLayout cl_serviceMarkAsDone, cl_pbCompletion;
     ServiceMarkDoneAdapter serviceMarkDoneAdapter;
     boolean isAskForCompleteJob = false;
+    List<RequestedItemModel> requestedItemList = new ArrayList<>();
 
     public DetailFragment() {
         // Required empty public constructor
@@ -733,8 +739,10 @@ public class DetailFragment extends Fragment
         btn_add_item.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add));
 
         requested_item_txt = layout.findViewById(R.id.requested_item_txt);
-        requested_item_txt.setText("Item Requested");
+        requested_item_txt.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.item_requested));
 
+        progressBar_itemRequest =layout.findViewById(R.id.progressBar_itemRequest);
+        requested_item_cardView = layout.findViewById(R.id.requested_item_cardView);
         show_requested_list = layout.findViewById(R.id.show_requested_list);
         hide_requested_list = layout.findViewById(R.id.hide_requested_list);
         show_requested_list.setOnClickListener(this);
@@ -883,6 +891,7 @@ public class DetailFragment extends Fragment
         EotApp.getAppinstance().setNotifyForEquipmentCount(this);
         EotApp.getAppinstance().setNotifyForEquipmentStatusList(this);
         EotApp.getAppinstance().setNotifyForcompletionInDetail(this);
+        EotApp.getAppinstance().setNotifyForRequestedItemList(this);
 
         if (mParam2.getRecurType() != null && App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsRecur().equals("0") && !mParam2.getRecurType().equals("0")){
             recur_parent_view.setVisibility(View.VISIBLE);
@@ -892,9 +901,11 @@ public class DetailFragment extends Fragment
         //set Requested item recyclerview in adapter
         recyclerView_requested_item.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL
                 , false));
-        requestedItemListAdapter = new RequestedItemListAdapter();//, this, this
+        requestedItemListAdapter = new RequestedItemListAdapter(requestedItemList,getContext(),this,this);//, this, this
         recyclerView_requested_item.setAdapter(requestedItemListAdapter);
         recyclerView_requested_item.setNestedScrollingEnabled(false);
+
+//        if(App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsR)
     }
 
     private void addJobServicesInChips(JtId jtildModel) {
@@ -1310,6 +1321,14 @@ public class DetailFragment extends Fragment
     }
 
     @Override
+    public void setRequestItemData(List<RequestedItemModel> requestItemData) {
+        progressBar_itemRequest.setVisibility(View.GONE);
+            if(requestItemData != null && requestItemData.size() > 0){
+                requestedItemListAdapter.setReqItemList(requestItemData);
+            }
+    }
+
+    @Override
     public void notDataFoundInRecureData(String msg) {
         progressBar_cyclic.setVisibility(View.GONE);
         AppUtility.alertDialog(getActivity(), LanguageController.getInstance().getMobileMsgByKey(AppConstant.dialog_error_title),
@@ -1317,6 +1336,21 @@ public class DetailFragment extends Fragment
             return null;
 
         });
+    }
+
+    @Override
+    public void notDtateFoundInRequestedItemList(String msg) {
+        EotApp.getAppinstance().showToastmsg(msg);
+        progressBar_itemRequest.setVisibility(View.GONE);
+        show_requested_list.setVisibility(View.VISIBLE);
+        recyclerView_requested_item.setVisibility(View.GONE);
+        hide_requested_list.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void deletedRequestData(String msg) {
+        EotApp.getAppinstance().showToastmsg(msg);
+        jobDetail_pi.getRequestedItemDataList(mParam2.getJobId());
     }
 
     @Override
@@ -2818,6 +2852,9 @@ public void setCompletionDetail(){
                 break;
 
             case R.id.btn_add_requested_item:
+                show_requested_list.setVisibility(View.VISIBLE);
+                recyclerView_requested_item.setVisibility(View.GONE);
+                hide_requested_list.setVisibility(View.GONE);
                 Intent intent2 = new Intent(getActivity(), AddUpdateRquestedItemActivity.class);
                 intent2.putExtra("addReqItem",true);
                 intent2.putExtra("jobId",mParam2.getJobId());
@@ -2825,9 +2862,19 @@ public void setCompletionDetail(){
                 break;
 
             case R.id.show_requested_list:
-                show_requested_list.setVisibility(View.GONE);
-                recyclerView_requested_item.setVisibility(View.VISIBLE);
-                hide_requested_list.setVisibility(View.VISIBLE);
+                if(AppUtility.isInternetConnected()){
+                    progressBar_itemRequest.setVisibility(View.VISIBLE);
+                    show_requested_list.setVisibility(View.GONE);
+                    recyclerView_requested_item.setVisibility(View.VISIBLE);
+                    hide_requested_list.setVisibility(View.VISIBLE);
+                    if (jobDetail_pi != null) {
+                        jobDetail_pi.getRequestedItemDataList(mParam2.getJobId());
+                    }
+                }else {
+                    showErrorDialog(LanguageController.getInstance().getMobileMsgByKey(AppConstant.offline_feature_alert));
+                }
+
+
                 break;
             case R.id.hide_requested_list:
                 show_requested_list.setVisibility(View.VISIBLE);
@@ -3443,6 +3490,42 @@ public void setCompletionDetail(){
 //            jobDetail_pi.getAttachFileList(jobId, App_preference.getSharedprefInstance().getLoginRes().getUsrId()
 //                    , "6");
             jobDetail_pi.loadFromServer(jobId);
+    }
+
+    @Override
+    public void updateReqItemList(String api_name, String message) {
+        switch (api_name){
+            case Service_apis.addItemRequest:
+                showAppInstallDialog(message);
+                Chat_Send_Msg_Model chat_send_Msg_model = new Chat_Send_Msg_Model(
+                        "Request for Item", "", AppUtility.getDateByMiliseconds(),
+                        mParam2.getLabel(),
+                        mParam2.getJobId(), "1");
+                if(jobDetail_pi != null) {
+                    jobDetail_pi.sendMsg(chat_send_Msg_model);
+                }
+                break;
+        }
+    }
+
+    @Override
+    public void itemDelete(String irId) {
+        if(AppUtility.isInternetConnected()){
+            progressBar_itemRequest.setVisibility(View.VISIBLE);
+            jobDetail_pi.deleteRequestedItem(irId,mParam2.getJobId());
+        }
+    }
+
+    @Override
+    public void itemSelected(RequestedItemModel updateRequestedItemModel) {
+        show_requested_list.setVisibility(View.VISIBLE);
+        recyclerView_requested_item.setVisibility(View.GONE);
+        hide_requested_list.setVisibility(View.GONE);
+        Intent intent = new Intent(getActivity(),AddUpdateRquestedItemActivity.class);
+        intent.putExtra("updateSelectedReqItem",updateRequestedItemModel);
+        intent.putExtra("UpdateReqItem",true);
+        intent.putExtra("jobId",mParam2.getJobId());
+        startActivity(intent);
     }
 
 

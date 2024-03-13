@@ -18,4 +18,8 @@ public interface BrandDao {
 
     @Query("select * from Brand ")
     List<BrandData> getBrandDataList();
+
+    @Query("select name from Brand where  ebId = :brandId")
+    String getBrandNameById(String brandId);
+
 }

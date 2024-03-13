@@ -2,6 +2,7 @@ package com.eot_app.nav_menu.jobs.job_detail.requested_item;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -27,6 +28,7 @@ import com.eot_app.nav_menu.jobs.job_detail.invoice.inventry_pkg.Inventry_ReS_Mo
 import com.eot_app.nav_menu.jobs.job_detail.invoice.inventry_pkg.ItemParts;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.add_job_equip.model_pkg.BrandData;
 import com.eot_app.nav_menu.jobs.job_detail.requested_item.requested_itemModel.AddUpdateRequestedModel;
+import com.eot_app.nav_menu.jobs.job_detail.requested_item.requested_itemModel.RequestedItemModel;
 import com.eot_app.services.Service_apis;
 import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.AppUtility;
@@ -46,40 +48,62 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.Callable;
 
-public class AddUpdateRquestedItemActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener,AddUpdateReqItem_View {
+public class AddUpdateRquestedItemActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener, AddUpdateReqItem_View, TextWatcher {
 
     private AutoCompleteTextView autocomplete_item;
     private EditText edt_item_qty,edt_modelNo;
     private TextInputLayout  item_qty_layout,modelNo_layout,itemlayout;
-    private TextView brand_txt;
+    private TextView brand_txt,hint_brand_txt;
     private NoDefaultSpinner brand_spinner;
     private LinearLayout linearLayout_brand;
     private AddUpdateReqItem_PI reqItemPi;
     List<BrandData> brandList1 = new ArrayList<>();
-    private boolean IS_ITEM_MANDATRY,itemAdd;
+    private boolean IS_ITEM_MANDATRY;
     private Button add_edit_item_Btn;
     String[] brand_array =new String[brandList1.size()];
     LinkedHashMap<String,String> brand_mapArray =new LinkedHashMap<>(brandList1.size());
     private String inm,iQty,modelNo, jobId,brand_id,itemId;
     private String equId="";
+    RequestedItemModel updateRequestedItemModel;
+    boolean addItem = false;
+    boolean updateItem = false;
 
     private List<Inventry_ReS_Model> itemsList = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_update_rquested_item_activity);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+        initializelables();
         if(getIntent().getBooleanExtra("addReqItem",false)){
-            itemAdd = true;
+            addItem = true;
             jobId = getIntent().getStringExtra("jobId");
             Objects.requireNonNull(getSupportActionBar()).setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_request_Item));
+        }else if(getIntent().getBooleanExtra("UpdateReqItem",false)){
+            updateItem = true;
+            jobId = getIntent().getStringExtra("jobId");
+            updateRequestedItemModel = (RequestedItemModel) getIntent().getSerializableExtra("updateSelectedReqItem");
+            setItemDataValue();
+            Objects.requireNonNull(getSupportActionBar()).setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.update_request_Item));
         }
-        initializelables();
+
         reqItemPi = new AddUpdateReqItem_PC(this);
         reqItemPi.getInventryItemList();
         reqItemPi.getBrandList();
     }
+
+    private void setItemDataValue() {
+        autocomplete_item.setText(updateRequestedItemModel.getInm());
+        edt_item_qty.setText(updateRequestedItemModel.getQty());
+        edt_modelNo.setText(updateRequestedItemModel.getModelNo());
+        String brandName = brand_mapArray.get(updateRequestedItemModel.getEbId());
+        brand_txt.setText(brandName);
+
+    }
+
     private void initializelables() {
         itemlayout = findViewById(R.id.itemlayout);
         autocomplete_item = findViewById(R.id.autocomplete_item);
@@ -90,6 +114,8 @@ public class AddUpdateRquestedItemActivity extends AppCompatActivity implements 
         brand_txt.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.brand));
         brand_spinner = findViewById(R.id.brand_spinner);
         linearLayout_brand = findViewById(R.id.linearLayout_brand);
+        hint_brand_txt = findViewById(R.id.hint_brand_txt);
+        hint_brand_txt.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.brand));
         linearLayout_brand.setOnClickListener(this);
         edt_item_qty.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.qty));
         modelNo_layout = findViewById(R.id.modelNo_layout);
@@ -99,7 +125,9 @@ public class AddUpdateRquestedItemActivity extends AppCompatActivity implements 
         edt_modelNo.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.model_no));
         AppUtility.spinnerPopUpWindow(brand_spinner);
         brand_spinner.setOnItemSelectedListener(this);
-
+        add_edit_item_Btn.setOnClickListener(this);
+        Objects.requireNonNull(item_qty_layout.getEditText()).addTextChangedListener(this);
+        Objects.requireNonNull(modelNo_layout.getEditText()).addTextChangedListener(this);
         autocomplete_item.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -175,32 +203,54 @@ public class AddUpdateRquestedItemActivity extends AppCompatActivity implements 
                 brand_spinner.performClick();
                 break;
             case R.id.add_edit_item_Btn:
-                if (itemAdd) {
-                    itemAdd = false;
+                if(addItem)
                     addReqItem();
-                }
+                if(updateItem)
+                    updateReqItem();
+        }
+    }
+
+    private void updateReqItem() {
+        inm = autocomplete_item.getText().toString();
+        iQty = edt_item_qty.getText().toString();
+        modelNo = edt_modelNo.getText().toString();
+        if(!inm.equals("")) {
+            AddUpdateRequestedModel updateRequestModel = new AddUpdateRequestedModel(inm,
+                    brand_id,iQty,modelNo,equId,updateRequestedItemModel.getItemId(),jobId,updateRequestedItemModel.getId()
+                    );
+                   reqItemPi.updateReqItemApi(updateRequestModel);
+                   finish();
+        }else {
+            AppUtility.alertDialog(this, "", LanguageController.getInstance().getMobileMsgByKey(AppConstant.request_item_empty), LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), "", () -> null);
         }
     }
 
     private void addReqItem() {
+        inm = autocomplete_item.getText().toString();
+        iQty = edt_item_qty.getText().toString();
+        modelNo = edt_modelNo.getText().toString();
+        if(!inm.equals("")) {
+            AddUpdateRequestedModel addeRequestModel = new AddUpdateRequestedModel(
+                    autocomplete_item.getText().toString(), brand_id, edt_item_qty.getText().toString(), edt_modelNo.getText().toString(),
+                    equId, itemId, jobId);
+                String dateTime = AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT);
+                Gson gson = new Gson();
+                String addItemReqest = gson.toJson(addeRequestModel);
+                HyperLog.i("TAG addRequestItemReqest", new Gson().toJson(addeRequestModel));
+                OfflineDataController.getInstance().addInOfflineDB(Service_apis.addItemRequest, addItemReqest, dateTime);
+                finish();
 
-        AddUpdateRequestedModel addeRequestModel = new AddUpdateRequestedModel(
-                autocomplete_item.getText().toString(),brand_id,edt_item_qty.getText().toString(),edt_modelNo.getText().toString(),
-                equId,itemId,jobId);
-        if(AppUtility.isInternetConnected()){
-            reqItemPi.addReqItemApi(addeRequestModel);
+
         }else {
-            String dateTime = AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT);
-            Gson gson = new Gson();
-            String addItemReqest = gson.toJson(addeRequestModel);
-            HyperLog.i("TAG addRequestItemReqest", new Gson().toJson(addeRequestModel));
-            OfflineDataController.getInstance().addInOfflineDB(Service_apis.addItemOnJob, addItemReqest, dateTime);
+            AppUtility.alertDialog(this, "", LanguageController.getInstance().getMobileMsgByKey(AppConstant.request_item_empty), LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), "", () -> null);
+
         }
     }
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
       String brand_text= brand_array[position];
+      hint_brand_txt.setVisibility(View.VISIBLE);
         brand_txt.setText(brand_text);
         for(Map.Entry entry : brand_mapArray.entrySet()){
             if(entry.getValue().equals(brand_text)){
@@ -280,6 +330,23 @@ public class AddUpdateRquestedItemActivity extends AppCompatActivity implements 
         }
     }
 
+    @Override
+    public void showMessage(String msg) {
+        EotApp.getAppinstance().showToastmsg(msg);
+    }
+
+    @Override
+    public void showAlertDailog() {
+        AppUtility.alertDialog(this, LanguageController.getInstance().getMobileMsgByKey(AppConstant.dialog_error_title),
+                LanguageController.getInstance().getMobileMsgByKey(AppConstant.something_wrong), LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), "", new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                return null;
+            }
+        });
+
+    }
+
     private void setSelectedItemData(Inventry_ReS_Model itemselected) {
 
         Log.e("itemselected", new Gson().toJson(itemselected));
@@ -293,4 +360,28 @@ public class AddUpdateRquestedItemActivity extends AppCompatActivity implements 
                 "", () -> true);
     }
 
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+    }
+
+    @Override
+    public void onTextChanged(CharSequence charSequence , int start, int before, int count) {
+        if (charSequence.length() >= 1) {
+            if (charSequence.hashCode() == edt_item_qty.getText().hashCode())
+                item_qty_layout.setHintEnabled(true);
+            if(charSequence.hashCode() == edt_modelNo.getText().hashCode())
+                modelNo_layout.setHintEnabled(true);
+           } else if (charSequence.length() <= 0) {
+            if (charSequence.hashCode() == edt_item_qty.getText().hashCode())
+                item_qty_layout.setHintEnabled(false);
+            if (charSequence.hashCode() == edt_modelNo.getText().hashCode())
+                modelNo_layout.setHintEnabled(false);
+            }
+    }
+
+    @Override
+    public void afterTextChanged(Editable s) {
+
+    }
 }
