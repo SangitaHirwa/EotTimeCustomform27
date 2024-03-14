@@ -1038,7 +1038,7 @@ public class JobDetail_pc implements JobDetail_pi {
                             ChatController.getInstance().sendNotificationToAdmins(chat_send_Msg_model);
                             /*
                              *function call for increase job count**/
-                            ChatController.getInstance().notifyWebForIncreaseCount("jobCount","teamChat");
+                            ChatController.getInstance().notifyWebForIncreaseCount("jobCount", "teamChat");
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
@@ -1049,6 +1049,8 @@ public class JobDetail_pc implements JobDetail_pi {
                     });
         } else {
             networkDialog();
+        }
+    }
     public void addAttachmentToDb(List<Attachments> data, String jobId){
         ExecutorService service = Executors.newSingleThreadExecutor();
         service.execute(new Runnable() {

@@ -1855,7 +1855,7 @@
     "update_request_Item": "Update Request Item",
     "item_requested": "Item Requested",
     "request_item_empty": "Please enter Item name",
-    "no_item_requested_found": "No Item Requested Found"
+    "no_item_requested_found": "No Item Requested Found",
     "others": "Others",
     "offline_attachment_notes": "May be there are some more images, but it shows only in online mode."
   }

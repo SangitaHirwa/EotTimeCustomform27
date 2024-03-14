@@ -720,14 +720,6 @@ public abstract class AppDataBase extends RoomDatabase {
             /* **Alter Table for tempId **/
             database.execSQL("ALTER TABLE Attachments ADD COLUMN tempId TEXT");
             database.execSQL("ALTER TABLE Attachments ADD COLUMN bitmap TEXT");
-
-        }
-    };
-
-    /**Create Table for brand**/
-    static final Migration MIGRATION_46_47 = new Migration(46, 47) {
-        @Override
-        public void migrate(@NonNull SupportSQLiteDatabase database) {
             /* **CREATE Table for brand List**/
             database.execSQL("CREATE TABLE IF NOT EXISTS `Brand` (`ebId` TEXT NOT NULL UNIQUE," +
                     "'name' TEXT," +
