@@ -5,8 +5,8 @@ package com.eot_app.nav_menu.jobs.job_detail.documents.fileattach_mvp;
  */
 
 public interface Doc_Attch_Pi {
-    void getAttachFileList(String jobId,String usrId,String type,boolean firstCall);
-    void getMultiAttachFileList(String jobId,String usrId,String type,boolean firstCall, int parentPosition, int position, String queId, String jtId);
+    void getAttachFileList(String jobId,String usrId,String type,boolean firstCall, boolean isFromAttachment);
+    void getMultiAttachFileList(String jobId,String usrId,String type,boolean firstCall, int parentPosition, int position, String queId, String jtId, boolean isRefreshFromApi,boolean isFromAttachmet);
 
     void uploadDocuments(String job_Id, String file, String finalFname, String desc,String type,String isAddAttachAsCompletionNote);
     void uploadMultipleDocuments(String job_Id, String file, String finalFname, String desc,String type,String isAddAttachAsCompletionNote, boolean lastCall);

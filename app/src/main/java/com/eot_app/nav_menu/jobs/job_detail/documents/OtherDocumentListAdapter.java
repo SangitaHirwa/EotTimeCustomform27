@@ -11,11 +11,12 @@ import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.DecodeFormat;
 import com.eot_app.R;
 import com.eot_app.nav_menu.jobs.job_complation.JobCompletionActivity;
 import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.Attachments;
@@ -32,7 +33,7 @@ import java.util.ArrayList;
  * Created by ubuntu on 9/10/18.
  */
 
-public class DocumentListAdapter extends RecyclerView.Adapter<DocumentListAdapter.MyView_Holder> implements Filterable {
+public class OtherDocumentListAdapter extends RecyclerView.Adapter<OtherDocumentListAdapter.MyView_Holder> implements Filterable {
     final ArrayList<Attachments> suggestions = new ArrayList<>();
     private final FileDesc_Item_Selected fileDesc_item_selected;
     private final String jobId;
@@ -78,18 +79,10 @@ public class DocumentListAdapter extends RecyclerView.Adapter<DocumentListAdapte
         }
     };
     private Context context;
-    private JobCompletionActivity jobCompletionActivity;
     private DocumentsFragment documentsFragment;
 
 
-    public DocumentListAdapter(FileDesc_Item_Selected fileDesc_item_selected, ArrayList<Attachments> getFileList_res, String jobId) {
-        this.getFileList_res = getFileList_res;
-        this.fileDesc_item_selected = fileDesc_item_selected;
-        tempFileList = new ArrayList<>();
-        this.tempFileList = getFileList_res;
-        this.jobId = jobId;
-    }
-    public DocumentListAdapter(FileDesc_Item_Selected fileDesc_item_selected, ArrayList<Attachments> getFileList_res, String jobId,DocumentsFragment documentsFragment) {
+    public OtherDocumentListAdapter(FileDesc_Item_Selected fileDesc_item_selected, ArrayList<Attachments> getFileList_res, String jobId, DocumentsFragment documentsFragment) {
         this.getFileList_res = getFileList_res;
         this.fileDesc_item_selected = fileDesc_item_selected;
         tempFileList = new ArrayList<>();
@@ -97,31 +90,7 @@ public class DocumentListAdapter extends RecyclerView.Adapter<DocumentListAdapte
         this.jobId = jobId;
         this.documentsFragment = documentsFragment;
     }
-    public DocumentListAdapter(FileDesc_Item_Selected fileDesc_item_selected, ArrayList<Attachments> getFileList_res, String jobId, String isEqu) {
-        this.getFileList_res = getFileList_res;
-        this.fileDesc_item_selected = fileDesc_item_selected;
-        tempFileList = new ArrayList<>();
-        this.tempFileList = getFileList_res;
-        this.jobId = jobId;
-        this.isEqu = isEqu;
-    }
-    public DocumentListAdapter(FileDesc_Item_Selected fileDesc_item_selected, ArrayList<Attachments> getFileList_res, String jobId, boolean isClickDisabled) {
-        this.getFileList_res = getFileList_res;
-        this.fileDesc_item_selected = fileDesc_item_selected;
-        tempFileList = new ArrayList<>();
-        this.tempFileList = getFileList_res;
-        this.jobId = jobId;
-        this.isClickDisabled = isClickDisabled;
-    }
 
-    public DocumentListAdapter(FileDesc_Item_Selected fileDesc_item_selected, ArrayList<Attachments> getFileList_res, JobCompletionActivity jobCompletionActivity, String jobId) {
-        this.getFileList_res = getFileList_res;
-        this.fileDesc_item_selected = fileDesc_item_selected;
-        tempFileList = new ArrayList<>();
-        this.tempFileList = getFileList_res;
-        this.jobCompletionActivity = jobCompletionActivity;
-        this.jobId = jobId;
-    }
 
     public void updateFileList(ArrayList<Attachments> getFileListres, boolean firstCall) {
         if (this.getFileList_res != null) {
@@ -204,14 +173,14 @@ public class DocumentListAdapter extends RecyclerView.Adapter<DocumentListAdapte
                 {
                     holder.image_loader.setVisibility(View.VISIBLE);
                     Glide.with(context).load("").centerCrop()
-                            .thumbnail(Glide.with(context).load(R.raw.loader_eot2)).into(holder.image_loader);
+                            .thumbnail(Glide.with(context).load(R.raw.loader_eot)).into(holder.image_loader);
                 }
                 else {
                     holder.image_loader.setVisibility(View.GONE);
                 }
             }else {
                 if(fileList.getBitmap()== null && fileList.getBitmap().isEmpty() || fileList.getBitmap().isEmpty()){
-                    Glide.with(context).load(R.mipmap.no_internet_placeholder).into(holder.image_thumb_nail);
+                    Glide.with(context).load(R.drawable.picture).into(holder.image_thumb_nail);
                 }
             }
         }
@@ -243,8 +212,8 @@ public class DocumentListAdapter extends RecyclerView.Adapter<DocumentListAdapte
                                 getFileList_res.get(pos).setAtt_docName(name);
                                 holder.file_name.setText(fileList.getAtt_docName() + "." + ext);
                             }
-                            if (jobCompletionActivity != null)
-                                jobCompletionActivity.setUpdatedDesc(desc,queId,jtId);
+//                            if (jobCompletionActivity != null)
+//                                jobCompletionActivity.setUpdatedDesc(desc,queId,jtId);
 
                         });
                         dialogUpdateDocuments.show(((AppCompatActivity) context).getSupportFragmentManager(), "dialog");

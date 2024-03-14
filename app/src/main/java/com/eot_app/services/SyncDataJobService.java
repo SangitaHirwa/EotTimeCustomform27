@@ -79,6 +79,7 @@ public class SyncDataJobService extends JobService {
     private int count;
     private int updateIndex;
     private String startJobSyncTime="";
+    private String startAttachmetSyncTime="";
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -125,6 +126,8 @@ public class SyncDataJobService extends JobService {
                 break;
             case 1:
 //               og.v("MainSync","startJobSyncTime"+" --" +startJobSyncTime);
+                startAttachmetSyncTime=App_preference.getSharedprefInstance().getAttachmentStartSyncTime();
+                App_preference.getSharedprefInstance().setAttachmentStartSyncTime(startAttachmetSyncTime);
                 getAttachmentSyncService();//get attachment list
                 break;
             case 2:
@@ -206,7 +209,7 @@ public class SyncDataJobService extends JobService {
             }
 
             JobListRequestModel jobListRequestModel = new JobListRequestModel(Integer.parseInt(App_preference.getSharedprefInstance().getLoginRes().getUsrId()),
-                    updateLimit, updateIndex);
+                    updateLimit, updateIndex,App_preference.getSharedprefInstance().getAttachmentStartSyncTime());
             String data = new Gson().toJson(jobListRequestModel);
             Log.d("Apitimetracking","getUserJobList:-"+data);
             Log.d("Apitimetracking","time:-"+AppUtility.getCurrentDateByFormat("yyyy-MM-dd HH:mm:ss"));
@@ -243,17 +246,16 @@ public class SyncDataJobService extends JobService {
                                 updateIndex += updateLimit;
                                 getAttachmentSyncService();
                             } else {
-//                                if (count != 0) {
-//                                    Log.v("MainSync","startJobSyncTimeCI"+" --" +startJobSyncTime);
-//                                    if(!startJobSyncTime.isEmpty()){
-//                                        App_preference.getSharedprefInstance().setJobSyncTime(startJobSyncTime);
-//                                    }
-//                                    else{
-//                                        App_preference.getSharedprefInstance().setJobSyncTime(AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT));
-//                                    }
-//                                    App_preference.getSharedprefInstance().setJobStartSyncTime("");
-//                                    Log.v("MainSync","startJobSyncTimeC"+" --" +App_preference.getSharedprefInstance().getJobSyncTime());
-//                                }
+                                if (count != 0) {
+                                    Log.v("MainSync","startJobSyncTimeCI"+" --" +startAttachmetSyncTime);
+                                    if(!startAttachmetSyncTime.isEmpty()){
+                                        App_preference.getSharedprefInstance().setAttachmentStartSyncTime(startAttachmetSyncTime);
+                                    }
+                                    else{
+                                        App_preference.getSharedprefInstance().setAttachmentStartSyncTime(AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT));
+                                    }
+                                    Log.v("MainSync","startJobSyncTimeC"+" --" +App_preference.getSharedprefInstance().getJobSyncTime());
+                                }
                                 updateIndex = 0;
                                 count = 0;
 //                                AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().deleteJobByIsDelete();

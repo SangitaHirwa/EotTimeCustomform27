@@ -121,7 +121,6 @@ public class CompressImg {
         String filename = getFilename();
         try {
             out = new FileOutputStream(filename);
-
 //          write the compressed bitmap at the destination specified by filename.
             scaledBitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
 
@@ -134,11 +133,11 @@ public class CompressImg {
     }
 
     public String getFilename() {
-        File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getPath(), "MyFolder/Images");
+        File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getPath(), "Eot Directory");
         if (!file.exists()) {
             file.mkdirs();
         }
-        String uriSting = (file.getAbsolutePath() + "/" + System.currentTimeMillis() + ".jpg");
+        String uriSting = (file.getAbsolutePath() + "/Eot_"+System.currentTimeMillis() + ".jpg");
         return uriSting;
 
     }

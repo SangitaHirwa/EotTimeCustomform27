@@ -53,6 +53,7 @@ import com.eot_app.nav_menu.jobs.job_detail.documents.ActivityDocumentSaveUpload
 import com.eot_app.nav_menu.jobs.job_detail.documents.EditImageDialog;
 import com.eot_app.nav_menu.jobs.job_detail.documents.PathUtils;
 import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.Attachments;
+import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.CompressImg;
 import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.NotifyForMultiDocAdd;
 import com.eot_app.nav_menu.jobs.job_detail.documents.fileattach_mvp.Doc_Attch_Pc;
 import com.eot_app.nav_menu.jobs.job_detail.documents.fileattach_mvp.Doc_Attch_Pi;
@@ -80,10 +81,14 @@ import com.eot_app.utility.settings.setting_db.Suggestion;
 import com.eot_app.utility.util_interfaces.Callback_AlertDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -154,6 +159,7 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
     ConstraintLayout cl_notSyncParent;
     int competionNotesPostion = -1;
     String complNotes ="";
+    String tempId="";
 
 
     @Override
@@ -233,7 +239,7 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
 
     @Override
     public void uploadDocDelete(String msg,String queId, String jtId) {
-        doc_attch_pi.getMultiAttachFileList(jobId, App_preference.getSharedprefInstance().getLoginRes().getUsrId(), "6",true,parentPositon,position, queId,jtId);
+        doc_attch_pi.getMultiAttachFileList(jobId, App_preference.getSharedprefInstance().getLoginRes().getUsrId(), "6",true,parentPositon,position, queId,jtId,true,false);
     }
 
 
@@ -273,7 +279,7 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
         if(showOnlyImg){
             ll_completionForm.setVisibility(View.GONE);
             ll_attachment.setVisibility(View.VISIBLE);
-            setList(new ArrayList<>(),"",true);
+            setList(new ArrayList<>(),"",true, true);
         }else {
             ll_completionForm.setVisibility(View.VISIBLE);
             ll_attachment.setVisibility(View.GONE);
@@ -594,7 +600,7 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
     }
 
     @Override
-    public void setList(ArrayList<Attachments> getFileList_res, String isAttachCommpletionNotes, boolean firstCall) {
+    public void setList(ArrayList<Attachments> getFileList_res, String isAttachCommpletionNotes, boolean firstCall, boolean isOnline) {
         if (currentDialog != null) {
             currentDialog.dismiss();
             currentDialog = null;
@@ -636,7 +642,7 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
                 assert fileList_res != null;
                 getFileList_res.addAll(fileList_res);
                 getFileList_res.get(0).setBitmap(bitmapString);
-                setList(getFileList_res, isAttachCompletionNotes,true);
+                setList(getFileList_res, isAttachCompletionNotes,true, true);
             }
         }
     }
@@ -1036,11 +1042,12 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
         File storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "Eot Directory");
 
         File directoryPath = new File(storageDir.getPath());
-        File image = File.createTempFile(
-                String.valueOf(imageFileName),  /* prefix */
-                ".jpg",         /* suffix */
-                directoryPath   /* directory */
-        );
+//        File image = File.createTempFile(
+//                String.valueOf(imageFileName),  /* prefix */
+//                ".jpg",         /* suffix */
+//                directoryPath   /* directory */
+//        );
+        File image = new File(directoryPath+"/Eot_"+imageFileName+".jpg");
         captureImagePath = image.getAbsolutePath();
         App_preference.getSharedprefInstance().setCapturePath(captureImagePath);
         return new File(image.getPath());
@@ -1079,12 +1086,14 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
                 if (resultCode == RESULT_OK)
                     if (doc_attch_pi != null){
                         String fileNameExt = AppUtility.getFileNameWithExtension(data.getStringExtra("imgPath"));
-                        String bitmapString = "";
-                        if (data.getBooleanExtra("isFileImage", false)) {
-                            Bitmap bitmap = AppUtility.getBitmapFromPath(data.getStringExtra("imgPath"));
-                            bitmapString = AppUtility.BitMapToString(bitmap);
-                        }
-                        Attachments attachments = new Attachments("TempAttach-"+data.getStringExtra("fileName"),fileNameExt,fileNameExt,data.getStringExtra("imgPath"),queId, jtId,"",jobData.getJobId(),"6",bitmapString);
+//                        String bitmapString = "";
+//                        if (data.getBooleanExtra("isFileImage", false)) {
+//                            Bitmap bitmap = AppUtility.getBitmapFromPath(data.getStringExtra("imgPath"));
+//                            bitmapString = AppUtility.BitMapToString(bitmap);
+//                        }
+
+                        tempId = "Attachment-"+App_preference.getSharedprefInstance().getLoginRes().getUsrId()+"-"+jobData.getJobId()+"-0-"+AppUtility.getCurrentMiliTiem();
+                        Attachments attachments = new Attachments(tempId,fileNameExt,fileNameExt,data.getStringExtra("imgPath"),queId, jtId,"",jobData.getJobId(),"6",data.getStringExtra("imgPath"),tempId);
                         AppDataBase.getInMemoryDatabase(this).attachments_dao().insertSingleAttachments(attachments);
 
                         String isAttach = data.getStringExtra("isAttach");
@@ -1139,7 +1148,7 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
                                         data.getStringExtra("fileName"),
                                         data.getStringExtra("desc"),
                                         data.getStringExtra("type"),
-                                        data.getStringExtra("isAttach"), true, false,this.parentPositon, this.position), AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT));
+                                        data.getStringExtra("isAttach"), true, false,this.parentPositon, this.position,tempId), AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT));
                             } catch (Exception e) {
                                 AppCenterLogs.addLogToAppCenterOnAPIFail("JobCompletion","","onActivityResult()"+e.getMessage(),"JobCompletionActivity","");
 
@@ -1278,7 +1287,7 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
 
     public void setUpdatedDesc(String desc, String queId, String jtId) {
         if(doc_attch_pi != null) {
-            doc_attch_pi.getMultiAttachFileList(jobId, App_preference.getSharedprefInstance().getLoginRes().getUsrId(), "6",true,-1,-1,queId,jtId);
+            doc_attch_pi.getMultiAttachFileList(jobId, App_preference.getSharedprefInstance().getLoginRes().getUsrId(), "6",true,-1,-1,queId,jtId,true,false);
         }
 
     }
@@ -1338,34 +1347,59 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
 
     private void uploadMultipleImges(Intent data,boolean imgPath,String jobId, String queId, String jtId){
         String [] imgPathArray = new String[data.getClipData().getItemCount()];
+        JsonArray jsonArray = new JsonArray();
         ExecutorService service = Executors.newSingleThreadExecutor();
         service.execute(()->{
             for(int i =0; i<data.getClipData().getItemCount();i++) {
                 Uri uri = data.getClipData().getItemAt(i).getUri();
-                String fileNameExt = AppUtility.getFileNameWithExtension(PathUtils.getRealPath(this, uri));
+                CompressImg compressImg = new CompressImg(this);
+                String savedImagePath = compressImg.compressImage(uri.toString());
+                String fileNameExt = AppUtility.getFileNameWithExtension(savedImagePath);
                 String[] fileName = fileNameExt.split("\\.");
                 imgPathArray[i] = PathUtils.getRealPath(this, uri);
+                tempId = "Attachment-"+App_preference.getSharedprefInstance().getLoginRes().getUsrId()+"-"+jobData.getJobId()+"-"+i+"-"+AppUtility.getCurrentMiliTiem();
 
-                Attachments attachments = new Attachments("TempAttach-"+fileName[0],fileNameExt,fileNameExt,imgPathArray[i],queId, jtId,"",jobData.getJobId(),"6");
+//                Bitmap bitmap = AppUtility.getBitmapFromPath(PathUtils.getRealPath(this, uri));
+//                String bitmapString = AppUtility.BitMapToString(bitmap);
+                Attachments attachments = new Attachments(tempId,fileNameExt,fileNameExt,imgPathArray[i],queId, jtId,"",jobData.getJobId(),"6",savedImagePath,tempId);
                 AppDataBase.getInMemoryDatabase(this).attachments_dao().insertSingleAttachments(attachments);
+                JsonObject  jsonObject = new JsonObject();
+                jsonObject.addProperty("name",savedImagePath);
+                jsonObject.addProperty("tempId", tempId);
+                jsonArray.add(jsonObject);
 
-                new Handler(Looper.getMainLooper()).post(()->{
-                    onDocumentSelected("","",false,parentPositon,position,queId,jtId);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        onDocumentSelected("","",false,parentPositon,position,queId,jtId);
+                    }
                 });
-            }
-            new Handler(Looper.getMainLooper()).post(()->{
-                uploadOffline(imgPathArray,true,false,jobId,queId,jtId);
-            });
 
+
+            }
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    uploadOffline(jsonArray.toString(),true,false,jobId,queId,jtId,tempId);
+//                    Log.e("String list", jsonArray.toString() );
+//                    Gson gson = new Gson();
+//                    Type listType = new TypeToken<ArrayList<ImgPathWithTemp>>() {}.getType();
+//                    List <ImgPathWithTemp> list1 = gson.fromJson(jsonArray.toString(),listType);
+//                    for (ImgPathWithTemp item : list1
+//                         ) {
+//                        Log.e("String list", item.getName() );
+//                    }
+                }
+            });
         });
 
 
 
     }
 
-    public void uploadOffline(String[] imgPathArray,boolean imgPath, boolean isCompNotes, String jobId, String queId, String jtId){
+    public void uploadOffline(String imgPathArray,boolean imgPath, boolean isCompNotes, String jobId, String queId, String jtId,String tempId){
         Data.Builder builder = new Data.Builder();
-        builder.putStringArray("imgPathArray",imgPathArray);
+        builder.putString("imgPathArray",imgPathArray);
         builder.putBoolean("imgPath",true);
         builder.putBoolean("isCompNotes",true);
         builder.putString("jobId",jobId);
@@ -1374,6 +1408,7 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
         builder.putBoolean("isAttachmentSection",false);
         builder.putInt("parentPosition",parentPositon);
         builder.putInt("position",position);
+        builder.putString("tempId",tempId);
 
         mWorkManager = WorkManager.getInstance(this);
 
@@ -1393,11 +1428,11 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
     }
 
     @Override
-    public void updateMultiDoc(String apiName, String jobId, int parentPositon, int position, String queId, String jtId) {
+    public void updateMultiDoc(String apiName, String jobId, int parentPositon, int position, String queId, String jtId, boolean isRefreshFromApi) {
         switch (apiName) {
             case Service_apis.upload_document:
                 if(doc_attch_pi != null) {
-                    doc_attch_pi.getMultiAttachFileList(jobId, App_preference.getSharedprefInstance().getLoginRes().getUsrId(), "6",true, parentPositon, position,queId, jtId);
+                    doc_attch_pi.getMultiAttachFileList(jobId, App_preference.getSharedprefInstance().getLoginRes().getUsrId(), "6",true, parentPositon, position,queId, jtId,isRefreshFromApi, false);
                 }
                 break;
         }

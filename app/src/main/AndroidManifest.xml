@@ -490,5 +490,6 @@ Required only when requesting background location access on
     <uses-permission android:name="com.google.android.gms.permission.AD_ID"
         tools:node="remove"/>
     <uses-permission android:name="android.permission.READ_SETTINGS" />
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE"/>
 
 </manifest>

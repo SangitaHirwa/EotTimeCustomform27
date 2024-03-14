@@ -179,7 +179,7 @@ public class JobCardViewActivity extends AppCompatActivity  implements
         if(getIntent().hasExtra("invId") || getIntent().hasExtra("quotId")){
             binding.signatureView.setVisibility(View.GONE);
             if(getIntent().hasExtra("quotId")) {
-                setList(fileList_res, "", false);
+                setList(fileList_res, "", false,true);
             }
         }else {
             binding.signatureView.setVisibility(View.VISIBLE);
@@ -187,7 +187,7 @@ public class JobCardViewActivity extends AppCompatActivity  implements
         binding.rvJobCardAttachment.setLayoutManager(new LinearLayoutManager(this));
         binding.rvJobCardAttachment.setAdapter(jobCardAttachmentAdapter);
         if(jobId != null) {
-            doc_attch_pi.getAttachFileList(jobId, "", "", true);
+            doc_attch_pi.getAttachFileList(jobId, "", "", true, false);
         }
         // Log.e("fwList",new Gson().toJson(fwList));
         binding.jobCardEditor.setVerticalScrollBarEnabled(false);
@@ -477,7 +477,7 @@ public class JobCardViewActivity extends AppCompatActivity  implements
         this.email_reS_model = email_reS_model;
         if(quotId != null && !quotId.isEmpty()) {
             fileList_res = email_reS_model.getAttachment();
-            setList(fileList_res, "", false);
+            setList(fileList_res, "", false, true);
         }
         binding.tvLabelTo.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.to));
         binding.tvLabelCc.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.cc));
@@ -745,7 +745,7 @@ public class JobCardViewActivity extends AppCompatActivity  implements
         startActivityForResult(galleryIntent, CAPTURE_IMAGE_GALLARY);
     }
     @Override
-    public void setList(ArrayList<Attachments> getFileList_res, String isAttachCompletionNotes, boolean firstCall) {
+    public void setList(ArrayList<Attachments> getFileList_res, String isAttachCompletionNotes, boolean firstCall, boolean isOnline) {
 
         Log.e("Attachment List", ""+getFileList_res.size()+""+isAttachCompletionNotes);
         JobCardAttachmentModel jobCardAttachmentModel=null;
@@ -804,7 +804,7 @@ public class JobCardViewActivity extends AppCompatActivity  implements
         }
         // to add the new entry into existing list
         if (getFileList_res != null) {
-            setList(getFileList_res, "",true);
+            setList(getFileList_res, "",true, true);
             binding.progressBarCyclic.setVisibility(View.GONE);
         }
 

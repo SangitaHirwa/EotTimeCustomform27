@@ -986,6 +986,9 @@ public class AppConstant {
     public static String item_requested = "item_requested";
     public static String request_item_empty = "request_item_empty";
     public static String no_item_requested_found = "no_item_requested_found";
+    public static String others = "others";
+    public static String offline_attachment_notes = "offline_attachment_notes";
+
 
 
 
