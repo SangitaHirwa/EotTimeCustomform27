@@ -572,9 +572,12 @@ public class DocumentsFragment extends Fragment implements Doc_Attch_View, Docum
 //                        getFileList_res.add(obj);
                         Attachments attachments = new Attachments(tempId,fileNameExt,fileNameExt,data.getStringExtra("imgPath"),"", "",data.getStringExtra("desc"),jobId,data.getStringExtra("type"),data.getStringExtra("imgPath"), tempId);
                         AppDataBase.getInMemoryDatabase(getActivity()).attachments_dao().insertSingleAttachments(attachments);
-
+                        String type = "2";
 //                        setList((ArrayList<Attachments>) AppDataBase.getInMemoryDatabase(getActivity()).attachments_dao().getAllAttachmentsOfJob(jobId), "",true);
-                        setMultiList((ArrayList<Attachments>) AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).attachments_dao().getAllAttachmentsOfJob(jobId), data.getType(), true, -1, -1, queId, jobId);
+                        if(data.getStringExtra("type") != null && !data.getStringExtra("type").isEmpty()){
+                            type = data.getStringExtra("type");
+                        }
+                        setMultiList((ArrayList<Attachments>) AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).attachments_dao().getAllAttachmentsOfJob(jobId), type, true, -1, -1, queId, jobId);
 
                         if(data.getStringExtra("fileName")!=null){
                             try
