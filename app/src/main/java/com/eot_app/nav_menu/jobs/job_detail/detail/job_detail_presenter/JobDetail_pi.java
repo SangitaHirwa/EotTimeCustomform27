@@ -1,8 +1,10 @@
 package com.eot_app.nav_menu.jobs.job_detail.detail.job_detail_presenter;
 
+import com.eot_app.nav_menu.jobs.job_detail.chat.fire_Base_Model.Chat_Send_Msg_Model;
 import com.eot_app.nav_menu.jobs.job_detail.detail.jobdetial_model.CompletionDetailsPost;
 import com.eot_app.nav_menu.jobs.job_detail.detail.jobdetial_model.JobStatusModel;
 import com.eot_app.nav_menu.jobs.job_detail.detail.jobdetial_model.JobStatusModelNew;
+import com.eot_app.nav_menu.jobs.job_detail.requested_item.requested_itemModel.AddUpdateRequestedModel;
 
 /**
  * Created by aplite_pc302 on 6/25/18.
@@ -30,4 +32,7 @@ public interface JobDetail_pi {
     void addJobCompletionDetails(String jobId, CompletionDetailsPost.CompletionDetail obj,int logType);
     void loadFromServer(String jobId);
     void getRecureDataList(String jobId, String recurType);
+    void getRequestedItemDataList(String jobId);
+    void deleteRequestedItem(String irId, String jobId, AddUpdateRequestedModel requestedModel);
+    void sendMsg(Chat_Send_Msg_Model chat_send_Msg_model);
 }

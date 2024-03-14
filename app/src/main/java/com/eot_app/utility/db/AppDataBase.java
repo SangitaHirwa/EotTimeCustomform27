@@ -61,6 +61,8 @@ import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_db.tax_dao.Invoice_T
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_db.tax_dao.TaxComponentsConverter;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_db.tax_dao.TaxConverter;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_detail_pkg.inv_detail_model.Tax;
+import com.eot_app.nav_menu.jobs.job_detail.job_equipment.add_job_equip.model_pkg.BrandData;
+import com.eot_app.nav_menu.jobs.job_detail.job_equipment.add_job_equip.model_pkg.brand_db.BrandDao;
 import com.eot_app.nav_menu.jobs.joboffline_db.JobOfflineDataDao;
 import com.eot_app.nav_menu.jobs.joboffline_db.JobOfflineDataModel;
 import com.eot_app.time_shift_pkg.ShiftTimeDao;
@@ -102,7 +104,8 @@ import com.eot_app.utility.settings.setting_db.TagData;
         , AuditList_Res.class, ContractRes.class, Equipment.class, JobStatusModelNew.class,
         TaxesLocation.class, ClientRefrenceModel.class, ShiftTimeReSModel.class, CustomForm.class, CustomFormQue.class,
         CustomFormSubmited.class, CustomFormListOffline.class, AuditStatusModel.class, AppointmentStatusModel.class, OfflieCompleQueAns.class,
-        Attachments.class},
+        Attachments.class, BrandData.class},
+
         version = 47, exportSchema = false)
 @TypeConverters({TaxDataConverter.class, TagDataConverter.class, InvoiceItemDataModelConverter.class, TaxConverter.class
         , EquipmentTypeConverter.class, EquArrayConvrtr.class, EquCategoryConvrtr.class
@@ -720,6 +723,19 @@ public abstract class AppDataBase extends RoomDatabase {
 
         }
     };
+
+    /**Create Table for brand**/
+    static final Migration MIGRATION_46_47 = new Migration(46, 47) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            /* **CREATE Table for brand List**/
+            database.execSQL("CREATE TABLE IF NOT EXISTS `Brand` (`ebId` TEXT NOT NULL UNIQUE," +
+                    "'name' TEXT," +
+                    " PRIMARY KEY(`ebId`)) ");
+            database.execSQL("ALTER TABLE Inventry_ReS_Model ADD COLUMN brandNm TEXT");
+            database.execSQL("ALTER TABLE Inventry_ReS_Model ADD COLUMN ebId TEXT");
+        }
+    };
     private static final String DB_NAME = "eot_db";
 
     private static AppDataBase INSTANCE;
@@ -845,4 +861,5 @@ public abstract class AppDataBase extends RoomDatabase {
     public abstract AppointmentStatusDao appointmentStatusDao();
     public abstract OfflieCompleQueAns_Dao offline_completion_ans_dao();
     public abstract Attachments_Dao attachments_dao();
+    public abstract BrandDao brandDao();
 }

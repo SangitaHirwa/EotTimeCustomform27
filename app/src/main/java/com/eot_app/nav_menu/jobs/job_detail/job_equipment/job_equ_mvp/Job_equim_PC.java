@@ -74,6 +74,9 @@ public class Job_equim_PC implements Job_equim_PI {
         }
     }
 
+
+    /**Do not use this api because after discussion with jit sir some change in ui in view detail of equipment
+     in this api we don't get some param therefore we use loadFromServer() method for refresh equipment list.**/
     @Override
     public void getEquipmentJobList(String auditID, final String jobId) {
         if (AppUtility.isInternetConnected()) {

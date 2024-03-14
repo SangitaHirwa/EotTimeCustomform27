@@ -233,6 +233,11 @@ public interface Service_apis {
     String getRecurDataOfJob = "JobController/getRecurDataOfJob";
     String getSyncJobAttachments = "JobController/syncJobAttachmentsNew";
 
+    /**Add Requested Item api**/
+    String addItemRequest = "JobController/addItemRequest";
+    String  updateItemRequest = "JobController/updateItemRequest";
+    String deleteItemRequest = "JobController/deleteItemRequest";
+    String getListItemRequest ="JobController/listItemRequest";
 
     //no token required & header
     @POST
@@ -848,5 +853,6 @@ public interface Service_apis {
     @POST
     Observable<JsonObject> login(@Url String url,
                                  @Body Map<String, String> stringMap);
+
 }
 

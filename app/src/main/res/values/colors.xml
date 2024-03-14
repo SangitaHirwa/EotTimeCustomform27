@@ -96,5 +96,6 @@
     <color name="gray1">#717171</color>
     <color name="light_red1">#FFF1F2</color>
     <color name="light_red2">#FB7185</color>
+    <color name="requested_List">#edfcf2</color>
 
 </resources>

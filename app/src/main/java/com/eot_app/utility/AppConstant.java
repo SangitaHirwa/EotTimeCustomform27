@@ -978,8 +978,17 @@ public class AppConstant {
     public static String equipment_location = "equipment_location";
     public static String leader_change_completed_status_all_members = "leader_change_completed_status_all_members";
     public static String no_term_condition = "no_term_condition";
+    public static String remove_stock_from_inventory = "remove_stock_from_inventory";
+    public static String request_Item = "request_Item";
+    public static String add_request_Item = "add_request_Item";
+    public static String no_brand = "no_brand";
+    public static String update_request_Item = "update_request_Item";
+    public static String item_requested = "item_requested";
+    public static String request_item_empty = "request_item_empty";
+    public static String no_item_requested_found = "no_item_requested_found";
     public static String others = "others";
     public static String offline_attachment_notes = "offline_attachment_notes";
+
 
 
 

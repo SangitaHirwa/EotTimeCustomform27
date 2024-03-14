@@ -40,6 +40,7 @@ import com.eot_app.nav_menu.jobs.job_detail.form_form.get_qus_list.ans_model.Ans
 import com.eot_app.nav_menu.jobs.job_detail.form_form.get_qus_list.ans_model.Ans_Req;
 
 import com.eot_app.nav_menu.jobs.job_detail.form_form.get_qus_list.ans_model.Answer;
+import com.eot_app.nav_menu.jobs.job_detail.requested_item.requested_itemModel.AddUpdateRequestedModel;
 import com.eot_app.nav_menu.jobs.joboffline_db.JobOfflineDataModel;
 import com.eot_app.services.ApiClient;
 import com.eot_app.services.Service_apis;
@@ -322,12 +323,23 @@ public class OfflineDataController {
             case Service_apis.upload_document:
                 updateDocument(data, obj);
                 break;
+
+            case Service_apis.addItemRequest:
+            case Service_apis.updateItemRequest:
+                updateRequestedItem(data, obj);
+                break;
+
         }
         int check = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).offlinemodel().deleteFromId(data.getId());
         if (check == 1) {
             getTotalRequest();
         }
     };
+
+    private void updateRequestedItem(Offlinetable data, JsonObject obj) {
+        AddUpdateRequestedModel requestedModel = gson.fromJson(data.getParams(), AddUpdateRequestedModel.class);
+        EotApp.getAppinstance().getNotifyForRequestedItemList(data.getService_name(), String.valueOf(obj.get("message")),requestedModel);
+    }
 
     private void updateDocument(Offlinetable data, JsonObject obj){
         MultiDocUpdateRequest multiDocUpdateRequest = new Gson().fromJson(data.getParams(), MultiDocUpdateRequest.class);

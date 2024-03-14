@@ -183,7 +183,7 @@ public class ScanBarcode_PC implements ScanBarcode_PI {
         if(isScannerValue) {
             jsonObject.addProperty("barCode", barcode);
         }else {
-            jsonObject.addProperty("search", barcode);
+            jsonObject.addProperty("barCodeOrSno", barcode);
         }
         String data = new Gson().toJson(jsonObject);
         ApiClient.getservices().eotServiceCall(Service_apis.getAllEquipments,AppUtility.getApiHeaders(),AppUtility.getJsonObject(data))
