@@ -16,10 +16,17 @@
         <!--        android:layout_marginBottom="8dp"
         -->
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/progressBar_itemRequest"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            >
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/progressBar_itemRequest"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
             android:visibility="gone"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:clickable="true"
             android:elevation="10dp">
 
         <ProgressBar
@@ -33,9 +40,13 @@
             app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_titel_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/white"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             android:padding="12dp">
 
             <TextView
@@ -91,6 +102,9 @@
                     android:visibility="gone" />
             </RelativeLayout>
 
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerView_requested_item"
                 android:layout_width="match_parent"
@@ -98,9 +112,20 @@
                 android:layout_marginHorizontal="3dp"
                 android:layout_marginTop="5dp"
                 android:visibility="gone"
-                app:layout_constraintStart_toStartOf="@+id/requested_item_txt"
-                app:layout_constraintTop_toBottomOf="@id/requested_item_txt" />
+               app:layout_constraintTop_toBottomOf="@+id/cl_titel_bar" />
+            <TextView
+                android:id="@+id/txt_no_item_found"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/text_style1"
+                android:layout_marginTop="5dp"
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@+id/cl_titel_bar"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
 
+                />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 

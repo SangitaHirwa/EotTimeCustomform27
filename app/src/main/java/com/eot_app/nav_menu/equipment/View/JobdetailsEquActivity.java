@@ -56,6 +56,7 @@ import com.eot_app.nav_menu.jobs.job_detail.documents.DocumentListAdapter;
 import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.Attachments;
 import com.eot_app.nav_menu.jobs.job_detail.form_form.get_qus_list.qus_model.AnswerModel;
 import com.eot_app.nav_menu.jobs.job_detail.job_status_pkg.JobStatus_Controller;
+import com.eot_app.nav_menu.jobs.job_detail.requested_item.requested_itemModel.AddUpdateRequestedModel;
 import com.eot_app.nav_menu.jobs.job_detail.requested_item.requested_itemModel.RequestedItemModel;
 import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.AppUtility;
@@ -254,7 +255,7 @@ public class JobdetailsEquActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void deletedRequestData(String msg) {
+    public void deletedRequestData(String msg, AddUpdateRequestedModel requestedModel) {
 
     }
 

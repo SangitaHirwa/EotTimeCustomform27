@@ -1,5 +1,6 @@
 package com.eot_app.nav_menu.jobs.job_detail.requested_item;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.eot_app.R;
 import com.eot_app.nav_menu.jobs.job_detail.detail.DetailFragment;
+import com.eot_app.nav_menu.jobs.job_detail.requested_item.requested_itemModel.AddUpdateRequestedModel;
 import com.eot_app.nav_menu.jobs.job_detail.requested_item.requested_itemModel.RequestedItemModel;
 import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.AppUtility;
@@ -41,6 +43,7 @@ public class RequestedItemListAdapter extends RecyclerView.Adapter<RequestedItem
         return new MyViewHolder(view);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         RequestedItemModel requestedItemModel = requestedItemList.get(position);
@@ -50,17 +53,18 @@ public class RequestedItemListAdapter extends RecyclerView.Adapter<RequestedItem
         }
         holder.qty_item.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.qty)+":- "+requestedItemModel.getQty());
         if(requestedItemModel.getModelNo().equals("")){
-            holder.model_no_text.setVisibility(View.GONE);
+            holder.model_no_text.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.part_no)+" "+" ");
         }else {
             holder.model_no_text.setVisibility(View.VISIBLE);
-            holder.model_no_text.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.part_no)+":- "+requestedItemModel.getModelNo());
+            holder.model_no_text.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.part_no) + ":- " + requestedItemModel.getModelNo());
         }
         if(requestedItemModel.getEbId() != null && !requestedItemModel.getEbId().equals("")) {
             String brandName = AppDataBase.getInMemoryDatabase(context).brandDao().getBrandNameById(requestedItemModel.getEbId());
             holder.item_brand.setVisibility(View.VISIBLE);
+            if(brandName != null && !brandName.isEmpty())
             holder.item_brand.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.brand)+":- "+brandName);
         }else {
-            holder.item_brand.setVisibility(View.GONE);
+            holder.item_brand.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.brand)+" "+" ");
         }
 
         holder.item_view.setOnClickListener(v -> {
@@ -74,7 +78,7 @@ public class RequestedItemListAdapter extends RecyclerView.Adapter<RequestedItem
                     try {
 
                         if (!requestedItemModel.getId().equals("")) {
-                            deleteItem.itemDelete(requestedItemModel.getId());
+                            deleteItem.itemDelete(requestedItemModel.getId(),requestedItemModel);
                         }
                     } catch (Exception ex) {
                         ex.printStackTrace();
@@ -101,7 +105,7 @@ public class RequestedItemListAdapter extends RecyclerView.Adapter<RequestedItem
         notifyDataSetChanged();
     }
     public interface DeleteItem {
-        void itemDelete(String irId);
+        void itemDelete(String irId, RequestedItemModel requestedModel);
     }
     public interface SelectedItemListener {
         void itemSelected(RequestedItemModel requestedItemModel);

@@ -7,6 +7,7 @@ import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.model.InvoiceItem
 import com.eot_app.nav_menu.jobs.job_detail.detail.jobdetial_model.CompletionDetails;
 import com.eot_app.nav_menu.jobs.job_detail.detail.jobdetial_model.JobStatusModelNew;
 import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.Attachments;
+import com.eot_app.nav_menu.jobs.job_detail.requested_item.requested_itemModel.AddUpdateRequestedModel;
 import com.eot_app.nav_menu.jobs.job_detail.requested_item.requested_itemModel.RequestedItemModel;
 
 import java.util.ArrayList;
@@ -34,5 +35,5 @@ public interface JobDetail_view {
     void setRequestItemData(List<RequestedItemModel> requestItemData);
     void notDataFoundInRecureData(String msg);
     void notDtateFoundInRequestedItemList(String msg);
-    void deletedRequestData(String msg);
+    void deletedRequestData(String msg, AddUpdateRequestedModel requestedModel);
 }

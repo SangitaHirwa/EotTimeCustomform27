@@ -723,6 +723,8 @@ public abstract class AppDataBase extends RoomDatabase {
             database.execSQL("CREATE TABLE IF NOT EXISTS `Brand` (`ebId` TEXT NOT NULL UNIQUE," +
                     "'name' TEXT," +
                     " PRIMARY KEY(`ebId`)) ");
+            database.execSQL("ALTER TABLE Inventry_ReS_Model ADD COLUMN brandNm TEXT");
+            database.execSQL("ALTER TABLE Inventry_ReS_Model ADD COLUMN ebId TEXT");
         }
     };
     private static final String DB_NAME = "eot_db";

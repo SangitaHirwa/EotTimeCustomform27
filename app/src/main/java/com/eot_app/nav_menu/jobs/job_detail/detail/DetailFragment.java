@@ -94,6 +94,7 @@ import com.eot_app.nav_menu.jobs.job_detail.job_equipment.JobEquipmentActivity;
 import com.eot_app.nav_menu.jobs.job_detail.job_status_pkg.JobStatus_Controller;
 import com.eot_app.nav_menu.jobs.job_detail.requested_item.AddUpdateRquestedItemActivity;
 import com.eot_app.nav_menu.jobs.job_detail.requested_item.RequestedItemListAdapter;
+import com.eot_app.nav_menu.jobs.job_detail.requested_item.requested_itemModel.AddUpdateRequestedModel;
 import com.eot_app.nav_menu.jobs.job_detail.requested_item.requested_itemModel.RequestedItemModel;
 import com.eot_app.nav_menu.jobs.job_detail.reschedule.RescheduleActivity;
 import com.eot_app.nav_menu.jobs.job_detail.revisit.RevisitActivity;
@@ -109,6 +110,7 @@ import com.eot_app.utility.EotApp;
 import com.eot_app.utility.db.AppDataBase;
 import com.eot_app.utility.language_support.LanguageController;
 import com.eot_app.utility.settings.setting_db.FieldWorker;
+import com.eot_app.utility.settings.setting_db.Offlinetable;
 import com.eot_app.utility.settings.setting_db.TagData;
 import com.eot_app.utility.util_interfaces.Callback_AlertDialog;
 import com.eot_app.utility.util_interfaces.OnFragmentInteractionListener;
@@ -181,7 +183,7 @@ public class DetailFragment extends Fragment
             textViewContactperson, textViewTitle,
             textViewInstruction, txtViewHeader, textViewTags, txt_fw_nm_list,
             tv_description, tv_instruction, complation_txt, item_txt, eq_txt,
-            complation_notes, tv_tag, fw_Nm_List, txt_serviceHeader, txt_notesHeader, requested_item_txt;
+            complation_notes, tv_tag, fw_Nm_List, txt_serviceHeader, txt_notesHeader, requested_item_txt,txt_no_item_found;
     String mParam1;
     RelativeLayout map_layout;
     TextView custom_filed_txt, btnStopRecurView, btnComplationView,
@@ -257,6 +259,7 @@ public class DetailFragment extends Fragment
     ServiceMarkDoneAdapter serviceMarkDoneAdapter;
     boolean isAskForCompleteJob = false;
     List<RequestedItemModel> requestedItemList = new ArrayList<>();
+    String brandName = "";
 
     public DetailFragment() {
         // Required empty public constructor
@@ -742,6 +745,9 @@ public class DetailFragment extends Fragment
         requested_item_txt.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.item_requested));
 
         progressBar_itemRequest =layout.findViewById(R.id.progressBar_itemRequest);
+        txt_no_item_found =layout.findViewById(R.id.txt_no_item_found);
+        txt_no_item_found.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.no_item_requested_found));
+
         requested_item_cardView = layout.findViewById(R.id.requested_item_cardView);
         show_requested_list = layout.findViewById(R.id.show_requested_list);
         hide_requested_list = layout.findViewById(R.id.hide_requested_list);
@@ -905,7 +911,9 @@ public class DetailFragment extends Fragment
         recyclerView_requested_item.setAdapter(requestedItemListAdapter);
         recyclerView_requested_item.setNestedScrollingEnabled(false);
 
-//        if(App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsR)
+        if(App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsItemRequested() == 0){
+            ll_requested_item.setVisibility(View.VISIBLE);
+        }
     }
 
     private void addJobServicesInChips(JtId jtildModel) {
@@ -1324,7 +1332,13 @@ public class DetailFragment extends Fragment
     public void setRequestItemData(List<RequestedItemModel> requestItemData) {
         progressBar_itemRequest.setVisibility(View.GONE);
             if(requestItemData != null && requestItemData.size() > 0){
+                recyclerView_requested_item.setVisibility(View.VISIBLE);
+                txt_no_item_found.setVisibility(View.GONE);
                 requestedItemListAdapter.setReqItemList(requestItemData);
+            }else {
+                requestedItemListAdapter.setReqItemList(new ArrayList<>());
+                txt_no_item_found.setVisibility(View.VISIBLE);
+                recyclerView_requested_item.setVisibility(View.GONE);
             }
     }
 
@@ -1348,9 +1362,26 @@ public class DetailFragment extends Fragment
     }
 
     @Override
-    public void deletedRequestData(String msg) {
-        EotApp.getAppinstance().showToastmsg(msg);
+    public void deletedRequestData(String message,AddUpdateRequestedModel requestedModel) {
+        EotApp.getAppinstance().showToastmsg(message);
         jobDetail_pi.getRequestedItemDataList(mParam2.getJobId());
+        if(requestedModel != null) {
+            if(requestedModel.getEbId() != null && !requestedModel.getEbId().equals("0") && !requestedModel.getEbId().equals("")) {
+                brandName = AppDataBase.getInMemoryDatabase(getContext()).brandDao().getBrandNameById(requestedModel.getEbId());
+            }
+            String msg =
+                    "Deleted this Item<br>Item Name: "+requestedModel.getItemName()+"<br>"+
+                            "Qty: "+requestedModel.getQty()+"<br>"+
+                            "Model No: "+requestedModel.getModelNo()+"<br>"+
+                            "Brand: "+brandName;
+            Chat_Send_Msg_Model chat_send_Msg_model = new Chat_Send_Msg_Model(
+                    msg, "", AppUtility.getDateByMiliseconds(),
+                    mParam2.getLabel(),
+                    requestedModel.getJobId(), "1");
+            if (jobDetail_pi != null) {
+                jobDetail_pi.sendMsg(chat_send_Msg_model);
+            }
+        }
     }
 
     @Override
@@ -2865,10 +2896,10 @@ public void setCompletionDetail(){
                 if(AppUtility.isInternetConnected()){
                     progressBar_itemRequest.setVisibility(View.VISIBLE);
                     show_requested_list.setVisibility(View.GONE);
-                    recyclerView_requested_item.setVisibility(View.VISIBLE);
                     hide_requested_list.setVisibility(View.VISIBLE);
                     if (jobDetail_pi != null) {
                         jobDetail_pi.getRequestedItemDataList(mParam2.getJobId());
+                        recyclerView_requested_item.setVisibility(View.VISIBLE);
                     }
                 }else {
                     showErrorDialog(LanguageController.getInstance().getMobileMsgByKey(AppConstant.offline_feature_alert));
@@ -2880,6 +2911,7 @@ public void setCompletionDetail(){
                 show_requested_list.setVisibility(View.VISIBLE);
                 recyclerView_requested_item.setVisibility(View.GONE);
                 hide_requested_list.setVisibility(View.GONE);
+                txt_no_item_found.setVisibility(View.GONE);
                 break;
         }
     }
@@ -3493,26 +3525,58 @@ public void setCompletionDetail(){
     }
 
     @Override
-    public void updateReqItemList(String api_name, String message) {
+    public void updateReqItemList(String api_name, String message, AddUpdateRequestedModel requestedModel) {
         switch (api_name){
             case Service_apis.addItemRequest:
                 showAppInstallDialog(message);
-                Chat_Send_Msg_Model chat_send_Msg_model = new Chat_Send_Msg_Model(
-                        "Request for Item", "", AppUtility.getDateByMiliseconds(),
-                        mParam2.getLabel(),
-                        mParam2.getJobId(), "1");
-                if(jobDetail_pi != null) {
-                    jobDetail_pi.sendMsg(chat_send_Msg_model);
+                if(requestedModel != null) {
+                    if(requestedModel.getEbId() != null && !requestedModel.getEbId().equals("0") && !requestedModel.getEbId().equals("")) {
+                         brandName = AppDataBase.getInMemoryDatabase(getContext()).brandDao().getBrandNameById(requestedModel.getEbId());
+                    }
+                    String msg =
+                            "Request for Item<br>Item Name: "+requestedModel.getItemName()+"<br>"+
+                                    "Qty: "+requestedModel.getQty()+"<br>"+
+                                    "Model No: "+requestedModel.getModelNo()+"<br>"+
+                                    "Brand: "+brandName;
+                    Chat_Send_Msg_Model chat_send_Msg_model = new Chat_Send_Msg_Model(
+                            msg, "", AppUtility.getDateByMiliseconds(),
+                            mParam2.getLabel(),
+                            requestedModel.getJobId(), "1");
+                    if (jobDetail_pi != null) {
+                        jobDetail_pi.sendMsg(chat_send_Msg_model);
+                    }
+                }
+                break;
+            case Service_apis.updateItemRequest:
+                showAppInstallDialog(message);
+                if(requestedModel != null) {
+                    if(requestedModel.getEbId() != null && !requestedModel.getEbId().equals("0") && !requestedModel.getEbId().equals("")) {
+                        brandName = AppDataBase.getInMemoryDatabase(getContext()).brandDao().getBrandNameById(requestedModel.getEbId());
+                    }
+                    String msg =
+                            "Updated this Item<br>Item Name: "+requestedModel.getItemName()+"<br>"+
+                                    "Qty: "+requestedModel.getQty()+"<br>"+
+                                    "Model No: "+requestedModel.getModelNo()+"<br>"+
+                                    "Brand: "+brandName;
+                    Chat_Send_Msg_Model chat_send_Msg_model = new Chat_Send_Msg_Model(
+                            msg, "", AppUtility.getDateByMiliseconds(),
+                            mParam2.getLabel(),
+                            requestedModel.getJobId(), "1");
+                    if (jobDetail_pi != null) {
+                        jobDetail_pi.sendMsg(chat_send_Msg_model);
+                    }
                 }
                 break;
         }
     }
 
     @Override
-    public void itemDelete(String irId) {
+    public void itemDelete(String irId,RequestedItemModel requestedModel) {
         if(AppUtility.isInternetConnected()){
             progressBar_itemRequest.setVisibility(View.VISIBLE);
-            jobDetail_pi.deleteRequestedItem(irId,mParam2.getJobId());
+            AddUpdateRequestedModel requestedModel1 = new AddUpdateRequestedModel(requestedModel.getInm(),requestedModel.getEbId(),requestedModel.getQty(),
+                    requestedModel.getModelNo(),"",requestedModel.getItemId(),mParam2.getJobId());
+            jobDetail_pi.deleteRequestedItem(irId,mParam2.getJobId(),requestedModel1);
         }
     }
 

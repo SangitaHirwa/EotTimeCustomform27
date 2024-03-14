@@ -78,6 +78,9 @@ public class AddUpdateRquestedItemActivity extends AppCompatActivity implements 
         setContentView(R.layout.add_update_rquested_item_activity);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         initializelables();
+        reqItemPi = new AddUpdateReqItem_PC(this);
+        reqItemPi.getInventryItemList();
+        reqItemPi.getBrandList();
         if(getIntent().getBooleanExtra("addReqItem",false)){
             addItem = true;
             jobId = getIntent().getStringExtra("jobId");
@@ -89,10 +92,27 @@ public class AddUpdateRquestedItemActivity extends AppCompatActivity implements 
             setItemDataValue();
             Objects.requireNonNull(getSupportActionBar()).setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.update_request_Item));
         }
+      initiatView();
 
-        reqItemPi = new AddUpdateReqItem_PC(this);
-        reqItemPi.getInventryItemList();
-        reqItemPi.getBrandList();
+
+    }
+
+    private void initiatView() {
+
+
+        if(updateItem) {
+            if (updateRequestedItemModel.getItemId() != null && updateRequestedItemModel.getItemId().equals("0")) {
+                autocomplete_item.setFocusable(true);
+                autocomplete_item.addTextChangedListener(this);
+            }else {
+                autocomplete_item.setFocusable(false);
+                autocomplete_item.removeTextChangedListener(this);
+            }
+        }else {
+            autocomplete_item.setFocusable(true);
+            autocomplete_item.addTextChangedListener(this);
+
+        }
     }
 
     private void setItemDataValue() {
@@ -100,10 +120,17 @@ public class AddUpdateRquestedItemActivity extends AppCompatActivity implements 
         edt_item_qty.setText(updateRequestedItemModel.getQty());
         edt_modelNo.setText(updateRequestedItemModel.getModelNo());
         String brandName = brand_mapArray.get(updateRequestedItemModel.getEbId());
+        brand_id = updateRequestedItemModel.getEbId();
         brand_txt.setText(brandName);
-
+        if(!updateRequestedItemModel.getItemId().equals("0")){
+            autocomplete_item.setEnabled(false);
+            itemlayout.setClickable(false);
+            edt_modelNo.setEnabled(false);
+            linearLayout_brand.setClickable(false);
+        }else {
+            itemlayout.setClickable(true);
+        }
     }
-
     private void initializelables() {
         itemlayout = findViewById(R.id.itemlayout);
         autocomplete_item = findViewById(R.id.autocomplete_item);
@@ -126,55 +153,7 @@ public class AddUpdateRquestedItemActivity extends AppCompatActivity implements 
         AppUtility.spinnerPopUpWindow(brand_spinner);
         brand_spinner.setOnItemSelectedListener(this);
         add_edit_item_Btn.setOnClickListener(this);
-        Objects.requireNonNull(item_qty_layout.getEditText()).addTextChangedListener(this);
-        Objects.requireNonNull(modelNo_layout.getEditText()).addTextChangedListener(this);
-        autocomplete_item.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                if (autocomplete_item.getTag() == null) {
-                    Log.e("EmptyTag", "");
-                } else {
-                    switch (autocomplete_item.getTag().toString()) {
-                        case "Item":
-                            Log.e("", "");
-                            if (editable.length() >= 1) {
-
-                                itemlayout.setHintEnabled(true);
-                                IS_ITEM_MANDATRY = true;
-                                if (itemsList != null &&
-                                        AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).invoiceItemDao().getInventryItemList().size() == 0
-                                        && editable.length() >= 3) {
-                                    if (!AppUtility.isInternetConnected()) {
-                                        showDialogForLoadData();
-                                    } else {
-                                        reqItemPi.getDataFromServer(editable.toString());
-                                    }
-                                }
-                            } else if (editable.length() <= 0) {
-                                itemlayout.setHintEnabled(false);
-                                IS_ITEM_MANDATRY = false;
-                            }
-                            assert itemsList != null;
-                            if (!itemsList.contains(editable)) {
-                                inm = editable.toString();
-                            }
-                            break;
-
-                    }
-                }
-                Log.e("", "");
-            }
-        });
 
     }
 
@@ -218,8 +197,13 @@ public class AddUpdateRquestedItemActivity extends AppCompatActivity implements 
             AddUpdateRequestedModel updateRequestModel = new AddUpdateRequestedModel(inm,
                     brand_id,iQty,modelNo,equId,updateRequestedItemModel.getItemId(),jobId,updateRequestedItemModel.getId()
                     );
-                   reqItemPi.updateReqItemApi(updateRequestModel);
-                   finish();
+
+            String dateTime = AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT);
+            Gson gson = new Gson();
+            String addItemReqest = gson.toJson(updateRequestModel);
+            HyperLog.i("TAG addRequestItemReqest", new Gson().toJson(updateRequestModel));
+            OfflineDataController.getInstance().addInOfflineDB(Service_apis.updateItemRequest, addItemReqest, dateTime);
+            finish();
         }else {
             AppUtility.alertDialog(this, "", LanguageController.getInstance().getMobileMsgByKey(AppConstant.request_item_empty), LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), "", () -> null);
         }
@@ -294,7 +278,6 @@ public class AddUpdateRquestedItemActivity extends AppCompatActivity implements 
         Log.e("", "");
         this.itemsList = list;
         Log.v("ItemList::", new Gson().toJson(list));
-        AppUtility.autocompletetextviewPopUpWindow(autocomplete_item);
         autocomplete_item.setTag("Item");
         Auto_Inventry_Adpter itemAdapter = new Auto_Inventry_Adpter(this,
                 R.layout.custom_item_adpter, (ArrayList<Inventry_ReS_Model>) this.itemsList);
@@ -350,10 +333,28 @@ public class AddUpdateRquestedItemActivity extends AppCompatActivity implements 
     private void setSelectedItemData(Inventry_ReS_Model itemselected) {
 
         Log.e("itemselected", new Gson().toJson(itemselected));
-        inm = itemselected.getInm();
-        iQty = itemselected.getQty();
-        autocomplete_item.setText(inm);
+        iQty = "1";
+        if(itemselected.getPno() != null && !itemselected.getPno().isEmpty()){
+            edt_modelNo.setText(itemselected.getPno());
+        }else {
+            edt_modelNo.setText("");
+        }
+        if(itemselected.getBrandNm() != null && !itemselected.getBrandNm().isEmpty()){
+            brand_txt.setText(itemselected.getBrandNm());
+            brand_id = itemselected.getEbId();
+        }else{
+            brand_txt.setText("");
+            brand_id = "";
+        }
+        if(itemselected.getItemId()!=null && !itemselected.getItemId().isEmpty()) {
+            itemId = itemselected.getItemId();
+        }else {
+            itemId = "";
+        }
+        autocomplete_item.setText(itemselected.getInm());
         edt_item_qty.setText(iQty);
+        edt_modelNo.setEnabled(false);
+        linearLayout_brand.setClickable(false);
     }
     private void showDisError(String msg) {
         AppUtility.alertDialog(this, "", msg, LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok),
@@ -378,10 +379,63 @@ public class AddUpdateRquestedItemActivity extends AppCompatActivity implements 
             if (charSequence.hashCode() == edt_modelNo.getText().hashCode())
                 modelNo_layout.setHintEnabled(false);
             }
+
+            if (autocomplete_item.getTag() == null) {
+                Log.e("EmptyTag", "");
+            } else {
+                switch (autocomplete_item.getTag().toString()) {
+                    case "Item":
+                        Log.e("", "");
+                        edt_modelNo.setEnabled(true);
+                        linearLayout_brand.setClickable(true);
+
+                        if (charSequence.length() >= 1) {
+
+                            itemlayout.setHintEnabled(true);
+                            IS_ITEM_MANDATRY = true;
+                            if (itemsList != null &&
+                                    AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).invoiceItemDao().getInventryItemList().size() == 0
+                                    && charSequence.length() >= 3) {
+                                if (!AppUtility.isInternetConnected()) {
+
+                                } else {
+                                    reqItemPi.getDataFromServer(charSequence.toString());
+                                }
+                            }
+                        } else if (charSequence.length() <= 0) {
+                            itemlayout.setHintEnabled(false);
+                            IS_ITEM_MANDATRY = false;
+                        }
+                        assert itemsList != null;
+                        if (!itemsList.contains(charSequence)) {
+                            inm = charSequence.toString();
+                        }
+                        break;
+
+                }
+            }
+
     }
 
     @Override
     public void afterTextChanged(Editable s) {
-
+        if (s.length() >= 1) {
+            if (s.hashCode() == edt_item_qty.getText().hashCode())
+                item_qty_layout.setHintEnabled(true);
+            if(s.hashCode() == edt_modelNo.getText().hashCode())
+                modelNo_layout.setHintEnabled(true);
+        } else if (s.length() <= 0) {
+            if (s.hashCode() == edt_item_qty.getText().hashCode())
+                item_qty_layout.setHintEnabled(false);
+            if (s.hashCode() == edt_modelNo.getText().hashCode())
+                modelNo_layout.setHintEnabled(false);
+        }
+        if (!AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).invoiceItemDao().getInventryItemName(s.toString())) {
+                        edt_modelNo.setEnabled(true);
+                        linearLayout_brand.setClickable(true);
+                        edt_modelNo.setText("");
+                        brand_txt.setText("");
+                        edt_item_qty.setText("1");
+                    }
     }
 }

@@ -31,4 +31,68 @@ public class AddUpdateRequestedModel {
         this.jobId = jobId;
         this.irId = irId;
     }
+
+    public String getItemName() {
+        return itemName;
+    }
+
+    public void setItemName(String itemName) {
+        this.itemName = itemName;
+    }
+
+    public String getEbId() {
+        return ebId;
+    }
+
+    public void setEbId(String ebId) {
+        this.ebId = ebId;
+    }
+
+    public String getQty() {
+        return qty;
+    }
+
+    public void setQty(String qty) {
+        this.qty = qty;
+    }
+
+    public String getModelNo() {
+        return modelNo;
+    }
+
+    public void setModelNo(String modelNo) {
+        this.modelNo = modelNo;
+    }
+
+    public String getEquId() {
+        return equId;
+    }
+
+    public void setEquId(String equId) {
+        this.equId = equId;
+    }
+
+    public String getItemId() {
+        return itemId;
+    }
+
+    public void setItemId(String itemId) {
+        this.itemId = itemId;
+    }
+
+    public String getJobId() {
+        return jobId;
+    }
+
+    public void setJobId(String jobId) {
+        this.jobId = jobId;
+    }
+
+    public String getIrId() {
+        return irId;
+    }
+
+    public void setIrId(String irId) {
+        this.irId = irId;
+    }
 }

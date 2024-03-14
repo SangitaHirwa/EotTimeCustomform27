@@ -29,6 +29,7 @@ import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.GetFileList_req_
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_db.model_pkg.ItembyJobModel;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.model.EquipmentStatusReq;
 import com.eot_app.nav_menu.jobs.job_detail.job_status_pkg.JobStatus_Controller;
+import com.eot_app.nav_menu.jobs.job_detail.requested_item.requested_itemModel.AddUpdateRequestedModel;
 import com.eot_app.nav_menu.jobs.job_detail.requested_item.requested_itemModel.RequestedItemModel;
 import com.eot_app.nav_menu.jobs.joboffline_db.JobOfflineDataModel;
 import com.eot_app.services.ApiClient;
@@ -798,12 +799,8 @@ public class JobDetail_pc implements JobDetail_pi {
                                     Type listType = new TypeToken<List<RequestedItemModel>>() {
                                     }.getType();
                                     List<RequestedItemModel> data = new Gson().fromJson(convert, listType);
-                                    if(data != null && data.size() > 0 ) {
                                         view.setRequestItemData(data);
-                                    }else {
-                                        view.notDtateFoundInRequestedItemList(LanguageController.getInstance().getServerMsgByKey(LanguageController.getInstance().getMobileMsgByKey(AppConstant.no_item_requested_found)));
 
-                                    }
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
@@ -831,7 +828,7 @@ public class JobDetail_pc implements JobDetail_pi {
     }
 
     @Override
-    public void deleteRequestedItem(String irId, String jobId) {
+    public void deleteRequestedItem(String irId, String jobId, AddUpdateRequestedModel requestedModel) {
         if (AppUtility.isInternetConnected()) {
             HashMap<String, String> hashMap = new HashMap<>();
             hashMap.put("irIds",irId);
@@ -852,7 +849,7 @@ public class JobDetail_pc implements JobDetail_pi {
                             AppUtility.progressBarDissMiss();
                             if (jsonObject.get("success").getAsBoolean()) {
                                 try {
-                                    view.deletedRequestData(jsonObject.get("message").getAsString());
+                                    view.deletedRequestData(jsonObject.get("message").getAsString(),requestedModel);
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
