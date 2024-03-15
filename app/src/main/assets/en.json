@@ -1884,7 +1884,8 @@
     "select_leave_type": "Select Leave Type",
     "stripe": "Stripe",
     "timezone_Message": "The timezone set in the admin portal is different from your device clock",
-    "unremarked": "Unremarked"
+    "unremarked": "Unremarked",
+    "wire_transfer": "Wire Transfer"
   }
 }
 
