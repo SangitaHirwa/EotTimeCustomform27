@@ -924,7 +924,7 @@ public class AppConstant {
     public static String wire_transfer="wire_transfer";
     public static String paypal="PayPal";
     public static String stripe="stripe";
-    public static String Debit_card="Debit_card";
+    public static String Debit_card="debit_card";
     public static String cash= "cash";
     public static String cheque="cheque";
     public static String credit_card="credit_card";
@@ -992,6 +992,8 @@ public class AppConstant {
     public static String not_possible_to_display_images_from_other_users = "not_possible_to_display_images_from_other_users";
     public static String item_requested_by_the_field_user = "item_requested_by_the_field_user";
     public static String field_user_made_some_changes_on_the_requested_item = "field_user_made_some_changes_on_the_requested_item";
+    public static String confirm = "confirm";
+    public static String data_Save_On_Draft = "data_Save_On_Draft";
 
 
 
