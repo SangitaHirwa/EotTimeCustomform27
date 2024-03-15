@@ -1373,7 +1373,7 @@ public class DetailFragment extends Fragment
 
     @Override
     public void deletedRequestData(String message,AddUpdateRequestedModel requestedModel) {
-        EotApp.getAppinstance().showToastmsg(message);
+        EotApp.getAppinstance().showToastmsg(LanguageController.getInstance().getServerMsgByKey(message));
         jobDetail_pi.getRequestedItemDataList(mParam2.getJobId());
         if(requestedModel != null) {
             if(requestedModel.getEbId() != null && !requestedModel.getEbId().equals("0") && !requestedModel.getEbId().equals("")) {
@@ -3539,7 +3539,7 @@ public void setCompletionDetail(){
     public void updateReqItemList(String api_name, String message, AddUpdateRequestedModel requestedModel) {
         switch (api_name){
             case Service_apis.addItemRequest:
-                showAppInstallDialog(message);
+                showAppInstallDialog(LanguageController.getInstance().getServerMsgByKey(message));
                 if(requestedModel != null) {
                     if(requestedModel.getEbId() != null && !requestedModel.getEbId().equals("0") && !requestedModel.getEbId().equals("")) {
                          brandName = AppDataBase.getInMemoryDatabase(getContext()).brandDao().getBrandNameById(requestedModel.getEbId());
@@ -3559,7 +3559,7 @@ public void setCompletionDetail(){
                 }
                 break;
             case Service_apis.updateItemRequest:
-                showAppInstallDialog(message);
+                showAppInstallDialog(LanguageController.getInstance().getServerMsgByKey(message));
                 if(requestedModel != null) {
                     if(requestedModel.getEbId() != null && !requestedModel.getEbId().equals("0") && !requestedModel.getEbId().equals("")) {
                         brandName = AppDataBase.getInMemoryDatabase(getContext()).brandDao().getBrandNameById(requestedModel.getEbId());
