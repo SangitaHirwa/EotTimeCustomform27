@@ -27,7 +27,9 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             android:clickable="true"
-            android:elevation="10dp">
+            android:elevation="10dp"
+            android:background="#50A39D9D"
+            android:focusable="true">
 
         <ProgressBar
             android:layout_width="20dp"
