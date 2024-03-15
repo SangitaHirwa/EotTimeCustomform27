@@ -1380,10 +1380,10 @@ public class DetailFragment extends Fragment
                 brandName = AppDataBase.getInMemoryDatabase(getContext()).brandDao().getBrandNameById(requestedModel.getEbId());
             }
             String msg =
-                    "Deleted this Item<br>Item Name: "+requestedModel.getItemName()+"<br>"+
-                            "Qty: "+requestedModel.getQty()+"<br>"+
-                            "Model No: "+requestedModel.getModelNo()+"<br>"+
-                            "Brand: "+brandName;
+                    LanguageController.getInstance().getMobileMsgByKey(AppConstant.field_user_made_some_changes_on_the_requested_item)+"\n"+LanguageController.getInstance().getMobileMsgByKey(AppConstant.item_name)+": "+requestedModel.getItemName()+"\n"+
+                            LanguageController.getInstance().getMobileMsgByKey(AppConstant.qty)+": "+requestedModel.getQty()+"\n"+
+                            LanguageController.getInstance().getMobileMsgByKey(AppConstant.part_no)+": "+requestedModel.getModelNo()+"\n"+
+                            LanguageController.getInstance().getMobileMsgByKey(AppConstant.brand)+": "+brandName;
             Chat_Send_Msg_Model chat_send_Msg_model = new Chat_Send_Msg_Model(
                     msg, "", AppUtility.getDateByMiliseconds(),
                     mParam2.getLabel(),
@@ -2896,6 +2896,7 @@ public void setCompletionDetail(){
                 show_requested_list.setVisibility(View.VISIBLE);
                 recyclerView_requested_item.setVisibility(View.GONE);
                 hide_requested_list.setVisibility(View.GONE);
+                txt_no_item_found.setVisibility(View.GONE);
                 Intent intent2 = new Intent(getActivity(), AddUpdateRquestedItemActivity.class);
                 intent2.putExtra("addReqItem",true);
                 intent2.putExtra("jobId",mParam2.getJobId());
@@ -3544,10 +3545,10 @@ public void setCompletionDetail(){
                          brandName = AppDataBase.getInMemoryDatabase(getContext()).brandDao().getBrandNameById(requestedModel.getEbId());
                     }
                     String msg =
-                            "Request for Item<br>Item Name: "+requestedModel.getItemName()+"<br>"+
-                                    "Qty: "+requestedModel.getQty()+"<br>"+
-                                    "Model No: "+requestedModel.getModelNo()+"<br>"+
-                                    "Brand: "+brandName;
+                            LanguageController.getInstance().getMobileMsgByKey(AppConstant.item_requested_by_the_field_user)+"\n"+LanguageController.getInstance().getMobileMsgByKey(AppConstant.item_name)+": "+requestedModel.getItemName()+"\n"+
+                            LanguageController.getInstance().getMobileMsgByKey(AppConstant.qty)+": "+requestedModel.getQty()+"\n"+
+                            LanguageController.getInstance().getMobileMsgByKey(AppConstant.part_no)+": "+requestedModel.getModelNo()+"\n"+
+                            LanguageController.getInstance().getMobileMsgByKey(AppConstant.brand)+": "+brandName;
                     Chat_Send_Msg_Model chat_send_Msg_model = new Chat_Send_Msg_Model(
                             msg, "", AppUtility.getDateByMiliseconds(),
                             mParam2.getLabel(),
@@ -3564,10 +3565,10 @@ public void setCompletionDetail(){
                         brandName = AppDataBase.getInMemoryDatabase(getContext()).brandDao().getBrandNameById(requestedModel.getEbId());
                     }
                     String msg =
-                            "Updated this Item<br>Item Name: "+requestedModel.getItemName()+"<br>"+
-                                    "Qty: "+requestedModel.getQty()+"<br>"+
-                                    "Model No: "+requestedModel.getModelNo()+"<br>"+
-                                    "Brand: "+brandName;
+                            LanguageController.getInstance().getMobileMsgByKey(AppConstant.field_user_made_some_changes_on_the_requested_item)+"\n"+LanguageController.getInstance().getMobileMsgByKey(AppConstant.item_name)+": "+requestedModel.getItemName()+"\n"+
+                                    LanguageController.getInstance().getMobileMsgByKey(AppConstant.qty)+": "+requestedModel.getQty()+"\n"+
+                                    LanguageController.getInstance().getMobileMsgByKey(AppConstant.part_no)+": "+requestedModel.getModelNo()+"\n"+
+                                    LanguageController.getInstance().getMobileMsgByKey(AppConstant.brand)+": "+brandName;
                     Chat_Send_Msg_Model chat_send_Msg_model = new Chat_Send_Msg_Model(
                             msg, "", AppUtility.getDateByMiliseconds(),
                             mParam2.getLabel(),

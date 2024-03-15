@@ -53,7 +53,7 @@ public class RequestedItemListAdapter extends RecyclerView.Adapter<RequestedItem
         }
         holder.qty_item.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.qty)+":- "+requestedItemModel.getQty());
         if(requestedItemModel.getModelNo().equals("")){
-            holder.model_no_text.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.part_no)+" "+" ");
+            holder.model_no_text.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.part_no)+" ");
         }else {
             holder.model_no_text.setVisibility(View.VISIBLE);
             holder.model_no_text.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.part_no) + ":- " + requestedItemModel.getModelNo());
@@ -61,10 +61,14 @@ public class RequestedItemListAdapter extends RecyclerView.Adapter<RequestedItem
         if(requestedItemModel.getEbId() != null && !requestedItemModel.getEbId().equals("")) {
             String brandName = AppDataBase.getInMemoryDatabase(context).brandDao().getBrandNameById(requestedItemModel.getEbId());
             holder.item_brand.setVisibility(View.VISIBLE);
-            if(brandName != null && !brandName.isEmpty())
-            holder.item_brand.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.brand)+":- "+brandName);
-        }else {
-            holder.item_brand.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.brand)+" "+" ");
+            if(brandName != null && !brandName.isEmpty()) {
+                holder.item_brand.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.brand) + ":- " + brandName);
+            }else {
+                holder.item_brand.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.brand)+" ");
+            }
+        }
+        else {
+            holder.item_brand.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.brand)+" ");
         }
 
         holder.item_view.setOnClickListener(v -> {

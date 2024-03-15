@@ -1857,7 +1857,10 @@
     "request_item_empty": "Please enter Item name",
     "no_item_requested_found": "No Item Requested Found",
     "others": "Others",
-    "offline_attachment_notes": "May be there are some more images, but it shows only in online mode."
+    "offline_attachment_notes": "May be there are some more images, but it shows only in online mode.",
+    "not_possible_to_display_images_from_other_users": "In offline mode, it's not possible to display images from other users.",
+    "item_requested_by_the_field_user": "Item requested by the field user",
+    "field_user_made_some_changes_on_the_requested_item": "Field user made some changes on the requested item"
   }
 }
 

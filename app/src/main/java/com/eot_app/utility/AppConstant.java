@@ -236,6 +236,7 @@ public class AppConstant {
     public static final String item = "item";
     public static final String fieldworker = "fieldworker";
     public static final String items_name = "items_name";
+    public static final String item_name = "item_name";
     public static final String part_no = "part_no";
     public static final String description = "description";
     public static final String rate = "rate";
@@ -988,6 +989,9 @@ public class AppConstant {
     public static String no_item_requested_found = "no_item_requested_found";
     public static String others = "others";
     public static String offline_attachment_notes = "offline_attachment_notes";
+    public static String not_possible_to_display_images_from_other_users = "not_possible_to_display_images_from_other_users";
+    public static String item_requested_by_the_field_user = "item_requested_by_the_field_user";
+    public static String field_user_made_some_changes_on_the_requested_item = "field_user_made_some_changes_on_the_requested_item";
 
 
 

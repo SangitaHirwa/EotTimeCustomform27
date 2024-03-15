@@ -2,6 +2,7 @@ package com.eot_app.nav_menu.jobs.job_detail.requested_item;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -98,12 +99,11 @@ public class AddUpdateRquestedItemActivity extends AppCompatActivity implements 
     }
 
     private void initiatView() {
-
-
         if(updateItem) {
             if (updateRequestedItemModel.getItemId() != null && updateRequestedItemModel.getItemId().equals("0")) {
                 autocomplete_item.setFocusable(true);
                 autocomplete_item.addTextChangedListener(this);
+
             }else {
                 autocomplete_item.setFocusable(false);
                 autocomplete_item.removeTextChangedListener(this);
@@ -111,7 +111,6 @@ public class AddUpdateRquestedItemActivity extends AppCompatActivity implements 
         }else {
             autocomplete_item.setFocusable(true);
             autocomplete_item.addTextChangedListener(this);
-
         }
     }
 
@@ -130,6 +129,14 @@ public class AddUpdateRquestedItemActivity extends AppCompatActivity implements 
         }else {
             itemlayout.setClickable(true);
         }
+        if(updateRequestedItemModel.getModelNo() != null && !updateRequestedItemModel.getModelNo().isEmpty()){
+            modelNo_layout.setHintEnabled(true);
+        }
+        if(brandName!=null && !brandName.isEmpty()) {
+            hint_brand_txt.setVisibility(View.VISIBLE);
+        }
+        item_qty_layout.setHintEnabled(true);
+        itemlayout.setHintEnabled(true);
     }
     private void initializelables() {
         itemlayout = findViewById(R.id.itemlayout);
@@ -153,8 +160,8 @@ public class AddUpdateRquestedItemActivity extends AppCompatActivity implements 
         AppUtility.spinnerPopUpWindow(brand_spinner);
         brand_spinner.setOnItemSelectedListener(this);
         add_edit_item_Btn.setOnClickListener(this);
-
-
+        modelNo_layout.setOnClickListener(this);
+        item_qty_layout.setOnClickListener(this);
     }
 
     @Override
@@ -175,9 +182,16 @@ public class AddUpdateRquestedItemActivity extends AppCompatActivity implements 
         super.onBackPressed();
     }
 
+    @SuppressLint("NonConstantResourceId")
     @Override
     public void onClick(View v) {
         switch (v.getId()){
+            case R.id.item_qty_layout:
+                item_qty_layout.setHintEnabled(true);
+                break;
+            case R.id.modelNo_layout:
+                modelNo_layout.setHintEnabled(true);
+                break;
             case R.id.linearLayout_brand:
                 brand_spinner.performClick();
                 break;
@@ -336,12 +350,14 @@ public class AddUpdateRquestedItemActivity extends AppCompatActivity implements 
         iQty = "1";
         if(itemselected.getPno() != null && !itemselected.getPno().isEmpty()){
             edt_modelNo.setText(itemselected.getPno());
+            modelNo_layout.setHintEnabled(true);
         }else {
             edt_modelNo.setText("");
         }
         if(itemselected.getBrandNm() != null && !itemselected.getBrandNm().isEmpty()){
             brand_txt.setText(itemselected.getBrandNm());
             brand_id = itemselected.getEbId();
+            hint_brand_txt.setVisibility(View.VISIBLE);
         }else{
             brand_txt.setText("");
             brand_id = "";
@@ -355,6 +371,8 @@ public class AddUpdateRquestedItemActivity extends AppCompatActivity implements 
         edt_item_qty.setText(iQty);
         edt_modelNo.setEnabled(false);
         linearLayout_brand.setClickable(false);
+        item_qty_layout.setHintEnabled(true);
+
     }
     private void showDisError(String msg) {
         AppUtility.alertDialog(this, "", msg, LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok),
