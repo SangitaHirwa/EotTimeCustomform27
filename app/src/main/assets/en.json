@@ -891,7 +891,13 @@
     "leave_approved": "<b> Hi %s %s</b>, <br><br>Your leave request for <b>%s</b> to <b>%s</b> is approved.<br><br>Support team, <br>EyeOnTask",
     "leave_rejected": "<b>Hi %s %s</b>, <br><br>Your leave request for <b>%s</b> to <b>%s</b> is rejected.<br><br>Support team, <br>EyeOnTask",
     "lead_cmt_mail_subject": "Comment on Lead %s by %s.",
-    "mail_limit_exceed": "Company mail limit exceed today."
+    "mail_limit_exceed": "Company mail limit exceed today.",
+    "add_item_req":"Item requested successfully.",
+    "not_add_item_req":"Item requested not successfully.",
+    "update_item_req":"Requested item updated successfully.",
+    "not_update_item_req":"Requested item not updated successfully.",
+    "delete_item_req":"Requested item deleted.",
+    "not_delete_item_req":"Requested item not deleted."
   },
   "mobileMsgsModel": {
     "accept": "Accept",
@@ -1885,7 +1891,8 @@
     "stripe": "Stripe",
     "timezone_Message": "The timezone set in the admin portal is different from your device clock",
     "unremarked": "Unremarked",
-    "wire_transfer": "Wire Transfer"
+    "wire_transfer": "Wire Transfer",
+    "remove_requested_item": "Do you want to delete Item Request?"
   }
 }
 
