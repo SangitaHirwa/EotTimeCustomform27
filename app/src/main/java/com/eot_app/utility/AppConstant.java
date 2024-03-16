@@ -994,7 +994,16 @@ public class AppConstant {
     public static String item_requested_by_the_field_user = "item_requested_by_the_field_user";
     public static String field_user_made_some_changes_on_the_requested_item = "field_user_made_some_changes_on_the_requested_item";
     public static String confirm = "confirm";
+    public static String action = "action";
     public static String data_Save_On_Draft = "data_Save_On_Draft";
+    public static String parts_are_provided_by_the_client_not_taken_from_the_inventory = "parts_are_provided_by_the_client_not_taken_from_the_inventory";
+    public static String job_items_link_current_equipment = "job_items_link_current_equipment";
+    public static String select_job_items_to_link_equipment = "select_job_items_to_link_equipment";
+    public static String remark_form = "remark_form";
+    public static String link = "link";
+    public static String available = "available";
+    public static String discarded = "discarded";
+    public static String discard_equipments_not_replaced = "discard_equipments_not_replaced";
 
 
 

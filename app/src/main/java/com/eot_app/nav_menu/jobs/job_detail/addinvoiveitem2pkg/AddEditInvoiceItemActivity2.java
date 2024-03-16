@@ -1895,6 +1895,9 @@ public class AddEditInvoiceItemActivity2 extends
                 isPartParent = 1;
                 partTempId = AppUtility.getRandomUUID();
             }
+            if(edt_item_qty.getText().toString().isEmpty()){
+                edt_item_qty.setText("0");
+            }
             InvoiceItemDataModel addItemDataModel =
                     new InvoiceItemDataModel(autocomplete_item.getText().toString().trim(),
                             inm,
@@ -2112,7 +2115,9 @@ public class AddEditInvoiceItemActivity2 extends
             HyperLog.i("TAG", "updateItemsOnJob(M) start");
 
 
-
+            if(edt_item_qty.getText().toString().isEmpty()){
+                edt_item_qty.setText("0");
+            }
             int isPartParent = 0, isPartChild = 0;
 
             if (updateItemDataModel.getParentId() != null

@@ -206,6 +206,9 @@ public class AddUpdateRquestedItemActivity extends AppCompatActivity implements 
     private void updateReqItem() {
         inm = autocomplete_item.getText().toString();
         iQty = edt_item_qty.getText().toString();
+        if(iQty.isEmpty()){
+            iQty ="0";
+        }
         modelNo = edt_modelNo.getText().toString();
         if(!inm.equals("")) {
             AddUpdateRequestedModel updateRequestModel = new AddUpdateRequestedModel(inm,
@@ -227,6 +230,9 @@ public class AddUpdateRquestedItemActivity extends AppCompatActivity implements 
         inm = autocomplete_item.getText().toString();
         iQty = edt_item_qty.getText().toString();
         modelNo = edt_modelNo.getText().toString();
+        if(iQty.isEmpty()){
+            edt_item_qty.setText("0");
+        }
         if(!inm.equals("")) {
             AddUpdateRequestedModel addeRequestModel = new AddUpdateRequestedModel(
                     autocomplete_item.getText().toString(), brand_id, edt_item_qty.getText().toString(), edt_modelNo.getText().toString(),
