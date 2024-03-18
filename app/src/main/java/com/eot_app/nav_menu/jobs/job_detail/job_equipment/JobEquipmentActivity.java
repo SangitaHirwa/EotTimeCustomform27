@@ -300,7 +300,7 @@ public class JobEquipmentActivity extends AppCompatActivity
         //looping through existing elements
         for (EquArrayModel s : myList) {
             //if the existing elements contains the search input
-            if (s.getEqunm() != null && s.getEqunm().contains(text)&&s.getEqunm().equalsIgnoreCase(text.toLowerCase())||
+            if (s.getEqunm() != null && s.getEqunm().contains(text)&&s.getEqunm().equalsIgnoreCase(text.toLowerCase())|| s.getSnm() != null &&
                      s.getSnm().toLowerCase().contains(text.toLowerCase())
                     || (s.getSno() != null && s.getSno().equalsIgnoreCase(text.toLowerCase())) ||
                     (s.getMno() != null && s.getMno().equalsIgnoreCase(text.toLowerCase()))
