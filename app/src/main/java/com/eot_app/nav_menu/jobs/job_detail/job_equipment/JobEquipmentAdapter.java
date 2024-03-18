@@ -173,10 +173,10 @@ public class JobEquipmentAdapter extends RecyclerView.Adapter<JobEquipmentAdapte
         }
         if (isComeFromRemark) {
             holder.view_details.setVisibility(View.GONE);
-            holder.add_remark.setVisibility(View.GONE);
+            holder.action_btn.setVisibility(View.GONE);
         } else {
             holder.btnComplationView.setOnClickListener(v -> setRemarkActivity(holder.getBindingAdapterPosition()));
-            holder.add_remark.setOnClickListener(v -> setRemarkActivity(holder.getBindingAdapterPosition()));
+            holder.action_btn.setOnClickListener(v -> setRemarkActivity(holder.getBindingAdapterPosition()));
             holder.view_details.setOnClickListener(v -> selectionForDetails.onEquipmentSelectedForDetails(list.get(position)));
         }
 
@@ -189,13 +189,13 @@ public class JobEquipmentAdapter extends RecyclerView.Adapter<JobEquipmentAdapte
         if (!TextUtils.isEmpty(equArrayModel.getStatus()) || equArrayModel.getAttachments() != null && equArrayModel.getAttachments().size() > 0) {
             holder.edit_remark_layout.setVisibility(View.VISIBLE);
             setDataInRemarkView(holder, equArrayModel, position);
-            holder.add_remark.setVisibility(View.GONE);
+            holder.action_btn.setVisibility(View.GONE);
         } else {
             HyperLog.i("", "JobEquipmentAdapter: " + "onBindViewHolder(M)" + "status null");
             HyperLog.i("", "JobEquipmentAdapter: " + equArrayModel.getStatus());
             holder.edit_remark_layout.setVisibility(View.GONE);
-            holder.add_remark.setVisibility(View.VISIBLE);
-            holder.add_remark.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_remark));
+            holder.action_btn.setVisibility(View.VISIBLE);
+            holder.action_btn.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.action));
 
 //            if (equArrayModel.getAttachments() != null && equArrayModel.getAttachments().size() > 0) {
 //                updateAttchmentList(holder, equArrayModel.getAttachments(), position);
@@ -415,7 +415,7 @@ public class JobEquipmentAdapter extends RecyclerView.Adapter<JobEquipmentAdapte
         //  AppCompatImageView img_remark;
         AppCompatTextView tv_model, tv_serial, tv_model_label, tv_serial_label;//, tv_des;// tv_status, , tv_details ,, tv_remark
         // LinearLayout  ll_remark;//ll_details,
-        TextView view_details, add_remark, tv_status,tv_date;
+        TextView view_details, action_btn, tv_status,tv_date;
         TextView remark_txt, part_txt, remark_condition_txt, remark_status, remark_notes, btnComplationView;
         View edit_remark_layout;
         RecyclerView recyclerView;
@@ -445,7 +445,7 @@ public class JobEquipmentAdapter extends RecyclerView.Adapter<JobEquipmentAdapte
             tv_serial_label = itemView.findViewById(R.id.tv_serial_label);
             view_details = itemView.findViewById(R.id.view_details);
             view_details.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.view_details));
-            add_remark = itemView.findViewById(R.id.add_remark);
+            action_btn = itemView.findViewById(R.id.action_btn);
             remark_txt = itemView.findViewById(R.id.remark_txt);
             remark_condition_txt = itemView.findViewById(R.id.remark_condition_txt);
             remark_status = itemView.findViewById(R.id.remark_status);

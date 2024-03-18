@@ -3,14 +3,21 @@ package com.eot_app.nav_menu.jobs.job_detail.job_equipment.job_equ_remrk.job_equ
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
+
+import androidx.annotation.NonNull;
+
 import com.eot_app.activitylog.ActivityLogController;
 import com.eot_app.nav_menu.audit.audit_list.equipment.remark.remark_mvp.RemarkRequest;
+import com.eot_app.nav_menu.jobs.job_controller.ChatController;
 import com.eot_app.nav_menu.jobs.job_db.EquArrayModel;
 import com.eot_app.nav_menu.jobs.job_db.Job;
 import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.model.InvoiceItemDataModel;
+import com.eot_app.nav_menu.jobs.job_detail.chat.fire_Base_Model.Chat_Send_Msg_Model;
 import com.eot_app.nav_menu.jobs.job_detail.customform.cstm_form_model.CustomFormList_Res;
 import com.eot_app.nav_menu.jobs.job_detail.customform.cstm_form_model.FormList_Model_Req;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_db.model_pkg.ItembyJobModel;
+import com.eot_app.nav_menu.jobs.job_detail.requested_item.requested_itemModel.AddUpdateRequestedModel;
+import com.eot_app.nav_menu.jobs.job_detail.requested_item.requested_itemModel.RequestedItemModel;
 import com.eot_app.services.ApiClient;
 import com.eot_app.services.Service_apis;
 import com.eot_app.utility.AppConstant;
@@ -19,6 +26,10 @@ import com.eot_app.utility.App_preference;
 import com.eot_app.utility.EotApp;
 import com.eot_app.utility.db.AppDataBase;
 import com.eot_app.utility.language_support.LanguageController;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -436,6 +447,141 @@ public class JobEquRemark_PC implements JobEquRemark_PI {
         }
     }
 
+    @Override
+    public void getRequestedItemDataList(String jobId) {
+        if (AppUtility.isInternetConnected()) {
+            HashMap<String, String> hashMap = new HashMap<>();
+            hashMap.put("jobId", jobId);
+            hashMap.put("limit",updatelimit+"");
+            hashMap.put("index",updateindexItem+"");
+            ApiClient.getservices().eotServiceCall(Service_apis.getListItemRequest, AppUtility.getApiHeaders(),
+                            AppUtility.getJsonObject(new Gson().toJson(hashMap)))
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<JsonObject>() {
+                        @Override
+                        public void onSubscribe(@NotNull Disposable d) {
+
+                        }
+
+                        @Override
+                        public void onNext(@NotNull JsonObject jsonObject) {
+                            if (jsonObject.get("success").getAsBoolean()) {
+                                try {
+
+                                    String convert = jsonObject.get("data").getAsJsonArray().toString();
+                                    Type listType = new TypeToken<List<RequestedItemModel>>() {
+                                    }.getType();
+                                    List<RequestedItemModel> data = new Gson().fromJson(convert, listType);
+                                    jobEquimView.setRequestItemData(data);
+
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            } else {
+                                AppUtility.progressBarDissMiss();
+                                jobEquimView.notDtateFoundInRequestedItemList(LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
+                            }
+                        }
+
+
+                        @Override
+                        public void onError(@NotNull Throwable e) {
+                            AppUtility.progressBarDissMiss();
+                            Log.e("TAG", e.getMessage());
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            AppUtility.progressBarDissMiss();
+                        }
+                    });
+        }
+        else
+            networkError();
+    }
+
+    @Override
+    public void deleteRequestedItem(String irId, String jobId, AddUpdateRequestedModel requestedModel) {
+        if (AppUtility.isInternetConnected()) {
+            HashMap<String, String> hashMap = new HashMap<>();
+            hashMap.put("irIds",irId);
+            hashMap.put("jobId", jobId);
+
+            ApiClient.getservices().eotServiceCall(Service_apis.deleteItemRequest, AppUtility.getApiHeaders(),
+                            AppUtility.getJsonObject(new Gson().toJson(hashMap)))
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<JsonObject>() {
+                        @Override
+                        public void onSubscribe(@NotNull Disposable d) {
+
+                        }
+
+                        @Override
+                        public void onNext(@NotNull JsonObject jsonObject) {
+                            AppUtility.progressBarDissMiss();
+                            if (jsonObject.get("success").getAsBoolean()) {
+                                try {
+                                    jobEquimView.deletedRequestData(jsonObject.get("message").getAsString(),requestedModel);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            } else {
+                                AppUtility.progressBarDissMiss();
+                                jobEquimView.notDtateFoundInRequestedItemList(LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
+                            }
+                        }
+
+
+                        @Override
+                        public void onError(@NotNull Throwable e) {
+                            AppUtility.progressBarDissMiss();
+                            Log.e("TAG", e.getMessage());
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            AppUtility.progressBarDissMiss();
+                        }
+                    });
+        }
+        else
+            networkError();
+    }
+    @Override
+    public void sendMsg(Chat_Send_Msg_Model chat_send_Msg_model) {
+        if (AppUtility.isInternetConnected()) {
+            FirebaseFirestore.getInstance().collection(ChatController.getInstance().getChatPath(chat_send_Msg_model.getJobCode(), chat_send_Msg_model.getJobId()))
+                    .add(chat_send_Msg_model)
+                    .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                        @Override
+                        public void onSuccess(DocumentReference documentReference) {
+                            Log.e("Message Send", documentReference.getId());
+                            /*
+                             *update read count for all fieldworkers except me***/
+                            ChatController.getInstance().increseUnreadCountforAll(chat_send_Msg_model.getJobCode(), chat_send_Msg_model.getJobId());
+                            /*
+                             * function call for offline user push notification.**/
+                            ChatController.getInstance().getAllUserOffLineDataList(chat_send_Msg_model);
+                            /*
+                             *function call for desktop notification**/
+                            ChatController.getInstance().sendNotificationToAdmins(chat_send_Msg_model);
+                            /*
+                             *function call for increase job count**/
+                            ChatController.getInstance().notifyWebForIncreaseCount("jobCount", "teamChat");
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.e("Msg Not Send", e.getMessage());
+                        }
+                    });
+        } else {
+            networkError();
+        }
+    }
     public void networkError() {
         AppUtility.alertDialog(((Context) jobEquimView), LanguageController.getInstance().
                         getMobileMsgByKey(AppConstant.dialog_alert), LanguageController.getInstance().getMobileMsgByKey
