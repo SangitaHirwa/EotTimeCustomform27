@@ -76,7 +76,7 @@ public class RequestedItemListAdapter extends RecyclerView.Adapter<RequestedItem
         });
 
         holder.remove_item.setOnClickListener(view -> {
-            AppUtility.alertDialog2(context, "", LanguageController.getInstance().getMobileMsgByKey(AppConstant.invoice_remove), LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), LanguageController.getInstance().getMobileMsgByKey(AppConstant.cancel), new Callback_AlertDialog() {
+            AppUtility.alertDialog2(context, "", LanguageController.getInstance().getMobileMsgByKey(AppConstant.remove_requested_item), LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), LanguageController.getInstance().getMobileMsgByKey(AppConstant.cancel), new Callback_AlertDialog() {
                 @Override
                 public void onPossitiveCall() {
                     try {

@@ -183,7 +183,7 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:background="@android:color/transparent"
-                            android:inputType="text"
+                            android:inputType="number"
                             android:singleLine="true"
                             tools:ignore="Autofill,LabelFor" />
                         <!--android:hint="@string/hsn_code"-->

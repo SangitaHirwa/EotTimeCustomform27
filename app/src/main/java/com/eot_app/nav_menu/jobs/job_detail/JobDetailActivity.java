@@ -587,19 +587,6 @@ public class JobDetailActivity extends AppCompatActivity implements
                                 exception.printStackTrace();
                             }
                             ChatController.getInstance().setJobdetailListener(JobDetailActivity.this);
-                            try {
-                                if (dataJob != null && dataJob.getJobId() != null) {
-                                    /* *
-                                     * *
-                                     *  create batch count for JOB **/
-                                    showBadge(ChatController.getInstance().getbatchCount(dataJob.getJobId()));
-                                    /* *
-                                     * * client chat batch count ***/
-                                    showBadgeForClientChat(ChatController.getInstance().getClientChatBatchCount(dataJob.getJobId()));
-                                }
-                            } catch (Exception exception) {
-                                exception.printStackTrace();
-                            }
                             LocalBroadcastManager.getInstance(JobDetailActivity.this).registerReceiver(loadfromforserver,
                                     new IntentFilter("loadfromserver"));
                             attachKeyboardListeners();
@@ -639,6 +626,19 @@ public class JobDetailActivity extends AppCompatActivity implements
                                 clientChatTextView = badge.findViewById(R.id.badge_text_view);
                                 itemView.addView(badge);
                             }
+                        }
+                        try {
+                            if (dataJob != null && dataJob.getJobId() != null) {
+                                /* *
+                                 * *
+                                 *  create batch count for JOB **/
+                                showBadge(ChatController.getInstance().getbatchCount(dataJob.getJobId()));
+                                /* *
+                                 * * client chat batch count ***/
+                                showBadgeForClientChat(ChatController.getInstance().getClientChatBatchCount(dataJob.getJobId()));
+                            }
+                        } catch (Exception exception) {
+                            exception.printStackTrace();
                         }
                         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
                         EotApp.getAppinstance().setAddJobObserver(JobDetailActivity.this);
