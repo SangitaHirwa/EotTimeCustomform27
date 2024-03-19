@@ -905,6 +905,7 @@ public class AppUtility {
         AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).clientRefrenceDao().delete();
         AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).shiftTimeDao().delete();
         AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).attachments_dao().deleteTable();// Delete attachment table from database
+        AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).brandDao().delete();// Delete brand data from database
         App_preference.getSharedprefInstance().clearSharedPreference();
         UserToUserChatController.getInstance().clearAllList();
         App_preference.getSharedprefInstance().setLaunchFirst();// Set launch first time false because we are want to show prominent screen on one time. When user Install app.

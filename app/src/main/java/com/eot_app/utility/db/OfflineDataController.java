@@ -338,7 +338,7 @@ public class OfflineDataController {
 
     private void updateRequestedItem(Offlinetable data, JsonObject obj) {
         AddUpdateRequestedModel requestedModel = gson.fromJson(data.getParams(), AddUpdateRequestedModel.class);
-        EotApp.getAppinstance().getNotifyForRequestedItemList(data.getService_name(), String.valueOf(obj.get("message")),requestedModel);
+        EotApp.getAppinstance().getNotifyForRequestedItemList(data.getService_name(), obj.get("message").getAsString(),requestedModel);
     }
 
     private void updateDocument(Offlinetable data, JsonObject obj){
@@ -939,6 +939,13 @@ public class OfflineDataController {
         {
             callPendingMultiDocumentRequest(table);
             return;
+        } else if (table.getService_name().equals(Service_apis.addItemRequest)) {
+            callPendingAddReqItemInJobRequest(table);
+            return;
+        }
+        else if (table.getService_name().equals(Service_apis.updateItemRequest)) {
+            callPendingUpdateReqItemInJobRequest(table);
+            return;
         }
         // Done by shivani vani
       /* In case of offline mode if we create a job and set its completion notes in
@@ -1056,6 +1063,122 @@ public class OfflineDataController {
                         // isSync = false;
                     }
                 });
+    }
+
+    private synchronized void callPendingUpdateReqItemInJobRequest(Offlinetable table) {
+        AddUpdateRequestedModel model = new Gson().fromJson(table.getParams(), AddUpdateRequestedModel.class);
+        AddUpdateRequestedModel request = new AddUpdateRequestedModel(model.getItemName(), model.getEbId(), model.getQty(),
+                model.getModelNo(), model.getEquId(), model.getItemId(), model.getJobId(), model.getIrId());
+        String data = new Gson().toJson(request);
+        ApiClient.getservices().eotServiceCall(Service_apis.updateItemRequest,AppUtility.getApiHeaders(),AppUtility.getJsonObject(data)
+                )
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<JsonObject>() {
+                    @Override
+                    public void onSubscribe(@NonNull Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(@NonNull JsonObject jsonObject) {
+
+                        if (jsonObject.get("success").getAsBoolean()) {
+                            callBack.getResponse(table, jsonObject);
+                        } else if (jsonObject.get("statusCode") != null && jsonObject.get("statusCode").getAsString().equals(AppConstant.SESSION_EXPIRE)) {
+//                           onSessionExpire(jsonObject.get("message").getAsString());
+//                            when session expires
+                            EotApp.getAppinstance().sessionExpired();
+                            isSync = false;
+                        } else if (jsonObject.get("statusCode") != null && jsonObject.get("statusCode").getAsString().equals(AppConstant.ALREADY_SYNC)) {
+//                            when record already exist.
+//                            Log.e(TAG, jsonObject.get("message").getAsString());
+                            AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).offlinemodel().deleteFromId(table.getId());
+                        } else {
+                            sendForErrorLog(table, LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
+                            if (callBackFirstSync != null) { // for first time call from sync
+                                callBackFirstSync.getCallBackOfComplete(0, "Error Occur");
+                                callBackFirstSync = null;
+                            }
+                            isSync = false;
+                        }
+                    }
+
+                    @Override
+                    public void onError(@NonNull Throwable e) {
+                        sendForErrorLog(table, e.getMessage());
+                        isSync = false;
+                        if (callBackFirstSync != null) { // for first time call from sync
+                            callBackFirstSync.getCallBackOfComplete(0, "Error Occur");
+                            callBackFirstSync = null;
+                        }
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+
+
+    }
+
+    private synchronized void callPendingAddReqItemInJobRequest(Offlinetable table) {
+        AddUpdateRequestedModel model = new Gson().fromJson(table.getParams(), AddUpdateRequestedModel.class);
+        AddUpdateRequestedModel request = new AddUpdateRequestedModel(model.getItemName(),model.getEbId(), model.getQty(), model.getModelNo(), model.getEquId(),
+                model.getItemId(), model.getJobId());
+        String data = new Gson().toJson(request);
+            ApiClient.getservices().eotServiceCall(Service_apis.addItemRequest,AppUtility.getApiHeaders(),AppUtility.getJsonObject(data)
+                           )
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<JsonObject>() {
+                        @Override
+                        public void onSubscribe(@NonNull Disposable d) {
+
+                        }
+
+                        @Override
+                        public void onNext(@NonNull JsonObject jsonObject) {
+
+                            if (jsonObject.get("success").getAsBoolean()) {
+                                callBack.getResponse(table, jsonObject);
+                            } else if (jsonObject.get("statusCode") != null && jsonObject.get("statusCode").getAsString().equals(AppConstant.SESSION_EXPIRE)) {
+//                           onSessionExpire(jsonObject.get("message").getAsString());
+//                            when session expires
+                                EotApp.getAppinstance().sessionExpired();
+                                isSync = false;
+                            } else if (jsonObject.get("statusCode") != null && jsonObject.get("statusCode").getAsString().equals(AppConstant.ALREADY_SYNC)) {
+//                            when record already exist.
+//                            Log.e(TAG, jsonObject.get("message").getAsString());
+                                AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).offlinemodel().deleteFromId(table.getId());
+                            } else {
+                                sendForErrorLog(table, LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
+                                if (callBackFirstSync != null) { // for first time call from sync
+                                    callBackFirstSync.getCallBackOfComplete(0, "Error Occur");
+                                    callBackFirstSync = null;
+                                }
+                                isSync = false;
+                            }
+                        }
+
+                        @Override
+                        public void onError(@NonNull Throwable e) {
+                            sendForErrorLog(table, e.getMessage());
+                            isSync = false;
+                            if (callBackFirstSync != null) { // for first time call from sync
+                                callBackFirstSync.getCallBackOfComplete(0, "Error Occur");
+                                callBackFirstSync = null;
+                            }
+                        }
+
+                        @Override
+                        public void onComplete() {
+
+                        }
+                    });
+
+
     }
 
     private synchronized void callPendingMultiDocumentRequest(final Offlinetable table){

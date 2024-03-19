@@ -30,6 +30,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -50,12 +51,14 @@ import com.eot_app.nav_menu.jobs.job_db.Job;
 import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.AddEditInvoiceItemActivity2;
 import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.ReplaceItemEquipmentActivity;
 import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.model.InvoiceItemDataModel;
+import com.eot_app.nav_menu.jobs.job_detail.chat.fire_Base_Model.Chat_Send_Msg_Model;
 import com.eot_app.nav_menu.jobs.job_detail.chat.img_crop_pkg.ImageCropFragment;
 import com.eot_app.nav_menu.jobs.job_detail.customform.MyAttachment;
 import com.eot_app.nav_menu.jobs.job_detail.customform.cstm_form_model.CustomFormList_Res;
 import com.eot_app.nav_menu.jobs.job_detail.detail.NotifyForEquipmentCount;
 import com.eot_app.nav_menu.jobs.job_detail.detail.NotifyForEquipmentCountRemark;
 import com.eot_app.nav_menu.jobs.job_detail.detail.NotifyForItemCount;
+import com.eot_app.nav_menu.jobs.job_detail.detail.NotifyForRequestedItemList;
 import com.eot_app.nav_menu.jobs.job_detail.documents.DocumentListAdapter;
 import com.eot_app.nav_menu.jobs.job_detail.documents.PathUtils;
 import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.Attachments;
@@ -77,6 +80,11 @@ import com.eot_app.nav_menu.jobs.job_detail.job_audit_remark_attchment_pkg.mvp.J
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.job_equ_remrk.job_equ_mvp.JobEquRemark_PC;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.job_equ_remrk.job_equ_mvp.JobEquRemark_PI;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.job_equ_remrk.job_equ_mvp.JobEquRemark_View;
+import com.eot_app.nav_menu.jobs.job_detail.requested_item.AddUpdateRquestedItemActivity;
+import com.eot_app.nav_menu.jobs.job_detail.requested_item.RequestedItemListAdapter;
+import com.eot_app.nav_menu.jobs.job_detail.requested_item.requested_itemModel.AddUpdateRequestedModel;
+import com.eot_app.nav_menu.jobs.job_detail.requested_item.requested_itemModel.RequestedItemModel;
+import com.eot_app.services.Service_apis;
 import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.AppUtility;
 import com.eot_app.utility.App_preference;
@@ -104,7 +112,7 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
         EquipmentPartRemarkAdapter.OnEquipmentSelection, JobAudit_View,
         NotifyForItemCount, NotifyForEquipmentCountRemark, NotifyForEquipmentCount,
         View.OnClickListener, JobEquRemark_View, ImageCropFragment.MyDialogInterface, DocumentListAdapter.FileDesc_Item_Selected
-        , Que_View, MyFormInterFace, MyAttachment, RadioGroup.OnCheckedChangeListener {
+        , Que_View, MyFormInterFace, MyAttachment, RadioGroup.OnCheckedChangeListener, RequestedItemListAdapter.DeleteItem, RequestedItemListAdapter.SelectedItemListener, NotifyForRequestedItemList {
     public static final int SINGLEATTCHMENT = 365;
     public static final int ADDPART = 333;
     public final static int ADD_ITEM_DATA = 1;
@@ -129,11 +137,11 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
     boolean isAutoUpdatedRemark = false;
     CardView attachment_card, part_cardview, item_cardview;
     RecyclerView recyclerView_attachment,
-            recyclerView_customForm, recyclerView_part, recyclerView_item;
+            recyclerView_customForm, recyclerView_part, recyclerView_item,recyclerView_requested_item;
     LinearLayout formLayout;
     EquipmentPartRemarkAdapter equipmentPartAdapter;
     TextView image_txt, chip_txt, tv_text_for_replace, tv_replace;
-    ImageView deleteChip;
+    ImageView deleteChip,show_requested_list,hide_requested_list;
     Job mParam2;
     ArrayList<Attachments> allAttachmentsList = new ArrayList<>();
     InvoiceItemList2Adpter invoice_list_adpter;
@@ -148,7 +156,7 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
     private EditText edit_remarks;
     private Spinner status_spinner, equ_status_spinner;
     private TextView status_label, status_label1;
-    private TextView tv_equipment_name, tv_location;
+    private TextView tv_equipment_name, tv_location,requested_item_txt,txt_no_item_found,btn_add_requested_item;
     private JobEquRemark_PI jobEquimPi;
     int selectedCondition = -1;
     private boolean REMARK_SUBMIT = false;
@@ -166,8 +174,11 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
     private RelativeLayout image_with_tag;
     private View chip_layout;
     private DocumentListAdapter adapter;
-
-
+    View ll_requested_item;
+    ConstraintLayout progressBar_itemRequest;
+    List<RequestedItemModel> requestedItemList = new ArrayList<>();
+    RequestedItemListAdapter requestedItemListAdapter;
+    String brandName = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -397,12 +408,71 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
 
     }
 
+    @Override
+    public void setRequestItemData(List<RequestedItemModel> requestItemData) {
+        progressBar_itemRequest.setVisibility(View.GONE);
+        if(requestItemData != null && requestItemData.size() > 0){
+            recyclerView_requested_item.setVisibility(View.VISIBLE);
+            txt_no_item_found.setVisibility(View.GONE);
+            requestedItemListAdapter.setReqItemList(requestItemData);
+        }else {
+            requestedItemListAdapter.setReqItemList(new ArrayList<>());
+            txt_no_item_found.setVisibility(View.VISIBLE);
+            recyclerView_requested_item.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void notDtateFoundInRequestedItemList(String msg) {
+        EotApp.getAppinstance().showToastmsg(msg);
+        progressBar_itemRequest.setVisibility(View.GONE);
+        show_requested_list.setVisibility(View.VISIBLE);
+        recyclerView_requested_item.setVisibility(View.GONE);
+        hide_requested_list.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void deletedRequestData(String message, AddUpdateRequestedModel requestedModel) {
+        EotApp.getAppinstance().showToastmsg(LanguageController.getInstance().getServerMsgByKey(message));
+        jobEquimPi.getRequestedItemDataList(mParam2.getJobId());
+        if(requestedModel != null) {
+            if(requestedModel.getEbId() != null && !requestedModel.getEbId().equals("0") && !requestedModel.getEbId().equals("")) {
+                brandName = AppDataBase.getInMemoryDatabase(this).brandDao().getBrandNameById(requestedModel.getEbId());
+            }
+            String msg =
+                    LanguageController.getInstance().getMobileMsgByKey(AppConstant.field_user_made_some_changes_on_the_requested_item)+"\n"+LanguageController.getInstance().getMobileMsgByKey(AppConstant.item_name)+": "+requestedModel.getItemName()+"\n"+
+                            LanguageController.getInstance().getMobileMsgByKey(AppConstant.qty)+": "+requestedModel.getQty()+"\n"+
+                            LanguageController.getInstance().getMobileMsgByKey(AppConstant.part_no)+": "+requestedModel.getModelNo()+"\n"+
+                            LanguageController.getInstance().getMobileMsgByKey(AppConstant.brand)+": "+brandName;
+            Chat_Send_Msg_Model chat_send_Msg_model = new Chat_Send_Msg_Model(
+                    msg, "", AppUtility.getDateByMiliseconds(),
+                    mParam2.getLabel(),
+                    requestedModel.getJobId(), "1");
+            if (jobEquimPi != null) {
+                jobEquimPi.sendMsg(chat_send_Msg_model);
+            }
+        }
+    }
+
     private void initViews() {
 
         tv_label_status = findViewById(R.id.tv_label_status);
         tv_label_status.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.equ_status));
 
-
+        ll_requested_item = findViewById(R.id.ll_requested_item);
+        requested_item_txt = findViewById(R.id.requested_item_txt);
+        requested_item_txt.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.item_requested));
+        recyclerView_requested_item = findViewById(R.id.recyclerView_requested_item);
+        progressBar_itemRequest = findViewById(R.id.progressBar_itemRequest);
+        txt_no_item_found = findViewById(R.id.txt_no_item_found);
+        txt_no_item_found.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.no_item_requested_found));
+        show_requested_list = findViewById(R.id.show_requested_list);
+        hide_requested_list = findViewById(R.id.hide_requested_list);
+        show_requested_list.setOnClickListener(this);
+        hide_requested_list.setOnClickListener(this);
+        btn_add_requested_item = findViewById(R.id.btn_add_requested_item);
+        btn_add_requested_item.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add));
+        btn_add_requested_item.setOnClickListener(this);
         tv_no_replace = findViewById(R.id.tv_no_replace);
         tv_no_replace.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.discarded_eq));
 
@@ -510,6 +580,8 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
         EotApp.getAppinstance().setNotifyForItemCount(this);
         EotApp.getAppinstance().setNotifyForEquipmentCountRemark(this);
         EotApp.getAppinstance().setNotifyForEquipmentCount(this);
+        EotApp.getAppinstance().setNotifyForRequestedItemList(this);
+
 
         String getDisCalculationType;
         if (getIntent().getStringExtra("jobId")!=null&&!getIntent().getStringExtra("jobId").isEmpty())
@@ -523,6 +595,16 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
         invoice_list_adpter = new InvoiceItemList2Adpter(this, new ArrayList<>(), true, true,getDisCalculationType);//, this, this
         recyclerView_item.setAdapter(invoice_list_adpter);
         recyclerView_item.setNestedScrollingEnabled(false);
+
+        recyclerView_requested_item.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL
+                , false));
+        requestedItemListAdapter = new RequestedItemListAdapter(requestedItemList,this,this,this);//, this, this
+        recyclerView_requested_item.setAdapter(requestedItemListAdapter);
+        recyclerView_requested_item.setNestedScrollingEnabled(false);
+
+        if(App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsItemRequested() == 0){
+            ll_requested_item.setVisibility(View.VISIBLE);
+        }
 
     }
 
@@ -742,6 +824,41 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
                     }
                 }
 
+                break;
+
+            case R.id.btn_add_requested_item:
+                show_requested_list.setVisibility(View.VISIBLE);
+                recyclerView_requested_item.setVisibility(View.GONE);
+                hide_requested_list.setVisibility(View.GONE);
+                txt_no_item_found.setVisibility(View.GONE);
+                Intent intent2 = new Intent(this, AddUpdateRquestedItemActivity.class);
+                intent2.putExtra("addReqItemInEqu",true);
+                intent2.putExtra("jobId",mParam2.getJobId());
+                intent2.putExtra("jobLabel",mParam2.getLabel());
+                intent2.putExtra("equId",equipment.getEquId());
+                startActivity(intent2);
+                break;
+
+            case R.id.show_requested_list:
+                if(AppUtility.isInternetConnected()){
+                    progressBar_itemRequest.setVisibility(View.VISIBLE);
+                    show_requested_list.setVisibility(View.GONE);
+                    hide_requested_list.setVisibility(View.VISIBLE);
+                    if (jobEquimPi != null) {
+                        jobEquimPi.getRequestedItemDataList(mParam2.getJobId());
+                        recyclerView_requested_item.setVisibility(View.VISIBLE);
+                    }
+                }else {
+                    onErrorMsg(LanguageController.getInstance().getMobileMsgByKey(AppConstant.offline_feature_alert));
+                }
+
+
+                break;
+            case R.id.hide_requested_list:
+                show_requested_list.setVisibility(View.VISIBLE);
+                recyclerView_requested_item.setVisibility(View.GONE);
+                hide_requested_list.setVisibility(View.GONE);
+                txt_no_item_found.setVisibility(View.GONE);
                 break;
         }
     }
@@ -1524,5 +1641,69 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
         intent.putExtra("positions", position);
         intent.putExtra("isGetData", "");
         startActivityForResult(intent, EQUIPMENT_UPDATE_CODE);
+    }
+
+    @Override
+    public void itemDelete(String irId, RequestedItemModel requestedModel) {
+        if(AppUtility.isInternetConnected()){
+            progressBar_itemRequest.setVisibility(View.VISIBLE);
+            AddUpdateRequestedModel requestedModel1 = new AddUpdateRequestedModel(requestedModel.getInm(),requestedModel.getEbId(),requestedModel.getQty(),
+                    requestedModel.getModelNo(),"",requestedModel.getItemId(),mParam2.getJobId());
+            jobEquimPi.deleteRequestedItem(irId,mParam2.getJobId(),requestedModel1);
+        }
+    }
+
+    @Override
+    public void itemSelected(RequestedItemModel updateRequestedItemModel) {
+        show_requested_list.setVisibility(View.VISIBLE);
+        recyclerView_requested_item.setVisibility(View.GONE);
+        hide_requested_list.setVisibility(View.GONE);
+        Intent intent = new Intent(this,AddUpdateRquestedItemActivity.class);
+        intent.putExtra("updateSelectedReqItem",updateRequestedItemModel);
+        intent.putExtra("UpdateReqItem",true);
+        intent.putExtra("jobId",mParam2.getJobId());
+        intent.putExtra("jobLabel",mParam2.getLabel());
+        intent.putExtra("equId",equipment.getEquId());
+        startActivity(intent);
+    }
+
+    @Override
+    public void updateReqItemList(String api_name, String message, AddUpdateRequestedModel requestedModel) {
+        switch (api_name){
+            case Service_apis.addItemRequest:
+                EotApp.getAppinstance().showToastmsg(LanguageController.getInstance().getServerMsgByKey(message.trim()));
+                if(requestedModel != null) {
+                    String msg =
+                            LanguageController.getInstance().getMobileMsgByKey(AppConstant.item_requested_by_the_field_user)+"\n"+LanguageController.getInstance().getMobileMsgByKey(AppConstant.item_name)+": "+requestedModel.getItemName()+"\n"+
+                                    LanguageController.getInstance().getMobileMsgByKey(AppConstant.qty)+": "+requestedModel.getQty()+"\n"+
+                                    LanguageController.getInstance().getMobileMsgByKey(AppConstant.part_no)+": "+requestedModel.getModelNo()+"\n"+
+                                    LanguageController.getInstance().getMobileMsgByKey(AppConstant.brand)+": "+requestedModel.getBrandName();
+                    Chat_Send_Msg_Model chat_send_Msg_model = new Chat_Send_Msg_Model(
+                            msg, "", AppUtility.getDateByMiliseconds(),
+                            requestedModel.getJobLabel(),
+                            requestedModel.getJobId(), "1");
+                    if (jobEquimPi != null) {
+                        jobEquimPi.sendMsg(chat_send_Msg_model);
+                    }
+                }
+                break;
+            case Service_apis.updateItemRequest:
+                EotApp.getAppinstance().showToastmsg(LanguageController.getInstance().getServerMsgByKey(message.trim()));
+                if(requestedModel != null) {
+                    String msg =
+                            LanguageController.getInstance().getMobileMsgByKey(AppConstant.field_user_made_some_changes_on_the_requested_item)+"\n"+LanguageController.getInstance().getMobileMsgByKey(AppConstant.item_name)+": "+requestedModel.getItemName()+"\n"+
+                                    LanguageController.getInstance().getMobileMsgByKey(AppConstant.qty)+": "+requestedModel.getQty()+"\n"+
+                                    LanguageController.getInstance().getMobileMsgByKey(AppConstant.part_no)+": "+requestedModel.getModelNo()+"\n"+
+                                    LanguageController.getInstance().getMobileMsgByKey(AppConstant.brand)+": "+requestedModel.getBrandName();
+                    Chat_Send_Msg_Model chat_send_Msg_model = new Chat_Send_Msg_Model(
+                            msg, "", AppUtility.getDateByMiliseconds(),
+                            requestedModel.getJobLabel(),
+                            requestedModel.getJobId(), "1");
+                    if (jobEquimPi != null) {
+                        jobEquimPi.sendMsg(chat_send_Msg_model);
+                    }
+                }
+                break;
+        }
     }
 }
