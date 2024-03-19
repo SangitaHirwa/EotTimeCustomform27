@@ -2900,6 +2900,7 @@ public void setCompletionDetail(){
                 Intent intent2 = new Intent(getActivity(), AddUpdateRquestedItemActivity.class);
                 intent2.putExtra("addReqItem",true);
                 intent2.putExtra("jobId",mParam2.getJobId());
+                intent2.putExtra("jobLabel",mParam2.getLabel());
                 startActivity(intent2);
                 break;
 
@@ -3541,17 +3542,14 @@ public void setCompletionDetail(){
             case Service_apis.addItemRequest:
                 showAppInstallDialog(LanguageController.getInstance().getServerMsgByKey(message));
                 if(requestedModel != null) {
-                    if(requestedModel.getEbId() != null && !requestedModel.getEbId().equals("0") && !requestedModel.getEbId().equals("")) {
-                         brandName = AppDataBase.getInMemoryDatabase(getContext()).brandDao().getBrandNameById(requestedModel.getEbId());
-                    }
                     String msg =
                             LanguageController.getInstance().getMobileMsgByKey(AppConstant.item_requested_by_the_field_user)+"\n"+LanguageController.getInstance().getMobileMsgByKey(AppConstant.item_name)+": "+requestedModel.getItemName()+"\n"+
                             LanguageController.getInstance().getMobileMsgByKey(AppConstant.qty)+": "+requestedModel.getQty()+"\n"+
                             LanguageController.getInstance().getMobileMsgByKey(AppConstant.part_no)+": "+requestedModel.getModelNo()+"\n"+
-                            LanguageController.getInstance().getMobileMsgByKey(AppConstant.brand)+": "+brandName;
+                            LanguageController.getInstance().getMobileMsgByKey(AppConstant.brand)+": "+requestedModel.getBrandName();
                     Chat_Send_Msg_Model chat_send_Msg_model = new Chat_Send_Msg_Model(
                             msg, "", AppUtility.getDateByMiliseconds(),
-                            mParam2.getLabel(),
+                            requestedModel.getJobLabel(),
                             requestedModel.getJobId(), "1");
                     if (jobDetail_pi != null) {
                         jobDetail_pi.sendMsg(chat_send_Msg_model);
@@ -3561,17 +3559,14 @@ public void setCompletionDetail(){
             case Service_apis.updateItemRequest:
                 showAppInstallDialog(LanguageController.getInstance().getServerMsgByKey(message));
                 if(requestedModel != null) {
-                    if(requestedModel.getEbId() != null && !requestedModel.getEbId().equals("0") && !requestedModel.getEbId().equals("")) {
-                        brandName = AppDataBase.getInMemoryDatabase(getContext()).brandDao().getBrandNameById(requestedModel.getEbId());
-                    }
                     String msg =
                             LanguageController.getInstance().getMobileMsgByKey(AppConstant.field_user_made_some_changes_on_the_requested_item)+"\n"+LanguageController.getInstance().getMobileMsgByKey(AppConstant.item_name)+": "+requestedModel.getItemName()+"\n"+
                                     LanguageController.getInstance().getMobileMsgByKey(AppConstant.qty)+": "+requestedModel.getQty()+"\n"+
                                     LanguageController.getInstance().getMobileMsgByKey(AppConstant.part_no)+": "+requestedModel.getModelNo()+"\n"+
-                                    LanguageController.getInstance().getMobileMsgByKey(AppConstant.brand)+": "+brandName;
+                                    LanguageController.getInstance().getMobileMsgByKey(AppConstant.brand)+": "+requestedModel.getBrandName();
                     Chat_Send_Msg_Model chat_send_Msg_model = new Chat_Send_Msg_Model(
                             msg, "", AppUtility.getDateByMiliseconds(),
-                            mParam2.getLabel(),
+                            requestedModel.getJobLabel(),
                             requestedModel.getJobId(), "1");
                     if (jobDetail_pi != null) {
                         jobDetail_pi.sendMsg(chat_send_Msg_model);
@@ -3600,6 +3595,7 @@ public void setCompletionDetail(){
         intent.putExtra("updateSelectedReqItem",updateRequestedItemModel);
         intent.putExtra("UpdateReqItem",true);
         intent.putExtra("jobId",mParam2.getJobId());
+        intent.putExtra("jobLabel",mParam2.getLabel());
         startActivity(intent);
     }
 

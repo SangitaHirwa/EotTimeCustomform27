@@ -9,6 +9,8 @@ public class AddUpdateRequestedModel {
     private String itemId;
     private String jobId;
    private String irId;
+   private String label;
+   private String brandName;
 
 
     public AddUpdateRequestedModel(String itemName, String ebId, String qty, String modelNo, String equId, String itemId, String jobId) {
@@ -21,7 +23,21 @@ public class AddUpdateRequestedModel {
         this.jobId = jobId;
     }
 
-    public AddUpdateRequestedModel(String itemName, String ebId, String qty, String modelNo, String equId, String itemId, String jobId, String irId) {
+    public AddUpdateRequestedModel(String itemName, String ebId, String qty, String modelNo, String equId, String itemId,
+                                   String jobId, String irId, String jobLabel, String brandName) {
+        this.itemName = itemName;
+        this.ebId = ebId;
+        this.qty = qty;
+        this.modelNo = modelNo;
+        this.equId = equId;
+        this.itemId = itemId;
+        this.jobId = jobId;
+        this.irId = irId;
+        this.label = jobLabel;
+        this.brandName = brandName;
+    }
+
+    public AddUpdateRequestedModel(String itemName, String ebId, String qty, String modelNo, String equId, String itemId, String jobId,String irId) {
         this.itemName = itemName;
         this.ebId = ebId;
         this.qty = qty;
@@ -94,5 +110,21 @@ public class AddUpdateRequestedModel {
 
     public void setIrId(String irId) {
         this.irId = irId;
+    }
+
+    public String getJobLabel() {
+        return label;
+    }
+
+    public void setJobLabel(String jobLabel) {
+        this.label = jobLabel;
+    }
+
+    public String getBrandName() {
+        return brandName;
+    }
+
+    public void setBrandName(String brandName) {
+        this.brandName = brandName;
     }
 }

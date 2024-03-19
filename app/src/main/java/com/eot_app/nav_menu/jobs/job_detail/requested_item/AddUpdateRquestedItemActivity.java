@@ -65,8 +65,8 @@ public class AddUpdateRquestedItemActivity extends AppCompatActivity implements 
     private Button add_edit_item_Btn;
     String[] brand_array =new String[brandList1.size()];
     LinkedHashMap<String,String> brand_mapArray =new LinkedHashMap<>(brandList1.size());
-    private String inm,iQty,modelNo, jobId,brand_id,itemId;
-    private String equId="";
+    private String inm,iQty,modelNo, jobId,brand_id,itemId, jobLabel,brand_name,equId;
+
     RequestedItemModel updateRequestedItemModel;
     boolean addItem = false;
     boolean updateItem = false;
@@ -82,13 +82,17 @@ public class AddUpdateRquestedItemActivity extends AppCompatActivity implements 
         reqItemPi = new AddUpdateReqItem_PC(this);
         reqItemPi.getInventryItemList();
         reqItemPi.getBrandList();
-        if(getIntent().getBooleanExtra("addReqItem",false)){
+        if(getIntent().getBooleanExtra("addReqItem",false) || getIntent().getBooleanExtra("addReqItemInEqu",false)){
             addItem = true;
             jobId = getIntent().getStringExtra("jobId");
+            jobLabel = getIntent().getStringExtra("jobLabel");
+            equId = getIntent().getStringExtra("equId");
             Objects.requireNonNull(getSupportActionBar()).setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_request_Item));
-        }else if(getIntent().getBooleanExtra("UpdateReqItem",false)){
+        }else if(getIntent().getBooleanExtra("UpdateReqItem",false) || getIntent().getBooleanExtra("updateSelectedReqItemInEqu",false)){
             updateItem = true;
             jobId = getIntent().getStringExtra("jobId");
+            jobLabel = getIntent().getStringExtra("jobLabel");
+            equId = getIntent().getStringExtra("equId");
             updateRequestedItemModel = (RequestedItemModel) getIntent().getSerializableExtra("updateSelectedReqItem");
             setItemDataValue();
             Objects.requireNonNull(getSupportActionBar()).setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.update_request_Item));
@@ -115,28 +119,30 @@ public class AddUpdateRquestedItemActivity extends AppCompatActivity implements 
     }
 
     private void setItemDataValue() {
-        autocomplete_item.setText(updateRequestedItemModel.getInm());
-        edt_item_qty.setText(updateRequestedItemModel.getQty());
-        edt_modelNo.setText(updateRequestedItemModel.getModelNo());
-        String brandName = brand_mapArray.get(updateRequestedItemModel.getEbId());
-        brand_id = updateRequestedItemModel.getEbId();
-        brand_txt.setText(brandName);
-        if(!updateRequestedItemModel.getItemId().equals("0")){
-            autocomplete_item.setEnabled(false);
-            itemlayout.setClickable(false);
-            edt_modelNo.setEnabled(false);
-            linearLayout_brand.setClickable(false);
-        }else {
-            itemlayout.setClickable(true);
+        if(updateRequestedItemModel != null) {
+            autocomplete_item.setText(updateRequestedItemModel.getInm());
+            edt_item_qty.setText(updateRequestedItemModel.getQty());
+            edt_modelNo.setText(updateRequestedItemModel.getModelNo());
+            String brandName = brand_mapArray.get(updateRequestedItemModel.getEbId());
+            brand_id = updateRequestedItemModel.getEbId();
+            brand_txt.setText(brandName);
+            if (!updateRequestedItemModel.getItemId().equals("0")) {
+                autocomplete_item.setEnabled(false);
+                itemlayout.setClickable(false);
+                edt_modelNo.setEnabled(false);
+                linearLayout_brand.setClickable(false);
+            } else {
+                itemlayout.setClickable(true);
+            }
+            if (updateRequestedItemModel.getModelNo() != null && !updateRequestedItemModel.getModelNo().isEmpty()) {
+                modelNo_layout.setHintEnabled(true);
+            }
+            if (brandName != null && !brandName.isEmpty()) {
+                hint_brand_txt.setVisibility(View.VISIBLE);
+            }
+            item_qty_layout.setHintEnabled(true);
+            itemlayout.setHintEnabled(true);
         }
-        if(updateRequestedItemModel.getModelNo() != null && !updateRequestedItemModel.getModelNo().isEmpty()){
-            modelNo_layout.setHintEnabled(true);
-        }
-        if(brandName!=null && !brandName.isEmpty()) {
-            hint_brand_txt.setVisibility(View.VISIBLE);
-        }
-        item_qty_layout.setHintEnabled(true);
-        itemlayout.setHintEnabled(true);
     }
     private void initializelables() {
         itemlayout = findViewById(R.id.itemlayout);
@@ -206,6 +212,7 @@ public class AddUpdateRquestedItemActivity extends AppCompatActivity implements 
     private void updateReqItem() {
         inm = autocomplete_item.getText().toString();
         iQty = edt_item_qty.getText().toString();
+        brand_name = brand_txt.getText().toString();
         if(iQty.isEmpty()){
             iQty ="0";
         }
@@ -213,7 +220,7 @@ public class AddUpdateRquestedItemActivity extends AppCompatActivity implements 
         if(!inm.equals("")) {
             AddUpdateRequestedModel updateRequestModel = new AddUpdateRequestedModel(inm,
                     brand_id,iQty,modelNo,equId,updateRequestedItemModel.getItemId(),jobId,updateRequestedItemModel.getId()
-                    );
+                    ,jobLabel,brand_name);
 
             String dateTime = AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT);
             Gson gson = new Gson();
@@ -230,13 +237,15 @@ public class AddUpdateRquestedItemActivity extends AppCompatActivity implements 
         inm = autocomplete_item.getText().toString();
         iQty = edt_item_qty.getText().toString();
         modelNo = edt_modelNo.getText().toString();
+        brand_name = brand_txt.getText().toString();
+
         if(iQty.isEmpty()){
             edt_item_qty.setText("0");
         }
         if(!inm.equals("")) {
             AddUpdateRequestedModel addeRequestModel = new AddUpdateRequestedModel(
                     autocomplete_item.getText().toString(), brand_id, edt_item_qty.getText().toString(), edt_modelNo.getText().toString(),
-                    equId, itemId, jobId);
+                    equId, itemId, jobId,"",jobLabel,brand_name);
                 String dateTime = AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT);
                 Gson gson = new Gson();
                 String addItemReqest = gson.toJson(addeRequestModel);
