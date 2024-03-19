@@ -199,7 +199,11 @@ public class AddUpdateRquestedItemActivity extends AppCompatActivity implements 
                 modelNo_layout.setHintEnabled(true);
                 break;
             case R.id.linearLayout_brand:
-                brand_spinner.performClick();
+                if(brandList1 != null && brandList1.size() > 0){
+                    brand_spinner.performClick();
+                }else {
+                    showDisError(LanguageController.getInstance().getMobileMsgByKey(AppConstant.no_brand));
+                }
                 break;
             case R.id.add_edit_item_Btn:
                 if(addItem)
@@ -305,38 +309,37 @@ public class AddUpdateRquestedItemActivity extends AppCompatActivity implements 
     @Override
     public void setItemdata(List<Inventry_ReS_Model> list) {
         Log.e("", "");
-        this.itemsList = list;
-        Log.v("ItemList::", new Gson().toJson(list));
-        autocomplete_item.setTag("Item");
-        Auto_Inventry_Adpter itemAdapter = new Auto_Inventry_Adpter(this,
-                R.layout.custom_item_adpter, (ArrayList<Inventry_ReS_Model>) this.itemsList);
-        autocomplete_item.setAdapter(itemAdapter);
-        autocomplete_item.setThreshold(3);
-        autocomplete_item.setOnItemClickListener((adapterView, view, position, l) -> {
-            try {
-                Log.v("ItemList::", new Gson().toJson(adapterView.getItemAtPosition(position)));
-                setSelectedItemData(((Inventry_ReS_Model) adapterView.getItemAtPosition(position)));
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        });
+        if(list !=null && list.size() > 0) {
+            this.itemsList = list;
+            Log.v("ItemList::", new Gson().toJson(list));
+            autocomplete_item.setTag("Item");
+            Auto_Inventry_Adpter itemAdapter = new Auto_Inventry_Adpter(this,
+                    R.layout.custom_item_adpter, (ArrayList<Inventry_ReS_Model>) this.itemsList);
+            autocomplete_item.setAdapter(itemAdapter);
+            autocomplete_item.setThreshold(3);
+            autocomplete_item.setOnItemClickListener((adapterView, view, position, l) -> {
+                try {
+                    Log.v("ItemList::", new Gson().toJson(adapterView.getItemAtPosition(position)));
+                    setSelectedItemData(((Inventry_ReS_Model) adapterView.getItemAtPosition(position)));
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            });
+        }
     }
 
     @Override
     public void setBrandList(List<BrandData> brandList) {
         Log.e("itemselected", new Gson().toJson(brandList));
-         this.brandList1 = brandList;
-        if (brandList1 != null) {
-
-            brand_array = new String[brandList1.size()];
+        brandList1.clear();
+        if (brandList != null && brandList.size() > 0) {
+            brand_array = new String[brandList.size()];
+            this.brandList1 = brandList;
             int i = 0;
             for (BrandData brandData : brandList1) {
                 brand_array[i] = brandData.getName();
                 brand_mapArray.put(brandData.getEbId(),brandData.getName());
                 i++;
-            }
-            if(brand_array.length <= 0){
-                brand_array[0] = LanguageController.getInstance().getMobileMsgByKey(AppConstant.no_brand);
             }
             brand_spinner.setAdapter(new MySpinnerAdapter(this, brand_array));
         }
@@ -362,31 +365,33 @@ public class AddUpdateRquestedItemActivity extends AppCompatActivity implements 
     private void setSelectedItemData(Inventry_ReS_Model itemselected) {
 
         Log.e("itemselected", new Gson().toJson(itemselected));
-        iQty = "1";
-        if(itemselected.getPno() != null && !itemselected.getPno().isEmpty()){
-            edt_modelNo.setText(itemselected.getPno());
-            modelNo_layout.setHintEnabled(true);
-        }else {
-            edt_modelNo.setText("");
+        if(itemselected !=null) {
+            iQty = "1";
+            if (itemselected.getPno() != null && !itemselected.getPno().isEmpty()) {
+                edt_modelNo.setText(itemselected.getPno());
+                modelNo_layout.setHintEnabled(true);
+            } else {
+                edt_modelNo.setText("");
+            }
+            if (itemselected.getBrandNm() != null && !itemselected.getBrandNm().isEmpty()) {
+                brand_txt.setText(itemselected.getBrandNm());
+                brand_id = itemselected.getEbId();
+                hint_brand_txt.setVisibility(View.VISIBLE);
+            } else {
+                brand_txt.setText("");
+                brand_id = "";
+            }
+            if (itemselected.getItemId() != null && !itemselected.getItemId().isEmpty()) {
+                itemId = itemselected.getItemId();
+            } else {
+                itemId = "";
+            }
+            autocomplete_item.setText(itemselected.getInm());
+            edt_item_qty.setText(iQty);
+            edt_modelNo.setEnabled(false);
+            linearLayout_brand.setClickable(false);
+            item_qty_layout.setHintEnabled(true);
         }
-        if(itemselected.getBrandNm() != null && !itemselected.getBrandNm().isEmpty()){
-            brand_txt.setText(itemselected.getBrandNm());
-            brand_id = itemselected.getEbId();
-            hint_brand_txt.setVisibility(View.VISIBLE);
-        }else{
-            brand_txt.setText("");
-            brand_id = "";
-        }
-        if(itemselected.getItemId()!=null && !itemselected.getItemId().isEmpty()) {
-            itemId = itemselected.getItemId();
-        }else {
-            itemId = "";
-        }
-        autocomplete_item.setText(itemselected.getInm());
-        edt_item_qty.setText(iQty);
-        edt_modelNo.setEnabled(false);
-        linearLayout_brand.setClickable(false);
-        item_qty_layout.setHintEnabled(true);
 
     }
     private void showDisError(String msg) {
