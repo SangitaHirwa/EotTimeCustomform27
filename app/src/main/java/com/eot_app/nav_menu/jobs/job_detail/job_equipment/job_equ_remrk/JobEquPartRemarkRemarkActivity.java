@@ -1859,8 +1859,8 @@ public class JobEquPartRemarkRemarkActivity extends UploadDocumentActivity imple
      * hideRemarkSection :- For editing Remark*/
     public void showRemarkSection(){
         cv_showRemark.setVisibility(View.VISIBLE);
-        part_cardview.setVisibility(View.VISIBLE);
-        item_cardview.setVisibility(View.VISIBLE);
+        part_cardview.setVisibility(View.GONE);
+        item_cardview.setVisibility(View.GONE);
         ll_replace.setVisibility(View.VISIBLE);
         ll_requested_item.setVisibility(View.VISIBLE);
         attachment_card.setVisibility(View.GONE);
