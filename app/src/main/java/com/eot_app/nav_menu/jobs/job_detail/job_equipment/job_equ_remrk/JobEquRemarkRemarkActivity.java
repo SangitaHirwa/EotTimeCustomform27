@@ -472,6 +472,7 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
         hide_requested_list.setOnClickListener(this);
         btn_add_requested_item = findViewById(R.id.btn_add_requested_item);
         btn_add_requested_item.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add));
+        btn_add_requested_item.setTextSize(15);
         btn_add_requested_item.setOnClickListener(this);
         tv_no_replace = findViewById(R.id.tv_no_replace);
         tv_no_replace.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.discarded_eq));
