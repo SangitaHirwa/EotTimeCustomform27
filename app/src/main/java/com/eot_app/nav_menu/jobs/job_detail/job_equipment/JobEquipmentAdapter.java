@@ -175,8 +175,8 @@ public class JobEquipmentAdapter extends RecyclerView.Adapter<JobEquipmentAdapte
             holder.view_details.setVisibility(View.GONE);
             holder.action_btn.setVisibility(View.GONE);
         } else {
-            holder.btnComplationView.setOnClickListener(v -> setRemarkActivity(holder.getBindingAdapterPosition()));
-            holder.action_btn.setOnClickListener(v -> setRemarkActivity(holder.getBindingAdapterPosition()));
+            holder.btnComplationView.setOnClickListener(v -> setRemarkActivity(holder.getBindingAdapterPosition(),false));
+            holder.action_btn.setOnClickListener(v -> setRemarkActivity(holder.getBindingAdapterPosition(),true));
             holder.view_details.setOnClickListener(v -> selectionForDetails.onEquipmentSelectedForDetails(list.get(position)));
         }
 
@@ -189,7 +189,8 @@ public class JobEquipmentAdapter extends RecyclerView.Adapter<JobEquipmentAdapte
         if (!TextUtils.isEmpty(equArrayModel.getStatus()) || equArrayModel.getAttachments() != null && equArrayModel.getAttachments().size() > 0) {
             holder.edit_remark_layout.setVisibility(View.VISIBLE);
             setDataInRemarkView(holder, equArrayModel, position);
-            holder.action_btn.setVisibility(View.GONE);
+            holder.action_btn.setVisibility(View.VISIBLE);
+            holder.action_btn.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.action));
         } else {
             HyperLog.i("", "JobEquipmentAdapter: " + "onBindViewHolder(M)" + "status null");
             HyperLog.i("", "JobEquipmentAdapter: " + equArrayModel.getStatus());
@@ -374,9 +375,9 @@ public class JobEquipmentAdapter extends RecyclerView.Adapter<JobEquipmentAdapte
         }
     }
 
-    void setRemarkActivity(int position) {
+    void setRemarkActivity(int position, boolean isAction) {
         if (onEquipmentSelection != null) {
-            onEquipmentSelection.onEquipmentSelected(position, list.get(position));
+            onEquipmentSelection.onEquipmentSelected(position, list.get(position),isAction);
         } else {
             Log.e("getAllEquipments", "JobEqRemark JobEquipmentAdapter");
 
@@ -395,7 +396,7 @@ public class JobEquipmentAdapter extends RecyclerView.Adapter<JobEquipmentAdapte
     }
 
     public interface OnEquipmentSelection {
-        void onEquipmentSelected(int position, EquArrayModel equipmentRes);
+        void onEquipmentSelected(int position, EquArrayModel equipmentRes, boolean isAction);
     }
 
     public interface OnEquipmentClicked {

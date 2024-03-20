@@ -55,6 +55,7 @@ import com.eot_app.nav_menu.jobs.job_detail.chat.fire_Base_Model.Chat_Send_Msg_M
 import com.eot_app.nav_menu.jobs.job_detail.chat.img_crop_pkg.ImageCropFragment;
 import com.eot_app.nav_menu.jobs.job_detail.customform.MyAttachment;
 import com.eot_app.nav_menu.jobs.job_detail.customform.cstm_form_model.CustomFormList_Res;
+import com.eot_app.nav_menu.jobs.job_detail.detail.CompletionAdpterJobDteails;
 import com.eot_app.nav_menu.jobs.job_detail.detail.NotifyForEquipmentCount;
 import com.eot_app.nav_menu.jobs.job_detail.detail.NotifyForEquipmentCountRemark;
 import com.eot_app.nav_menu.jobs.job_detail.detail.NotifyForItemCount;
@@ -77,6 +78,8 @@ import com.eot_app.nav_menu.jobs.job_detail.job_audit_remark_attchment_pkg.model
 import com.eot_app.nav_menu.jobs.job_detail.job_audit_remark_attchment_pkg.mvp.JobAudit_PI;
 import com.eot_app.nav_menu.jobs.job_detail.job_audit_remark_attchment_pkg.mvp.JobAudit_Pc;
 import com.eot_app.nav_menu.jobs.job_detail.job_audit_remark_attchment_pkg.mvp.JobAudit_View;
+import com.eot_app.nav_menu.jobs.job_detail.job_equipment.EquipmentAttchmentList;
+import com.eot_app.nav_menu.jobs.job_detail.job_equipment.JobEquipmentActivity;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.job_equ_remrk.job_equ_mvp.JobEquRemark_PC;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.job_equ_remrk.job_equ_mvp.JobEquRemark_PI;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.job_equ_remrk.job_equ_mvp.JobEquRemark_View;
@@ -88,6 +91,7 @@ import com.eot_app.services.Service_apis;
 import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.AppUtility;
 import com.eot_app.utility.App_preference;
+import com.eot_app.utility.CustomLinearLayoutManager;
 import com.eot_app.utility.EotApp;
 import com.eot_app.utility.db.AppDataBase;
 import com.eot_app.utility.language_support.LanguageController;
@@ -135,12 +139,12 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
     LinearLayout audit_status_relative, audit_status_relative_status;
     JobAudit_PI jobAuditPi;
     boolean isAutoUpdatedRemark = false;
-    CardView attachment_card, part_cardview, item_cardview;
+    CardView attachment_card, part_cardview, item_cardview, cv_showRemark,cv_editRemark;
     RecyclerView recyclerView_attachment,
-            recyclerView_customForm, recyclerView_part, recyclerView_item,recyclerView_requested_item;
+            recyclerView_customForm, recyclerView_part, recyclerView_item,recyclerView_requested_item, rv_showAttachment;
     LinearLayout formLayout;
     EquipmentPartRemarkAdapter equipmentPartAdapter;
-    TextView image_txt, chip_txt, tv_text_for_replace, tv_replace;
+    TextView image_txt, chip_txt, tv_text_for_replace, tv_replace, txt_lbl_remark,txt_lbl_condition, txt_condition, txt_lbl_status, txt_status, txt_remark, btn_edit;
     ImageView deleteChip,show_requested_list,hide_requested_list;
     Job mParam2;
     ArrayList<Attachments> allAttachmentsList = new ArrayList<>();
@@ -179,6 +183,8 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
     List<RequestedItemModel> requestedItemList = new ArrayList<>();
     RequestedItemListAdapter requestedItemListAdapter;
     String brandName = "";
+    CompletionAdpterJobDteails jobCompletionAdpter;
+    boolean isAction = false, isEdit=false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -576,6 +582,23 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
         rediogrp = findViewById(R.id.rediogrp);
         rediogrp.setOnCheckedChangeListener(this);
 
+        cv_showRemark = findViewById(R.id.cv_showRemark);
+        cv_editRemark = findViewById(R.id.cv_editRemark);
+        rv_showAttachment = findViewById(R.id.rv_showAttachment);
+        txt_lbl_remark = findViewById(R.id.txt_lbl_remark);
+        txt_lbl_remark.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.remark_form));
+        txt_lbl_condition = findViewById(R.id.txt_lbl_condition);
+        txt_lbl_condition.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.condition)+": ");
+        txt_condition = findViewById(R.id.txt_condition);
+        txt_lbl_status = findViewById(R.id.txt_lbl_status);
+        txt_lbl_status.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.status_detail)+": ");
+        txt_status = findViewById(R.id.txt_status);
+        txt_remark = findViewById(R.id.txt_remark);
+        btn_edit = findViewById(R.id.btn_edit);
+        btn_edit.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit));
+
+        btn_edit.setOnClickListener(this);
+
         // to notify when added item or
         EotApp.getAppinstance().setNotifyForItemCount(this);
         EotApp.getAppinstance().setNotifyForEquipmentCountRemark(this);
@@ -602,8 +625,39 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
         recyclerView_requested_item.setAdapter(requestedItemListAdapter);
         recyclerView_requested_item.setNestedScrollingEnabled(false);
 
+        CustomLinearLayoutManager customLayoutManager = new CustomLinearLayoutManager(this, LinearLayoutManager.HORIZONTAL
+                , false);
+        rv_showAttachment.setLayoutManager(customLayoutManager);
+        jobCompletionAdpter = new CompletionAdpterJobDteails(new ArrayList<>(), pos -> {
+            try {
+                if (pos == 0 || pos == 1) {
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(App_preference.getSharedprefInstance().getBaseURL()
+                            + "" + (allAttachmentsList.get(pos).getAttachFileName()))));
+
+                } else {
+                    try {
+                        if (allAttachmentsList.size() > 0) {
+                            String str = new Gson().toJson(allAttachmentsList);
+                            Intent intent = new Intent(JobEquRemarkRemarkActivity.this, EquipmentAttchmentList.class);
+                            intent.putExtra("list", str);
+                            startActivity(intent);
+                        }
+                    } catch (Exception exception) {
+                        exception.printStackTrace();
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+        rv_showAttachment.setAdapter(jobCompletionAdpter);
+
         if(App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsItemRequested() == 0){
-            ll_requested_item.setVisibility(View.VISIBLE);
+            if(isAction) {
+                ll_requested_item.setVisibility(View.VISIBLE);
+            }else {
+                ll_requested_item.setVisibility(View.GONE);
+            }
         }
 
     }
@@ -750,7 +804,18 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home)
-            onBackPressed();
+            if(isAction){
+                if(isEdit){
+                    showRemarkSection();
+                    isEdit = false;
+                    setTitles();
+                }else {
+                    onBackPressed();
+                }
+            }else {
+                onBackPressed();
+            }
+
 
         return true;
     }
@@ -860,6 +925,11 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
                 hide_requested_list.setVisibility(View.GONE);
                 txt_no_item_found.setVisibility(View.GONE);
                 break;
+            case  R.id.btn_edit:
+                    hideRemarkSection();
+                    isEdit = true;
+                    setTitles();
+                    break;
         }
     }
 
@@ -1255,12 +1325,36 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
         getUpdatedLocation();
         Intent intent = getIntent();
 
+        if(intent.hasExtra("isAction")){
+            isAction = intent.getBooleanExtra("isAction",false);
+            if(isAction){
+                isEdit = false;
+                showRemarkSection();
+            }else {
+                isEdit = true;
+                hideRemarkSection();
+            }
+        }
+
         //equipment = intent.getParcelableExtra("equipment");
         if (intent.hasExtra("equipment")) {
             String strEquipment = intent.getExtras().getString("equipment");
             equipment = new Gson().fromJson(strEquipment, EquArrayModel.class);
         }
 
+        if(isRemarkUpdated){
+            Job job = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(mParam2.getJobId());
+            isRemarkUpdated = false;
+            if (job != null && job.getEquArray() != null) {
+                Log.e("job Eq ::", new Gson().toJson(job.getEquArray()));
+                for (EquArrayModel item:
+                        job.getEquArray()) {
+                    if(equipment.getEquId().equalsIgnoreCase(item.getEquId())){
+                        equipment = item;
+                    }
+                }
+            }
+        }
 
         try {
             if (getIntent().hasExtra("jobId")) {
@@ -1287,7 +1381,11 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
                     if (App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsItemVisible() == 0
                             &&
                             App_preference.getSharedprefInstance().getLoginRes().getCompPermission().get(0).getIsItemEnable().equals("0")) {
-                        item_cardview.setVisibility(View.VISIBLE);
+                        if(isAction) {
+                            item_cardview.setVisibility(View.VISIBLE);
+                        }else {
+                            item_cardview.setVisibility(View.GONE);
+                        }
                     } else {
                         item_cardview.setVisibility(View.GONE);
                     }
@@ -1312,7 +1410,11 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
 
             //for checking the sttaus of the equipment and hide replace part if duiscarded already
 
-            ll_replace.setVisibility(getCurrentEquipmentStatus(equipment.getEquStatus()).equalsIgnoreCase("Discarded") ? View.GONE : View.VISIBLE);
+            if(isAction) {
+                ll_replace.setVisibility(getCurrentEquipmentStatus(equipment.getEquStatus()).equalsIgnoreCase("Discarded") ? View.GONE : View.VISIBLE);
+            }else {
+                ll_replace.setVisibility(View.GONE);
+            }
             tv_no_replace.setVisibility(getCurrentEquipmentStatus(equipment.getEquStatus()).equalsIgnoreCase("Discarded") ? View.VISIBLE : View.GONE);
 
             Log.e("mParam2", new Gson().toJson(mParam2));
@@ -1349,6 +1451,7 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
             if (!TextUtils.isEmpty(equipment.getRemark())) {
                 isRemarkUpdated = true;
                 edit_remarks.setText(equipment.getRemark());
+                txt_remark.setText(equipment.getRemark());
             }
 
 
@@ -1360,10 +1463,20 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
                 }
             }
 
+            for (EquipmentStatus status : equipmentStatusList) {
+               if(status.getEsId().equalsIgnoreCase(equipment.getStatus())){
+                   txt_condition.setText(status.getStatusText());
+               }
+            }
             if (!TextUtils.isEmpty(equipment.getEquStatus()) && TextUtils.isDigitsOnly(equipment.getEquStatus())) {
                 int selectedStatusPosition = getEquipmentStatusPosition(equipment.getEquStatus());
                 if (selectedStatusPosition > -1) {
                     equ_status_spinner.setSelection(selectedStatusPosition);
+                }
+            }
+            for (EquipmentStatus status : equipmentStatusList2) {
+                if(status.getEsId().equalsIgnoreCase(equipment.getEquStatus())){
+                    txt_status.setText(status.getStatusText());
                 }
             }
             if (equipment != null && equipment.getAttachments() != null) {
@@ -1385,8 +1498,10 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
                     recyclerView_attachment.setLayoutManager(new GridLayoutManager(this, 3));
                     adapter = new DocumentListAdapter(this, attachments, jobId,"1");
                     recyclerView_attachment.setAdapter(adapter);
+                    jobCompletionAdpter.updateFileList(attachments);
                 } else {
                     adapter.updateFileList(attachments,true);
+                    jobCompletionAdpter.updateFileList(attachments);
                 }
             }
         }
@@ -1395,11 +1510,27 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
 
     private void setTitles() {
         if (equipment.getRemark().equals("") && equipment.getStatus().equals("") && equipment.getAttachments() != null && equipment.getAttachments().size() == 0) {
-            setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_remark));
+            if(isAction) {
+                if(isEdit){
+                    setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_remark));
+                }else {
+                    setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.action));
+                }
+            }else {
+                setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_remark));
+            }
             titleNm = (LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_remark));
         } else {
             if (equipment != null && equipment.getEqunm() != null) {
-                setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.remark_on) + " " + equipment.getEqunm());
+                if(isAction) {
+                    if(isEdit){
+                        setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_remark));
+                    }else {
+                        setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.action));
+                    }
+                }else {
+                    setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_remark));
+                }
                 titleNm = LanguageController.getInstance().getMobileMsgByKey(AppConstant.remark_on) + " " + equipment.getEqunm();
             } else {
                 setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.update_remark));
@@ -1630,7 +1761,7 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
     }
 
     @Override
-    public void onEquipmentSelected(int position, EquArrayModel equipmentRes) {
+    public void onEquipmentSelected(int position, EquArrayModel equipmentRes, boolean isAction) {
         Log.e("getAllEquipments", "JobEqRemark JobEquipmentActivity");
         Intent intent = new Intent(this, JobEquPartRemarkRemarkActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
@@ -1640,6 +1771,7 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
         intent.putExtra("cltId", cltId);
         intent.putExtra("positions", position);
         intent.putExtra("isGetData", "");
+        intent.putExtra("isAction", isAction);
         startActivityForResult(intent, EQUIPMENT_UPDATE_CODE);
     }
 
@@ -1705,5 +1837,47 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
                 }
                 break;
         }
+    }
+
+    /** Due to  separate edit remark section at 19 Mar 24, We intorduce new below method for hide and show View's
+     * showRemarkSection :- For showing Remark
+     * hideRemarkSection :- For editing Remark*/
+    public void showRemarkSection(){
+       cv_showRemark.setVisibility(View.VISIBLE);
+       part_cardview.setVisibility(View.VISIBLE);
+       item_cardview.setVisibility(View.VISIBLE);
+       ll_replace.setVisibility(View.VISIBLE);
+       ll_requested_item.setVisibility(View.VISIBLE);
+        attachment_card.setVisibility(View.GONE);
+       cv_editRemark.setVisibility(View.GONE);
+    }
+    public void hideRemarkSection(){
+        cv_showRemark.setVisibility(View.GONE);
+        part_cardview.setVisibility(View.GONE);
+        item_cardview.setVisibility(View.GONE);
+        ll_replace.setVisibility(View.GONE);
+        ll_requested_item.setVisibility(View.GONE);
+        attachment_card.setVisibility(View.VISIBLE);
+        cv_editRemark.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(isAction){
+            if(isEdit){
+                showRemarkSection();
+                isEdit = false;
+                setTitles();
+                /** For set update data*/
+                if(isRemarkUpdated){
+                    setData();
+                }
+            }else {
+                super.onBackPressed();
+            }
+        }else {
+            super.onBackPressed();
+        }
+
     }
 }

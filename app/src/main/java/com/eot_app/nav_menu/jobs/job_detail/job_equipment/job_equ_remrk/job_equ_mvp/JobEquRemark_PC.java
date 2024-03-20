@@ -316,6 +316,7 @@ public class JobEquRemark_PC implements JobEquRemark_PI {
                     filesList.add(body);
                 }
             }
+            remarkRequest.setEquStatus(equStatusId);
             RequestBody audId = RequestBody.create(remarkRequest.getAudId(), MultipartBody.FORM);
             RequestBody equId = RequestBody.create(remarkRequest.getEquId(), MultipartBody.FORM);
             RequestBody userId = RequestBody.create(App_preference.getSharedprefInstance().getLoginRes().getUsrId(), MultipartBody.FORM);
@@ -420,6 +421,7 @@ public class JobEquRemark_PC implements JobEquRemark_PI {
                     if (equipment.getEquId().equals(remarkRequest.getEquId())) {
                         equipment.setStatus(remarkRequest.getStatus());
                         equipment.setRemark(remarkRequest.getRemark());
+                        equipment.setEquStatus(remarkRequest.getEquStatus());
                         AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().updateJob(job);
                         // for notifying job overview page
                         EotApp.getAppinstance().getJobFlagOverView();
@@ -432,6 +434,7 @@ public class JobEquRemark_PC implements JobEquRemark_PI {
                             if (equipmentPart.getEquId().equals(remarkRequest.getEquId())) {
                                 equipmentPart.setStatus(remarkRequest.getStatus());
                                 equipmentPart.setRemark(remarkRequest.getRemark());
+                                equipmentPart.setEquStatus(remarkRequest.getEquStatus());
                                 AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().updateJob(job);
                                 // for notifying job overview page
                                 EotApp.getAppinstance().getJobFlagOverView();

@@ -118,13 +118,13 @@ public class EquipmentPartAdapter extends RecyclerView.Adapter<EquipmentPartAdap
         if(isComeFromDetail)
         {
             holder.main_layout.setOnClickListener(v -> onEquipmentClicked.OnEquipmentClicked());
-            holder.add_remark.setOnClickListener(v -> onEquipmentClicked.OnEquipmentClicked());
+            holder.add_action.setOnClickListener(v -> onEquipmentClicked.OnEquipmentClicked());
             holder.view_details.setOnClickListener(v -> onEquipmentClicked.OnEquipmentClicked());
 
         }
         else {
             holder.view_details.setOnClickListener(v -> selectionForDetails.onEquipmentSelectedForDetails(list.get(position)));
-            holder.add_remark.setOnClickListener(v -> setRemarkActivity(holder.getBindingAdapterPosition()));
+            holder.add_action.setOnClickListener(v -> setRemarkActivity(holder.getBindingAdapterPosition(), true));
         }
         if(equArrayModel.getExpiryDate()!=null&&!equArrayModel.getExpiryDate().isEmpty()){
             try {
@@ -205,9 +205,9 @@ public class EquipmentPartAdapter extends RecyclerView.Adapter<EquipmentPartAdap
         }
 
         if (!TextUtils.isEmpty(equArrayModel.getStatus()) || equArrayModel.getAttachments() != null && equArrayModel.getAttachments().size() > 0) {
-            holder.add_remark.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.view_edit_remark));
+            holder.add_action.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.action));
         } else {
-            holder.add_remark.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_remark));
+            holder.add_action.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.action));
         }
 
         try {
@@ -265,7 +265,7 @@ public class EquipmentPartAdapter extends RecyclerView.Adapter<EquipmentPartAdap
         AppCompatImageView img_equipment;
         TextView equ_img_view;
         AppCompatTextView tv_model, tv_serial, tv_model_label, tv_serial_label,tv_status;//, tv_des;// tv_status, , tv_details ,, tv_remark
-        TextView view_details, add_remark,tv_date;
+        TextView view_details, add_action,tv_date;
         LinearLayout main_layout;
         TextView tvWarranty;
         ImageView ivAlert;
@@ -285,7 +285,7 @@ public class EquipmentPartAdapter extends RecyclerView.Adapter<EquipmentPartAdap
             tv_serial_label = itemView.findViewById(R.id.tv_serial_label);
             view_details = itemView.findViewById(R.id.view_details);
             view_details.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.view_details));
-            add_remark = itemView.findViewById(R.id.add_remark);
+            add_action = itemView.findViewById(R.id.add_action);
             equ_img_view = itemView.findViewById(R.id.equ_img_view);
             tv_status = itemView.findViewById(R.id.tv_status);
             ll_status = itemView.findViewById(R.id.ll_status);
@@ -297,10 +297,10 @@ public class EquipmentPartAdapter extends RecyclerView.Adapter<EquipmentPartAdap
 
 
     }
-    void setRemarkActivity(int position) {
+    void setRemarkActivity(int position, boolean isAction) {
         if (onEquipmentSelection != null) {
             list.get(position).setIsPart("1");
-            onEquipmentSelection.onEquipmentSelected(position, list.get(position));
+            onEquipmentSelection.onEquipmentSelected(position, list.get(position),isAction);
         } else {
             String strEqu = new Gson().toJson(list.get(position));
             mContext.startActivity(new Intent(mContext, JobEquRemarkRemarkActivity.class).putExtra("equipment", strEqu));

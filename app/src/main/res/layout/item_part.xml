@@ -198,7 +198,7 @@
 
                 <TextView
                     android:layout_marginStart="5dp"
-                    android:id="@+id/add_remark"
+                    android:id="@+id/add_action"
                     style="@style/style_thrid_thrd"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
