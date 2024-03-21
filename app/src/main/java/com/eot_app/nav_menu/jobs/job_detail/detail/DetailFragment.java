@@ -1373,7 +1373,7 @@ public class DetailFragment extends Fragment
 
     @Override
     public void deletedRequestData(String message,AddUpdateRequestedModel requestedModel) {
-        EotApp.getAppinstance().showToastmsg(LanguageController.getInstance().getServerMsgByKey(message));
+        EotApp.getAppinstance().showToastmsg(LanguageController.getInstance().getServerMsgByKey(message.trim()));
         jobDetail_pi.getRequestedItemDataList(mParam2.getJobId());
         if(requestedModel != null) {
             if(requestedModel.getEbId() != null && !requestedModel.getEbId().equals("0") && !requestedModel.getEbId().equals("")) {
@@ -2198,7 +2198,7 @@ public void setCompletionDetail(){
 
             SpannableStringBuilder builder1 = new SpannableStringBuilder();
             SpannableString str2 = new SpannableString(
-                    LanguageController.getInstance().getMobileMsgByKey(AppConstant.po_number) + " : ");
+                    LanguageController.getInstance().getMobileMsgByKey(AppConstant.order_reference_number) + " : ");
             builder1.append(str2);
 
             if (mParam2.getPono() != null && !mParam2.getPono().isEmpty()) {
@@ -3540,7 +3540,7 @@ public void setCompletionDetail(){
     public void updateReqItemList(String api_name, String message, AddUpdateRequestedModel requestedModel) {
         switch (api_name){
             case Service_apis.addItemRequest:
-                showAppInstallDialog(LanguageController.getInstance().getServerMsgByKey(message));
+                showAppInstallDialog(LanguageController.getInstance().getServerMsgByKey(message.trim()));
                 if(requestedModel != null) {
                     String msg =
                             LanguageController.getInstance().getMobileMsgByKey(AppConstant.item_requested_by_the_field_user)+"\n"+LanguageController.getInstance().getMobileMsgByKey(AppConstant.item_name)+": "+requestedModel.getItemName()+"\n"+
@@ -3557,7 +3557,7 @@ public void setCompletionDetail(){
                 }
                 break;
             case Service_apis.updateItemRequest:
-                showAppInstallDialog(LanguageController.getInstance().getServerMsgByKey(message));
+                showAppInstallDialog(LanguageController.getInstance().getServerMsgByKey(message.trim()));
                 if(requestedModel != null) {
                     String msg =
                             LanguageController.getInstance().getMobileMsgByKey(AppConstant.field_user_made_some_changes_on_the_requested_item)+"\n"+LanguageController.getInstance().getMobileMsgByKey(AppConstant.item_name)+": "+requestedModel.getItemName()+"\n"+

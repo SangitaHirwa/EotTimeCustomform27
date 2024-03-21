@@ -579,7 +579,7 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
 
 
         job_ponumber = findViewById(R.id.job_ponumber);
-        job_ponumber.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.po_number));
+        job_ponumber.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.order_reference_number));
 
         schedule_text = findViewById(R.id.schedule_text);
         schedule_text.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.schedule_text));

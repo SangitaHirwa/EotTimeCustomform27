@@ -1007,6 +1007,7 @@ public class AppConstant {
     public static String available = "available";
     public static String discarded = "discarded";
     public static String discard_equipments_not_replaced = "discard_equipments_not_replaced";
+    public static String order_reference_number = "order_reference_number";
 
 
 

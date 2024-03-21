@@ -444,7 +444,7 @@ public class JobEquPartRemarkRemarkActivity extends UploadDocumentActivity imple
 
     @Override
     public void deletedRequestData(String message, AddUpdateRequestedModel requestedModel) {
-        EotApp.getAppinstance().showToastmsg(LanguageController.getInstance().getServerMsgByKey(message));
+        EotApp.getAppinstance().showToastmsg(LanguageController.getInstance().getServerMsgByKey(message.trim()));
         jobEquimPi.getRequestedItemDataList(mParam2.getJobId());
         if(requestedModel != null) {
             if(requestedModel.getEbId() != null && !requestedModel.getEbId().equals("0") && !requestedModel.getEbId().equals("")) {
