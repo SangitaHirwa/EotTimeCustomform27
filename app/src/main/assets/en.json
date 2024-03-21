@@ -897,7 +897,9 @@
     "update_item_req":"Requested item updated successfully.",
     "not_update_item_req":"Requested item not updated successfully.",
     "delete_item_req":"Requested item deleted.",
-    "not_delete_item_req":"Requested item not deleted."
+    "not_delete_item_req":"Requested item not deleted.",
+    "item_linked": "Item linked successfully.",
+    "item_not_linked": "Unable to link item, please try again."
   },
   "mobileMsgsModel": {
     "accept": "Accept",
@@ -1901,7 +1903,8 @@
     "link": "Link",
     "available": "Available",
     "discarded": "Discarded",
-     "discard_equipments_not_replaced": "Discard equipments cannot be replaced."
+     "discard_equipments_not_replaced": "Discard equipments cannot be replaced.",
+    "link_items": "Link Items"
   }
 }
 

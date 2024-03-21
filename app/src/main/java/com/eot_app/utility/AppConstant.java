@@ -427,6 +427,9 @@ public class AppConstant {
     public static final String capture_barcode = "capture_barcode";
     public static final String barcode_capture_note = "barcode_capture_note";
     public static final String add_contact_name = "add_contact_name";
+    public static final String link_items = "link_items";
+    public static final String item_linked = "item_linked";
+    public static final String item_not_linked = "item_not_linked";
 
     /**
      * **** new keys for language support

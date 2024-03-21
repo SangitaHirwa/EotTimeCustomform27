@@ -185,9 +185,15 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
     String brandName = "";
     CompletionAdpterJobDteails jobCompletionAdpter;
     boolean isAction = false, isEdit=false;
+    public static JobEquRemarkRemarkActivity jobEquRemarkRemarkActivity;
+
+    public JobEquRemarkRemarkActivity getInstance (){
+        return jobEquRemarkRemarkActivity;
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        jobEquRemarkRemarkActivity = this;
         setContentView(R.layout.activity_job_equ_remark);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         initViews();
@@ -1041,8 +1047,8 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
         intent.putExtra("InvoiceItemDataModel", invoiceItemDataModel);
         intent.putExtra("comeFrom", "AddRemarkPart");
         intent.putExtra("NONBILLABLE", false);
-        startActivity(intent);
-        finish();
+        startActivityForResult(intent,ADD_ITEM_DATA);
+
     }
 
     /**
@@ -1569,11 +1575,11 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
                 jobAuditPi.uploadAttchmentOnserverForJobAudit(myObject,fileNameExt);
             }
         } else if (requestCode == ADD_ITEM_DATA) {
-            if (data != null && data.hasExtra("AddInvoiceItem")) {
+//            if (data != null && data.hasExtra("AddInvoiceItem")) {
                 mParam2 = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(jobId);
                 if (mParam2!=null)
                 setItemListByJob(mParam2.getItemData());
-            }
+//            }
         } else if (requestCode == ADDPART) {
             Log.e("OnResult", "PartAdded");
             // call api to refresh data
@@ -1594,7 +1600,7 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
 
 
     @Override
-    public void onRemarkUpdate(String message) {
+    public void onRemarkUpdate(String message,InvoiceItemDataModel updateItemDataModel) {
         isRemarkUpdated = true;
         String remark_msg = !REMARK_SUBMIT ? LanguageController.getInstance().getMobileMsgByKey(AppConstant.euipment_remark_submit) : LanguageController.getInstance().getMobileMsgByKey(AppConstant.euipment_remark_update);
         EotApp.getAppinstance().getNotifyForEquipmentStatusList();

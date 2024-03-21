@@ -401,6 +401,9 @@
         <activity android:name=".nav_menu.jobs.job_detail.requested_item.AddUpdateRquestedItemActivity"
             android:screenOrientation="portrait"
             android:exported="false"/>
+        <activity android:name=".nav_menu.jobs.job_detail.job_equipment.job_equ_remrk.JobEquLinkItemActivity"
+            android:screenOrientation="portrait"
+            android:exported="false"/>
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" /> <!-- android:enabled="true" -->

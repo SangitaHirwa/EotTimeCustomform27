@@ -3,6 +3,7 @@ package com.eot_app.nav_menu.jobs.job_detail.job_equipment.job_equ_remrk.job_equ
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -379,7 +380,7 @@ public class JobEquRemark_PC implements JobEquRemark_PI {
                                 if (jsonObject.get("success").getAsBoolean()) {
                                     String message = LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString());
                                     updateEquipmentStates(remarkRequest);
-                                    jobEquimView.onRemarkUpdate(message);
+                                    jobEquimView.onRemarkUpdate(message, new InvoiceItemDataModel());
                                 } else if (jsonObject.get("statusCode") != null && jsonObject.get("statusCode").getAsString().equals(AppConstant.SESSION_EXPIRE)) {
                                     jobEquimView.onSessionExpire(LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
                                 } else {
@@ -585,6 +586,122 @@ public class JobEquRemark_PC implements JobEquRemark_PI {
             networkError();
         }
     }
+
+    @Override
+    public void getLinkItemList(String jobId) {
+        HashMap<String, String> hashMap = new HashMap<>();
+        hashMap.put("jobId", jobId);
+        hashMap.put("limit",updatelimit+"");
+        hashMap.put("index",updateindexItem+"");
+        if (AppUtility.isInternetConnected()) {
+        ApiClient.getservices().eotServiceCall(Service_apis.getLinkItem, AppUtility.getApiHeaders(),
+                            AppUtility.getJsonObject(new Gson().toJson(hashMap)))
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(new Observer<JsonObject>() {
+        @Override
+        public void onSubscribe(@NotNull Disposable d) {
+
+        }
+
+        @Override
+        public void onNext(@NotNull JsonObject jsonObject) {
+            AppUtility.progressBarDissMiss();
+            if (jsonObject.get("success").getAsBoolean()) {
+                try {
+                    String convert = jsonObject.get("data").getAsJsonArray().toString();
+                    Type listType = new TypeToken<List<InvoiceItemDataModel>>() {
+                    }.getType();
+                    List<InvoiceItemDataModel> data = new Gson().fromJson(convert, listType);
+                    jobEquimView.setItemListByJob(data);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } else {
+                AppUtility.progressBarDissMiss();
+                jobEquimView.notDtateFoundInRequestedItemList(LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
+            }
+        }
+
+
+        @Override
+        public void onError(@NotNull Throwable e) {
+            AppUtility.progressBarDissMiss();
+            Log.e("TAG", e.getMessage());
+        }
+
+        @Override
+        public void onComplete() {
+            AppUtility.progressBarDissMiss();
+        }
+    });
+} else {
+            networkError();
+        }
+    }
+
+    @Override
+    public void linkedItemAddToEqu(String jobId, String equId, String ijmmId) {
+        HashMap<String, String> hashMap = new HashMap<>();
+        hashMap.put("jobId", jobId);
+        hashMap.put("equId",equId);
+        hashMap.put("ijmmId",ijmmId);
+        if (AppUtility.isInternetConnected()) {
+            ApiClient.getservices().eotServiceCall(Service_apis.linkItemToEqup, AppUtility.getApiHeaders(),
+                            AppUtility.getJsonObject(new Gson().toJson(hashMap)))
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<JsonObject>() {
+                        @Override
+                        public void onSubscribe(@NotNull Disposable d) {
+
+                        }
+
+                        @Override
+                        public void onNext(@NotNull JsonObject jsonObject) {
+                            AppUtility.progressBarDissMiss();
+                            if (jsonObject.get("success").getAsBoolean()) {
+                                try {
+                                    Job job = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(jobId);
+                                    List<InvoiceItemDataModel> list = job.getItemData();
+                                    InvoiceItemDataModel updateItemDataModel = new InvoiceItemDataModel();
+                                    for (InvoiceItemDataModel item : list
+                                         ) {
+                                        if(item.getIjmmId().equalsIgnoreCase(ijmmId)){
+                                            item.setEquId(equId);
+                                            updateItemDataModel = item;
+                                            break;
+                                        }
+                                    }
+                                    AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().updateJobitems(jobId,list);
+                                    jobEquimView.onRemarkUpdate(jsonObject.get("message").getAsString(),updateItemDataModel);
+
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            } else {
+                                AppUtility.progressBarDissMiss();
+                                jobEquimView.notDtateFoundInRequestedItemList(LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
+                            }
+                        }
+
+
+                        @Override
+                        public void onError(@NotNull Throwable e) {
+                            AppUtility.progressBarDissMiss();
+                            Log.e("TAG", e.getMessage());
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            AppUtility.progressBarDissMiss();
+                        }
+                    });
+        } else {
+            networkError();
+        }
+    }
+
     public void networkError() {
         AppUtility.alertDialog(((Context) jobEquimView), LanguageController.getInstance().
                         getMobileMsgByKey(AppConstant.dialog_alert), LanguageController.getInstance().getMobileMsgByKey

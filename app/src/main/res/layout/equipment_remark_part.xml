@@ -206,7 +206,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="Add remark"
-                            android:textColor="@color/color_green"
+                            android:textColor="@color/colorPrimary"
                             android:textStyle="bold"
                             tools:ignore="HardcodedText" />
 

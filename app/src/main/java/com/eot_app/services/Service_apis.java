@@ -238,6 +238,9 @@ public interface Service_apis {
     String  updateItemRequest = "JobController/updateItemRequest";
     String deleteItemRequest = "JobController/deleteItemRequest";
     String getListItemRequest ="JobController/listItemRequest";
+    /** Get and Set link Item in Equipment*/
+    String getLinkItem ="JobController/getItemListForLinkEqu";
+    String linkItemToEqup ="JobController/linkJobItemToEqu";
 
     //no token required & header
     @POST

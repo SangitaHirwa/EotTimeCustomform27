@@ -27,5 +27,7 @@ public interface JobEquRemark_PI {
     void getRequestedItemDataList(String jobId);
     void deleteRequestedItem(String irId, String jobId, AddUpdateRequestedModel requestedModel);
     void sendMsg(Chat_Send_Msg_Model chat_send_Msg_model);
+    void getLinkItemList(String jobId);
+    void linkedItemAddToEqu(String jobId, String equId, String ijmmId);
 
 }

@@ -49,6 +49,7 @@ import com.eot_app.nav_menu.jobs.job_detail.invoice.inventry_pkg.ItemParts;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_detail_pkg.inv_detail_model.Tax;
 import com.eot_app.nav_menu.jobs.job_detail.invoice2list.ItemListPartAdpter;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.add_job_equip.UpdateJobEquipMentActivity;
+import com.eot_app.nav_menu.jobs.job_detail.job_equipment.job_equ_remrk.JobEquLinkItemActivity;
 import com.eot_app.nav_menu.jobs.joboffline_db.JobOfflineDataModel;
 import com.eot_app.services.Service_apis;
 import com.eot_app.utility.AppConstant;
@@ -128,16 +129,20 @@ public class ReplaceItemEquipmentActivity extends
     String warrantyType ="";
     String warrantyValue="";
     String isGrouped="";
-    TextView tvLabelStep1,tv_skip;
-    RelativeLayout ll_note;
+    TextView tvLabelStep1,tv_skip,txt_lbl_link,btn_link_item;
+    RelativeLayout ll_note, ll_link_note;
     private ImageButton tax_cancel;
     CheckBox add_stock_checkBox;
     String isRemoveStock ="1";
     boolean show_stock_checkbox = false;
-
+    public  static  ReplaceItemEquipmentActivity replaceItemEquipmentActivity;
+    public ReplaceItemEquipmentActivity getInstance (){
+        return replaceItemEquipmentActivity;
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        replaceItemEquipmentActivity = this;
         setContentView(R.layout.activity_edit__invoice);
         initializelables();
         Bundle bundle = getIntent().getExtras();
@@ -483,13 +488,20 @@ public class ReplaceItemEquipmentActivity extends
         recyclerView_part_item.setNestedScrollingEnabled(false);
 
         ll_note = findViewById(R.id.ll_note);
+        ll_link_note = findViewById(R.id.ll_link_note);
         // to show the note on the screen
         tvLabelStep1 = findViewById(R.id.tvLabelStep1);
         tvLabelStep1.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.step_1_note_new));
+        txt_lbl_link = findViewById(R.id.txt_lbl_link);
+        txt_lbl_link.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.select_job_items_to_link_equipment));
         ll_note.setVisibility(View.VISIBLE);
+        ll_link_note.setVisibility(View.VISIBLE);
         tv_skip = findViewById(R.id.tv_skip);
         tv_skip.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.skip));
         tv_skip.setOnClickListener(this);
+        btn_link_item = findViewById(R.id.btn_link_item);
+        btn_link_item.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.yes));
+        btn_link_item.setOnClickListener(this);
 
         itemlayout = findViewById(R.id.itemlayout);
         layout_fw_item = findViewById(R.id.layout_fw_item);
@@ -1159,6 +1171,9 @@ public class ReplaceItemEquipmentActivity extends
             case R.id.tv_skip:
                 sentDataForEquipWithoutItem();
                 break;
+                case R.id.btn_link_item:
+                    linkItem();
+                break;
             case R.id.tax_cancel:
                 for (Tax tax:listFilter)
                 {
@@ -1188,6 +1203,27 @@ public class ReplaceItemEquipmentActivity extends
         finish();
     }
 
+    private void linkItem() {
+        Intent intent = new Intent(ReplaceItemEquipmentActivity.this,  JobEquLinkItemActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+
+        String strEqu = new Gson().toJson(equipment);
+        intent.putExtra("edit_jobId", jobId);
+        intent.putExtra("invId", invId);
+        if(equipment.getIsPart().equalsIgnoreCase("1"))
+            intent.putExtra("isPart", "1");
+            intent.putExtra("comeFrom", comeFrom);
+        intent.putExtra("equipment", strEqu);
+        intent.putExtra("equipmentId", equipment.getEquId());
+        intent.putExtra("InvoiceItemDataModel", updateItemDataModel);
+        try {
+            intent.putExtra("objectStr", new Gson().toJson(updateItemDataModel));
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+        startActivity(intent);
+//        startActivityForResult(intent, EQUIPMENTLINK);
+    }
     private void checkMandtryFileds() {
         if (!IS_ITEM_MANDATRY && TAB_SELECT == 1) {
             AppUtility.alertDialog(this, "", LanguageController.getInstance().getMobileMsgByKey(AppConstant.item_empty), LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok),
@@ -1212,8 +1248,10 @@ public class ReplaceItemEquipmentActivity extends
                 if (tax.isSelect())
                     taxListFilter.add(tax);
             }
-
-            String equId="";
+            String equId= "";
+            if(equipment != null && equipment.getEquId() != null){
+                equId = equipment.getEquId();
+            }
             if (equipment.getIsPart().equalsIgnoreCase("1")) {
                 equId =equipment.getParentId();
             }

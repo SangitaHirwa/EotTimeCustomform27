@@ -67,6 +67,7 @@ import com.eot_app.nav_menu.jobs.job_detail.job_equipment.add_job_equip.model_pk
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.add_job_equip.mvp.AddJobEqu_Pc;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.add_job_equip.mvp.AddJobEqu_Pi;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.add_job_equip.mvp.AddJobEqu_View;
+import com.eot_app.nav_menu.jobs.job_detail.job_equipment.job_equ_remrk.JobEquRemarkRemarkActivity;
 import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.AppUtility;
 import com.eot_app.utility.App_preference;
@@ -650,7 +651,7 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
         try {
             if (updateItemDataModel != null) {
 
-                if (updateItemDataModel.getIsGrouped().equalsIgnoreCase("1") && isPart.equalsIgnoreCase("0")) {
+                if (updateItemDataModel.getIsGrouped() != null && updateItemDataModel.getIsGrouped().equalsIgnoreCase("1") && isPart != null && isPart.equalsIgnoreCase("0")) {
                     AppUtility.alertDialog(UpdateJobEquipMentActivity.this, LanguageController.getInstance().getMobileMsgByKey(AppConstant.are_you_sure), LanguageController.getInstance().getMobileMsgByKey(AppConstant.do_you_want_t), LanguageController.getInstance().getMobileMsgByKey(AppConstant.yes), LanguageController.getInstance().getMobileMsgByKey(AppConstant.no), () -> {
                         isCnvtItemParts = "1";
                         return true;
@@ -1224,7 +1225,7 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
         EotApp.getAppinstance().getNotifyForEquipmentCountRemark();
         EotApp.getAppinstance().showToastmsg(msg);
         new Handler().postDelayed(() -> {
-
+            new JobEquRemarkRemarkActivity().getInstance().finish();
             /*navigate to the job equipment screen *****/
             Intent intent = new Intent();
             setResult(EQUIPMENT_UPDATE_CODE, intent);
@@ -1395,7 +1396,10 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            onBackPressed();
+            Intent intent = new Intent();
+            setResult(RESULT_OK,intent);
+            finish();
+//            onBackPressed();
             return true;
         }
         return true;

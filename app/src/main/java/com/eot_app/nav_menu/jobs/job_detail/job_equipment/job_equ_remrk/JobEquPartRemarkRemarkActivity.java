@@ -1065,7 +1065,7 @@ public class JobEquPartRemarkRemarkActivity extends UploadDocumentActivity imple
         intent.putExtra("comeFrom", "AddRemark");
         intent.putExtra("NONBILLABLE", false);
         startActivity(intent);
-        finish();
+
     }
 
     /**
@@ -1608,7 +1608,7 @@ public class JobEquPartRemarkRemarkActivity extends UploadDocumentActivity imple
 
 
     @Override
-    public void onRemarkUpdate(String message) {
+    public void onRemarkUpdate(String message,InvoiceItemDataModel updateItemDataModel) {
         isRemarkUpdated = true;
         String remark_msg = !REMARK_SUBMIT ? LanguageController.getInstance().getMobileMsgByKey(AppConstant.euipment_remark_submit) : LanguageController.getInstance().getMobileMsgByKey(AppConstant.euipment_remark_update);
         EotApp.getAppinstance().getNotifyForEquipmentStatusList();

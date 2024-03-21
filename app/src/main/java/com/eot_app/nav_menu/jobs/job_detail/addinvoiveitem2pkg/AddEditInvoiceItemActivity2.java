@@ -62,6 +62,7 @@ import com.eot_app.nav_menu.jobs.job_detail.invoice.inventry_pkg.ItemParts;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_detail_pkg.inv_detail_model.Tax;
 import com.eot_app.nav_menu.jobs.job_detail.invoice2list.ItemListPartAdpter;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.add_job_equip.AddJobEquipMentActivity;
+import com.eot_app.nav_menu.jobs.job_detail.job_equipment.job_equ_remrk.JobEquLinkItemActivity;
 import com.eot_app.nav_menu.jobs.joboffline_db.JobOfflineDataModel;
 import com.eot_app.services.Service_apis;
 import com.eot_app.utility.AppConstant;
@@ -100,7 +101,8 @@ public class AddEditInvoiceItemActivity2 extends
         View.OnClickListener,
         RadioGroup.OnCheckedChangeListener {
     public static final int EQUIPMENTCONVERT = 201;
-    RelativeLayout ll_note;
+    public static final int EQUIPMENTLINK = 202;
+    RelativeLayout ll_note, ll_link_note;
     View nm_view, desc_view, qty_view, rate_view, supplier_view, disc_view, tax_view, amount_view, part_no_view, hsncode_view, unit_view, taxrateAmount_view, seroal_no_view, tax_rate_view;
     TextView tax_value_txt, tax_txt_hint, amount_value_txt, taxamount_txt_hint, taxamount_value_txt, amount_txt_hint;
     List<ItemParts> partsList = new ArrayList<>();
@@ -110,7 +112,7 @@ public class AddEditInvoiceItemActivity2 extends
     String equipmentIdName = "";
     String equipmentType = "";
     RelativeLayout add_quote_item_layout;
-    TextView text_default, tv_label_part;
+    TextView text_default, tv_label_part, txt_lbl_link,btn_link_item;
     CardView ll_part_items;
     RecyclerView recyclerView_part_item;
     ItemListPartAdpter invoice_list_adpter;
@@ -181,10 +183,16 @@ public class AddEditInvoiceItemActivity2 extends
     CheckBox add_stock_checkBox;
    String isRemoveStock ="1";
    boolean show_stock_checkbox = false;
+   public static AddEditInvoiceItemActivity2 addEditInvoiceItemActivity2;
 
+   public  AddEditInvoiceItemActivity2 getInstance(){
+
+       return addEditInvoiceItemActivity2;
+   }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        addEditInvoiceItemActivity2 = this;
         setContentView(R.layout.activity_edit__invoice);
 //        initializelables();
         appointmentItemData_pi = new AppointmentItemData_pc();
@@ -209,6 +217,8 @@ public class AddEditInvoiceItemActivity2 extends
                     if (comeFrom != null && comeFrom.equalsIgnoreCase("AddRemark")) {
                         edt_item_qty.setEnabled(false);
                         ll_note.setVisibility(View.VISIBLE);
+                    }else  if (comeFrom != null && comeFrom.equalsIgnoreCase("AddRemarkItem")) {
+                        ll_link_note.setVisibility(View.VISIBLE);
                     }
                     layout_fw_item.setVisibility(View.GONE);
                 }
@@ -827,6 +837,7 @@ public class AddEditInvoiceItemActivity2 extends
         tvLabelStep1.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.step_1_note_new));
 
         ll_note = findViewById(R.id.ll_note);
+        ll_link_note = findViewById(R.id.ll_link_note);
         itemlayout = findViewById(R.id.itemlayout);
         layout_fw_item = findViewById(R.id.layout_fw_item);
         tv_label_part = findViewById(R.id.tv_label_part);
@@ -915,6 +926,11 @@ public class AddEditInvoiceItemActivity2 extends
 
         add_stock_checkBox = findViewById(R.id.add_stock_checkBox);
         add_stock_checkBox.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.remove_stock_from_inventory));
+        txt_lbl_link = findViewById(R.id.txt_lbl_link);
+        txt_lbl_link.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.select_job_items_to_link_equipment));
+        btn_link_item = findViewById(R.id.btn_link_item);
+        btn_link_item.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.yes));
+        btn_link_item.setOnClickListener(this);
 
         intializeViews();
     }
@@ -1090,6 +1106,15 @@ public class AddEditInvoiceItemActivity2 extends
         intent.putExtra("equipmentIdName", equipmentIdName);
         intent.putExtra("equipmentType", equipmentType);
         startActivityForResult(intent, EQUIPMENTCONVERT);
+    }
+    /** Move Link Item Screen */
+    private void linkItem() {
+        Intent intent = new Intent(AddEditInvoiceItemActivity2.this, JobEquLinkItemActivity.class);
+        intent.putExtra("edit_jobId", jobId);
+        intent.putExtra("comeFrom", "AddItem");
+        intent.putExtra("equipmentId", equipmentId);
+        startActivity(intent);
+//        startActivityForResult(intent, EQUIPMENTLINK);
     }
 
     @Override
@@ -1543,6 +1568,9 @@ public class AddEditInvoiceItemActivity2 extends
                 Log.d("settax5",String.valueOf(total_tax)+getTotalApplyTax());
                 calculateTaxRate();
                 total_Amount_cal();
+                break;
+            case R.id.btn_link_item:
+                linkItem();
                 break;
         }
     }

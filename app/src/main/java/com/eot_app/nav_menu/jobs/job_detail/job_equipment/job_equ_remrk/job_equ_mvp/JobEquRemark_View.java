@@ -16,7 +16,7 @@ public interface JobEquRemark_View {
     void onSessionExpire(String message);
     void setItemListByJob(List<InvoiceItemDataModel> itemList);
 
-    void onRemarkUpdate(String message);
+    void onRemarkUpdate(String message,InvoiceItemDataModel updateItemDataModel);
 
     void onErrorMsg(String msg);
 

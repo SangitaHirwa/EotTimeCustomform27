@@ -46,7 +46,46 @@ Choose an item from the inventory Choose an item from the inventory yy"
                 tools:ignore="HardcodedText" />
         </RelativeLayout>
         <RelativeLayout
-            android:layout_below="@+id/ll_note"
+            android:id="@+id/ll_link_note"
+            android:visibility="gone"
+            android:background="@color/bg_link_item_note"
+            android:layout_marginBottom="10dp"
+            android:padding="25dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_below="@id/ll_note"
+            >
+            <TextView
+                android:id="@+id/txt_lbl_link"
+                style="@style/style_sec"
+                android:layout_width="match_parent"
+                android:layout_toStartOf="@+id/btn_link_item"
+                android:layout_height="wrap_content"
+                android:gravity="start"
+                tools:text="Note : Step 1 - Choose an item from the inventory
+Choose an item from the inventory Choose an item from the inventory yy"
+                android:textSize="16dp"
+                android:textStyle="bold"
+                tools:ignore="SpUsage" />
+            <TextView
+                android:layout_alignParentEnd="true"
+                android:id="@+id/btn_link_item"
+                android:paddingHorizontal="25dp"
+                android:layout_marginStart="10dp"
+                style="@style/style_sec"
+                android:background="@drawable/submit_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:paddingVertical="6dp"
+                android:layout_marginTop="5dp"
+                android:gravity="center"
+                android:text="skip"
+                tools:ignore="HardcodedText" />
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_below="@+id/ll_link_note"
             android:id="@+id/add_quote_item_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

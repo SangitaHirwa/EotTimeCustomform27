@@ -71,6 +71,15 @@ public class InvoiceItemDataModel implements Parcelable {
     private String parentId;
     private String groupId;
     private String isRemoveStock;
+    private String brandNm;
+
+    public String getBrandNm() {
+        return brandNm;
+    }
+
+    public void setBrandNm(String brandNm) {
+        this.brandNm = brandNm;
+    }
 
     public String getParentId() {
         return parentId;
@@ -241,6 +250,7 @@ public class InvoiceItemDataModel implements Parcelable {
         parentId = in.readString();
         groupId = in.readString();
         isRemoveStock = in.readString();
+        brandNm = in.readString();
     }
 
     public static Creator<InvoiceItemDataModel> getCREATOR() {
@@ -445,6 +455,7 @@ public class InvoiceItemDataModel implements Parcelable {
         dest.writeString(parentId);
         dest.writeString(groupId);
         dest.writeString(isRemoveStock);
+        dest.writeString(brandNm);
     }
 
 
@@ -484,7 +495,8 @@ public class InvoiceItemDataModel implements Parcelable {
                 Objects.equals(getIsPartChild(), that.getIsPartChild())&&
                 Objects.equals(getParentId(), that.getParentId())&&
                 Objects.equals(getGroupId(), that.getGroupId())&&
-                Objects.equals(getIsRemoveStock(), that.getIsRemoveStock());
+                Objects.equals(getIsRemoveStock(), that.getIsRemoveStock())&&
+                Objects.equals(getBrandNm(), that.getBrandNm());
     }
 
     public String getIsBillableChange() {
@@ -536,6 +548,6 @@ public class InvoiceItemDataModel implements Parcelable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(getTempNm(), getInm(), getIjmmId(), getItemId(), getDataType(), getItemType(), getRate(), getQty(), getDiscount(), getDes(), getHsncode(), getPno(), getUnit(), getTaxamnt(), getSupplierCost(), getIsGrouped(), getTax(), getJtId(), getIsBillable(), getIsBillableChange(),getWarrantyType(),getWarrantyValue(),getEquId(),getIsPartTempId(),getIsPartParent(),getIsPartChild(),getParentId(),isRemoveStock);
+        return Objects.hash(getTempNm(), getInm(), getIjmmId(), getItemId(), getDataType(), getItemType(), getRate(), getQty(), getDiscount(), getDes(), getHsncode(), getPno(), getUnit(), getTaxamnt(), getSupplierCost(), getIsGrouped(), getTax(), getJtId(), getIsBillable(), getIsBillableChange(),getWarrantyType(),getWarrantyValue(),getEquId(),getIsPartTempId(),getIsPartParent(),getIsPartChild(),getParentId(),isRemoveStock,getBrandNm());
     }
 }
