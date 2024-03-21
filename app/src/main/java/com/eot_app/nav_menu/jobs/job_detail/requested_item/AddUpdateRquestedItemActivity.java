@@ -373,8 +373,9 @@ public class AddUpdateRquestedItemActivity extends AppCompatActivity implements 
             } else {
                 edt_modelNo.setText("");
             }
-            if (itemselected.getBrandNm() != null && !itemselected.getBrandNm().isEmpty()) {
-                brand_txt.setText(itemselected.getBrandNm());
+            if (itemselected.getEbId() != null && !itemselected.getEbId().isEmpty()) {
+                String brandNameById = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).brandDao().getBrandNameById(itemselected.getEbId());
+                brand_txt.setText(brandNameById);
                 brand_id = itemselected.getEbId();
                 hint_brand_txt.setVisibility(View.VISIBLE);
             } else {
