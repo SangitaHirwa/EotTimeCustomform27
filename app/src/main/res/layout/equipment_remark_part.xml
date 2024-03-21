@@ -209,6 +209,13 @@
                             android:textColor="@color/colorPrimary"
                             android:textStyle="bold"
                             tools:ignore="HardcodedText" />
+                        <ImageView
+                            android:visibility="gone"
+                            android:id="@+id/img_show_remark"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/double_tick"
+                            android:layout_gravity="center"/>
 
                     </LinearLayout>
                 </LinearLayout>

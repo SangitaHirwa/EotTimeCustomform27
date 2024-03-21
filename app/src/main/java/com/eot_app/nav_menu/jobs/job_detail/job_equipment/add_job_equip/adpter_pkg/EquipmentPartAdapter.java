@@ -115,6 +115,11 @@ public class EquipmentPartAdapter extends RecyclerView.Adapter<EquipmentPartAdap
         EquArrayModel equArrayModel = list.get(position);
         Log.e("List", "" + new Gson().toJson(list));
 
+        if (!TextUtils.isEmpty(equArrayModel.getStatus()) || equArrayModel.getAttachments() != null && equArrayModel.getAttachments().size() > 0) {
+            holder.img_show_remark.setVisibility(View.VISIBLE);
+        }else {
+            holder.img_show_remark.setVisibility(View.GONE);
+        }
         if(isComeFromDetail)
         {
             holder.main_layout.setOnClickListener(v -> onEquipmentClicked.OnEquipmentClicked());
@@ -268,7 +273,7 @@ public class EquipmentPartAdapter extends RecyclerView.Adapter<EquipmentPartAdap
         TextView view_details, add_action,tv_date;
         LinearLayout main_layout;
         TextView tvWarranty;
-        ImageView ivAlert;
+        ImageView ivAlert, img_show_remark;
         LinearLayout ll_status;
 
         public MyViewHolder(@NonNull View itemView) {
@@ -292,6 +297,7 @@ public class EquipmentPartAdapter extends RecyclerView.Adapter<EquipmentPartAdap
             tv_date = itemView.findViewById(R.id.tv_date);
             tvWarranty = itemView.findViewById(R.id.tvWarranty);
             ivAlert = itemView.findViewById(R.id.ivAlert);
+            img_show_remark = itemView.findViewById(R.id.img_show_remark);
 
         }
 

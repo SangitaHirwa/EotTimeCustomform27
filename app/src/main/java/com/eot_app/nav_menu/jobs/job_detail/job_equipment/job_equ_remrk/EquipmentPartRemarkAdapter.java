@@ -109,7 +109,11 @@ public class EquipmentPartRemarkAdapter extends RecyclerView.Adapter<EquipmentPa
         Log.e("List", "" + new Gson().toJson(list));
         holder.tv_item_name.setText(equArrayModel.getEqunm());
 
-
+        if (!TextUtils.isEmpty(equArrayModel.getStatus()) || equArrayModel.getAttachments() != null && equArrayModel.getAttachments().size() > 0) {
+            holder.img_show_remark.setVisibility(View.VISIBLE);
+        }else {
+            holder.img_show_remark.setVisibility(View.GONE);
+        }
 
 
         if(llDetailHide)
@@ -240,7 +244,7 @@ public class EquipmentPartRemarkAdapter extends RecyclerView.Adapter<EquipmentPa
         LinearLayout ll_main;
         LinearLayout ll_views;
         TextView tvWarranty;
-        ImageView ivAlert;
+        ImageView ivAlert, img_show_remark;
         TextView view_details, add_action;
         LinearLayout ll_status;
 
@@ -268,6 +272,7 @@ public class EquipmentPartRemarkAdapter extends RecyclerView.Adapter<EquipmentPa
             ll_status = itemView.findViewById(R.id.ll_status);
             view_details.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.view_details));
             add_action = itemView.findViewById(R.id.add_action);
+            img_show_remark = itemView.findViewById(R.id.img_show_remark);
         }
 
 
