@@ -1901,7 +1901,8 @@
     "link": "Link",
     "available": "Available",
     "discarded": "Discarded",
-     "discard_equipments_not_replaced": "Discard equipments cannot be replaced."
+     "discard_equipments_not_replaced": "Discard equipments cannot be replaced.",
+    "order_reference_number": "Order Reference Number"
   }
 }
 
