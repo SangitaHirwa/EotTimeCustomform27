@@ -665,6 +665,8 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
             }else {
                 ll_requested_item.setVisibility(View.GONE);
             }
+        }else {
+            ll_requested_item.setVisibility(View.GONE);
         }
 
     }
@@ -1889,7 +1891,11 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
        part_cardview.setVisibility(View.VISIBLE);
        item_cardview.setVisibility(View.VISIBLE);
        ll_replace.setVisibility(View.VISIBLE);
-       ll_requested_item.setVisibility(View.VISIBLE);
+        if(App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsItemRequested() == 0){
+            ll_requested_item.setVisibility(View.VISIBLE);
+        }else {
+            ll_requested_item.setVisibility(View.GONE);
+        }
         attachment_card.setVisibility(View.GONE);
        cv_editRemark.setVisibility(View.GONE);
     }

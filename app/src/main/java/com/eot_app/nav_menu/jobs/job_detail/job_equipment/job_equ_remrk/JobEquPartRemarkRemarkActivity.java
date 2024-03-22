@@ -641,6 +641,8 @@ public class JobEquPartRemarkRemarkActivity extends UploadDocumentActivity imple
 
         if(App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsItemRequested() == 0){
             ll_requested_item.setVisibility(View.VISIBLE);
+        }else {
+            ll_requested_item.setVisibility(View.GONE);
         }
         CustomLinearLayoutManager customLayoutManager = new CustomLinearLayoutManager(this, LinearLayoutManager.HORIZONTAL
                 , false);
@@ -1875,7 +1877,11 @@ public class JobEquPartRemarkRemarkActivity extends UploadDocumentActivity imple
         part_cardview.setVisibility(View.GONE);
         item_cardview.setVisibility(View.GONE);
         ll_replace.setVisibility(View.VISIBLE);
-        ll_requested_item.setVisibility(View.VISIBLE);
+        if(App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsItemRequested() == 0){
+            ll_requested_item.setVisibility(View.VISIBLE);
+        }else {
+            ll_requested_item.setVisibility(View.GONE);
+        }
         attachment_card.setVisibility(View.GONE);
         cv_editRemark.setVisibility(View.GONE);
     }

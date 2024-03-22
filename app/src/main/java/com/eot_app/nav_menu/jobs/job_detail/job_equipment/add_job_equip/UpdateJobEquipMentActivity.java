@@ -152,8 +152,10 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
         try {
             DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy", Locale.US);//hh:mm:ss a
             Date startDate = formatter.parse(selectedDay + "-" + (selectedMonth + 1) + "-" + selectedYear);
+            DateFormat formatter1 = new SimpleDateFormat("dd-MMM-yyyy", Locale.US);
             assert startDate != null;
-            dateselect = formatter.format(startDate);
+            dateselect = formatter1.format(startDate);
+//            dateselect = formatter.format(startDate);
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             params.setMargins(0, 5, 0, -20);
 
@@ -226,7 +228,7 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
                 updateItemDataModel.getWarrantyValue() != null &&
                 !updateItemDataModel.getWarrantyValue().isEmpty() &&
                 !updateItemDataModel.getWarrantyType().isEmpty()) {
-            String date = AppUtility.addDaysInDate(dateselect, Integer.parseInt(updateItemDataModel.getWarrantyValue()), updateItemDataModel.getWarrantyType(), "dd-MM-yyyy");
+            String date = AppUtility.addDaysInDate(dateselect, Integer.parseInt(updateItemDataModel.getWarrantyValue()), updateItemDataModel.getWarrantyType(), "dd-MMM-yyyy");
             setWarrntyViews(date, params);
         }
     }
@@ -577,7 +579,7 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
             job = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(jobId);
         }
         // To set the current date as warranty start date
-        setWarrntyStartViews(AppUtility.getCurrentDateByFormat("dd-MM-yyyy"));
+        setWarrntyStartViews(AppUtility.getCurrentDateByFormat("dd-MMM-yyyy"));
 
         //get equipment list
         addJobEqu_pi.getEquipmentList(jobId);

@@ -517,7 +517,7 @@
                 </androidx.cardview.widget.CardView>
 
                     <include
-                        android:visibility="visible"
+                        android:visibility="gone"
                         android:id="@+id/ll_requested_item"
                         app:cardBackgroundColor="@color/white"
                         android:layout_margin="8dp"
