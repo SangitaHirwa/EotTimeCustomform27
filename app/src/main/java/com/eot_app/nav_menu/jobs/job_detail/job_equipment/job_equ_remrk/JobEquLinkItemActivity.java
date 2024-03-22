@@ -17,6 +17,7 @@ import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.AddEditInvoiceIte
 import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.ReplaceItemEquipmentActivity;
 import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.model.InvoiceItemDataModel;
 import com.eot_app.nav_menu.jobs.job_detail.customform.cstm_form_model.CustomFormList_Res;
+import com.eot_app.nav_menu.jobs.job_detail.job_equipment.add_job_equip.AddJobEquipMentActivity;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.add_job_equip.UpdateJobEquipMentActivity;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.job_equ_remrk.adapter.LinkItemAdapter;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.job_equ_remrk.job_equ_mvp.JobEquRemark_PC;
@@ -39,8 +40,8 @@ public class JobEquLinkItemActivity extends AppCompatActivity implements JobEquR
     TextView txt_lbl;
     LinkItemAdapter linkItemAdapter;
     JobEquRemark_PC jobEquRemarkPc;
-    String jobId, equId, comeFrom, invId;
-    boolean isAddItem = false;
+    String jobId, equId, comeFrom, invId, equipmentIdName, equipmentType;
+    boolean isAddItem = false, isPartAdd = false;
     InvoiceItemDataModel updateItemDataModel;
     EquArrayModel equipment;
     public  static  JobEquLinkItemActivity jobEquLinkItemActivity;
@@ -66,14 +67,22 @@ public class JobEquLinkItemActivity extends AppCompatActivity implements JobEquR
                     jobId = bundle.getString("edit_jobId");
                     if(comeFrom.equalsIgnoreCase("AddItem")){
                         isAddItem = true;
+                    }else if(comeFrom.equalsIgnoreCase("AddRemark")){
+                        isPartAdd = true;
                     }
                     /** For replace item to equipment*/
-                    if(!isAddItem){
+                    if(!isAddItem && !isPartAdd){
                         invId = bundle.getString("invId");
                         String string = bundle.getString("objectStr");
                         updateItemDataModel = new Gson().fromJson(string, InvoiceItemDataModel.class);
                         String strEquipment = getIntent().getExtras().getString("equipment");
                         equipment = new Gson().fromJson(strEquipment, EquArrayModel.class);
+                    }else if(isPartAdd){
+                        invId = bundle.getString("invId");
+                        equipmentIdName = bundle.getString("equipmentIdName");
+                        equipmentType = bundle.getString("equipmentType");
+                        String string = bundle.getString("objectStr");
+                        updateItemDataModel = new Gson().fromJson(string, InvoiceItemDataModel.class);
                     }
                 }
             } catch (Exception exception) {
@@ -133,6 +142,24 @@ public class JobEquLinkItemActivity extends AppCompatActivity implements JobEquR
             new AddEditInvoiceItemActivity2().getInstance().finish();
             Intent intent = new Intent();
             setResult(RESULT_OK, intent);
+            finish();
+        }else if(isPartAdd){
+            new AddEditInvoiceItemActivity2().getInstance().finish();
+            Intent intent = new Intent(JobEquLinkItemActivity.this, AddJobEquipMentActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+            intent.putExtra("edit_jobId", jobId);
+            intent.putExtra("invId", invId);
+            intent.putExtra("comeFrom", comeFrom);
+            intent.putExtra("equipmentId", equId);
+            intent.putExtra("equipmentIdName", equipmentIdName);
+            intent.putExtra("equipmentType", equipmentType);
+            intent.putExtra("InvoiceItemDataModel", updateItemDataModel);
+            try {
+                intent.putExtra("objectStr", new Gson().toJson(updateItemDataModel));
+            } catch (Exception exception) {
+                exception.printStackTrace();
+            }
+            startActivityForResult(intent, 201);
             finish();
         }else {
             new ReplaceItemEquipmentActivity().getInstance().finish();

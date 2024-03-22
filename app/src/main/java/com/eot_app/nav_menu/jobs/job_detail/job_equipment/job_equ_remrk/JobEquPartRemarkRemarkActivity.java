@@ -1402,6 +1402,11 @@ public class JobEquPartRemarkRemarkActivity extends UploadDocumentActivity imple
 
 
         if (equipment != null) {
+            if (!TextUtils.isEmpty(equipment.getStatus()) || equipment.getAttachments() != null && equipment.getAttachments().size() > 0) {
+                btn_edit.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit));
+            }else {
+                btn_edit.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add));
+            }
 
             equId = equipment.getEquId();
             mParam2 = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(jobId);
@@ -1527,7 +1532,11 @@ public class JobEquPartRemarkRemarkActivity extends UploadDocumentActivity imple
         if (equipment.getRemark().equals("") && equipment.getStatus().equals("") && equipment.getAttachments() != null && equipment.getAttachments().size() == 0) {
             if(isAction) {
                 if(isEdit){
-                    setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_remark));
+                    if (!TextUtils.isEmpty(equipment.getStatus()) || equipment.getAttachments() != null && equipment.getAttachments().size() > 0) {
+                        setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.update_remark));
+                    }else {
+                        setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_remark));
+                    }
                 }else {
                     setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.action));
                 }
@@ -1539,7 +1548,11 @@ public class JobEquPartRemarkRemarkActivity extends UploadDocumentActivity imple
             if (equipment != null && equipment.getEqunm() != null) {
                 if(isAction) {
                     if(isEdit){
-                        setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_remark));
+                        if (!TextUtils.isEmpty(equipment.getStatus()) || equipment.getAttachments() != null && equipment.getAttachments().size() > 0) {
+                            setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.update_remark));
+                        }else {
+                            setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_remark));
+                        }
                     }else {
                         setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.action));
                     }

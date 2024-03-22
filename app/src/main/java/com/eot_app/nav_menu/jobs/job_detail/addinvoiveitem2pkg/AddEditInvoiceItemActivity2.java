@@ -217,6 +217,7 @@ public class AddEditInvoiceItemActivity2 extends
                     if (comeFrom != null && comeFrom.equalsIgnoreCase("AddRemark")) {
                         edt_item_qty.setEnabled(false);
                         ll_note.setVisibility(View.VISIBLE);
+                        ll_link_note.setVisibility(View.VISIBLE);
                     }else  if (comeFrom != null && comeFrom.equalsIgnoreCase("AddRemarkItem")) {
                         ll_link_note.setVisibility(View.VISIBLE);
                     }
@@ -1109,12 +1110,31 @@ public class AddEditInvoiceItemActivity2 extends
     }
     /** Move Link Item Screen */
     private void linkItem() {
-        Intent intent = new Intent(AddEditInvoiceItemActivity2.this, JobEquLinkItemActivity.class);
-        intent.putExtra("edit_jobId", jobId);
-        intent.putExtra("comeFrom", "AddItem");
-        intent.putExtra("equipmentId", equipmentId);
-        startActivity(intent);
+        if(comeFrom.equalsIgnoreCase("AddRemarkItem")) {
+            Intent intent = new Intent(AddEditInvoiceItemActivity2.this, JobEquLinkItemActivity.class);
+            intent.putExtra("edit_jobId", jobId);
+            intent.putExtra("comeFrom", "AddItem");
+            intent.putExtra("equipmentId", equipmentId);
+            startActivity(intent);
 //        startActivityForResult(intent, EQUIPMENTLINK);
+        }else {
+            Intent intent = new Intent(AddEditInvoiceItemActivity2.this,  JobEquLinkItemActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+
+            intent.putExtra("edit_jobId", jobId);
+            intent.putExtra("invId", invId);
+            intent.putExtra("comeFrom", comeFrom);
+            intent.putExtra("equipmentId", equipmentId);
+            intent.putExtra("equipmentIdName", equipmentIdName);
+            intent.putExtra("equipmentType", equipmentType);
+            intent.putExtra("InvoiceItemDataModel", updateItemDataModel);
+            try {
+                intent.putExtra("objectStr", new Gson().toJson(updateItemDataModel));
+            } catch (Exception exception) {
+                exception.printStackTrace();
+            }
+            startActivity(intent);
+        }
     }
 
     @Override
