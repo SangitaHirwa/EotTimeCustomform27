@@ -2198,7 +2198,7 @@ public void setCompletionDetail(){
 
             SpannableStringBuilder builder1 = new SpannableStringBuilder();
             SpannableString str2 = new SpannableString(
-                    LanguageController.getInstance().getMobileMsgByKey(AppConstant.order_reference_number) + " : ");
+                    LanguageController.getInstance().getMobileMsgByKey(AppConstant.po_number) + " : ");
             builder1.append(str2);
 
             if (mParam2.getPono() != null && !mParam2.getPono().isEmpty()) {
