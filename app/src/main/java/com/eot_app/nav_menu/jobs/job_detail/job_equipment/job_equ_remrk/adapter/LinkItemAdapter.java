@@ -46,7 +46,7 @@ public class LinkItemAdapter extends RecyclerView.Adapter<LinkItemAdapter.MyView
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         holder.txt_item_name.setText(list.get(position).getInm());
         holder.txt_item_quantity.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.qty)+" : "+list.get(position).getQty());
-        holder.txt_item_model_no.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.model_no)+" : "+list.get(position).getPno());
+        holder.txt_item_model_no.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.equipment_model)+" : "+list.get(position).getPno());
         holder.txt_item_brand_nm.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.brand)+" : "+list.get(position).getBrandNm());
 
         holder.txt_link.setOnClickListener(new View.OnClickListener() {

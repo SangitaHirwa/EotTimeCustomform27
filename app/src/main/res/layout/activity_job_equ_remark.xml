@@ -358,18 +358,6 @@
                                 android:nestedScrollingEnabled="false"
                                 app:layout_constraintStart_toStartOf="@id/txt_remark"
                                 app:layout_constraintTop_toBottomOf="@id/txt_remark" />
-
-                            <FrameLayout
-                                android:id="@+id/framlayout"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                tools:layout_editor_absoluteX="-47dp"
-                                tools:layout_editor_absoluteY="-362dp">
-
-                            </FrameLayout>
-
-                            <!--End Custom Form View-->
-
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
                     </androidx.cardview.widget.CardView>
