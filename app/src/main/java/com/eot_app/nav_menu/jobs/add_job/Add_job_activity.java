@@ -2324,7 +2324,7 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
                     kpr = null;
                 }
 
-                if (date_str.isEmpty()) { //remove space from schdlFinish & schdlStart
+                if (date_str != null &&date_str.isEmpty()) { //remove space from schdlFinish & schdlStart
                     schdlStart = schdlFinish = "";
                 } else {
                     schdlStart = date_str + " " + time_str;
