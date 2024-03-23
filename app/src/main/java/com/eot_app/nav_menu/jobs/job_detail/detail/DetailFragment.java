@@ -193,7 +193,7 @@ public class DetailFragment extends Fragment
     RecyclerView recyclerView, rv_mark_done;
     InvoiceItemList2Adpter invoice_list_adpter;
     RequestedItemListAdapter requestedItemListAdapter;
-    TextView text_misc;
+//    TextView text_misc;
     View ll_item, ll_equipment, ll_requested_item;
     RecyclerView recyclerView_job_item, recyclerView_requested_item;
     RecyclerView recyclerView_job_eq,rv_fw_list;
@@ -238,7 +238,7 @@ public class DetailFragment extends Fragment
     private Job_Status_Adpter mySpinnerAdapter;
     // job actual and travel time
     private ChipGroup chipGroup;
-    private CardView ll_po_number;
+    private LinearLayout ll_po_number;
     private CompletionAdpterJobDteails1 jobCompletionAdpter;
     private JobDetailEquipmentAdapter adapter;
     private TextView site_name;
@@ -837,7 +837,7 @@ public class DetailFragment extends Fragment
         }
 
         site_name = layout.findViewById(R.id.site_name);
-        text_misc = layout.findViewById(R.id.text_misc);
+//        text_misc = layout.findViewById(R.id.text_misc);
         tagcardView = layout.findViewById(R.id.tagcardView);
 
 
@@ -848,7 +848,7 @@ public class DetailFragment extends Fragment
 
         quotes_details_txt.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.quotes_details));
         quotes_details_number_txt.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.quotes_num));
-        text_misc.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.misc));
+//        text_misc.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.misc));
 
 //        customLayoutManager = new CustomLinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL
 //                , false);
@@ -913,6 +913,8 @@ public class DetailFragment extends Fragment
 
         if(App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsItemRequested() == 0){
             ll_requested_item.setVisibility(View.VISIBLE);
+        }else{
+            ll_requested_item.setVisibility(View.GONE);
         }
     }
 
@@ -1636,12 +1638,16 @@ public void setCompletionDetail(){
                         site_name.setVisibility(View.VISIBLE);
                         if (!TextUtils.isEmpty(mParam2.getSnm())) {
                             site_name.setText(mParam2.getSnm());
+                            ll_po_number.setVisibility(View.VISIBLE);
                         } else {
                             site_name.setText("");
-                            site_name.setVisibility(View.GONE);
+                            site_name.setVisibility(View.INVISIBLE);
                         }
                     } else {
-                        site_name.setVisibility(View.GONE);
+                        site_name.setVisibility(View.INVISIBLE);
+                        if(textViewPONumber.getVisibility() == View.GONE){
+                            ll_po_number.setVisibility(View.GONE);
+                        }
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -2198,19 +2204,21 @@ public void setCompletionDetail(){
 
             SpannableStringBuilder builder1 = new SpannableStringBuilder();
             SpannableString str2 = new SpannableString(
-                    LanguageController.getInstance().getMobileMsgByKey(AppConstant.order_reference_number) + " : ");
+                    LanguageController.getInstance().getMobileMsgByKey(AppConstant.order_ref_no) + " : ");
             builder1.append(str2);
 
             if (mParam2.getPono() != null && !mParam2.getPono().isEmpty()) {
+                textViewPONumber.setVisibility(View.VISIBLE);
                 ll_po_number.setVisibility(View.VISIBLE);
                 SpannableString str3 = new SpannableString(mParam2.getPono());
                 str3.setSpan(new android.text.style.StyleSpan(android.graphics.Typeface.BOLD),
                         0, str3.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                 builder1.append(str3);
                 textViewPONumber.setText(builder1, TextView.BufferType.SPANNABLE);
+            } else {
+                textViewPONumber.setVisibility(View.GONE);
 
-            } else
-                ll_po_number.setVisibility(View.GONE);
+            }
 
             String endtime = "", startDatTime = "";
             if (mParam2.getSchdlStart() != null && !mParam2.getSchdlStart().equals("")) {

@@ -1210,9 +1210,10 @@ public class ReplaceItemEquipmentActivity extends
         String strEqu = new Gson().toJson(equipment);
         intent.putExtra("edit_jobId", jobId);
         intent.putExtra("invId", invId);
-        if(equipment.getIsPart().equalsIgnoreCase("1"))
+        if(equipment.getIsPart().equalsIgnoreCase("1")) {
             intent.putExtra("isPart", "1");
-            intent.putExtra("comeFrom", comeFrom);
+        }
+        intent.putExtra("comeFrom", comeFrom);
         intent.putExtra("equipment", strEqu);
         intent.putExtra("equipmentId", equipment.getEquId());
         intent.putExtra("InvoiceItemDataModel", updateItemDataModel);

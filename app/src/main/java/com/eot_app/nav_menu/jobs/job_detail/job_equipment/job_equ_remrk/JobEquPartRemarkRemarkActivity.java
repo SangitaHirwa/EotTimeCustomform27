@@ -641,6 +641,8 @@ public class JobEquPartRemarkRemarkActivity extends UploadDocumentActivity imple
 
         if(App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsItemRequested() == 0){
             ll_requested_item.setVisibility(View.VISIBLE);
+        }else {
+            ll_requested_item.setVisibility(View.GONE);
         }
         CustomLinearLayoutManager customLayoutManager = new CustomLinearLayoutManager(this, LinearLayoutManager.HORIZONTAL
                 , false);
@@ -1402,6 +1404,11 @@ public class JobEquPartRemarkRemarkActivity extends UploadDocumentActivity imple
 
 
         if (equipment != null) {
+            if (!TextUtils.isEmpty(equipment.getStatus()) || equipment.getAttachments() != null && equipment.getAttachments().size() > 0) {
+                btn_edit.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit));
+            }else {
+                btn_edit.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add));
+            }
 
             equId = equipment.getEquId();
             mParam2 = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(jobId);
@@ -1527,7 +1534,11 @@ public class JobEquPartRemarkRemarkActivity extends UploadDocumentActivity imple
         if (equipment.getRemark().equals("") && equipment.getStatus().equals("") && equipment.getAttachments() != null && equipment.getAttachments().size() == 0) {
             if(isAction) {
                 if(isEdit){
-                    setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_remark));
+                    if (!TextUtils.isEmpty(equipment.getStatus()) || equipment.getAttachments() != null && equipment.getAttachments().size() > 0) {
+                        setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.update_remark));
+                    }else {
+                        setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_remark));
+                    }
                 }else {
                     setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.action));
                 }
@@ -1539,7 +1550,11 @@ public class JobEquPartRemarkRemarkActivity extends UploadDocumentActivity imple
             if (equipment != null && equipment.getEqunm() != null) {
                 if(isAction) {
                     if(isEdit){
-                        setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_remark));
+                        if (!TextUtils.isEmpty(equipment.getStatus()) || equipment.getAttachments() != null && equipment.getAttachments().size() > 0) {
+                            setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.update_remark));
+                        }else {
+                            setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_remark));
+                        }
                     }else {
                         setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.action));
                     }
@@ -1862,7 +1877,11 @@ public class JobEquPartRemarkRemarkActivity extends UploadDocumentActivity imple
         part_cardview.setVisibility(View.GONE);
         item_cardview.setVisibility(View.GONE);
         ll_replace.setVisibility(View.VISIBLE);
-        ll_requested_item.setVisibility(View.VISIBLE);
+        if(App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsItemRequested() == 0){
+            ll_requested_item.setVisibility(View.VISIBLE);
+        }else {
+            ll_requested_item.setVisibility(View.GONE);
+        }
         attachment_card.setVisibility(View.GONE);
         cv_editRemark.setVisibility(View.GONE);
     }

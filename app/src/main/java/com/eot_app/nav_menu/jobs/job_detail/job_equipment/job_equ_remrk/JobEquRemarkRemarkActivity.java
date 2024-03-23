@@ -665,6 +665,8 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
             }else {
                 ll_requested_item.setVisibility(View.GONE);
             }
+        }else {
+            ll_requested_item.setVisibility(View.GONE);
         }
 
     }
@@ -1402,6 +1404,12 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
 
         if (equipment != null) {
 
+            if (!TextUtils.isEmpty(equipment.getStatus()) || equipment.getAttachments() != null && equipment.getAttachments().size() > 0) {
+                btn_edit.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit));
+            }else {
+                btn_edit.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add));
+            }
+
             equId = equipment.getEquId();
             mParam2 = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(jobId);
 
@@ -1456,9 +1464,12 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
 //                return;
 
             if (!TextUtils.isEmpty(equipment.getRemark())) {
+                txt_remark.setVisibility(View.VISIBLE);
                 isRemarkUpdated = true;
                 edit_remarks.setText(equipment.getRemark());
                 txt_remark.setText(equipment.getRemark());
+            }else {
+                txt_remark.setVisibility(View.GONE);
             }
 
 
@@ -1470,10 +1481,21 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
                 }
             }
 
-            for (EquipmentStatus status : equipmentStatusList) {
-               if(status.getEsId().equalsIgnoreCase(equipment.getStatus())){
-                   txt_condition.setText(status.getStatusText());
-               }
+            if(equipment.getStatus()!= null && !equipment.getStatus().equals("")) {
+                txt_lbl_condition.setVisibility(View.VISIBLE);
+                txt_lbl_status.setVisibility(View.VISIBLE);
+                txt_condition.setVisibility(View.VISIBLE);
+                txt_status.setVisibility(View.VISIBLE);
+                for (EquipmentStatus status : equipmentStatusList) {
+                    if (status.getEsId().equalsIgnoreCase(equipment.getStatus())) {
+                        txt_condition.setText(status.getStatusText());
+                    }
+                }
+            }else {
+                txt_lbl_condition.setVisibility(View.GONE);
+                txt_lbl_status.setVisibility(View.GONE);
+                txt_condition.setVisibility(View.GONE);
+                txt_status.setVisibility(View.GONE);
             }
             if (!TextUtils.isEmpty(equipment.getEquStatus()) && TextUtils.isDigitsOnly(equipment.getEquStatus())) {
                 int selectedStatusPosition = getEquipmentStatusPosition(equipment.getEquStatus());
@@ -1492,6 +1514,8 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
                     button_submit.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.update_btn));
                     REMARK_SUBMIT = true;
                 }
+            }else {
+                rv_showAttachment.setVisibility(View.GONE);
             }
         }
     }
@@ -1499,6 +1523,11 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
 
     private void setAttachments(ArrayList<Attachments> attachments) {
         allAttachmentsList = attachments;
+        if(attachments.size() >0){
+            rv_showAttachment.setVisibility(View.VISIBLE);
+        }else {
+            rv_showAttachment.setVisibility(View.GONE);
+        }
         if (equipment != null) {
             if (attachments != null) {
                 if (adapter == null) {
@@ -1519,7 +1548,11 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
         if (equipment.getRemark().equals("") && equipment.getStatus().equals("") && equipment.getAttachments() != null && equipment.getAttachments().size() == 0) {
             if(isAction) {
                 if(isEdit){
+                    if (!TextUtils.isEmpty(equipment.getStatus()) || equipment.getAttachments() != null && equipment.getAttachments().size() > 0) {
+                    setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.update_remark));
+                    }else {
                     setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_remark));
+                    }
                 }else {
                     setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.action));
                 }
@@ -1531,7 +1564,11 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
             if (equipment != null && equipment.getEqunm() != null) {
                 if(isAction) {
                     if(isEdit){
-                        setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_remark));
+                        if (!TextUtils.isEmpty(equipment.getStatus()) || equipment.getAttachments() != null && equipment.getAttachments().size() > 0) {
+                            setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.update_remark));
+                        }else {
+                            setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_remark));
+                        }
                     }else {
                         setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.action));
                     }
@@ -1854,7 +1891,11 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
        part_cardview.setVisibility(View.VISIBLE);
        item_cardview.setVisibility(View.VISIBLE);
        ll_replace.setVisibility(View.VISIBLE);
-       ll_requested_item.setVisibility(View.VISIBLE);
+        if(App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsItemRequested() == 0){
+            ll_requested_item.setVisibility(View.VISIBLE);
+        }else {
+            ll_requested_item.setVisibility(View.GONE);
+        }
         attachment_card.setVisibility(View.GONE);
        cv_editRemark.setVisibility(View.GONE);
     }
