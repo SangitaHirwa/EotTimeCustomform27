@@ -28,7 +28,7 @@ public class ClientContactAddEdit_Model {
     private String notes;
     private String isactive;
     private Set<String> siteId = new HashSet<>();
-
+    private String altEmail;
     public String getExtraField1() {
         return extraField1;
     }
@@ -71,7 +71,7 @@ public class ClientContactAddEdit_Model {
 
     public ClientContactAddEdit_Model(String compId,
                                       String cltId, String cnm,
-                                      String email, String mob,
+                                      String email,String altEmail, String mob,
                                       String alternate, String fax,
                                       String skype, String twitter,
                                       int i, int checked,
@@ -85,6 +85,7 @@ public class ClientContactAddEdit_Model {
         this.cltId = cltId;
         this.cnm = cnm;
         this.email = email;
+        this.altEmail = altEmail;
         this.mob1 = mob;
         this.mob2 = alternate;
         this.fax = fax;
@@ -157,6 +158,14 @@ public class ClientContactAddEdit_Model {
     public int getDef() {
         return def;
     }
+
+    public String getAltEmail() {
+        return altEmail;
+    }
+
+    public void setAltEmail(String altEmail) {
+        this.altEmail = altEmail;
+    }
 }
 
 class ClientContactEdit_Model {
@@ -179,7 +188,7 @@ class ClientContactEdit_Model {
     private String extraField4;
     private String notes;
     private String isactive;
-
+    private String altEmail;
     public String getExtraField1() {
         return extraField1;
     }
@@ -229,7 +238,7 @@ class ClientContactEdit_Model {
     }
 
     public ClientContactEdit_Model(String cltId, String conId, String cnm,
-                                   String email, String mob1, String mob2,
+                                   String email,String altEmail, String mob1, String mob2,
                                    String fax, String twitter, String skype,
                                    int def, int checkd, Set<String> siteId,
                                    String extraField1, String extraField2,
@@ -239,6 +248,7 @@ class ClientContactEdit_Model {
         this.conId = conId;
         this.cnm = cnm;
         this.email = email;
+        this.altEmail = altEmail;
         this.mob1 = mob1;
         this.mob2 = mob2;
         this.fax = fax;
@@ -298,5 +308,13 @@ class ClientContactEdit_Model {
 
     public Set<String> getSiteId() {
         return siteId;
+    }
+
+    public String getAltEmail() {
+        return altEmail;
+    }
+
+    public void setAltEmail(String altEmail) {
+        this.altEmail = altEmail;
     }
 }

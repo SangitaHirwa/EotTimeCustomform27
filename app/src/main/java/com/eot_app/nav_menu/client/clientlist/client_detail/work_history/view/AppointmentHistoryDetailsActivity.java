@@ -83,7 +83,7 @@ public class AppointmentHistoryDetailsActivity extends AppCompatActivity impleme
 
         Intent intent = getIntent();
         if (intent.hasExtra("app_data")) {
-            this.model = (Appointment) getIntent().getSerializableExtra("app_data");
+            this.model =  getIntent().getParcelableExtra("app_data");
             appointmnet_deatils_pi.getAppointmentAttachment(model.getAppId());
             setDataInUI(model);
         }

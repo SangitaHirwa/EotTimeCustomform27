@@ -6,6 +6,10 @@ import com.eot_app.activitylog.ActivityLogController;
 import com.eot_app.activitylog.LogModel;
 import com.eot_app.nav_menu.jobs.job_complation.compla_model.JobComplation;
 import com.eot_app.nav_menu.jobs.job_complation.compla_model.RemoveAttchment;
+import com.eot_app.nav_menu.jobs.job_db.IsMarkDoneConvrtr;
+import com.eot_app.nav_menu.jobs.job_db.IsMarkDoneWithJtid;
+
+import com.eot_app.nav_menu.jobs.job_detail.form_form.get_qus_list.ans_model.Answer;
 import com.eot_app.services.ApiClient;
 import com.eot_app.services.Service_apis;
 import com.eot_app.utility.AppConstant;
@@ -17,10 +21,14 @@ import com.eot_app.utility.language_support.LanguageController;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+import okhttp3.MultipartBody;
 
 /**
  * Created by Sonam-11 on 2020-02-04.
@@ -33,7 +41,7 @@ public class Compl_PC implements Compl_PI {
     }
 
     @Override
-    public void removeUploadAttchment(final String jaId) {
+    public void removeUploadAttchment(final String jaId, String queId, String jtId) {
         if (AppUtility.isInternetConnected()) {
 
             RemoveAttchment jobListRequestModel = new RemoveAttchment(jaId);
@@ -53,20 +61,20 @@ public class Compl_PC implements Compl_PI {
                             if (jsonObject.get("success").getAsBoolean()) {
                                 Log.e("", "");
                                 EotApp.getAppinstance().showToastmsg(LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
-                                complaView.uploadDocDelete("");
-                                EotApp.getAppinstance().getNotifyForAttchCount();
+                                complaView.uploadDocDelete("",queId,jtId);
+//                                EotApp.getAppinstance().getNotifyForAttchCount();
                             } else if (jsonObject.get("statusCode") != null && jsonObject.get("statusCode").getAsString().equals(AppConstant.SESSION_EXPIRE)) {
                                 Log.e("", "");
                                 complaView.sessionexpire(LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
                             } else {
-                                complaView.uploadDocDelete(jsonObject.get("message").getAsString());
+                                complaView.uploadDocDelete(jsonObject.get("message").getAsString(),queId,jtId);
                             }
                         }
 
 
                         @Override
                         public void onError(Throwable e) {
-                            complaView.uploadDocDelete(e.getMessage());
+                            complaView.uploadDocDelete(e.getMessage(),queId,jtId);
                             Log.e("TAG", e.getMessage());
                         }
 
@@ -80,10 +88,9 @@ public class Compl_PC implements Compl_PI {
     }
 
     @Override
-    public void addEditJobComplation(String jobId, String complNote) {
+    public void addEditJobComplation(String jobId, String complNote, ArrayList<Answer> compQueAns, List<String>signAns, List<String>docAns, List<Answer>signQueIdArray, List<Answer>docQueIdArray, List<IsMarkDoneWithJtid> markDoneWithJtids) {
 
-        JobComplation request = new JobComplation
-                (jobId, complNote);
+        JobComplation request = new JobComplation(jobId, complNote,compQueAns,signAns,docAns,signQueIdArray,docQueIdArray,markDoneWithJtids);
         String dateTime = AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT);
         Gson gson = new Gson();
         String data = gson.toJson(request);

@@ -77,8 +77,8 @@ public class AdpterJobHistory extends RecyclerView.Adapter<AdpterJobHistory.MyVi
     public void onBindViewHolder(MyViewHolder holder, final int position) {
         if (position == getItemCount() - 1) holder.blank_view.setVisibility(View.VISIBLE);
         else holder.blank_view.setVisibility(View.GONE);
-        String today_date = AppUtility.getDateByFormat(AppUtility.dateTimeByAmPmFormate("EEE, dd MMM yyyy ,hh:mm ,a"
-                , "EEE, dd MMM yyyy ,HH:mm"));
+        String today_date = AppUtility.getDateByFormat(AppUtility.dateTimeByAmPmFormate("EEE, "+AppConstant.DATE_FORMAT+" ,hh:mm ,a"
+                , "EEE, "+AppConstant.DATE_FORMAT+" ,HH:mm"));
         String[] today_dt = today_date.split(",");
         String to_day = today_dt[1];
 

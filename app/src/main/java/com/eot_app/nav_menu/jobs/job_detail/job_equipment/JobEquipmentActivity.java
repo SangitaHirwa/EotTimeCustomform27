@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -239,12 +240,12 @@ public class JobEquipmentActivity extends AppCompatActivity
             if (jobEquimPi != null && !auditid.equals("0")) {
                 recyclerView.setNestedScrollingEnabled(false);
                 AppUtility.progressBarShow(this);
-                jobEquimPi.getEquipmentJobList(auditid, jobId);
+                jobEquimPi.loadFromServer(jobId);
             }
             else if (jobEquimPi != null && auditid.equals("0")&&!jobId.equals("0")) {
                 recyclerView.setNestedScrollingEnabled(false);
                 AppUtility.progressBarShow(this);
-                jobEquimPi.getEquipmentJobList(jobId, jobId);
+                jobEquimPi.loadFromServer(jobId);
             }else {
                 swipeRefresh();
             }
@@ -299,7 +300,7 @@ public class JobEquipmentActivity extends AppCompatActivity
         //looping through existing elements
         for (EquArrayModel s : myList) {
             //if the existing elements contains the search input
-            if (s.getEqunm() != null && s.getEqunm().contains(text)&&s.getEqunm().equalsIgnoreCase(text.toLowerCase())||
+            if (s.getEqunm() != null && s.getEqunm().contains(text)&&s.getEqunm().equalsIgnoreCase(text.toLowerCase())|| s.getSnm() != null &&
                      s.getSnm().toLowerCase().contains(text.toLowerCase())
                     || (s.getSno() != null && s.getSno().equalsIgnoreCase(text.toLowerCase())) ||
                     (s.getMno() != null && s.getMno().equalsIgnoreCase(text.toLowerCase()))
@@ -424,28 +425,40 @@ public class JobEquipmentActivity extends AppCompatActivity
         }
         if (requestCode == EQUIPMENT_UPDATE_CODE) {
             if (adapter != null && jobEquimPi != null) {
-                jobEquimPi.getEquipmentJobList(jobId,jobId);
+                jobEquimPi.getEquipmentList(jobId);
             }
         }
     }
 
     @Override
-    public void onEquipmentSelected(int positions, EquArrayModel equipmentRes) {
+    public void onEquipmentSelected(int positions, EquArrayModel equipmentRes, boolean isAction) {
         if (!job.getTempId().equals(job.getJobId())) {
             Log.e("getAllEquipments", "JobEqRemark JobEquipmentActivity");
-
-            if(equipmentRes.getIsPart().equalsIgnoreCase("1")){
-                Intent intent = new Intent(this, JobEquPartRemarkRemarkActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-                String strEqu = new Gson().toJson(equipmentRes);
-                intent.putExtra("equipment", strEqu);
-                intent.putExtra("jobId", jobId);
-                intent.putExtra("cltId", cltId);
-                intent.putExtra("positions", positions);
-                intent.putExtra("isGetData", "");
-                startActivityForResult(intent,EQUIPMENT_UPDATE_CODE);
-            }
-            else {
+            if(equipmentRes.getIsPart() !=null) {
+                if (equipmentRes.getIsPart().equalsIgnoreCase("1")) {
+                    Intent intent = new Intent(this, JobEquPartRemarkRemarkActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                    String strEqu = new Gson().toJson(equipmentRes);
+                    intent.putExtra("equipment", strEqu);
+                    intent.putExtra("jobId", jobId);
+                    intent.putExtra("cltId", cltId);
+                    intent.putExtra("positions", positions);
+                    intent.putExtra("isGetData", "");
+                    intent.putExtra("isAction",isAction);
+                    startActivityForResult(intent, EQUIPMENT_UPDATE_CODE);
+                } else {
+                    Intent intent = new Intent(this, JobEquRemarkRemarkActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                    String strEqu = new Gson().toJson(equipmentRes);
+                    intent.putExtra("equipment", strEqu);
+                    intent.putExtra("jobId", jobId);
+                    intent.putExtra("cltId", cltId);
+                    intent.putExtra("positions", positions);
+                    intent.putExtra("isGetData", "");
+                    intent.putExtra("isAction",isAction);
+                    startActivityForResult(intent, EQUIPMENT_UPDATE_CODE);
+                }
+            }else {
                 Intent intent = new Intent(this, JobEquRemarkRemarkActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                 String strEqu = new Gson().toJson(equipmentRes);
@@ -454,6 +467,7 @@ public class JobEquipmentActivity extends AppCompatActivity
                 intent.putExtra("cltId", cltId);
                 intent.putExtra("positions", positions);
                 intent.putExtra("isGetData", "");
+                intent.putExtra("isAction",isAction);
                 startActivityForResult(intent, EQUIPMENT_UPDATE_CODE);
             }
 
@@ -613,7 +627,7 @@ public class JobEquipmentActivity extends AppCompatActivity
                 intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                 intent.putExtra("type", "2");
                 intent.putExtra("cltId", cltId);
-                intent.putExtra("id", jobId);
+                intent.putExtra("idJob", jobId);
                 intent.putExtra("contrId", contrId);
                 startActivityForResult(intent, EQUIPMENT_UPDATE_CODE);
                 closeFABMenu();
@@ -624,7 +638,7 @@ public class JobEquipmentActivity extends AppCompatActivity
                 intent1.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                 intent1.putExtra("type", "1");
                 intent1.putExtra("cltId", "");
-                intent1.putExtra("id", jobId);
+                intent1.putExtra("idJob", jobId);
                 intent1.putExtra("siteid",siteid);
                 startActivityForResult(intent1, EQUIPMENT_UPDATE_CODE);
                 closeFABMenu();

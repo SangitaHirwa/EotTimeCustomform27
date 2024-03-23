@@ -37,7 +37,7 @@ public class ExpenseList_pc implements ExpenseList_PI {
 
     public ExpenseList_pc(ExpenseList_View expenseListView) {
         this.expenseListView = expenseListView;
-        this.updatelimit = AppConstant.LIMIT_HIGH;
+        this.updatelimit = AppConstant.LIMIT_MID;
         this.updateindex = 0;
         expenseList = new ArrayList<>();
     }

@@ -16,11 +16,16 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.eot_app.R;
 import com.eot_app.login_next.login_next_model.CompPermission;
+import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_detail_pkg.inv_detail_model.Tax;
+import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_detail_pkg.inv_detail_model.TaxComponents;
+import com.eot_app.nav_menu.jobs.job_detail.invoice2list.GenerateInvoiceItemAdpter;
+import com.eot_app.nav_menu.jobs.job_detail.invoice2list.itemlist_model.TaxData;
 import com.eot_app.nav_menu.quote.quote_invoice_pkg.quote_model_pkg.Quote_ItemData;
 import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.AppUtility;
 import com.eot_app.utility.App_preference;
 import com.eot_app.utility.language_support.LanguageController;
+import com.eot_app.utility.util_interfaces.GetListData;
 import com.eot_app.utility.util_interfaces.MyListItemSelected;
 import com.eot_app.utility.util_interfaces.MyListItemSelectedLisT;
 
@@ -37,21 +42,31 @@ public class Quote_Details_Adpter extends RecyclerView.Adapter<Quote_Details_Adp
     private final MyListItemSelectedLisT<String> invoce_rm_item;
     private final ArrayList<String> removeItem = new ArrayList<>();
     private final String taxCalculationType;
+    private final String disCalculationType;
     Set<Boolean> chk_pos;
     MyListItemSelected<Quote_ItemData> myListItemSelected;
     private List<Quote_ItemData> invoiceItemList;
     private boolean[] is_pos_checked;
-
-    public Quote_Details_Adpter(Context context, List<Quote_ItemData> invoiceItemList, MyListItemSelected<Quote_ItemData> myListItemSelected, MyListItemSelectedLisT<String> invoce_rm_item, String taxCalculationType) {
+    private List<TaxData> showTaxList = new ArrayList<>();
+    private Double subTotal = 0.0;
+    private GetListData getListData;
+    private boolean getDataOfTaxComponent = true;
+    private String getIsAddisDiscBefore = "0";
+    String singleTaxId ="0";
+    boolean isTaxIdSame =false;
+    public Quote_Details_Adpter(Context context, List<Quote_ItemData> invoiceItemList, MyListItemSelected<Quote_ItemData> myListItemSelected, MyListItemSelectedLisT<String> invoce_rm_item, String taxCalculationType, String disCalculationType,String getIsAddisDiscBefore) {
         this.invoiceItemList = invoiceItemList;
         this.context = context;
         this.myListItemSelected = myListItemSelected;
         this.invoce_rm_item = invoce_rm_item;
         this.taxCalculationType = taxCalculationType;
+        this.disCalculationType = disCalculationType;
         this.is_pos_checked = new boolean[invoiceItemList.size()];
         nm_list = new HashSet<>();
         ids_list = new HashSet<>();
         chk_pos = new HashSet<>();
+        this.getListData = (GetListData) context;
+        this.getIsAddisDiscBefore = getIsAddisDiscBefore;
 
     }
 
@@ -75,11 +90,30 @@ public class Quote_Details_Adpter extends RecyclerView.Adapter<Quote_Details_Adp
         myViewHolder.item_nm_invoice.setText(invoiceItemList.get(position).getInm());
         //  String qty = AppUtility.getRoundoff_amount(invoiceItemList.get(position).getQty());
         //   myViewHolder.qty_invoice.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.qty) + ": " + invoiceItemList.get(position).getQty());
-        myViewHolder.item_price_invoice.setText(AppUtility.getRoundoff_amount(AppUtility.getCalculatedAmountForQuotes(
-                invoiceItemList.get(position).getQty(),
-                invoiceItemList.get(position).getRate(),
-                invoiceItemList.get(position).getDiscount()
-                , invoiceItemList.get(position).getTax(), taxCalculationType)));
+//        myViewHolder.item_price_invoice.setText(AppUtility.getRoundoff_amount(AppUtility.getCalculatedAmountForQuotes(
+//                invoiceItemList.get(position).getQty(),
+//                invoiceItemList.get(position).getRate(),
+//                invoiceItemList.get(position).getDiscount()
+//                , invoiceItemList.get(position).getTax(), taxCalculationType)));
+        myViewHolder.item_price_invoice.setText(AppUtility.getRoundoff_amount
+                (AppUtility.getCalculatedAmountForDiscount(invoiceItemList.get(position).getQty(),
+                        invoiceItemList.get(position).getRate(),
+                        invoiceItemList.get(position).getDiscount(),
+                        invoiceItemList.get(position).getTax(),
+                        taxCalculationType,disCalculationType,false).get("Amount")));
+
+        String taxAmount = AppUtility.getRoundoff_amount
+                (AppUtility.getCalculatedAmountForDiscount(invoiceItemList.get(position).getQty(),
+                        invoiceItemList.get(position).getRate(),
+                        invoiceItemList.get(position).getDiscount(),
+                        invoiceItemList.get(position).getTax(),
+                        taxCalculationType,disCalculationType,false).get("Tax"));
+        String _subtotal = AppUtility.getRoundoff_amount
+                (AppUtility.getCalculatedAmountForDiscount(invoiceItemList.get(position).getQty(),
+                        invoiceItemList.get(position).getRate(),
+                        invoiceItemList.get(position).getDiscount(),
+                        invoiceItemList.get(position).getTax(),
+                        taxCalculationType,disCalculationType,false).get("Subtotal"));
 
         myViewHolder.item_layout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -143,13 +177,122 @@ public class Quote_Details_Adpter extends RecyclerView.Adapter<Quote_Details_Adp
         } catch (Exception exception) {
             exception.printStackTrace();
         }
+
+        subTotal += Double.parseDouble(_subtotal);
+        int taxItemPos=0;
+        if(invoiceItemList.get(position).getTax().size()>0) {
+            if(getDataOfTaxComponent) {
+                singleTaxId = invoiceItemList.get(position).getTax().get(0).getTaxId();
+                for (TaxData tax: showTaxList
+                     ) {
+                    if(singleTaxId.equals(tax.getTaxId())){
+                        isTaxIdSame= true;
+                        break;
+                    }else {
+                        isTaxIdSame= false;
+                    }
+                    taxItemPos++;
+                }
+//                    if(singleTaxId.equals(invoiceItemList.get(position).getTax().get(0).getTaxId())){
+//                        isTaxIdSame = true;
+//
+//                    }else {
+//                        isTaxIdSame = false;
+//                    }
+
+                if (App_preference.getSharedprefInstance().getLoginRes().getTaxShowType().equals("2")) {
+                    if (invoiceItemList.get(position).getTax().get(0).getTaxComponents() != null && invoiceItemList.get(position).getTax().get(0).getTaxComponents().size() > 0) {
+                        for (Tax tax2 : invoiceItemList.get(position).getTax().get(0).getTaxComponents()
+                        ) {
+                            List<Tax> tempList = new ArrayList<>();
+                            tempList.add(tax2);
+                            String __taxAmt = AppUtility.getRoundoff_amount
+                                    (AppUtility.getCalculatedAmountForDiscount(invoiceItemList.get(position).getQty(),
+                                            invoiceItemList.get(position).getRate(),
+                                            invoiceItemList.get(position).getDiscount(),
+                                            tempList,
+                                            taxCalculationType, disCalculationType, false).get("Tax"));
+                            if(isTaxIdSame){
+
+                                for (TaxData taxData: showTaxList
+                                     ) {
+                                    if(taxData.getTaxId().equals(singleTaxId)&&taxData.getLabel().equals(tax2.getLabel())){
+                                        Double subTotalTax = taxData.getTaxAmount() + Double.parseDouble(__taxAmt);
+                                        taxData.setTaxAmount(subTotalTax);
+                                    }
+                                }
+                            }else
+                            {
+                                TaxData taxData = new TaxData();
+                                taxData.setRate(Double.parseDouble(tax2.getRate()));
+                                taxData.setTaxAmount(Double.parseDouble(__taxAmt));
+                                taxData.setLabel(tax2.getLabel());
+                                taxData.setTaxId(invoiceItemList.get(position).getTax().get(0).getTaxId());
+                                showTaxList.add(taxData);
+                            }
+
+                        }
+                    }else {
+                        if(isTaxIdSame){
+                            for(TaxData taxData : showTaxList){
+                                if(taxData.getTaxId().equals(singleTaxId)&&taxData.getLabel().equals(invoiceItemList.get(position).getTax().get(0).getLabel())) {
+                                    Double subTotalTax = taxData.getTaxAmount() + Double.parseDouble(taxAmount);
+                                    taxData.setTaxAmount(subTotalTax);
+                                }
+                            }
+
+                        }
+                        else{
+                            TaxData taxData = new TaxData();
+                            taxData.setRate(Double.parseDouble(invoiceItemList.get(position).getTax().get(0).getRate()));
+                            taxData.setTaxAmount(Double.parseDouble(taxAmount));
+                            taxData.setLabel(invoiceItemList.get(position).getTax().get(0).getLabel());
+                            taxData.setTaxId(invoiceItemList.get(position).getTax().get(0).getTaxId());
+                            showTaxList.add(taxData);
+                        }
+                    }
+                } else {
+                    if(isTaxIdSame){
+                        for(TaxData taxData : showTaxList){
+                            if(taxData.getTaxId().equals(singleTaxId)&&taxData.getLabel().equals(invoiceItemList.get(position).getTax().get(0).getLabel())) {
+                                Double subTotalTax = taxData.getTaxAmount() + Double.parseDouble(taxAmount);
+                                taxData.setTaxAmount(subTotalTax);
+                            }
+                        }
+                }
+                    else{
+                        TaxData taxData = new TaxData();
+                        taxData.setRate(Double.parseDouble(invoiceItemList.get(position).getTax().get(0).getRate()));
+                        taxData.setTaxAmount(Double.parseDouble(taxAmount));
+                        taxData.setLabel(invoiceItemList.get(position).getTax().get(0).getLabel());
+                        taxData.setTaxId(invoiceItemList.get(position).getTax().get(0).getTaxId());
+                        showTaxList.add(taxData);
+                    }
+
+                }
+                if(getIsAddisDiscBefore.equals("1")){
+                    getDataOfTaxComponent = false;
+                }
+            }
+        }
+
+        if(position == invoiceItemList.size()-1){
+            List<TaxData> tempList = new ArrayList<>();
+            tempList.addAll(showTaxList);
+            getListData.setCalculation(subTotal,tempList,false,singleTaxId);
+            subTotal =0.0;
+            showTaxList.clear();
+            getDataOfTaxComponent = true;
+        }
     }
 
     @Override
     public int getItemCount() {
         return invoiceItemList.size();
     }
-
+//    public interface GetListData {
+//        public  void setCalculation (Double Subtotal, List<TaxData> listTax);
+//    }
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
         private final TextView item_nm_invoice;

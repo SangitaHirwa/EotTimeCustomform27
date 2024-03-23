@@ -8,19 +8,21 @@
     <dimen name="filter_img_width">25dp</dimen>
     <dimen name="filter_img_height">25dp</dimen>
 
-    <dimen name="large_text">15dp</dimen>
-    <dimen name="medium_text">12dp</dimen>
-    <dimen name="medium_text_low">11dp</dimen>
-    <dimen name="small_text">9dp</dimen>
-    <dimen name="extra_text">25dp</dimen>
+    <dimen name="large_text">15sp</dimen>
+    <dimen name="medium_text">12sp</dimen>
+    <dimen name="medium_text_low">11sp</dimen>
+    <dimen name="small_text">9sp</dimen>
+    <dimen name="extra_text">25sp</dimen>
 
-    <dimen name="medium_txt">13dp</dimen>
-    <dimen name="medium_txt_low">11dp</dimen>
-    <dimen name="low_text">9dp</dimen>
-    <dimen name="large_sec_text">15dp</dimen>
+    <dimen name="medium_txt">13sp</dimen>
+    <dimen name="medium_txt_low">11sp</dimen>
+    <dimen name="low_text">9sp</dimen>
+    <dimen name="large_sec_text">15sp</dimen>
 
 
     <dimen name="input_field_height">50dp</dimen>
+    <dimen name="dialog_input_field_height">29dp</dimen>
+    <dimen name="input_field_multiline_height">100dp</dimen>
     <dimen name="input_field_padding">10dp</dimen>
     <dimen name="tv_drawable_padding">8dp</dimen>
 
@@ -55,5 +57,6 @@
     <dimen name="day_circle_radius">120dp</dimen>
     <dimen name="day_circle_stroke_width">1dp</dimen>
     <dimen name="day_circle_width">24dp</dimen>
+    <dimen name="job_card_att_list_hieght">150dp</dimen>
 
 </resources>

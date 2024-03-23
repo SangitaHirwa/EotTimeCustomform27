@@ -33,7 +33,7 @@ public interface Add_Quote_Pi {
 
     void getActiveUserList();
 
-    void getTermsConditions();
+    void getTermsConditions(boolean isFirstCall);
 
     void addQuoteWithDocuments(Add_Quote_ReQ add_quote_reQ, ArrayList links, List<String> fileNames);
 }

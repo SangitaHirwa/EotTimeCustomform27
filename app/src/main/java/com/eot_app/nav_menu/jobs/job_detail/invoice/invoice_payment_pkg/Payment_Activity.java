@@ -1,5 +1,7 @@
 package com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_payment_pkg;
 
+import static com.eot_app.R.drawable.batch_invoice;
+
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.content.Intent;
@@ -10,7 +12,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
+import android.text.method.ScrollingMovementMethod;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -26,7 +28,7 @@ import com.eot_app.UploadDocumentActivity;
 import com.eot_app.databinding.ActivityPaymentBinding;
 import com.eot_app.nav_menu.client.clientlist.client_detail.site.sitelist.editsite.editsitedb.SpinnerCountrySite;
 import com.eot_app.nav_menu.jobs.job_detail.documents.DocumentListAdapter;
-import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.GetFileList_Res;
+import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.Attachments;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_detail_pkg.inv_detail_model.Inv_Res_Model;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_payment_pkg.payment_mvp.PayMent_View;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_payment_pkg.payment_mvp.Payment_pc;
@@ -244,6 +246,8 @@ public class Payment_Activity extends UploadDocumentActivity implements  Documen
         txtPaidAmount.setText(SpinnerCountrySite.getCourrencyNamebyId(App_preference.getSharedprefInstance().getCompanySettingsDetails().getCur()) + AppUtility.getRoundoff_amount(String.valueOf(0)));
         txtDueAmount.setText(SpinnerCountrySite.getCourrencyNamebyId(App_preference.getSharedprefInstance().getCompanySettingsDetails().getCur()) + AppUtility.getRoundoff_amount(String.valueOf(0)));
 
+
+
     }
 
     private void findViews() {
@@ -313,6 +317,17 @@ public class Payment_Activity extends UploadDocumentActivity implements  Documen
             invId = invoiceDetails.getInvId();
             invNm = invoiceDetails.getNm();
         }
+
+        if(invoice_Details.getInvType()!= null && invoice_Details.getInvType().equals("3")){
+
+        txtTotalAmount.setCompoundDrawablesWithIntrinsicBounds(batch_invoice,0,0,0);
+
+        }else {
+
+            txtTotalAmount.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
+        }
+
+
         //currencyList("currency.json");
         double remainingAmount = 0, totalAmount = 0, paidAmount = 0;
         if (invoice_Details != null) {
@@ -321,6 +336,9 @@ public class Payment_Activity extends UploadDocumentActivity implements  Documen
                 try {
                     totalAmount = Double.parseDouble(AppUtility.getRoundoff_amount(invoice_Details.getTotal()));
                     txtTotalAmount.setText(invoice_Details.getCurSym() + AppUtility.getRoundoff_amount(String.valueOf(totalAmount)));
+                    if(txtTotalAmount.getText().length()>11){
+                        txtTotalAmount.setMovementMethod(new ScrollingMovementMethod());
+                    }
                 } catch (NumberFormatException e) {
                     e.printStackTrace();
                 }
@@ -329,6 +347,9 @@ public class Payment_Activity extends UploadDocumentActivity implements  Documen
                 try {
                     paidAmount = Double.parseDouble(AppUtility.getRoundoff_amount(invoice_Details.getPaid()));
                     txtPaidAmount.setText(invoice_Details.getCurSym() + AppUtility.getRoundoff_amount(String.valueOf(paidAmount)));
+                    if(txtPaidAmount.getText().length()>11){
+                        txtPaidAmount.setMovementMethod(new ScrollingMovementMethod());
+                    }
                 } catch (NumberFormatException e) {
                     e.printStackTrace();
                 }
@@ -342,6 +363,9 @@ public class Payment_Activity extends UploadDocumentActivity implements  Documen
              **/
             if (invoice_Details != null && !TextUtils.isEmpty(invoice_Details.getCurSym())){
                 txtDueAmount.setText(invoice_Details.getCurSym() + AppUtility.getRoundoff_amount(String.valueOf(remainingAmount)));
+                if(txtDueAmount.getText().length()>11){
+                    txtDueAmount.setMovementMethod(new ScrollingMovementMethod());
+                }
             }
 
         }
@@ -385,7 +409,7 @@ public class Payment_Activity extends UploadDocumentActivity implements  Documen
         return true;
     }
 
-    private void setAttachments(ArrayList<GetFileList_Res> attachments) {
+    private void setAttachments(ArrayList<Attachments> attachments) {
         if (attachments != null) {
             if (attachments.size() > 0) {
                 tv_label_attachment.setVisibility(View.VISIBLE);
@@ -397,7 +421,7 @@ public class Payment_Activity extends UploadDocumentActivity implements  Documen
                 adapter = new DocumentListAdapter(this, attachments, jobId);
                 recyclerView_attachment.setAdapter(adapter);
             } else {
-                adapter.updateFileList(attachments);
+                adapter.updateFileList(attachments,true);
             }
         }
 
@@ -410,9 +434,9 @@ public class Payment_Activity extends UploadDocumentActivity implements  Documen
         if (requestCode == SINGLEATTCHMENT) {
             if (data.hasExtra("code")) {
                 String barcode = data.getStringExtra("code");
-                ArrayList<GetFileList_Res> attachmentList = new ArrayList<>();
+                ArrayList<Attachments> attachmentList = new ArrayList<>();
                 try {
-                    Type listType = new TypeToken<List<GetFileList_Res>>() {
+                    Type listType = new TypeToken<List<Attachments>>() {
                     }.getType();
                     attachmentList = new Gson().fromJson(barcode, listType);
                         /*if (equipment != null && equipment.getAttachments() != null && equipment.getAttachments().size() > 0) {
@@ -431,9 +455,9 @@ public class Payment_Activity extends UploadDocumentActivity implements  Documen
 
 
     @Override
-    public void OnItemClick_Document(GetFileList_Res getFileList_res) {
-        if (getFileList_res != null)
-            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(App_preference.getSharedprefInstance().getBaseURL() + "" + getFileList_res.getAttachFileName())));
+    public void OnItemClick_Document(Attachments attachments) {
+        if (attachments != null)
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(App_preference.getSharedprefInstance().getBaseURL() + "" + attachments.getAttachFileName())));
     }
 
     @Override

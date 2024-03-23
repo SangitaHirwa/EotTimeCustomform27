@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -13,6 +14,7 @@ import android.view.Window;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -64,6 +66,7 @@ public class BarcodeScanActivity extends AppCompatActivity implements ScanBarcod
     private String comeFrom;
     LinearLayout layout_search;
     List<EquArrayModel> jobList;
+    boolean isScannerValue;
 
 
     @Override
@@ -111,7 +114,8 @@ public class BarcodeScanActivity extends AppCompatActivity implements ScanBarcod
                 finish();
             }
             else {
-                searchEquipment(result.getText());
+                isScannerValue = true;
+                searchEquipment(result.getText(),isScannerValue);
             }
         }));
 
@@ -128,7 +132,9 @@ public class BarcodeScanActivity extends AppCompatActivity implements ScanBarcod
                 if (!TextUtils.isEmpty(edit_barcode.getText().toString())) {
                     AppUtility.hideSoftKeyboard(BarcodeScanActivity.this);
                     codeText = edit_barcode.getText().toString();
-                    searchEquipment(edit_barcode.getText().toString());
+                    isScannerValue = false;
+                    searchEquipment(edit_barcode.getText().toString(), isScannerValue);
+                    edit_barcode.getText().clear();
                 }
             }
         });
@@ -178,7 +184,12 @@ public class BarcodeScanActivity extends AppCompatActivity implements ScanBarcod
             mCodeScanner.startPreview();
         }
         else {
-            askTedPermission(0,AppConstant.cameraPermissions);
+            // Sdk version 33
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU ) {
+                askTedPermission(0, AppConstant.cameraPermissions33);
+            }else {
+                askTedPermission(0, AppConstant.cameraPermissions);
+            }
         }
     }
     private void askTedPermission(int type,String[] permissions) {
@@ -222,6 +233,7 @@ public class BarcodeScanActivity extends AppCompatActivity implements ScanBarcod
 
     @Override
     public void onEquipmentFoundButNotLinked(Equipment equipment) {
+        AppUtility.progressBarDissMiss();
         if (equipment == null) {
             try {
                 TextView dailog_title, dialog_msg;
@@ -275,7 +287,12 @@ public class BarcodeScanActivity extends AppCompatActivity implements ScanBarcod
     @Override
     public void onRecordFound(List<AuditList_Res> list) {
         if (jobList!=null&&!jobList.isEmpty()) {
-            List<String> jobEquipmentByEquipmentId = AppDataBase.getInMemoryDatabase(this).jobModel().getjobidsbyequid("%"+jobList.get(0).getBarcode()+"%");
+            List<String> jobEquipmentByEquipmentId = null;
+            if(!jobList.get(0).getBarcode().equals("")) {
+                 jobEquipmentByEquipmentId = AppDataBase.getInMemoryDatabase(this).jobModel().getjobidsbyequid("%" + jobList.get(0).getBarcode() + "%");
+            }else{
+                jobEquipmentByEquipmentId = AppDataBase.getInMemoryDatabase(this).jobModel().getjobidsbyequid("%" + jobList.get(0).getSno() + "%");
+            }
             String s = new Gson().toJson(jobEquipmentByEquipmentId);
             if (jobEquipmentByEquipmentId.size() == 0 && list.size() == 0) {
                 Intent intent = new Intent(this, EquipmentDetailsActivity.class);
@@ -291,6 +308,8 @@ public class BarcodeScanActivity extends AppCompatActivity implements ScanBarcod
                 intent.putExtra("codetext", codeText);
                 startActivityForResult(intent, 100);
             }
+        }else {
+            Toast.makeText(this, LanguageController.getInstance().getMobileMsgByKey(AppConstant.eqi_not_foun_txt), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -301,9 +320,30 @@ public class BarcodeScanActivity extends AppCompatActivity implements ScanBarcod
     }
 
     /*create search request*/
-    private void searchEquipment(String barcode) {
-        AppUtility.progressBarShow(this);
-        scanBarcode_pc.equipmentbarcode(barcode);
+    private void searchEquipment(String barcode,boolean isScannerValue) {
+
+        if(AppUtility.isInternetConnected()) {
+            scanBarcode_pc.equipmentbarcode(barcode, isScannerValue);
+        }else{
+            jobList.clear();
+            List<Job> jobList1 = AppDataBase.getInMemoryDatabase(this).jobModel().getEqupByBarcode("%"+barcode+"%");
+            if(jobList1.size()>0) {
+                outerloop:
+                for (Job item : jobList1
+                ) {
+                    for (EquArrayModel item1 : item.getEquArray()) {
+                        if (item1.getBarcode().equals(barcode) || item1.getSno().equals(barcode)) {
+                            jobList.add(item1);
+                            break outerloop;
+                        }
+                    }
+                }
+                Log.e("List Size", ""+jobList.size());
+                onAudiListCall(barcode);
+            }else {
+                onAudiListCall(barcode);
+            }
+        }
     }
 
 

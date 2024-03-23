@@ -29,18 +29,24 @@ public class SplashActivity extends AppCompatActivity {
         }
         @Override
         public void onNext(@NonNull Object o) {
-            if (App_preference.getSharedprefInstance().getLoginRes() != null) {
-                if (App_preference.getSharedprefInstance().getLoginRes().getToken().isEmpty()) {
+            if(App_preference.getSharedprefInstance().isLaunchFirst()) {
+                Intent intent = new Intent(SplashActivity.this, ProminentScreen.class);
+                startActivity(intent);
+                finish();
+            }else {
+                if (App_preference.getSharedprefInstance().getLoginRes() != null) {
+                    if (App_preference.getSharedprefInstance().getLoginRes().getToken().isEmpty()) {
+                        Intent intent = new Intent(SplashActivity.this, Login2Activity.class);
+                        startActivity(intent);
+                        finish();
+                    } else {
+                        LoginSuccessFully();
+                    }
+                } else {
                     Intent intent = new Intent(SplashActivity.this, Login2Activity.class);
                     startActivity(intent);
                     finish();
-                } else {
-                    LoginSuccessFully();
                 }
-            } else {
-                Intent intent = new Intent(SplashActivity.this, Login2Activity.class);
-                startActivity(intent);
-                finish();
             }
         }
         private void LoginSuccessFully() {

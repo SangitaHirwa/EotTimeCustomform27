@@ -78,7 +78,7 @@
                     android:layout_height="15dp"
                     android:layout_marginTop="22dp"
                     android:gravity="end"
-                    android:text="AM"
+                    android:text=""
                     android:textStyle="normal"
                     app:layout_constraintEnd_toEndOf="@+id/job_time"
                     app:layout_constraintTop_toTopOf="parent"

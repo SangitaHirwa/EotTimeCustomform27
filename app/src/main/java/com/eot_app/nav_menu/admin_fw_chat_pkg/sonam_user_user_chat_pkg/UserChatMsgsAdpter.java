@@ -23,6 +23,7 @@ import com.eot_app.R;
 import com.eot_app.nav_menu.admin_fw_chat_pkg.sonam_user_user_chat_pkg.usertouser_model.MsgModel;
 import com.eot_app.nav_menu.admin_fw_chat_pkg.sonam_user_user_chat_pkg.usertouser_model.UserChatModel;
 import com.eot_app.nav_menu.admin_fw_chat_pkg.sonam_user_user_chat_pkg.usertouser_mvp.UserToUserChat_View;
+import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.AppUtility;
 import com.eot_app.utility.App_preference;
 import com.eot_app.utility.EotApp;
@@ -57,7 +58,7 @@ public class UserChatMsgsAdpter extends RecyclerView.Adapter<UserChatMsgsAdpter.
     @Override
     public void onBindViewHolder(@NonNull final MyViewHolder holder, int i) {
         final MsgModel model = msgList.get(i);
-        String today_date = AppUtility.getDateByFormat(AppUtility.dateTimeByAmPmFormate("dd/MMM/yyyy hh:mm a", "dd/MMM/yyyy HH:mm"));
+        String today_date = AppUtility.getDateByFormat(AppUtility.dateTimeByAmPmFormate(AppConstant.DATE_FORMAT+" hh:mm a", AppConstant.DATE_FORMAT+" HH:mm"));
         String[] today_Date = today_date.split(" ");
         String str = "", usrIDs = "", stringDate = "";
 

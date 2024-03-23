@@ -5,10 +5,11 @@ import java.util.ArrayList;
 public interface Quo_Invo_Pi {
     void getQuotesInvoiceDetails(String quotId);
 
-    void removeQuotesItem(ArrayList<String> rmvItem, String invId);
+    void removeQuotesItem(ArrayList<String> rmvItem/*, String invId*/);
 
     void generateQuotPDF(String quotId,String tempId);
 
     void convertQuotationToJob(String quotId);
     void getQuotesInvoicetemplateList();
+
 }

@@ -77,7 +77,7 @@ public class AdapterAuditList extends RecyclerView.Adapter<AdapterAuditList.MyVi
 
 
         String today_date = AppUtility.getDateByFormat(AppUtility.dateTimeByAmPmFormate(
-                "EEE, dd MMM yyyy ,hh:mm ,a", "EEE, dd MMM yyyy ,HH:mm"));
+                "EEE, "+AppConstant.DATE_FORMAT+" ,hh:mm ,a", "EEE, "+AppConstant.DATE_FORMAT+" ,HH:mm"));
         String[] today_dt = today_date.split(",");
         String to_day = today_dt[1];
 
@@ -98,11 +98,13 @@ public class AdapterAuditList extends RecyclerView.Adapter<AdapterAuditList.MyVi
             }
 
             txtFrst.setSpan(new ForegroundColorSpan(Color.parseColor("#00848d")), 0, txtFrst.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            holder.job_time.setText(date[1]);
+            String[] time_am_pm = date[1].split(" ");
+            holder.job_time.setText(time_am_pm[0]);
+
             try {
                 if (App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable() != null &&
                         App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable().equals("0"))
-                    holder.job_am_pm.setText(date[2]);
+                    holder.job_am_pm.setText(time_am_pm[1]);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -211,7 +213,7 @@ public class AdapterAuditList extends RecyclerView.Adapter<AdapterAuditList.MyVi
                 holder.status.setText(imageForStatus.getText());
 
                 if(imageForStatus.getUrl()!=null){
-                    Picasso.with(EotApp.getAppinstance()).load(App_preference.getSharedprefInstance().getBaseURL() +
+                    Picasso.get().load(App_preference.getSharedprefInstance().getBaseURL() +
                             imageForStatus.getUrl())
                             .into(holder.status_img);
                     holder.status_constraints.setBackgroundResource(R.color.white);

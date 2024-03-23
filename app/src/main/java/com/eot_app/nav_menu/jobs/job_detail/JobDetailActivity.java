@@ -40,7 +40,10 @@ import androidx.viewpager.widget.ViewPager;
 import com.eot_app.R;
 import com.eot_app.home_screens.MainActivity;
 import com.eot_app.login_next.FooterMenu;
+import com.eot_app.login_next.login_next_model.CompPermission;
+import com.eot_app.nav_menu.client.clientlist.client_detail.work_history.WorkHistoryFragment;
 import com.eot_app.nav_menu.client_chat_pkg.ClientChatFragment;
+import com.eot_app.nav_menu.jobs.job_card_view.JobCardViewActivity;
 import com.eot_app.nav_menu.jobs.job_controller.ChatController;
 import com.eot_app.nav_menu.jobs.job_controller.ChatListnersContainer;
 import com.eot_app.nav_menu.jobs.job_db.Job;
@@ -91,7 +94,8 @@ import com.hypertrack.hyperlog.HyperLog;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 
 public class JobDetailActivity extends AppCompatActivity implements
@@ -138,10 +142,15 @@ public class JobDetailActivity extends AppCompatActivity implements
     private TextView text, clientChatTextView;
     private BottomSheetDialog mBottomSheetDialog;
     private ButtomBarAdapter buttomBarAdapter;
-    private String appId;
+    private String appId, toJsonTemplate;
     private boolean DOCUMENTSELECT = false;
+    JobCardViewActivity jobCardViewActivity;
     private boolean keyboardListenersAttached = false;
     private ViewGroup rootLayout;
+    private String completeFor;
+    private String jobType;
+    private ExecutorService executorService;
+
     BroadcastReceiver loadfromforserver=new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -258,17 +267,25 @@ public class JobDetailActivity extends AppCompatActivity implements
                     /* **** *//* *
                  * canInvoiceCreated =0   Do not create  invoice /1 create invoice
                  * check permission for the job is allow to generate invoice
+                 * For Batch invoice and solo invoice chek we use inbType key (28/Sep/23)
+                 * inbType  = 0- unsaved client /none
+                              1 -  Client
+                              2- Job /solo
+                              3- Multi job / batch
                  * **//* ***/
 
                     ChatController.getInstance().setClientChatState(2, "");
                     //ChatController.getInstance().setChatScreenState(2, "");
                     CLIENTCHATWINDOW = false;
                     //   COMMNENTWINDOW = false;
+//                    if (dataJob != null && dataJob.getCanInvoiceCreated() != null &&
+//                            dataJob.getCanInvoiceCreated().equals("0")) {
                     if (dataJob != null && dataJob.getCanInvoiceCreated() != null &&
-                            dataJob.getCanInvoiceCreated().equals("0")) {
+                            dataJob.getInvType().equals("3")) {
                         AppUtility.alertDialog(JobDetailActivity.this,
                                 LanguageController.getInstance().getMobileMsgByKey(AppConstant.title_invoice),
-                                LanguageController.getInstance().getMobileMsgByKey(AppConstant.invoice_can_not_generate_msg), null,
+                                LanguageController.getInstance().getMobileMsgByKey(AppConstant.batch_invoice_can_not_generate_msg), null,
+//                                LanguageController.getInstance().getMobileMsgByKey(AppConstant.invoice_can_not_generate_msg), null,
                                 LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), null);
                     } else {
                         assert dataJob != null;
@@ -412,71 +429,8 @@ public class JobDetailActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_job_detail);
-
-        /* **Add bottom navigation Option's *****/
-        initializeMenuItemList();
-
-        /* ****add current(root task) activity when app at background*/
-        if (!isTaskRoot()) {
-            final Intent intent = getIntent();
-            final String intentAction = intent.getAction();
-            if (intent.hasCategory(Intent.CATEGORY_LAUNCHER) && intentAction != null && intentAction.equals(Intent.ACTION_MAIN)) {
-                finish();
-                return;
-            }
-            attachKeyboardListeners();
-        }
-
-        viewPager = findViewById(R.id.jobdetail_pager);
-        setUpViewPager(viewPager);
-        navigation = findViewById(R.id.navigation);
         setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.job_details));
-        Menu menu = navigation.getMenu();
-        if (menu_items_ilist.size() > 0) {
-            int count_menu = 0;
-            for (MenuItemsModel item : menu_items_ilist) {
-                if (count_menu == 4) {
-                    break;
-                }
-                menu.add(Menu.NONE, item.getMenu_item_id(), Menu.NONE, item.getMenu_title()).setIcon(item.getMenu_icon());
-                item.setIsalreadySet(true);
-                count_menu++;
-            }
-//            more option is always stay on the place.
-            if (menu_items_ilist.size() > 4)
-                menu.add(Menu.NONE, ID_MORE, Menu.NONE, LanguageController.getInstance().getMobileMsgByKey(AppConstant.more)).setIcon(R.drawable.ic_more_horiz_black_24dp);
-        }
-
-
-        /* *   add job chat batch count on tab ***/
-        BottomNavigationMenuView bottomNavigationMenuView = (BottomNavigationMenuView) navigation.getChildAt(0);
-        for (int i = 0; i < bottomNavigationMenuView.getChildCount(); i++) {
-            int chatId = bottomNavigationMenuView.getChildAt(i).getId();
-            if (chatId == ID_CHAT) {
-                View v = bottomNavigationMenuView.getChildAt(i);
-                BottomNavigationItemView itemView = (BottomNavigationItemView) v;
-                /* ** add view for chat batch icon ***/
-                View badge = LayoutInflater.from(this).inflate(R.layout.chat_batch_count_layout, navigation, false);
-                text = badge.findViewById(R.id.badge_text_view);
-                itemView.addView(badge);
-            } else if (chatId == ID_CLIENT_CHAT) {
-                View v = bottomNavigationMenuView.getChildAt(i);
-                BottomNavigationItemView itemView = (BottomNavigationItemView) v;
-                /* ** add view for chat batch icon ***/
-                View badge = LayoutInflater.from(this).inflate(R.layout.chat_batch_count_layout, navigation, false);
-                clientChatTextView = badge.findViewById(R.id.badge_text_view);
-                itemView.addView(badge);
-            }
-        }
-
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-
-
-        // EotApp.getAppinstance().setNotifyForInvoiceGenr(this);
-        EotApp.getAppinstance().setAddJobObserver(this);
-
         /* * *intent data for Notifications*****/
-
         bundle = getIntent().getExtras();
         if (bundle != null) {
             if (getIntent().hasExtra("JOBS")) {
@@ -484,21 +438,20 @@ public class JobDetailActivity extends AppCompatActivity implements
                     String str = getIntent().getExtras().getString("JOBS");
                     dataJob = new Gson().fromJson(str, Job.class);
                     appId = bundle.getString("appId");
-                    EotApp.getAppinstance().setObserver(this); // use to check remove field worker notification.
+                    EotApp.getAppinstance().setObserver(JobDetailActivity.this); // use to check remove field worker notification.
                 } catch (Exception e) {
-                    startActivity(new Intent(this, MainActivity.class));
-                    this.finish();
+                    startActivity(new Intent(JobDetailActivity.this, MainActivity.class));
+                    JobDetailActivity.this.finish();
                     e.printStackTrace();
                 }
-
             } else
-            /* ** Job Chat notification   ***/
+                /* ** Job Chat notification   ***/
                 if (getIntent().hasExtra("CHAT_JOB")) {
                     try {
                         String str = getIntent().getExtras().getString("CHAT_JOB");
                         dataJob = new Gson().fromJson(str, Job.class);
                         // dataJob = bundle.getParcelable("CHAT_JOB");
-                        Job tempJobData = AppDataBase.getInMemoryDatabase(this).jobModel().getJobsById(dataJob.getJobId());
+                        Job tempJobData = AppDataBase.getInMemoryDatabase(JobDetailActivity.this).jobModel().getJobsById(dataJob.getJobId());
                         if ((dataJob != null && tempJobData != null) && dataJob.getJobId().equals(tempJobData.getJobId())) {
                             if (navigation.getMenu().findItem(ID_CHAT) != null) {
                                 navigation.setSelectedItemId(ID_CHAT);
@@ -515,24 +468,22 @@ public class JobDetailActivity extends AppCompatActivity implements
                                 viewPager.setCurrentItem(CHAT_VIEW, false);
                             }
                         } else {
-                            startActivity(new Intent(this, MainActivity.class));
-                            this.finish();
+                            startActivity(new Intent(JobDetailActivity.this, MainActivity.class));
+                            JobDetailActivity.this.finish();
                         }
                     } catch (Exception exception) {
                         exception.printStackTrace();
-                        startActivity(new Intent(this, MainActivity.class));
-                        this.finish();
+                        startActivity(new Intent(JobDetailActivity.this, MainActivity.class));
+                        JobDetailActivity.this.finish();
                     }
-
                 } else if (getIntent().hasExtra("CLIENT_CHAT")) {
                     try {
                         String str = getIntent().getExtras().getString("CLIENT_CHAT");
                         dataJob = new Gson().fromJson(str, Job.class);
-                        Job tempJobData = AppDataBase.getInMemoryDatabase(this).jobModel().getJobsById(dataJob.getJobId());
+                        Job tempJobData = AppDataBase.getInMemoryDatabase(JobDetailActivity.this).jobModel().getJobsById(dataJob.getJobId());
                         if ((dataJob != null && tempJobData != null) && dataJob.getJobId().equals(tempJobData.getJobId())) {
                             Log.e("", "");
-
-//                            if (navigation.getMenu().findItem(ID_CLIENT_CHAT) != null) {
+ //                            if (navigation.getMenu().findItem(ID_CLIENT_CHAT) != null) {
 //                                navigation.setSelectedItemId(ID_CLIENT_CHAT);
 //                            } else {
 //                                viewPager.setCurrentItem(CLINET_CHAT_VIEW, false);
@@ -552,22 +503,20 @@ public class JobDetailActivity extends AppCompatActivity implements
                                 viewPager.setCurrentItem(CLINET_CHAT_VIEW, false);
                             }
                         } else {
-                            startActivity(new Intent(this, MainActivity.class));
-                            this.finish();
+                            startActivity(new Intent(JobDetailActivity.this, MainActivity.class));
+                            JobDetailActivity.this.finish();
                         }
                     } catch (Exception exception) {
                         exception.printStackTrace();
-                        startActivity(new Intent(this, MainActivity.class));
-                        this.finish();
+                        startActivity(new Intent(JobDetailActivity.this, MainActivity.class));
+                        JobDetailActivity.this.finish();
                     }
-
                 }
-
                 /* *when bundle data not found **/
                 else if (getIntent().getAction() != null) {
                     if (getIntent().getType().equals("CLIENTCHAT")) {
                         try {
-                            dataJob = AppDataBase.getInMemoryDatabase(this).jobModel().getJobsById(getIntent().getAction());
+                            dataJob = AppDataBase.getInMemoryDatabase(JobDetailActivity.this).jobModel().getJobsById(getIntent().getAction());
                             if (navigation.getMenu().findItem(ID_CLIENT_CHAT) != null) {
                                 navigation.setSelectedItemId(ID_CLIENT_CHAT);
                             } else {
@@ -575,12 +524,12 @@ public class JobDetailActivity extends AppCompatActivity implements
                             }
                         } catch (Exception ex) {
                             ex.printStackTrace();
-                            startActivity(new Intent(this, MainActivity.class));
-                            this.finish();
+                            startActivity(new Intent(JobDetailActivity.this, MainActivity.class));
+                            JobDetailActivity.this.finish();
                         }
                     } else if (getIntent().getType().equals("ADMINCHAT")) {
                         try {
-                            dataJob = AppDataBase.getInMemoryDatabase(this).jobModel().getJobsById(getIntent().getAction());
+                            dataJob = AppDataBase.getInMemoryDatabase(JobDetailActivity.this).jobModel().getJobsById(getIntent().getAction());
                             if (navigation.getMenu().findItem(ID_CHAT) != null) {
                                 navigation.setSelectedItemId(ID_CHAT);
                             } else {
@@ -589,73 +538,124 @@ public class JobDetailActivity extends AppCompatActivity implements
                         } catch (Exception exception) {
                             exception.printStackTrace();
                         }
-
                     }
-
                 } else {
                     navigation.setSelectedItemId(ID_JOB_DETAIL);
                     return;
                 }
         }
-
-        Log.e("DataJob",new Gson().toJson(dataJob));
-        cstm_form_pc = new Cstm_Form_Pc(this);
-        ArrayList<String> jTitleId = null;
-        try {
-            jTitleId = new ArrayList<>();
-            for (JtId jobTitleId : dataJob.getJtId()) {
-                jTitleId.add(jobTitleId.getJtId());
+        AppUtility.progressBarShow(this);
+        executorService = Executors.newSingleThreadExecutor();
+        executorService.execute(new Runnable() {
+            @Override
+            public void run() {
+                /* **Add bottom navigation Option's *****/
+                initializeMenuItemList();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        viewPager = findViewById(R.id.jobdetail_pager);
+                        setUpViewPager(viewPager);
+                        /* ****add current(root task) activity when app at background*/
+                        if (!isTaskRoot()) {
+                            final Intent intent = getIntent();
+                            final String intentAction = intent.getAction();
+                            if (intent.hasCategory(Intent.CATEGORY_LAUNCHER) && intentAction != null && intentAction.equals(Intent.ACTION_MAIN)) {
+                                finish();
+                                return;
+                            }
+                            Log.e("DataJob",new Gson().toJson(dataJob));
+                            cstm_form_pc = new Cstm_Form_Pc(JobDetailActivity.this);
+                            ArrayList<String> jTitleId = null;
+                            try {
+                                jTitleId = new ArrayList<>();
+                                for (JtId jobTitleId : dataJob.getJtId()) {
+                                    jTitleId.add(jobTitleId.getJtId());
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            if (dataJob != null && dataJob.getJobId() != null) {
+                                cstm_form_pc.callApiGetFormlist(dataJob.getJobId(), jTitleId);
+                            }
+                            try {
+                                if (dataJob == null) {
+                                    startActivity(new Intent(JobDetailActivity.this, MainActivity.class));
+                                    JobDetailActivity.this.finish();
+                                }
+                            } catch (Exception exception) {
+                                exception.printStackTrace();
+                            }
+                            ChatController.getInstance().setJobdetailListener(JobDetailActivity.this);
+                            LocalBroadcastManager.getInstance(JobDetailActivity.this).registerReceiver(loadfromforserver,
+                                    new IntentFilter("loadfromserver"));
+                            attachKeyboardListeners();
+                            navigation = findViewById(R.id.navigation);
+                            Menu menu = navigation.getMenu();
+                            if (menu_items_ilist.size() > 0) {
+                                int count_menu = 0;
+                                for (MenuItemsModel item : menu_items_ilist) {
+                                    if (count_menu == 4) {
+                                        break;
+                                    }
+                                    menu.add(Menu.NONE, item.getMenu_item_id(), Menu.NONE, item.getMenu_title()).setIcon(item.getMenu_icon());
+                                    item.setIsalreadySet(true);
+                                    count_menu++;
+                                }
+//            more option is always stay on the place.
+                                if (menu_items_ilist.size() > 4)
+                                    menu.add(Menu.NONE, ID_MORE, Menu.NONE, LanguageController.getInstance().getMobileMsgByKey(AppConstant.more)).setIcon(R.drawable.ic_more_horiz_black_24dp);
+                            }
+                        }
+                        /* ** add view for chat batch icon ***/
+                        BottomNavigationMenuView bottomNavigationMenuView = (BottomNavigationMenuView) navigation.getChildAt(0);
+                        for (int i = 0; i < bottomNavigationMenuView.getChildCount(); i++) {
+                            int chatId = bottomNavigationMenuView.getChildAt(i).getId();
+                            if (chatId == ID_CHAT) {
+                                View v = bottomNavigationMenuView.getChildAt(i);
+                                BottomNavigationItemView itemView = (BottomNavigationItemView) v;
+                                /* ** add view for chat batch icon ***/
+                                View badge = LayoutInflater.from(JobDetailActivity.this).inflate(R.layout.chat_batch_count_layout, navigation, false);
+                                text = badge.findViewById(R.id.badge_text_view);
+                                itemView.addView(badge);
+                            } else if (chatId == ID_CLIENT_CHAT) {
+                                View v = bottomNavigationMenuView.getChildAt(i);
+                                BottomNavigationItemView itemView = (BottomNavigationItemView) v;
+                                /* ** add view for chat batch icon ***/
+                                View badge = LayoutInflater.from(JobDetailActivity.this).inflate(R.layout.chat_batch_count_layout, navigation, false);
+                                clientChatTextView = badge.findViewById(R.id.badge_text_view);
+                                itemView.addView(badge);
+                            }
+                        }
+                        try {
+                            if (dataJob != null && dataJob.getJobId() != null) {
+                                /* *
+                                 * *
+                                 *  create batch count for JOB **/
+                                showBadge(ChatController.getInstance().getbatchCount(dataJob.getJobId()));
+                                /* *
+                                 * * client chat batch count ***/
+                                showBadgeForClientChat(ChatController.getInstance().getClientChatBatchCount(dataJob.getJobId()));
+                            }
+                        } catch (Exception exception) {
+                            exception.printStackTrace();
+                        }
+                        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+                        EotApp.getAppinstance().setAddJobObserver(JobDetailActivity.this);
+                    }
+                });
+                detail_activity_pi = new Job_Detail_Activity_pc(JobDetailActivity.this);
+                detail_activity_pi.getInvoiceItemList();
+                // permission for job card
+                if(App_preference.getSharedprefInstance().getLoginRes().getCompPermission().get(0).getIsJobCardEnableMobile()
+                        != null && App_preference.getSharedprefInstance().getLoginRes().getCompPermission().get(0).
+                        getIsJobCardEnableMobile().equals("0"))
+                {
+                    detail_activity_pi.getJobCardetemplateList();
+                }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        if (dataJob != null && dataJob.getJobId() != null) {
-            cstm_form_pc.callApiGetFormlist(dataJob.getJobId(), jTitleId);
-        }
-
-        try {
-            if (dataJob == null) {
-                startActivity(new Intent(this, MainActivity.class));
-                this.finish();
-            }
-        } catch (Exception exception) {
-            exception.printStackTrace();
-        }
-
-        detail_activity_pi = new Job_Detail_Activity_pc(this);
-        detail_activity_pi.getInvoiceItemList();
-        // permission for job card
-        if(App_preference.getSharedprefInstance().getLoginRes().getCompPermission().get(0).getIsJobCardEnableMobile()
-                != null && App_preference.getSharedprefInstance().getLoginRes().getCompPermission().get(0).
-                getIsJobCardEnableMobile().equals("0"))
-        {
-            detail_activity_pi.getJobCardetemplateList();
-        }
-
-
-        ChatController.getInstance().setJobdetailListener(this);
-
-        try {
-            if (dataJob != null && dataJob.getJobId() != null) {
-                /* *
-                 * *
-                 *  create batch count for JOB **/
-                showBadge(ChatController.getInstance().getbatchCount(dataJob.getJobId()));
-                /* *
-                 * * client chat batch count ***/
-                showBadgeForClientChat(ChatController.getInstance().getClientChatBatchCount(dataJob.getJobId()));
-            }
-        } catch (Exception exception) {
-            exception.printStackTrace();
-        }
-
-        LocalBroadcastManager.getInstance(this).registerReceiver(loadfromforserver,
-                new IntentFilter("loadfromserver"));
-        addButtomCustomFormWindow();
+        });
     }
-
-
     /***** arrange footer menu option by Admin sequence ******/
     private void initializeMenuItemList() {
         if (menu_items_ilist.size() > 0) {
@@ -771,7 +771,7 @@ public class JobDetailActivity extends AppCompatActivity implements
             ChatController.getInstance().setChatScreenState(3, "");
         }
 
-        if (position < navigation.getMenu().size() && mypagerAdapter.getPageTitle(position).
+        if (navigation!= null && position < navigation.getMenu().size() && mypagerAdapter.getPageTitle(position).
                 equals(LanguageController.getInstance().getMobileMsgByKey(AppConstant.title_chat))) {
             ChatController.getInstance().setChatScreenState(1, dataJob.getJobId());
             ChatController.getInstance().setUnreadCountZeroByJobId(dataJob.getLabel(), dataJob.getJobId(),
@@ -795,7 +795,29 @@ public class JobDetailActivity extends AppCompatActivity implements
             return true;
         }
         else if (item.getItemId() == R.id.miJobCard) {
-            dialogJobCardDocuments = new DialogJobCardDocuments();
+
+            if(AppUtility.isInternetConnected()) {
+                if (templateList != null && !templateList.isEmpty()) {
+                    toJsonTemplate = new Gson().toJson(templateList);
+                }
+                Intent intent = new Intent(this, JobCardViewActivity.class);
+                intent.putExtra("DataForJobCardView", true);
+                intent.putExtra("JobId", dataJob.getJobId());
+                intent.putExtra("toJsonTemplateString", toJsonTemplate);
+                if (dataJob.getKpr() != null) {
+                    String[] fwList2 = dataJob.getKpr().split(",");
+                    intent.putExtra("FwList", fwList2);
+                }
+                startActivity(intent);
+            }else {
+                AppUtility.alertDialog(this, LanguageController.getInstance().getMobileMsgByKey(AppConstant.dialog_error_title),
+                        LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_check_network), LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), "", () -> {
+                            return null;
+
+                        });
+
+            }
+            /*dialogJobCardDocuments = new DialogJobCardDocuments();
             dialogJobCardDocuments.setContext(this);
             dialogJobCardDocuments.setJobId(dataJob.getJobId());
 
@@ -808,7 +830,7 @@ public class JobDetailActivity extends AppCompatActivity implements
             if(templateList!=null && !templateList.isEmpty()){
                 dialogJobCardDocuments.setInvoiceTmpList(templateList);
             }
-            dialogJobCardDocuments.show(getSupportFragmentManager(), "dialog");
+           *//* dialogJobCardDocuments.show(getSupportFragmentManager(), "dialog");*/
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -834,7 +856,7 @@ public class JobDetailActivity extends AppCompatActivity implements
                 switch (resultCode) {
                     case Activity.RESULT_OK:
                         if (detailFragment != null) {
-                            detailFragment.onFormSuccess();
+                            detailFragment.onFormSuccess(completeFor,jobType);
                         }
                         break;
                     case Activity.RESULT_CANCELED:
@@ -914,6 +936,7 @@ public class JobDetailActivity extends AppCompatActivity implements
             case ID_DOCUMENTS:
                 DOCUMENTSELECT = false;
                 selectBottomMenu(ID_DOCUMENTS);
+                documentsFragment.updateDocList();
                 viewPager.setCurrentItem(DOCUMENT_VIEW, false);
                 break;
             case ID_PAYMENT:
@@ -930,15 +953,24 @@ public class JobDetailActivity extends AppCompatActivity implements
                 /* *
                  * canInvoiceCreated =0   Do not create  invoice /1 create invoice
                  * check permission for the job is allow to generate invoice
+                 * For Batch invoice and solo invoice chek we use invType key (28/Sep/23)
+                 * invType  = 0- unsaved client /none
+                            1 -  Client
+                            2- Job /solo
+                            3- Multi job / batch
                  * **/
-                if (dataJob != null && dataJob.getCanInvoiceCreated() != null &&
-                        dataJob.getCanInvoiceCreated().equals("0")) {
-                    AppUtility.alertDialog(JobDetailActivity.this,
-                            LanguageController.getInstance().getMobileMsgByKey(AppConstant.title_invoice),
-                            LanguageController.getInstance().getMobileMsgByKey(AppConstant.invoice_can_not_generate_msg), null,
-                            LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), null);
-                } else
-                    detail_activity_pi.getItemFromServer(dataJob.getJobId());
+
+//                if (dataJob != null && dataJob.getCanInvoiceCreated() != null &&
+//                        dataJob.getCanInvoiceCreated().equals("0")) {
+                    if (dataJob != null && dataJob.getCanInvoiceCreated() != null &&
+                            dataJob.getInvType().equals("3")) {
+                        AppUtility.alertDialog(JobDetailActivity.this,
+                                LanguageController.getInstance().getMobileMsgByKey(AppConstant.title_invoice),
+                                LanguageController.getInstance().getMobileMsgByKey(AppConstant.batch_invoice_can_not_generate_msg), null,
+//                                LanguageController.getInstance().getMobileMsgByKey(AppConstant.invoice_can_not_generate_msg), null,
+                                LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), null);
+                    } else
+                        detail_activity_pi.getItemFromServer(dataJob.getJobId());
                 break;
             case ID_CLIENT_CHAT:
                 selectBottomMenu(ID_CLIENT_CHAT);
@@ -981,7 +1013,9 @@ public class JobDetailActivity extends AppCompatActivity implements
         }
     }
 
-    public void openFormForEvent(String eventId) {
+    public void openFormForEvent(String eventId , String completeFor, String jobType) {
+        this.completeFor = completeFor;
+        this.jobType = jobType;
         HyperLog.i(TAG, "openFormForEvent(M) check custom form permission");
 
         if (App_preference.getSharedprefInstance().getLoginRes().getCustomFormEnable().equals("1")) {
@@ -1000,6 +1034,7 @@ public class JobDetailActivity extends AppCompatActivity implements
                                 Intent intent = new Intent(JobDetailActivity.this, FormQueAns_Activity.class);
                                 intent.putExtra("formId", item);
                                 intent.putExtra("jobId", dataJob.getJobId());
+                                intent.putExtra("isLeader",dataJob.getIsLeader());
                                 startActivityForResult(intent, CUSTOM_FORM_REQUESTCALL + i);
                                 i++;
                             }
@@ -1007,7 +1042,7 @@ public class JobDetailActivity extends AppCompatActivity implements
                         if (i == 0) {
                             if (detailFragment != null) {
                                 HyperLog.i(TAG, "openFormForEvent(M) : Custom form Answer Submit than status change");
-                                detailFragment.onFormSuccess();
+                                detailFragment.onFormSuccess(completeFor,jobType);
                             } else {
                                 HyperLog.i(TAG, "openFormForEvent(M) : detailFragment NULL......");
                             }
@@ -1016,7 +1051,7 @@ public class JobDetailActivity extends AppCompatActivity implements
                         }
                     } else {
                         if (detailFragment != null) {
-                            detailFragment.onFormSuccess();
+                            detailFragment.onFormSuccess(completeFor,jobType);
                             HyperLog.i(TAG, "openFormForEvent(M) :" + "Custom Form List Not Found");
                         } else {
                             HyperLog.i(TAG, "openFormForEvent(M) : detailFragment NULL......");
@@ -1025,7 +1060,7 @@ public class JobDetailActivity extends AppCompatActivity implements
                 } else {
                     HyperLog.i(TAG, "openFormForEvent(M) :" + "Status Update WithOut NEtwork");
                     if (detailFragment != null) {
-                        detailFragment.onFormSuccess();
+                        detailFragment.onFormSuccess(completeFor,jobType);
                     } else {
                         HyperLog.i(TAG, "openFormForEvent(M) : detailFragment NULL......");
                     }
@@ -1034,7 +1069,7 @@ public class JobDetailActivity extends AppCompatActivity implements
                 ex.printStackTrace();
                 HyperLog.i(TAG, "openFormForEvent(M) :" + ex.toString());
                 if (detailFragment != null) {
-                    detailFragment.onFormSuccess();
+                    detailFragment.onFormSuccess(completeFor,jobType);
                 } else {
                     HyperLog.i(TAG, "openFormForEvent(M) : detailFragment NULL......");
                 }
@@ -1042,7 +1077,7 @@ public class JobDetailActivity extends AppCompatActivity implements
         } else {
             HyperLog.i(TAG, "openFormForEvent(M) :" + "Custom form permission Disable");
             if (detailFragment != null) {
-                detailFragment.onFormSuccess();
+                detailFragment.onFormSuccess(completeFor,jobType);
             } else {
                 HyperLog.i(TAG, "openFormForEvent(M) : detailFragment NULL......");
             }
@@ -1074,29 +1109,61 @@ public class JobDetailActivity extends AppCompatActivity implements
     }
 
     @Override
+    public void progressBarDissmissForThread() {
+          AppUtility.progressBarDissMiss();
+    }
+
+    @Override
     public void moreInvoiceOption(List<InvoiceItemDataModel> data) {
+
         if (data.size() > 0) {
-            dataJob = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(dataJob.getJobId());
-            if (dataJob != null && dataJob.getIsJobInvoiced() != null && dataJob.getIsJobInvoiced().equals("0")) {
-                showDialogForInvoice();
+            if (haveBillableItem(data)) {
+                dataJob = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(dataJob.getJobId());
+                if (dataJob != null && dataJob.getIsJobInvoiced() != null && dataJob.getIsJobInvoiced().equals("0")) {
+                    showDialogForInvoice();
+                } else {
+                    Intent generateInvoiceIntent = new Intent(JobDetailActivity.this,
+                            Generate_Invoice_Activity.class);
+                    generateInvoiceIntent.putExtra("JobId", dataJob.getJobId());
+                    startActivity(generateInvoiceIntent);
+                }
             } else {
-                Intent generateInvoiceIntent = new Intent(JobDetailActivity.this,
-                        Generate_Invoice_Activity.class);
-                generateInvoiceIntent.putExtra("JobId", dataJob.getJobId());
-                startActivity(generateInvoiceIntent);
+                AppUtility.alertDialog(this, "", LanguageController.getInstance().getMobileMsgByKey(AppConstant.non_billable_item_alert), LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), "", () -> null);
             }
-        } else {
+        }else {
             AppUtility.alertDialog(this, "", LanguageController.getInstance().getMobileMsgByKey(AppConstant.no_Item_generate_inv), LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), "", () -> null);
         }
     }
 
 
 
+    private boolean haveBillableItem(List<InvoiceItemDataModel> data){
+        boolean haveBillableItem = false;
+    for (InvoiceItemDataModel item : data
+    ) {
+        if(item.getIsBillable().equals("1")){
+            haveBillableItem =  true;
+            break;
+        }
+    }
+    return haveBillableItem;
+}
 
     private void showDialogForInvoice() {
-        AppUtility.alertDialog2(this, LanguageController.getInstance().getMobileMsgByKey(AppConstant.are_you_sure_invoice)
-                , ""
+        String message = "";
+        String title = "";
+        if(!dataJob.getContrId().equals("0")){
+            title = LanguageController.getInstance().getMobileMsgByKey(AppConstant.title_invoice);
+            message = LanguageController.getInstance().getMobileMsgByKey(AppConstant.contract_invoice_alert);
 
+        }else {
+            title = LanguageController.getInstance().getMobileMsgByKey(AppConstant.are_you_sure_invoice);
+
+        }
+        AppUtility.alertDialog2(this, title
+                , message
+//        AppUtility.alertDialog2(this, LanguageController.getInstance().getMobileMsgByKey(AppConstant.are_you_sure_invoice)
+//                 ,""
                 , LanguageController.getInstance().getMobileMsgByKey(AppConstant.yes), LanguageController.getInstance().getMobileMsgByKey(AppConstant.no), new Callback_AlertDialog() {
                     @Override
                     public void onPossitiveCall() {
@@ -1275,8 +1342,9 @@ public class JobDetailActivity extends AppCompatActivity implements
         return super.onPrepareOptionsMenu(menu);
     }
 
-    public void openCustomSignatureDialog() {
+    public void openCustomSignatureDialog(String statusId) {
         if (detail_activity_pi != null && dataJob != null) {
+            dataJob.setStatus(statusId);
             if (TextUtils.isEmpty(dataJob.getSignature())) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 View view = LayoutInflater.from(this).inflate(R.layout.item_customer_signature, null);
@@ -1329,6 +1397,8 @@ public class JobDetailActivity extends AppCompatActivity implements
                     if (mSignature.isSignatureEmpty()) {
                         mfile = null;
                     }
+                    Log.e("Signature Param", "JobId = "+dataJob.getJobId());
+                    Log.e("Signature Param", "File = "+mfile);
                     detail_activity_pi.uploadCustomerSign(
                             dataJob.getJobId(),
                             mfile);
@@ -1369,6 +1439,8 @@ public class JobDetailActivity extends AppCompatActivity implements
             super(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
         }
 
+        @NonNull
+        @Override
         public Fragment getItem(int position) {
             switch (position) {
                 case 0:
@@ -1386,11 +1458,18 @@ public class JobDetailActivity extends AppCompatActivity implements
                 case 3:
                     return FeedbackFragment.newInstance("No", dataJob.getJobId());
                 case 4:
-                    return HistoryFragment.newInstance("No", dataJob.getJobId());
+                    CompPermission compPermission = App_preference.getSharedprefInstance().getLoginRes().getCompPermission().get(0);
+                    if (compPermission.getCltWorkHistory() != null) {
+                        if (compPermission.getCltWorkHistory().equals("0"))
+                            return  WorkHistoryFragment.newInstance(dataJob.getCltId(),dataJob.getJobId());
+                        else
+                            return HistoryFragment.newInstance("No", dataJob.getJobId());
+                    }
+
                 case 5:
                     return ClientChatFragment.newInstance("NO", dataJob.getJobId());
                 case 6:
-                    return CustomFormListFragment.newInstance(customFormLists, dataJob.getJobId());
+                    return CustomFormListFragment.newInstance(customFormLists, dataJob.getJobId(),dataJob.getIsLeader());
                 default:
                     return null;
             }

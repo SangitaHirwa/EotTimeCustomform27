@@ -9,6 +9,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Parcelable;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -16,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -35,6 +37,17 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.eot_app.R;
 import com.eot_app.login_next.FooterMenu;
 import com.eot_app.login_next.login_next_model.CompPermission;
+import com.eot_app.nav_menu.appointment.appointment_ItemData.AppointmentItemAdded_pi;
+import com.eot_app.nav_menu.appointment.appointment_ItemData.AppointmentItemData_pc;
+import com.eot_app.nav_menu.appointment.appointment_ItemData.AppointmentItemData_pi;
+import com.eot_app.nav_menu.appointment.appointment_model.AppintmentItemDataModel;
+import com.eot_app.nav_menu.appointment.appointment_model.AppointmentAddItem_Res;
+import com.eot_app.nav_menu.appointment.appointment_model.AppointmentItemAdd_RequestModel;
+import com.eot_app.nav_menu.appointment.appointment_model.AppointmentItemDataInMap;
+import com.eot_app.nav_menu.appointment.appointment_model.AppointmentUpdateItem_Req_Model;
+import com.eot_app.nav_menu.appointment.dbappointment.Appointment;
+import com.eot_app.nav_menu.appointment.details.RequirementGetheringListAdapter;
+import com.eot_app.nav_menu.appointment.details.documents.AppointmentTax;
 import com.eot_app.nav_menu.jobs.job_db.Job;
 import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.model.AddInvoiceItemReqModel;
 import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.model.InvoiceItemDataModel;
@@ -49,6 +62,7 @@ import com.eot_app.nav_menu.jobs.job_detail.invoice.inventry_pkg.ItemParts;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_detail_pkg.inv_detail_model.Tax;
 import com.eot_app.nav_menu.jobs.job_detail.invoice2list.ItemListPartAdpter;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.add_job_equip.AddJobEquipMentActivity;
+import com.eot_app.nav_menu.jobs.job_detail.job_equipment.job_equ_remrk.JobEquLinkItemActivity;
 import com.eot_app.nav_menu.jobs.joboffline_db.JobOfflineDataModel;
 import com.eot_app.services.Service_apis;
 import com.eot_app.utility.AppConstant;
@@ -65,14 +79,19 @@ import com.eot_app.utility.settings.setting_db.Offlinetable;
 import com.eot_app.utility.util_interfaces.Callback_AlertDialog;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.hypertrack.hyperlog.HyperLog;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.Callable;
 
 import static com.eot_app.nav_menu.jobs.job_detail.invoice2list.JoBInvoiceItemList2Activity.ADD_ITEM_DATA;
+import static com.eot_app.utility.AppConstant.qty;
 
 
 public class AddEditInvoiceItemActivity2 extends
@@ -82,7 +101,8 @@ public class AddEditInvoiceItemActivity2 extends
         View.OnClickListener,
         RadioGroup.OnCheckedChangeListener {
     public static final int EQUIPMENTCONVERT = 201;
-    RelativeLayout ll_note;
+    public static final int EQUIPMENTLINK = 202;
+    RelativeLayout ll_note, ll_link_note;
     View nm_view, desc_view, qty_view, rate_view, supplier_view, disc_view, tax_view, amount_view, part_no_view, hsncode_view, unit_view, taxrateAmount_view, seroal_no_view, tax_rate_view;
     TextView tax_value_txt, tax_txt_hint, amount_value_txt, taxamount_txt_hint, taxamount_value_txt, amount_txt_hint;
     List<ItemParts> partsList = new ArrayList<>();
@@ -92,7 +112,7 @@ public class AddEditInvoiceItemActivity2 extends
     String equipmentIdName = "";
     String equipmentType = "";
     RelativeLayout add_quote_item_layout;
-    TextView text_default, tv_label_part;
+    TextView text_default, tv_label_part, txt_lbl_link,btn_link_item;
     CardView ll_part_items;
     RecyclerView recyclerView_part_item;
     ItemListPartAdpter invoice_list_adpter;
@@ -122,11 +142,15 @@ public class AddEditInvoiceItemActivity2 extends
     private List<JobTitle> servicesItemList = new ArrayList<>();
     private List<FieldWorker> fieldWorkerList = new ArrayList<>();
     private List<Inventry_ReS_Model> itemsList = new ArrayList<>();
-    private String jobId;
+    private String jobId="";
+    private String appId="";
     private String jtId = "";
+
     private String isBillable = "1";
     private boolean addItemOnInvoice;
     private Job jobModel;
+    private  Appointment appointmentModel;
+    private Boolean appointmentItemCountForFlag = false;
     private TextView convert_item_to_equi;
     private Boolean jobItemCountForFlag = false;
     private boolean updateItem = false;
@@ -136,12 +160,44 @@ public class AddEditInvoiceItemActivity2 extends
     private boolean NOITEMRELECT = false, NONBILLABLE = false;
     private ImageButton tax_cancel;
 
+    private boolean firstTimeOnPage = true;
+    private String getTaxMethodType="", getSingleTaxId="0";
+    private String getDisCalculationType,getTaxCalculationType;
 
+    public final static int ADD_REQUIRED_ITEM = 5;
+    public final static int UPDATE_ITEM = 398;
+    private List<InvoiceItemDataModel> itemDataList =new ArrayList<>();
+    private Bundle bundle;
+    private AppointmentItemData_pi appointmentItemData_pi;
+    private AppointmentTax appointmentTax;
+    private AppintmentItemDataModel updateAppointmentItemData;
+    private int isPartParent = 0, isPartChild = 0;
+    private AppintmentItemDataModel appintmentItemDataModel;
+    private AppintmentItemDataModel updateAppintmentItemDataModel;
+    private int appDataType;
+    private int appitemType;
+    private int appjtId;
+    private  String appInm="";
+    private AppointmentUpdateItem_Req_Model itemAddRequestModel;
+    private  AppointmentAddItem_Res updateItem_res;
+    CheckBox add_stock_checkBox;
+   String isRemoveStock ="1";
+   boolean show_stock_checkbox = false;
+   public static AddEditInvoiceItemActivity2 addEditInvoiceItemActivity2;
+
+   public  AddEditInvoiceItemActivity2 getInstance(){
+
+       return addEditInvoiceItemActivity2;
+   }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        addEditInvoiceItemActivity2 = this;
         setContentView(R.layout.activity_edit__invoice);
-        initializelables();
+//        initializelables();
+        appointmentItemData_pi = new AppointmentItemData_pc();
+        bundle = getIntent().getExtras();
+//        initializelables();
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             try {
@@ -152,13 +208,18 @@ public class AddEditInvoiceItemActivity2 extends
                 if (getIntent().hasExtra("comeFrom")) {
                     comeFrom = bundle.getString("comeFrom");
                     cltId = bundle.getString("cltId");
+                    show_stock_checkbox = true;
                     equipment = bundle.getString("equipment");
                     equipmentId = bundle.getString("equipmentId");
                     equipmentIdName = bundle.getString("equipmentIdName");
                     equipmentType = bundle.getString("equipmentType");
+                    initializelables();
                     if (comeFrom != null && comeFrom.equalsIgnoreCase("AddRemark")) {
                         edt_item_qty.setEnabled(false);
                         ll_note.setVisibility(View.VISIBLE);
+                        ll_link_note.setVisibility(View.VISIBLE);
+                    }else  if (comeFrom != null && comeFrom.equalsIgnoreCase("AddRemarkItem")) {
+                        ll_link_note.setVisibility(View.VISIBLE);
                     }
                     layout_fw_item.setVisibility(View.GONE);
                 }
@@ -176,7 +237,14 @@ public class AddEditInvoiceItemActivity2 extends
             if (getIntent().hasExtra("jobId")) {
                 jobId = bundle.getString("jobId");
                 invId = bundle.getString("invId");
+                show_stock_checkbox = true;
+                getTaxDisType(jobId);
+                initializelables();
                 addItemOnInvoice = bundle.getBoolean("addItemOnInvoice");
+                    getTaxMethodType = bundle.getString("getTaxMethodType");
+                    if (getTaxMethodType.equals("1")) {
+                        getSingleTaxId = bundle.getString("getSingleTaxId");
+                    }
                 setDefaultValuesForAddNewItem();
 
                 // for hiding in case of generate invoice
@@ -191,13 +259,50 @@ public class AddEditInvoiceItemActivity2 extends
             } else if (getIntent().hasExtra("InvoiceItemDataModel")) {
                 jobId = bundle.getString("edit_jobId");
                 invId = bundle.getString("invId");
+                show_stock_checkbox = true;
+                getTaxDisType(jobId);
+                initializelables();
                 addItemOnInvoice = bundle.getBoolean("addItemOnInvoice");
                 updateItemDataModel = bundle.getParcelable("InvoiceItemDataModel");
+                    getTaxMethodType = bundle.getString("getTaxMethodType");
+                    if (getTaxMethodType.equals("1")) {
+                        getSingleTaxId = bundle.getString("getSingleTaxId");
+                    }
                 Log.e("InvoiceItemDataModel1", new Gson().toJson(updateItemDataModel));
                 invoiceItemPi.getTaxList();
                 goneViewsForUpdate();
             }
-            getJobById();
+            if(getIntent().hasExtra("AddRequirmentGetheringItem")) {
+               appId = bundle.getString("appId");
+                getTaxDisTypeForApp(appId);
+                initializelables();
+                getTaxMethodType = bundle.getString("getTaxMethodType");
+                if (getTaxMethodType.equals("1")) {
+                    getSingleTaxId = bundle.getString("getSingleTaxId");
+                }
+                setDefaultValuesForAddNewItem();
+                invoiceItemPi.getTaxList();
+
+            }else if(getIntent().hasExtra("UpdateItemRequirmentGethering")){
+                bundle.getBoolean("UpdateItemRequirmentGethering");
+                appId = bundle.getString("appId");
+                getTaxDisTypeForApp(appId);
+                initializelables();
+                getTaxMethodType = bundle.getString("getTaxMethodType");
+                if (getTaxMethodType.equals("1")) {
+                    getSingleTaxId = bundle.getString("getSingleTaxId");
+                }
+                updateAppointmentItemData= getIntent().getParcelableExtra("updateItemDataOfApp");
+
+                invoiceItemPi.getTaxList();
+                goneViewsForUpdateAppItem();
+            }
+            if(getIntent().hasExtra("AddRequirmentGetheringItem")||getIntent().hasExtra("UpdateItemRequirmentGethering")) {
+                getAppointmentById();
+            }
+            else {
+                getJobById();
+            }
         } else {
             return;
         }
@@ -283,6 +388,174 @@ public class AddEditInvoiceItemActivity2 extends
                 Log.e("", "");
             }
         });
+    }
+
+    private void getTaxDisType(String jobId){
+        if(jobId != null && !jobId.equals("")){
+            Job job = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(jobId);
+            if(job.getCanInvoiceCreated().equals("1")) {
+                getDisCalculationType = AppDataBase.getInMemoryDatabase(this).jobModel().disCalculationType(jobId);
+                getTaxCalculationType = AppDataBase.getInMemoryDatabase(this).jobModel().taxCalculationType(jobId);
+            }else {
+                getDisCalculationType= App_preference.getSharedprefInstance().getLoginRes().getDisCalculationType();
+                getTaxCalculationType= App_preference.getSharedprefInstance().getLoginRes().getTaxCalculationType();
+            }
+        }else{
+            getDisCalculationType= App_preference.getSharedprefInstance().getLoginRes().getDisCalculationType();
+            getTaxCalculationType= App_preference.getSharedprefInstance().getLoginRes().getTaxCalculationType();
+        }
+    }
+    private void getTaxDisTypeForApp(String appId){
+        if(appId != null && !appId.equals("")){
+            Appointment appointment = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).appointmentModel().getAppointmentById(appId);
+            if( appointment.getItemData().size()>0) {
+                if(!appointment.getDisCalculationType().equals("") && !appointment.getTaxCalculationType().equals("")
+                && appointment.getDisCalculationType() != null && appointment.getTaxCalculationType() != null )
+                getDisCalculationType = appointment.getDisCalculationType();
+                getTaxCalculationType = appointment.getTaxCalculationType();
+            }else {
+                getDisCalculationType= App_preference.getSharedprefInstance().getLoginRes().getDisCalculationType();
+                getTaxCalculationType= App_preference.getSharedprefInstance().getLoginRes().getTaxCalculationType();
+            }
+        }else{
+            getDisCalculationType= App_preference.getSharedprefInstance().getLoginRes().getDisCalculationType();
+            getTaxCalculationType= App_preference.getSharedprefInstance().getLoginRes().getTaxCalculationType();
+        }
+    }
+    private void goneViewsForUpdateAppItem() {
+        layout_fw_item.setVisibility(View.GONE);
+          try {
+           if (updateAppointmentItemData.getTax().size() > 0) {
+                List<AppointmentTax> filterSelectedTaxList = updateAppointmentItemData.getTax();
+                for (Tax taxModel : listFilter) {
+                    for (AppointmentTax taxselect : filterSelectedTaxList) {
+                        if (taxModel.getTaxId().equals(String.valueOf(taxselect.getTaxId()))) {
+                            if (Double.parseDouble(taxModel.getRate()) != Double.parseDouble(taxselect.getRate())) {
+                                taxModel.setAppliedTax(LanguageController.getInstance().getMobileMsgByKey
+                                        (AppConstant.applied_tax) + " (" + taxselect.getRate() + " %)");
+                                taxModel.setSelect(true);
+                                total_tax += Float.parseFloat(taxselect.getRate());
+                            } else {
+                                taxModel.setSelect(true);
+                                total_tax += Float.parseFloat(taxselect.getRate());
+                            }
+                            taxModel.setOldTax(taxselect.getRate());
+
+                            updateItem = true;
+                            break;
+                        }
+                    }
+                }
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        setItemFieldsForApp();
+    }
+
+    private void setItemFieldsForApp() {
+        tax_value_txt.setText((String.valueOf(total_tax)));
+//        calculateTaxRate();
+
+        /* type 1 for inventry item  */
+        switch (updateAppointmentItemData.getDataType()) {
+            // for equipment items
+
+            case 4:
+            case 0:
+            case 1:
+                autocomplete_item.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.item));
+                setTxtBkgColor(1);
+                fw_service_filed_hide(1);
+                IS_ITEM_MANDATRY = true;
+                TAB_SELECT = 1;
+                break;
+            /* type 2 for FieldWorker item  */
+            case 2:
+                setTxtBkgColor(2);
+                autocomplete_item.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.fieldworkers_name));
+                fw_service_filed_hide(2);
+                IS_FW_MANDATRY = true;
+                TAB_SELECT = 2;
+                break;
+            case 3:
+                setTxtBkgColor(3);
+                autocomplete_item.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.services_name));
+                fw_service_filed_hide(3);
+                IS_SERVICES_MANDATRY = true;
+                TAB_SELECT = 3;
+                break;
+
+            /* type 6 for LABOUR item  */
+            case 6:
+
+                break;
+        }
+
+
+        if (!updateAppointmentItemData.getInm().equals(""))
+            autocomplete_item.setText(updateAppointmentItemData.getInm());
+        else autocomplete_item.setText(appointmentModel.getTempId());
+        autocomplete_item.setFocusableInTouchMode(false);
+        autocomplete_item.dismissDropDown();
+        itemlayout.setHintEnabled(true);
+
+        edt_item_qty.setText(updateAppointmentItemData.getQty());
+        edt_item_rate.setText(AppUtility.getRoundoff_amount(updateAppointmentItemData.getRate()));
+        edt_item_supplier.setText(AppUtility.getRoundoff_amount((updateAppointmentItemData.getSupplierCost())));
+        edt_item_disc.setText(updateAppointmentItemData.getDiscount());
+        edt_item_desc.setText(updateAppointmentItemData.getDes());
+        edt_part_no.setText(updateAppointmentItemData.getPno());
+        edt_hsnCode.setHint(App_preference.getSharedprefInstance().getLoginRes().getHsnCodeLable());
+        edt_hsnCode.setText(updateAppointmentItemData.getHsncode());
+        edt_unit.setText(updateAppointmentItemData.getUnit());
+        edt_serialNo.setText(updateAppointmentItemData.getSerialNo());
+
+        itemId = updateAppointmentItemData.getItemId();
+        appDataType = updateAppointmentItemData.getDataType();
+        appInm = updateAppointmentItemData.getInm();
+        appitemType = updateAppointmentItemData.getItemType();
+        appjtId = updateAppointmentItemData.getJtId();
+        try {
+            if (!NONBILLABLE && updateAppointmentItemData.getDataType()==1) {
+                if (updateAppointmentItemData.getIsBillable() != null) {
+                    isBillable = updateAppointmentItemData.getIsBillable();
+                }
+                if (updateAppointmentItemData.getIsBillableChange() != null)
+                    isBillableChange = updateAppointmentItemData.getIsBillableChange();
+                if (isBillable.equals("1")) {
+                    radio_billable.setChecked(true);
+                    radio_none_billable.setChecked(false);
+                } else if (isBillable.equals("0")) {
+                    radio_none_billable.setChecked(true);
+                    radio_billable.setChecked(false);
+                } else {
+                    radio_none_billable.setChecked(false);
+                    radio_billable.setChecked(false);
+                }
+            } else {
+                rediogrp.setVisibility(View.GONE);
+                isBillable = updateAppointmentItemData.getIsBillable();
+                isBillableChange = updateAppointmentItemData.getIsBillableChange();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        firstTimeOnPage = false;
+        total_Amount_cal();
+        calculateTaxRate();
+    }
+
+    private void getAppointmentById() {
+         appointmentModel = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).appointmentModel().getAppointmentById(appId);
+        if (appointmentModel == null) {
+            HyperLog.i("", "getJobById(M) job model null found");
+            finish();
+        } else if (appointmentModel.getItemData() != null && appointmentModel.getItemData().size() == 0) {
+            appointmentItemCountForFlag = true;
+        }
     }
 
     private void showDialogForLoadData() {
@@ -408,6 +681,19 @@ public class AddEditInvoiceItemActivity2 extends
         itemType = updateItemDataModel.getItemType();
         inm = updateItemDataModel.getInm();
         jtId = updateItemDataModel.getJtId();
+        if(updateItemDataModel.getItemType() != null && updateItemDataModel.getItemType().equals("0")){
+            if(updateItemDataModel.getIsRemoveStock() != null && updateItemDataModel.getIsRemoveStock().equals("0")){
+                add_stock_checkBox.setChecked(false);
+                isRemoveStock = "0";
+            }else {
+                add_stock_checkBox.setChecked(true);
+                isRemoveStock = "1";
+            }
+            add_stock_checkBox.setVisibility(View.VISIBLE);
+        }else {
+            add_stock_checkBox.setVisibility(View.GONE);
+
+        }
         try {
             if (!NONBILLABLE && updateItemDataModel.getDataType().equals("1")) {
                 if (updateItemDataModel.getIsBillable() != null) {
@@ -434,7 +720,9 @@ public class AddEditInvoiceItemActivity2 extends
             e.printStackTrace();
         }
 
-
+        firstTimeOnPage = false;
+        total_Amount_cal();
+        calculateTaxRate();
     }
 
     private void setEmptyFieldsNonInventry() {
@@ -463,7 +751,19 @@ public class AddEditInvoiceItemActivity2 extends
     }
 
     private void set_Title() {
-        if (updateItemDataModel == null) {
+        if(bundle.getBoolean("UpdateItemRequirmentGethering")){
+            if (App_preference.getSharedprefInstance().getLoginRes().getIsItemEditEnable().equals("1")) {
+                Objects.requireNonNull(getSupportActionBar()).setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.update_item));
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                add_edit_item_Btn.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.update_btn));
+                DP_OPEN = false;
+            } else {
+                EnableDisbleFields();
+                Objects.requireNonNull(getSupportActionBar()).setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.view_details));
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                add_edit_item_Btn.setVisibility(View.GONE);
+            }
+        }else if (updateItemDataModel == null) {
             if (comeFrom != null && comeFrom.equalsIgnoreCase("AddRemark"))
                 Objects.requireNonNull(getSupportActionBar()).setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.step_1));
             else
@@ -503,6 +803,7 @@ public class AddEditInvoiceItemActivity2 extends
                 add_edit_item_Btn.setVisibility(View.GONE);
             }
         }
+        firstTimeOnPage = false;
     }
 
     /**
@@ -537,6 +838,7 @@ public class AddEditInvoiceItemActivity2 extends
         tvLabelStep1.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.step_1_note_new));
 
         ll_note = findViewById(R.id.ll_note);
+        ll_link_note = findViewById(R.id.ll_link_note);
         itemlayout = findViewById(R.id.itemlayout);
         layout_fw_item = findViewById(R.id.layout_fw_item);
         tv_label_part = findViewById(R.id.tv_label_part);
@@ -583,7 +885,7 @@ public class AddEditInvoiceItemActivity2 extends
         edt_item_disc = findViewById(R.id.edt_item_disc);
 
         // direct discount case
-        discount(App_preference.getSharedprefInstance().getLoginRes().getDisCalculationType());
+        discount(getDisCalculationType);
 
         taxamount_layout = findViewById(R.id.taxamount_layout);
         taxamount_txt_hint = findViewById(R.id.taxamount_txt_hint);
@@ -622,6 +924,14 @@ public class AddEditInvoiceItemActivity2 extends
         radio_none_billable.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.non_billable));
         radio_billable.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.billable));
         text_default.setText(" (" + LanguageController.getInstance().getMobileMsgByKey(AppConstant.text_default) + ")");
+
+        add_stock_checkBox = findViewById(R.id.add_stock_checkBox);
+        add_stock_checkBox.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.remove_stock_from_inventory));
+        txt_lbl_link = findViewById(R.id.txt_lbl_link);
+        txt_lbl_link.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.select_job_items_to_link_equipment));
+        btn_link_item = findViewById(R.id.btn_link_item);
+        btn_link_item.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.yes));
+        btn_link_item.setOnClickListener(this);
 
         intializeViews();
     }
@@ -733,6 +1043,13 @@ public class AddEditInvoiceItemActivity2 extends
 //        if (!NONBILLABLE) {
 //            rediogrp.setVisibility(View.GONE);
 //        }
+        add_stock_checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if(!isChecked){
+                isRemoveStock = "0";
+            }else {
+                isRemoveStock = "1";
+            }
+        });
 
         invoiceItemPi = new AddEditInvoiceItem_PC(this);
         invoiceItemPi.getInventryItemList();
@@ -790,6 +1107,34 @@ public class AddEditInvoiceItemActivity2 extends
         intent.putExtra("equipmentIdName", equipmentIdName);
         intent.putExtra("equipmentType", equipmentType);
         startActivityForResult(intent, EQUIPMENTCONVERT);
+    }
+    /** Move Link Item Screen */
+    private void linkItem() {
+        if(comeFrom.equalsIgnoreCase("AddRemarkItem")) {
+            Intent intent = new Intent(AddEditInvoiceItemActivity2.this, JobEquLinkItemActivity.class);
+            intent.putExtra("edit_jobId", jobId);
+            intent.putExtra("comeFrom", "AddItem");
+            intent.putExtra("equipmentId", equipmentId);
+            startActivity(intent);
+//        startActivityForResult(intent, EQUIPMENTLINK);
+        }else {
+            Intent intent = new Intent(AddEditInvoiceItemActivity2.this,  JobEquLinkItemActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+
+            intent.putExtra("edit_jobId", jobId);
+            intent.putExtra("invId", invId);
+            intent.putExtra("comeFrom", comeFrom);
+            intent.putExtra("equipmentId", equipmentId);
+            intent.putExtra("equipmentIdName", equipmentIdName);
+            intent.putExtra("equipmentType", equipmentType);
+            intent.putExtra("InvoiceItemDataModel", updateItemDataModel);
+            try {
+                intent.putExtra("objectStr", new Gson().toJson(updateItemDataModel));
+            } catch (Exception exception) {
+                exception.printStackTrace();
+            }
+            startActivity(intent);
+        }
     }
 
     @Override
@@ -869,7 +1214,9 @@ public class AddEditInvoiceItemActivity2 extends
             Log.e("checkEmpty:;", warrantyValue + " " + warrantyType);
 
         }
-
+        if(show_stock_checkbox) {
+            add_stock_checkBox.setVisibility(View.VISIBLE);
+        }
         /* 1 For Selected tax on Item************/
         if (itemselected.getTaxType() != null && itemselected.getTaxType().equals("1")) {
             setDefaultTax(itemselected.getTax());
@@ -914,6 +1261,10 @@ public class AddEditInvoiceItemActivity2 extends
         edt_item_desc.setText(itemselected.getIdes());
         edt_unit.setText(itemselected.getUnit());
         edt_serialNo.setText(itemselected.getSerialNo());
+
+        if(!add_stock_checkBox.isChecked()){
+            isRemoveStock = "0";
+        }
         Log.v("Rate:::", itemselected.getRate());
         if (itemselected.getRate().isEmpty()) {
             edt_item_rate.setText("0");
@@ -925,8 +1276,20 @@ public class AddEditInvoiceItemActivity2 extends
         } else {
             edt_item_supplier.setText(AppUtility.getRoundoff_amount(itemselected.getSupplierCost()));
         }
-        edt_item_disc.setText(AppUtility.getRoundoff_amount(itemselected.getDiscount()));
-
+        if(getDisCalculationType.equals("1")) {
+            if(itemselected.getDiscount().isEmpty()){
+                itemselected.setDiscount("0");
+            }
+            double calculaterateDis = 0;
+                double qty = Double.parseDouble(edt_item_qty.getText().toString());
+                double rate = Double.parseDouble(edt_item_rate.getText().toString());
+                double dis = Double.parseDouble(itemselected.getDiscount());
+                calculaterateDis = (rate * qty * dis) / 100;
+            edt_item_disc.setText(AppUtility.getRoundoff_amount(""+calculaterateDis));
+        }else
+        {
+            edt_item_disc.setText(AppUtility.getRoundoff_amount(itemselected.getDiscount()));
+        }
         total_Amount_cal();
 
         // TODO removed by shivani
@@ -1189,6 +1552,7 @@ public class AddEditInvoiceItemActivity2 extends
                 break;
             case R.id.item_select:
                 autocomplete_item.setTag("Item");
+                add_stock_checkBox.setVisibility(View.GONE);
                 invoiceItemPi.getInventryItemList();
                 setTxtBkgColor(1);
                 fw_service_filed_hide(1);
@@ -1206,6 +1570,7 @@ public class AddEditInvoiceItemActivity2 extends
                 autocomplete_item.setTag("Services");
                 setTxtBkgColor(3);
                 invoiceItemPi.getJobServiceTittle();
+                add_stock_checkBox.setVisibility(View.GONE);
                 fw_service_filed_hide(3);
                 break;
             case R.id.tv_skip:
@@ -1216,6 +1581,7 @@ public class AddEditInvoiceItemActivity2 extends
                 {
                     tax.setSelect(false);
                 }
+                taxId="0";
                 float localtax = getTotalApplyTax();
                 total_tax = localtax;
                 tax_value_txt.setText((String.valueOf(localtax)));
@@ -1223,10 +1589,13 @@ public class AddEditInvoiceItemActivity2 extends
                 calculateTaxRate();
                 total_Amount_cal();
                 break;
+            case R.id.btn_link_item:
+                linkItem();
+                break;
         }
     }
 
-
+    String taxId = "0";
     private void checkMandtryFileds() {
         if (!IS_ITEM_MANDATRY && TAB_SELECT == 1) {
             AppUtility.alertDialog(this, "", LanguageController.getInstance().getMobileMsgByKey(AppConstant.item_empty), LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok),
@@ -1236,24 +1605,333 @@ public class AddEditInvoiceItemActivity2 extends
         } else if (!IS_SERVICES_MANDATRY && TAB_SELECT == 3) {
             AppUtility.alertDialog(this, "", LanguageController.getInstance().getMobileMsgByKey(AppConstant.service_error), AppConstant.ok, "", () -> null);
         } else {
-            if (updateItemDataModel == null) {
-                addItemsOnJob();
-            } else {
-                updateItemsOnJob();
+
+                List<Tax> taxListFilter = new ArrayList<>();
+                for (Tax tax : listFilter) {
+                    if (tax.isSelect()) {
+                        taxListFilter.add(tax);
+                        taxId = tax.getTaxId();
+                    }
+                }
+                if( jobModel!= null && jobModel.getCanInvoiceCreated().equals("1")) {
+                    if (getTaxMethodType.equals("1")) {
+                        if (!taxId.equals(getSingleTaxId)) {
+                            AppUtility.alertDialog(this, LanguageController.getInstance().getMobileMsgByKey(AppConstant.are_you_sure),LanguageController.getInstance().getMobileMsgByKey(AppConstant.tax_change_msg) , AppConstant.yes, AppConstant.no, new Callable<Boolean>() {
+                                @Override
+                                public Boolean call() throws Exception {
+                                    AppUpdateJob(taxListFilter);
+                                    return null;
+                                }
+                            });
+                        } else {
+                            AppUpdateJob(taxListFilter);
+                        }
+                    } else {
+                        AppUpdateJob(taxListFilter);
+                    }
+                }else {
+                    AppUpdateJob(taxListFilter);
+                }
             }
+
+    }
+
+    public void AppUpdateJob(List<Tax> taxListFilter){
+        if(edt_item_rate.getText().length()<=0){
+            edt_item_rate.setText("0");
+        }
+        if(edt_item_disc.getText().length()<=0){
+            edt_item_disc.setText("0");
+        }
+        if(bundle.getBoolean("AddRequirmentGetheringItem")){
+            addItemOnAppointment();
+        }
+        else if(bundle.getBoolean("UpdateItemRequirmentGethering")){
+            updateItemsOnAppointment();
+        }else if (updateItemDataModel == null) {
+            addItemsOnJob(taxListFilter);
+        } else {
+            updateItemsOnJob(taxListFilter);
         }
     }
 
-    private void addItemsOnJob() {
+    private void updateItemsOnAppointment() {
         try {
             HyperLog.i("TAG", "addItemsOnJob(M) started");
-
+            List<AppointmentTax> apptaxList = new ArrayList<>();
             List<Tax> taxListFilter = new ArrayList<>();
             for (Tax tax : listFilter) {
                 if (tax.isSelect())
                     taxListFilter.add(tax);
             }
+            if(taxListFilter.size()>0) {
+                appointmentTax = new AppointmentTax(Integer.parseInt(taxListFilter.get(0).getTaxId()),
+                        taxListFilter.get(0).getRate(), taxListFilter.get(0).getLabel(), taxListFilter);
+                apptaxList.add(appointmentTax);
+            }
+//            else{
+//                appointmentTax = new AppointmentTax(Integer.parseInt("0"),
+//                        "0", "0", taxListFilter);
+//            }
+//            apptaxList.add(appointmentTax);
 
+            int isPartParent = 0;
+            String partTempId = "";
+            if (partsList != null && !partsList.isEmpty()) {
+                isPartParent = 1;
+                partTempId = AppUtility.getRandomUUID();
+            }
+            if(updateAppointmentItemData.getDataType()==0){
+                dataType="0";
+            }if(itemType.equals(""))
+            {
+                itemType="0";
+            }if(isGrouped.equals("")){
+                isGrouped="0";
+            }
+            if(edt_serialNo.getText().toString().equals("")) {
+                edt_serialNo.setText("0");
+            }
+            updateAppintmentItemDataModel= new AppintmentItemDataModel(edt_item_desc.getText().toString(),"",appInm
+                    ,edt_part_no.getText().toString(),edt_item_qty.getText().toString(),
+                    edt_item_rate.getText().toString(),edt_unit.getText().toString(),apptaxList,
+                    itemId,edt_hsnCode.getText().toString(),String.valueOf(taxAmount),updateAppointmentItemData.getDataType(),
+                    edt_item_disc.getText().toString(),updateAppointmentItemData.getItemType(),edt_item_supplier.getText().toString(),
+                    isBillable,isBillableChange,appointmentModel.getTempId(),String.valueOf(isPartParent),String.valueOf(isPartChild),partTempId,
+                    updateAppointmentItemData.getIsItemOrTitle(), edt_serialNo.getText().toString(),Integer.parseInt(isGrouped),updateAppointmentItemData.getIlmmId());
+
+
+            updateItem_res=new AppointmentAddItem_Res(itemId,appInm, updateAppointmentItemData.getDataType(),
+                    updateAppointmentItemData.getItemType(),edt_item_rate.getText().toString(),edt_item_supplier.getText().toString(),
+                    edt_serialNo.getText().toString(),edt_item_qty.getText().toString(),
+                    edt_item_disc.getText().toString(), Integer.parseInt(isGrouped),apptaxList,
+                    edt_item_desc.getText().toString(),edt_hsnCode.getText().toString(),edt_part_no.getText().toString(),
+                    edt_unit.getText().toString(), isBillableChange,appointmentModel.getTempId(),
+                    String.valueOf(updateAppointmentItemData.getIlmmId()),updateAppointmentItemData.getIsLabourParent(),
+                    updateAppointmentItemData.getIsLabourChild(),updateAppointmentItemData.getLabourTempId(),
+                    taxAmount,String.valueOf(isPartParent),String.valueOf(isPartChild),
+                    partTempId,updateAppointmentItemData.getDataType(),String.valueOf(appjtId));
+            // *add api for appointment item**/
+            try {
+                if (!isBillable.equals("")) {
+                    updateAppointmentItemData.setIsBillable(isBillable);
+                }
+            } catch (Exception exception) {
+                exception.printStackTrace();
+            }
+            String updateItem = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).appointmentModel().getUpdatedItemData(appId);
+            Type listType = new TypeToken<List<AppointmentItemDataInMap>>() {
+            }.getType();
+            List<AppointmentItemDataInMap > addItemList = new Gson().fromJson(updateItem, listType);
+            for (AppointmentItemDataInMap itemData : addItemList) {
+                AppintmentItemDataModel itemData1 = itemData.getItemData();
+                if(itemData1.getIlmmId()==updateAppointmentItemData.getIlmmId()){
+                    addItemList.remove(itemData);
+                    break;
+                }
+            }
+            AppointmentItemDataInMap itemDataInMap=new AppointmentItemDataInMap(String.valueOf(updateAppointmentItemData.getIlmmId()),updateAppintmentItemDataModel);
+            addItemList.add(itemDataInMap);
+            String updateInDB = new Gson().toJson(addItemList);
+            AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).appointmentModel().updateAppointmentItem(appId,updateInDB);
+
+
+            if(AppUtility.isInternetConnected()){
+                List<AppointmentAddItem_Res> addItem_resList=new ArrayList<>();
+                addItem_resList.add(updateItem_res);
+                String addToservice = new Gson().toJson(addItem_resList);
+                 AppointmentUpdateItem_Req_Model updateItem_req_model=new AppointmentUpdateItem_Req_Model(addToservice,
+                         String.valueOf(updateAppointmentItemData.getLeadId()),String.valueOf(updateAppointmentItemData.getIlmmId()));
+                 Intent intent=new Intent();
+                 intent.putExtra("updateDataReqModel",updateItem_req_model);
+                 intent.putExtra("updateDataForDB",itemDataInMap);
+                 intent.putExtra("modelForUpdate",updateAppointmentItemData);
+                 intent.putExtra("onlineUpdate",true);
+                 setResult(RESULT_OK,intent);
+
+            }
+            else {
+                updateSyncAppItem(updateItem_res);
+                Intent intent=new Intent();
+                intent.putExtra("offlineUpdate",true);
+                setResult(RESULT_OK,intent);
+            }
+
+
+            finish_Activity();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            HyperLog.i("TAG", "addItemsOnJob(M) exception:" + ex.toString());
+        }
+    }
+
+    private void updateSyncAppItem(AppointmentAddItem_Res updateItem_res) {
+        try {
+
+                List<AppointmentAddItem_Res> addItem_resList=new ArrayList<>();
+                addItem_resList.add(updateItem_res);
+                String jsonAddDataInApi= new Gson().toJson(addItem_resList);
+                AppointmentUpdateItem_Req_Model itemupdateRequestModel =new AppointmentUpdateItem_Req_Model(jsonAddDataInApi,appointmentModel.getLeadId(),
+                        String.valueOf(updateAppointmentItemData.getIlmmId()));
+                String dateTime = AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT);
+                Gson gson = new Gson();
+                String updateAppointmentReqest = gson.toJson(itemupdateRequestModel);
+                HyperLog.i("TAG addJobReqest", new Gson().toJson(itemAddRequestModel));
+                OfflineDataController.getInstance().addInOfflineDB(Service_apis.updateItemOnAppointment, updateAppointmentReqest, dateTime);
+
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+    }
+
+    private void addItemOnAppointment() {
+        try {
+            HyperLog.i("TAG", "addItemsOnJob(M) started");
+            List<AppointmentTax> apptaxList = new ArrayList<>();
+            List<Tax> taxListFilter = new ArrayList<>();
+            for (Tax tax : listFilter) {
+                if (tax.isSelect())
+                    taxListFilter.add(tax);
+
+            }if(taxListFilter.size()>0) {
+                appointmentTax = new AppointmentTax(Integer.parseInt(taxListFilter.get(0).getTaxId()),
+                        taxListFilter.get(0).getRate(), taxListFilter.get(0).getLabel(), taxListFilter);
+                apptaxList.add(appointmentTax);
+            }
+//            else{
+//                appointmentTax = new AppointmentTax(Integer.parseInt("0"),
+//                        "0", "0", taxListFilter);
+//            }
+//            apptaxList.add(appointmentTax);
+
+            int isPartParent = 0;
+            String partTempId = "";
+            if (partsList != null && !partsList.isEmpty()) {
+                isPartParent = 1;
+                partTempId = AppUtility.getRandomUUID();
+            }
+            if(edt_serialNo.getText().toString().equals("")) {
+                edt_serialNo.setText("0");
+            }
+            if(itemType.equals("")){
+                itemType="0";
+            }
+            if(jtId.equals("")){
+                jtId="0";
+            }
+
+            appintmentItemDataModel= new AppintmentItemDataModel(edt_item_desc.getText().toString(),"",
+                    inm ,edt_part_no.getText().toString(),edt_item_qty.getText().toString(),
+                    edt_item_rate.getText().toString(),edt_unit.getText().toString(),apptaxList,
+                    itemId,edt_hsnCode.getText().toString(),String.valueOf(taxAmount),Integer.parseInt(dataType),
+                    edt_item_disc.getText().toString(), Integer.parseInt(itemType),edt_item_supplier.getText().toString(),
+                    isBillable,isBillableChange,appointmentModel.getTempId(),String.valueOf(isPartParent),String.valueOf(isPartChild),partTempId,
+                    Integer.parseInt(dataType), edt_serialNo.getText().toString(),Integer.parseInt(isGrouped),0);
+
+
+     AppointmentAddItem_Res addItem_res=new AppointmentAddItem_Res(itemId,inm, Integer.parseInt(dataType),
+             Integer.parseInt(itemType),edt_item_rate.getText().toString(),edt_item_supplier.getText().toString(),
+             edt_serialNo.getText().toString(),edt_item_qty.getText().toString(),
+             edt_item_disc.getText().toString(), Integer.parseInt(isGrouped),apptaxList,
+             edt_item_desc.getText().toString(),edt_hsnCode.getText().toString(),edt_part_no.getText().toString(),
+             edt_unit.getText().toString(),isBillableChange,appointmentModel.getTempId(),"","","",
+             "",taxAmount,String.valueOf(isPartParent),String.valueOf(isPartChild),partTempId,Integer.parseInt(dataType),jtId);
+             // *add api for appointment item**/
+            try {
+                if (!isBillable.equals("")) {
+                    // appintmentItemDataModel.setIsBillable(isBillable);
+                }
+                if (addItemOnInvoice) {
+                    //  appintmentItemDataModel.setIsBillable("1");
+                }
+
+            } catch (Exception exception) {
+                exception.printStackTrace();
+            }
+
+            /**Code For Offline Online**/
+            List<AppointmentItemDataInMap> itemDataInMaps= new ArrayList<>();
+            AppointmentItemDataInMap itemDataInMap=new AppointmentItemDataInMap("",appintmentItemDataModel);
+            itemDataInMaps.add(itemDataInMap);
+            List<AppointmentAddItem_Res> addItem_resList=new ArrayList<>();
+            addItem_resList.add(addItem_res);
+
+            List<AppointmentItemDataInMap> itemDataInMaps1= new ArrayList<>(itemDataInMaps);
+            if(appointmentModel!= null && appointmentModel.getItemData() != null){
+                itemDataInMaps1.addAll(appointmentModel.getItemData());
+            }
+            String jsonAddDataDB1 = new Gson().toJson(itemDataInMaps1);
+            AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).appointmentModel().updateAppointmentItem(appId,jsonAddDataDB1);
+            appointmentModel.setItemData(itemDataInMaps1);
+            addItemWithAppointmentSync(addItem_resList);
+
+
+            finish_Activity();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            HyperLog.i("TAG", "addItemsOnJob(M) exception:" + ex.toString());
+        }
+    }
+
+    private void addItemWithAppointmentSync(List<AppointmentAddItem_Res> itemDataList) {
+        try {
+            boolean noItem = false;
+            List<Offlinetable> offlinetableList = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).offlinemodel()
+                    .getOfflinetablesById(Service_apis.addItemOnAppointment);
+            if (offlinetableList != null && offlinetableList.size() > 0) {
+                HyperLog.i("TAG", "addItemWithJobSync(M) item found");
+
+                for (Offlinetable offlinetableModel : offlinetableList) {
+
+                    AppointmentItemAdd_RequestModel reqModel = new Gson().fromJson(offlinetableModel.getParams(),AppointmentItemAdd_RequestModel.class);
+                    if (reqModel.getAppId().equals(appId)) {
+
+                        HyperLog.i("TAG", "addItemWithJobSync(M) item found 1");
+                        HyperLog.i("TAG reqModel1", new Gson().toJson(reqModel));
+
+                        offlinetableModel.setParams(new Gson().toJson(reqModel));
+                        HyperLog.i("TAG offlinetableModel", new Gson().toJson(offlinetableModel));
+
+                        AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).offlinemodel().update(offlinetableModel);
+                        noItem = true;
+
+                    }
+                }
+            }if(!noItem){
+                List<AppointmentAddItem_Res> addItem_resList=new ArrayList<>();
+                addItem_resList.addAll(itemDataList);
+                String jsonAddDataInApi= new Gson().toJson(addItem_resList);
+                AppointmentItemAdd_RequestModel itemAddRequestModel =new AppointmentItemAdd_RequestModel(jsonAddDataInApi,appointmentModel.getLeadId(),appId);
+                String dateTime = AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT);
+                Gson gson = new Gson();
+                String addAppointmentReqest = gson.toJson(itemAddRequestModel);
+                HyperLog.i("TAG addJobReqest", new Gson().toJson(itemAddRequestModel));
+                OfflineDataController.getInstance().addInOfflineDB(Service_apis.addItemOnAppointment, addAppointmentReqest, dateTime);
+            }else{
+                List<AppointmentAddItem_Res> addItem_resList=new ArrayList<>();
+                addItem_resList.addAll(itemDataList);
+                String jsonAddDataInApi= new Gson().toJson(addItem_resList);
+                AppointmentItemAdd_RequestModel itemAddRequestModel =new AppointmentItemAdd_RequestModel(jsonAddDataInApi,appointmentModel.getLeadId(),appId);
+                String dateTime = AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT);
+                Gson gson = new Gson();
+                String addAppointmentReqest = gson.toJson(itemAddRequestModel);
+                HyperLog.i("TAG addJobReqest", new Gson().toJson(itemAddRequestModel));
+                OfflineDataController.getInstance().addInOfflineDB(Service_apis.addItemOnAppointment, addAppointmentReqest, dateTime);
+
+            }
+
+        }catch (Exception e) {
+            HyperLog.i("TAG", "addItemWithJobSync(M) exception:" + e.toString());
+
+            e.printStackTrace();
+        }
+
+    }
+    private void addItemsOnJob(List<Tax> taxListFilter) {
+        try{
+            HyperLog.i("TAG", "addItemsOnJob(M) started");
 
             // for creating a unique id for the item and its part so that we can identify
             // whether the item is having parts and which are its parts
@@ -1264,6 +1942,9 @@ public class AddEditInvoiceItemActivity2 extends
             if (partsList != null && !partsList.isEmpty()) {
                 isPartParent = 1;
                 partTempId = AppUtility.getRandomUUID();
+            }
+            if(edt_item_qty.getText().toString().isEmpty()){
+                edt_item_qty.setText("0");
             }
             InvoiceItemDataModel addItemDataModel =
                     new InvoiceItemDataModel(autocomplete_item.getText().toString().trim(),
@@ -1278,11 +1959,11 @@ public class AddEditInvoiceItemActivity2 extends
                             edt_hsnCode.getText().toString().trim(),
                             edt_part_no.getText().toString().trim(),
                             edt_unit.getText().toString().trim(),
-                            (String.valueOf(taxAmount))
+                            taxamount_value_txt.getText().toString().trim()
                             , edt_item_supplier.getText().toString().trim()
                             , taxListFilter, jtId,
                             edt_serialNo.getText().toString().trim(),
-                            isBillableChange, equipmentId, "", partTempId, isPartParent, 0);
+                            isBillableChange, equipmentId, "", partTempId, isPartParent, 0,isRemoveStock);
 
             try {
                 if (!isBillable.equals("")) {
@@ -1295,9 +1976,8 @@ public class AddEditInvoiceItemActivity2 extends
                 exception.printStackTrace();
             }
 
-            List<InvoiceItemDataModel> itemDataList = new ArrayList<>();
-
             itemDataList.add(addItemDataModel);
+
 
 
             // for adding parts
@@ -1323,10 +2003,9 @@ public class AddEditInvoiceItemActivity2 extends
                         , partsList.get(i).getTax(), "",
                         partsList.get(i).getSerialNo(),
                         partsList.get(i).getIsBillableChange(), equipmentId,
-                        partsList.get(i).getIsBillable(), partTempId, 0, 1
+                        partsList.get(i).getIsBillable(), partTempId, 0, 1,isRemoveStock
                 ));
             }
-
 //            Add  item's in job**
             if (jobModel.getJobId().equals(jobModel.getTempId())) {
                 // for updating the local database
@@ -1378,6 +2057,7 @@ public class AddEditInvoiceItemActivity2 extends
 
     }
 
+
     private void addItemWithJobSync(List<InvoiceItemDataModel> addItemDataModel) {
         try {
             HyperLog.i("TAG", "addItemWithJobSync(M) start");
@@ -1389,7 +2069,7 @@ public class AddEditInvoiceItemActivity2 extends
                 HyperLog.i("TAG", "addItemWithJobSync(M) item found");
 
                 for (Offlinetable offlinetableModel : offlinetableList) {
-                    AddInvoiceItemReqModel reqModel = new Gson().fromJson(offlinetableModel.getParams                   (), AddInvoiceItemReqModel.class);
+                    AddInvoiceItemReqModel reqModel = new Gson().fromJson(offlinetableModel.getParams(), AddInvoiceItemReqModel.class);
                     if (reqModel.getJobId().equals(jobId)) {
 
                         HyperLog.i("TAG", "addItemWithJobSync(M) item found 1");
@@ -1401,7 +2081,7 @@ public class AddEditInvoiceItemActivity2 extends
                         offlinetableModel.setParams(new Gson().toJson(reqModel));
                         HyperLog.i("TAG offlinetableModel", new Gson().toJson(offlinetableModel));
 
-                        AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).offlinemodel()                            .update(offlinetableModel);
+                        AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).offlinemodel().update(offlinetableModel);
                         noItem = true;
                         break;
                     }
@@ -1409,22 +2089,28 @@ public class AddEditInvoiceItemActivity2 extends
 
                 if (!noItem) {
                     List<InvoiceItemDataModel> list = new ArrayList<>(addItemDataModel);
-                    AddInvoiceItemReqModel object = new AddInvoiceItemReqModel(jobModel.getJobId(),                      list, addItemOnInvoice, locId);
+                    AddInvoiceItemReqModel object = new AddInvoiceItemReqModel(jobModel.getJobId(),list, addItemOnInvoice, locId);
                     String dateTime = AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT);
                     Gson gson = new Gson();
                     String addJobReqest = gson.toJson(object);
                     HyperLog.i("TAG addJobReqest", new Gson().toJson(object));
-                    OfflineDataController.getInstance().addInOfflineDB(Service_apis.addItemOnJob,                         addJobReqest, dateTime);
+                    OfflineDataController.getInstance().addInOfflineDB(Service_apis.addItemOnJob,addJobReqest, dateTime);
                 }
+                //(24-aug-23) Add "else" condition, because when "noItem" is true its not run api only store data in offline table.
+                else{
+                    OfflineDataController.getInstance().getTotalRequest();
+                }
+                EotApp.getAppinstance().notifyApiItemAddEdit_Observer(Service_apis.addItemOnJob, jobId);
             } else {
                 HyperLog.i("TAG", "addItemWithJobSync(M) item added in offline quque");
 
                 List<InvoiceItemDataModel> list = new ArrayList<>(addItemDataModel);
-                AddInvoiceItemReqModel object = new AddInvoiceItemReqModel(jobModel.getJobId(), list,              addItemOnInvoice, locId);
+                AddInvoiceItemReqModel object = new AddInvoiceItemReqModel(jobModel.getJobId(), list,addItemOnInvoice, locId);
                 String dateTime = AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT);
                 Gson gson = new Gson();
                 String addJobReqest = gson.toJson(object);
-                OfflineDataController.getInstance().addInOfflineDB(Service_apis.addItemOnJob,                       addJobReqest, dateTime);
+                OfflineDataController.getInstance().addInOfflineDB(Service_apis.addItemOnJob,addJobReqest, dateTime);
+                EotApp.getAppinstance().notifyApiItemAddEdit_Observer(Service_apis.addItemOnJob, jobId);
             }
             HyperLog.i("TAG", "addItemWithJobSync(M) finish");
         } catch (Exception e) {
@@ -1472,17 +2158,14 @@ public class AddEditInvoiceItemActivity2 extends
 
     }
 
-    private void updateItemsOnJob() {
+    private void updateItemsOnJob(List<Tax> taxListFilter) {
         try {
             HyperLog.i("TAG", "updateItemsOnJob(M) start");
 
-            List<Tax> taxListFilter = new ArrayList<>();
-            for (Tax tax : listFilter) {
-                if (tax.isSelect())
-                    taxListFilter.add(tax);
+
+            if(edt_item_qty.getText().toString().isEmpty()){
+                edt_item_qty.setText("0");
             }
-
-
             int isPartParent = 0, isPartChild = 0;
 
             if (updateItemDataModel.getParentId() != null
@@ -1507,13 +2190,13 @@ public class AddEditInvoiceItemActivity2 extends
                     edt_item_desc.getText().toString().trim(),
                     edt_hsnCode.getText().toString().trim(), edt_part_no.getText().toString().trim(),
                     edt_unit.getText().toString().trim(),
-                    (String.valueOf(taxAmount)),
+                    taxamount_value_txt.getText().toString().trim(),
                     edt_item_supplier.getText().toString().trim()
                     , taxListFilter, jtId, edt_serialNo.getText().toString().trim(),
                     updateItemDataModel.getItemConvertCount()
                     , isBillableChange, equipmentId,
                     updateItemDataModel.getIsPartTempId()
-                    , isPartParent, isPartChild
+                    , isPartParent, isPartChild,updateItemDataModel.getGroupId(),isRemoveStock
                     //        , updateItemDataModel.getIsBillable()
             );
 
@@ -1628,7 +2311,7 @@ public class AddEditInvoiceItemActivity2 extends
                 String dateTime = AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT);
                 Gson gson = new Gson();
                 String addJobReqest = gson.toJson(updateItemReqModel);
-                OfflineDataController.getInstance().addInOfflineDB(Service_apis                                    .updateItemInJobMobile, addJobReqest, dateTime);
+                OfflineDataController.getInstance().addInOfflineDB(Service_apis.updateItemInJobMobile, addJobReqest, dateTime);
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -1698,7 +2381,6 @@ public class AddEditInvoiceItemActivity2 extends
             HyperLog.i("TAG", "updateItemWithoutJobSync(M) exception:" + e.toString());
         }
     }
-
 
     private void fw_service_filed_hide(int type) {
         switch (type) {
@@ -1796,10 +2478,18 @@ public class AddEditInvoiceItemActivity2 extends
                 exception.printStackTrace();
             }
         }
+        if(getIntent().hasExtra("AddRequirmentGetheringItem")){
+            Intent intent=new Intent();
+           // intent.putExtra("AddItemData",appintmentItemDataModel);
+            setResult(ADD_REQUIRED_ITEM,intent);
 
-        Intent intent = new Intent();
-        intent.putExtra("AddInvoiceItem", "AddItem");
-        setResult(ADD_ITEM_DATA, intent);
+        }
+        else if(bundle.getBoolean("addItemOnInvoice")) {
+            Intent intent = new Intent();
+            intent.putExtra("AddInvoiceItem", "AddItem");
+            setResult(ADD_ITEM_DATA, intent);
+        }
+
         /*Notify Job Overview For Item Flag call only when Item First time Added****/
         if (jobItemCountForFlag) {
             EotApp.getAppinstance().getJobFlagOverView();
@@ -2148,19 +2838,21 @@ public class AddEditInvoiceItemActivity2 extends
                 item_qty_layout.setHintEnabled(true);
             if (charSequence.hashCode() == edt_item_rate.getText().hashCode()) {
                 item_rate_layout.setHintEnabled(true);
+                if(!firstTimeOnPage) {
                 calculateTaxRate();
+                }
             }
             if (charSequence.hashCode() == edt_item_supplier.getText().hashCode())
                 item_supplier_layout.setHintEnabled(true);
             if (charSequence.hashCode() == edt_item_disc.getText().hashCode()) {
                 item_discount_layout.setHintEnabled(true);
                 /* discount must not be gratter than 100 */
-                if (App_preference.getSharedprefInstance().getLoginRes().getDisCalculationType() != null && App_preference.getSharedprefInstance().getLoginRes().getDisCalculationType().equals("0")) {
+                if (getDisCalculationType != null && getDisCalculationType.equals("0")) {
                     if (!edt_item_disc.getText().toString().isEmpty() && Float.parseFloat(edt_item_disc.getText().toString()) > 100) {
                         showDisError(LanguageController.getInstance().getMobileMsgByKey(AppConstant.discountError));
                         edt_item_disc.setText("0");
                     }
-                } else if (App_preference.getSharedprefInstance().getLoginRes().getDisCalculationType()!= null &&App_preference.getSharedprefInstance().getLoginRes().getDisCalculationType().equals("1")) {
+                } else if (getDisCalculationType!= null &&getDisCalculationType.equals("1")) {
                     if (!edt_item_disc.getText().toString().isEmpty() && !edt_item_rate.getText().toString().isEmpty() && Float.parseFloat(edt_item_disc.getText().toString()) > Float.parseFloat(edt_item_rate.getText().toString())) {
                         showDisError(LanguageController.getInstance().getMobileMsgByKey(AppConstant.discountError));
                         edt_item_disc.setText("0");
@@ -2171,7 +2863,9 @@ public class AddEditInvoiceItemActivity2 extends
                         edt_item_disc.setText("0");
                     }
                 }
-                calculateTaxRate();
+                if(!firstTimeOnPage) {
+                    calculateTaxRate();
+                }
             }
             if (charSequence.hashCode() == edt_part_no.getText().hashCode())
                 item_partNo_layout.setHintEnabled(true);
@@ -2183,8 +2877,9 @@ public class AddEditInvoiceItemActivity2 extends
                 serialNo_layout.setHintEnabled(true);
             if (charSequence.hashCode() == edt_item_tax_rate.getText().hashCode())
                 item_tax_rate_layout.setHintEnabled(true);
-
-            total_Amount_cal();
+if(!firstTimeOnPage) {
+    total_Amount_cal();
+}
         } else if (charSequence.length() <= 0) {
             if (charSequence.hashCode() == edt_item_desc.getText().hashCode())
                 item_desc_layout.setHintEnabled(false);
@@ -2192,13 +2887,17 @@ public class AddEditInvoiceItemActivity2 extends
                 item_qty_layout.setHintEnabled(false);
             if (charSequence.hashCode() == edt_item_rate.getText().hashCode()) {
                 item_rate_layout.setHintEnabled(false);
-                calculateTaxRate();
+                if(!firstTimeOnPage) {
+                    calculateTaxRate();
+                }
             }
             if (charSequence.hashCode() == edt_item_supplier.getText().hashCode())
                 item_supplier_layout.setHintEnabled(false);
             if (charSequence.hashCode() == edt_item_disc.getText().hashCode()) {
                 item_discount_layout.setHintEnabled(false);
+                if(!firstTimeOnPage) {
                 calculateTaxRate();
+                }
             }
             if (charSequence.hashCode() == edt_part_no.getText().hashCode())
                 item_partNo_layout.setHintEnabled(false);
@@ -2210,7 +2909,9 @@ public class AddEditInvoiceItemActivity2 extends
                 serialNo_layout.setHintEnabled(false);
             if (charSequence.hashCode() == edt_item_tax_rate.getText().hashCode())
                 item_tax_rate_layout.setHintEnabled(false);
-            total_Amount_cal();
+            if(!firstTimeOnPage) {
+                total_Amount_cal();
+            }
         }
     }
 
@@ -2224,124 +2925,44 @@ public class AddEditInvoiceItemActivity2 extends
      */
     private void total_Amount_cal() {
 
-       String getDisCalculationType = AppDataBase.getInMemoryDatabase(this).jobModel().disCalculationType(jobId);
+//       String getDisCalculationType = AppDataBase.getInMemoryDatabase(this).jobModel().disCalculationType(jobId);
+//       String getTaxCalculationType = App_preference.getSharedprefInstance().getLoginRes().getTaxCalculationType();
         discount(getDisCalculationType);
-        double qty = 0, rate = 0, dis = 0;
-        double amount = 0;
-        /*  check of amount calculation */
-        try {
+        String qty = "", rate = "" , dis = "" ;
             if (!edt_item_qty.getText().toString().equals("")) {
-                qty = Double.parseDouble((edt_item_qty.getText().toString()));
+                qty = edt_item_qty.getText().toString();
             }
             if (!edt_item_rate.getText().toString().equals("")) {
-                rate = Double.parseDouble(AppUtility.getRoundoff_amount(edt_item_rate.getText().toString()));
+                rate = edt_item_rate.getText().toString();
             }
             if (!edt_item_disc.getText().toString().equals("")) {
-                dis = Double.parseDouble(AppUtility.getRoundoff_amount(edt_item_disc.getText().toString()));
+                dis = edt_item_disc.getText().toString();
             }
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-
-        if (App_preference.getSharedprefInstance().getLoginRes().getTaxCalculationType().equals("0")) {
-            try {
-                double calculaterateDis = 0;
-                //** based on the type of calculation , direct or percentage  **//
-                if (getDisCalculationType.equals("0"))
-                    calculaterateDis = (rate * dis) / 100;
-                else if (getDisCalculationType.equals("1"))
-                    calculaterateDis = dis;
-
-                double rate1 = rate * qty;
-                double newRate = rate1 - calculaterateDis;
-                double newAmt = (newRate * total_tax) / 100;
-                amount = newAmt + newRate;
-
-
-                taxAmount = ((total_tax * rate * qty) / 100);
-
-                String tax_Amount = AppUtility.getRoundoff_amount(String.valueOf(taxAmount));
-                taxamount_value_txt.setText(tax_Amount);
-
-            } catch (Exception exception) {
-                exception.printStackTrace();
-            }
-
-        } else if (App_preference.getSharedprefInstance().getLoginRes().getTaxCalculationType().equals("1")) {
-            double totalPrice = qty * rate;
-            double itemTotal = totalPrice + ((totalPrice * total_tax) / 100);
-            double discount = 0;
-            if (getDisCalculationType.equals("0"))
-                discount = ((itemTotal * dis) / 100);
-            else if (getDisCalculationType.equals("1"))
-                discount = dis;
-
-            amount = itemTotal - discount;
-
-            taxAmount = ((total_tax * rate * qty) / 100);
-            String tax_Amount = AppUtility.getRoundoff_amount(String.valueOf(taxAmount));
-            taxamount_value_txt.setText(tax_Amount);
-        }
-        else if (App_preference.getSharedprefInstance().getLoginRes().getTaxCalculationType().equals("2")) {
-            double totalPrice = qty * rate;
-            double itemTotal = totalPrice + ((totalPrice * total_tax) / 100);
-            double discount = 0;
-            if (getDisCalculationType.equals("0"))
-                discount = ((totalPrice * dis) / 100);
-            else if (getDisCalculationType.equals("1"))
-                discount = dis;
-
-            amount = itemTotal - discount;
-
-            taxAmount = ((total_tax * rate * qty) / 100);
-            String tax_Amount = AppUtility.getRoundoff_amount(String.valueOf(taxAmount));
-            taxamount_value_txt.setText(tax_Amount);
-        }
-
-        String amountString = AppUtility.getRoundoff_amount(String.valueOf(amount));
-        amount_value_txt.setText(amountString);
+          Map<String, String> result = AppUtility.getCalculatedAmountForDiscount(qty,rate,dis,listFilter,getTaxCalculationType,getDisCalculationType,updateItem);
+        taxamount_value_txt.setText(AppUtility.getRoundoff_amount(result.get("Tax")));
+        amount_value_txt.setText(AppUtility.getRoundoff_amount(result.get("Amount")));
 
     }
 
 
     private void calculateTaxRate() {
         if (!App_preference.getSharedprefInstance().getLoginRes().getCompPermission().get(0).getIsRateIncludingTax().equals("1")) {
-            String getDisCalculationType = AppDataBase.getInMemoryDatabase(this).jobModel().disCalculationType(jobId);
+//            String getDisCalculationType = AppDataBase.getInMemoryDatabase(this).jobModel().disCalculationType(jobId);
+//            String getTaxCalculationType = App_preference.getSharedprefInstance().getLoginRes().getTaxCalculationType();
             discount(getDisCalculationType);
-            double rate = 0, dis = 0;
+            String rate = "", dis ="" ;
 
             /* check of amount calculation */
             try {
 
                 if (!edt_item_rate.getText().toString().equals("")) {
-                    rate = Double.parseDouble(AppUtility.getRoundoff_amount(edt_item_rate.getText().toString()));
+                    rate = edt_item_rate.getText().toString();
                 }
                 if (!edt_item_disc.getText().toString().equals("")) {
-                    dis = Double.parseDouble(AppUtility.getRoundoff_amount(edt_item_disc.getText().toString()));
+                    dis = edt_item_disc.getText().toString();
                 }
-
-                if (App_preference.getSharedprefInstance().getLoginRes().getTaxCalculationType().equals("0")) {
-
-                    double newAmt = (rate * total_tax) / 100;
-                    double d = rate + newAmt;
-                    String tax_Amount = AppUtility.getRoundoff_amount(String.valueOf(d));
-                    edt_item_tax_rate.setText(tax_Amount);
-                } else if (App_preference.getSharedprefInstance().getLoginRes().getTaxCalculationType().equals("1")) {
-
-                    double newAmt = (rate * total_tax) / 100;
-                    double d = rate + newAmt;
-                    String tax_Amount = AppUtility.getRoundoff_amount(String.valueOf(d));
-                    edt_item_tax_rate.setText(tax_Amount);
-                }
-                else if (App_preference.getSharedprefInstance().getLoginRes().getTaxCalculationType().equals("2")) {
-
-                    double newAmt = (rate * total_tax) / 100;
-                    double d = rate + newAmt;
-                    String tax_Amount = AppUtility.getRoundoff_amount(String.valueOf(d));
-                    edt_item_tax_rate.setText(tax_Amount);
-
-                }
+                String result = AppUtility.getCalculatedTax(rate,dis,listFilter,getTaxCalculationType,getDisCalculationType,updateItem);
+                edt_item_tax_rate.setText(result);
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -2416,6 +3037,7 @@ public class AddEditInvoiceItemActivity2 extends
         warrantyType = "";
         warrantyValue = "";
         isGrouped = "0";
+        firstTimeOnPage = false;
     }
 
     private void discount(String discount)
@@ -2430,6 +3052,7 @@ public class AddEditInvoiceItemActivity2 extends
         }
 
     }
+
 
 }
 

@@ -27,9 +27,12 @@
     <color name="custom_search_bg">#ebe8e8</color>
     <color name="app_background_color">#ebe8e8</color>
 
-
+    <color name="actual_text">#685F5F</color>
+    <color name="start_text">#757575</color>
     <color name="txt_color">#737D7E</color>
-    <color name="txt_sub_color">#8C9293</color>
+    <color name="actual_taxt_time">#685F5F</color>
+    <color name="txt_sub_color">#757575</color>
+    <color name="txt_sub_color_">#838383</color>
     <color name="recyclerview">#f6f2f3</color>
     <color name="card_view_color">#f5f2f2</color>
     <color name="task_color">#e2e2e2</color>
@@ -75,5 +78,27 @@
     <color name="week_select_color">#078379</color>
     <color name="bg_job">#f2f7fa</color>
     <color name="light_red">#F67070</color>
+    <color name="invoice_calculation_bd">#EFFEFF</color>
+    <color name="invoice_sub_total_amount">#4F4F4F</color>
+    <color name="invoice_total_amount">#222222</color>
+    <color name="dialog_edit_text_lbl_color">#72777A</color>
+    <color name="scroll_thumb_color">#1E5F62</color>
+    <color name="scroll_track_color">#CED4DA</color>
+    <color name="bg_color_dialog_toolbar">#E6F0F1</color>
+    <color name="txt_dialog_link_color">#16A1B4</color>
+    <color name="bg_rv_dialog">#EDEDED</color>
+    <color name="font_header_color">#514D4E</color>
+    <color name="que_label_color">#5C5C5C</color>
+    <color name="txt_link_color">#038590</color>
+    <color name="txt_btn_mark_color">#7A7F83</color>
+    <color name="btn_border_color">#c7c7c7</color>
+    <color name="green1">#30A648</color>
+    <color name="gray1">#717171</color>
+    <color name="light_red1">#FFF1F2</color>
+    <color name="light_red2">#FB7185</color>
+    <color name="requested_List">#edfcf2</color>
+    <color name="bg_link_item_note">#FEF3C7</color>
+    <color name="equp_link_item">#666666</color>
+
 
 </resources>

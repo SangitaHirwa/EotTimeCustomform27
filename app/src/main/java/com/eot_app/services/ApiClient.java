@@ -3,9 +3,13 @@ package com.eot_app.services;
 import com.eot_app.BuildConfig;
 import com.eot_app.utility.App_preference;
 import com.hypertrack.hyperlog.HyperLog;
+
+import org.conscrypt.Conscrypt;
+
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.security.Security;
 import java.util.concurrent.TimeUnit;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -42,6 +46,7 @@ public class ApiClient {
 
         /* **call Api error**/
         try {
+            Security.insertProviderAt(Conscrypt.newProvider(),1); // Added for protocol TLSv1.3
             TLSSocketFactory tlsSocketFactory = new TLSSocketFactory();
             if (tlsSocketFactory.getTrustManager() != null) {
                 builder.sslSocketFactory(tlsSocketFactory, tlsSocketFactory.getTrustManager());

@@ -4,11 +4,15 @@ import android.content.Context;
 import android.util.Log;
 
 import com.eot_app.activitylog.ActivityLogController;
+import com.eot_app.nav_menu.jobs.job_detail.detail.jobdetial_model.JobCardAttachmentModel;
+import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_email_pkg.get_email_temp_model.Get_Email_Message_Res_Model;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_email_pkg.get_email_temp_model.Get_Email_ReQ_Model;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_email_pkg.get_email_temp_model.Get_Email_ReS_Model;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_email_pkg.get_email_temp_model.InvoiceEmaliTemplate;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_email_pkg.send_email_temp_model.Send_Email_ReQ_Model;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_email_pkg.send_email_temp_model.Send_Email_ReS_Model;
+import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_email_pkg.send_email_temp_model.Send_JobCard_Email_ReqModel;
+import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_email_pkg.send_email_temp_model.Send_Quote_Email_Req_Model;
 import com.eot_app.services.ApiClient;
 import com.eot_app.services.Service_apis;
 import com.eot_app.utility.AppConstant;
@@ -22,6 +26,7 @@ import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import io.reactivex.Observer;
@@ -31,9 +36,12 @@ import io.reactivex.schedulers.Schedulers;
 
 public class Invoice_Email_pc implements Invoice_Email_pi {
     Invoice_Email_View email_view;
+    Context context;
+    Get_Email_ReS_Model email_reS;
 
-    public Invoice_Email_pc(Invoice_Email_View email_view) {
+    public Invoice_Email_pc(Invoice_Email_View email_view,Context context) {
         this.email_view = email_view;
+        this.context = context;
     }
 
     @Override
@@ -98,6 +106,61 @@ public class Invoice_Email_pc implements Invoice_Email_pi {
                         public void onComplete() {
                         }
                     });
+        }
+    }
+
+    @Override
+    public void getJobCardEmailMessageChatList(String jobId) {
+        Map<String, String> hm = new HashMap<>();
+        hm.put("jobId", jobId);
+
+
+        JsonObject jsonObject = AppUtility.getJsonObject(new Gson().toJson(hm));
+
+        if (AppUtility.isInternetConnected()) {
+
+            AppUtility.progressBarShow(context);
+            ApiClient.getservices().eotServiceCall(Service_apis.getDetailForCltToFwChat, AppUtility.getApiHeaders(), jsonObject)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<JsonObject>() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
+
+                        }
+
+                        @Override
+                        public void onNext(JsonObject jsonObject) {
+                            AppUtility.progressBarDissMiss();
+                            if (jsonObject.get("success").getAsBoolean()) {
+                                Gson gson = new Gson();
+                                if(jsonObject.get("data") != null) {
+                                    Get_Email_Message_Res_Model msg_reS_model = gson.fromJson(jsonObject.get("data"), Get_Email_Message_Res_Model.class);
+                                      email_view.setChatDataList(msg_reS_model);
+                                }else {
+                                    email_view.showErrorAlertDialog("ChatDataNull");
+                                }
+                            } else if (jsonObject.get("statusCode") != null && jsonObject.get("statusCode").getAsString().equals(AppConstant.SESSION_EXPIRE)) {
+                                email_view.setSessionExpire(LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
+                            } else {
+                                email_view.showErrorAlertDialog(LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
+                            }
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            Log.e("", e.getMessage());
+                            AppUtility.progressBarDissMiss();
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            AppUtility.progressBarDissMiss();
+
+                        }
+                    });
+        } else {
+            EotApp.getAppinstance().showToastmsg(LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_check_network));
         }
     }
 
@@ -244,7 +307,7 @@ public class Invoice_Email_pc implements Invoice_Email_pi {
                     ActivityLogController.JOB_GET_INVOICE_TEMP,
                     ActivityLogController.JOB_MODULE
             );
-            AppUtility.progressBarShow((Context) email_view);
+            AppUtility.progressBarShow(context);
             ApiClient.getservices().eotServiceCall(Service_apis.getInvoiceEmailTemplate, AppUtility.getApiHeaders(), jsonObject)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -287,8 +350,8 @@ public class Invoice_Email_pc implements Invoice_Email_pi {
     }
 
     @Override
-    public void sendInvoiceEmailTempApi(String invId, String compId, String messageInHtml, String emailSubject, String emailTo, String emailCc, String isProformaInv, String tempId,Object stripLink) {
-        Send_Email_ReQ_Model reQ_model = new Send_Email_ReQ_Model(invId, compId, messageInHtml, emailSubject, emailTo, emailCc,stripLink);
+    public void sendInvoiceEmailTempApi(String invId, String compId, String messageInHtml, String emailSubject, String emailTo, String emailCc, String isProformaInv, String tempId,Object stripLink, List<JobCardAttachmentModel> Attachment) {
+        Send_Email_ReQ_Model reQ_model = new Send_Email_ReQ_Model(invId, compId, messageInHtml, emailSubject, emailTo, emailCc,stripLink,Attachment);
         reQ_model.setIsProformaInv(isProformaInv);
         reQ_model.setTempId(tempId);
         JsonObject jsonObject = AppUtility.getJsonObject(new Gson().toJson(reQ_model));
@@ -299,7 +362,7 @@ public class Invoice_Email_pc implements Invoice_Email_pi {
                     ActivityLogController.JOB_MODULE
             );
 
-            AppUtility.progressBarShow((Context) email_view);
+            AppUtility.progressBarShow(context);
             ApiClient.getservices().eotServiceCall(Service_apis.sendInvoiceEmailTemplate, AppUtility.getApiHeaders(), jsonObject)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -365,7 +428,7 @@ public class Invoice_Email_pc implements Invoice_Email_pi {
     }
 
     @Override
-    public void getQuotationEmailTemplate(String quotId) {
+    public void getQuotationEmailTemplate(String quotId,boolean attechmentUpload) {
         Map<String, String> hm = new HashMap<>();
         hm.put("quotId", quotId);
         hm.put("compId", App_preference.getSharedprefInstance().getLoginRes().getCompId());
@@ -377,7 +440,7 @@ public class Invoice_Email_pc implements Invoice_Email_pi {
                     ActivityLogController.JOB_GET_EMAIL_QOUTE,
                     ActivityLogController.JOB_MODULE
             );
-            AppUtility.progressBarShow((Context) email_view);
+            AppUtility.progressBarShow(context);
             ApiClient.getservices().eotServiceCall(Service_apis.getQuotationEmailTemplate, AppUtility.getApiHeaders(), jsonObject)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -392,8 +455,8 @@ public class Invoice_Email_pc implements Invoice_Email_pi {
                             AppUtility.progressBarDissMiss();
                             if (jsonObject.get("success").getAsBoolean()) {
                                 Gson gson = new Gson();
-                                Get_Email_ReS_Model email_reS_model = gson.fromJson(jsonObject.get("data"), Get_Email_ReS_Model.class);
-                                email_view.onGetEmailTempData(email_reS_model);
+                                    Get_Email_ReS_Model email_reS_model = gson.fromJson(jsonObject.get("data"), Get_Email_ReS_Model.class);
+                                    email_view.onGetEmailTempData(email_reS_model);
                             } else if (jsonObject.get("statusCode") != null && jsonObject.get("statusCode").getAsString().equals(AppConstant.SESSION_EXPIRE)) {
                                 email_view.setSessionExpire(LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
                             } else {
@@ -418,20 +481,11 @@ public class Invoice_Email_pc implements Invoice_Email_pi {
     }
 
     @Override
-    public void sendQuotationEmailTemplate(String quotId, String message, String subject, String to, String cc, String bcc, String from, String fromnm, String tempId) {
+    public void sendQuotationEmailTemplate(String quotId, String message, String subject, String to, String cc,
+                                           String bcc, String from, String fromnm, String tempId, ArrayList<String> quoteAttachmentArray) {
 
-        Map<String, String> hm = new HashMap<>();
-        hm.put("quotId", quotId);
-        hm.put("message", message);
-        hm.put("subject", subject);
-        hm.put("to", to);
-        hm.put("cc", cc);
-        hm.put("bcc", bcc);
-        hm.put("from", from);
-        hm.put("fromnm", fromnm);
-        hm.put("isQuotePdfSend", "1");
-        hm.put("tempId", tempId);
-
+        Send_Quote_Email_Req_Model hm = new Send_Quote_Email_Req_Model(quotId,message,subject,to,cc,bcc,
+                from,fromnm,tempId,quoteAttachmentArray);
         JsonObject jsonObject = AppUtility.getJsonObject(new Gson().toJson(hm));
         if (AppUtility.isInternetConnected()) {
             ActivityLogController.saveActivity(
@@ -439,7 +493,7 @@ public class Invoice_Email_pc implements Invoice_Email_pi {
                     ActivityLogController.JOB_SEND_QUOTE_TEMP,
                     ActivityLogController.JOB_MODULE
             );
-            AppUtility.progressBarShow((Context) email_view);
+            AppUtility.progressBarShow(context);
             ApiClient.getservices().eotServiceCall(Service_apis.sendQuotationEmailTemplate, AppUtility.getApiHeaders(), jsonObject)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -489,7 +543,7 @@ public class Invoice_Email_pc implements Invoice_Email_pi {
 
         if (AppUtility.isInternetConnected()) {
 
-            AppUtility.progressBarShow((Context) email_view);
+            AppUtility.progressBarShow(context);
             ApiClient.getservices().eotServiceCall(Service_apis.getJobDocEmailTemplate, AppUtility.getApiHeaders(), jsonObject)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -544,7 +598,7 @@ public class Invoice_Email_pc implements Invoice_Email_pi {
         JsonObject jsonObject = AppUtility.getJsonObject(new Gson().toJson(hm));
         if (AppUtility.isInternetConnected()) {
 
-            AppUtility.progressBarShow((Context) email_view);
+            AppUtility.progressBarShow(context);
             ApiClient.getservices().eotServiceCall(Service_apis.sendJobDocEmailTemplate, AppUtility.getApiHeaders(), jsonObject)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -585,16 +639,19 @@ public class Invoice_Email_pc implements Invoice_Email_pi {
     }
 
     @Override
-    public void getJobCardEmailTemplate(String jobId,String tempId) {
+    public void getJobCardEmailTemplate(String jobId,String tempId, String chatUrl) {
         Map<String, String> hm = new HashMap<>();
         hm.put("jobId", jobId);
         hm.put("tempId", tempId);
-
+        if(!chatUrl.equals(""))
+        {
+            hm.put("chatUrl", chatUrl);
+        }
         JsonObject jsonObject = AppUtility.getJsonObject(new Gson().toJson(hm));
 
         if (AppUtility.isInternetConnected()) {
 
-            AppUtility.progressBarShow((Context) email_view);
+//            AppUtility.progressBarShow(context);
             ApiClient.getservices().eotServiceCall(Service_apis.getJobCardEmailTemplate, AppUtility.getApiHeaders(), jsonObject)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -610,7 +667,7 @@ public class Invoice_Email_pc implements Invoice_Email_pi {
                             if (jsonObject.get("success").getAsBoolean()) {
                                 Gson gson = new Gson();
                                 Get_Email_ReS_Model email_reS_model = gson.fromJson(jsonObject.get("data"), Get_Email_ReS_Model.class);
-                                email_view.onGetEmailTempData(email_reS_model);
+                               email_reS = email_reS_model;
                             } else if (jsonObject.get("statusCode") != null && jsonObject.get("statusCode").getAsString().equals(AppConstant.SESSION_EXPIRE)) {
                                 email_view.setSessionExpire(LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
                             } else {
@@ -627,6 +684,7 @@ public class Invoice_Email_pc implements Invoice_Email_pi {
                         @Override
                         public void onComplete() {
                             AppUtility.progressBarDissMiss();
+                            email_view.onGetEmailTempData(email_reS);
                         }
                     });
         } else {
@@ -635,23 +693,12 @@ public class Invoice_Email_pc implements Invoice_Email_pi {
     }
 
     @Override
-    public void sendJobCardEmailTemplate(String jobId, String pdfPath, String message, String subject, String to, String cc, String tempId,String fwid) {
-
-        Map<String, String> hm = new HashMap<>();
-        hm.put("jobId", jobId);
-        hm.put("pdfPath", pdfPath);
-        hm.put("message", message);
-        hm.put("subject", subject);
-        hm.put("to", to);
-        hm.put("cc", cc);
-        hm.put("isJobCardPdfSend", "1");
-        hm.put("tempId", tempId);
-        hm.put("techId",fwid);
-
+    public void sendJobCardEmailTemplate(String jobId, String pdfPath, String message, String subject, String to, String cc, String tempId,String fwid,List<JobCardAttachmentModel> cardAttachmentModelList) {
+        Send_JobCard_Email_ReqModel hm = new Send_JobCard_Email_ReqModel(jobId,pdfPath,message,subject,to,cc,tempId,fwid,cardAttachmentModelList);
         JsonObject jsonObject = AppUtility.getJsonObject(new Gson().toJson(hm));
         if (AppUtility.isInternetConnected()) {
 
-            AppUtility.progressBarShow((Context) email_view);
+            AppUtility.progressBarShow(context);
             ApiClient.getservices().eotServiceCall(Service_apis.sendJobCardEmailTemplate, AppUtility.getApiHeaders(), jsonObject)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())

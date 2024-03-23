@@ -11,7 +11,7 @@ import android.os.Parcelable;
 public class AnswerModel  implements Parcelable {
     private String key="0";
     private String value;
-
+    private String jtId = "";
     public AnswerModel() {
     }
 
@@ -22,6 +22,7 @@ public class AnswerModel  implements Parcelable {
     protected AnswerModel(Parcel in) {
         key = in.readString();
         value = in.readString();
+        jtId = in.readString();
     }
 
     public static final Creator<AnswerModel> CREATOR = new Creator<AnswerModel>() {
@@ -52,9 +53,23 @@ public class AnswerModel  implements Parcelable {
         this.value = value;
     }
 
+    public String getJtId() {
+        return jtId;
+    }
+
+    public void setJtId(String jtId) {
+        this.jtId = jtId;
+    }
+
     public AnswerModel(String key, String value) {
         this.key = key;
         this.value = value;
+    }
+
+    public AnswerModel(String key, String value, String jtId) {
+        this.key = key;
+        this.value = value;
+        this.jtId = jtId;
     }
 
     @Override
@@ -66,5 +81,6 @@ public class AnswerModel  implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(key);
         dest.writeString(value);
+        dest.writeString(jtId);
     }
 }

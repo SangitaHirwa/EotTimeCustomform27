@@ -7,7 +7,7 @@ import com.eot_app.nav_menu.client.add_client.addclient_model_pkg.AddClientModel
  */
 
 public interface AddClient_Pi {
-    Boolean addClientValidation(String name, String contactName, String email, String siteName, String add, String countryname, String statename, String mob);//,
+    Boolean addClientValidation(String name, String contactName, String email,String alternateEmail, String siteName, String add, String countryname, String statename, String mob);//,
 
     void addClientCall(AddClientModel addClientModel);
 

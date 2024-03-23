@@ -31,7 +31,7 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="50dp">
+                android:layout_height="wrap_content">
 
                 <TextView
                     android:id="@+id/jobservicelablehint"
@@ -48,8 +48,8 @@
                     android:id="@+id/jobservicelayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:minHeight="@dimen/input_field_height"
                     android:layout_marginTop="3dp"
+                    android:layout_below="@+id/jobservicelablehint"
                     android:gravity="center"
                     android:orientation="horizontal"
                     tools:ignore="UseCompoundDrawables">
@@ -1396,19 +1396,22 @@
 
     </ScrollView>
 
-    <Button
-        android:id="@+id/submit_btn"
-        style="@style/style_sec"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/button_field_height"
-        android:layout_alignParentBottom="true"
-        android:layout_margin="5dp"
-        android:background="@drawable/submit_btn"
-        android:textAllCaps="false"
-        android:textColor="@color/white"
-        android:textStyle="bold">
+        <Button
+            android:id="@+id/submit_btn"
+            style="@style/style_sec"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/button_field_height"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="5dp"
+            android:background="@drawable/submit_btn"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textStyle="bold">
 
-    </Button>
+        </Button>
 </RelativeLayout>
 
 </layout>

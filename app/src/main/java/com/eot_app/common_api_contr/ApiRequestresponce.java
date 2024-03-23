@@ -64,6 +64,7 @@ public class ApiRequestresponce {
                     });
 
         } else {
+            AppUtility.progressBarDissMiss();
             EotApp.getAppinstance().showToastmsg(LanguageController.getInstance().getMobileMsgByKey(AppConstant.network_error));
         }
 

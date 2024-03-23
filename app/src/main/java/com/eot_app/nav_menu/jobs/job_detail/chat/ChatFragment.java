@@ -47,6 +47,7 @@ import com.eot_app.nav_menu.jobs.job_detail.chat.fire_Base_Model.Chat_Send_Msg_M
 import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.AppUtility;
 import com.eot_app.utility.EotApp;
+import com.eot_app.utility.WrapContentLinearLayoutManager;
 import com.eot_app.utility.db.AppDataBase;
 import com.eot_app.utility.language_support.LanguageController;
 import com.eot_app.utility.util_interfaces.MyListItemSelected;
@@ -192,7 +193,8 @@ public class ChatFragment extends UploadDocumentFragment implements View.OnClick
         recycler_chats = view.findViewById(R.id.recycler_client_chats);
         mLayoutManager = new LinearLayoutManager(getActivity());
         mLayoutManager.setStackFromEnd(true);
-        recycler_chats.setLayoutManager(mLayoutManager);
+        recycler_chats.setLayoutManager(new WrapContentLinearLayoutManager(requireActivity(), LinearLayoutManager.VERTICAL, false));
+//        recycler_chats.setLayoutManager(mLayoutManager);
 
         recycler_chats.setItemAnimator(new DefaultItemAnimator());
         recycler_chats.setOnTouchListener(new View.OnTouchListener() {
@@ -225,9 +227,7 @@ public class ChatFragment extends UploadDocumentFragment implements View.OnClick
                     new FirestoreRecyclerOptions.Builder<Chat_Send_Msg_Model>()
                             .setQuery(query, Chat_Send_Msg_Model.class)
                             .build();
-
             myChatAdapter = new MyChatAdapter(response, this);
-
             myChatAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
                 @Override
                 public void onItemRangeInserted(int positionStart, int itemCount) {

@@ -43,7 +43,7 @@ public class DialogUploadDocuments extends DialogFragment implements View.OnClic
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setStyle(DialogFragment.STYLE_NORMAL, R.style.Theme_AppCompat_Light_Dialog_Alert);
+        setStyle(DialogFragment.STYLE_NORMAL, androidx.appcompat.R.style.Theme_AppCompat_Light_Dialog_Alert);
     }
 
     public void setImgPath(String imgPath) {
@@ -80,7 +80,7 @@ public class DialogUploadDocuments extends DialogFragment implements View.OnClic
                 ed_doc_title.setText(fileName);
         }
         if (isFileImage && imgPath != null) {
-            Picasso.with(getActivity()).load(new File(imgPath)).into(img_doc);
+            Picasso.get().load(new File(imgPath)).into(img_doc);
         } else {
             img_doc.setVisibility(View.GONE);
 

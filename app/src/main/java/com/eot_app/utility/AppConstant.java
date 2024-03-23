@@ -19,6 +19,7 @@ public class AppConstant {
 
     public static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";// 2021-12-09 23:00:00
     public static final String DATE_TIME_FORMAT_new = "dd-MMM-yyyy hh:mm:ss a";
+    public static final String DATE_FORMAT = "dd-MMM-yyyy";
     public static final int LIMIT_MID = 50;
     public static final int LIMIT_HIGH = 120;
     public static final String SESSION_EXPIRE = "401";
@@ -43,6 +44,7 @@ public class AppConstant {
     public static final String medium_caps = "Medium";
     public static final String Medium_id = "2";
     //     job states id
+    public static final String Reschedule = "0";
     public static final String Not_Started = "1";
     public static final String Accepted = "2";
     public static final String Reject = "3";
@@ -55,6 +57,7 @@ public class AppConstant {
     public static final String Closed = "10";
     public static final String Multi = "11";
     public static final String New_On_Hold = "12";
+    public static final String Revisit = "revisite";
     public static final String CUSTOM = "110";
     //   job Priority
     public static final String High = "High";
@@ -233,6 +236,7 @@ public class AppConstant {
     public static final String item = "item";
     public static final String fieldworker = "fieldworker";
     public static final String items_name = "items_name";
+    public static final String item_name = "item_name";
     public static final String part_no = "part_no";
     public static final String description = "description";
     public static final String rate = "rate";
@@ -423,6 +427,9 @@ public class AppConstant {
     public static final String capture_barcode = "capture_barcode";
     public static final String barcode_capture_note = "barcode_capture_note";
     public static final String add_contact_name = "add_contact_name";
+    public static final String link_items = "link_items";
+    public static final String item_linked = "item_linked";
+    public static final String item_not_linked = "item_not_linked";
 
     /**
      * **** new keys for language support
@@ -445,6 +452,13 @@ public class AppConstant {
     public static String[] galleryPermissions = {
             "android.permission.WRITE_EXTERNAL_STORAGE",
             "android.permission.READ_EXTERNAL_STORAGE"
+    };
+    public static String[] cameraPermissions33 = {
+            "android.permission.CAMERA",
+            "android.permission.READ_MEDIA_IMAGES"
+    };
+    public static String[] galleryPermissions33 = {
+            "android.permission.READ_MEDIA_IMAGES"
     };
     public static String No = "No";
     public static String Update = "Update";
@@ -913,7 +927,7 @@ public class AppConstant {
     public static String wire_transfer="wire_transfer";
     public static String paypal="PayPal";
     public static String stripe="stripe";
-    public static String Debit_card="Debit_card";
+    public static String Debit_card="debit_card";
     public static String cash= "cash";
     public static String cheque="cheque";
     public static String credit_card="credit_card";
@@ -924,6 +938,79 @@ public class AppConstant {
     public static String timezone_Message="timezone_Message";
     public static String Equipment_without_client="Equipment_without_client";
     public static String Form_is_already_submitted="Form_is_already_submitted";
+    public static final String title_status_history = "status_history";
+    public static final String title_clients_work_history = "clients_work_history";
+    public static final String sub_total = "Sub_Total";
+    public static final String additional_discount = "Additional_Discount";
+    public static final String extra_items_total = "extra_items_total";
+    public static final String total_amount = "total_amount";
+    public static final String rename = "rename";
+    public static final String tax_change_msg = "Additional_Discount_Message";
+
+
+    /**Add Appointment Item keys**/
+    public static String Text_Req_Gath="Requirements_Gathering";
+    public static String Text_See_More="SeeMore";
+    public static String Text_see_Less="Seeless";
+    public static String appointment_status_change = "appointment_status_change";
+    public static String alternate_email = "alternate_Email_Id";
+    public static String percentage_discount = "percentage_discount";
+    public static String flat_discount = "flat_discount";
+    public static String invoice_Due_Date ="invoice_Due_Date";
+    public static String valid_alternate_Email_Id = "valid_alternate_Email_Id";
+    public static String err_due_Invoice_date = "err_due_Invoice_date";
+    public static String inv_duedate_updated = "inv_duedate_updated";
+    public static String contract_invoice_alert = "contract_invoice_alert";
+    public static String batch_invoice_can_not_generate_msg = "batch_invoice_can_not_generate_msg";
+    public static String signature_alert = "signature_alert";
+    public static String non_billable_item_alert = "non_billable_item_alert";
+    public static String send_job_card = "send_job_card";
+    public static String download = "download";
+    public static String appointment_code = "appointment_code";
+    public static String preview_and_send_jobcard = "preview_and_send_jobcard";
+    public static String Send_Esign_pad_with_email = "Send_Esign_pad_with_email";
+
+    public static String click_here_to_provide_chat_url = "click_here_to_provide_chat_url";
+    public static String preview_and_send_invoice = "preview_and_send_invoice";
+    public static String preview_and_send_quote = "preview_and_send_quote";
+    public static String preview_and_send_document = "preview_and_send_document";
+    public static String click_here_to_provide_paypal_link = "click_here_to_provide_paypal_link";
+    public static String services_done = "services_done";
+    public static String _services_done = "_services_done";
+    public static String status_complete_for_all_fw = "status_complete_for_all_fw";
+    public static String not_synced_at = "not_synced_at";
+    public static String equipment_location = "equipment_location";
+    public static String leader_change_completed_status_all_members = "leader_change_completed_status_all_members";
+    public static String no_term_condition = "no_term_condition";
+    public static String remove_stock_from_inventory = "remove_stock_from_inventory";
+    public static String request_Item = "request_Item";
+    public static String add_request_Item = "add_request_Item";
+    public static String no_brand = "no_brand";
+    public static String update_request_Item = "update_request_Item";
+    public static String item_requested = "item_requested";
+    public static String request_item_empty = "request_item_empty";
+    public static String no_item_requested_found = "no_item_requested_found";
+    public static String remove_requested_item = "remove_requested_item";
+    public static String others = "others";
+    public static String offline_attachment_notes = "offline_attachment_notes";
+    public static String not_possible_to_display_images_from_other_users = "not_possible_to_display_images_from_other_users";
+    public static String item_requested_by_the_field_user = "item_requested_by_the_field_user";
+    public static String field_user_made_some_changes_on_the_requested_item = "field_user_made_some_changes_on_the_requested_item";
+    public static String confirm = "confirm";
+    public static String action = "action";
+    public static String data_Save_On_Draft = "data_Save_On_Draft";
+    public static String parts_are_provided_by_the_client_not_taken_from_the_inventory = "parts_are_provided_by_the_client_not_taken_from_the_inventory";
+    public static String job_items_link_current_equipment = "job_items_link_current_equipment";
+    public static String select_job_items_to_link_equipment = "select_job_items_to_link_equipment";
+    public static String remark_form = "remark_form";
+    public static String link = "link";
+    public static String available = "available";
+    public static String discarded = "discarded";
+    public static String discard_equipments_not_replaced = "discard_equipments_not_replaced";
+    public static String order_ref_no = "order_ref_no";
+
+
+
 
     public static String server(String location) {
         switch (location) {

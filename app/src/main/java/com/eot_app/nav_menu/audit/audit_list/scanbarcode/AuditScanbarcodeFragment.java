@@ -1,6 +1,7 @@
 package com.eot_app.nav_menu.audit.audit_list.scanbarcode;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -141,7 +142,12 @@ public class AuditScanbarcodeFragment extends Fragment implements ScanBarcode_Vi
         if (AppUtility.askCameraTakePicture(getActivity())) {
             mCodeScanner.startPreview();
         }else {
-            askTedPermission(0,AppConstant.cameraPermissions);
+            // Sdk version 33
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU ) {
+                askTedPermission(0, AppConstant.cameraPermissions33);
+            }else {
+                askTedPermission(0, AppConstant.cameraPermissions);
+            }
         }
     }
     private void askTedPermission(int type,String[] permissions) {

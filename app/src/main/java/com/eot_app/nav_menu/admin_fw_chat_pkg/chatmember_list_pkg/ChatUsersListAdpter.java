@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.eot_app.R;
 import com.eot_app.nav_menu.admin_fw_chat_pkg.sonam_user_user_chat_pkg.user_chat_controller.UserToUserChatController;
 import com.eot_app.nav_menu.admin_fw_chat_pkg.sonam_user_user_chat_pkg.usertouser_model.ChatMsgDataModel;
+import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.AppUtility;
 import com.eot_app.utility.App_preference;
 import com.squareup.picasso.Picasso;
@@ -79,17 +80,17 @@ public class ChatUsersListAdpter extends RecyclerView.Adapter<ChatUsersListAdpte
         /*user image/profile set***/
         if (chatMembersList.get(i).getUserChatModel().getIsTeam() != null && chatMembersList.get(i).getUserChatModel().getIsTeam().equals("1")
                 && chatMembersList.get(i).getUserChatModel().getTeamMemId() != null && chatMembersList.get(i).getUserChatModel().getTeamMemId().size() > 0) {
-            Picasso.with(context).load(R.drawable.grp_chat).into(myViewHolder.userImg);
+         Picasso.get().load(R.drawable.grp_chat).into(myViewHolder.userImg);
 
         } else {
             if (chatMembersList.get(i).getUserChatModel().getImg() != null
                     && !chatMembersList.get(i).getUserChatModel().getImg().equals("")) {
-                Picasso.with(context).load(App_preference.getSharedprefInstance().getBaseURL() +
+             Picasso.get().load(App_preference.getSharedprefInstance().getBaseURL() +
                         chatMembersList.get(i).getUserChatModel().getImg()).
                         placeholder(R.drawable.chat_user_ic).error(R.drawable.chat_user_ic)
                         .into(myViewHolder.userImg);
             } else {
-                Picasso.with(context).load(R.drawable.chat_user_ic).into(myViewHolder.userImg);
+             Picasso.get().load(R.drawable.chat_user_ic).into(myViewHolder.userImg);
             }
         }
         /*user online/offline status ***/
@@ -144,15 +145,15 @@ public class ChatUsersListAdpter extends RecyclerView.Adapter<ChatUsersListAdpte
 
         /*last MSG's time***/
         if (memberModel.getMsgModel().getCreatedAt() != null && !memberModel.getMsgModel().getCreatedAt().equals("")) {
-            String todaydatetime = AppUtility.getDateByFormat(AppUtility.dateTimeByAmPmFormate("dd/MM/yyyy hh:mm a",
-                    "dd/MM/yyyy HH:mm"));
+            String todaydatetime = AppUtility.getDateByFormat(AppUtility.dateTimeByAmPmFormate(AppConstant.DATE_FORMAT+" hh:mm a",
+                    AppConstant.DATE_FORMAT+" HH:mm"));
             String[] todayDateTime = todaydatetime.split(" ");
             String yesterdaydatetime = AppUtility.getYesterDayDate(
-                    AppUtility.dateTimeByAmPmFormate("dd/MM/yyyy hh:mm a", "dd/MM/yyyy HH:mm"), -1);
+                    AppUtility.dateTimeByAmPmFormate(AppConstant.DATE_FORMAT+" hh:mm a", AppConstant.DATE_FORMAT+" HH:mm"), -1);
             String[] yesterDayDateTime = yesterdaydatetime.split(" ");
             String msgdatetime = AppUtility.getDate(Long.parseLong(memberModel.getMsgModel().getCreatedAt()),
-                    AppUtility.dateTimeByAmPmFormate("dd/MM/yyyy hh:mm a",
-                            "dd/MM/yyyy HH:mm"));
+                    AppUtility.dateTimeByAmPmFormate(AppConstant.DATE_FORMAT+" hh:mm a",
+                            AppConstant.DATE_FORMAT+" HH:mm"));
             String[] msgDateTime = msgdatetime.split(" ");
             if (todayDateTime[0].equals(msgDateTime[0])) {
                 try {

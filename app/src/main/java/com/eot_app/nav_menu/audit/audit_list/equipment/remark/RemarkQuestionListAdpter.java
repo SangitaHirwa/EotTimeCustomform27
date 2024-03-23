@@ -891,7 +891,7 @@ public class RemarkQuestionListAdpter extends RecyclerView.Adapter<RemarkQuestio
                       /*  Bitmap myBitmap = BitmapFactory.decodeFile(mfile.getAbsolutePath());
                         attachmentView.setImageBitmap(myBitmap);
                         attachmentView.setScaleType(ImageView.ScaleType.FIT_XY);*/
-                        Picasso.with(context).load(mfile).into(attachmentView);
+                     Picasso.get().load(mfile).into(attachmentView);
 
                     } else if (ext.equals("doc") || ext.equals("docx")) {
                         attachmentView.setImageResource(R.drawable.word);

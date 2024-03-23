@@ -59,7 +59,7 @@ public class InvoiceItemDetailsModel implements Parcelable {
     private List<ShippingItem> shippingItem = new ArrayList<>();
     private String curSym;
     private String locId;
-
+    private  String isAddisDiscBefore;
     public InvoiceItemDetailsModel() {
     }
 
@@ -102,6 +102,7 @@ public class InvoiceItemDetailsModel implements Parcelable {
         groupData = in.createTypedArrayList(InvoiceGroupData.CREATOR);
         shippingItem = in.createTypedArrayList(ShippingItem.CREATOR);
         curSym = in.readString();
+        isAddisDiscBefore = in.readString();
     }
 
     public static Creator<InvoiceItemDetailsModel> getCREATOR() {
@@ -413,6 +414,7 @@ public class InvoiceItemDetailsModel implements Parcelable {
         dest.writeTypedList(groupData);
         dest.writeTypedList(shippingItem);
         dest.writeString(curSym);
+        dest.writeString(isAddisDiscBefore);
     }
 
     public String getLocId() {
@@ -426,5 +428,13 @@ public class InvoiceItemDetailsModel implements Parcelable {
     @Override
     public int describeContents() {
         return 0;
+    }
+
+    public String getIsAddisDiscBefore() {
+        return isAddisDiscBefore;
+    }
+
+    public void setIsAddisDiscBefore(String isAddisDiscBefore) {
+        this.isAddisDiscBefore = isAddisDiscBefore;
     }
 }

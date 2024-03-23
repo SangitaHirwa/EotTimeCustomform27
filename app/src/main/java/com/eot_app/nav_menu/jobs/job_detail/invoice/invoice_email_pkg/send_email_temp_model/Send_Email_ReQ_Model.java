@@ -1,5 +1,9 @@
 package com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_email_pkg.send_email_temp_model;
 
+import com.eot_app.nav_menu.jobs.job_detail.detail.jobdetial_model.JobCardAttachmentModel;
+
+import java.util.List;
+
 public class Send_Email_ReQ_Model {
 
     private String invId;
@@ -12,8 +16,10 @@ public class Send_Email_ReQ_Model {
     String isProformaInv = "0";
     private String tempId;
     private Object stripLink;
+    List<JobCardAttachmentModel> Attachment;
 
-    public Send_Email_ReQ_Model(String invId, String compId, String message, String subject, String to, String cc,Object stripLink) {
+    public Send_Email_ReQ_Model(String invId, String compId, String message, String subject, String to, String cc,Object stripLink,
+                                List<JobCardAttachmentModel> Attachment) {
         this.invId = invId;
         this.compId = compId;
         this.message = message;
@@ -21,6 +27,7 @@ public class Send_Email_ReQ_Model {
         this.to = to;
         this.cc = cc;
         this.stripLink=stripLink;
+        this.Attachment = Attachment;
     }
 
     public Object getStripLink() {
@@ -89,5 +96,13 @@ public class Send_Email_ReQ_Model {
 
     public void setCc(String cc) {
         this.cc = cc;
+    }
+
+    public List<JobCardAttachmentModel> getAttachment() {
+        return Attachment;
+    }
+
+    public void setAttachment(List<JobCardAttachmentModel> attachment) {
+        Attachment = attachment;
     }
 }

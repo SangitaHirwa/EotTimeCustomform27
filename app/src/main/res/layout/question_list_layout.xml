@@ -1,27 +1,29 @@
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cv_parent"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="10dp"
-    android:layout_marginTop="5dp"
-    android:layout_marginEnd="10dp"
-    android:layout_marginBottom="5dp"
     android:orientation="vertical"
-    app:cardBackgroundColor="@color/window_background"
-    app:cardElevation="0dp">
+    app:cardBackgroundColor="@color/white"
+    app:cardElevation="0dp"
+    android:layout_marginVertical="8dp"
+    >
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="10dp"
+        >
 
         <!--question Layout-->
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="0dp"
             android:gravity="start|top"
             android:orientation="horizontal">
 
@@ -29,33 +31,48 @@
 
             <TextView
                 android:id="@+id/que_no"
-                style="@style/header_text_style"
+                style="@style/header_text_style2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="5dp" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                />
 
             <!--add ques-->
             <TextView
                 android:id="@+id/tvQuestion"
-                style="@style/header_text_style"
-                android:layout_width="match_parent"
+                style="@style/header_text_style2"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="3dp"
+                android:layout_marginStart="0dp"
                 android:gravity="start|top"
                 android:text="@string/dynamic_question_add"
-                android:textStyle="bold" />
-
+                app:layout_constraintStart_toEndOf="@id/que_no"
+                app:layout_constraintTop_toTopOf="parent"
+                />
 
             <CheckBox
                 android:id="@+id/checkbox_single"
-                style="@style/header_text_style"
+                style="@style/header_text_style2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="-3dp"
-                android:buttonTint="@color/txt_color" />
+                android:buttonTint="@color/txt_color"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toEndOf="@id/tvQuestion"
+                />
+            <TextView
+                android:id="@+id/txt_upload"
+                style="@style/header_text_style2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Upload"
+                android:textColor="@color/txt_link_color"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                />
 
-
-        </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <!--ans ques type 1 text-->
 
@@ -64,8 +81,7 @@
             style="@style/subtext_style"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="4dp"
             android:background="@drawable/edittext_shap_qus"
             android:fontFamily="@font/arimo_regular"
             android:gravity="center_vertical"
@@ -87,10 +103,9 @@
             style="@style/subtext_style"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
             android:nestedScrollingEnabled="true"
             android:overScrollMode="always"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="4dp"
             android:background="@drawable/edittext_shap_qus"
             android:ems="10"
             android:fontFamily="@font/arimo_regular"
@@ -110,8 +125,8 @@
             android:id="@+id/linearCheck"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="4dp"
             android:orientation="vertical"
             android:visibility="visible" />
 
@@ -119,7 +134,7 @@
             android:id="@+id/linearSpinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="4dp"
             android:background="@drawable/edittext_shap_qus"
             android:gravity="center"
             android:padding="5dp">
@@ -167,7 +182,7 @@
             android:id="@+id/linearDate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="4dp"
             android:background="@drawable/edittext_shap_qus"
             android:visibility="visible">
 
@@ -191,7 +206,7 @@
             android:id="@+id/linearTime"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="4dp"
             android:background="@drawable/edittext_shap_qus"
             android:visibility="visible">
 
@@ -216,7 +231,7 @@
             android:id="@+id/linearDateTime"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="4dp"
             android:background="@drawable/edittext_shap_qus"
             android:orientation="horizontal"
             android:visibility="visible">
@@ -258,8 +273,7 @@
             style="@style/subtext_style"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="4dp"
             android:background="@drawable/edittext_shap_qus"
             android:fontFamily="@font/arimo_regular"
             android:gravity="center_vertical"
@@ -277,7 +291,7 @@
             android:id="@+id/signature_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="-5dp"
+            android:layout_marginTop="0dp"
             android:orientation="vertical"
             android:visibility="gone">
 
@@ -293,13 +307,12 @@
 
                 <TextView
                     android:id="@+id/add_sign_lable"
-                    style="@style/header_text_style"
+                    style="@style/header_text_style2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="3dp"
+                    android:layout_marginStart="0dp"
                     android:layout_weight="1"
                     android:gravity="start|top"
-                    android:textStyle="bold"
                     tools:ignore="InefficientWeight" />
 
                 <ImageView
@@ -346,7 +359,7 @@
             android:id="@+id/Attchment_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="-5dp"
+            android:layout_marginTop="0dp"
             android:orientation="vertical"
             android:visibility="gone">
 
@@ -364,14 +377,13 @@
 
                 <TextView
                     android:id="@+id/Attchment_lable"
-                    style="@style/header_text_style"
+                    style="@style/header_text_style2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="3dp"
+                    android:layout_marginStart="0dp"
                     android:layout_weight="2"
                     android:gravity="start|top"
                     android:text="@string/customer_portal_login_with_your_username_and_password_directly_from_here"
-                    android:textStyle="bold"
                     tools:ignore="InefficientWeight" />
 
                 <ImageView
@@ -406,8 +418,28 @@
                 android:padding="5dp"
                 tools:ignore="ContentDescription" />
         </LinearLayout>
+<!--MultiAttachment-->
+        <FrameLayout
+            android:id="@+id/fm_multiattachment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp">
 
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <androidx.core.widget.ContentLoadingProgressBar
+                android:id="@+id/progressBar"
+                style="@style/Widget.AppCompat.ProgressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="gone" />
+        </FrameLayout>
         <View
+            android:id="@+id/view"
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginTop="5dp"

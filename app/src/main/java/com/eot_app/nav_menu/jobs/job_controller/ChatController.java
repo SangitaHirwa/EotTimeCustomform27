@@ -13,11 +13,14 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.eot_app.login_next.FireStoreUserOnlineModel;
+import com.eot_app.login_next.login_next_model.AdminID;
+import com.eot_app.nav_menu.appointment.list.AppointmentListFragment;
 import com.eot_app.nav_menu.client_chat_pkg.client_chat_model.ClientChatReqModel;
 import com.eot_app.nav_menu.client_chat_pkg.client_chat_model.SendCLientAdminNotifica;
 import com.eot_app.nav_menu.jobs.job_db.Job;
 import com.eot_app.nav_menu.jobs.job_detail.JobDetailActivity;
 import com.eot_app.nav_menu.jobs.job_detail.chat.fire_Base_Model.Chat_Send_Msg_Model;
+import com.eot_app.nav_menu.jobs.job_detail.chat.fire_Base_Model.FirestoreCountIncreaseModel;
 import com.eot_app.nav_menu.jobs.job_detail.chat.fire_Base_Model.FirestoreFieldWorkerModel;
 import com.eot_app.nav_menu.jobs.job_list.JobList;
 import com.eot_app.services.ApiClient;
@@ -34,6 +37,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -79,6 +83,7 @@ public class ChatController {
     private final String[] clientChatStateArray = new String[]{"", "", ""};
     private NotificationUtils nNotificationUtils;
     private JobList joblistListener;
+    private AppointmentListFragment calendarJObListener;
     private JobDetailActivity jobdetailListener;
 
     public static ChatController getInstance() {
@@ -126,6 +131,10 @@ public class ChatController {
         this.joblistListener = joblistListener;
     }
 
+    public AppointmentListFragment getCalendarJObListener(){ return calendarJObListener;}
+    public void setCalendarJObListener(AppointmentListFragment calendarJObListener){
+        this.calendarJObListener = calendarJObListener;
+    }
     /*** Unread count for Admin msg ****/
     public void setUnreadCountZeroByJobId(String jobCode, final String jobId, int clUnread) {
         FirestoreFieldWorkerModel model = new FirestoreFieldWorkerModel();
@@ -681,7 +690,12 @@ public class ChatController {
     private void getUserOffLineListSendNoti(final ArrayList<String> userJobList, final ClientChatReqModel
             chat_send_Msg_model) {
 
-        List<String> adminIdsList = App_preference.getSharedprefInstance().getLoginRes().getAdminIds();
+//        List<String> adminIdsList = App_preference.getSharedprefInstance().getLoginRes().getAdminIds();
+        List<String> adminIdsList = new ArrayList<>();
+
+        for(AdminID id :App_preference.getSharedprefInstance().getLoginRes().getAdminIdsWithFBasePerm()) {
+            adminIdsList.add(id.getUsrId().toString());
+        }
 
         List<String> rmUsrKeyList = new ArrayList<>();
         for (String adIds : userJobList) {
@@ -737,7 +751,12 @@ public class ChatController {
     private void getUserOffLineList(final ArrayList<String> userJobList, final Chat_Send_Msg_Model
             chat_send_Msg_model) {
 
-        List<String> adminIdsList = App_preference.getSharedprefInstance().getLoginRes().getAdminIds();
+//        List<String> adminIdsList = App_preference.getSharedprefInstance().getLoginRes().getAdminIds();
+        List<String> adminIdsList = new ArrayList<>();
+
+        for(AdminID id :App_preference.getSharedprefInstance().getLoginRes().getAdminIdsWithFBasePerm()) {
+            adminIdsList.add(id.getUsrId().toString());
+        }
 
         List<String> rmUsrKeyList = new ArrayList<>();
         for (String adIds : userJobList) {
@@ -916,9 +935,14 @@ public class ChatController {
         }
         admin_noti_model.put("time", chat_send_msg_model.getTime());
         admin_noti_model.put("usrnm", chat_send_msg_model.getUsrnm());
-        for (String id : App_preference.getSharedprefInstance().getLoginRes().getAdminIds()) {
-            FirebaseFirestore.getInstance().collection(getAdminNotificationDocPath(id)).add(admin_noti_model);
+        for(AdminID id: App_preference.getSharedprefInstance().getLoginRes().getAdminIdsWithFBasePerm()){
+            if(id.getFirebaseNotifpermi().getJobChat().equals("1")){
+                FirebaseFirestore.getInstance().collection(getAdminNotificationDocPath(id.getUsrId().toString())).add(admin_noti_model);
+            }
         }
+//        for (String id : App_preference.getSharedprefInstance().getLoginRes().getAdminIds()) {
+//            FirebaseFirestore.getInstance().collection(getAdminNotificationDocPath(id)).add(admin_noti_model);
+//        }
     }
 
     /**
@@ -932,9 +956,14 @@ public class ChatController {
         }
         chat_send_msg_model.setIsClientChat(true);
         chat_send_msg_model.isClientChat();
-        for (String id : App_preference.getSharedprefInstance().getLoginRes().getAdminIds()) {
-            FirebaseFirestore.getInstance().collection(getAdminNotificationForClientChatforAdmin(id)).add(chat_send_msg_model);
+        for(AdminID id: App_preference.getSharedprefInstance().getLoginRes().getAdminIdsWithFBasePerm()){
+            if(id.getFirebaseNotifpermi().getJobClientChat().equals("1")){
+                FirebaseFirestore.getInstance().collection(getAdminNotificationDocPath(id.getUsrId().toString())).add(chat_send_msg_model);
+            }
         }
+//        for (String id : App_preference.getSharedprefInstance().getLoginRes().getAdminIds()) {
+//            FirebaseFirestore.getInstance().collection(getAdminNotificationForClientChatforAdmin(id)).add(chat_send_msg_model);
+//        }
         FirebaseFirestore.getInstance().collection(getAdminNotificationForClientChat(cltId))
                 .add(chat_send_msg_model);
     }
@@ -1065,55 +1094,191 @@ public class ChatController {
                     }
                 });
     }
-
+    public  void notifyWebForIncreaseCount(String typeOfIncreaseCount,String isFrom){
+        for (AdminID id : App_preference.getSharedprefInstance().getLoginRes().getAdminIdsWithFBasePerm()) {
+            if(typeOfIncreaseCount.equals("jobCount")) {
+                if(isFrom.equals("teamChat")){
+                    if(id.getFirebaseNotifpermi().getJobChat().equals("1")) {
+                        IncreaseCount(id.getUsrId().toString(), typeOfIncreaseCount);
+                    }
+                } else if(isFrom.equals("clientChat")){
+                     if(id.getFirebaseNotifpermi().getJobClientChat().equals("1")){
+                        IncreaseCount(id.getUsrId().toString(), typeOfIncreaseCount);
+                    }
+                }else {
+                    if (id.getFirebaseNotifpermi().getAddJob().equals("1")) {
+                        IncreaseCount(id.getUsrId().toString(), typeOfIncreaseCount);
+                    }
+                }
+            }else {
+                IncreaseCount(id.getUsrId().toString(), typeOfIncreaseCount);
+            }
+//            FirebaseFirestore.getInstance().collection(getCollectionPathForWebIncreaseCount(id.getUsrId().toString())).document(typeOfIncreaseCount + "/")
+//                    .get()
+//                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+//                        @Override
+//                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+//                            if (task.isSuccessful()) {
+//
+//                                WriteBatch batch = FirebaseFirestore.getInstance().batch();
+//                                FirestoreCountIncreaseModel fwmodel = task.getResult().toObject(FirestoreCountIncreaseModel.class);
+//                                if (fwmodel != null) {
+//                                    fwmodel.setCount(fwmodel.getCount() + 1);
+//                                } else {
+//                                    fwmodel = new FirestoreCountIncreaseModel();
+//                                    fwmodel.setCount(fwmodel.getCount() + 1);
+//                                }
+//                                batch.set(task.getResult().getReference(), fwmodel);
+//                                batch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
+//                                    @Override
+//                                    public void onComplete(@NonNull Task<Void> task) {
+//                                        Log.d(TAG, "=>> committed");
+//                                    }
+//                                });
+//                            } else {
+//                                Log.d(TAG, "Error getting documents: ", task.getException());
+//                            }
+//                        }
+//                    });
+        }
+    }
     public void notifyWeBforNew(String type, String action, String jobId, String msg, String statusId) {
         try {
             if (statusId == null)
                 statusId = "";
             NotifyWebNewModel model = new NotifyWebNewModel(type, action, jobId, statusId);
             model.setMsg(msg);
-            FirebaseFirestore.getInstance().collection(getCollectionPathForWeb()).add(model).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                @Override
-                public void onSuccess(DocumentReference documentReference) {
-                    HyperLog.i("ChangeJobStatus", "Notify Web - "+new Gson().toJson(model));
-
-                    Log.e("", "");
+            for(AdminID id: App_preference.getSharedprefInstance().getLoginRes().getAdminIdsWithFBasePerm()){
+                if(action.equals("AddJob")) {
+                    if (id.getFirebaseNotifpermi().getAddJob().equals("1")) {
+                        sendNotificaion(id.getUsrId().toString(),model);
+                    }
                 }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    HyperLog.i("ChangeJobStatus", "Notify Web - Failure");
-
-                    Log.e("", "");
+                else if(action.equals("JobStatus")) {
+                    if (id.getFirebaseNotifpermi().getJobStatus().equals("1")) {
+                        sendNotificaion(id.getUsrId().toString(), model);
+                    }
                 }
-            }).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
-                @Override
-                public void onComplete(@NonNull Task<DocumentReference> task) {
-                    HyperLog.i("ChangeJobStatus", "Notify Web - Completion");
-
-                    Log.e("", "");
-
+                else {
+                        sendNotificaion(id.getUsrId().toString(),model);
                 }
-            });
+                }
+//            for (String id : App_preference.getSharedprefInstance().getLoginRes().getAdminIds()) {
+//            FirebaseFirestore.getInstance().collection(getCollectionPathForWeb(id)).add(model)
+//                    .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+//                @Override
+//                public void onSuccess(DocumentReference documentReference) {
+//                    HyperLog.i("ChangeJobStatus", "Notify Web - "+new Gson().toJson(model));
+//
+//                    Log.e("", "");
+//                }
+//            })
+//                    .addOnFailureListener(new OnFailureListener() {
+//                @Override
+//                public void onFailure(@NonNull Exception e) {
+//                    HyperLog.i("ChangeJobStatus", "Notify Web - Failure");
+//
+//                    Log.e("", "");
+//                }
+//            })
+//                    .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+//                @Override
+//                public void onComplete(@NonNull Task<DocumentReference> task) {
+//                    HyperLog.i("ChangeJobStatus", "Notify Web - Completion");
+//
+//                    Log.e("", "");
+//
+//                }
+//            });
+//            }
         } catch (Exception exception) {
             exception.printStackTrace();
         }
     }
 
-    public String getCollectionPathForWeb() {
+    public String getCollectionPathForWebIncreaseCount(String id){
         try {
-            for (String id : App_preference.getSharedprefInstance().getLoginRes().getAdminIds()) {
-                return App_preference.getSharedprefInstance().getRegion()
+                return /*"192"*/App_preference.getSharedprefInstance().getRegion()
                         + "/comp-"
                         + App_preference.getSharedprefInstance().getLoginRes().getCompId()
-                        + "/notifyWeb/ad-" + id + "/newAssignNotify/";
-            }
-            return "";
+                        + "/notifyWeb/ad-" + id + "/counts/";
         } catch (Exception exception) {
             exception.printStackTrace();
         }
         return "";
+    }
+    public String getCollectionPathForWeb(String id) {
+        try {
+            return App_preference.getSharedprefInstance().getRegion()
+                        + "/comp-"
+                        + App_preference.getSharedprefInstance().getLoginRes().getCompId()
+                        + "/notifyWeb/ad-" + id + "/newAssignNotify/";
 
+
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+        return "";
+    }
+
+    public void sendNotificaion(String id ,NotifyWebNewModel model) {
+
+        FirebaseFirestore.getInstance().collection(getCollectionPathForWeb(id)).add(model)
+                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+                        HyperLog.i("ChangeJobStatus", "Notify Web - " + new Gson().toJson(model));
+
+                        Log.e("", "");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        HyperLog.i("ChangeJobStatus", "Notify Web - Failure");
+
+                        Log.e("", "");
+                    }
+                })
+                .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentReference> task) {
+                        HyperLog.i("ChangeJobStatus", "Notify Web - Completion");
+
+                        Log.e("", "");
+
+                    }
+                });
+    }
+
+    public void IncreaseCount(String id, String typeOfIncreaseCount){
+        FirebaseFirestore.getInstance().collection(getCollectionPathForWebIncreaseCount(id)).document(typeOfIncreaseCount + "/")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+
+                            WriteBatch batch = FirebaseFirestore.getInstance().batch();
+                            FirestoreCountIncreaseModel fwmodel = task.getResult().toObject(FirestoreCountIncreaseModel.class);
+                            if (fwmodel != null) {
+                                fwmodel.setCount(fwmodel.getCount() + 1);
+                            } else {
+                                fwmodel = new FirestoreCountIncreaseModel();
+                                fwmodel.setCount(fwmodel.getCount() + 1);
+                            }
+                            batch.set(task.getResult().getReference(), fwmodel);
+                            batch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    Log.d(TAG, "=>> committed");
+                                }
+                            });
+                        } else {
+                            Log.d(TAG, "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
     }
 
 }

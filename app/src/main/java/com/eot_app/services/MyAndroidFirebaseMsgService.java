@@ -37,6 +37,7 @@ public class MyAndroidFirebaseMsgService extends FirebaseMessagingService {
     public void onNewToken(String s) {
         super.onNewToken(s);
         Log.e("NEW_TOKEN", s);
+        App_preference.getSharedprefInstance().setFirebaseDeviceToken(s);
     }
 
     @Override
@@ -151,6 +152,15 @@ public class MyAndroidFirebaseMsgService extends FirebaseMessagingService {
                 }
                 EotApp.getAppinstance().notifyObserver(otherdata.getAction(), otherdata.getId(), data.get("body").toString());
                 LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent("Archived_jobs"));
+            }else if (otherdata.getAction().equals("someJobUpdated")) {
+                    LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent("job_refresh"));
+                createNotification(data.get("title").toString(), data.get("body").toString(), "MULTI_JOB", otherdata.getId());
+                LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent("appointment_refresh"));
+            }else if (otherdata.getAction().equals("updateQuote")) {
+                if (App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsQuoteVisible()==0) {
+                    createNotification(data.get("title").toString(), data.get("body").toString(), "quote_update", otherdata.getId());
+//                    LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent("appointment_refresh"));
+                }
             }
 
             if (/* Check if data needs to be processed by long running job */ true) {

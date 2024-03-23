@@ -27,7 +27,7 @@ public class JOB_weekly_recur_PC implements JOB_weekly_recur_PI {
 
         Date date = null;
         try {
-            date = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).parse(startDate);
+            date = new SimpleDateFormat("dd-MMM-yyyy", Locale.getDefault()).parse(startDate);
         } catch (ParseException e) {
             e.printStackTrace();
         }

@@ -26,6 +26,7 @@
                     android:id="@+id/recycler_view_work_history"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:paddingTop="5dp"
                     tools:listitem="@layout/item_audit_list" />
 
             </LinearLayout>

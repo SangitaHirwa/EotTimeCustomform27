@@ -15,6 +15,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.location.LocationManager;
 import android.media.ExifInterface;
+import android.media.MediaScannerConnection;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -41,6 +42,7 @@ import com.eot_app.R;
 import com.eot_app.nav_menu.admin_fw_chat_pkg.sonam_user_user_chat_pkg.user_chat_controller.UserToUserChatController;
 import com.eot_app.nav_menu.jobs.add_job.Add_job_activity;
 import com.eot_app.nav_menu.jobs.job_detail.detail.jobdetial_model.JobStatusModelNew;
+import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.MultiDocUpdateRequest;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_detail_pkg.inv_detail_model.Tax;
 import com.eot_app.utility.db.AppDataBase;
 import com.eot_app.utility.language_support.LanguageController;
@@ -321,7 +323,7 @@ public class AppUtility {
     public static String getDate(long milliSeconds) { //Convert milisecond to Date time for chat
         try {
             SimpleDateFormat formatter = new SimpleDateFormat(
-                    AppUtility.dateTimeByAmPmFormate("dd/MMM/yyyy hh:mm a", "dd/MMM/yyyy HH:mm"), Locale.US);
+                    AppUtility.dateTimeByAmPmFormate(AppConstant.DATE_FORMAT+" hh:mm a", AppConstant.DATE_FORMAT+" HH:mm"), Locale.US);
             if (App_preference.getSharedprefInstance().getLoginRes().getIsAutoTimeZone().equals("1")) {
                 formatter.setTimeZone(TimeZone.getTimeZone(App_preference.getSharedprefInstance().getLoginRes().getLoginUsrTz()));
             }else{
@@ -516,7 +518,7 @@ public class AppUtility {
     public static String[] getFormatedTime(String updateDate) {
         try {
             String timeFormate =
-                    AppUtility.dateTimeByAmPmFormate("EEE, d MMM yyyy/hh:mm/a", "EEE, d MMM yyyy/HH:mm");
+                    AppUtility.dateTimeByAmPmFormate("EEE, "+AppConstant.DATE_FORMAT+"/hh:mm a", "EEE, "+AppConstant.DATE_FORMAT+"/HH:mm");
             // Create a DateFormatter object for displaying date in specified format.
 //            SimpleDateFormat formatter = new SimpleDateFormat(timeFormate, Locale.US);
             SimpleDateFormat formatter = new SimpleDateFormat(timeFormate, Locale.getDefault());
@@ -742,7 +744,7 @@ public class AppUtility {
                 }
                 startDate = formatter.parse(dateStr);
                 assert startDate != null;
-                callback.setDateTime(formatter.format(startDate));
+                callback.setDateTime(new SimpleDateFormat(AppConstant.DATE_FORMAT).format(startDate));
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -793,7 +795,7 @@ public class AppUtility {
                 try {
                     endDate = formatter.parse(dateEnd);
                     assert endDate != null;
-                    callback.setDateTime(formatter.format(endDate));
+                    callback.setDateTime(new SimpleDateFormat(AppConstant.DATE_FORMAT).format(endDate));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -902,11 +904,11 @@ public class AppUtility {
         AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).taxesLocationDao().delete();
         AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).clientRefrenceDao().delete();
         AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).shiftTimeDao().delete();
-
+        AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).attachments_dao().deleteTable();// Delete attachment table from database
+        AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).brandDao().delete();// Delete brand data from database
         App_preference.getSharedprefInstance().clearSharedPreference();
-
-
         UserToUserChatController.getInstance().clearAllList();
+        App_preference.getSharedprefInstance().setLaunchFirst();// Set launch first time false because we are want to show prominent screen on one time. When user Install app.
 
     }
 
@@ -1063,7 +1065,7 @@ public class AppUtility {
 
     public static boolean askCameraTakePicture(Context context) {
         HyperLog.i("AppUtility", "askCameraTakePicture(M) Start");
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP && Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
             HyperLog.i("AppUtility", "LOLLIPOP grater");
             if (verifyPermissions(AppConstant.cameraPermissions)) {
                 HyperLog.i("AppUtility", "Allow Permission dialog ......");
@@ -1072,6 +1074,14 @@ public class AppUtility {
                 HyperLog.i("AppUtility", "Ask Permission dialog ......");
                 ActivityCompat.requestPermissions((Activity) context, AppConstant.cameraPermissions, 1);
             }*/
+        }
+        // Sdk version 33
+        else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU ) {
+            HyperLog.i("AppUtility", "LOLLIPOP grater");
+            if (verifyPermissions(AppConstant.cameraPermissions33)) {
+                HyperLog.i("AppUtility", "Allow Permission dialog ......");
+                return true;
+            }
         } else {
             HyperLog.i("AppUtility", "LOLLIPOP Less than");
             return true;
@@ -1082,8 +1092,12 @@ public class AppUtility {
     }
 
     public static boolean askGalaryTakeImagePermiSsion(Context context) {
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP && Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
             return verifyPermissions(AppConstant.galleryPermissions);
+        }
+        // Sdk version 33
+        else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU ) {
+            return verifyPermissions(AppConstant.galleryPermissions33);
         } else {
             return true;
         }
@@ -1102,7 +1116,7 @@ public class AppUtility {
     }
 
     public static boolean askStoragePerMission(Context context) {
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP && Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(context,
                     Manifest.permission.READ_EXTERNAL_STORAGE)
                     != PackageManager.PERMISSION_GRANTED) {
@@ -1112,10 +1126,122 @@ public class AppUtility {
                 ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
                 return true;
             }
-        } else {
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(context,
+                    Manifest.permission.READ_MEDIA_IMAGES)
+                    != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions((Activity) context,
+                        new String[]{Manifest.permission.READ_MEDIA_IMAGES}, UPLOAD_FILE);
+            } else {
+                ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.READ_MEDIA_IMAGES}, 1);
+                return true;
+            }
+        }else {
             return true;
         }
         return false;
+    }
+public static void askAllPerMission(Context context) {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP && Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+            ||ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+            ||ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED
+            ||ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+            ||ContextCompat.checkSelfPermission(context, Manifest.permission.MANAGE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+            ) {
+                ActivityCompat.requestPermissions((Activity) context,
+                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
+                                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                                Manifest.permission.CAMERA,
+                                Manifest.permission.ACCESS_FINE_LOCATION,
+                                Manifest.permission.MANAGE_EXTERNAL_STORAGE
+                        }, UPLOAD_FILE);
+            } else {
+                ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+
+            }
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED
+                ||ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED
+                ||ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                ||ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
+                ||ContextCompat.checkSelfPermission(context, Manifest.permission.MANAGE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+            ) {
+                ActivityCompat.requestPermissions((Activity) context,
+                        new String[]{Manifest.permission.READ_MEDIA_IMAGES,
+                                    Manifest.permission.CAMERA,
+                                   Manifest.permission.ACCESS_FINE_LOCATION,
+                                   Manifest.permission.POST_NOTIFICATIONS,
+                                   Manifest.permission.MANAGE_EXTERNAL_STORAGE
+                        }, UPLOAD_FILE);
+            } else {
+                ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.READ_MEDIA_IMAGES}, 1);
+
+            }
+        }
+
+    }
+    public static void askAllPerMission1(Context context) {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP && Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+            ||ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+            ||ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED
+            ||ContextCompat.checkSelfPermission(context, Manifest.permission.MANAGE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+           ) {
+                ActivityCompat.requestPermissions((Activity) context,
+                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
+                                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                                Manifest.permission.CAMERA,
+                                Manifest.permission.MANAGE_EXTERNAL_STORAGE
+                        }, UPLOAD_FILE);
+            } else {
+                ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+
+            }
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED
+                ||ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED
+                ||ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
+                ||ContextCompat.checkSelfPermission(context, Manifest.permission.MANAGE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+            ) {
+                ActivityCompat.requestPermissions((Activity) context,
+                        new String[]{Manifest.permission.READ_MEDIA_IMAGES,
+                                    Manifest.permission.CAMERA,
+                                   Manifest.permission.POST_NOTIFICATIONS,
+                                   Manifest.permission.MANAGE_EXTERNAL_STORAGE
+                        }, UPLOAD_FILE);
+            } else {
+                ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.READ_MEDIA_IMAGES}, 1);
+
+            }
+        }
+
+    }
+public static void askPerMissionForLocation(Context context) {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP && Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+            ) {
+                ActivityCompat.requestPermissions((Activity) context,
+                        new String[]{
+                                Manifest.permission.ACCESS_FINE_LOCATION
+                        }, UPLOAD_FILE);
+            } else {
+                ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+
+            }
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+            ) {
+                ActivityCompat.requestPermissions((Activity) context,
+                        new String[]{
+                                   Manifest.permission.ACCESS_FINE_LOCATION,
+                                                           }, UPLOAD_FILE);
+            } else {
+                ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+
+            }
+        }
+
     }
 
 
@@ -1301,7 +1427,7 @@ public class AppUtility {
                 //** based on the type of calculation , direct or percentage  **//
                 double calculaterateDis = 0;
                 if (getDisCalculationType.equals("0"))
-                    calculaterateDis = (rate * dis) / 100;
+                    calculaterateDis = (rate * qty *dis) / 100;
                 else if (getDisCalculationType.equals("1"))
                     calculaterateDis = dis;
 
@@ -1342,6 +1468,172 @@ public class AppUtility {
 
             }
             result = String.valueOf(amount);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return result;
+    }
+    /**
+     * calculate for item list
+     */
+    public static Map <String, String> getCalculatedAmountForDiscount(String str_qty, String str_rate, String str_discount, List<Tax> tax, String taxCalculationType,String getDisCalculationType,boolean update) {
+        HashMap<String, String> result = new HashMap<>();
+        double amount = 0;
+        double total_tax_amt = 0;
+        double total_with_discount = 0;
+        try {
+            double qty = 0, rate = 0, dis = 0;
+            if (str_qty.isEmpty()) {
+                str_qty = "0";
+            }
+            if (str_rate.isEmpty()) {
+                str_rate = "0";
+            }
+            if (str_discount.isEmpty()) {
+                str_discount = "0";
+            }
+
+            qty = Double.parseDouble(str_qty);
+            rate = Double.parseDouble(str_rate);
+            dis = Double.parseDouble(str_discount);
+            float total_tax = 0;
+            for (Tax item : tax) {
+                if(item.getRate().equals("0")||item.getRate()==null){
+                    item.setRate(item.getPercentage());
+                }
+                if(item.isSelect()) {
+                    String item_rate = item.getRate();
+                    if (update) {
+                        if (item.getOldTax() != null && !item.getOldTax().equals(""))
+                            total_tax += Float.parseFloat(item.getOldTax());
+                    } else {
+                        if (!item_rate.isEmpty()) {
+                            total_tax += Float.parseFloat(item_rate);
+                        }
+                    }
+                }else if(tax.size()==1){
+                    total_tax = Float.parseFloat(item.getRate());
+                }
+            }
+
+
+            if (taxCalculationType.equals("0")) {
+                //TODO calculation part
+                //** based on the type of calculation , direct or percentage  **//
+                double calculaterateDis = 0;
+                if (getDisCalculationType.equals("0"))
+                    calculaterateDis = (rate * qty *dis) / 100;
+                else if (getDisCalculationType.equals("1"))
+                    calculaterateDis = dis;
+
+                double totalRate = rate * qty;
+                double newRate = totalRate - calculaterateDis;
+                double newAmt = (newRate * total_tax) / 100;
+                total_tax_amt = newAmt;
+                amount = newAmt + newRate;
+                total_with_discount = newRate;
+
+
+            } else if (taxCalculationType.equals("1")) {
+
+
+                //** based on the type of calculation , direct or percentage  **//
+
+
+                double totalPrice = qty * rate;
+                double itemTotal = totalPrice + ((totalPrice * total_tax) / 100);
+                double discount = 0;
+                if (getDisCalculationType.equals("0"))
+                    discount = ((itemTotal * dis) / 100);
+                else if (getDisCalculationType.equals("1"))
+                    discount = dis;
+                total_tax_amt = (totalPrice * total_tax) / 100;
+                amount = itemTotal - discount;
+                total_with_discount = amount - total_tax_amt;
+
+            }
+            else if (taxCalculationType.equals("2")) {
+                //** based on the type of calculation , direct or percentage  **//
+
+                double totalPrice = qty * rate;
+                double itemTotal = totalPrice + ((totalPrice * total_tax) / 100);
+                double discount = 0;
+                if (getDisCalculationType.equals("0"))
+                    discount = ((totalPrice * dis) / 100);
+                else if (getDisCalculationType.equals("1"))
+                    discount = dis;
+                total_tax_amt= (totalPrice * total_tax) / 100;
+                amount = itemTotal - discount;
+                total_with_discount = amount - total_tax_amt;
+
+            }
+            result.put("Amount",String.valueOf(amount));
+            result.put("Tax",String.valueOf(total_tax_amt));
+            result.put("Subtotal",String.valueOf(total_with_discount));
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return result;
+    }
+    /**
+     * calculate for tax
+     */
+    public static String getCalculatedTax(String str_rate, String str_discount, List<Tax> tax, String taxCalculationType,String getDisCalculationType,boolean update) {
+        String result = "0.0";
+        double amount = 0;
+        try {
+            double rate = 0, dis = 0;
+
+            if (str_rate.isEmpty()) {
+                str_rate = "0";
+            }
+            if (str_discount.isEmpty()) {
+                str_discount = "0";
+            }
+
+            rate = Double.parseDouble(str_rate);
+            dis = Double.parseDouble(str_discount);
+            float total_tax = 0;
+            for (Tax item : tax) {
+                if(item.isSelect()) {
+                    String item_rate = item.getRate();
+                    if (update) {
+                        if (item.getOldTax() != null && !item.getOldTax().equals(""))
+                            total_tax += Float.parseFloat(item.getOldTax());
+                    } else {
+                        if (!item_rate.isEmpty()) {
+                            total_tax += Float.parseFloat(item_rate);
+                        }
+                    }
+                }
+            }
+            if (taxCalculationType.equals("0")) {
+                double calculaterateDis = 0;
+                //** based on the type of calculation , direct or percentage  **//
+                if (getDisCalculationType.equals("0"))
+                    calculaterateDis = (rate * dis) / 100;
+                else if (getDisCalculationType.equals("1"))
+                    calculaterateDis = dis;
+
+                double newRate = rate - calculaterateDis;
+                double newAmt = (newRate * total_tax) / 100;
+                double d = rate + newAmt;
+                amount = d;
+
+            }
+            else if (taxCalculationType.equals("1")) {
+
+                double newAmt = (rate * total_tax) / 100;
+                double d = rate + newAmt;
+                amount = d;
+            }
+            else if (taxCalculationType.equals("2")) {
+
+                double newAmt = (rate * total_tax) / 100;
+                double d = rate + newAmt;
+                amount = d;
+            }
+            result = String.valueOf(AppUtility.getRoundoff_amount(String.valueOf(amount)));
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -1955,7 +2247,7 @@ public class AppUtility {
                 DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
                 Date startDate1 = formatter.parse(day + "-" + (month + 1) + "-" + year);
                 assert startDate1 != null;
-                callback.setDateTime(new SimpleDateFormat("dd-MMM-yyyy", Locale.getDefault()).format(startDate1));
+                callback.setDateTime(new SimpleDateFormat(AppConstant.DATE_FORMAT, Locale.getDefault()).format(startDate1));
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -1972,7 +2264,7 @@ public class AppUtility {
                 DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
                 startDate = formatter.parse(dateStr);
                 assert startDate != null;
-                callback.setDateTime(formatter.format(startDate));
+                callback.setDateTime(new SimpleDateFormat(AppConstant.DATE_FORMAT).format(startDate));
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -1994,7 +2286,7 @@ public class AppUtility {
                 try {
                     endDate = formatter.parse(dateEnd);
                     assert endDate != null;
-                    callback.setDateTime(formatter.format(endDate));
+                    callback.setDateTime(new SimpleDateFormat(AppConstant.DATE_FORMAT).format(endDate));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -2007,7 +2299,7 @@ public class AppUtility {
     public static String[] getFormatedTimes(String updateDate) {
         try {
             String timeFormate =
-                    AppUtility.dateTimeByAmPmFormate("EEE, d MMM yyyy/hh:mm/a", "EEE, d MMM yyyy/HH:mm");
+                    AppUtility.dateTimeByAmPmFormate("EEE, "+AppConstant.DATE_FORMAT+"/hh:mm/a", "EEE, "+AppConstant.DATE_FORMAT+"/HH:mm");
             // Create a DateFormatter object for displaying date in specified format.
 //            SimpleDateFormat formatter = new SimpleDateFormat(timeFormate, Locale.US);
             SimpleDateFormat formatter = new SimpleDateFormat(timeFormate, Locale.getDefault());
@@ -2063,9 +2355,9 @@ public class AppUtility {
     public static String dateByFormeteNew(String date){
         String dateByFormatsync=null;
         try{
-            SimpleDateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+            SimpleDateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             Date date1 = dateFormat.parse(date);
-            SimpleDateFormat dateFormat1=new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+            SimpleDateFormat dateFormat1=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             if (App_preference.getSharedprefInstance().getLoginRes().getIsAutoTimeZone().equals("1")) {
                 dateFormat1.setTimeZone(TimeZone.getTimeZone(App_preference.getSharedprefInstance().getLoginRes().getLoginUsrTz()));
             } else {
@@ -2083,12 +2375,61 @@ public class AppUtility {
     public static String get24HoursTimeFormate(String timeS){
         String time=null;
         try {
-            Date date = new SimpleDateFormat("dd-MM-yyyy hh:mm a", Locale.getDefault()).parse(timeS);
-            time= new SimpleDateFormat("dd-MM-yyyy HH:mm", Locale.getDefault()).format(date);
+            Date date = new SimpleDateFormat(AppConstant.DATE_FORMAT+" hh:mm a", Locale.getDefault()).parse(timeS);
+            time= new SimpleDateFormat(AppConstant.DATE_FORMAT+" HH:mm", Locale.getDefault()).format(date);
         } catch (ParseException e) {
             e.printStackTrace();
         }
         return time;
     }
+    public static String getParam(String job_Id, String que_Id, String jtId,String file, String finalFname, String desc, String type, String isAddAttachAsCompletionNote, boolean lastCall,boolean isAttachmentSection, int parentPosition, int position, String tempId){
+        MultiDocUpdateRequest multi_DocUpdateRequest;
+        if(que_Id.equals("") && que_Id.isEmpty()) {
+            multi_DocUpdateRequest = new MultiDocUpdateRequest(job_Id, file, finalFname, desc, type, isAddAttachAsCompletionNote, lastCall, isAttachmentSection,tempId);
+        }else {
+            multi_DocUpdateRequest = new MultiDocUpdateRequest(job_Id, que_Id, jtId,file, finalFname, desc, type, isAddAttachAsCompletionNote, lastCall,isAttachmentSection, parentPosition, position,tempId);
+        }
+        Gson gson = new Gson();
+        String multiDocUpdateRequest = gson.toJson(multi_DocUpdateRequest);
+        return multiDocUpdateRequest;
+    }
+    public static String getCurrentMiliTiem (){
+        Calendar calendar = Calendar.getInstance();
+       return String.valueOf(calendar.getTime().getTime());
+    }
+
+    public static File downloadFile(String imgName,Bitmap bm) throws IOException {
+
+        //Create Path to save Image
+        File path = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "Eot Directory"); //Creates app specific folder
+        if (!path.exists()) {
+            path.mkdir();
+        }
+        File imageFile = new File(path.getPath()+"/"+imgName);
+        if(!imageFile.exists()) {
+           File imageFile1 = new File(path.getPath()+"/Eot_"+AppUtility.getCurrentMiliTiem()+".jpg");
+
+           imageFile = imageFile1;
+            FileOutputStream out = new FileOutputStream(imageFile);
+            try {
+                bm.compress(Bitmap.CompressFormat.PNG, 100, out); // Compress Image
+                out.flush();
+                out.close();
+
+                // Tell the media scanner about the new file so that it is
+                // immediately available to the user.
+                MediaScannerConnection.scanFile(EotApp.getAppinstance(), new String[]{imageFile.getAbsolutePath()}, null, new MediaScannerConnection.OnScanCompletedListener() {
+                    public void onScanCompleted(String path, Uri uri) {
+                        Log.i("ExternalStorage", "Scanned " + path + ":");
+                        Log.i("ExternalStorage", "-> uri=" + uri);
+                    }
+                });
+            } catch (Exception e) {
+                Log.e("Error", e.getMessage());
+            }
+        }
+        return new File(imageFile.getPath());
+    }
+
 }
 

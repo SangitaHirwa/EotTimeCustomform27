@@ -69,6 +69,17 @@ public class InvoiceItemDataModel implements Parcelable {
     private int isPartParent=0;
     private int isPartChild=0;
     private String parentId;
+    private String groupId;
+    private String isRemoveStock;
+    private String brandNm;
+
+    public String getBrandNm() {
+        return brandNm;
+    }
+
+    public void setBrandNm(String brandNm) {
+        this.brandNm = brandNm;
+    }
 
     public String getParentId() {
         return parentId;
@@ -133,7 +144,7 @@ public class InvoiceItemDataModel implements Parcelable {
                                 String pno, String unit, String taxamnt, String supplierCost,
                                 List<Tax> tax, String jtId, String serialNo, String isBillableChange,
                                 String equId,String isBillable,
-                                String partTempId,int isPartParent,int isPartChild) {//, String isBillable
+                                String partTempId,int isPartParent,int isPartChild,String isRemoveStock) {//, String isBillable
         this.tempNm = tempNm;
         this.inm = inm;
         this.itemId = itemId;
@@ -159,6 +170,7 @@ public class InvoiceItemDataModel implements Parcelable {
         this.partTempId = partTempId;
         this.isPartParent = isPartParent;
         this.isPartChild = isPartChild;
+        this.isRemoveStock = isRemoveStock;
     }
 
 
@@ -169,7 +181,7 @@ public class InvoiceItemDataModel implements Parcelable {
                                 String itemType, String rate, String qty, String discount, String des,
                                 String hsncode, String pno, String unit, String taxamnt, String supplierCost,
                                 List<Tax> tax, String jtId, String serialNo, String itemConvertCount
-            , String isBillableChange,String equId, String partTempId,int isPartParent,int isPartChild){
+            , String isBillableChange,String equId, String partTempId,int isPartParent,int isPartChild, String groupId,String isRemoveStock){
 //            , String partTempId,int isPartParent,int isPartChild) {//, String isBillable
         this.tempNm = tempNm;
         this.itemConvertCount = itemConvertCount;
@@ -197,6 +209,8 @@ public class InvoiceItemDataModel implements Parcelable {
         this.partTempId = partTempId;
         this.isPartParent = isPartParent;
         this.isPartChild = isPartChild;
+        this.groupId = groupId;
+        this.isRemoveStock = isRemoveStock;
     }
 
 
@@ -234,6 +248,9 @@ public class InvoiceItemDataModel implements Parcelable {
         isPartParent = in.readInt();
         isPartChild = in.readInt();
         parentId = in.readString();
+        groupId = in.readString();
+        isRemoveStock = in.readString();
+        brandNm = in.readString();
     }
 
     public static Creator<InvoiceItemDataModel> getCREATOR() {
@@ -436,6 +453,9 @@ public class InvoiceItemDataModel implements Parcelable {
         dest.writeInt(isPartParent);
         dest.writeInt(isPartChild);
         dest.writeString(parentId);
+        dest.writeString(groupId);
+        dest.writeString(isRemoveStock);
+        dest.writeString(brandNm);
     }
 
 
@@ -473,7 +493,10 @@ public class InvoiceItemDataModel implements Parcelable {
                 Objects.equals(getIsPartTempId(), that.getIsPartTempId())&&
                 Objects.equals(getIsPartParent(), that.getIsPartParent())&&
                 Objects.equals(getIsPartChild(), that.getIsPartChild())&&
-                Objects.equals(getParentId(), that.getParentId());
+                Objects.equals(getParentId(), that.getParentId())&&
+                Objects.equals(getGroupId(), that.getGroupId())&&
+                Objects.equals(getIsRemoveStock(), that.getIsRemoveStock())&&
+                Objects.equals(getBrandNm(), that.getBrandNm());
     }
 
     public String getIsBillableChange() {
@@ -507,8 +530,24 @@ public class InvoiceItemDataModel implements Parcelable {
         this.serialNo = serialNo;
     }
 
+    public String getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(String groupId) {
+        this.groupId = groupId;
+    }
+
+    public String getIsRemoveStock() {
+        return isRemoveStock;
+    }
+
+    public void setIsRemoveStock(String isRemoveStock) {
+        this.isRemoveStock = isRemoveStock;
+    }
+
     @Override
     public int hashCode() {
-        return Objects.hash(getTempNm(), getInm(), getIjmmId(), getItemId(), getDataType(), getItemType(), getRate(), getQty(), getDiscount(), getDes(), getHsncode(), getPno(), getUnit(), getTaxamnt(), getSupplierCost(), getIsGrouped(), getTax(), getJtId(), getIsBillable(), getIsBillableChange(),getWarrantyType(),getWarrantyValue(),getEquId(),getIsPartTempId(),getIsPartParent(),getIsPartChild(),getParentId());
+        return Objects.hash(getTempNm(), getInm(), getIjmmId(), getItemId(), getDataType(), getItemType(), getRate(), getQty(), getDiscount(), getDes(), getHsncode(), getPno(), getUnit(), getTaxamnt(), getSupplierCost(), getIsGrouped(), getTax(), getJtId(), getIsBillable(), getIsBillableChange(),getWarrantyType(),getWarrantyValue(),getEquId(),getIsPartTempId(),getIsPartParent(),getIsPartChild(),getParentId(),isRemoveStock,getBrandNm());
     }
 }

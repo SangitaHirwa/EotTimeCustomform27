@@ -87,7 +87,7 @@ public class FormQueAns_Activity extends UploadDocumentActivity implements View.
     private TextView actionbar_title;
     private QuestionListAdapter questionListAdapter;
     private List<QuesRspncModel> quesRspncModelList = new ArrayList<>();
-    private String jobId;
+    private String jobId, isLeader;
     private View em_layout;
     private TextView nolist_txt;
     private RelativeLayout rl;
@@ -98,6 +98,8 @@ public class FormQueAns_Activity extends UploadDocumentActivity implements View.
     private String captureImagePath;
     private List<Answer> answer;
     private List<Answer> answerfinal;
+
+    private boolean customSaveForm = false;
 
 
     @Override
@@ -141,6 +143,7 @@ public class FormQueAns_Activity extends UploadDocumentActivity implements View.
         getSupportActionBar().hide();
         customFormList = getIntent().getParcelableExtra("formId");
         jobId = getIntent().getStringExtra("jobId");
+        isLeader = getIntent().getStringExtra("isLeader");
         initializeView();
     }
 
@@ -159,7 +162,11 @@ public class FormQueAns_Activity extends UploadDocumentActivity implements View.
         if (customFormList.getMandatory().equals("1")) {
             skip_btn.setEnabled(false);
             skip_btn.setBackgroundColor(getResources().getColor(R.color.hintcolor));
-        } else {
+        } else if(customFormList.getMandatory().equals("2") &&
+                App_preference.getSharedprefInstance().getLoginRes().getUsrId().equals(isLeader) ){
+            skip_btn.setEnabled(false);
+            skip_btn.setBackgroundColor(getResources().getColor(R.color.hintcolor));
+        }else {
             skip_btn.setBackground(getResources().getDrawable(R.drawable.submit_btn));
             skip_btn.setOnClickListener(this);
         }
@@ -409,13 +416,15 @@ public class FormQueAns_Activity extends UploadDocumentActivity implements View.
     @Override
     public void onBackPressed() {
         closeKeyboard();
-        AppUtility.alertDialog2(this,
-                "",
-                LanguageController.getInstance().getMobileMsgByKey(AppConstant.save_to_draft),
-                LanguageController.getInstance().getMobileMsgByKey(AppConstant.yes),
-                LanguageController.getInstance().getMobileMsgByKey(AppConstant.no), new Callback_AlertDialog() {
-                    @Override
-                    public void onPossitiveCall() {
+        List<Fragment> fragments = getSupportFragmentManager().getFragments();
+        if (fragments.isEmpty()||(fragments.size()<1||!(fragments.get(0)instanceof CustomFormFragment))) {
+            AppUtility.alertDialog2(this,
+                    "",
+                    LanguageController.getInstance().getMobileMsgByKey(AppConstant.save_to_draft),
+                    LanguageController.getInstance().getMobileMsgByKey(AppConstant.yes),
+                    LanguageController.getInstance().getMobileMsgByKey(AppConstant.no), new Callback_AlertDialog() {
+                        @Override
+                        public void onPossitiveCall() {
                        /* List<Fragment> fragments = getSupportFragmentManager().getFragments();
                         if (fragments.isEmpty())
                         {
@@ -426,30 +435,45 @@ public class FormQueAns_Activity extends UploadDocumentActivity implements View.
                             ArrayList<Answer> childanswerArrayList = ((CustomFormFragment) fragments.get(0)).answerArrayList;
                             setFormDraft(pid,childanswerArrayList);
                         }*/
-                        List<Fragment> fragments = getSupportFragmentManager().getFragments();
-                        if (fragments.isEmpty()||(fragments.size()<1||!(fragments.get(0)instanceof CustomFormFragment)))
-                        {
-                            setFormDraft("-1",answerArrayList);
-                        }else{
-                            for (int i=0;i<fragments.size();i++) {
-                                if (fragments.get(i) instanceof CustomFormFragment) {
-                                    String pid = ((CustomFormFragment) fragments.get(i)).optionid;
-                                    ((CustomFormFragment) fragments.get(i)).getAnsListSaveBtn();
-                                    ArrayList<Answer> childanswerArrayList = ((CustomFormFragment) fragments.get(i)).answerArrayList;
-                                    setFormDraft(pid, childanswerArrayList);
-                                }else{
-                                    continue;
-                                }
-                            }
+//                            List<Fragment> fragments = getSupportFragmentManager().getFragments();
+//                            if (fragments.isEmpty() || (fragments.size() < 1 || !(fragments.get(0) instanceof CustomFormFragment))) {
+                                setFormDraft("-1", answerArrayList);
+//                            } else {
+//                                for (int i = 0; i < fragments.size(); i++) {
+//                                    if (fragments.get(i) instanceof CustomFormFragment) {
+//                                        String pid = ((CustomFormFragment) fragments.get(i)).optionid;
+//                                        ((CustomFormFragment) fragments.get(i)).getAnsListSaveBtn();
+//                                        ArrayList<Answer> childanswerArrayList = ((CustomFormFragment) fragments.get(i)).answerArrayList;
+//                                        setFormDraft(pid, childanswerArrayList);
+//                                    } else {
+//                                        continue;
+//                                    }
+//                                }
+//                            }
+                            backprassed(true);
                         }
-                        backprassed(true);
-                    }
 
-                    @Override
-                    public void onNegativeCall() {
-                        backprassed(false);
+                        @Override
+                        public void onNegativeCall() {
+                            backprassed(false);
+                        }
+                    });
+        }else {
+            if(customSaveForm) {
+                for (int i = 0; i < fragments.size(); i++) {
+                    if (fragments.get(i) instanceof CustomFormFragment) {
+                        String pid = ((CustomFormFragment) fragments.get(i)).optionid;
+                        ((CustomFormFragment) fragments.get(i)).getAnsListSaveBtn();
+                        ArrayList<Answer> childanswerArrayList = ((CustomFormFragment) fragments.get(i)).answerArrayList;
+                        setFormDraft(pid, childanswerArrayList);
+                    } else {
+                        continue;
                     }
-                });
+                    customSaveForm = false;
+                }
+            }
+            backprassed(true);
+        }
     }
 
     private void backprassed(Boolean msg){
@@ -461,7 +485,7 @@ public class FormQueAns_Activity extends UploadDocumentActivity implements View.
         }
         if (fragments > 0) {
             getFragmentManager().popBackStack();
-        } else if (customFormList.getMandatory().equals("1")) {
+        } else if (customFormList.getMandatory().equals("1")||customFormList.getMandatory().equals("2")) {
             setResult(RESULT_CANCELED,intent);
             super.onBackPressed();
         } else {
@@ -681,6 +705,7 @@ public class FormQueAns_Activity extends UploadDocumentActivity implements View.
     public void getAnsList(ArrayList<Answer> answerArray, List<MultipartBody.Part> signAns,
                            List<MultipartBody.Part> docAns, ArrayList<String> signQueIdArray, ArrayList<String> docQueIdArray,List<String> dosanspath,List<String> signanspath) {
         Log.e("Size--->>", ">>>>>" + answerArray.size());
+        customSaveForm = true;
         linearLayout2.setVisibility(View.VISIBLE);
         this.signQueIdArray.addAll(signQueIdArray);
         this.docQueIdArray.addAll(docQueIdArray);

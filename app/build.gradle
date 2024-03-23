@@ -1,18 +1,29 @@
 plugins {
     id 'com.android.application'
     id 'com.google.gms.google-services'
+    id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
 }
 
 android {
-    compileSdkVersion 31
+    signingConfigs {
+        release {
+            storeFile file('/home/aplite/Desktop/Savan Project/Backup/JKS File/Live_requirement/keystorefile')
+            storePassword 'Eyeontask@1'
+            keyPassword 'Eyeontask@1'
+            keyAlias 'eyeontask'
+        }
+    }
+    namespace 'com.eot_app'
+    compileSdk 34
     defaultConfig {
         applicationId "com.eot_app"
-        minSdkVersion 21
-        targetSdkVersion 31
-        versionCode 104
-        versionName "2.85"
+        minSdk 21
+        targetSdk 34
+        versionCode 119
+        versionName "2.99"
         testInstrumentationRunner 'androidx.test.reyeontask@123' +
                 'unner.AndroidJUnitRunner'
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
@@ -24,35 +35,48 @@ android {
             buildConfigField "String", "REGISTER_AU" , "\"https://au.eyeontask.com/en/eotServices/\""
             buildConfigField "String", "REGISTER_AS" , "\"https://as.eyeontask.com/en/eotServices/\""
             buildConfigField "String", "REGISTER_UK" , "\"https://uk.eyeontask.com/en/eotServices/\""
+            signingConfig signingConfigs.release
         }
 
         debug {
 //          buildConfigField "String", 'BASEURL', "\"http://103.231.46.90:8435/eotServices/\""
-//          buildConfigField "String", 'BASEURL', "\"http://192.168.88.2:8435/eotServices/\""
- //        buildConfigField "String", "BASEURL", "\"https://www.eyeontask.com/eotServices/\""
+//            buildConfigField "String", 'BASEURL', "\"http://192.168.88.2:8435/eotServices/\""
+//          buildConfigField "String", "BASEURL", "\"https://www.eyeontask.com/eotServices/\""
            buildConfigField "String", "BASEURL", "\"https://staging.eyeontask.com/eotServices/\""
             buildConfigField "String", "REGISTER_US" , "\"https://us1.eyeontask.com/en/eotServices/\""
             buildConfigField "String", "REGISTER_AU" , "\"https://au1.eyeontask.com/en/eotServices/\""
             buildConfigField "String", "REGISTER_AS" , "\"https://as1.eyeontask.com/en/eotServices/\""
             buildConfigField "String", "REGISTER_UK" , "\"https://uk1.eyeontask.com/en/eotServices/\""
         }
+        releaseDebuggable {
+            initWith release
+            debuggable true
+        }
         useLibrary 'org.apache.http.legacy'
     }
 
-    lintOptions {
-        checkReleaseBuilds false
-        // Or, if you prefer, you can continue to check for errors in prod builds,
-        // but continue the build even when errors are found:
-        abortOnError false
-    }
 
     buildFeatures {
         dataBinding true
+        buildConfig = true
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+    lint {
+        abortOnError false
+        checkReleaseBuilds false
+    }
+    flavorDimensions = ["default"]
+    productFlavors {
+        prod {
+            dimension 'default'
+        }
+        dev {
+            dimension 'default'
+        }
     }
 }
 
@@ -60,55 +84,56 @@ android {
 dependencies {
 
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'androidx.appcompat:appcompat:1.0.0'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'com.google.android.material:material:1.0.0'
+    implementation 'com.google.android.material:material:1.10.0'
+    implementation 'androidx.activity:activity:1.8.0'
     //
-    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     //   retrofit2 for api call
-    implementation 'com.squareup.retrofit2:retrofit:2.4.0'
-    implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
     implementation 'androidx.cardview:cardview:1.0.0'
 
 
     //    using rooms persistence library
-    implementation 'androidx.room:room-runtime:2.4.2'
-    implementation 'com.google.android.gms:play-services-auth:20.2.0'
-    annotationProcessor 'androidx.room:room-compiler:2.4.2'
-    implementation 'androidx.room:room-rxjava2:2.4.2'
+    implementation 'androidx.room:room-runtime:2.6.0'
+    implementation 'com.google.android.gms:play-services-auth:20.7.0'
+    annotationProcessor 'androidx.room:room-compiler:2.6.0'
+    implementation 'androidx.room:room-rxjava2:2.6.0'
     //    Rx java libraries
-    implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
-    implementation 'io.reactivex.rxjava2:rxjava:2.1.9'
-    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
-    implementation 'com.squareup.okhttp3:okhttp:3.11.0'
+    implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
+    implementation 'io.reactivex.rxjava2:rxjava:2.2.21'
+    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.9.0'
+    implementation 'com.squareup.okhttp3:okhttp:4.2.2'
     //    picasso
-    implementation 'com.squareup.picasso:picasso:2.5.2'
+    implementation 'com.squareup.picasso:picasso:2.71828'
 
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0'
-    implementation 'com.google.android.gms:play-services-location:20.0.0'
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+    implementation 'com.google.android.gms:play-services-location:21.0.1'
 //    fire base setup
-    implementation 'com.google.firebase:firebase-core:16.0.6'
-    implementation 'com.google.firebase:firebase-messaging:17.3.4'
-    implementation 'com.google.firebase:firebase-storage:16.0.5'
-    implementation 'com.google.firebase:firebase-firestore:17.1.4'
-    implementation 'com.firebaseui:firebase-ui-firestore:4.2.1'
-    implementation 'com.google.firebase:firebase-database:16.0.5'
+    implementation platform('com.google.firebase:firebase-bom:32.5.0')
+    implementation 'com.google.firebase:firebase-core:21.1.1'
+    implementation 'com.google.firebase:firebase-messaging:23.3.1'
+    implementation 'com.google.firebase:firebase-storage:20.3.0'
+    implementation 'com.google.firebase:firebase-firestore:24.9.1'
+    implementation 'com.firebaseui:firebase-ui-firestore:8.0.2'
+    implementation 'com.google.firebase:firebase-database:20.3.0'
 
-    implementation 'com.firebaseui:firebase-ui-storage:4.2.1'
-    implementation 'com.google.firebase:firebase-auth:16.0.5'
+    implementation 'com.firebaseui:firebase-ui-storage:8.0.2'
+    implementation 'com.google.firebase:firebase-auth:22.2.0'
 
     implementation 'com.github.bumptech.glide:glide:4.11.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
-    // Removed by shivani
-//    implementation 'org.jetbrains:annotations-java5:15.0'
-
+    
     //library for image editing
     implementation 'ja.burhanrashid52:photoeditor:0.3.3'
+
     //get app version from google play store
-    implementation 'org.jsoup:jsoup:1.12.2'
-    implementation 'androidx.recyclerview:recyclerview:1.2.1'
+    implementation 'org.jsoup:jsoup:1.16.2'
+    implementation 'androidx.recyclerview:recyclerview:1.3.2'
 
     //for image croping
     implementation 'com.theartofdev.edmodo:android-image-cropper:1.2.1'
@@ -118,35 +143,28 @@ dependencies {
 
     //DataBinding
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel:2.5.0'
-    annotationProcessor 'androidx.lifecycle:lifecycle-compiler:2.5.0'
-
-
-    /*****Crash Dependency***/
-//     implementation 'cat.ereza:customactivityoncrash:2.2.0'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel:2.6.2'
+    //noinspection LifecycleAnnotationProcessorWithJava8
+    annotationProcessor 'androidx.lifecycle:lifecycle-compiler:2.6.2'
 
     /****Error Log***/
     implementation 'com.hypertrack:hyperlog:0.0.10'
 
     //OnMapReadyCallback
-    implementation 'com.google.android.gms:play-services-maps:18.0.2'
-    implementation 'com.google.android.gms:play-services-location:20.0.0'
+    implementation 'com.google.android.gms:play-services-maps:18.1.0'
+
 
     implementation 'com.squareup.okhttp3:logging-interceptor:4.2.2'
-
-
     implementation 'gun0912.ted:tedpermission:2.1.0'
 
-//    crash report dependency
-//    implementation 'com.instabug.library:instabug:10.13.0'
-
-    //  debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.9.1'
-    // releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.1'
-    // testImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.1'
-
+    // WorkManager dependency
+    implementation "androidx.work:work-runtime:2.8.1"
+    // For TLSv1.3 protocol
+    implementation 'org.conscrypt:conscrypt-android:2.2.1'
     // added for AppcenterLogs
-    def appCenterSdkVersion = '4.4.5'
+    def appCenterSdkVersion = '5.0.2'
     implementation "com.microsoft.appcenter:appcenter-analytics:${appCenterSdkVersion}"
     implementation "com.microsoft.appcenter:appcenter-crashes:${appCenterSdkVersion}"
+
 
 }

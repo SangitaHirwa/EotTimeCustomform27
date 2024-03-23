@@ -53,6 +53,7 @@ public class SettingUrls {
     private final boolean isSessionExpired = false;
     private int count;
     private int updateindex;
+    boolean isFirstCall= false;
 
 
     public SettingUrls(int compId, FirstSyncPC.CallBackFirstSync callbacksSync) {
@@ -165,8 +166,11 @@ public class SettingUrls {
                             count = 0;
                             if (TextUtils.isEmpty(App_preference.getSharedprefInstance().getLoginRes().getToken())) {
                                 callbacksSync.getCallBackOfComplete(SESSION_EXPIRE, FAIL_MSG);
-                            } else
-                                getFieldWorkerList();
+                            } else {
+                                isFirstCall = true;
+                            }
+                                getFieldWorkerList(isFirstCall);
+
                         }
                     }
                 });
@@ -177,7 +181,7 @@ public class SettingUrls {
     }
 
     /*******    for get field worker list*/
-    public void getFieldWorkerList() {   //add client account
+    public void getFieldWorkerList(Boolean apiFirstCall) {   //add client account
 
 //    CommonModel model = new CommonModel(compId, limit, updateindex);
         if (App_preference.getSharedprefInstance().getLoginRes() != null) {
@@ -201,7 +205,7 @@ public class SettingUrls {
                                 Type listType = new TypeToken<List<FieldWorker>>() {
                                 }.getType();
                                 List<FieldWorker> data = new Gson().fromJson(convert, listType);
-                                addFieldWorkerToDB(data);
+                                addFieldWorkerToDB(data,apiFirstCall);
                             } else if (jsonObject.get("statusCode") != null && jsonObject.get("statusCode").getAsString().equals(AppConstant.SESSION_EXPIRE)) {
                                 App_preference.getSharedprefInstance().setBlankTokenOnSessionExpire();
                             }
@@ -216,7 +220,7 @@ public class SettingUrls {
                         public void onComplete() {
                             if ((updateindex + updatelimit) <= count) {
                                 updateindex += updatelimit;
-                                getFieldWorkerList();
+                                getFieldWorkerList(false);
                             } else {
                                 updateindex = 0;
                                 count = 0;
@@ -358,6 +362,9 @@ public class SettingUrls {
                             String convert = jsonObject.get("data").getAsJsonObject().toString();
                             Log.d("customData", convert);
                             CustOmFiledResModel resModel = new Gson().fromJson(convert, CustOmFiledResModel.class);
+                            if(type.equals("4")){
+                                App_preference.getSharedprefInstance().setJobCompletionForm(convert);
+                            }
                             getCustomFieldByFormId(resModel.getFrmId(), type);
                         } else if (jsonObject.get("statusCode") != null && jsonObject.get("statusCode").getAsString().equals(AppConstant.SESSION_EXPIRE)) {
                             App_preference.getSharedprefInstance().setBlankTokenOnSessionExpire();
@@ -415,6 +422,9 @@ public class SettingUrls {
                                 getCustomFrom("1");
                             } else if (type.equals("1")) {
                                 App_preference.getSharedprefInstance().setJobCustomField(convert);
+                                getCustomFrom("4");
+                            } else if (type.equals("4")) {
+                                App_preference.getSharedprefInstance().setJobCompletionFormField(convert);
                                 getCompanySettingDetails();
                             }
 
@@ -487,7 +497,10 @@ public class SettingUrls {
         AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).tagmodel().inserTags(data);
     }
 
-    private void addFieldWorkerToDB(List<FieldWorker> data) {
+    private void addFieldWorkerToDB(List<FieldWorker> data, Boolean apiFirstCall) {
+        if(apiFirstCall){
+        AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).fieldWorkerModel().delete();
+        }
         AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).fieldWorkerModel().inserFieldWorker(data);
     }
 

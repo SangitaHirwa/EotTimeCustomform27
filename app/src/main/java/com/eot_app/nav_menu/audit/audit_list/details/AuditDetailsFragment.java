@@ -315,12 +315,19 @@ public class AuditDetailsFragment extends Fragment implements View.OnClickListen
         }
 
         try {
-            if (!btnText) {
-                customfiled_btn.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add));
-                SAVEANS = false;
-            } else {
-                customfiled_btn.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit));
-                SAVEANS = true;
+
+            if(App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsEditCustomFormVisible()==0) {
+
+                if (!btnText) {
+                    customfiled_btn.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add));
+                    SAVEANS = false;
+                } else {
+                    customfiled_btn.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit));
+                    SAVEANS = true;
+                }
+            }
+            else {
+                customfiled_btn.setVisibility(View.GONE);
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -507,7 +514,7 @@ public class AuditDetailsFragment extends Fragment implements View.OnClickListen
                 status.setText(this.audit.getStatus());
             updateStatusButtons(this.audit.getStatus());
 
-            String dateFormat = "dd MMM yyyy";
+            String dateFormat = AppConstant.DATE_FORMAT;
             String timeFormat = AppUtility.dateTimeByAmPmFormate("hh:mm a", "HH:mm");
 
             if (!TextUtils.isEmpty(this.audit.getSchdlStart())) {
@@ -566,8 +573,10 @@ public class AuditDetailsFragment extends Fragment implements View.OnClickListen
 
 
             /* ***custom fileds qiestion list***/
-            if (App_preference.getSharedprefInstance().getLoginRes().getIsCustomFieldEnable().equals("1")) {
-                auditDetail_pc.getCustomFieldQues(audit.getAudId());
+            if(App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsCustomField()==0) {
+                if (App_preference.getSharedprefInstance().getLoginRes().getIsCustomFieldEnable().equals("1")) {
+                    auditDetail_pc.getCustomFieldQues(audit.getAudId());
+                }
             }
 
             try {
@@ -1192,7 +1201,7 @@ public class AuditDetailsFragment extends Fragment implements View.OnClickListen
                     switchDefaultColor(EotApp.getAppinstance().getResources().getColor(R.color.txt_color));
 
                     if(imageForStatus.getUrl()!=null){
-                        Picasso.with(EotApp.getAppinstance()).load(App_preference.getSharedprefInstance().getBaseURL() +
+                        Picasso.get().load(App_preference.getSharedprefInstance().getBaseURL() +
                                 imageForStatus.getUrl())
                                 .into(status_img);
                     } else{

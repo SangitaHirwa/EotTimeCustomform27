@@ -32,6 +32,7 @@ import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -84,7 +85,8 @@ public class FirstSyncPC implements FirstSyncPi {
         jsonObject.addProperty("index",updateIndex);
         jsonObject.addProperty("limit",updateLimit);
         jsonObject.addProperty("moduleType","");
-        jsonObject.addProperty("minAppVer","1");
+        /*Remove this variable after discuss with Ritesh Prajapat for 2.92 release on 26 Dec 2023*/
+        //jsonObject.addProperty("minAppVer","1");
         String data = new Gson().toJson(jsonObject);
         ApiClient.getservices().eotServiceCall(Service_apis.getJobStatus,
                 AppUtility.getApiHeaders(), AppUtility.getJsonObject(data))
@@ -238,7 +240,11 @@ public class FirstSyncPC implements FirstSyncPi {
                                 ResLoginData resLoginData = App_preference.getSharedprefInstance().getLoginRes();
 
                                 if (resLoginData != null) {
-                                    resLoginData.setMobileDefaultSettings(mobileDefaultSettings);
+                                    try {
+                                        resLoginData.setMobileDefaultSettings(mobileDefaultSettings);
+                                    } catch (JSONException e) {
+                                        throw new RuntimeException(e);
+                                    }
                                 }
                                 String saveLoginData = gson.toJson(resLoginData);
                                 App_preference.getSharedprefInstance().setLoginResponse(saveLoginData);

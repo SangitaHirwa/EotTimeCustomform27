@@ -10,6 +10,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -943,7 +944,12 @@ public class RemarkActivity extends UploadDocumentActivity implements JobAudit_V
                         takePictureFromCamera();
                     }
                     else {
-                        askTedPermission(0,AppConstant.cameraPermissions);
+                        // Sdk version 33
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU ) {
+                            askTedPermission(0, AppConstant.cameraPermissions33);
+                        }else {
+                            askTedPermission(0, AppConstant.cameraPermissions);
+                        }
                     }
                     dialog.dismiss();
                 }
@@ -954,7 +960,12 @@ public class RemarkActivity extends UploadDocumentActivity implements JobAudit_V
                     if (AppUtility.askGalaryTakeImagePermiSsion(RemarkActivity.this)) {
                         getImageFromGallray();
                     }else {
-                        askTedPermission(1,AppConstant.galleryPermissions);
+                        // Sdk version 33
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU ) {
+                            askTedPermission(1, AppConstant.galleryPermissions33);
+                        }else {
+                            askTedPermission(1, AppConstant.galleryPermissions);
+                        }
                     }
                     dialog.dismiss();
                 }
@@ -966,7 +977,12 @@ public class RemarkActivity extends UploadDocumentActivity implements JobAudit_V
                         takeimageFromGalary();//only for drive documents
                     }
                     else {
-                        askTedPermission(2,AppConstant.galleryPermissions);
+                        // Sdk version 33
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU ) {
+                            askTedPermission(2, AppConstant.galleryPermissions33);
+                        }else {
+                            askTedPermission(2, AppConstant.galleryPermissions);
+                        }
                     }
                     dialog.dismiss();
                 }
@@ -1121,9 +1137,9 @@ public class RemarkActivity extends UploadDocumentActivity implements JobAudit_V
             }
                /* if (data.hasExtra("code")) {
                     String barcode = data.getStringExtra("code");
-                    ArrayList<GetFileList_Res> equipmentList = new ArrayList<>();
+                    ArrayList<Attachments> equipmentList = new ArrayList<>();
                     try {
-                        Type listType = new TypeToken<List<GetFileList_Res>>() {
+                        Type listType = new TypeToken<List<Attachments>>() {
                         }.getType();
                         equipmentList = new Gson().fromJson(barcode, listType);
                         if (equipment != null && equipment.getAttachments() != null && equipment.getAttachments().size() > 0) {

@@ -15,6 +15,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -357,7 +358,12 @@ public class ChatActivity extends AppCompatActivity implements
                 if (AppUtility.askCameraTakePicture(ChatActivity.this)) {
                     takePictureFromCamera();
                 }else {
-                    askTedPermission(0,AppConstant.cameraPermissions);
+                    // Sdk version 33
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU ) {
+                        askTedPermission(0, AppConstant.cameraPermissions33);
+                    }else {
+                        askTedPermission(0, AppConstant.cameraPermissions);
+                    }
                 }
                 dialog.dismiss();
             });
@@ -367,7 +373,12 @@ public class ChatActivity extends AppCompatActivity implements
                 if (AppUtility.askGalaryTakeImagePermiSsion(ChatActivity.this)) {
                     takeimageFromGalary();
                 }else {
-                    askTedPermission(1,AppConstant.galleryPermissions);
+                    // Sdk version 33
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU ) {
+                        askTedPermission(1, AppConstant.galleryPermissions33);
+                    }else {
+                        askTedPermission(1, AppConstant.galleryPermissions);
+                    }
                 }
                 dialog.dismiss();
             });

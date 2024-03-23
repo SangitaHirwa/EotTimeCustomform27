@@ -16,6 +16,16 @@ public class AppointmentAttachment implements Serializable {
     private boolean isSelected;
     String  bitmap;
 
+    public String getDocNm() {
+        return docNm;
+    }
+
+    public void setDocNm(String docNm) {
+        this.docNm = docNm;
+    }
+
+    String  docNm;
+
     public String getBitmap() {
         return bitmap;
     }

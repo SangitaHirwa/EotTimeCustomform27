@@ -29,13 +29,20 @@ import com.eot_app.nav_menu.client.clientlist.client_detail.work_history.view.Ap
 import com.eot_app.nav_menu.equipment.View.AuditDetailEquActivity;
 import com.eot_app.nav_menu.equipment.View.JobdetailsEquActivity;
 import com.eot_app.nav_menu.jobs.job_db.Job;
+import com.eot_app.nav_menu.jobs.job_detail.detail.jobdetial_model.JobStatusModelNew;
+import com.eot_app.nav_menu.jobs.job_detail.history.History;
+import com.eot_app.nav_menu.jobs.job_detail.history.HistoryAdapter;
 import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.AppUtility;
 import com.eot_app.utility.App_preference;
 import com.eot_app.utility.EotApp;
+import com.eot_app.utility.db.AppDataBase;
 import com.eot_app.utility.language_support.LanguageController;
+import com.eot_app.utility.util_interfaces.MyListItemSelected;
+import com.eot_app.utility.util_interfaces.MyListItemSelectedLisT;
 import com.google.gson.Gson;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -43,7 +50,7 @@ import java.util.concurrent.Callable;
  * Created by Mahendra Dabi on 12/3/21.
  */
 public class ClientWorkHistoryList extends Fragment implements WorkHistoryView, AdpterAduitHistory.OnAuditSelection, AdpterJobHistory.OnJobSelection,
-        AdpterAppointmentHistory.OnAppointmentSelection, LoadMoreItem {
+        AdpterAppointmentHistory.OnAppointmentSelection, LoadMoreItem, MyListItemSelected<History> {
     boolean istrue = true;
     private RecyclerView recycler_view_work_history;
     FragmentTypes typeSelected;
@@ -51,7 +58,8 @@ public class ClientWorkHistoryList extends Fragment implements WorkHistoryView, 
     private WorkHistoryPI workHistoryPI;
     private AdpterAduitHistory adpterAduitHistory;
     private AdpterAppointmentHistory adpterAppointmentHistory;
-    private String cltId;
+    private HistoryAdapter historyAdapter;
+    private String cltId,jobId;
     private FragmentTypes type;
     private LinearLayout nolist_linear;
     View view;
@@ -63,8 +71,14 @@ public class ClientWorkHistoryList extends Fragment implements WorkHistoryView, 
 
     public static ClientWorkHistoryList newInstance(FragmentTypes types, String cltId) {
         Bundle bundle = new Bundle();
-        bundle.putSerializable("type", types);
-        bundle.putString("id", cltId);
+        if(types.name().equals("History")){
+            bundle.putSerializable("type", types);
+            bundle.putString("param1", "No");
+            bundle.putString("param2", cltId);
+        }else {
+            bundle.putSerializable("type", types);
+            bundle.putString("id", cltId);
+        }
         ClientWorkHistoryList fragment = new ClientWorkHistoryList();
         fragment.setArguments(bundle);
         return fragment;
@@ -113,6 +127,15 @@ public class ClientWorkHistoryList extends Fragment implements WorkHistoryView, 
             workHistoryPI.getAuditList(cltId);
 
 
+        }else if (type.equals(FragmentTypes.History)) {
+            historyAdapter = new HistoryAdapter( this);
+//            historyAdapter.setOnAuditSelection(this);
+//            historyAdapter.setFromShowSiteName(App_preference.getSharedprefInstance().getSiteNameShowInSetting());
+//            historyAdapter.setLoadMoreItem(this);
+            recycler_view_work_history.setAdapter(historyAdapter);
+            workHistoryPI.getHistoryList(jobId);
+
+
         }
 
         swiperefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -144,6 +167,7 @@ public class ClientWorkHistoryList extends Fragment implements WorkHistoryView, 
                 type = (FragmentTypes) arguments.getSerializable("type");
                 typeSelected = type;
                 this.cltId = arguments.getString("id");
+                this.jobId = arguments.getString("param2");
             }
         }
     }
@@ -184,6 +208,35 @@ public class ClientWorkHistoryList extends Fragment implements WorkHistoryView, 
         } else {
             nolist_linear.setVisibility(View.VISIBLE);
             nolist_txt.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.no_appointment_found));
+        }
+    }
+
+    @Override
+    public void setHistoryList(List<History> historyList) {
+        progressBar.setVisibility(View.GONE);
+        swiperefresh.setRefreshing(false);
+        // for setting dynamic status names
+        List<JobStatusModelNew> jobStatusList = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobStatusModelNew().getAllStatusList();
+
+        for (JobStatusModelNew jobStatus : jobStatusList) {
+            for (History history:
+                    historyList) {
+                if(jobStatus.getKey().equalsIgnoreCase(history.getStatus())){
+                    history.setStatusName(jobStatus.getName());
+                    if(jobStatus.getIsDefault().equalsIgnoreCase("0"))
+                    {
+                        history.setIsDefaultStatus("0");
+                        history.setImageBitmap(jobStatus.getUrlBitmap());
+                    }
+                }
+            }
+        }
+        historyAdapter.updateRecords(historyList);
+        if (historyAdapter.getItemCount() <= 0) {
+            nolist_linear.setVisibility(View.VISIBLE);
+            nolist_txt.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.hint_empty));
+        } else {
+            nolist_linear.setVisibility(View.GONE);
         }
     }
 
@@ -280,10 +333,16 @@ public class ClientWorkHistoryList extends Fragment implements WorkHistoryView, 
 
     }
 
+    @Override
+    public void onMyListitemSeleted(History history) {
+
+    }
+
 
     public enum FragmentTypes {
         JOB,
         AUDIT,
-        APPOINTMENT
+        APPOINTMENT,
+        History
     }
 }

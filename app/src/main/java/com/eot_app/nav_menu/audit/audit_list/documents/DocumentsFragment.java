@@ -10,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -77,7 +78,7 @@ public class DocumentsFragment extends Fragment implements Doc_Attch_View, Docum
     Doc_Attch_Pi doc_attch_pi;
     RecyclerView.LayoutManager layoutManager;
     LinearLayout nodoc_linear;
-    String captureImagePath;
+    private String captureImagePath;
     TextView noDocList;
     private DocumentListAdapter documentListAdapter;
     // TODO: Rename and change types of parameters
@@ -308,7 +309,12 @@ public class DocumentsFragment extends Fragment implements Doc_Attch_View, Docum
                     if (AppUtility.askCameraTakePicture(getActivity())) {
                         takePictureFromCamera();
                     }else {
-                        askTedPermission(0,AppConstant.cameraPermissions);
+                        // Sdk version 33
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU ) {
+                            askTedPermission(0, AppConstant.cameraPermissions33);
+                        }else {
+                            askTedPermission(0, AppConstant.cameraPermissions);
+                        }
                     }
                     dialog.dismiss();
                 }
@@ -320,7 +326,12 @@ public class DocumentsFragment extends Fragment implements Doc_Attch_View, Docum
                     if (AppUtility.askGalaryTakeImagePermiSsion(getActivity())) {
                         getImageFromGallray();
                     }else {
-                        askTedPermission(1,AppConstant.galleryPermissions);
+                        // Sdk version 33
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU ) {
+                            askTedPermission(1, AppConstant.galleryPermissions33);
+                        }else {
+                            askTedPermission(1, AppConstant.galleryPermissions);
+                        }
                     }
                     dialog.dismiss();
                 }
@@ -332,7 +343,12 @@ public class DocumentsFragment extends Fragment implements Doc_Attch_View, Docum
                     if (AppUtility.askGalaryTakeImagePermiSsion(getActivity())) {
                         takeimageFromGalary();//only for drive documents
                     }else {
-                        askTedPermission(2,AppConstant.galleryPermissions);
+                        // Sdk version 33
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU ) {
+                            askTedPermission(2, AppConstant.galleryPermissions33);
+                        }else {
+                            askTedPermission(2, AppConstant.galleryPermissions);
+                        }
                     }
                     dialog.dismiss();
                 }
@@ -447,11 +463,12 @@ public class DocumentsFragment extends Fragment implements Doc_Attch_View, Docum
                 if (resultCode == RESULT_OK) {
                     try {
                          //get uri from current created path
-                        File file = AppUtility.scaleToActualAspectRatio(captureImagePath, 1024f, 1024f);
-                        if (file != null)
-                            imageEditing(Uri.fromFile(file), "camera_capture");
+                        if(captureImagePath!=null) {
+                            File file = AppUtility.scaleToActualAspectRatio(captureImagePath, 1024f, 1024f);
+                            if (file != null)
+                                imageEditing(Uri.fromFile(file), "camera_capture");
 
-                        isImage=true;
+                        }  isImage=true;
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

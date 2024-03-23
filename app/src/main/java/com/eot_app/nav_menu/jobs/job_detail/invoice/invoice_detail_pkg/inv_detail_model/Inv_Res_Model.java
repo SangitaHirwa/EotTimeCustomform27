@@ -48,6 +48,7 @@ public class Inv_Res_Model implements Parcelable {
     private String hsnCodeLable;
     private String taxCalculationType = "0";
 
+
     protected Inv_Res_Model(Parcel in) {
         invId = in.readString();
         parentId = in.readString();
@@ -316,6 +317,8 @@ public class Inv_Res_Model implements Parcelable {
     public int describeContents() {
         return 0;
     }
+
+
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {

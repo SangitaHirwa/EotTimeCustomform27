@@ -7,7 +7,7 @@ import com.eot_app.nav_menu.client.clientlist.client_detail.contact.client_dao.C
  */
 
 public interface EditContact_Pi {
-    boolean checkValidation(String email, String name, String mob, String alterNate);
+    boolean checkValidation(String name,String email,String alternateEmail,  String mob, String alterNate);
 
     void AddNewClientContact(ClientContactAddEdit_Model clientContactAddEdit_model);
 

@@ -167,6 +167,8 @@ public class MainActivity extends UploadDocumentActivity implements MainActivity
     public boolean isSyncDone = false;
     public boolean isNetworkDisconnected = false;
     boolean auditNoti;
+    boolean jobNoti;
+    boolean quoteNoti;
     //firebase ref path
     String path;
     @SuppressLint("SimpleDateFormat")
@@ -251,7 +253,11 @@ public class MainActivity extends UploadDocumentActivity implements MainActivity
                     = new BatteryStatusReceiver();
             IntentFilter intentFilter = new IntentFilter();
             intentFilter.addAction(Intent.ACTION_BATTERY_CHANGED);
+            if(Build.VERSION.SDK_INT< Build.VERSION_CODES.O) {
             registerReceiver(batteryStatusReceiver, intentFilter);
+            }else {
+                registerReceiver(batteryStatusReceiver, intentFilter,RECEIVER_EXPORTED);
+            }
         }
     }
 
@@ -289,6 +295,7 @@ public class MainActivity extends UploadDocumentActivity implements MainActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        AppUtility.askAllPerMission(this);
         /*
            after language change update status json according the language
          **/
@@ -321,7 +328,11 @@ public class MainActivity extends UploadDocumentActivity implements MainActivity
                     stopService(new Intent(MainActivity.this, SyncDataJobService.class));
                 }
             };
-            registerReceiver(updateUIReceiver, filter);
+            if(Build.VERSION.SDK_INT< Build.VERSION_CODES.O) {
+                registerReceiver(updateUIReceiver, filter);
+            }else {
+                registerReceiver(updateUIReceiver, filter,RECEIVER_EXPORTED);
+            }
         }
 
         IntentFilter filter = new IntentFilter();
@@ -335,7 +346,11 @@ public class MainActivity extends UploadDocumentActivity implements MainActivity
                 showRetryDialog();
             }
         };
-        registerReceiver(showAlertReceiver, filter);
+        if(Build.VERSION.SDK_INT< Build.VERSION_CODES.O) {
+            registerReceiver(showAlertReceiver, filter);
+        }else {
+            registerReceiver(showAlertReceiver, filter,RECEIVER_EXPORTED);
+        }
 
         // first sync end
 
@@ -451,12 +466,20 @@ public class MainActivity extends UploadDocumentActivity implements MainActivity
                         updateFragment(LanguageController.getInstance().getMobileMsgByKey(AppConstant.audit_nav),
                                 fragmentAuditList);
                     } else if (Objects.equals(bundle.get("NOTIFICATIONTAG"), "JOB")) {
+                        jobNoti= true;
                         updateFragment(LanguageController.getInstance().getMobileMsgByKey(AppConstant.jobs), joblistfragment);
                     } else if (Objects.equals(bundle.get("NOTIFICATIONTAG"), "APPOINTMENT")) {
                         isCalendarSelected = true;
                         title_calender.performClick();
                     } else if (Objects.equals(bundle.get("NOTIFICATIONTAG"), "updateLeave")) {
                         updateFragment(LanguageController.getInstance().getMobileMsgByKey(AppConstant.user_leave), userLeaveListFragment);
+                    } else if (Objects.equals(bundle.get("NOTIFICATIONTAG"), "MULTI_JOB")) {
+                        jobNoti= true;
+                        setNotificationDataId("");
+                        updateFragment(LanguageController.getInstance().getMobileMsgByKey(AppConstant.jobs), joblistfragment);
+                    }else if (Objects.equals(bundle.get("NOTIFICATIONTAG"), "quote_update")) {
+                        quoteNoti = true;
+                        title_qoutes.performClick();
                     } else {
                         title_jobs.performClick();
                     }
@@ -664,6 +687,14 @@ public class MainActivity extends UploadDocumentActivity implements MainActivity
     protected void onResume() {
         //        set user online offline in in app version
         ChatController.getInstance().setAppUserOnline(1);
+        //   after getting permission of location from device setting of app and it's save locally
+           if (App_preference.getSharedprefInstance().getLoginRes().getIsFWgpsEnable().equals("1")) {
+            if (ActivityCompat.checkSelfPermission(Objects.requireNonNull(this), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                    && ActivityCompat.checkSelfPermission(Objects.requireNonNull(this), Manifest.permission.ACCESS_COARSE_LOCATION)
+                    == PackageManager.PERMISSION_GRANTED) {
+               onFWTrackingStart();
+            }
+        }
         Log.e("MainActivity","OnResumeCalled");
         super.onResume();
     }
@@ -672,7 +703,11 @@ public class MainActivity extends UploadDocumentActivity implements MainActivity
         if (action) {
             IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
             filter.addAction(Intent.ACTION_AIRPLANE_MODE_CHANGED);
-            this.registerReceiver(br, filter);
+            if(Build.VERSION.SDK_INT< Build.VERSION_CODES.O) {
+                this.registerReceiver(br, filter);
+            }else {
+                this.registerReceiver(br, filter,RECEIVER_EXPORTED);
+            }
         } else {
             unregisterReceiver(br);
         }
@@ -701,7 +736,7 @@ public class MainActivity extends UploadDocumentActivity implements MainActivity
             profile_name.setText(full_name);
             profile_email.setText(email);
             if (!img_url.equals("")) {
-                Picasso.with(this).load(App_preference.getSharedprefInstance().getBaseURL() + img_url).placeholder(R.drawable.ic_profile).error(R.drawable.ic_profile).into(profile_img);
+                Picasso.get().load(App_preference.getSharedprefInstance().getBaseURL() + img_url).placeholder(R.drawable.ic_profile).error(R.drawable.ic_profile).into(profile_img);
             }
         }
     }
@@ -1164,7 +1199,29 @@ public class MainActivity extends UploadDocumentActivity implements MainActivity
             isCalendarSelected = true;
             img_month_arrow.setVisibility(View.VISIBLE);
             img_sorting.setVisibility(View.VISIBLE);
-        } else if (menu != null) {
+        } else if (jobNoti) {
+            menu.setGroupVisible(R.id.job_group, true);
+            menu.setGroupVisible(R.id.client_group, false);
+            menu.setGroupVisible(R.id.quote_group, false);
+            menu.setGroupVisible(R.id.audit_group, false);
+            menu.setGroupVisible(R.id.single_chat_group, false);
+            menu.setGroupVisible(R.id.expense_group, false);
+            menu.setGroupVisible(R.id.report_group, false);
+            isCalendarSelected = false;
+            img_month_arrow.setVisibility(View.GONE);
+            img_sorting.setVisibility(View.GONE);
+        }else if (quoteNoti) {
+            menu.setGroupVisible(R.id.job_group, false);
+            menu.setGroupVisible(R.id.client_group, false);
+            menu.setGroupVisible(R.id.quote_group, true);
+            menu.setGroupVisible(R.id.audit_group, false);
+            menu.setGroupVisible(R.id.single_chat_group, false);
+            menu.setGroupVisible(R.id.expense_group, false);
+            menu.setGroupVisible(R.id.report_group, false);
+            isCalendarSelected = false;
+            img_month_arrow.setVisibility(View.GONE);
+            img_sorting.setVisibility(View.GONE);
+        }else  {
             menu.setGroupVisible(R.id.job_group, false);
             menu.setGroupVisible(R.id.client_group, false);
             menu.setGroupVisible(R.id.quote_group, false);
@@ -1421,6 +1478,12 @@ public class MainActivity extends UploadDocumentActivity implements MainActivity
                         expenseListFragment.refereshExpenseList();
                     }
                     break;
+                    case ADDUSERLEAVE:
+                    Log.e("Leave Added", "true");
+                    if(userLeaveListFragment != null){
+                        userLeaveListFragment.refreshLeaveList();
+                    }
+                    break;
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
@@ -1612,8 +1675,9 @@ public class MainActivity extends UploadDocumentActivity implements MainActivity
                     appointmentListFragment.refreshAppointmentList();
                 break;
             case Service_apis.addLeave:
+                Log.e("Leave Added", "After Api call success");
                 if (userLeaveListFragment != null)
-                    userLeaveListFragment.refreshAppointmentList();
+                    userLeaveListFragment.refreshLeaveList();
                 break;
         }
     }
@@ -2247,7 +2311,11 @@ public class MainActivity extends UploadDocumentActivity implements MainActivity
         if (!isRegistered) {
             IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
             filter.addAction(Intent.ACTION_PROVIDER_CHANGED);
-            registerReceiver(networkSwitchStateReceiver, filter);
+            if(Build.VERSION.SDK_INT< Build.VERSION_CODES.O) {
+                registerReceiver(networkSwitchStateReceiver, filter);
+            }else {
+                registerReceiver(networkSwitchStateReceiver, filter,RECEIVER_EXPORTED);
+            }
             isRegistered = true;
         }
     }
@@ -2352,7 +2420,11 @@ public class MainActivity extends UploadDocumentActivity implements MainActivity
                     stopService(new Intent(MainActivity.this, SyncDataJobService.class));
                 }
             };
-            registerReceiver(updateUIReceiver, filter);
+            if(Build.VERSION.SDK_INT< Build.VERSION_CODES.O) {
+                registerReceiver(updateUIReceiver, filter);
+            }else {
+                registerReceiver(updateUIReceiver, filter,RECEIVER_EXPORTED);
+            }
 
         } else {
             sync_iv.clearAnimation();

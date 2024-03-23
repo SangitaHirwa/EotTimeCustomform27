@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import java.io.UnsupportedEncodingException;
@@ -82,9 +83,13 @@ public class EotEditor extends WebView {
     public EotEditor(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
-        setVerticalScrollBarEnabled(false);
+        setVerticalScrollBarEnabled(true);
         setHorizontalScrollBarEnabled(false);
         getSettings().setJavaScriptEnabled(true);
+
+        getSettings().setBuiltInZoomControls(true);
+        setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
+        setScrollbarFadingEnabled(false);
         setWebChromeClient(new WebChromeClient());
         setWebViewClient(createWebviewClient());
         /**/

@@ -74,6 +74,13 @@ public class ChatListnersContainer {
                                             ChatController.getInstance().getJoblistListener().getAdapter().
                                                     notifyDataSetChanged();
                                         }
+                                        //        notify calender list adapter
+                                        if (ChatController.getInstance().getCalendarJObListener() != null &&
+                                                ChatController.getInstance().getCalendarJObListener().getAdapter()
+                                                        != null) {
+                                            ChatController.getInstance().getCalendarJObListener().getAdapter().
+                                                    notifyDataSetChanged();
+                                        }
 
                                     } else  /** SECOND-2  craete notification***/
                                         if (fwitem.getUnread() > 0 && ChatListnersContainer.this.getJobId()
@@ -85,6 +92,13 @@ public class ChatListnersContainer {
                                             //        notify job list adapter
                                             if (ChatController.getInstance().getJoblistListener() != null && ChatController.getInstance().getJoblistListener().getAdapter() != null) {
                                                 ChatController.getInstance().getJoblistListener().getAdapter().notifyDataSetChanged();
+                                            }
+                                            //        notify calender list adapter
+                                            if (ChatController.getInstance().getCalendarJObListener() != null &&
+                                                    ChatController.getInstance().getCalendarJObListener().getAdapter()
+                                                            != null) {
+                                                ChatController.getInstance().getCalendarJObListener().getAdapter().
+                                                        notifyDataSetChanged();
                                             }
                                             if (ChatController.getInstance().getJobdetailListener() != null) {
                                                 ChatController.getInstance().getJobdetailListener().
@@ -132,9 +146,23 @@ public class ChatListnersContainer {
                                                         ChatController.getInstance().getJoblistListener().getAdapter() != null) {
                                                     ChatController.getInstance().getJoblistListener().getAdapter().notifyDataSetChanged();
                                                 }
+                                                //        notify calender list adapter
+                                                if (ChatController.getInstance().getCalendarJObListener() != null &&
+                                                        ChatController.getInstance().getCalendarJObListener().getAdapter()
+                                                                != null) {
+                                                    ChatController.getInstance().getCalendarJObListener().getAdapter().
+                                                            notifyDataSetChanged();
+                                                }
                                             } else if (fwitem.getUnread() == 0 && fwitem.getCltunread() == 0) {
                                                 if (ChatController.getInstance().getJoblistListener() != null && ChatController.getInstance().getJoblistListener().getAdapter() != null) {
                                                     ChatController.getInstance().getJoblistListener().getAdapter().notifyDataSetChanged();
+                                                }
+                                                //        notify calender list adapter
+                                                if (ChatController.getInstance().getCalendarJObListener() != null &&
+                                                        ChatController.getInstance().getCalendarJObListener().getAdapter()
+                                                                != null) {
+                                                    ChatController.getInstance().getCalendarJObListener().getAdapter().
+                                                            notifyDataSetChanged();
                                                 }
                                                 //        notify job detail page
                                                 if (ChatController.getInstance().getJobdetailListener() != null) {
@@ -168,6 +196,13 @@ public class ChatListnersContainer {
                                         ChatController.getInstance().getJoblistListener().getAdapter().
                                                 notifyDataSetChanged();
                                     }
+                                    //        notify calender list adapter
+                                    if (ChatController.getInstance().getCalendarJObListener() != null &&
+                                            ChatController.getInstance().getCalendarJObListener().getAdapter()
+                                                    != null) {
+                                        ChatController.getInstance().getCalendarJObListener().getAdapter().
+                                                notifyDataSetChanged();
+                                    }
                                 } else {/**  * no need for notification craete only update count  ***/
                                     if (fwitem.getCltunread() > 0
                                             &&
@@ -184,6 +219,13 @@ public class ChatListnersContainer {
                                             if (ChatController.getInstance().getJobdetailListener() != null)
                                                 ChatController.getInstance().getJobdetailListener().showBadgeForClientChat(fwitem.getCltunread());
                                         }
+                                        //        notify calender list adapter
+                                        if (ChatController.getInstance().getCalendarJObListener() != null &&
+                                                ChatController.getInstance().getCalendarJObListener().getAdapter()
+                                                        != null) {
+                                            ChatController.getInstance().getCalendarJObListener().getAdapter().
+                                                    notifyDataSetChanged();
+                                        }
 
                                     } else {
                                         try {
@@ -199,6 +241,13 @@ public class ChatListnersContainer {
                                                 ChatController.getInstance().getUnreadMessagesByClientJobFwId(ChatListnersContainer.this.jobId);
                                             if (ChatController.getInstance().getJoblistListener() != null && ChatController.getInstance().getJoblistListener().getAdapter() != null) {
                                                 ChatController.getInstance().getJoblistListener().getAdapter().
+                                                        notifyDataSetChanged();
+                                            }
+                                            //        notify calender list adapter
+                                            if (ChatController.getInstance().getCalendarJObListener() != null &&
+                                                    ChatController.getInstance().getCalendarJObListener().getAdapter()
+                                                            != null) {
+                                                ChatController.getInstance().getCalendarJObListener().getAdapter().
                                                         notifyDataSetChanged();
                                             }
 

@@ -21,7 +21,7 @@ import android.widget.Toast;
 import com.eot_app.R;
 import com.eot_app.databinding.CheckinCheckoutDialogBinding;
 import com.eot_app.home_screens.MainActivity;
-import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.GetFileList_Res;
+import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.Attachments;
 import com.eot_app.nav_menu.jobs.job_detail.documents.fileattach_mvp.Doc_Attch_Pc;
 import com.eot_app.nav_menu.jobs.job_detail.documents.fileattach_mvp.Doc_Attch_Pi;
 import com.eot_app.nav_menu.jobs.job_detail.documents.fileattach_mvp.Doc_Attch_View;
@@ -91,7 +91,7 @@ public class DialogCheckInUploadDocuments extends DialogFragment implements View
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setStyle(DialogFragment.STYLE_NORMAL, R.style.Theme_AppCompat_Light_Dialog_Alert);
+        setStyle(DialogFragment.STYLE_NORMAL, androidx.appcompat.R.style.Theme_AppCompat_Light_Dialog_Alert);
     }
 
 
@@ -240,7 +240,7 @@ public class DialogCheckInUploadDocuments extends DialogFragment implements View
                                 showToastmsg(LanguageController.getInstance().getMobileMsgByKey(AppConstant.checkout_time_greater_current_time));
                         return;
                     }
-                    uploadDocuments(AppUtility.changeDateFormat(date,format,AppConstant.DATE_TIME_FORMAT_new));
+                    uploadDocuments(AppUtility.changeDateFormat(date,format,AppConstant.DATE_TIME_FORMAT));
                 }
                 else {
                     uploadDocuments("");
@@ -363,17 +363,34 @@ public class DialogCheckInUploadDocuments extends DialogFragment implements View
     }
 
     @Override
-    public void selectFile() {
+    public void showProgressBar() {
+
+    }
+
+
+
+    @Override
+    public void selectFiles() {
 
     }
 
     @Override
-    public void setList(ArrayList<GetFileList_Res> getFileList_res, String isAttch) {
+    public void selectFilesForCompletion(boolean isCompletion) {
 
     }
 
     @Override
-    public void addNewItemToAttachmentList(ArrayList<GetFileList_Res> getFileList_res, String isAttachCompletionNotes) {
+    public void setList(ArrayList<Attachments> getFileList_res, String isAttch, boolean firstCall, boolean isOnline) {
+
+    }
+
+    @Override
+    public void setMultiList(ArrayList<Attachments> getFileList_res, String isAttachCompletionNotes, boolean firstCall, int parentPositon, int position, String queId, String jtId) {
+
+    }
+
+    @Override
+    public void addNewItemToAttachmentList(ArrayList<Attachments> getFileList_res, String isAttachCompletionNotes) {
 
     }
 

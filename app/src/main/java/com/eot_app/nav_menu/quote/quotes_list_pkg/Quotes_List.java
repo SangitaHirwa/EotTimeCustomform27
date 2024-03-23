@@ -1,5 +1,6 @@
 package com.eot_app.nav_menu.quote.quotes_list_pkg;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -22,6 +23,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.eot_app.R;
+import com.eot_app.home_screens.MainActivity;
+import com.eot_app.nav_menu.jobs.job_db.Job;
+import com.eot_app.nav_menu.jobs.job_detail.JobDetailActivity;
 import com.eot_app.nav_menu.quote.quote_invoice_pkg.Quote_Invoice_Details_Activity;
 import com.eot_app.nav_menu.quote.quotes_list_pkg.qoute_model_pkg.Quote_ReS;
 import com.eot_app.nav_menu.quote.quotes_list_pkg.quotes_list_mvp.QuotesList_Pc;
@@ -30,10 +34,12 @@ import com.eot_app.nav_menu.quote.quotes_list_pkg.quotes_list_mvp.QuotesList_Vie
 import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.AppUtility;
 import com.eot_app.utility.EotApp;
+import com.eot_app.utility.db.AppDataBase;
 import com.eot_app.utility.language_support.LanguageController;
 import com.eot_app.utility.util_interfaces.MyListItemSelected;
 import com.eot_app.utility.util_interfaces.OnFragmentInteractionListener;
 import com.google.android.material.chip.ChipGroup;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -81,6 +87,7 @@ public class Quotes_List extends Fragment implements View.OnClickListener, Quote
     Button date_time_clear_btn;
     private View em_layout;
     private TextView nolist_txt;
+    Activity myActivity;
 
     public Quotes_List() {
         // Required empty public constructor
@@ -111,6 +118,7 @@ public class Quotes_List extends Fragment implements View.OnClickListener, Quote
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        myActivity = getActivity();
     }
 
     @Override
@@ -300,6 +308,20 @@ public class Quotes_List extends Fragment implements View.OnClickListener, Quote
                 quoteListAdpter.updateRecords(quoteList);
                 em_layout.setVisibility(View.GONE);
                 quoteList_RecyclerView.setVisibility(View.VISIBLE);
+                try {
+                    if (myActivity instanceof MainActivity) {
+                        String notificationDataId = ((MainActivity) myActivity).getNotificationDataId();
+                        ((MainActivity) myActivity).setNotificationDataId(null);
+                        if (!TextUtils.isEmpty(notificationDataId)) {
+                            Intent quotesinvoiceIntent = new Intent(getActivity(), Quote_Invoice_Details_Activity.class);
+                            quotesinvoiceIntent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                            quotesinvoiceIntent.putExtra("quotId", notificationDataId);
+                            startActivity(quotesinvoiceIntent);
+                        }
+                    }
+                } catch (Exception exception) {
+                    exception.printStackTrace();
+                }
             } else {
                 em_layout.setVisibility(View.VISIBLE);
                 quoteList_RecyclerView.setVisibility(View.GONE);

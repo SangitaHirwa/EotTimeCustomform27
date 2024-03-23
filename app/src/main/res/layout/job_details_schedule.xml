@@ -40,15 +40,14 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/accept_reject_linear"
                 android:layout_alignParentEnd="true"
-                android:layout_centerInParent="true"
-                >
+                android:layout_centerInParent="true">
 
                 <ImageView
                     android:id="@+id/arrow_dp_icon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
                     android:layout_alignParentEnd="true"
+                    android:layout_gravity="center"
                     android:layout_marginEnd="10dp"
                     android:background="@drawable/date_dp_bck"
                     android:gravity="center"
@@ -199,9 +198,10 @@
                 android:id="@+id/textViewJobStatus"
                 style="@style/job_details_child_style"
                 android:layout_below="@+id/accept_reject_linear"
-                android:layout_margin="5dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="5dp"
+                android:layout_marginBottom="5dp"
                 android:layout_toEndOf="@+id/job_status_lable"
                 android:gravity="center"
                 android:padding="1dp"

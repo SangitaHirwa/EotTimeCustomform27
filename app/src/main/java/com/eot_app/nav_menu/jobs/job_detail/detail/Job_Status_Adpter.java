@@ -11,25 +11,31 @@ import com.eot_app.R;
 import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.language_support.LanguageController;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 public class Job_Status_Adpter extends BaseAdapter {
 
     private final LayoutInflater inflator;
     private final MyJobStatusDp myJobStatusDp;
     //    private ArrayList<String> mCounting = new ArrayList<>();
     String[] mCounting;
+    LinkedHashMap<String,String> mCounting1;
 
 
     // public Job_Status_Adpter(Context context, ArrayList<String> counting) {
-    public Job_Status_Adpter(Context context, String[] mCounting, MyJobStatusDp myJobStatusDp) {
+    public Job_Status_Adpter(Context context, String[] mCounting, LinkedHashMap<String,String> mCounting1, MyJobStatusDp myJobStatusDp) {
         inflator = LayoutInflater.from(context);
         this.mCounting = mCounting;
         this.myJobStatusDp = myJobStatusDp;
+        this.mCounting1 = mCounting1;
     }
 
-    public void updtaeList(String[] counting) {
+    public void updtaeList(String[] counting,LinkedHashMap<String,String> mCounting1) {
         //   if (this.mCounting.length() > 0)
         //   this.mCounting.clear();
         this.mCounting = counting;
+        this.mCounting1 = mCounting1;
         notifyDataSetChanged();
     }
 
@@ -65,7 +71,12 @@ public class Job_Status_Adpter extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 if (myJobStatusDp != null) {
-                    myJobStatusDp.selectedStatus(position);
+                    for(Map.Entry item:mCounting1.entrySet()){
+                        if(mCounting[position].equalsIgnoreCase(item.getValue().toString())){
+                            myJobStatusDp.selectedStatus(item.getKey().toString());
+                        }
+                    }
+//                    myJobStatusDp.selectedStatus(position);
                 }
             }
         });
@@ -94,7 +105,7 @@ public class Job_Status_Adpter extends BaseAdapter {
 
 
     public interface MyJobStatusDp {
-        void selectedStatus(int pos);
+        void selectedStatus(String pos);
     }
 }
 

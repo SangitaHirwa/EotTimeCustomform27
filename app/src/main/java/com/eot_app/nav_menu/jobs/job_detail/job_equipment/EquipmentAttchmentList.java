@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.eot_app.R;
-import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.GetFileList_Res;
+import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.Attachments;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.model.EqipAttchAdpter;
 import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.language_support.LanguageController;
@@ -23,7 +23,7 @@ import java.util.List;
 public class EquipmentAttchmentList extends AppCompatActivity {
     EqipAttchAdpter attchAdpter;
     RecyclerView.LayoutManager layoutManager;
-    private List<GetFileList_Res> attachments = new ArrayList<>();
+    private List<Attachments> attachments = new ArrayList<>();
     RecyclerView recyclerView;
 
     @Override
@@ -34,7 +34,7 @@ public class EquipmentAttchmentList extends AppCompatActivity {
         try {
             if (getIntent().hasExtra("list")) {
                 String str = getIntent().getExtras().get("list").toString();
-                Type listType = new TypeToken<List<GetFileList_Res>>() {
+                Type listType = new TypeToken<List<Attachments>>() {
                 }.getType();
                 attachments = new Gson().fromJson(str, listType);
             }

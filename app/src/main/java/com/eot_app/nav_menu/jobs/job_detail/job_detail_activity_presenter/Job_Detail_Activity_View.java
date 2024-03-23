@@ -11,6 +11,7 @@ public interface Job_Detail_Activity_View {
     void finishActivityWithSetResult();
 
     void onSessionExpire(String message);
+    void progressBarDissmissForThread();
 
     void setInvoiceDetails();
 

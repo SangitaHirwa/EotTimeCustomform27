@@ -107,6 +107,32 @@ public class Job implements Parcelable {//
     private String isJobInvoiced;
     private String desWithoutHtml;
     private String disCalculationType;
+    private String taxCalculationType;
+    private  String isAddisDiscBefore;
+    private String invType;
+    //add param for leader
+    private String isLeader;
+
+    @TypeConverters(CompliAnsArrayConvrtr.class)
+    private List<CompliAnsArray> compliAnsArray = new ArrayList<>() ;
+    @TypeConverters(IsMarkDoneConvrtr.class)
+    private List<IsMarkDoneWithJtid> isMarkDoneWithJtId =new ArrayList<>();
+    public List<IsMarkDoneWithJtid> getIsMarkDoneWithJtId() {
+        return isMarkDoneWithJtId;
+    }
+
+    public void setIsMarkDoneWithJtId(List<IsMarkDoneWithJtid> isMarkDoneWithJtId) {
+        this.isMarkDoneWithJtId = isMarkDoneWithJtId;
+    }
+
+
+    public List<CompliAnsArray> getCompliAnsArray() {
+        return compliAnsArray;
+    }
+
+    public void setCompliAnsArray(List<CompliAnsArray> compliAnsArray) {
+        this.compliAnsArray = compliAnsArray;
+    }
 
     public String getDesWithoutHtml() {
         return desWithoutHtml;
@@ -176,6 +202,12 @@ public class Job implements Parcelable {//
         isJobInvoiced = in.readString();
         desWithoutHtml = in.readString();
         disCalculationType=in.readString();
+        taxCalculationType=in.readString();
+        isAddisDiscBefore=in.readString();
+        invType=in.readString();
+        isLeader =in.readString();
+        compliAnsArray =in.createTypedArrayList(CompliAnsArray.CREATOR);
+        isMarkDoneWithJtId = in.createTypedArrayList(IsMarkDoneWithJtid.CREATOR);
     }
 
     public static Creator<Job> getCREATOR() {
@@ -629,6 +661,14 @@ public class Job implements Parcelable {//
         this.disCalculationType = disCalculationType;
     }
 
+    public String getTaxCalculationType() {
+        return taxCalculationType;
+    }
+
+    public void setTaxCalculationType(String taxCalculationType) {
+        this.taxCalculationType = taxCalculationType;
+    }
+
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(status);
@@ -687,6 +727,12 @@ public class Job implements Parcelable {//
         dest.writeString(isJobInvoiced);
         dest.writeString(desWithoutHtml);
         dest.writeString(disCalculationType);
+        dest.writeString(taxCalculationType);
+        dest.writeString(isAddisDiscBefore);
+        dest.writeString(invType);
+        dest.writeString(isLeader);
+        dest.writeTypedList(compliAnsArray);
+        dest.writeTypedList(isMarkDoneWithJtId);
     }
 
     public String getPono() {
@@ -719,5 +765,29 @@ public class Job implements Parcelable {//
 
     public void setIsJobInvoiced(String isJobInvoiced) {
         this.isJobInvoiced = isJobInvoiced;
+    }
+
+    public String getIsAddisDiscBefore() {
+        return isAddisDiscBefore;
+    }
+
+    public void setIsAddisDiscBefore(String isAddisDiscBefore) {
+        this.isAddisDiscBefore = isAddisDiscBefore;
+    }
+
+    public String getInvType() {
+        return invType;
+    }
+
+    public void setInvType(String invType) {
+        this.invType = invType;
+    }
+
+    public String getIsLeader() {
+        return isLeader;
+    }
+
+    public void setIsLeader(String isLeader) {
+        this.isLeader = isLeader;
     }
 }

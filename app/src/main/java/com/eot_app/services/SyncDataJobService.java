@@ -24,12 +24,16 @@ import com.eot_app.nav_menu.client.clientlist.client_detail.site.sitelist.Site_m
 import com.eot_app.nav_menu.jobs.job_db.Job;
 import com.eot_app.nav_menu.jobs.job_db.JobListRequestModel;
 import com.eot_app.nav_menu.jobs.job_detail.customform.cstm_form_model.CustomFormListOffline;
+import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.Attachments;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.inventry_pkg.Inventry_ReQ_Model;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.inventry_pkg.Inventry_ReS_Model;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_db.location_tax_dao.TaxReqModel;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_db.location_tax_dao.TaxesLocation;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_detail_pkg.inv_detail_model.Tax;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_model_pkg.TaxList_ReQ_Model;
+import com.eot_app.nav_menu.jobs.job_detail.job_equipment.add_job_equip.model_pkg.BrandData;
+import com.eot_app.nav_menu.jobs.job_detail.job_equipment.add_job_equip.model_pkg.GetBrandListReqModel;
+import com.eot_app.nav_menu.jobs.job_detail.job_equipment.add_job_equip.model_pkg.GetListModel;
 import com.eot_app.time_shift_pkg.ShiftTimeReSModel;
 import com.eot_app.time_shift_pkg.ShiftTimeReqModel;
 import com.eot_app.utility.AppCenterLogs;
@@ -68,12 +72,14 @@ import io.reactivex.schedulers.Schedulers;
  * * created by shivani vani in FEB 2022**
  * */
 
+@SuppressLint("SpecifyJobSchedulerIdRange")
 public class SyncDataJobService extends JobService {
 
     private final int updateLimit = AppConstant.LIMIT_HIGH;
     private int count;
     private int updateIndex;
     private String startJobSyncTime="";
+    private String startAttachmetSyncTime="";
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -116,51 +122,60 @@ public class SyncDataJobService extends JobService {
         int status_no = App_preference.getSharedprefInstance().getFirstSyncState();
         switch (status_no) {
             case 0:
+                getBrandList();
+                break;
+            case 1:
+//               og.v("MainSync","startJobSyncTime"+" --" +startJobSyncTime);
+                startAttachmetSyncTime=App_preference.getSharedprefInstance().getAttachmentStartSyncTime();
+                App_preference.getSharedprefInstance().setAttachmentStartSyncTime(startAttachmetSyncTime);
+                getAttachmentSyncService();//get attachment list
+                break;
+            case 2:
                 startJobSyncTime=AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT);
                 App_preference.getSharedprefInstance().setJobStartSyncTime(startJobSyncTime);
                 Log.v("MainSync","startJobSyncTime"+" --" +startJobSyncTime);
                 getJobSyncService();//get job list
                 break;
-            case 1:
+            case 3:
                 getClientSyncService();//sync client list
                 break;
-            case 2:
+            case 4:
                 getContactSyncService();//sync contact list
                 break;
-            case 3:
+            case 5:
                 getSiteSyncService();//get Site list
                 break;
-            case 4:
+            case 6:
                 getChatgrpUserSyncService();//get chat user list
                 break;
-            case 5:
+            case 7:
                 getAppointmentSyncService();//get appointment  list
                 break;
-            case 6:
+            case 8:
                 getInvoiceItemList();//get inventory item's
                 break;
-            case 7:
+            case 9:
                 getInvoiceTaxesList();//get taxes for invoice item's
                 break;
-            case 8:
+            case 10:
                 getAuditList();
                 break;
-            case 9:
+            case 11:
                 getContractList();
                 break;
-            case 10:
+            case 12:
                 getEquipmentList();
                 break;
-            case 11:
+            case 13:
                 getTaxLocations();
                 break;
-            case 12:
+            case 14:
                 getJobTimeShiftList();
                 break;
-            case 13:
+            case 15:
                 getCustomForm();
                 break;
-            case 14:
+            case 16:
                 goHomePage();
                 App_preference.getSharedprefInstance().setFirstSyncState(0);
                 stopSelf();
@@ -180,6 +195,83 @@ public class SyncDataJobService extends JobService {
         return parser.parse(params).getAsJsonObject();
     }
 
+    private void getAttachmentSyncService() {
+        if (AppUtility.isInternetConnected()) {
+            ActivityLogController.saveActivity(
+                    ActivityLogController.LOGIN_MODULE,
+                    ActivityLogController.LOGIN_JOB_SYNC,
+                    ActivityLogController.LOGIN_MODULE
+            );
+            if (FIrstSyncPreference.getSharedprefInstance().getJobIndexValue()!=0)
+            {
+                updateIndex=FIrstSyncPreference.getSharedprefInstance().getJobIndexValue();
+                FIrstSyncPreference.getSharedprefInstance().setJobIndexValue(0);
+            }
+
+            JobListRequestModel jobListRequestModel = new JobListRequestModel(Integer.parseInt(App_preference.getSharedprefInstance().getLoginRes().getUsrId()),
+                    updateLimit, updateIndex,App_preference.getSharedprefInstance().getAttachmentStartSyncTime());
+            String data = new Gson().toJson(jobListRequestModel);
+            Log.d("Apitimetracking","getUserJobList:-"+data);
+            Log.d("Apitimetracking","time:-"+AppUtility.getCurrentDateByFormat("yyyy-MM-dd HH:mm:ss"));
+            ApiClient.getservices().eotServiceCall(Service_apis.getSyncJobAttachments, AppUtility.getApiHeaders(), getJsonObject(data))
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<JsonObject>() {
+                        @Override
+                        public void onSubscribe(@NotNull Disposable d) {
+                        }
+                        @Override
+                        public void onNext(@NotNull JsonObject jsonObject) {
+                            AppCenterLogs.addLogToAppCenterOnAPIFail("Api","getUserJobList","","SyncDataJobService",String.valueOf(jsonObject.get("success").getAsBoolean()));
+                            Log.e("responce:", jsonObject.toString());
+                            if (jsonObject.get("success").getAsBoolean()) {
+                                count = jsonObject.get("count").getAsInt();
+                                String convert = new Gson().toJson(jsonObject.get("data").getAsJsonArray());
+                                Type listType = new TypeToken<List<Attachments>>() {
+                                }.getType();
+                                List<Attachments> data = new Gson().fromJson(convert, listType);
+                                addAttachmentsInToDB(data);
+                            }
+                        }
+                        @Override
+                        public void onError(@NotNull Throwable e) {
+                            Log.e("Network Error :", e.toString());
+                    //        AppCenterLogs.addLogToAppCenterOnAPIFail("Api","getUserJobList",e.getMessage(),"SyncDataJobService","");
+                            errorMsg(e.toString());
+                            FIrstSyncPreference.getSharedprefInstance().setJobIndexValue(updateIndex);
+                        }
+                        @Override
+                        public void onComplete() {
+                            if ((updateIndex + updateLimit) <= count) {
+                                updateIndex += updateLimit;
+                                getAttachmentSyncService();
+                            } else {
+                                if (count != 0) {
+                                    Log.v("MainSync","startJobSyncTimeCI"+" --" +startAttachmetSyncTime);
+                                    if(!startAttachmetSyncTime.isEmpty()){
+                                        App_preference.getSharedprefInstance().setAttachmentStartSyncTime(startAttachmetSyncTime);
+                                    }
+                                    else{
+                                        App_preference.getSharedprefInstance().setAttachmentStartSyncTime(AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT));
+                                    }
+                                    Log.v("MainSync","startJobSyncTimeC"+" --" +App_preference.getSharedprefInstance().getJobSyncTime());
+                                }
+                                updateIndex = 0;
+                                count = 0;
+//                                AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().deleteJobByIsDelete();
+
+//                                AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().deleteJobStatusNot(
+//                                        "1","2","3","4","5","6","7","8","9","10","11","12"
+//                                );
+                                App_preference.getSharedprefInstance().setFirstSyncState(2);
+                                startSyncFromStatus();
+                                Log.v("MainSync","startJobSyncTimeCR"+" --" +App_preference.getSharedprefInstance().getJobSyncTime());
+                                Log.v("MainSync","Sync completed "+" --" +"JobSync Done");
+                            }
+                        }
+                    });
+        }
+    }
     private void getJobSyncService() {
         if (AppUtility.isInternetConnected()) {
             ActivityLogController.saveActivity(
@@ -249,7 +341,7 @@ public class SyncDataJobService extends JobService {
 //                                AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().deleteJobStatusNot(
 //                                        "1","2","3","4","5","6","7","8","9","10","11","12"
 //                                );
-                                App_preference.getSharedprefInstance().setFirstSyncState(1);
+                                App_preference.getSharedprefInstance().setFirstSyncState(3);
                                 startSyncFromStatus();
                                 Log.v("MainSync","startJobSyncTimeCR"+" --" +App_preference.getSharedprefInstance().getJobSyncTime());
                                 Log.v("MainSync","Sync completed "+" --" +"JobSync Done");
@@ -261,6 +353,10 @@ public class SyncDataJobService extends JobService {
 
     private void addJobInToDB(List<Job> data) {
         AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().inserJob(data);
+    }
+    private void addAttachmentsInToDB(List<Attachments> data) {
+        AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).attachments_dao().insertAttachments(data);
+        AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).attachments_dao().deleteAttachments();
     }
 
     private void getAppointmentSyncService() {
@@ -325,7 +421,7 @@ public class SyncDataJobService extends JobService {
                             updateIndex = 0;
                             count = 0;
                             AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).appointmentModel().deleteAppointmentByIsDelete();
-                            App_preference.getSharedprefInstance().setFirstSyncState(6);
+                            App_preference.getSharedprefInstance().setFirstSyncState(8);
                             startSyncFromStatus();
                             Log.v("MainSync","Sync completed "+" --" +"appointment Sync Done");
                         }
@@ -403,7 +499,7 @@ public class SyncDataJobService extends JobService {
                                 }
                                 updateIndex = 0;
                                 count = 0;
-                                App_preference.getSharedprefInstance().setFirstSyncState(7);
+                                App_preference.getSharedprefInstance().setFirstSyncState(9);
                                 startSyncFromStatus();
                                 Log.v("MainSync","Sync completed "+" --" +"Invoice Sync Done");
                             }
@@ -483,7 +579,7 @@ public class SyncDataJobService extends JobService {
                                 }
                                 updateIndex = 0;
                                 count = 0;
-                                App_preference.getSharedprefInstance().setFirstSyncState(5);
+                                App_preference.getSharedprefInstance().setFirstSyncState(7);
                                 startSyncFromStatus();
                                 Log.v("MainSync","Sync completed "+" --" +"Chat Grup Sync Done");
 
@@ -559,7 +655,7 @@ public class SyncDataJobService extends JobService {
                                 AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).sitemodel().deleteSiteByIsDelete();
 
 
-                                App_preference.getSharedprefInstance().setFirstSyncState(4);
+                                App_preference.getSharedprefInstance().setFirstSyncState(6);
                                 startSyncFromStatus();
                                 Log.v("MainSync","Sync completed "+" --" +"site Sync Done");
 
@@ -637,7 +733,7 @@ public class SyncDataJobService extends JobService {
                                 updateIndex = 0;
                                 count = 0;
                                 AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).contactModel().deleteContactByIsDelete();
-                                App_preference.getSharedprefInstance().setFirstSyncState(3);
+                                App_preference.getSharedprefInstance().setFirstSyncState(5);
                                 startSyncFromStatus();
                                 Log.v("MainSync","Sync completed "+" --" +"Contact Sync Done");
 
@@ -712,7 +808,7 @@ public class SyncDataJobService extends JobService {
                                 updateIndex = 0;
                                 count = 0;
                                 AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).clientModel().deleteClientByIsDelete();
-                                App_preference.getSharedprefInstance().setFirstSyncState(2);
+                                App_preference.getSharedprefInstance().setFirstSyncState(4);
                                 startSyncFromStatus();
                                 Log.v("MainSync","Sync completed "+" --" +"Client Sync Done");
                             }
@@ -779,7 +875,7 @@ public class SyncDataJobService extends JobService {
                             }
                             updateIndex = 0;
                             count = 0;
-                            App_preference.getSharedprefInstance().setFirstSyncState(8);
+                            App_preference.getSharedprefInstance().setFirstSyncState(10);
                             startSyncFromStatus();
                         }
                     }
@@ -822,7 +918,7 @@ public class SyncDataJobService extends JobService {
                                executors.execute(new Runnable() {
                                    @Override
                                    public void run() {
-                                    //   AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).customFormListOfflineDao().delete();
+                                       AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).customFormListOfflineDao().delete();
                                        for (int i=0;i<formList.size();i++)
                                        {
                                            String jtId = formList.get(i).getJtId();
@@ -836,9 +932,9 @@ public class SyncDataJobService extends JobService {
 
                                                        AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).customFormListOfflineDao().insert(customFormListOffline);
                                                    }
-                                               }else
-                                               AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).customFormListOfflineDao().insert(formList.get(i));
-
+                                               }else {
+                                                   AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).customFormListOfflineDao().insert(formList.get(i));
+                                               }
                                            }
                                        }
                                    }
@@ -865,7 +961,7 @@ public class SyncDataJobService extends JobService {
                            }
                            updateIndex = 0;
                            count = 0;
-                           App_preference.getSharedprefInstance().setFirstSyncState(14);
+                           App_preference.getSharedprefInstance().setFirstSyncState(16);
                            startSyncFromStatus();
                            Log.v("MainSync","Sync completed "+" --" +"job time Sync Done");
                        }
@@ -923,7 +1019,7 @@ public class SyncDataJobService extends JobService {
                             }
                             updateIndex = 0;
                             count = 0;
-                            App_preference.getSharedprefInstance().setFirstSyncState(13);
+                            App_preference.getSharedprefInstance().setFirstSyncState(15);
                             startSyncFromStatus();
                             Log.v("MainSync","Sync completed "+" --" +"job time Sync Done");
 
@@ -985,7 +1081,7 @@ public class SyncDataJobService extends JobService {
                             }
                             updateIndex = 0;
                             count = 0;
-                            App_preference.getSharedprefInstance().setFirstSyncState(12);
+                            App_preference.getSharedprefInstance().setFirstSyncState(14);
                             startSyncFromStatus();
                             Log.v("MainSync","Sync completed "+" --" +"tax location Sync Done");
 
@@ -1053,7 +1149,7 @@ public class SyncDataJobService extends JobService {
                             updateIndex = 0;
                             count = 0;
                             AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).equipmentDao().deleteEquipmentByIsDelete();
-                            App_preference.getSharedprefInstance().setFirstSyncState(11);
+                            App_preference.getSharedprefInstance().setFirstSyncState(13);
                             startSyncFromStatus();
                             Log.v("MainSync","Sync completed "+" --" +"quipment Sync Done");
 
@@ -1119,7 +1215,7 @@ public class SyncDataJobService extends JobService {
                             updateIndex = 0;
                             count = 0;
                             AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).contractDao().deleteContractByIsDelete();
-                            App_preference.getSharedprefInstance().setFirstSyncState(10);
+                            App_preference.getSharedprefInstance().setFirstSyncState(12);
                             startSyncFromStatus();
                             Log.v("MainSync","Sync completed "+" --" +"contract Sync Done");
 
@@ -1185,7 +1281,7 @@ public class SyncDataJobService extends JobService {
                             count = 0;
                             AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).auditDao().deleteJobByIsDelete();
                             //     AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).auditDao().deleteAuditStatusNot();
-                            App_preference.getSharedprefInstance().setFirstSyncState(9);
+                            App_preference.getSharedprefInstance().setFirstSyncState(11);
                             startSyncFromStatus();
                             Log.v("MainSync","Sync completed "+" --" +"Audit List Sync Done");
                         }
@@ -1216,6 +1312,66 @@ public class SyncDataJobService extends JobService {
     public void OfflineDbSync() {
         OfflineDataController.getInstance().fromFirstTimeSyncCall((success_no, msg) -> startSyncFromStatus());
     }
+   /**get Brand dataList**/
+   private void getBrandList() {
+       if (FIrstSyncPreference.getSharedprefInstance().getAuditIndexValue()!=0)
+       {
+           updateIndex=FIrstSyncPreference.getSharedprefInstance().getAuditIndexValue();
+           FIrstSyncPreference.getSharedprefInstance().setAuditIndexValue(0);
+       }
+       GetBrandListReqModel brandListReqModel = new GetBrandListReqModel(updateLimit,updateIndex,"");
+       String data = new Gson().toJson(brandListReqModel);
+       Log.d("Apitimetracking","getContractList:-"+data);
+       Log.d("Apitimetracking","time"+AppUtility.getCurrentDateByFormat("yyyy-MM-dd HH:mm:ss"));
+       ApiClient.getservices().eotServiceCall(Service_apis.getBrandList, AppUtility.getApiHeaders(), AppUtility.getJsonObject(data))
+               .subscribeOn(Schedulers.io())
+               .observeOn(AndroidSchedulers.mainThread())
+               .subscribe(new Observer<JsonObject>() {
+                   @Override
+                   public void onSubscribe(@NotNull Disposable d) {
 
+                   }
 
+                   @Override
+                   public void onNext(@NotNull JsonObject jsonObject) {
+                       AppCenterLogs.addLogToAppCenterOnAPIFail("Api","getBrandList","","SyncDataJobService",String.valueOf(jsonObject.get("success").getAsBoolean()));
+                       Log.d("getBrandList", jsonObject.toString());
+                       if (jsonObject.get("success").getAsBoolean()) {
+                           count = jsonObject.get("count").getAsInt();
+                           String convert = new Gson().toJson(jsonObject.get("data").getAsJsonArray());
+                           Type listType = new TypeToken<List<BrandData>>() {
+                           }.getType();
+                           List<BrandData> brandList = new Gson().fromJson(convert, listType);
+                           if (brandList != null) {
+                               AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).brandDao().insertBrandDate(brandList);
+                           }
+                       }
+                   }
+
+                   @Override
+                   public void onError(@NotNull Throwable e) {
+                       Log.e("Network Error :", e.toString());
+                       /* *****/
+                       errorMsg(e.toString());
+                   }
+
+                   @Override
+                   public void onComplete() {
+                       if ((updateIndex + updateLimit) <= count) {
+                           updateIndex += updateLimit;
+                           getBrandList();
+                       } else {
+                           if (count != 0) {
+                               App_preference.getSharedprefInstance().setContractSyncTime(AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT));
+                           }
+                           updateIndex = 0;
+                           count = 0;
+                           App_preference.getSharedprefInstance().setFirstSyncState(1);
+                           startSyncFromStatus();
+                           Log.v("MainSync","Sync completed "+" --" +"contract Sync Done");
+
+                       }
+                   }
+               });
+   }
 }

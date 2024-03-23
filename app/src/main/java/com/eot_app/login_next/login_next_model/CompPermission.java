@@ -31,6 +31,8 @@ public class CompPermission {
     private String isCompNmShowMobile  = "1";
     private String isEditJobAndTravelTime;
 
+    private String isLeaderChgAllUsrStatusOnJb;
+
     public String getIsEditJobAndTravelTime() {
         return isEditJobAndTravelTime;
     }
@@ -238,5 +240,13 @@ public class CompPermission {
 
     public void setIsQuoteNoShowOnAppointment(String isQuoteNoShowOnAppointment) {
         this.isQuoteNoShowOnAppointment = isQuoteNoShowOnAppointment;
+    }
+
+    public String getIsLeaderChgAllUsrStatusOnJb() {
+        return isLeaderChgAllUsrStatusOnJb;
+    }
+
+    public void setIsLeaderChgAllUsrStatusOnJb(String isLeaderChgAllUsrStatusOnJb) {
+        this.isLeaderChgAllUsrStatusOnJb = isLeaderChgAllUsrStatusOnJb;
     }
 }

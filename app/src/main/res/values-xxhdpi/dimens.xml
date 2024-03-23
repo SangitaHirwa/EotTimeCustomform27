@@ -4,7 +4,7 @@
     <dimen name="logo_height">90dp</dimen>
     <dimen name="extra_text">30dp</dimen>
     <dimen name="text_layout_height">42dp</dimen>
-    <dimen name="medium_text">15dp</dimen>
+    <dimen name="medium_text">12dp</dimen>
     <dimen name="margin_top">12dp</dimen>
 
 

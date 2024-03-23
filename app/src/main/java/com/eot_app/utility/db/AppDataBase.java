@@ -30,9 +30,14 @@ import com.eot_app.nav_menu.client.clientlist.client_detail.site.sitelist.SiteCu
 import com.eot_app.nav_menu.client.clientlist.client_detail.site.sitelist.SiteDao;
 import com.eot_app.nav_menu.client.clientlist.client_detail.site.sitelist.Site_model;
 import com.eot_app.nav_menu.jobs.add_job.JobRecurTypeConvert;
+import com.eot_app.nav_menu.jobs.job_db.Attachments_Dao;
+import com.eot_app.nav_menu.jobs.job_db.CompliAnsArrayConvrtr;
 import com.eot_app.nav_menu.jobs.job_db.EquArrayConvrtr;
+import com.eot_app.nav_menu.jobs.job_db.IsMarkDoneConvrtr;
 import com.eot_app.nav_menu.jobs.job_db.Job;
 import com.eot_app.nav_menu.jobs.job_db.JobDao;
+import com.eot_app.nav_menu.jobs.job_db.OfflieCompleQueAns;
+import com.eot_app.nav_menu.jobs.job_db.OfflieCompleQueAns_Dao;
 import com.eot_app.nav_menu.jobs.job_db.SelecetedDaysConverter;
 import com.eot_app.nav_menu.jobs.job_db.TagDataConverter;
 import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.typeconver_pkg.InvoiceItemDataModelConverter;
@@ -40,6 +45,7 @@ import com.eot_app.nav_menu.jobs.job_detail.customform.cstm_form_model.CustomFor
 import com.eot_app.nav_menu.jobs.job_detail.customform.cstm_form_model.CustomFormListOfflineDao;
 import com.eot_app.nav_menu.jobs.job_detail.detail.jobdetial_model.JobStatusDao;
 import com.eot_app.nav_menu.jobs.job_detail.detail.jobdetial_model.JobStatusModelNew;
+import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.Attachments;
 import com.eot_app.nav_menu.jobs.job_detail.form_form.get_qus_list.Fromdb.CustomForm;
 import com.eot_app.nav_menu.jobs.job_detail.form_form.get_qus_list.Fromdb.CustomFormDao;
 import com.eot_app.nav_menu.jobs.job_detail.form_form.get_qus_list.Fromdb.CustomFormQue;
@@ -52,8 +58,11 @@ import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_db.invebtry_items_da
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_db.location_tax_dao.TaxesLocation;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_db.location_tax_dao.TaxesLocationDao;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_db.tax_dao.Invoice_TaxDao;
+import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_db.tax_dao.TaxComponentsConverter;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_db.tax_dao.TaxConverter;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_detail_pkg.inv_detail_model.Tax;
+import com.eot_app.nav_menu.jobs.job_detail.job_equipment.add_job_equip.model_pkg.BrandData;
+import com.eot_app.nav_menu.jobs.job_detail.job_equipment.add_job_equip.model_pkg.brand_db.BrandDao;
 import com.eot_app.nav_menu.jobs.joboffline_db.JobOfflineDataDao;
 import com.eot_app.nav_menu.jobs.joboffline_db.JobOfflineDataModel;
 import com.eot_app.time_shift_pkg.ShiftTimeDao;
@@ -94,12 +103,15 @@ import com.eot_app.utility.settings.setting_db.TagData;
         Inventry_ReS_Model.class, JobOfflineDataModel.class
         , AuditList_Res.class, ContractRes.class, Equipment.class, JobStatusModelNew.class,
         TaxesLocation.class, ClientRefrenceModel.class, ShiftTimeReSModel.class, CustomForm.class, CustomFormQue.class,
-        CustomFormSubmited.class, CustomFormListOffline.class, AuditStatusModel.class, AppointmentStatusModel.class},
-        version = 41, exportSchema = false)
+        CustomFormSubmited.class, CustomFormListOffline.class, AuditStatusModel.class, AppointmentStatusModel.class, OfflieCompleQueAns.class,
+        Attachments.class, BrandData.class},
+
+        version = 47, exportSchema = false)
 @TypeConverters({TaxDataConverter.class, TagDataConverter.class, InvoiceItemDataModelConverter.class, TaxConverter.class
         , EquipmentTypeConverter.class, EquArrayConvrtr.class, EquCategoryConvrtr.class
         , SiteCustomFieldConverter.class, JobRecurTypeConvert.class, SelecetedDaysConverter.class
-        , SuggestionConverter.class, TeamMemrConverter.class, PartConverter.class
+        , SuggestionConverter.class, TeamMemrConverter.class, PartConverter.class, TaxComponentsConverter.class, IsMarkDoneConvrtr.class,
+        CompliAnsArrayConvrtr.class
 })
 
 public abstract class AppDataBase extends RoomDatabase {
@@ -614,6 +626,108 @@ public abstract class AppDataBase extends RoomDatabase {
                     " PRIMARY KEY(`id`))");
         }
     };
+    /**Add some filed in Appointment for Item add in Requirement Gathering **/
+
+
+    static final Migration MIGRATION_41_42 = new Migration(41, 42) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            /* **Alter Table for getting item list in appointment and tax components in tax**/
+            database.execSQL("ALTER TABLE Appointment ADD COLUMN parentId TEXT");
+            database.execSQL("ALTER TABLE Appointment ADD COLUMN leadId TEXT");
+            database.execSQL("ALTER TABLE Appointment ADD COLUMN isStatusShow TEXT");
+            database.execSQL("ALTER TABLE Appointment ADD COLUMN itemData TEXT");
+            database.execSQL("ALTER TABLE Tax ADD COLUMN taxComponents TEXT");
+            database.execSQL("ALTER TABLE Job ADD COLUMN taxCalculationType TEXT");
+            database.execSQL("ALTER TABLE Job ADD COLUMN isAddisDiscBefore TEXT");
+
+        }
+    };
+    /**Add Attachment filed in Appointment **/
+
+
+    static final Migration MIGRATION_42_43 = new Migration(42, 43) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            /* **Alter Table for getting item list in appointment and tax components in tax**/
+            database.execSQL("ALTER TABLE Client ADD COLUMN altEmail TEXT");
+
+            database.execSQL("ALTER TABLE ContactData ADD COLUMN altEmail TEXT");
+
+            database.execSQL("ALTER TABLE Appointment ADD COLUMN taxCalculationType TEXT");
+            database.execSQL("ALTER TABLE Appointment ADD COLUMN disCalculationType TEXT");
+            /* **Alter Table for getting invoice type **/
+            database.execSQL("ALTER TABLE Job ADD COLUMN invType TEXT");
+
+        }
+    };
+
+    static final Migration MIGRATION_43_44 = new Migration(43, 44) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            /* **Alter Table for getting invoice type **/
+            database.execSQL("ALTER TABLE Job ADD COLUMN invType TEXT");
+
+        }
+    };
+    static final Migration MIGRATION_44_45 = new Migration(44, 45) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            /* **Alter Table for getting invoice type **/
+            database.execSQL("ALTER TABLE Job ADD COLUMN isLeader TEXT");
+
+        }
+    };
+    static final Migration MIGRATION_45_46 = new Migration(45, 46) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            /* **Alter Table for getting invoice type **/
+            database.execSQL("ALTER TABLE Job ADD COLUMN compliAnsArray TEXT");
+            database.execSQL("ALTER TABLE Job ADD COLUMN isMarkDoneWithJtId TEXT");
+            /***CREATE Table for Completion offline Ans List**/
+            database.execSQL("CREATE TABLE IF NOT EXISTS `OfflieCompleQueAns` (`jobId` TEXT NOT NULL UNIQUE,'allQuestionAnswer' TEXT," +
+                    "'isMarkDoneWithJtId' TEXT," +
+                     " PRIMARY KEY(`jobId`)) ");
+             /***CREATE Table for Attachments List**/
+            database.execSQL("CREATE TABLE IF NOT EXISTS `Attachments` (`attachmentId` TEXT NOT NULL UNIQUE,'deleteTable' TEXT," +
+                    "'image_name' TEXT," +
+                    "'userId' TEXT," +
+                    "'attachFileName' TEXT," +
+                    "'attachThumnailFileName' TEXT," +
+                    "'attachFileActualName' TEXT," +
+                    "'type' TEXT," +
+                    "'createdate' TEXT," +
+                    "'attFolderNm' TEXT," +
+                    "'queId' TEXT," +
+                    "'jtId' TEXT," +
+                    "'name' TEXT," +
+                    "'att_docName' TEXT," +
+                    "'des' TEXT," +
+                    "'attchOriginId' TEXT," +
+                    "'isFeedback' TEXT," +
+                    "'jobId' TEXT," +
+                    "'size' INTEGER NOT NULL," +
+                    "'attchParentId' TEXT," +
+                    "'isLinked' TEXT," +
+                    "'isdelete' TEXT," +
+                     " PRIMARY KEY(`attachmentId`)) ");
+
+        }
+    };
+    static final Migration MIGRATION_46_47 = new Migration(45, 46) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            /* **Alter Table for tempId **/
+            database.execSQL("ALTER TABLE Attachments ADD COLUMN tempId TEXT");
+            database.execSQL("ALTER TABLE Attachments ADD COLUMN bitmap TEXT");
+            /* **CREATE Table for brand List**/
+            database.execSQL("CREATE TABLE IF NOT EXISTS `Brand` (`ebId` TEXT NOT NULL UNIQUE," +
+                    "'name' TEXT," +
+                    " PRIMARY KEY(`ebId`)) ");
+            database.execSQL("ALTER TABLE Inventry_ReS_Model ADD COLUMN brandNm TEXT");
+            database.execSQL("ALTER TABLE Inventry_ReS_Model ADD COLUMN ebId TEXT");
+        }
+    };
     private static final String DB_NAME = "eot_db";
 
     private static AppDataBase INSTANCE;
@@ -669,6 +783,12 @@ public abstract class AppDataBase extends RoomDatabase {
                     .addMigrations(MIGRATION_38_39)
                     .addMigrations(MIGRATION_39_40)
                     .addMigrations(MIGRATION_40_41)
+                    .addMigrations(MIGRATION_41_42)
+                    .addMigrations(MIGRATION_42_43)
+                    .addMigrations(MIGRATION_43_44)
+                    .addMigrations(MIGRATION_44_45)
+                    .addMigrations(MIGRATION_45_46)
+                    .addMigrations(MIGRATION_46_47)
                     .fallbackToDestructiveMigration()
                     .build();
         }
@@ -731,4 +851,7 @@ public abstract class AppDataBase extends RoomDatabase {
     public abstract AuditStatusDao auditStatusDao();
 
     public abstract AppointmentStatusDao appointmentStatusDao();
+    public abstract OfflieCompleQueAns_Dao offline_completion_ans_dao();
+    public abstract Attachments_Dao attachments_dao();
+    public abstract BrandDao brandDao();
 }

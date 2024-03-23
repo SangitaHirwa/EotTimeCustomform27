@@ -24,6 +24,7 @@ import com.eot_app.nav_menu.audit.audit_list.audit_mvp.model.AuditList_Res;
 import com.eot_app.nav_menu.client.clientlist.client_detail.work_history.ClientWorkHistoryList;
 import com.eot_app.nav_menu.client.clientlist.client_detail.work_history.LoadMoreItem;
 import com.eot_app.nav_menu.jobs.job_detail.detail.jobdetial_model.JobStatusModel;
+import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.AppUtility;
 import com.eot_app.utility.App_preference;
 import com.eot_app.utility.EotApp;
@@ -86,7 +87,7 @@ public class AdpterAduitHistory extends RecyclerView.Adapter<AdpterAduitHistory.
             holder.tv_site_name.setVisibility(View.GONE);
         }
 
-        String today_date = AppUtility.getDateByFormat("EEE, dd MMM yyyy ,hh:mm ,a");
+        String today_date = AppUtility.getDateByFormat("EEE, "+ AppConstant.DATE_FORMAT+" ,hh:mm ,a");
         String[] today_dt = today_date.split(",");
         String to_day = today_dt[1];
 

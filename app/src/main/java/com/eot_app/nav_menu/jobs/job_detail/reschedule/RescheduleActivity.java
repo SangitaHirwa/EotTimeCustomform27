@@ -125,7 +125,7 @@ public class RescheduleActivity extends AppCompatActivity implements View.OnClic
                 time_start.setText(timeFormat);
                 time_str = timeFormat;
 
-                String dateFormat = AppUtility.getDateWithFormate(longStartTime, "dd-MM-yyyy");
+                String dateFormat = AppUtility.getDateWithFormate(longStartTime, "dd-MMM-yyyy");
                 date_start.setText(dateFormat);
                 date_str = dateFormat;
 
@@ -135,7 +135,7 @@ public class RescheduleActivity extends AppCompatActivity implements View.OnClic
                 time_end.setText(timeFormat);
                 time_en = timeFormat;
 
-                dateFormat = AppUtility.getDateWithFormate(endTime, "dd-MM-yyyy");
+                dateFormat = AppUtility.getDateWithFormate(endTime, "dd-MMM-yyyy");
                 date_end.setText(dateFormat);
                 date_en = dateFormat;
             } catch (Exception ex) {
@@ -294,8 +294,8 @@ public class RescheduleActivity extends AppCompatActivity implements View.OnClic
         Locale.getDefault().getDisplayLanguage();
         try {
             SimpleDateFormat gettingfmt = new SimpleDateFormat(
-                    AppUtility.dateTimeByAmPmFormate("dd-MM-yyyy hh:mm a",
-                            "dd-MM-yyyy HH:mm"), Locale.US);//, Locale.US
+                    AppUtility.dateTimeByAmPmFormate("dd-MMM-yyyy hh:mm a",
+                            "dd-MMM-yyyy HH:mm"), Locale.US);//, Locale.US
             Date date = gettingfmt.parse(schdlStart);
             date.getTime();
 

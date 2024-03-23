@@ -20,7 +20,7 @@ public class QuoteFilter_Pc implements QuoteFilter_Pi {
     @Override
     public void getQuotesStatesList() {
         final ArrayList<QuoteFilter_State_Model> quoteStatusList = new ArrayList<>();
-        quoteStatusList.add(new QuoteFilter_State_Model(AppConstant.QuoteNew, AppConstant.status_new));
+        quoteStatusList.add(new QuoteFilter_State_Model(AppConstant.QuoteNew, AppConstant.status_new_key));
         quoteStatusList.add(new QuoteFilter_State_Model((AppConstant.QuoteAproved), AppConstant.approved));
         quoteStatusList.add(new QuoteFilter_State_Model(AppConstant.QuoteReject, AppConstant.status_reje));
         quoteStatusList.add(new QuoteFilter_State_Model(AppConstant.QuoteOnHold, AppConstant.status_onhold));

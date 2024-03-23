@@ -20,6 +20,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.eot_app.R;
 import com.eot_app.eoteditor.EotEditor;
+import com.eot_app.nav_menu.jobs.job_detail.detail.jobdetial_model.JobCardAttachmentModel;
+import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_email_pkg.get_email_temp_model.Get_Email_Message_Res_Model;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_email_pkg.get_email_temp_model.Get_Email_ReS_Model;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_email_pkg.get_email_temp_model.InvoiceEmaliTemplate;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_email_pkg.send_email_temp_model.Send_Email_ReS_Model;
@@ -30,7 +32,9 @@ import com.eot_app.utility.language_support.LanguageController;
 import com.google.android.material.textfield.TextInputLayout;
 import com.hypertrack.hyperlog.HyperLog;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.Callable;
 
@@ -41,7 +45,7 @@ public class Invoice_Email_Activity extends AppCompatActivity implements View.On
     private EditText edt_email_to, edt_email_cc, edt_email_subject/*, edt_email_message*/;
     Button btn_send_email;
     private Invoice_Email_pi invoice_email_pi;
-    private String invId, quotId, appId, jobId;
+    private String invId, quotId, appId, jobId ;
     TextInputLayout input_layout_email_to, input_layout_email_cc, input_layout_email_subject, input_layout_email_message;
     private Get_Email_ReS_Model email_reS_model;
     private String isProformaInv = "0";
@@ -50,6 +54,8 @@ public class Invoice_Email_Activity extends AppCompatActivity implements View.On
     ArrayList<InvoiceEmaliTemplate> templateList = new ArrayList<>();
     private RelativeLayout rl;
     private Object stripLink;
+    List<JobCardAttachmentModel> reqAttachmentList;
+    ArrayList<String> quoteAttachmentArray = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +63,7 @@ public class Invoice_Email_Activity extends AppCompatActivity implements View.On
         setContentView(R.layout.activity_invoice_email);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.email_invoice));
-        invoice_email_pi = new Invoice_Email_pc(this);
+        invoice_email_pi = new Invoice_Email_pc(this, this);
         findViews();
         Bundle bundle = getIntent().getExtras();
         if (getIntent().hasExtra("invId")) {
@@ -98,14 +104,14 @@ public class Invoice_Email_Activity extends AppCompatActivity implements View.On
         } else if (quotId != null) {
             setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.email_quotes));
             invoice_email_pi.getQuotesInvoicetemplateList();
-            invoice_email_pi.getQuotationEmailTemplate(quotId);
+            invoice_email_pi.getQuotationEmailTemplate(quotId,false);
         } else if (appId != null) {
             setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.email_document));
             invoice_email_pi.getJobDocEmailTemplate(appId);
         } else if (jobId != null) {
             setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.email_job_card));
             invoice_email_pi.getJobCardetemplateList();
-            invoice_email_pi.getJobCardEmailTemplate(jobId,tempId);
+            invoice_email_pi.getJobCardEmailTemplate(jobId,tempId,"");
         }
     }
 
@@ -117,7 +123,7 @@ public class Invoice_Email_Activity extends AppCompatActivity implements View.On
 
         // if user is not coming from dialog of template selection
         if(tempId==null||tempId.isEmpty())
-        rl.setVisibility(View.VISIBLE);
+            rl.setVisibility(View.VISIBLE);
 
         if (templateList != null && templateList.size() > 0) {
             for (InvoiceEmaliTemplate model : templateList) {
@@ -141,6 +147,11 @@ public class Invoice_Email_Activity extends AppCompatActivity implements View.On
 
             }
         });
+    }
+
+    @Override
+    public void setChatDataList(Get_Email_Message_Res_Model chatDataList) {
+
     }
 
     private void findViews() {
@@ -203,7 +214,7 @@ public class Invoice_Email_Activity extends AppCompatActivity implements View.On
                             emailSubject,
                             emailTo,
                             emailCc,
-                            isProformaInv, tempId,stripLink);
+                            isProformaInv, tempId,stripLink,reqAttachmentList);
                 }
                 break;
         }
@@ -315,7 +326,7 @@ public class Invoice_Email_Activity extends AppCompatActivity implements View.On
                                 messageInHtml,
                                 emailSubject,
                                 emailTo,
-                                emailCc, isProformaInv, tempId,stripLink);
+                                emailCc, isProformaInv, tempId,stripLink,reqAttachmentList);
                     } else if (quotId != null) {
                         invoice_email_pi.sendQuotationEmailTemplate(quotId,
                                 messageInHtml,
@@ -324,7 +335,7 @@ public class Invoice_Email_Activity extends AppCompatActivity implements View.On
                                 emailCc,
                                 "",
                                 email_reS_model.getFrom(),
-                                email_reS_model.getFromnm(), tempId);
+                                email_reS_model.getFromnm(), tempId, quoteAttachmentArray);
                     } else if (appId != null) {
                         invoice_email_pi.sendJObDocEmailTemplate(appId,
                                 getIntent().getStringExtra("pdfPath"),
@@ -342,7 +353,7 @@ public class Invoice_Email_Activity extends AppCompatActivity implements View.On
                                 messageInHtml,
                                 emailSubject,
                                 emailTo,
-                                emailCc,tempId,getIntent().getStringExtra("fwid"));
+                                emailCc,tempId,getIntent().getStringExtra("fwid"),reqAttachmentList);
                     }
                 }
                 break;

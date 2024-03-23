@@ -70,6 +70,7 @@ public class ContactData implements Parcelable {
     private String notes;
     private String extraField1;
     private String extraField2;
+    private String altEmail;
 
     public String getIsactive() {
         return isactive;
@@ -147,6 +148,7 @@ public class ContactData implements Parcelable {
         notes = in.readString();
         extraField1 = in.readString();
         extraField2 = in.readString();
+        altEmail = in.readString();
     }
 
     @Override
@@ -172,7 +174,7 @@ public class ContactData implements Parcelable {
         dest.writeString(notes);
         dest.writeString(extraField1);
         dest.writeString(extraField2);
-
+        dest.writeString(altEmail);
     }
 
     @Override
@@ -293,5 +295,11 @@ public class ContactData implements Parcelable {
         this.def = def;
     }
 
+    public String getAltEmail() {
+        return altEmail;
+    }
 
+    public void setAltEmail(String altEmail) {
+        this.altEmail = altEmail;
+    }
 }

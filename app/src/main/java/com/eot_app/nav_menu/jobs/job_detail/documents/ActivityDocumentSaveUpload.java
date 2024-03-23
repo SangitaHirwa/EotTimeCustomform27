@@ -280,8 +280,9 @@ public class ActivityDocumentSaveUpload extends AppCompatActivity implements Vie
     }
 
     private String saveBitMap(View drawView) {
-
-        File pictureFileDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+/**Change path for save img locally*/
+//        File pictureFileDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File pictureFileDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "Eot Directory");
 
         String filename = pictureFileDir.getPath() + File.separator + System.currentTimeMillis() + ".jpg";
         File pictureFile = new File(filename);

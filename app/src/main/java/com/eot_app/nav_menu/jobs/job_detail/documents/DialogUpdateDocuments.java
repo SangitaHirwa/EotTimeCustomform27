@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,7 +26,7 @@ import androidx.appcompat.widget.AppCompatTextView;
 import androidx.fragment.app.DialogFragment;
 import com.bumptech.glide.Glide;
 import com.eot_app.R;
-import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.GetFileList_Res;
+import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.Attachments;
 import com.eot_app.nav_menu.jobs.job_detail.documents.fileattach_mvp.Doc_Attch_Pc;
 import com.eot_app.nav_menu.jobs.job_detail.documents.fileattach_mvp.Doc_Attch_Pi;
 import com.eot_app.nav_menu.jobs.job_detail.documents.fileattach_mvp.Doc_Attch_View;
@@ -36,17 +35,17 @@ import com.eot_app.utility.AppUtility;
 import com.eot_app.utility.App_preference;
 import com.eot_app.utility.EotApp;
 import com.eot_app.utility.language_support.LanguageController;
+
 import java.util.ArrayList;
-import java.util.Objects;
 import java.util.concurrent.Callable;
 
 public class DialogUpdateDocuments extends DialogFragment implements View.OnClickListener, Doc_Attch_View {
 
     AppCompatImageView img_doc;
     AppCompatTextView tv_doc_name;
-    AppCompatTextView tv_label_desc;
-    AppCompatTextView tv_label_optional;
-    AppCompatEditText ed_doc_desc;
+    AppCompatTextView tv_label_desc, tv_label_rename;
+    AppCompatTextView tv_label_optional, tv_label_rename_optional;
+    AppCompatEditText ed_doc_desc, et_doc_rename;
     AppCompatButton btn_submit;
     Doc_Attch_Pi doc_attch_pi;
     OnDocumentUpdate onDocumentUpdate;
@@ -63,6 +62,8 @@ public class DialogUpdateDocuments extends DialogFragment implements View.OnClic
     private boolean isClickDisabled=false;
     LinearLayout llBottom;
     Bitmap bitmap;
+    String[] splitTxt;
+    String  queId, jtId;
 
     public void setIsFileImage(boolean b) {
         this.isFileImage = b;
@@ -75,7 +76,7 @@ public class DialogUpdateDocuments extends DialogFragment implements View.OnClic
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setStyle(DialogFragment.STYLE_NORMAL, R.style.Theme_AppCompat_Light_Dialog_Alert);
+        setStyle(DialogFragment.STYLE_NORMAL, androidx.appcompat.R.style.Theme_AppCompat_Light_Dialog_Alert);
 
     }
 
@@ -84,13 +85,15 @@ public class DialogUpdateDocuments extends DialogFragment implements View.OnClic
         isFromClientHistory = fromClientHistory;
     }
 
-    public void setImgPath(String docId, String imgPath, String fileName, String desc, String type, String jobId) {
+    public void setImgPath(String docId, String imgPath, String fileName, String desc, String type, String jobId,String queId, String jtId) {
         this.docId = docId;
         this.imgPath = imgPath;
         this.fileName = fileName;
         this.desc = desc;
         this.type = type;
         this.jobId = jobId;
+        this.queId = queId;
+        this.jtId = jtId;
     }
     public void setImgPath(String docId, String imgPath, String fileName, String desc, String type, String jobId,boolean isClickDisabled) {
         this.docId = docId;
@@ -121,6 +124,9 @@ public class DialogUpdateDocuments extends DialogFragment implements View.OnClic
         tv_label_desc = view.findViewById(R.id.tv_label_des);
         tv_label_optional = view.findViewById(R.id.tv_label_optional);
         ed_doc_desc = view.findViewById(R.id.et_doc_desc);
+        tv_label_rename = view.findViewById(R.id.tv_label_rename);
+        tv_label_rename_optional = view.findViewById(R.id.tv_label_rename_optional);
+        et_doc_rename = view.findViewById(R.id.et_doc_rename);
 
         btn_submit = view.findViewById(R.id.button_submit);
         btn_submit.setOnClickListener(this);
@@ -164,15 +170,19 @@ public class DialogUpdateDocuments extends DialogFragment implements View.OnClic
         btn_submit.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.update_btn));
         tv_label_desc.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.doc_des_op));
         tv_label_optional.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.optional));
+        tv_label_rename.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.rename));
+        tv_label_rename_optional.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.optional));
 
 
         if (desc != null)
             ed_doc_desc.setText(desc);
-        if (fileName != null)
+        if (fileName != null) {
             tv_doc_name.setText(fileName);
+            et_doc_rename.setText(fileName);
+        }
         if (isFileImage && imgPath != null)
         {
-            Glide.with(Objects.requireNonNull(getActivity()))
+            Glide.with(requireActivity())
                 .load(App_preference.getSharedprefInstance().getBaseURL() + imgPath)
                 .thumbnail(Glide.with(getActivity()).load(R.raw.loader_eot))
                 .placeholder(R.drawable.picture)
@@ -227,15 +237,17 @@ public class DialogUpdateDocuments extends DialogFragment implements View.OnClic
     private void uploadDocuments(String isAddAttachAsCompletionNote) {
         if (docId != null) {
             AppUtility.hideSoftKeyboard(getActivity());
-            String updateDesc = "";
+            String updateDesc = "", updateName = "";
             if (!TextUtils.isEmpty(ed_doc_desc.getText().toString()))
                 updateDesc = ed_doc_desc.getText().toString();
-
-            if (desc.contentEquals(updateDesc)) {
+            if (!TextUtils.isEmpty(et_doc_rename.getText().toString()))
+                updateName = et_doc_rename.getText().toString();
+            if (desc.contentEquals(updateDesc) && fileName.contentEquals(updateName)) {
                 dismiss();
             } else {
                 AppUtility.progressBarShow(getActivity());
-                doc_attch_pi.updateDocuments(docId, updateDesc, isAddAttachAsCompletionNote, jobId);
+               splitTxt = updateName.split("\\.");
+                doc_attch_pi.updateDocuments(docId, updateDesc, splitTxt[0],isAddAttachAsCompletionNote, jobId, queId, jtId);
             }
         }
 
@@ -266,7 +278,7 @@ public class DialogUpdateDocuments extends DialogFragment implements View.OnClic
     @Override
     public void onDocumentUpdate(String msg, boolean isSuccess) {
         if (isSuccess && onDocumentUpdate != null) {
-            onDocumentUpdate.onUpdateDes(ed_doc_desc.getText().toString());
+            onDocumentUpdate.onUpdateDes(ed_doc_desc.getText().toString(),splitTxt[0],queId, jtId);
             dismiss();
 
         } else if (msg != null)
@@ -279,17 +291,33 @@ public class DialogUpdateDocuments extends DialogFragment implements View.OnClic
     }
 
     @Override
-    public void selectFile() {
+    public void showProgressBar() {
+
+    }
+
+
+    @Override
+    public void selectFiles() {
 
     }
 
     @Override
-    public void setList(ArrayList<GetFileList_Res> getFileList_res, String isAttch) {
+    public void selectFilesForCompletion(boolean isCompletion) {
 
     }
 
     @Override
-    public void addNewItemToAttachmentList(ArrayList<GetFileList_Res> getFileList_res, String isAttachCompletionNotes) {
+    public void setList(ArrayList<Attachments> getFileList_res, String isAttch, boolean firstCall, boolean isOnline) {
+
+    }
+
+    @Override
+    public void setMultiList(ArrayList<Attachments> getFileList_res, String isAttachCompletionNotes, boolean firstCall, int parentPositon, int position, String queId, String jtId) {
+
+    }
+
+    @Override
+    public void addNewItemToAttachmentList(ArrayList<Attachments> getFileList_res, String isAttachCompletionNotes) {
 
     }
 
@@ -330,6 +358,6 @@ public class DialogUpdateDocuments extends DialogFragment implements View.OnClic
     }
 
     public interface OnDocumentUpdate {
-        void onUpdateDes(String desc);
+        void onUpdateDes(String desc,String name,String queId, String jtId);
     }
 }

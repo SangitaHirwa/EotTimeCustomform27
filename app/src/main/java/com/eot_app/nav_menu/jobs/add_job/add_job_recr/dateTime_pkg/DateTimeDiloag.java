@@ -9,6 +9,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
+import com.eot_app.utility.AppConstant;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -50,7 +52,7 @@ public class DateTimeDiloag extends DialogFragment implements DatePickerDialog.O
             DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
 
             Date startDate = formatter.parse(dayOfMonth + "-" + (month + 1) + "-" + year);
-            currentDateString = new SimpleDateFormat("dd-MMM-yyyy", Locale.getDefault()).format(startDate);
+            currentDateString = new SimpleDateFormat(AppConstant.DATE_FORMAT, Locale.getDefault()).format(startDate);
         } catch (ParseException e) {
             e.printStackTrace();
         }

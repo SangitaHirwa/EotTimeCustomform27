@@ -5,6 +5,9 @@ import com.eot_app.nav_menu.audit.audit_list.equipment.model.EquipmentStatus;
 import com.eot_app.utility.language_support.Language_Model;
 import com.eot_app.utility.language_support.Language_Settings;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -72,6 +75,64 @@ public class MobileDefaultSettings {
     private String isAddJobRecurEnable="1";
     private String isAutoTimeZone="0";
     private String loginUsrTz;
+    private String taxShowType;
+    private String isJobCompCustSignEnable ;
+    private int isCustomField;
+    private String AdminIdsWithFBasePerm;
+    private String isHideContactOnDispatch;
+
+    public String getIsCompleShowMarkDone() {
+        return isCompleShowMarkDone;
+    }
+
+    public void setIsCompleShowMarkDone(String isCompleShowMarkDone) {
+        this.isCompleShowMarkDone = isCompleShowMarkDone;
+    }
+
+    public CompleMoFldVisiblty getCompleMoFldVisiblty() {
+        return compleMoFldVisiblty;
+    }
+
+    public void setCompleMoFldVisiblty(CompleMoFldVisiblty compleMoFldVisiblty) {
+        this.compleMoFldVisiblty = compleMoFldVisiblty;
+    }
+
+    private String isCompleShowMarkDone;
+    private CompleMoFldVisiblty compleMoFldVisiblty;
+
+
+    public String getIsHideContactOnDispatch() {
+        return isHideContactOnDispatch;
+    }
+
+    public void setIsHideContactOnDispatch(String isHideContactOnDispatch) {
+        this.isHideContactOnDispatch = isHideContactOnDispatch;
+    }
+
+    public String getAdminIdsWithFBasePerm() {
+        return AdminIdsWithFBasePerm;
+    }
+
+    public void setAdminIdsWithFBasePerm(String adminIdsWithFBasePerm) throws JSONException {
+              AdminIdsWithFBasePerm = adminIdsWithFBasePerm;
+    }
+
+    public String getIsJobCompCustSignEnable() {
+        return isJobCompCustSignEnable;
+    }
+
+    public void setIsJobCompCustSignEnable(String isJobCompCustSignEnable) {
+        this.isJobCompCustSignEnable = isJobCompCustSignEnable;
+    }
+
+    public String getTaxShowType() {
+        return taxShowType;
+    }
+
+    public void setTaxShowType(String taxShowType) {
+        this.taxShowType = taxShowType;
+    }
+
 
     public String getIsAutoTimeZone() {
         return isAutoTimeZone;
@@ -428,5 +489,9 @@ public class MobileDefaultSettings {
 
     public void setIscheckInOutAttachment(String ischeckInOutAttachment) {
         this.ischeckInOutAttachment = ischeckInOutAttachment;
+    }
+
+    public int getIsCustomField() {
+        return isCustomField;
     }
 }

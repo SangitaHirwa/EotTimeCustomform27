@@ -13,5 +13,5 @@ public interface ScanBarcode_PI {
 
     void syncEquipments();
 
-    void equipmentbarcode(String barcode);
+    void equipmentbarcode(String barcode, boolean isScannerValue);
 }

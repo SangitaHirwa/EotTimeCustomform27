@@ -10,7 +10,7 @@ public class Update_Quote_ReQ {//var iqmmId: String?
 //    var isInvOrNoninv: String?
 
 
-     String invId;
+    /* String invId;*/
      String type;
      String rate;
      String qty;
@@ -30,11 +30,12 @@ public class Update_Quote_ReQ {//var iqmmId: String?
      String inm;
 // String isInvOrNoninv,
 
-    public Update_Quote_ReQ(String iqmmId, String invId, String type, String rate, String qty, String unit,
+/*Remove invId variable after discuss with Rani Yadav for 2.92 release on 26 Dec 2023*/
+    public Update_Quote_ReQ(String iqmmId, /*String invId,*/ String type, String rate, String qty, String unit,
                             String discount, String des, String totalAmount, List<Tax> taxData,
                             String supplierCost, String pno, String taxamnt, String jtId, String itemId, String inm) {
         this.iqmmId = iqmmId;
-        this.invId = invId;
+    /*    this.invId = invId;*/
         this.type = type;
         this.rate = rate;
         this.qty = qty;

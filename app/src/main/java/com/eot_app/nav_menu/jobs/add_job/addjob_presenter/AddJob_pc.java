@@ -3,6 +3,9 @@ package com.eot_app.nav_menu.jobs.add_job.addjob_presenter;
 import android.app.Activity;
 import android.text.TextUtils;
 import android.util.Log;
+
+import androidx.annotation.NonNull;
+
 import com.eot_app.activitylog.ActivityLogController;
 import com.eot_app.activitylog.LogModel;
 import com.eot_app.nav_menu.client.client_db.Client;
@@ -145,8 +148,8 @@ public class AddJob_pc implements Add_job_pi {
 
     @Override
     public void getCurrentdateTime(String calenderDate) {
-        String dateTime = AppUtility.getDateByFormats(AppUtility.dateTimeByAmPmFormate("dd-MM-yyyy hh:mm:ss a"
-                , "dd-MM-yyyy HH:mm:ss"));
+        String dateTime = AppUtility.getDateByFormats(AppUtility.dateTimeByAmPmFormate(AppConstant.DATE_FORMAT+" hh:mm:ss a"
+                , AppConstant.DATE_FORMAT+" HH:mm:ss"));
         String[] date_Time = dateTime.split(" ");
         String datestr = date_Time[0];
 
@@ -180,7 +183,7 @@ public class AddJob_pc implements Add_job_pi {
         }
     }
 
-    private void sch_time_cur(String datestr, String date_Time, String sch_tm_dt) {
+    private void sch_time_cur(String datestr, @NonNull String date_Time, String sch_tm_dt) {
         String an_pm = "";
         try {
             String[] remv_sec = date_Time.split(":");
@@ -194,7 +197,18 @@ public class AddJob_pc implements Add_job_pi {
             } catch (Exception e) {
                 e.getMessage();
             }
+            if(datestr!=null && !datestr.isEmpty()){
+                try {
+                    SimpleDateFormat spf = new SimpleDateFormat("dd-MM-yyyy");
+                    Date date = spf.parse(datestr);
+                    spf= new SimpleDateFormat(AppConstant.DATE_FORMAT);
+                    datestr = spf.format(date);
+                    System.out.println(datestr);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
 
+            }
             //  String[] am_pm = date_Time.split(" ");
             String cur_start = remv_sec[0] + ":" + remv_sec[1] + an_pm;
             String date_time = datestr + " " + cur_start;
@@ -204,7 +218,7 @@ public class AddJob_pc implements Add_job_pi {
                     TimeUnit.MINUTES.toSeconds(Integer.parseInt(time_dur[1])));
 
             SimpleDateFormat simpleDate = new SimpleDateFormat(
-                    AppUtility.dateTimeByAmPmFormate("dd-MM-yyyy hh:mm a", "dd-MM-yyyy HH:mm"), Locale.US);
+                    AppUtility.dateTimeByAmPmFormate(AppConstant.DATE_FORMAT+" hh:mm a", AppConstant.DATE_FORMAT+" HH:mm"), Locale.US);
             Date past = null;
             long milisce = 0;
             try {
@@ -255,7 +269,7 @@ public class AddJob_pc implements Add_job_pi {
     private void end_Date_Time() {
         String date_time = date_str + " " + time_str;
         SimpleDateFormat simpleDate = new SimpleDateFormat(
-                AppUtility.dateTimeByAmPmFormate("dd-MM-yyyy hh:mm a", "dd-MM-yyyy HH:mm"), Locale.US);
+                AppUtility.dateTimeByAmPmFormate(AppConstant.DATE_FORMAT+" hh:mm a", AppConstant.DATE_FORMAT+" HH:mm"), Locale.US);
         Date past = null;
         long milisce = 0;
         try {
@@ -463,15 +477,21 @@ public class AddJob_pc implements Add_job_pi {
     }
 
     private String getTimeStampFromFormatedDate(String schdlStart) {
-        SimpleDateFormat gettingfmt = new SimpleDateFormat(
-                //AppUtility.dateTimeByAmPmFormate
-                ("dd-MM-yyyy hh:mm a"
-                        //                , "dd-MM-yyyy kk:mm"
-                )
-                , Locale.US);
+//        SimpleDateFormat gettingfmt = new SimpleDateFormat(
+//                //AppUtility.dateTimeByAmPmFormate
+//                ("dd-MM-yyyy hh:mm a"
+//                        //                , "dd-MM-yyyy kk:mm"
+//                )
+//                , Locale.US);
         try {
-            Date formated = gettingfmt.parse(schdlStart);
-            return String.valueOf(formated.getTime() / 1000);
+            SimpleDateFormat dateFormat =new SimpleDateFormat("dd-MMM-yyyy HH:mm");
+            Date date = dateFormat.parse(schdlStart);
+            SimpleDateFormat dateFormat1 = new SimpleDateFormat("dd-MM-yyyy hh:mm a",Locale.US);
+             String dateformat = dateFormat1.format(date);
+            Date date1 = new SimpleDateFormat("dd-MM-yyyy hh:mm a",Locale.US).parse(dateformat);
+            return String.valueOf(date1.getTime()/1000);
+//            Date formated = gettingfmt.parse(schdlStart);
+//            return String.valueOf(formated.getTime() / 1000);
         } catch (ParseException e) {
             e.printStackTrace();
         }

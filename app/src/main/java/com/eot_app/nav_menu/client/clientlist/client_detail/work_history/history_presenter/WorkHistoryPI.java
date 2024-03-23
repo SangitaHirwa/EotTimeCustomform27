@@ -20,5 +20,5 @@ public interface WorkHistoryPI {
 
     void loadMoreItem(ClientWorkHistoryList.FragmentTypes types, String cltId);
 
-
+    void getHistoryList(String jobId);
 }

@@ -4,11 +4,13 @@ public class DocUpdateRequest {
     String jaId;
     String des;
     private String isAddAttachAsCompletionNote;
+    String docNm;
 
-    public DocUpdateRequest(String jaId, String des,String isAddAttachAsCompletionNote) {
+    public DocUpdateRequest(String jaId, String des, String rename,String isAddAttachAsCompletionNote) {
         this.jaId = jaId;
         this.des = des;
         this.isAddAttachAsCompletionNote=isAddAttachAsCompletionNote;
+        this.docNm = rename;
     }
     public DocUpdateRequest(String jaId, String des) {
         this.jaId = jaId;

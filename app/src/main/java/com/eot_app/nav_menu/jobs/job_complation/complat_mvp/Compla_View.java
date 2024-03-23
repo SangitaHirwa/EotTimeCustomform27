@@ -6,7 +6,7 @@ package com.eot_app.nav_menu.jobs.job_complation.complat_mvp;
 public interface Compla_View {
     void updateDetailJob(String note);
 
-    void uploadDocDelete(String msg);
+    void uploadDocDelete(String msg, String queId, String jtId);
 
     void sessionexpire(String msg);
 }

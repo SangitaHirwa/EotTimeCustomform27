@@ -1,5 +1,6 @@
 package com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_email_pkg;
 
+import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_email_pkg.get_email_temp_model.Get_Email_Message_Res_Model;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_email_pkg.get_email_temp_model.Get_Email_ReS_Model;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_email_pkg.get_email_temp_model.InvoiceEmaliTemplate;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_email_pkg.send_email_temp_model.Send_Email_ReS_Model;
@@ -17,4 +18,5 @@ public interface Invoice_Email_View {
     void setSessionExpire(String msg);
 
     void setInvoiceTmpList(ArrayList<InvoiceEmaliTemplate> templateList);
+    void setChatDataList(Get_Email_Message_Res_Model chatDataList);
 }

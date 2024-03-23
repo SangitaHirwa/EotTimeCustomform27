@@ -21,6 +21,9 @@ public interface invebtry_ItemDao {
     @Query("select * from Inventry_ReS_Model order by inm ASC ")
     List<Inventry_ReS_Model> getInventryItemList();
 
+    @Query("select * from Inventry_ReS_Model where inm = :itemName")
+    boolean getInventryItemName(String itemName);
+
 
     @Query("delete from Inventry_ReS_Model")
     void delete();

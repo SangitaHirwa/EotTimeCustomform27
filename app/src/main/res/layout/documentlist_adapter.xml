@@ -40,11 +40,12 @@
             <ImageView
                 android:visibility="gone"
                 android:id="@+id/image_loader"
-                android:layout_width="match_parent"
+                android:layout_width="25dp"
                 android:adjustViewBounds="false"
-                android:layout_centerInParent="true"
+                android:layout_alignTop="@id/image_thumb_nail"
+                android:layout_alignEnd="@id/image_thumb_nail"
                 android:background="@android:color/transparent"
-                android:layout_height="match_parent"
+                android:layout_height="25dp"
                 tools:ignore="ContentDescription" />
             <TextView
                 android:id="@+id/tv_file_name"

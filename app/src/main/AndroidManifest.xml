@@ -16,6 +16,10 @@
         android:usesCleartextTraffic="true"
         tools:replace="android:allowBackup">
         <activity
+            android:name=".nav_menu.jobs.job_card_view.JobCardViewActivity"
+            android:exported="false"
+            />
+        <activity
             android:name=".nav_menu.addlead.AddLeadFragment"
             android:exported="false"
             tools:ignore="Instantiatable" />
@@ -190,6 +194,7 @@
             android:name=".nav_menu.jobs.job_complation.JobCompletionActivity"
             android:parentActivityName=".nav_menu.jobs.job_detail.JobDetailActivity"
             android:exported="false"
+            android:screenOrientation="portrait"
             />
         <activity
             android:name=".nav_menu.jobs.job_detail.reschedule.RescheduleActivity"
@@ -390,7 +395,15 @@
             android:screenOrientation="portrait"
             android:exported="false"
             android:windowSoftInputMode="stateHidden|adjustResize" />
-
+        <activity android:name=".home_screens.ProminentScreen"
+            android:screenOrientation="portrait"
+            android:exported="false"/>
+        <activity android:name=".nav_menu.jobs.job_detail.requested_item.AddUpdateRquestedItemActivity"
+            android:screenOrientation="portrait"
+            android:exported="false"/>
+        <activity android:name=".nav_menu.jobs.job_detail.job_equipment.job_equ_remrk.JobEquLinkItemActivity"
+            android:screenOrientation="portrait"
+            android:exported="false"/>
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" /> <!-- android:enabled="true" -->
@@ -402,7 +415,7 @@
         <!-- TODO changed with new  Key   -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyBTZDC_PrAX3xPPfqNtAr1dNrhLW0UEviE" />
+            android:value="${MAPS_API_KEY}" />
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.eot_app.provider"
@@ -468,8 +481,18 @@ Required only when requesting background location access on
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="com.google.android.gms.permission.ACTIVITY_RECOGNITION" />
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
 
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+<!--    sdk33-->
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
+    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
+    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+    <!--For remove inbuilt Advertising Id permission from dependencies -->
+    <uses-permission android:name="com.google.android.gms.permission.AD_ID"
+        tools:node="remove"/>
+    <uses-permission android:name="android.permission.READ_SETTINGS" />
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE"/>
 
 </manifest>

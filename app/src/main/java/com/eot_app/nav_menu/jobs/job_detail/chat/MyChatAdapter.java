@@ -21,6 +21,7 @@ import com.bumptech.glide.request.target.Target;
 import com.eot_app.R;
 import com.eot_app.nav_menu.jobs.job_detail.chat.fb_mvp.Chat_View;
 import com.eot_app.nav_menu.jobs.job_detail.chat.fire_Base_Model.Chat_Send_Msg_Model;
+import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.AppUtility;
 import com.eot_app.utility.App_preference;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
@@ -41,7 +42,7 @@ public class MyChatAdapter extends FirestoreRecyclerAdapter<Chat_Send_Msg_Model,
 
     @Override
     protected void onBindViewHolder(final MyViewHolder holder, int position, final Chat_Send_Msg_Model model) {
-        String timeFormate = AppUtility.dateTimeByAmPmFormate("dd/MMM/yyyy hh:mm a", "dd/MMM/yyyy HH:mm");
+        String timeFormate = AppUtility.dateTimeByAmPmFormate(AppConstant.DATE_FORMAT+" hh:mm a", AppConstant.DATE_FORMAT+" HH:mm");
 
         String today_date = AppUtility.getDateByFormat(timeFormate);
         String[] today_Date = today_date.split(" ");

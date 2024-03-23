@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -26,11 +27,14 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.eot_app.R;
 import com.eot_app.login_next.FooterMenu;
 import com.eot_app.nav_menu.client.clientlist.client_detail.site.sitelist.editsite.editsitedb.SpinnerCountrySite;
+import com.eot_app.nav_menu.jobs.job_card_view.JobCardViewActivity;
 import com.eot_app.nav_menu.jobs.job_detail.detail.DialogJobCardDocuments;
 import com.eot_app.nav_menu.jobs.job_detail.generate_invoice.invoice_adpter_pkg.Sipping_Adpter;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_detail_pkg.inv_detail_model.ShippingItem;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_email_pkg.Invoice_Email_Activity;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_email_pkg.get_email_temp_model.InvoiceEmaliTemplate;
+import com.eot_app.nav_menu.jobs.job_detail.invoice2list.adapter.InvoiceTaxAdapter;
+import com.eot_app.nav_menu.jobs.job_detail.invoice2list.itemlist_model.TaxData;
 import com.eot_app.nav_menu.quote.add_quotes_pkg.AddQuotes_Activity;
 import com.eot_app.nav_menu.quote.quote_invoice_pkg.quote_model_pkg.Quote_ItemData;
 import com.eot_app.nav_menu.quote.quote_invoice_pkg.quote_model_pkg.Quote_invoice_Details_Res;
@@ -45,6 +49,7 @@ import com.eot_app.utility.App_preference;
 import com.eot_app.utility.EotApp;
 import com.eot_app.utility.language_support.LanguageController;
 import com.eot_app.utility.util_interfaces.Callback_AlertDialog;
+import com.eot_app.utility.util_interfaces.GetListData;
 import com.eot_app.utility.util_interfaces.MyListItemSelected;
 import com.eot_app.utility.util_interfaces.MyListItemSelectedLisT;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -54,7 +59,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-public class Quote_Invoice_Details_Activity extends AppCompatActivity implements Quo_Invo_View, View.OnClickListener, MyListItemSelected<Quote_ItemData>, MyListItemSelectedLisT<String> {
+public class Quote_Invoice_Details_Activity extends AppCompatActivity implements Quo_Invo_View, View.OnClickListener, MyListItemSelected<Quote_ItemData>, MyListItemSelectedLisT<String>, GetListData {
 
     private final static int ADD_ITEM_DATA = 1;
     static public String quotId;
@@ -79,6 +84,13 @@ public class Quote_Invoice_Details_Activity extends AppCompatActivity implements
     private QuotesDetails quotesDetails;
     private Sipping_Adpter sipping_adpter;
     DialogJobCardDocuments dialogJobCardDocuments;
+    private ConstraintLayout cl_parent_calculation;
+    private TextView txt_lbl_sub_total, txt_sub_total, txt_lbl_additional_discount, txt_additional_discount, txt_lbl_additional_discount1, txt_additional_discount1, txt_lbl_total, txt_total,txt_lbl_tax, txt_tax;
+
+    private RecyclerView rvShowTax;
+    private InvoiceTaxAdapter invoiceTaxAdapter;
+    private int listCount = 0;
+    private String toJsonTemplate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,7 +119,7 @@ public class Quote_Invoice_Details_Activity extends AppCompatActivity implements
         invoiceFab = findViewById(R.id.invoiceFab);
 
         linearFabEmail = findViewById(R.id.linearFabEmail);
-        linearFabPrintInvoice = findViewById(R.id.linearFabPrintInvoice);
+//        linearFabPrintInvoice = findViewById(R.id.linearFabPrintInvoice);
         linearFabAddNewItem = findViewById(R.id.linearFabAddNewItem);
         linearFabQuotesInJob = findViewById(R.id.linearFabQuotesInJob);
 
@@ -123,11 +135,11 @@ public class Quote_Invoice_Details_Activity extends AppCompatActivity implements
         quote_due_dt = findViewById(R.id.quote_due_dt);
 
         tv_fab_email = findViewById(R.id.tv_fab_email);
-        tv_fab_email.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.email_quote));
+        tv_fab_email.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.preview_and_send_quote));
         tv_fab_add_new_item = findViewById(R.id.tv_fab_add_new_item);
         tv_fab_add_new_item.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_new_item));
-        tv_fab_print_invoice = findViewById(R.id.tv_fab_print_invoice);
-        tv_fab_print_invoice.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.print_quote));
+//        tv_fab_print_invoice = findViewById(R.id.tv_fab_print_invoice);
+//        tv_fab_print_invoice.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.print_quote));
         tv_fab_QuotesToJob = findViewById(R.id.tv_fab_QuotesToJob);
         tv_fab_QuotesToJob.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.quote_to_job));
 
@@ -137,6 +149,23 @@ public class Quote_Invoice_Details_Activity extends AppCompatActivity implements
         tv_due_date = findViewById(R.id.tv_due_date);
         tv_due_date.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.quotes_end_date));
 
+        cl_parent_calculation = findViewById(R.id.cl_parent_calculation);
+        txt_lbl_sub_total = findViewById(R.id.txt_lbl_sub_total);
+        txt_lbl_sub_total.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.sub_total));
+        txt_sub_total = findViewById(R.id.txt_sub_total);
+        txt_lbl_additional_discount = findViewById(R.id.txt_lbl_additional_discount);
+        txt_lbl_additional_discount.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.additional_discount));
+        txt_additional_discount = findViewById(R.id.txt_additional_discount);
+        txt_lbl_additional_discount1 = findViewById(R.id.txt_lbl_additional_discount1);
+        txt_lbl_additional_discount1.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.additional_discount));
+        txt_additional_discount1 = findViewById(R.id.txt_additional_discount1);
+        txt_lbl_tax = findViewById(R.id.txt_lbl_tax);
+        txt_lbl_tax.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.extra_items_total));
+        txt_tax = findViewById(R.id.txt_tax);
+        txt_lbl_total = findViewById(R.id.txt_lbl_total);
+        txt_lbl_total.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.total_amount));
+        txt_total = findViewById(R.id.txt_total);
+        rvShowTax = findViewById(R.id.rv_tax);
         /**this view for shpping item**/
         recyclerView_shippingitem = findViewById(R.id.recyclerView_shippingitem);
 
@@ -160,7 +189,7 @@ public class Quote_Invoice_Details_Activity extends AppCompatActivity implements
         layoutManager = new LinearLayoutManager(this);
         recyclerView_shippingitem.setLayoutManager(layoutManager);
         List<ShippingItem> shippingItemList = new ArrayList<>();
-        sipping_adpter = new Sipping_Adpter(shippingItemList);
+        sipping_adpter = new Sipping_Adpter(this,shippingItemList);
         recyclerView_shippingitem.setAdapter(sipping_adpter);
 
 
@@ -170,7 +199,7 @@ public class Quote_Invoice_Details_Activity extends AppCompatActivity implements
 
         invoiceFab.setOnClickListener(this);
         linearFabEmail.setOnClickListener(this);
-        linearFabPrintInvoice.setOnClickListener(this);
+//        linearFabPrintInvoice.setOnClickListener(this);
         linearFabAddNewItem.setOnClickListener(this);
         linearFabQuotesInJob.setOnClickListener(this);
 
@@ -184,7 +213,10 @@ public class Quote_Invoice_Details_Activity extends AppCompatActivity implements
         quo_invo_pi.getQuotesInvoicetemplateList();
 
         swiperefresh.setOnRefreshListener(() -> quo_invo_pi.getQuotesInvoiceDetails(quotId));
-
+//Show tax
+        invoiceTaxAdapter = new InvoiceTaxAdapter(this,new ArrayList<TaxData>());
+        rvShowTax.setLayoutManager(new LinearLayoutManager(this));
+        rvShowTax.setAdapter(invoiceTaxAdapter);
     }
 
     @Override
@@ -241,12 +273,13 @@ public class Quote_Invoice_Details_Activity extends AppCompatActivity implements
                 }
 
                 if (!quotes_Details_Inv.getInvDate().equals(""))
-                    quote_cre_dt.setText(AppUtility.getDateWithFormate(Long.parseLong(quotes_Details_Inv.getInvDate()), "dd-MMM-yyyy"));
+                    quote_cre_dt.setText(AppUtility.getDateWithFormate(Long.parseLong(quotes_Details_Inv.getInvDate()), AppConstant.DATE_FORMAT));
                 if (!quotes_Details_Inv.getDuedate().equals(""))
-                    quote_due_dt.setText(AppUtility.getDateWithFormate(Long.parseLong(quotes_Details_Inv.getDuedate()), "dd-MMM-yyyy"));
+                    quote_due_dt.setText(AppUtility.getDateWithFormate(Long.parseLong(quotes_Details_Inv.getDuedate()), AppConstant.DATE_FORMAT));
                 quote_total_amount.setText(AppUtility.getRoundoff_amount(quotes_Details_Inv.getTotal()));
                 if (quotesDetails.getInvData() != null && quotesDetails.getInvData().getItemData() != null) {
-                    quotes_item_Adpter = new Quote_Details_Adpter(this, quotesDetails.getInvData().getItemData(), this, this, quotes_Details_Inv.getTaxCalculationType());
+                    quotes_item_Adpter = new Quote_Details_Adpter(this, quotesDetails.getInvData().getItemData(), this, this, quotes_Details_Inv.getTaxCalculationType(),quotes_Details_Inv.getDisCalculationType()
+                            ,quotes_Details_Inv.getIsAddisDiscBefore());
                     recyclerView_quote.setAdapter(quotes_item_Adpter);
                 }
 
@@ -285,8 +318,8 @@ public class Quote_Invoice_Details_Activity extends AppCompatActivity implements
 
     private void setTxtInsideView() {
         rm_quote_im.setEnabled(false);
-        int count = quotes_item_Adpter.getItemCount();
-        list_item_quote_count.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.list_item) + " (" + count + ")");
+        listCount = quotes_item_Adpter.getItemCount();
+        list_item_quote_count.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.list_item) + " (" + listCount + ")");
     }
 
 
@@ -300,6 +333,8 @@ public class Quote_Invoice_Details_Activity extends AppCompatActivity implements
         intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         intent.putExtra("quotesDetails", new Gson().toJson(quotesDetails));
         intent.putExtra("itemId", itemData.getItemId());
+        intent.putExtra("getTaxMethodType", quotes_Details_Inv.getIsAddisDiscBefore());
+        intent.putExtra("getSingleTaxId", SingleTaxId);
         startActivityForResult(intent, ADD_ITEM_DATA);
     }
 
@@ -327,7 +362,8 @@ public class Quote_Invoice_Details_Activity extends AppCompatActivity implements
     @Override
     public void setInvoiceDetails(Quote_invoice_Details_Res invoice_Details_data) {
         if (invoice_Details_data != null) {
-            quote_nm.setText(invoice_Details_data.getNm());
+            /*Remove nm variable after discuss with Rani Yadav for 2.92 release on 26 Dec 2023*/
+          /*  quote_nm.setText(invoice_Details_data.getNm());*/
             String clientAddress = "";
             if (!invoice_Details_data.getAdr().equals(""))
                 clientAddress = invoice_Details_data.getAdr() + "\n";
@@ -378,7 +414,7 @@ public class Quote_Invoice_Details_Activity extends AppCompatActivity implements
 
                 closeFABMenu();
                 break;
-
+              /*
             case R.id.linearFabEmail:
                 if (quotes_Details_Inv != null) {
                     Intent emailIntent = new Intent(this, Invoice_Email_Activity.class);
@@ -414,7 +450,49 @@ public class Quote_Invoice_Details_Activity extends AppCompatActivity implements
 
                     closeFABMenu();
                 }
+                break;*/
+                /**change in ui for preview and email**/
+
+            case R.id.linearFabEmail:
+                if(templateList!=null && !templateList.isEmpty()){
+                    toJsonTemplate = new Gson().toJson(templateList);
+                }
+                if (quotes_Details_Inv != null) {
+                    Intent emailIntent = new Intent(this, JobCardViewActivity.class);
+                    emailIntent.putExtra("quotId", quotId);
+                    emailIntent.putExtra("templateList",toJsonTemplate);
+                    emailIntent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+//                    emailIntent.putExtra("compId", invoice_Details.getCompId());
+                    startActivity(emailIntent);
+                }
+                closeFABMenu();
                 break;
+           /* case R.id.linearFabPrintInvoice:
+                if (templateList != null && !templateList.isEmpty()&& templateList.size()>1) {
+                    dialogJobCardDocuments = new DialogJobCardDocuments();
+                    dialogJobCardDocuments.setContext(this);
+                    dialogJobCardDocuments.setQuoteId(quotId);
+                    dialogJobCardDocuments.setquo_invo_pi(quo_invo_pi);
+                    dialogJobCardDocuments.setInvoiceTmpList(templateList);
+                    dialogJobCardDocuments.show(getSupportFragmentManager(), "dialog");
+                    closeFABMenu();
+                } else {
+                    String tempId="";
+                    if(templateList != null && !templateList.isEmpty() && templateList.size()==1){
+                        tempId=templateList.get(0).getInvTempId();
+                    }
+                    linearFabPrintInvoice.setClickable(false);
+                    quo_invo_pi.generateQuotPDF(quotId,tempId);
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            linearFabPrintInvoice.setClickable(true);
+                        }
+                    }, 500);
+
+                    closeFABMenu();
+                }
+                break;*/
             case R.id.rm_quote_im:
 
                 if (quotes_Details_Inv != null) {
@@ -446,7 +524,8 @@ public class Quote_Invoice_Details_Activity extends AppCompatActivity implements
         AppUtility.alertDialog2(this, "", LanguageController.getInstance().getMobileMsgByKey(AppConstant.invoice_remove), LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), LanguageController.getInstance().getMobileMsgByKey(AppConstant.cancel), new Callback_AlertDialog() {
             @Override
             public void onPossitiveCall() {
-                quo_invo_pi.removeQuotesItem(rm_DataItem, quotes_Details_Inv.getInvId());
+                /*Remove invId variable after discuss with Rani Yadav for 2.92 release on 26 Dec 2023*/
+                quo_invo_pi.removeQuotesItem(rm_DataItem/*, quotes_Details_Inv.getInvId()*/);
             }
 
             @Override
@@ -467,6 +546,8 @@ public class Quote_Invoice_Details_Activity extends AppCompatActivity implements
         Intent intent = new Intent(this, AddQutesItem_Activity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         intent.putExtra("AddQuotesItem", new Gson().toJson(quotesDetails));
+        intent.putExtra("getTaxMethodType", quotes_Details_Inv.getIsAddisDiscBefore());
+        intent.putExtra("getSingleTaxId", SingleTaxId);
         startActivity(intent);
     }
 
@@ -482,12 +563,12 @@ public class Quote_Invoice_Details_Activity extends AppCompatActivity implements
         backgroundView.setVisibility(View.VISIBLE);*/
         //chnages for overlap buttons
         linearFabQuotesInJob.setVisibility(View.VISIBLE);
-        linearFabQuotesInJob.animate().translationY(getResources().getDimension(R.dimen.standard_145));
+        linearFabQuotesInJob.animate().translationY(getResources().getDimension(R.dimen.standard_100));
         linearFabEmail.setVisibility(View.VISIBLE);
-        linearFabEmail.animate().translationY(getResources().getDimension(R.dimen.standard_100));
+        linearFabEmail.animate().translationY(getResources().getDimension(R.dimen.standard_55));
         // linearFabAddNewItem.setVisibility(View.VISIBLE);
-        linearFabPrintInvoice.setVisibility(View.VISIBLE);
-        linearFabPrintInvoice.animate().translationY(getResources().getDimension(R.dimen.standard_55));
+//        linearFabPrintInvoice.setVisibility(View.VISIBLE);
+//      linearFabPrintInvoice.animate().translationY(getResources().getDimension(R.dimen.standard_55));
         backgroundView.setVisibility(View.VISIBLE);
 
 
@@ -499,15 +580,15 @@ public class Quote_Invoice_Details_Activity extends AppCompatActivity implements
                             &&
                             App_preference.getSharedprefInstance().getLoginRes().getCompPermission().get(0).getIsItemEnable().equals("0")) {
                         linearFabAddNewItem.setVisibility(View.VISIBLE);
-                        linearFabQuotesInJob.animate().translationY(getResources().getDimension(R.dimen.standard_200));
-                        linearFabEmail.animate().translationY(getResources().getDimension(R.dimen.standard_145));
-                        linearFabPrintInvoice.animate().translationY(getResources().getDimension(R.dimen.standard_100));
+                        linearFabQuotesInJob.animate().translationY(getResources().getDimension(R.dimen.standard_145));
+                        linearFabEmail.animate().translationY(getResources().getDimension(R.dimen.standard_100));
+//                        linearFabPrintInvoice.animate().translationY(getResources().getDimension(R.dimen.standard_100));
                         linearFabAddNewItem.animate().translationY(getResources().getDimension(R.dimen.standard_55));
                     } else {
                         linearFabAddNewItem.setVisibility(View.GONE);
-                        linearFabQuotesInJob.animate().translationY(getResources().getDimension(R.dimen.standard_145));
-                        linearFabEmail.animate().translationY(getResources().getDimension(R.dimen.standard_100));
-                        linearFabPrintInvoice.animate().translationY(getResources().getDimension(R.dimen.standard_55));
+                        linearFabQuotesInJob.animate().translationY(getResources().getDimension(R.dimen.standard_100));
+                        linearFabEmail.animate().translationY(getResources().getDimension(R.dimen.standard_55));
+//                        linearFabPrintInvoice.animate().translationY(getResources().getDimension(R.dimen.standard_55));
                     }
                 }
         }
@@ -521,7 +602,7 @@ public class Quote_Invoice_Details_Activity extends AppCompatActivity implements
         linearFabEmail.animate().translationY(0);
         linearFabAddNewItem.animate().translationY(0);
 
-        linearFabPrintInvoice.animate().translationY(0).setListener(new Animator.AnimatorListener() {
+        linearFabEmail.animate().translationY(0).setListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animator) {
 
@@ -532,7 +613,7 @@ public class Quote_Invoice_Details_Activity extends AppCompatActivity implements
                 if (!isFABOpen) {
                     linearFabQuotesInJob.setVisibility(View.GONE);
                     linearFabEmail.setVisibility(View.GONE);
-                    linearFabPrintInvoice.setVisibility(View.GONE);
+//                    linearFabPrintInvoice.setVisibility(View.GONE);
                     linearFabAddNewItem.setVisibility(View.GONE);
                     backgroundView.setVisibility(View.GONE);
                     actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorPrimary)));
@@ -570,5 +651,95 @@ public class Quote_Invoice_Details_Activity extends AppCompatActivity implements
             }
         });
     }
+    Double totalOfShippingItem = 0.0;
+    String SingleTaxId="0";
+    @Override
+    public void setCalculation(Double Subtotal, List<TaxData> listTax,boolean isShippingData,String SingleTaxId) {
+        String additionalDiscount =quotes_Details_Inv.getDiscount();
+        if(listCount==0){
+            cl_parent_calculation.setVisibility(View.GONE);
+        }else {
+            cl_parent_calculation.setVisibility(View.VISIBLE);
+        }
+        if(isShippingData){
+            totalOfShippingItem = Subtotal;
+        }
 
+        if(quotes_Details_Inv.getIsAddisDiscBefore().equals("0")) {
+            txt_additional_discount.setVisibility(View.GONE);
+            txt_lbl_additional_discount.setVisibility(View.GONE);
+            txt_additional_discount1.setVisibility(View.VISIBLE);
+            txt_lbl_additional_discount1.setVisibility(View.VISIBLE);
+            rvShowTax.setVisibility(View.VISIBLE);
+            if (additionalDiscount.equals("0.0000") || additionalDiscount.equals("")) {
+                txt_lbl_additional_discount1.setVisibility(View.GONE);
+                txt_additional_discount1.setVisibility(View.GONE);
+            } else {
+                txt_additional_discount1.setText("-" + AppUtility.getRoundoff_amount(additionalDiscount));
+            }
+            if(totalOfShippingItem == 0){
+                txt_lbl_tax.setVisibility(View.GONE);
+                txt_tax.setVisibility(View.GONE);
+            }else {
+                txt_tax.setText(AppUtility.getRoundoff_amount(""+totalOfShippingItem));
+                txt_lbl_tax.setVisibility(View.VISIBLE);
+                txt_tax.setVisibility(View.VISIBLE);
+            }
+            if(listTax.size()<= 0){
+                rvShowTax.setVisibility(View.GONE);
+            }else {
+                rvShowTax.setVisibility(View.VISIBLE);
+            }
+            txt_sub_total.setText(AppUtility.getRoundoff_amount("" + Subtotal));
+            invoiceTaxAdapter.setList(listTax);
+            txt_total.setText(AppUtility.getRoundoff_amount(String.valueOf(Double.parseDouble(quotes_Details_Inv.getTotal()))));
+            quote_total_amount.setText(AppUtility.getRoundoff_amount(String.valueOf(Double.parseDouble(quotes_Details_Inv.getTotal()))));
+        }
+        else if(quotes_Details_Inv.getIsAddisDiscBefore().equals("1")){
+            Double taxRate = 0.0;
+            this.SingleTaxId = SingleTaxId;
+            txt_additional_discount.setVisibility(View.VISIBLE);
+            txt_lbl_additional_discount.setVisibility(View.VISIBLE);
+            txt_additional_discount1.setVisibility(View.GONE);
+            txt_lbl_additional_discount1.setVisibility(View.GONE);
+            rvShowTax.setVisibility(View.VISIBLE);
+            if (additionalDiscount.equals("0.0000") || additionalDiscount.equals("")) {
+                txt_lbl_additional_discount.setVisibility(View.GONE);
+                txt_additional_discount.setVisibility(View.GONE);
+            } else {
+                txt_additional_discount.setText("-" + AppUtility.getRoundoff_amount(additionalDiscount));
+            }
+            if(totalOfShippingItem == 0){
+                txt_lbl_tax.setVisibility(View.GONE);
+                txt_tax.setVisibility(View.GONE);
+            }else {
+                txt_tax.setText(AppUtility.getRoundoff_amount(""+totalOfShippingItem));
+                txt_lbl_tax.setVisibility(View.GONE);
+                txt_tax.setVisibility(View.GONE);
+            }
+            txt_sub_total.setText(AppUtility.getRoundoff_amount("" + Subtotal));
+            List<TaxData> showTaxList = new ArrayList<>();
+            for (TaxData tax: listTax
+            ) {
+                taxRate = tax.getRate();
+                TaxData taxData = new TaxData();
+                taxData.setRate(taxRate);
+                taxData.setTaxAmount(tax.getTaxAmount());
+                taxData.setLabel(tax.getLabel());
+                showTaxList.add(taxData);
+            }
+            Double total = Subtotal - Double.parseDouble(additionalDiscount);;
+            Double taxTotal = 0.0;
+            for (TaxData changeAmt : showTaxList){
+                Double taxAmount = total*changeAmt.getRate()/100;
+                changeAmt.setTaxAmount(taxAmount);
+                taxTotal = taxTotal +taxAmount;
+            }
+            invoiceTaxAdapter.setList(showTaxList);
+            total = total+taxTotal+totalOfShippingItem;
+            txt_total.setText(AppUtility.getRoundoff_amount(""+total));
+            quote_total_amount.setText(AppUtility.getRoundoff_amount(""+total));
+        }
+
+    }
 }

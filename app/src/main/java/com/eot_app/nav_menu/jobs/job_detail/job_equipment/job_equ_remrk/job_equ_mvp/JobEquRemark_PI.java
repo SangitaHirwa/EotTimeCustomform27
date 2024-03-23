@@ -2,6 +2,8 @@ package com.eot_app.nav_menu.jobs.job_detail.job_equipment.job_equ_remrk.job_equ
 
 import com.eot_app.nav_menu.audit.audit_list.equipment.remark.remark_mvp.RemarkRequest;
 import com.eot_app.nav_menu.jobs.job_db.Job;
+import com.eot_app.nav_menu.jobs.job_detail.chat.fire_Base_Model.Chat_Send_Msg_Model;
+import com.eot_app.nav_menu.jobs.job_detail.requested_item.requested_itemModel.AddUpdateRequestedModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +24,10 @@ public interface JobEquRemark_PI {
 
     void getItemFromServer(final String jobId);
     void getItemListByJobFromDB(String jobId);
-
+    void getRequestedItemDataList(String jobId);
+    void deleteRequestedItem(String irId, String jobId, AddUpdateRequestedModel requestedModel);
+    void sendMsg(Chat_Send_Msg_Model chat_send_Msg_model);
+    void getLinkItemList(String jobId);
+    void linkedItemAddToEqu(String jobId, String equId, String ijmmId);
 
 }

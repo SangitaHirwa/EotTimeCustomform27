@@ -29,7 +29,7 @@ import com.eot_app.R;
 import com.eot_app.nav_menu.audit.audit_list.equipment.model.EquipmentStatus;
 import com.eot_app.nav_menu.jobs.job_db.EquArrayModel;
 import com.eot_app.nav_menu.jobs.job_detail.detail.CompletionAdpterJobDteails;
-import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.GetFileList_Res;
+import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.Attachments;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.add_job_equip.adpter_pkg.EquipmentPartAdapter;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.job_equ_remrk.JobEquRemarkRemarkActivity;
 import com.eot_app.utility.AppConstant;
@@ -153,10 +153,10 @@ public class JobEquipmentAdapter extends RecyclerView.Adapter<JobEquipmentAdapte
 
         if (equArrayModel.getExpiryDate() != null && !equArrayModel.getExpiryDate().isEmpty()) {
             try {
-                String expiryDate = AppUtility.getDate(Long.parseLong(equArrayModel.getExpiryDate()), "dd/MM/yyyy");
+                String expiryDate = AppUtility.getDate(Long.parseLong(equArrayModel.getExpiryDate()), AppConstant.DATE_FORMAT);
                 Log.e("Equipment", expiryDate);
-                Log.e("Equipment", AppUtility.getCurrentDateByFormat("dd/MM/yyyy"));
-                if (!AppUtility.compareTwoDatesWarranty(AppUtility.getCurrentDateByFormat("dd/MM/yyyy"), expiryDate, "dd/MM/yyyy")) {
+                Log.e("Equipment", AppUtility.getCurrentDateByFormat(AppConstant.DATE_FORMAT));
+                if (!AppUtility.compareTwoDatesWarranty(AppUtility.getCurrentDateByFormat(AppConstant.DATE_FORMAT), expiryDate, AppConstant.DATE_FORMAT)) {
                     holder.tvWarranty.setTextColor(ContextCompat.getColor(mContext, R.color.red_color));
                     holder.ivAlert.setVisibility(View.VISIBLE);
                 } else {
@@ -173,10 +173,10 @@ public class JobEquipmentAdapter extends RecyclerView.Adapter<JobEquipmentAdapte
         }
         if (isComeFromRemark) {
             holder.view_details.setVisibility(View.GONE);
-            holder.add_remark.setVisibility(View.GONE);
+            holder.action_btn.setVisibility(View.GONE);
         } else {
-            holder.btnComplationView.setOnClickListener(v -> setRemarkActivity(holder.getBindingAdapterPosition()));
-            holder.add_remark.setOnClickListener(v -> setRemarkActivity(holder.getBindingAdapterPosition()));
+            holder.btnComplationView.setOnClickListener(v -> setRemarkActivity(holder.getBindingAdapterPosition(),false));
+            holder.action_btn.setOnClickListener(v -> setRemarkActivity(holder.getBindingAdapterPosition(),true));
             holder.view_details.setOnClickListener(v -> selectionForDetails.onEquipmentSelectedForDetails(list.get(position)));
         }
 
@@ -189,25 +189,29 @@ public class JobEquipmentAdapter extends RecyclerView.Adapter<JobEquipmentAdapte
         if (!TextUtils.isEmpty(equArrayModel.getStatus()) || equArrayModel.getAttachments() != null && equArrayModel.getAttachments().size() > 0) {
             holder.edit_remark_layout.setVisibility(View.VISIBLE);
             setDataInRemarkView(holder, equArrayModel, position);
-            holder.add_remark.setVisibility(View.GONE);
+            holder.action_btn.setVisibility(View.VISIBLE);
+            holder.action_btn.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.action));
         } else {
             HyperLog.i("", "JobEquipmentAdapter: " + "onBindViewHolder(M)" + "status null");
             HyperLog.i("", "JobEquipmentAdapter: " + equArrayModel.getStatus());
             holder.edit_remark_layout.setVisibility(View.GONE);
-            holder.add_remark.setVisibility(View.VISIBLE);
-            holder.add_remark.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_remark));
+            holder.action_btn.setVisibility(View.VISIBLE);
+            holder.action_btn.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.action));
 
 //            if (equArrayModel.getAttachments() != null && equArrayModel.getAttachments().size() > 0) {
 //                updateAttchmentList(holder, equArrayModel.getAttachments(), position);
 //            }
         }
-
-        if (equArrayModel.getIsPart().equalsIgnoreCase("0")
-                && equArrayModel.getEquComponent() != null && !equArrayModel.getEquComponent().isEmpty()) {
-            setPartList(holder, equArrayModel.getEquComponent(), equArrayModel.getEqunm(), equArrayModel.getEquId());
-        } else {
-            holder.part_layout.setVisibility(View.GONE);
-        }
+         if(equArrayModel.getIsPart()!=null) {
+             if (equArrayModel.getIsPart().equalsIgnoreCase("0")
+                     && equArrayModel.getEquComponent() != null && !equArrayModel.getEquComponent().isEmpty()) {
+                 setPartList(holder, equArrayModel.getEquComponent(), equArrayModel.getEqunm(), equArrayModel.getEquId());
+             } else {
+                 holder.part_layout.setVisibility(View.GONE);
+             }
+         }else{
+             holder.part_layout.setVisibility(View.GONE);
+         }
 
         /* 0 Mean equipment 1 means Part(Sub equipment) ****/
         if (!TextUtils.isEmpty(equArrayModel.getIsPart()) && !equArrayModel.getIsPart().equals("0"))
@@ -242,7 +246,7 @@ public class JobEquipmentAdapter extends RecyclerView.Adapter<JobEquipmentAdapte
                     holder.tv_status.setText(getCurrentStatusNameById(equArrayModel.getEquStatus()));
 
                     if(equArrayModel.getStatusUpdateDate() != null&&!equArrayModel.getStatusUpdateDate().isEmpty()){
-                        holder.tv_date.setText(AppUtility.getDate(Long.parseLong(equArrayModel.getStatusUpdateDate()), "dd MMM yyyy"));
+                        holder.tv_date.setText(AppUtility.getDate(Long.parseLong(equArrayModel.getStatusUpdateDate()), AppConstant.DATE_FORMAT));
                         holder.tv_date.setVisibility(View.VISIBLE);
                     }
                     else
@@ -287,7 +291,7 @@ public class JobEquipmentAdapter extends RecyclerView.Adapter<JobEquipmentAdapte
             holder.remark_notes.setVisibility(View.GONE);
         }
 
-        ArrayList<GetFileList_Res> attachmentsList = new ArrayList<>();
+        ArrayList<Attachments> attachmentsList = new ArrayList<>();
         if (equArrayModel.getAttachments() != null && equArrayModel.getAttachments().size() > 0)
             attachmentsList = equArrayModel.getAttachments();
 
@@ -371,9 +375,9 @@ public class JobEquipmentAdapter extends RecyclerView.Adapter<JobEquipmentAdapte
         }
     }
 
-    void setRemarkActivity(int position) {
+    void setRemarkActivity(int position, boolean isAction) {
         if (onEquipmentSelection != null) {
-            onEquipmentSelection.onEquipmentSelected(position, list.get(position));
+            onEquipmentSelection.onEquipmentSelected(position, list.get(position),isAction);
         } else {
             Log.e("getAllEquipments", "JobEqRemark JobEquipmentAdapter");
 
@@ -392,7 +396,7 @@ public class JobEquipmentAdapter extends RecyclerView.Adapter<JobEquipmentAdapte
     }
 
     public interface OnEquipmentSelection {
-        void onEquipmentSelected(int position, EquArrayModel equipmentRes);
+        void onEquipmentSelected(int position, EquArrayModel equipmentRes, boolean isAction);
     }
 
     public interface OnEquipmentClicked {
@@ -412,7 +416,7 @@ public class JobEquipmentAdapter extends RecyclerView.Adapter<JobEquipmentAdapte
         //  AppCompatImageView img_remark;
         AppCompatTextView tv_model, tv_serial, tv_model_label, tv_serial_label;//, tv_des;// tv_status, , tv_details ,, tv_remark
         // LinearLayout  ll_remark;//ll_details,
-        TextView view_details, add_remark, tv_status,tv_date;
+        TextView view_details, action_btn, tv_status,tv_date;
         TextView remark_txt, part_txt, remark_condition_txt, remark_status, remark_notes, btnComplationView;
         View edit_remark_layout;
         RecyclerView recyclerView;
@@ -442,7 +446,7 @@ public class JobEquipmentAdapter extends RecyclerView.Adapter<JobEquipmentAdapte
             tv_serial_label = itemView.findViewById(R.id.tv_serial_label);
             view_details = itemView.findViewById(R.id.view_details);
             view_details.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.view_details));
-            add_remark = itemView.findViewById(R.id.add_remark);
+            action_btn = itemView.findViewById(R.id.action_btn);
             remark_txt = itemView.findViewById(R.id.remark_txt);
             remark_condition_txt = itemView.findViewById(R.id.remark_condition_txt);
             remark_status = itemView.findViewById(R.id.remark_status);

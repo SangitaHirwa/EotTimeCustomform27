@@ -41,7 +41,7 @@ public class AddLeaveFragment extends AppCompatActivity implements View.OnClickL
     private UserLeave_pi userLeave_pi;
     List<LeaveUserModel> listuser;
 
-    private String STARTSELCTEDATE = "", STARTSELCTETIME = " 12:00 am", ENDSELCTETIME = " 11:59 pm", ENDSELCTEDATE = "";
+    private String STARTSELCTEDATE = "", STARTSELCTETIME = " 12:00 AM", ENDSELCTETIME = " 11:59 PM", ENDSELCTEDATE = "";
     private final DatePickerDialog.OnDateSetListener datePickerListener = new DatePickerDialog.OnDateSetListener() {
         @Override
         public void onDateSet(DatePicker view, int selectedYear, int selectedMonth, int selectedDay) {
@@ -52,7 +52,7 @@ public class AddLeaveFragment extends AppCompatActivity implements View.OnClickL
                     Date startDate = formatter.parse(selectedDay + "-" + (selectedMonth + 1) + "-" + selectedYear);
                     STARTSELCTEDATE = "";
                     assert startDate != null;
-                    STARTSELCTEDATE = " " + formatter.format(startDate);
+                    STARTSELCTEDATE = " " + new SimpleDateFormat(AppConstant.DATE_FORMAT, Locale.US).format(startDate);
                     binding.timeFrom.setText("");
                     binding.timeFrom.setText(STARTSELCTEDATE.concat(STARTSELCTETIME));
                     selectStartTime("START");
@@ -63,7 +63,7 @@ public class AddLeaveFragment extends AppCompatActivity implements View.OnClickL
                     Date startDate = formatter.parse(selectedDay + "-" + (selectedMonth + 1) + "-" + selectedYear);
                     ENDSELCTEDATE = "";
                     assert startDate != null;
-                    ENDSELCTEDATE = " " + formatter.format(startDate);
+                    ENDSELCTEDATE = " " + new SimpleDateFormat(AppConstant.DATE_FORMAT, Locale.US).format(startDate);
                     binding.timeTo.setText("");
                     binding.timeTo.setText(ENDSELCTEDATE.concat(ENDSELCTETIME));
                     selectStartTime("END");
@@ -226,8 +226,8 @@ public class AddLeaveFragment extends AppCompatActivity implements View.OnClickL
     }
 
     private void initilaleDateTimeset() {
-        binding.timeFrom.setText(AppUtility.getDateByFormat("dd-MM-yyyy").concat(STARTSELCTETIME));
-        binding.timeTo.setText(AppUtility.getDateByFormat("dd-MM-yyyy").concat(ENDSELCTETIME));
+        binding.timeFrom.setText(AppUtility.getDateByFormat(AppConstant.DATE_FORMAT).concat(STARTSELCTETIME));
+        binding.timeTo.setText(AppUtility.getDateByFormat(AppConstant.DATE_FORMAT).concat(ENDSELCTETIME));
         listuser=new ArrayList<>();
         emptyfields();
     }
@@ -258,20 +258,20 @@ public class AddLeaveFragment extends AppCompatActivity implements View.OnClickL
             case R.id.submit_button:
                 Date startDate, endDate;
                 String s = "", e = "", datetiemform;
-                datetiemform = "dd-MM-yyyy hh:mm a";
+                datetiemform = AppConstant.DATE_FORMAT+" hh:mm a";
                 try {
                     startDate = new SimpleDateFormat(datetiemform, Locale.getDefault()).parse(binding.timeFrom.getText().toString().trim());
                     endDate = new SimpleDateFormat(datetiemform, Locale.getDefault()).parse(binding.timeTo.getText().toString().trim());
                     assert startDate != null;
-                    s = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss", Locale.getDefault()).format(startDate);
+                    s = new SimpleDateFormat(AppConstant.DATE_FORMAT+" hh:mm:ss a", Locale.getDefault()).format(startDate);
                     assert endDate != null;
-                    e = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss", Locale.getDefault()).format(endDate);
+                    e = new SimpleDateFormat(AppConstant.DATE_FORMAT+" hh:mm:ss a", Locale.getDefault()).format(endDate);
                     e = AppUtility.getDate(e);
                 } catch (Exception exception) {
                     exception.printStackTrace();
                 }
 
-                if (!AppUtility.compareTwoDatesForTimeSheet2(s, e, "dd-MM-yyyy hh:mm:ss")) {
+                if (!AppUtility.compareTwoDatesForTimeSheet2(s, e, AppConstant.DATE_FORMAT+" hh:mm:ss a")) {
                     showMyDialog(LanguageController.getInstance().getMobileMsgByKey(AppConstant.time_sheet_date_error));
                 } else {
                     AppUtility.progressBarShow(this);

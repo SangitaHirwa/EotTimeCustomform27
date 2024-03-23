@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +13,9 @@ import android.widget.TextView;
 import com.eot_app.R;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_detail_pkg.inv_detail_model.ShippingItem;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_detail_pkg.inv_detail_model.Tax;
+import com.eot_app.nav_menu.jobs.job_detail.invoice2list.GenerateInvoiceItemAdpter;
 import com.eot_app.utility.AppUtility;
+import com.eot_app.utility.util_interfaces.GetListData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,9 +25,12 @@ public class Sipping_Adpter extends RecyclerView.Adapter<Sipping_Adpter.MyViewHo
     private static final int NUMBER_OF_BLANK_CARDS = 2;
     private List<ShippingItem> shippingItemList;
     private String taxCalculationType;
+    private GetListData getListData;
+    private  Double total = 0.0;
 
-    public Sipping_Adpter(List<ShippingItem> shippingItem) {
+    public Sipping_Adpter(Context context,List<ShippingItem> shippingItem) {
         this.shippingItemList = shippingItem;
+        this.getListData =(GetListData) context;
     }
 
 
@@ -45,6 +51,11 @@ public class Sipping_Adpter extends RecyclerView.Adapter<Sipping_Adpter.MyViewHo
             //   myViewHolder.shpinng_item_rate.setText(shippingItemList.get(pos).getRate());
             List<Tax> taxList = new ArrayList<>();
             myViewHolder.shpinng_item_rate.setText(AppUtility.getRoundoff_amount(AppUtility.getCalculatedAmount("1", shippingItemList.get(pos).getRate(), "0", taxList, taxCalculationType)));
+            total += Double.parseDouble(AppUtility.getRoundoff_amount(AppUtility.getCalculatedAmount("1", shippingItemList.get(pos).getRate(), "0", taxList, taxCalculationType)));
+            if(pos == shippingItemList.size()-1) {
+                getListData.setCalculation(total, new ArrayList<>(), true, "0");
+                total =0.0;
+            }
         }
     }
 

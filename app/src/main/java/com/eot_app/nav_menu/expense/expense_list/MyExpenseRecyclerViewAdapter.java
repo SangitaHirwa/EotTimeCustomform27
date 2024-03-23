@@ -104,7 +104,7 @@ public class MyExpenseRecyclerViewAdapter extends RecyclerView.Adapter<MyExpense
                 String[] date_separated = cr_date.split(",");
                 Spannable txtFrst;
 
-                String today_date = AppUtility.getDateByFormat("EEE,dd MMM yyyy ,hh:mm ,a");
+                String today_date = AppUtility.getDateByFormat("EEE,"+AppConstant.DATE_FORMAT+" ,hh:mm ,a");
                 String[] today_dt = today_date.split(",");
                 String to_day = today_dt[1];
 
@@ -117,12 +117,13 @@ public class MyExpenseRecyclerViewAdapter extends RecyclerView.Adapter<MyExpense
 
 
                 String dateExpenses = date_separated[1];
-                String[] dateExpensesArray = dateExpenses.split(" ");
-                DecimalFormat formatter = new DecimalFormat("00");
-                String[] aa = dateExpensesArray[1].split(" ");
+                String[] dateExpensesArray = dateExpenses.split("-");
+               /* DecimalFormat formatter = new DecimalFormat("00");
+                String[] aa = dateExpensesArray[1].split(" ");*/
                 //time_start.setText((formatter.format(Integer.parseInt(aa[0]))) + ":" + aa[1]);
-                holder.expense_date.setText((formatter.format(Integer.parseInt(aa[0]))) + " " + dateExpensesArray[2]);
-                holder.expense_am_pm.setText(dateExpensesArray[3]);
+//                holder.expense_date.setText((formatter.format(Integer.parseInt(aa[0]))) + " " + dateExpensesArray[2]);
+                holder.expense_date.setText( dateExpensesArray[0]+ "-" + dateExpensesArray[1]);
+                holder.expense_am_pm.setText(dateExpensesArray[2]);
 
                 if (position < filterList.size())
                     if (position == 0 || (filterList.get(position - 1).getDateTime() != null && filterList.get(position - 1).getDateTime().equals(""))) {

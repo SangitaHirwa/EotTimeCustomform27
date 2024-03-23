@@ -15,12 +15,14 @@
             android:id="@+id/item_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:padding="5dp"
+            android:layout_marginLeft="5dp"
             android:gravity="center">
 
             <CheckBox
                 android:id="@+id/checkbox_invoice"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="50dp"
                 android:layout_alignParentStart="true"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
@@ -32,9 +34,8 @@
                 android:layout_toStartOf="@+id/linear_lay_billable"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="20dp"
                 android:gravity="start|center"
-                android:padding="10dp">
+                android:padding="5dp">
 
                 <TextView
                     android:id="@+id/item_nm_invoice"
@@ -71,19 +72,7 @@
                     tools:ignore="HardcodedText" />
                 <!--                style="@style/style_thrid_thrd"
                 -->
-                <TextView
-                    android:id="@+id/description"
-                    android:layout_below="@+id/qty_invoice"
-                    style="@style/style_thrid_thrd"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="1dp"
-                    android:gravity="start"
-                    android:text="description"
-                    android:textSize="@dimen/medium_txt_low"
-                    android:visibility="gone"
-                    android:textStyle="normal"
-                    tools:ignore="HardcodedText,SpUsage" />
+
 
                 <!--
                 -->
@@ -97,7 +86,7 @@
                 android:layout_marginEnd="8dp"
                 android:gravity="center"
                 android:orientation="vertical"
-                android:padding="10dp">
+                >
 
                 <TextView
                     android:id="@+id/item_price_invoice"
@@ -123,7 +112,21 @@
                     tools:ignore="HardcodedText" />
 
             </LinearLayout>
-
+            <TextView
+                android:id="@+id/description"
+                android:layout_below="@+id/relativeLayout"
+                android:layout_toRightOf="@+id/checkbox_invoice"
+                style="@style/style_thrid_thrd"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="1dp"
+                android:gravity="start"
+                android:text="description"
+                android:textSize="@dimen/medium_txt_low"
+                android:visibility="gone"
+                android:textStyle="normal"
+                tools:ignore="HardcodedText,SpUsage" />
         </RelativeLayout>
 
     </androidx.cardview.widget.CardView>

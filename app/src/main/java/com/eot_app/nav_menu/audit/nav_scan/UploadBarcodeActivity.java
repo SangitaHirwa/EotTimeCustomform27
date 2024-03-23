@@ -1,6 +1,7 @@
 package com.eot_app.nav_menu.audit.nav_scan;
 
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.Window;
@@ -134,7 +135,12 @@ public class UploadBarcodeActivity extends AppCompatActivity {
             mCodeScanner.startPreview();
         }
         else {
-            askTedPermission(0,AppConstant.cameraPermissions);
+            // Sdk version 33
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU ) {
+                askTedPermission(0, AppConstant.cameraPermissions33);
+            }else {
+                askTedPermission(0, AppConstant.cameraPermissions);
+            }
         }
     }
     private void askTedPermission(int type,String[] permissions) {

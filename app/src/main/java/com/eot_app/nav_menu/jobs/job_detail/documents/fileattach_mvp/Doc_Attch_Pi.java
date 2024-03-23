@@ -5,11 +5,14 @@ package com.eot_app.nav_menu.jobs.job_detail.documents.fileattach_mvp;
  */
 
 public interface Doc_Attch_Pi {
-    void getAttachFileList(String jobId,String usrId,String type);
+    void getAttachFileList(String jobId,String usrId,String type,boolean firstCall, boolean isFromAttachment);
+    void getMultiAttachFileList(String jobId,String usrId,String type,boolean firstCall, int parentPosition, int position, String queId, String jtId, boolean isRefreshFromApi,boolean isFromAttachmet);
 
     void uploadDocuments(String job_Id, String file, String finalFname, String desc,String type,String isAddAttachAsCompletionNote);
+    void uploadMultipleDocuments(String job_Id, String file, String finalFname, String desc,String type,String isAddAttachAsCompletionNote, boolean lastCall);
 
 
-    void updateDocuments(String docId, String des, String isAddAttachAsCompletionNote, String jobId);
+    void updateDocuments(String docId, String des, String rename,String isAddAttachAsCompletionNote, String jobId, String queId, String jtId);
+    void uploadQuoteDocument(String file,String fileName, String quotId,String type,String usrId,String des);
 }
 

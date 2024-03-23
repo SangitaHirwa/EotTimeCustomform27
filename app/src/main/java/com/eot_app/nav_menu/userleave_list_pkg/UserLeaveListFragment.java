@@ -131,9 +131,22 @@ public class UserLeaveListFragment extends Fragment implements View.OnClickListe
     }
 
 
-    public void refreshAppointmentList() {
+    public void refreshLeaveList() {
+//        if (userleaveViewModel != null) {
+//            userleaveViewModel.getUserLeaveStatusList();
+//        }
+
         if (userleaveViewModel != null) {
-            userleaveViewModel.getUserLeaveStatusList();
+            if (AppUtility.isInternetConnected()) {
+                userleaveViewModel.getUserLeaveList();
+            }
+            else {
+                binding.swiperefresh.setRefreshing(false);
+                AppUtility.alertDialog(getActivity(),
+                        "",
+                        LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_check_network),
+                        LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), null, null);
+            }
         }
     }
 
@@ -182,16 +195,18 @@ public class UserLeaveListFragment extends Fragment implements View.OnClickListe
 
 
         binding.swiperefresh.setOnRefreshListener(() -> {
-            if (userleaveViewModel != null)
-                if (AppUtility.isInternetConnected())
-                    userleaveViewModel.getUserLeaveList();
-                else {
-                    binding.swiperefresh.setRefreshing(false);
-                    AppUtility.alertDialog(getActivity(),
-                            "",
-                            LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_check_network),
-                            LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), null, null);
-                }
+//            if (userleaveViewModel != null)
+//                if (AppUtility.isInternetConnected())
+//                    userleaveViewModel.getUserLeaveList();
+//                else {
+//                    binding.swiperefresh.setRefreshing(false);
+//                    AppUtility.alertDialog(getActivity(),
+//                            "",
+//                            LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_check_network),
+//                            LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), null, null);
+//                }
+            refreshLeaveList();
+
         });
 
 

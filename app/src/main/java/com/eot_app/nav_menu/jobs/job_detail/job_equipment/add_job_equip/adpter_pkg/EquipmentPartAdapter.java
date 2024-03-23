@@ -115,23 +115,28 @@ public class EquipmentPartAdapter extends RecyclerView.Adapter<EquipmentPartAdap
         EquArrayModel equArrayModel = list.get(position);
         Log.e("List", "" + new Gson().toJson(list));
 
+        if (!TextUtils.isEmpty(equArrayModel.getStatus()) || equArrayModel.getAttachments() != null && equArrayModel.getAttachments().size() > 0) {
+            holder.img_show_remark.setVisibility(View.VISIBLE);
+        }else {
+            holder.img_show_remark.setVisibility(View.GONE);
+        }
         if(isComeFromDetail)
         {
             holder.main_layout.setOnClickListener(v -> onEquipmentClicked.OnEquipmentClicked());
-            holder.add_remark.setOnClickListener(v -> onEquipmentClicked.OnEquipmentClicked());
+            holder.add_action.setOnClickListener(v -> onEquipmentClicked.OnEquipmentClicked());
             holder.view_details.setOnClickListener(v -> onEquipmentClicked.OnEquipmentClicked());
 
         }
         else {
             holder.view_details.setOnClickListener(v -> selectionForDetails.onEquipmentSelectedForDetails(list.get(position)));
-            holder.add_remark.setOnClickListener(v -> setRemarkActivity(holder.getBindingAdapterPosition()));
+            holder.add_action.setOnClickListener(v -> setRemarkActivity(holder.getBindingAdapterPosition(), true));
         }
         if(equArrayModel.getExpiryDate()!=null&&!equArrayModel.getExpiryDate().isEmpty()){
             try {
-                String expiryDate = AppUtility.getDate(Long.parseLong(equArrayModel.getExpiryDate()),"dd/MM/yyyy");
+                String expiryDate = AppUtility.getDate(Long.parseLong(equArrayModel.getExpiryDate()),AppConstant.DATE_FORMAT);
                 Log.e("Equipment",expiryDate);
-                Log.e("Equipment",AppUtility.getCurrentDateByFormat("dd/MM/yyyy"));
-                if(!AppUtility.compareTwoDatesWarranty(AppUtility.getCurrentDateByFormat("dd/MM/yyyy"),expiryDate,"dd/MM/yyyy")){
+                Log.e("Equipment",AppUtility.getCurrentDateByFormat(AppConstant.DATE_FORMAT));
+                if(!AppUtility.compareTwoDatesWarranty(AppUtility.getCurrentDateByFormat(AppConstant.DATE_FORMAT),expiryDate,AppConstant.DATE_FORMAT)){
                     holder.tvWarranty.setTextColor(ContextCompat.getColor(mContext,R.color.red_color));
                     holder.ivAlert.setVisibility(View.VISIBLE);
                 }
@@ -170,10 +175,10 @@ public class EquipmentPartAdapter extends RecyclerView.Adapter<EquipmentPartAdap
 
         if(equArrayModel.getExpiryDate()!=null&&!equArrayModel.getExpiryDate().isEmpty()){
             try {
-                String expiryDate = AppUtility.getDate(Long.parseLong(equArrayModel.getExpiryDate()),"dd/MM/yyyy");
+                String expiryDate = AppUtility.getDate(Long.parseLong(equArrayModel.getExpiryDate()),AppConstant.DATE_FORMAT);
                 Log.e("Equipment",expiryDate);
-                Log.e("Equipment",AppUtility.getCurrentDateByFormat("dd/MM/yyyy"));
-                if(!AppUtility.compareTwoDatesWarranty(AppUtility.getCurrentDateByFormat("dd/MM/yyyy"),expiryDate,"dd/MM/yyyy")){
+                Log.e("Equipment",AppUtility.getCurrentDateByFormat(AppConstant.DATE_FORMAT));
+                if(!AppUtility.compareTwoDatesWarranty(AppUtility.getCurrentDateByFormat(AppConstant.DATE_FORMAT),expiryDate,AppConstant.DATE_FORMAT)){
                     holder.tvWarranty.setTextColor(ContextCompat.getColor(mContext,R.color.red_color));
                     holder.ivAlert.setVisibility(View.VISIBLE);
                 }
@@ -205,9 +210,9 @@ public class EquipmentPartAdapter extends RecyclerView.Adapter<EquipmentPartAdap
         }
 
         if (!TextUtils.isEmpty(equArrayModel.getStatus()) || equArrayModel.getAttachments() != null && equArrayModel.getAttachments().size() > 0) {
-            holder.add_remark.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.view_edit_remark));
+            holder.add_action.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.action));
         } else {
-            holder.add_remark.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_remark));
+            holder.add_action.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.action));
         }
 
         try {
@@ -221,7 +226,7 @@ public class EquipmentPartAdapter extends RecyclerView.Adapter<EquipmentPartAdap
                     holder.tv_status.setText(getCurrentStatusNameById(equArrayModel.getEquStatus()));
 
                     if(equArrayModel.getStatusUpdateDate() != null&&!equArrayModel.getStatusUpdateDate().isEmpty()){
-                        holder.tv_date.setText(AppUtility.getDate(Long.parseLong(equArrayModel.getStatusUpdateDate()), "dd MMM yyyy"));
+                        holder.tv_date.setText(AppUtility.getDate(Long.parseLong(equArrayModel.getStatusUpdateDate()), AppConstant.DATE_FORMAT));
                         holder.tv_date.setVisibility(View.VISIBLE);
                     }
                     else
@@ -265,10 +270,10 @@ public class EquipmentPartAdapter extends RecyclerView.Adapter<EquipmentPartAdap
         AppCompatImageView img_equipment;
         TextView equ_img_view;
         AppCompatTextView tv_model, tv_serial, tv_model_label, tv_serial_label,tv_status;//, tv_des;// tv_status, , tv_details ,, tv_remark
-        TextView view_details, add_remark,tv_date;
+        TextView view_details, add_action,tv_date;
         LinearLayout main_layout;
         TextView tvWarranty;
-        ImageView ivAlert;
+        ImageView ivAlert, img_show_remark;
         LinearLayout ll_status;
 
         public MyViewHolder(@NonNull View itemView) {
@@ -285,22 +290,23 @@ public class EquipmentPartAdapter extends RecyclerView.Adapter<EquipmentPartAdap
             tv_serial_label = itemView.findViewById(R.id.tv_serial_label);
             view_details = itemView.findViewById(R.id.view_details);
             view_details.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.view_details));
-            add_remark = itemView.findViewById(R.id.add_remark);
+            add_action = itemView.findViewById(R.id.add_action);
             equ_img_view = itemView.findViewById(R.id.equ_img_view);
             tv_status = itemView.findViewById(R.id.tv_status);
             ll_status = itemView.findViewById(R.id.ll_status);
             tv_date = itemView.findViewById(R.id.tv_date);
             tvWarranty = itemView.findViewById(R.id.tvWarranty);
             ivAlert = itemView.findViewById(R.id.ivAlert);
+            img_show_remark = itemView.findViewById(R.id.img_show_remark);
 
         }
 
 
     }
-    void setRemarkActivity(int position) {
+    void setRemarkActivity(int position, boolean isAction) {
         if (onEquipmentSelection != null) {
             list.get(position).setIsPart("1");
-            onEquipmentSelection.onEquipmentSelected(position, list.get(position));
+            onEquipmentSelection.onEquipmentSelected(position, list.get(position),isAction);
         } else {
             String strEqu = new Gson().toJson(list.get(position));
             mContext.startActivity(new Intent(mContext, JobEquRemarkRemarkActivity.class).putExtra("equipment", strEqu));

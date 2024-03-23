@@ -6,7 +6,7 @@ import com.eot_app.activitylog.ActivityLogController;
 import com.eot_app.nav_menu.jobs.job_db.Job;
 import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.model.InvoiceItemDataModel;
 import com.eot_app.nav_menu.jobs.job_detail.detail.job_detail_presenter.JobDetail_pc;
-import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.GetFileList_Res;
+import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.Attachments;
 import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.GetFileList_req_Model;
 import com.eot_app.services.ApiClient;
 import com.eot_app.services.Service_apis;
@@ -152,9 +152,9 @@ public class Job_EquipmentPC extends JobDetail_pc implements Job_Equipment_PI {
                                 if (jsonObject.get("data").getAsJsonArray().size() > 0) {
                                     count = jsonObject.get("count").getAsInt();
                                     String convert = new Gson().toJson(jsonObject.get("data").getAsJsonArray());
-                                    Type listType = new com.google.gson.reflect.TypeToken<List<GetFileList_Res>>() {
+                                    Type listType = new com.google.gson.reflect.TypeToken<List<Attachments>>() {
                                     }.getType();
-                                    ArrayList<GetFileList_Res> getFileList_res = new Gson().fromJson(convert, listType);
+                                    ArrayList<Attachments> getFileList_res = new Gson().fromJson(convert, listType);
                                     equipment_view.setList(getFileList_res, "");
                                 } else {
                                     equipment_view.noAttachment();

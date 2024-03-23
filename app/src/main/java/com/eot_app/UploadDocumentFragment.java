@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.view.View;
@@ -44,7 +45,7 @@ public class UploadDocumentFragment extends Fragment implements ImageCropFragmen
 
 
     public void selectFile(boolean hideAttachment) {
-        if (!Utils.isOnline(Objects.requireNonNull(getActivity()))) {
+        if (!Utils.isOnline(requireActivity())) {
             AppUtility.alertDialog(getActivity(), LanguageController.getInstance().getMobileMsgByKey(AppConstant.dialog_error_title),  LanguageController.getInstance().getMobileMsgByKey(AppConstant.feature_not_available), LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), "", () -> null);
         } else {
             final BottomSheetDialog dialog = new BottomSheetDialog(getActivity());
@@ -68,7 +69,12 @@ public class UploadDocumentFragment extends Fragment implements ImageCropFragmen
                 if (AppUtility.askCameraTakePicture(getActivity())) {
                     getPictureFromCamera();
                 }else {
-                    askTedPermission(0,AppConstant.cameraPermissions);
+                    // Sdk version 33
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU ) {
+                        askTedPermission(0, AppConstant.cameraPermissions33);
+                    }else {
+                        askTedPermission(0, AppConstant.cameraPermissions);
+                    }
                 }
 
                 dialog.dismiss();
@@ -78,7 +84,12 @@ public class UploadDocumentFragment extends Fragment implements ImageCropFragmen
                 if (AppUtility.askGalaryTakeImagePermiSsion(getActivity())) {
                     getImageFromGallery();
                 }else {
-                    askTedPermission(1,AppConstant.galleryPermissions);
+                    // Sdk version 33
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU ) {
+                        askTedPermission(1, AppConstant.galleryPermissions33);
+                    }else {
+                        askTedPermission(1, AppConstant.galleryPermissions);
+                    }
                 }
 
                 dialog.dismiss();
@@ -88,7 +99,12 @@ public class UploadDocumentFragment extends Fragment implements ImageCropFragmen
                 if (AppUtility.askGalaryTakeImagePermiSsion(getActivity())) {
                     getDocumentsFromGallery();//only for drive documents
                 }else {
-                    askTedPermission(2,AppConstant.galleryPermissions);
+                    // Sdk version 33
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU ) {
+                        askTedPermission(2, AppConstant.galleryPermissions33);
+                    }else {
+                        askTedPermission(2, AppConstant.galleryPermissions);
+                    }
                 }
 
                 dialog.dismiss();
@@ -144,7 +160,7 @@ public class UploadDocumentFragment extends Fragment implements ImageCropFragmen
         }
 
 
-        Uri uri = FileProvider.getUriForFile(Objects.requireNonNull(getActivity()), getActivity().getApplicationContext().getPackageName() + ".provider", imageFile);
+        Uri uri = FileProvider.getUriForFile(requireActivity(), getActivity().getApplicationContext().getPackageName() + ".provider", imageFile);
 
         takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
         takePictureIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);

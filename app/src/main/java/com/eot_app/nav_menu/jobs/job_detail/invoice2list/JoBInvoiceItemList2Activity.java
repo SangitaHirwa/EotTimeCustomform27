@@ -32,6 +32,7 @@ import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_db.location_tax_dao.
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_db.location_tax_dao.TaxesLocation;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_email_pkg.get_email_temp_model.InvoiceEmaliTemplate;
 import com.eot_app.nav_menu.jobs.job_detail.invoice2list.itemlist_model.InvoiceItemDetailsModel;
+import com.eot_app.nav_menu.jobs.job_detail.invoice2list.itemlist_model.TaxData;
 import com.eot_app.nav_menu.jobs.job_detail.invoice2list.itemlist_mvp.ItemList_PC;
 import com.eot_app.nav_menu.jobs.job_detail.invoice2list.itemlist_mvp.ItemList_PI;
 import com.eot_app.nav_menu.jobs.job_detail.invoice2list.itemlist_mvp.ItemList_View;
@@ -47,6 +48,7 @@ import com.eot_app.utility.db.OfflineDataController;
 import com.eot_app.utility.language_support.LanguageController;
 import com.eot_app.utility.settings.setting_db.Offlinetable;
 import com.eot_app.utility.util_interfaces.Callback_AlertDialog;
+import com.eot_app.utility.util_interfaces.GetListData;
 import com.eot_app.utility.util_interfaces.MyListItemSelected;
 import com.eot_app.utility.util_interfaces.MyListItemSelectedLisT;
 import com.google.gson.Gson;
@@ -58,7 +60,7 @@ import java.util.Objects;
 
 
 public class JoBInvoiceItemList2Activity extends AppCompatActivity implements View.OnClickListener, ItemList_View
-        , MyListItemSelectedLisT<InvoiceItemDataModel>, MyListItemSelected<InvoiceItemDataModel>, JobItem_Observer {
+        , MyListItemSelectedLisT<InvoiceItemDataModel>, MyListItemSelected<InvoiceItemDataModel>, JobItem_Observer, GetListData {
     public final static int ADD_ITEM_DATA = 1;
     Button addInvoiceItem_btn;
     RelativeLayout listItem_invoice_layout;
@@ -83,7 +85,9 @@ public class JoBInvoiceItemList2Activity extends AppCompatActivity implements Vi
     private Spinner loc_tax_dp;
     private String locId = "0";
     private List<TaxesLocation> taxList = new ArrayList<>();
-
+    private Job job;
+    String getDisCalculationType, getTaxCalculationType;
+    String SingleTaxId="0";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,11 +104,22 @@ public class JoBInvoiceItemList2Activity extends AppCompatActivity implements Vi
             jobId = bundle.getString("JobId");
             try {
                 if (jobId != null && !jobId.equals("")) {
-                    Job job = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(jobId);
+                    job = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(jobId);
                     if (job.getLocId() == null)
                         job.setLocId("0");
                     else locId = job.getLocId();
+                }else{
+                    getDisCalculationType= App_preference.getSharedprefInstance().getLoginRes().getDisCalculationType();
+                    getTaxCalculationType= App_preference.getSharedprefInstance().getLoginRes().getTaxCalculationType();
                 }
+
+                    if(job.getCanInvoiceCreated().equals("1")) {
+                        getDisCalculationType = AppDataBase.getInMemoryDatabase(this).jobModel().disCalculationType(jobId);
+                        getTaxCalculationType = AppDataBase.getInMemoryDatabase(this).jobModel().taxCalculationType(jobId);
+                    }else {
+                        getDisCalculationType= App_preference.getSharedprefInstance().getLoginRes().getDisCalculationType();
+                        getTaxCalculationType= App_preference.getSharedprefInstance().getLoginRes().getTaxCalculationType();
+                    }
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -303,17 +318,9 @@ public class JoBInvoiceItemList2Activity extends AppCompatActivity implements Vi
     }
 
     private void intialize_UI_Views() {
-        String getDisCalculationType;
-        if (jobId!=null&&!jobId.isEmpty())
-        {
-            getDisCalculationType=AppDataBase.getInMemoryDatabase(this).jobModel().disCalculationType(jobId);
-        }else{
-            getDisCalculationType= App_preference.getSharedprefInstance().getLoginRes().getDisCalculationType();
-        }
         layoutManager = new LinearLayoutManager(this);
         recyclerView_invoice.setLayoutManager(layoutManager);
-
-        invoice_list_adpter = new InvoiceItemList2Adpter(this, new ArrayList<>(),getDisCalculationType);//, this, this
+        invoice_list_adpter = new InvoiceItemList2Adpter(this, new ArrayList<>(),getDisCalculationType,getTaxCalculationType,this,job.getIsAddisDiscBefore());//, this, this
         recyclerView_invoice.setAdapter(invoice_list_adpter);
 
 
@@ -467,6 +474,8 @@ public class JoBInvoiceItemList2Activity extends AppCompatActivity implements Vi
         intent.putExtra("jobId", jobId);
         intent.putExtra("locId", locId);
         intent.putExtra("NONBILLABLE", false);
+        intent.putExtra("getTaxMethodType", job.getIsAddisDiscBefore());
+        intent.putExtra("getSingleTaxId", SingleTaxId);
         startActivityForResult(intent, ADD_ITEM_DATA);
     }
 
@@ -508,6 +517,8 @@ public class JoBInvoiceItemList2Activity extends AppCompatActivity implements Vi
         intent.putExtra("locId", locId);
         intent.putExtra("NONBILLABLE", false);
         Log.e("InvoiceItemDataModel", new Gson().toJson(invoiceItemDataModel));
+        intent.putExtra("getTaxMethodType", job.getIsAddisDiscBefore());
+        intent.putExtra("getSingleTaxId", SingleTaxId);
         startActivityForResult(intent, ADD_ITEM_DATA);
     }
 
@@ -848,4 +859,8 @@ public class JoBInvoiceItemList2Activity extends AppCompatActivity implements Vi
     }
 
 
+    @Override
+    public void setCalculation(Double Subtotal, List<TaxData> listTax, boolean isShippingData, String singleTaxId) {
+        this.SingleTaxId = singleTaxId;
+    }
 }

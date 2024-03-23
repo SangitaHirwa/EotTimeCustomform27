@@ -14,7 +14,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DecodeFormat;
 import com.eot_app.R;
-import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.GetFileList_Res;
+import com.eot_app.nav_menu.jobs.job_complation.JobCompletionActivity;
+import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.Attachments;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.JobEquipmentAdapter;
 import com.eot_app.utility.App_preference;
 
@@ -23,10 +24,11 @@ import java.util.ArrayList;
 
 public class CompletionAdpterJobDteails extends RecyclerView.Adapter<CompletionAdpterJobDteails.ViewHolder> {
 
-    ArrayList<GetFileList_Res> getFileListres = new ArrayList<>();
+    ArrayList<Attachments> getFileListres = new ArrayList<>();
     boolean EQUIPMENTATTCHMENT = false;
     JobEquipmentAdapter.SelectedImageView selectedImageView;
     private CallBAckForAttchemnt callBAckForAttchemnt;
+    private CallBAckFormAttchemntToCompl callBAckFormAttchemntToCompl;
     private Context context;
     private int counter = 0;
 
@@ -36,20 +38,25 @@ public class CompletionAdpterJobDteails extends RecyclerView.Adapter<CompletionA
      * @param getFileListres String[] containing the data to populate views to be used
      *                       by RecyclerView.
      */
-    public CompletionAdpterJobDteails(ArrayList<GetFileList_Res> getFileListres, CallBAckForAttchemnt callBAckForAttchemnt) {
+    public CompletionAdpterJobDteails(ArrayList<Attachments> getFileListres, CallBAckForAttchemnt callBAckForAttchemnt) {
         this.getFileListres = getFileListres;
         this.callBAckForAttchemnt = callBAckForAttchemnt;
         this.EQUIPMENTATTCHMENT = false;
     }
 
 
-    public CompletionAdpterJobDteails(ArrayList<GetFileList_Res> getFileListres, JobEquipmentAdapter.SelectedImageView selectedImageView) {
+    public CompletionAdpterJobDteails(ArrayList<Attachments> getFileListres, JobEquipmentAdapter.SelectedImageView selectedImageView) {
         this.getFileListres = getFileListres;
         this.EQUIPMENTATTCHMENT = true;
         this.selectedImageView = selectedImageView;
     }
+  public CompletionAdpterJobDteails(ArrayList<Attachments> getFileListres, CallBAckFormAttchemntToCompl callBAckFormAttchemntToCompl, Context context) {
+        this.getFileListres = getFileListres;
+        this.callBAckFormAttchemntToCompl = callBAckFormAttchemntToCompl;
+        this.context = context;
+    }
 
-    public void updateFileList(ArrayList<GetFileList_Res> getFileListres) {
+    public void updateFileList(ArrayList<Attachments> getFileListres) {
         if (this.getFileListres != null) this.getFileListres.clear();
         this.getFileListres.addAll(getFileListres);
         notifyDataSetChanged();
@@ -77,7 +84,7 @@ public class CompletionAdpterJobDteails extends RecyclerView.Adapter<CompletionA
         // Get element from your dataset at this position and replace the
         // contents of the view with that element
 
-        GetFileList_Res fileList = getFileListres.get(position);
+        Attachments fileList = getFileListres.get(position);
         counter = +1;
         final String ext = fileList.getImage_name().substring((fileList.getImage_name().lastIndexOf(".")) + 1).toLowerCase();
         if (!ext.isEmpty()) {
@@ -125,6 +132,8 @@ public class CompletionAdpterJobDteails extends RecyclerView.Adapter<CompletionA
                         callBAckForAttchemnt.getAttchment();
                     else if (EQUIPMENTATTCHMENT && selectedImageView != null) {
                         selectedImageView.sleecteAttch(position);
+                    }else  if(context instanceof JobCompletionActivity){
+                        callBAckFormAttchemntToCompl.hideView(true);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -137,11 +146,18 @@ public class CompletionAdpterJobDteails extends RecyclerView.Adapter<CompletionA
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
-        return getFileListres.size();
+        if(getFileListres.size()>3){
+            return 3;
+        }else {
+            return getFileListres.size();
+        }
     }
 
     public interface CallBAckForAttchemnt {
         void getAttchment();
+    }
+    public interface CallBAckFormAttchemntToCompl {
+        void hideView(boolean hide);
     }
 
     /**

@@ -71,6 +71,7 @@
                     android:background="@android:color/transparent"
                     android:hint="@string/email_star"
                     android:singleLine="true"
+                    android:importantForAutofill="no"
                     android:textColor="@color/body_font_color"
                     tools:ignore="Autofill,TextFields" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -80,7 +81,35 @@
                 android:layout_height="1dp"
                 android:layout_marginTop="5dp"
                 android:background="@color/border_font_color" />
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/input_layout_alter_email"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/input_field_height"
+                android:gravity="center"
+                android:paddingTop="5dp"
+                app:hintAnimationEnabled="true"
+                app:hintEnabled="false"
+                app:hintTextAppearance="@style/TextInputLayoutHintText">
 
+                <EditText
+                    android:id="@+id/alternate_email"
+                    style="@style/style_sec_sec"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:background="@android:color/transparent"
+                    android:hint="@string/alternate_email"
+                    android:singleLine="true"
+                    android:importantForAutofill="no"
+                    android:textColor="@color/body_font_color"
+                    tools:ignore="Autofill,TextFields" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="5dp"
+                android:background="@color/border_font_color" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/input_layout_mobile"

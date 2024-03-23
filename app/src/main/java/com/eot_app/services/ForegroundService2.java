@@ -34,6 +34,7 @@ import com.eot_app.lat_lng_sync_pck.GPSModel;
 import com.eot_app.lat_lng_sync_pck.LatLngRequest;
 import com.eot_app.lat_lng_sync_pck.LatLngSycn_Controller;
 import com.eot_app.recievers.BatteryStatusReceiver;
+import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.AppUtility;
 import com.eot_app.utility.App_preference;
 import com.eot_app.utility.db.OfflineDataController;
@@ -75,6 +76,7 @@ public class ForegroundService2 extends Service {
     public static final String F_STATUS_FIELD = "gpsStatus";
     public static final String F_ISONLINE_FIELD = "isOnline";
     public static final String F_ISBACKGROUND_FIELD = "isBackground";
+    private static final int NOTIFICATION_ID = 1;
     public static String STARTFOREGROUND_ACTION = "com.eot_app.action.startforeground";
     public static String STOPFOREGROUND_ACTION = "com.eot_app.action.stopforeground";
     public static String STOPFOREGROUND_ADMINDENIED_ACTION = "com.eot_app.action.stopadmindenied";
@@ -212,6 +214,12 @@ public class ForegroundService2 extends Service {
     }
 
     @Override
+    public void onCreate() {
+        super.onCreate();
+        startForeground(NOTIFICATION_ID, generateNotification(this,""));
+    }
+
+    @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         try {
             if (Objects.equals(intent.getAction(), STARTFOREGROUND_ACTION)) {
@@ -305,7 +313,11 @@ public class ForegroundService2 extends Service {
                     = new BatteryStatusReceiver();
             IntentFilter intentFilter = new IntentFilter();
             intentFilter.addAction(Intent.ACTION_BATTERY_CHANGED);
-            this.registerReceiver(batteryStatusReceiver, intentFilter);
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+                this.registerReceiver(batteryStatusReceiver, intentFilter);
+            } else {
+                this.registerReceiver(batteryStatusReceiver, intentFilter, RECEIVER_EXPORTED);
+            }
         }
     }
 
@@ -719,15 +731,17 @@ public class ForegroundService2 extends Service {
      */
     private void registerTransitionReceiver() {
         Intent intent = new Intent(TRANSITIONS_RECEIVER_ACTION);
+        final int flag = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ? PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE : PendingIntent.FLAG_UPDATE_CURRENT;
         mActivityTransitionsPendingIntent =
-                PendingIntent.getBroadcast(this, 0, intent, 0);
+                PendingIntent.getBroadcast(this, 0, intent, flag);
 
         if (mTransitionsReceiver == null) {
             mTransitionsReceiver = new TransitionsReceiver();
-            registerReceiver(
-                    mTransitionsReceiver,
-                    new IntentFilter(TRANSITIONS_RECEIVER_ACTION)
-            );
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+                registerReceiver(mTransitionsReceiver, new IntentFilter(TRANSITIONS_RECEIVER_ACTION));
+            } else {
+                registerReceiver(mTransitionsReceiver, new IntentFilter(TRANSITIONS_RECEIVER_ACTION), RECEIVER_EXPORTED);
+            }
         }
     }
 
@@ -739,19 +753,19 @@ public class ForegroundService2 extends Service {
             Task<Void> task = ActivityRecognition.getClient(this)
                     .removeActivityTransitionUpdates(mActivityTransitionsPendingIntent);
 
-            task.addOnSuccessListener(
-                    result -> {
-                        mActivityTransitionsPendingIntent.cancel();
-                        //  HyperLog.i(LOG_TAG, "Activity Removed.");
-                    }
-            );
+                task.addOnSuccessListener(
+                        result -> {
+                            mActivityTransitionsPendingIntent.cancel();
+                            //  HyperLog.i(LOG_TAG, "Activity Removed.");
+                        }
+                );
 
-            task.addOnFailureListener(
-                    e -> {
-                        //HyperLog.i(LOG_TAG, "Activity Remove Error: " + e.toString());
+                task.addOnFailureListener(
+                        e -> {
+                            //HyperLog.i(LOG_TAG, "Activity Remove Error: " + e.toString());
 
-                    }
-            );
+                        }
+                );
 
         }
 
@@ -903,7 +917,7 @@ public class ForegroundService2 extends Service {
                 );
                 String toJson = gson.toJson(latLngRequest);
                 HyperLog.i(LOG_TAG, "Location saved on local DB:" + toJson);
-                OfflineDataController.getInstance().addInOfflineDB(Service_apis.addFWlatlong, toJson, AppUtility.getDateByFormat("yyyy-MM-dd hh:mm:ss a"));
+                OfflineDataController.getInstance().addInOfflineDB(Service_apis.addFWlatlong, toJson, AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT));
                 //clear after save to offline
                 offlineLocations.clear();
             }
@@ -993,7 +1007,11 @@ public class ForegroundService2 extends Service {
     private void registerGPSReceiver() {
         IntentFilter filter = new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION);
         filter.addAction(Intent.ACTION_PROVIDER_CHANGED);
-        registerReceiver(locationSwitchStateReceiver, filter);
+        if(Build.VERSION.SDK_INT< Build.VERSION_CODES.O) {
+            registerReceiver(locationSwitchStateReceiver, filter);
+        }else {
+            registerReceiver(locationSwitchStateReceiver, filter,RECEIVER_EXPORTED);
+        }
 
     }
 
@@ -1036,7 +1054,11 @@ public class ForegroundService2 extends Service {
     private void registerNetworkReceiver() {
         IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
         filter.addAction(Intent.ACTION_PROVIDER_CHANGED);
-        registerReceiver(networkSwitchStateReceiver, filter);
+        if(Build.VERSION.SDK_INT< Build.VERSION_CODES.O) {
+            registerReceiver(networkSwitchStateReceiver, filter);
+        }else {
+            registerReceiver(networkSwitchStateReceiver, filter,RECEIVER_EXPORTED);
+        }
     }
 
     /**

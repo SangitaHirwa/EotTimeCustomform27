@@ -6,8 +6,8 @@ public interface Add_Edit_Inv_Pi {
     void getFwList();
 
     void getInventryItemListFromServer();
-
-    void addInvoiceItem(Invoice_Update_Request_Model addItem_model);
+//Remove after discussion with Jit Sir 8/nov/23
+//    void addInvoiceItem(Invoice_Update_Request_Model addItem_model);
 
     void getTaxList();
 

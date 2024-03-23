@@ -95,6 +95,7 @@ public class MainActivity_pc implements MainActivity_pi {
                                     // for syncing of contact and site
                                     App_preference.getSharedprefInstance().setContactSiteSynced(false);
                                     App_preference.getSharedprefInstance().setLoginResponse(new Gson().toJson(data));
+
                                 }
                             }
 
@@ -124,7 +125,7 @@ public class MainActivity_pc implements MainActivity_pi {
             time = timeCheckout;
         }
         else {
-            time = AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT_new);
+            time = AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT);
         }
 
         String checkId = App_preference.getSharedprefInstance().getcheckId();

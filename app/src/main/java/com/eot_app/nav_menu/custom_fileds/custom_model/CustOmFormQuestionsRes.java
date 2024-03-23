@@ -33,6 +33,8 @@ public class CustOmFormQuestionsRes implements Parcelable {
     private String mandatory;
     private String frmType;
     private int index;
+    private List<AnswerModel> ans = new ArrayList<>();
+    private List<OptionModel> opt = new ArrayList<>();
 
     public void setIndex(int index) {
         this.index = index;
@@ -41,8 +43,6 @@ public class CustOmFormQuestionsRes implements Parcelable {
     public int getIndex() {
         return index;
     }
-
-    private List<AnswerModel> ans = new ArrayList<>();
 
     public CustOmFormQuestionsRes() {
     }
@@ -127,7 +127,6 @@ public class CustOmFormQuestionsRes implements Parcelable {
         this.opt = opt;
     }
 
-    private List<OptionModel> opt = new ArrayList<>();
 
     protected CustOmFormQuestionsRes(Parcel in) {
         queId = in.readString();

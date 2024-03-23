@@ -126,7 +126,7 @@ public class AddAppointmentActivity extends UploadDocumentActivity implements Te
         if (getIntent() != null && getIntent().hasExtra(ISINEDITMODE)) {
             isInEditMode = true;
             getSupportActionBar().setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.appointment_edit));
-            appointment = (Appointment) getIntent().getSerializableExtra("appointment");
+            appointment =  getIntent().getParcelableExtra("appointment");
         }
 
         initializelables();
@@ -268,7 +268,7 @@ public class AddAppointmentActivity extends UploadDocumentActivity implements Te
         binding.adderes.setText(appointment.getAdr());
         binding.city.setText(appointment.getCity());
         binding.postCode.setText(appointment.getZip());
-        binding.jobDesc.setText(appointment.getDes());
+        binding.editor.setHtml(appointment.getDes());
         binding.email.setText(appointment.getEmail());
         binding.mobNo.setText(appointment.getMob1());
         binding.cbFutureClient.setVisibility(View.GONE);
@@ -306,7 +306,7 @@ public class AddAppointmentActivity extends UploadDocumentActivity implements Te
             binding.timeStart.setText(timeFormat);
             time_str = timeFormat;
 
-            String dateFormat = AppUtility.getDateWithFormates(longStartTime, "dd-MM-yyyy");
+            String dateFormat = AppUtility.getDateWithFormates(longStartTime, AppConstant.DATE_FORMAT);
             binding.dateStart.setText(dateFormat);
             date_str = dateFormat;
 
@@ -316,12 +316,12 @@ public class AddAppointmentActivity extends UploadDocumentActivity implements Te
             binding.timeEnd.setText(timeFormat);
             time_en = timeFormat;
 
-            dateFormat = AppUtility.getDateWithFormates(endTime, "dd-MM-yyyy");
+            dateFormat = AppUtility.getDateWithFormates(endTime, AppConstant.DATE_FORMAT);
             binding.dateEnd.setText(dateFormat);
             date_en = dateFormat;
 
 
-            try {
+         /*   try {
                 if (!TextUtils.isEmpty(this.appointment.getDes())) {
                     binding.jobdeshint.setVisibility(View.VISIBLE);
                     binding.editor.setHtml(this.appointment.getDes());
@@ -346,7 +346,7 @@ public class AddAppointmentActivity extends UploadDocumentActivity implements Te
             } catch (Exception exception) {
                 exception.getMessage();
             }
-
+*/
 
         } catch (Exception ex) {
             HyperLog.i("", "preFilledForm(M) exception:" + ex.toString());
@@ -431,7 +431,7 @@ public class AddAppointmentActivity extends UploadDocumentActivity implements Te
         else
             binding.submitBtn.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_appointment));
 
-        binding.jobdeshint.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.description));
+        binding.inputLayoutDesJob.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.description));
 
         //  binding.dateStart.setOnClickListener(this);
         //binding.dateEnd.setOnClickListener(this);
@@ -654,7 +654,7 @@ public class AddAppointmentActivity extends UploadDocumentActivity implements Te
     }
 
     private String getTimeStampFromFormatedDate(String schdlStart) {
-        SimpleDateFormat gettingfmt = new SimpleDateFormat("dd-MM-yyyy hh:mm a"
+        SimpleDateFormat gettingfmt = new SimpleDateFormat(AppConstant.DATE_FORMAT+" hh:mm a"
                 , Locale.US);
         try {
             Date formated = gettingfmt.parse(schdlStart);
@@ -669,7 +669,7 @@ public class AddAppointmentActivity extends UploadDocumentActivity implements Te
 
     private String getLongTimeStamp(String schdlStart) {
         SimpleDateFormat gettingfmt = new SimpleDateFormat(AppUtility.dateTimeByAmPmFormate(
-                "dd-MM-yyyy hh:mm a", "dd-MM-yyyy HH:mm"), Locale.US);
+                AppConstant.DATE_FORMAT+" hh:mm a", AppConstant.DATE_FORMAT+" HH:mm"), Locale.US);
         try {
             Date formated = gettingfmt.parse(schdlStart);
             long l = formated.getTime() / 1000;
@@ -989,7 +989,7 @@ public class AddAppointmentActivity extends UploadDocumentActivity implements Te
 
     public void getCurrentdateTime(String calenderDate) {
         String dateTime = AppUtility.getDateByFormats(AppUtility.dateTimeByAmPmFormate(
-                "dd-MM-yyyy hh:mm:ss a", "dd-MM-yyyy HH:mm:ss"));
+                AppConstant.DATE_FORMAT+" hh:mm:ss a", AppConstant.DATE_FORMAT+" HH:mm:ss"));
         String[] date_Time = dateTime.split(" ");
         String datestr = date_Time[0];
 
@@ -1033,6 +1033,18 @@ public class AddAppointmentActivity extends UploadDocumentActivity implements Te
             } catch (Exception e) {
                 e.getMessage();
             }
+            if(datestr!=null && !datestr.isEmpty()){
+                try {
+                    SimpleDateFormat spf = new SimpleDateFormat("dd-MM-yyyy");
+                    Date date = spf.parse(datestr);
+                    spf= new SimpleDateFormat(AppConstant.DATE_FORMAT);
+                    datestr = spf.format(date);
+                    System.out.println(datestr);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+
+            }
             String cur_start = remv_sec[0] + ":" + remv_sec[1] + an_pm;
             String date_time = datestr + " " + cur_start;
             String[] time_dur = sch_tm_dt.split(":");
@@ -1040,7 +1052,7 @@ public class AddAppointmentActivity extends UploadDocumentActivity implements Te
                     TimeUnit.MINUTES.toSeconds(Integer.parseInt(time_dur[1])));
 
             SimpleDateFormat simpleDate = new SimpleDateFormat(AppUtility.dateTimeByAmPmFormate(
-                    "dd-MM-yyyy hh:mm a", "dd-MM-yyyy HH:mm"), Locale.US);
+                    AppConstant.DATE_FORMAT+" hh:mm a", AppConstant.DATE_FORMAT+" HH:mm"), Locale.US);
             Date past = null;
             long milisce = 0;
             try {
@@ -1114,7 +1126,7 @@ public class AddAppointmentActivity extends UploadDocumentActivity implements Te
     private void end_Date_Time() {
         String date_time = date_str + " " + time_str;
         SimpleDateFormat simpleDate = new SimpleDateFormat(AppUtility.dateTimeByAmPmFormate(
-                "dd-MM-yyyy hh:mm a", "dd-MM-yyyy HH:mm"), Locale.US);
+                AppConstant.DATE_FORMAT+" hh:mm a", AppConstant.DATE_FORMAT+" HH:mm"), Locale.US);
         Date past = null;
         long milisce = 0;
         try {
@@ -1630,13 +1642,18 @@ public class AddAppointmentActivity extends UploadDocumentActivity implements Te
 
     private void updateSyncAppoinemnt(AppointmentUpdateReq updateReq) {
         String s = new Gson().toJson(updateReq);
-        String dateTime = AppUtility.getDateByFormats("dd-MM-yyyy hh:mm:ss a");
+        String dateTime = AppUtility.getDateByFormats(AppConstant.DATE_FORMAT+" hh:mm:ss a");
 
         //update in local DB
         Appointment newAppointment = new Appointment();
         newAppointment.setTempId(appointment.getTempId());
         newAppointment.setAppId(appointment.getAppId());
         newAppointment.setLabel(appointment.getLabel());
+        newAppointment.setJobId(appointment.getJobId());
+        newAppointment.setJobLabel(appointment.getJobLabel());
+        newAppointment.setQuotId(appointment.getQuotId());
+        newAppointment.setQuotLabel(appointment.getQuotLabel());
+        newAppointment.setItemData(appointment.getItemData());
         newAppointment.setCltId(cltId);
         newAppointment.setSiteId(siteId);
         newAppointment.setConId(conId);
@@ -1697,7 +1714,7 @@ public class AddAppointmentActivity extends UploadDocumentActivity implements Te
                     if (!TextUtils.isEmpty(schdlStart)) {
                         SimpleDateFormat format = new SimpleDateFormat(
                                 //"dd-MM-yyyy hh:mm a"
-                                AppUtility.dateTimeByAmPmFormate("dd-MM-yyyy hh:mm a", "dd-MM-yyyy HH:mm")
+                                AppUtility.dateTimeByAmPmFormate(AppConstant.DATE_FORMAT+" hh:mm a", AppConstant.DATE_FORMAT+" HH:mm")
                                 , Locale.US);
                         try {
                             Date start = format.parse(schdlStart);

@@ -77,6 +77,12 @@
         <item name="android:textColor">@color/txt_sub_color</item>
     </style>
 
+    //Dialog EditText lbl style
+ <style name="dialog_edittext_lbl_style" parent="TextAppearance.Design.Hint">
+        <item name="android:textSize">14dp</item>
+        <item name="android:textColor">@color/dialog_edit_text_lbl_color</item>
+    </style>
+
     //text view hint style 02-nov-18
 
     <style name="text_hint" parent="@android:style/TextAppearance.Small">
@@ -92,7 +98,38 @@
     <style name="header_text_style" parent="@android:style/TextAppearance.Small">
         <item name="android:fontFamily">@font/arimo_bold</item>
         <item name="android:textSize">@dimen/large_text</item>
-        <item name="android:color">@color/body_font_color</item>
+        <item name="android:textColor">@color/body_font_color</item>
+    </style>
+ <style name="header_text_style1" parent="@android:style/TextAppearance.Small">
+        <item name="android:fontFamily">@font/arimo_bold</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/font_header_color</item>
+    </style>
+    <style name="header_text_style2" parent="@android:style/TextAppearance.Small">
+        <item name="android:fontFamily">@font/arimo_medium</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:textColor">@color/que_label_color</item>
+    </style>
+    <style name="text_style" parent="@android:style/TextAppearance.Small">
+        <item name="android:fontFamily">@font/arimo_semibold</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:textColor">@color/font_header_color</item>
+    </style>
+    <style name="text_style1" parent="@android:style/TextAppearance.Small">
+        <item name="android:fontFamily">@font/arimo_semibold</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:textColor">@color/font_header_color</item>
+    </style>
+
+    <style name="btn_text_completion" parent="@android:style/TextAppearance.Small">
+        <item name="android:fontFamily">@font/arimo_medium</item>
+        <item name="android:textSize">9sp</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+<style name="btn_txt_mark" parent="@android:style/TextAppearance.Small">
+        <item name="android:fontFamily">@font/arimo_medium</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/txt_btn_mark_color</item>
     </style>
 
     //edit text style
@@ -100,7 +137,7 @@
     <style name="subtext_style" parent="@android:style/TextAppearance.Small">
         <item name="android:fontFamily">@font/arimo_regular</item>
         <item name="android:textSize">@dimen/medium_text_low</item>
-        <item name="android:textColor">@color/txt_sub_color</item>
+        <item name="android:textColor">@color/txt_sub_color_</item>
     </style>
 
 
@@ -230,11 +267,23 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="background">@color/recyclerview</item>
     </style>
+    <!--actual  time style-->
+    <style name="actual_time_text" parent="@android:style/TextAppearance.Small">
+        <item name="android:fontFamily">@font/arimo_regular</item>
+        <item name="android:textSize">@dimen/medium_text</item>
+        <item name="android:color">@color/actual_taxt_time</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textFontWeight">600</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="background">@color/recyclerview</item>
+    </style>
     <!--Job details Hearder Style-->
     <style name="job_details_child_style" parent="@android:style/TextAppearance.Small">
         <item name="android:fontFamily">@font/arimo_regular</item>
-        <item name="android:textSize">@dimen/medium_txt</item>
+        <item name="android:textSize">@dimen/medium_txt_low</item>
         <item name="android:color">@color/txt_sub_color</item>
+        <item name="android:textFontWeight">400</item>
         <item name="android:textStyle">normal</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
@@ -249,6 +298,12 @@
 
         <item name="colorAccent">@color/colorAccent</item>
 
+    </style>
+    //For invoice calculation
+    <style name="calculation_text_style" parent="@android:style/TextAppearance.Small">
+        <item name="android:fontFamily">@font/arimo_bold</item>
+        <item name="android:textSize">@dimen/large_text</item>
+        <item name="android:color">@color/invoice_sub_total_amount</item>
     </style>
 
 </resources>

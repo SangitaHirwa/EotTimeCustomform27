@@ -3,6 +3,7 @@ package com.eot_app.nav_menu.client.clientlist.client_detail.work_history.histor
 import com.eot_app.nav_menu.appointment.dbappointment.Appointment;
 import com.eot_app.nav_menu.audit.audit_list.audit_mvp.model.AuditList_Res;
 import com.eot_app.nav_menu.jobs.job_db.Job;
+import com.eot_app.nav_menu.jobs.job_detail.history.History;
 
 import java.util.List;
 
@@ -16,6 +17,7 @@ public interface WorkHistoryView {
     void setAuditList(List<AuditList_Res> audit);
 
     void setAppointmentList(List<Appointment> appointment);
+    void setHistoryList(List<History> historyList);
 
     void setJobDetails(Job job);
 

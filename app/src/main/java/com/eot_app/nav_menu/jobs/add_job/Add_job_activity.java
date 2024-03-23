@@ -13,6 +13,8 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextUtils;
@@ -22,6 +24,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebSettings;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -36,6 +39,7 @@ import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.app.ActivityCompat;
@@ -114,6 +118,8 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class Add_job_activity extends UploadDocumentActivity implements AddjobView,
         AdapterView.OnItemSelectedListener, View.OnClickListener
@@ -170,7 +176,7 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
     private String ctry_id = "";
     private String state_id = "";
     private int clientForFuture = 0, siteForFuture = 0, contactForFuture = 0, member_type;
-    private String date_str, time_str, date_en, time_en, schdlStart, schdlFinish;
+    private String date_str, time_str, date_en, time_en,oldDate_str, oldTime_str, oldDate_en, oldTime_en, schdlStart, schdlFinish;
     int iTag = 1;
     private String kpr;
     private String[] job_prioty;
@@ -216,83 +222,139 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
     private List<ShiftTimeReSModel> list = new ArrayList<>();
     View schl_view;
     String status="1";
+    private ExecutorService executorService;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_job);
-        setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.title_add_job));
+        AppUtility.progressBarShow(Add_job_activity.this);
+        executorService = Executors.newSingleThreadExecutor();
+        executorService.execute(new Runnable() {
+            @Override
+            public void run() {
+                setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.title_add_job));
 
-        if(getIntent()!=null&&getIntent().getStringExtra("CalenderDate")!=null)
-        {
-            calenderDate=getIntent().getStringExtra("CalenderDate");
-        }
-        //check the add job called form appointment and get the appId
-        if (Objects.requireNonNull(getIntent()).hasExtra("appId")) {
-            appId = getIntent().getStringExtra("appId");
-        }else if (getIntent().hasExtra("addJobByEquipment")) {
-            cltId = getIntent().getStringExtra("addJobByEquipment");
-            equId.add(getIntent().getStringExtra("equId"));
-        }
-        customDPController = new CustomDPController();
-        tagDpController=new TagDpController();
-        initializelables();
-        initializeView();
-        textInputLayoutHint();
-        jobPrioritySet();
-        setTaskPriority();
-
-        mEditor.setPlaceholder(LanguageController.getInstance().getMobileMsgByKey(AppConstant              .job_desc));
-        mEditor.setTextColor(Color.parseColor("#8C9293"));
-
-        mEditor.setOnTextChangeListener(text -> {
-            if (text.length() >= 0) {
-                jobdeshint.setVisibility(View.VISIBLE);
-            } else {
-                jobdeshint.setVisibility(View.INVISIBLE);
-            }
-        });
-        mEditor.setBackgroundColor(Color.TRANSPARENT);
-        mEditor.focusEditor();
-
-        mEditor.setOnFocusChangeListener((v, hasFocus) -> {
-            if (hasFocus) {
-                jobdeshint.setVisibility(View.VISIBLE);
-            } else {
-                if (mEditor.getHtml() != null) {
-                    if (mEditor.getHtml().length() != 0) {
-                        jobdeshint.setVisibility(View.VISIBLE);
-                    } else
-                        jobdeshint.setVisibility(View.INVISIBLE);
-                } else
-                    jobdeshint.setVisibility(View.INVISIBLE);
-            }
-        });
-        action_insert_image.setOnClickListener(v -> {
-            mEditor.focusEditor();
-            HyperLog.i("Add_job_activity", "action_insert_image(M) started");
-            selectFile(true);
-            HyperLog.i("Add_job_activity", "action_insert_image(M) End");
-        });
-        action_insert_suggestion.setOnClickListener(v -> {
-            mEditor.focusEditor();
-            try {
-                if (suggestionsArray != null && suggestionsArray.length > 0)
-                    job_suggestion_spinner.performClick();
-                else {
-                    AppUtility.alertDialog(Add_job_activity.this,
-                            "", LanguageController.getInstance()
-                                    .getMobileMsgByKey(AppConstant.no_suggesstion)
-                            , LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), "", () -> null);
+                if(getIntent()!=null&&getIntent().getStringExtra("CalenderDate")!=null)
+                {
+                    calenderDate=getIntent().getStringExtra("CalenderDate");
                 }
-            } catch (Exception exception) {
-                exception.printStackTrace();
+                //check the add job called form appointment and get the appId
+                if (Objects.requireNonNull(getIntent()).hasExtra("appId")) {
+                    appId = getIntent().getStringExtra("appId");
+                }else if (getIntent().hasExtra("addJobByEquipment")) {
+                    cltId = getIntent().getStringExtra("addJobByEquipment");
+                    equId.add(getIntent().getStringExtra("equId"));
+                }
+                customDPController = new CustomDPController();
+                tagDpController=new TagDpController();
+
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        initializelables();
+                        initializeView();
+                        jobPrioritySet();
+                        setTaskPriority();
+                        /*find Recur View's****/
+                        findRecurView();
+                        mEditor.setPlaceholder(LanguageController.getInstance().getMobileMsgByKey(AppConstant              .job_desc));
+                        mEditor.setTextColor(Color.parseColor("#8C9293"));
+                        mEditor.setBackgroundColor(Color.TRANSPARENT);
+//                        mEditor.focusEditor();
+                    }
+                });
+
+
+
+                SettingUrls settingurl = new SettingUrls(Integer.parseInt(App_preference.getSharedprefInstance().getLoginRes().getCompId()), (success_no, msg) -> {
+                });
+                settingurl.getTagList();
+                settingurl.getJobTitleList();
+                runOnUiThread(new Runnable() {
+                    @SuppressLint("ClickableViewAccessibility")
+                    @Override
+                    public void run() {
+                        mEditor.setOnTextChangeListener(text -> {
+                            if (text.length() >= 0) {
+                                jobdeshint.setVisibility(View.VISIBLE);
+                            } else {
+                                jobdeshint.setVisibility(View.INVISIBLE);
+                            }
+                        });
+                        mEditor.setOnTouchListener((v, event) -> {
+                            mEditor.focusEditor();
+                            jobdeshint.setVisibility(View.VISIBLE);
+                            return false;
+                        });
+                        mEditor.setOnFocusChangeListener((v, hasFocus) -> {
+                            if (hasFocus) {
+                                jobdeshint.setVisibility(View.VISIBLE);
+                            } else {
+                                if (mEditor.getHtml() != null) {
+                                    if (mEditor.getHtml().length() != 0) {
+                                        jobdeshint.setVisibility(View.VISIBLE);
+                                    } else
+                                        jobdeshint.setVisibility(View.INVISIBLE);
+                                } else
+                                    jobdeshint.setVisibility(View.INVISIBLE);
+                            }
+                        });
+                        action_insert_image.setOnClickListener(v -> {
+                            mEditor.focusEditor();
+                            HyperLog.i("Add_job_activity", "action_insert_image(M) started");
+                            selectFile(true);
+                            HyperLog.i("Add_job_activity", "action_insert_image(M) End");
+                        });
+                        action_insert_suggestion.setOnClickListener(v -> {
+                            job_suggestion_spinner.setVisibility(View.VISIBLE);
+                            mEditor.focusEditor();
+                            try {
+                                if (suggestionsArray != null && suggestionsArray.length > 0)
+                                    job_suggestion_spinner.performClick();
+                                else {
+                                    AppUtility.alertDialog(Add_job_activity.this,
+                                            "", LanguageController.getInstance()
+                                                    .getMobileMsgByKey(AppConstant.no_suggesstion)
+                                            , LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), "", () -> null);
+                                }
+                            } catch (Exception exception) {
+                                exception.printStackTrace();
+                            }
+                        });
+                        initializeViewMethod();
+                        textInputLayoutHint();
+                        if(!AppUtility.isInternetConnected()){
+                            AppUtility.error_Alert_Dialog(Add_job_activity.this, AppConstant.network_error, LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok)
+                                    , () -> null);
+                        }
+
+                    }
+                });
+
+
             }
-        });
+            });
 
-        /*find Recur View's****/
-        findRecurView();
+        }
 
+
+    private void initializeViewMethod() {
+        addJob_pc = new AddJob_pc(this);
+        addJob_pc.getJobTitleList();
+        addJob_pc.getClientList();
+        addJob_pc.getCountryList();
+        addJob_pc.getWorkerList();
+        addJob_pc.getTagDataList();
+        addJob_pc.getCurrentdateTime(calenderDate);
+        addJob_pc.getTimeShiftList();
+        FieldWorker yourId = addJob_pc.getDefaultFieldWorker();
+        if (yourId != null) {
+            linearMainView.setVisibility(View.VISIBLE);
+            addChips(yourId);
+        }
     }
 
 
@@ -394,7 +456,7 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
 
     private void setDataInDateTimeField(ShiftTimeReSModel shiftTimeReSModel) {
         try {
-            date_str = AppUtility.getDateByFormats("dd-MM-yyyy");
+            date_str = AppUtility.getDateByFormats(AppConstant.DATE_FORMAT);
             date_start.setText(date_str);
 
             String[] startTime = shiftTimeReSModel.getShiftStartTime().split(":");
@@ -406,7 +468,7 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
 
             time_start.setText(time_str);
 
-            date_en = AppUtility.getDateByFormats("dd-MM-yyyy");
+            date_en = AppUtility.getDateByFormats(AppConstant.DATE_FORMAT);
             String[] endTime = shiftTimeReSModel.getShiftEndTime().split(":");
             String temptime_en = AppUtility.updateTime(Integer.parseInt(endTime[0]), Integer.parseInt(endTime[1]));
 
@@ -610,7 +672,7 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
         jobservicetxtlableset.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.job_title) + " *");
         jobservicelablehint = findViewById(R.id.jobservicelablehint);
         jobservicelablehint.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.job_title) + " *");
-        jobservicelayout.setOnClickListener(this);
+
 
         jobdeshint = findViewById(R.id.jobdeshint);
         jobdeshint.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.job_desc));
@@ -621,16 +683,14 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
         contract_dp_img = findViewById(R.id.contract_dp_img);
         contractSpinner = findViewById(R.id.contractSpinner);
         contract_view = findViewById(R.id.contract_view);
-        contract_cross_img.setOnClickListener(this);
-        contract_dp_img.setOnClickListener(this);
-        contarct_lable.setOnClickListener(this);
+
         contract_hint_lable.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.contract));
         site_dp_img = findViewById(R.id.site_dp_img);
-        site_dp_img.setOnClickListener(this);
+
 
 
         contact_dp_img = findViewById(R.id.contact_dp_img);
-        contact_dp_img.setOnClickListener(this);
+
 
         contact_new_add_layout = findViewById(R.id.contact_new_add_layout);
         contact_dp_layout = findViewById(R.id.contact_dp_layout);
@@ -647,7 +707,7 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
         jobtaglablehint=findViewById(R.id.jobtaglablehint);
         jobtaglablehint.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.tag));
         jobtagtxtlableset.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.tag));
-        jobtaglayout.setOnClickListener(this);
+
 
         site_new_add_layout = findViewById(R.id.site_new_add_layout);
         site_dp_layout = findViewById(R.id.site_dp_layout);
@@ -743,7 +803,7 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
         }
 
         lat_lng_view_lay = findViewById(R.id.lat_lng_view_lay);
-        lat_lng_view_lay.setOnClickListener(this);
+
         lat_lng_txt_lable = findViewById(R.id.lat_lng_txt_lable);
         lat_lng_txt_lable.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.get_current_lat_long));
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -754,8 +814,7 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
         time_shift_dp = findViewById(R.id.time_shift_dp);
         shift_time_txt.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.all_day_leave));
 
-        shift_time_txt.setOnClickListener(this);
-        switch_btn.setOnCheckedChangeListener(this);
+
 
     }
 
@@ -1038,6 +1097,12 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
         } else if (TextUtils.isEmpty(cltId)) {
             setCompanySettingAdrs();
         }
+        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                AppUtility.progressBarDissMiss();
+            }
+        },1000);
 
 
     }
@@ -1059,18 +1124,16 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
         cb_future_contact.setOnClickListener(this);
         cb_future_sites.setOnClickListener(this);
         assignto_linear.setOnClickListener(this);
-
-
-        addJob_pc = new AddJob_pc(this);
-        addJob_pc.getJobTitleList();
-        addJob_pc.getClientList();
-        addJob_pc.getCountryList();
-        addJob_pc.getWorkerList();
-        addJob_pc.getTagDataList();
-        addJob_pc.getCurrentdateTime(calenderDate);
-        addJob_pc.getTimeShiftList();
-
-
+        jobservicelayout.setOnClickListener(this);
+        contract_cross_img.setOnClickListener(this);
+        contract_dp_img.setOnClickListener(this);
+        contarct_lable.setOnClickListener(this);
+        site_dp_img.setOnClickListener(this);
+        contact_dp_img.setOnClickListener(this);
+        jobtaglayout.setOnClickListener(this);
+        lat_lng_view_lay.setOnClickListener(this);
+        shift_time_txt.setOnClickListener(this);
+        switch_btn.setOnCheckedChangeListener(this);
         /* **Hide lat & lng filed when permission deny****/
         if (App_preference.getSharedprefInstance().getCompanySettingsDetails().getIsJobLatLngEnable()==null||App_preference.getSharedprefInstance().getCompanySettingsDetails().getIsJobLatLngEnable().equals("0")) {
             lng_view.setVisibility(View.GONE);
@@ -1089,16 +1152,9 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
         }
 
 //      for add user as default fieldworker in member list initialize.
-        FieldWorker yourId = addJob_pc.getDefaultFieldWorker();
-        if (yourId != null) {
-            linearMainView.setVisibility(View.VISIBLE);
-            addChips(yourId);
-        }
 
-        SettingUrls settingurl = new SettingUrls(Integer.parseInt(App_preference.getSharedprefInstance().getLoginRes().getCompId()), (success_no, msg) -> {
-        });
-        settingurl.getTagList();
-        settingurl.getJobTitleList();
+
+
 
         auto_client.setOnClickListener(this);
         job_ponumber.setOnClickListener(this);
@@ -1116,33 +1172,13 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
         imvCross_site.setOnClickListener(this);
 
 
-        if (App_preference.getSharedprefInstance().getLoginRes().getIsCustomFieldEnable().equals("1")
+        if (App_preference.getSharedprefInstance().getLoginRes().getIsCustomFieldEnable().equals("1") &&
+                App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsEditCustomFormVisible()==0
+
                 // add job form setting page permission
                 && App_preference.getSharedprefInstance().getLoginRes().getIsAddJobCustomFieldEnable().equals("1")) {
             setAdapterOfCustomField();
         }
-
-        job_ponumber.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                poId= 0;
-                if (charSequence.length() >= 1) {
-                    addJob_pc.getPoNumberList(charSequence.toString());
-                    job_po_number_layout.setHintEnabled(true);
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                Log.e("", "");
-            }
-        });
-
 
     }
 
@@ -1181,6 +1217,8 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
                         , new JoBServSuggAdpter.SelectedService() {
                     @Override
                     public void getSerNm(String nm) {
+                        mEditor.focusEditor();
+                        job_suggestion_spinner.setVisibility(View.GONE);
                         setSelectedSuggeston(nm);
                     }
                 });
@@ -1195,17 +1233,22 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
     }
 
     private void setSelectedSuggeston(String nm) {
+        String htmlContent = nm.replaceAll("\n", "<br>");
+        WebSettings webSettings = mEditor.getSettings();
+        webSettings.setJavaScriptEnabled(true);
+
         try {
             // action_insert_suggestion.setText(nm);
             String str = "";
             if (mEditor.getHtml() != null) {
-                str = mEditor.getHtml() + "\n" + nm;
+                str = mEditor.getHtml() + "<br>" + htmlContent;
                 mEditor.setHtml(str);
             } else {
-                mEditor.setHtml(nm);
+                mEditor.setHtml(htmlContent);
             }
 
             jobdeshint.setVisibility(View.VISIBLE);
+            job_suggestion_spinner.setVisibility(View.VISIBLE);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1502,8 +1545,6 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
         auto_states.setText(SpinnerCountrySite.getStatenameById(App_preference.getSharedprefInstance().getCompanySettingsDetails().getCtry(), App_preference.getSharedprefInstance().getCompanySettingsDetails().getState()));
         state_id = (App_preference.getSharedprefInstance().getCompanySettingsDetails().getState());
         ctry_id = (App_preference.getSharedprefInstance().getCompanySettingsDetails().getCtry());
-
-
         try {
             if (App_preference.getSharedprefInstance().getLoginRes().getCtryCode() != null) {
                 mob_no.setText(App_preference.getSharedprefInstance().getLoginRes().getCtryCode());
@@ -1858,6 +1899,11 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
 
     @Override
     public void showErrorMsgsForValidation(String msg) {
+
+        date_str = oldDate_str;
+        time_str =oldTime_str;
+        date_en = oldDate_en;
+        time_en = oldTime_en;
         showErrorDialog(msg);
     }
 
@@ -2283,6 +2329,11 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
                 } else {
                     schdlStart = date_str + " " + time_str;
                     schdlFinish = date_en + " " + time_en;
+
+                    oldDate_str = date_str;
+                    oldTime_str = time_str;
+                    oldDate_en = date_en;
+                    oldTime_en = time_en;
                 }
 
 
@@ -2418,7 +2469,7 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
             if (!date_start.getText().toString().equals("")) {
                 Date start_Date = null;
                 try {
-                    start_Date = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).parse(date_start.getText().toString());
+                    start_Date = new SimpleDateFormat("dd-MMM-yyyy", Locale.getDefault()).parse(date_start.getText().toString());
 
                 } catch (ParseException e) {
                     e.printStackTrace();
@@ -2772,7 +2823,7 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
         try {
             SimpleDateFormat gettingfmt = new SimpleDateFormat(
                     //"dd-MM-yyyy hh:mm a"
-                    AppUtility.dateTimeByAmPmFormate("dd-MM-yyyy hh:mm a", "dd-MM-yyyy HH:mm")
+                    AppUtility.dateTimeByAmPmFormate(AppConstant.DATE_FORMAT+" hh:mm a", AppConstant.DATE_FORMAT+" HH:mm")
                     , Locale.US);
             Date date = gettingfmt.parse(schdlStart);
             assert date != null;
