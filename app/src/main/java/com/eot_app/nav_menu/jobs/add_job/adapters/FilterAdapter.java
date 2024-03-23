@@ -35,7 +35,7 @@ public class FilterAdapter extends ArrayAdapter<Client> {
             if (constraint != null) {
                 suggestions.clear();
                 for (Client customer : itemsAll) {
-                    if (customer.getNm().toLowerCase().startsWith(constraint.toString().toLowerCase())) {
+                    if (customer.getNm().toLowerCase().contains(constraint.toString().toLowerCase())) {
                         suggestions.add(customer);
                     }
                 }
