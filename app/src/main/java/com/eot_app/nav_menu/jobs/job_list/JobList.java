@@ -809,13 +809,21 @@ public class JobList extends Fragment implements MyListItemSelected<Job>, Joblis
                 jobListPi.searchEquipment(job.getJobId(), barcode);
             }
         } else {
-            /* ** Change BY Me For Imvoice ***/
-            Intent intentJobDeatis = new Intent(getActivity(), JobDetailActivity.class);
-            intentJobDeatis.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-            //intentJobDeatis.putExtra("JOBS", job);
-            String strjob = new Gson().toJson(job);
-            intentJobDeatis.putExtra("JOBS", strjob);
-            requireActivity().startActivityForResult(intentJobDeatis, UPDATE);
+            /** After discussion with Jit sir and Shubham user not swithch to job detail screen 26/MAR/24*/
+            if(job.getJobId().equals(job.getTempId())){
+                AppUtility.alertDialog(getActivity(), "",
+                        LanguageController.getInstance().getMobileMsgByKey(AppConstant.error_msg_job_not_synced), LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), "", () -> {
+                            return null;
+                        });
+            }else {
+                /* ** Change BY Me For Imvoice ***/
+                Intent intentJobDeatis = new Intent(getActivity(), JobDetailActivity.class);
+                intentJobDeatis.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                //intentJobDeatis.putExtra("JOBS", job);
+                String strjob = new Gson().toJson(job);
+                intentJobDeatis.putExtra("JOBS", strjob);
+                requireActivity().startActivityForResult(intentJobDeatis, UPDATE);
+            }
         }
     }
 

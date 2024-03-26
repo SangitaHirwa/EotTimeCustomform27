@@ -430,6 +430,7 @@ public class AppConstant {
     public static final String link_items = "link_items";
     public static final String item_linked = "item_linked";
     public static final String item_not_linked = "item_not_linked";
+    public static final String error_msg_job_not_synced = "error_msg_job_not_synced";
 
     /**
      * **** new keys for language support
