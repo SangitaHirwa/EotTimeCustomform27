@@ -67,6 +67,7 @@ import com.eot_app.nav_menu.jobs.job_detail.job_equipment.add_job_equip.model_pk
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.add_job_equip.mvp.AddJobEqu_Pc;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.add_job_equip.mvp.AddJobEqu_Pi;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.add_job_equip.mvp.AddJobEqu_View;
+import com.eot_app.nav_menu.jobs.job_detail.job_equipment.job_equ_remrk.JobEquPartRemarkRemarkActivity;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.job_equ_remrk.JobEquRemarkRemarkActivity;
 import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.AppUtility;
@@ -1227,7 +1228,12 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
         EotApp.getAppinstance().getNotifyForEquipmentCountRemark();
         EotApp.getAppinstance().showToastmsg(msg);
         new Handler().postDelayed(() -> {
-            new JobEquRemarkRemarkActivity().getInstance().finish();
+            if( new JobEquRemarkRemarkActivity().getInstance() != null) {
+                new JobEquRemarkRemarkActivity().getInstance().finish();
+            }
+            if( new JobEquPartRemarkRemarkActivity().getInstance() != null) {
+                new JobEquPartRemarkRemarkActivity().getInstance().finish();
+            }
             /*navigate to the job equipment screen *****/
             Intent intent = new Intent();
             setResult(EQUIPMENT_UPDATE_CODE, intent);

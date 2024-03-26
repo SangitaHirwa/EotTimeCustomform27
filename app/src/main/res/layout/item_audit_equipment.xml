@@ -266,11 +266,9 @@
             android:visibility="gone" />
 
 
-
         <include
             android:id="@+id/edit_remark_layout"
             layout="@layout/remark_attch_layout" />
-
 
         <LinearLayout
             android:layout_width="match_parent"

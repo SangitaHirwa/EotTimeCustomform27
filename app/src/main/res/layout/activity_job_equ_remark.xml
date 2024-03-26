@@ -24,15 +24,36 @@
                 android:orientation="vertical"
                 android:paddingHorizontal="@dimen/left_margin"
                 android:paddingTop="@dimen/left_margin">
-
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
                 <TextView
                     android:id="@+id/tv_equipment_name"
                     style="@style/style_sec"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_marginEnd="5dp"
                     android:layout_height="wrap_content"
                     android:gravity="start"
                     android:text=""
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toStartOf="@id/txt_status"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    />
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/txt_status"
+        style="@style/style_sub_header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:textColor="@color/white"
+        android:textSize="10sp"
+        android:paddingVertical="3dp"
+        android:paddingHorizontal="5dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>
 
                 <TextView
                     android:id="@+id/tv_location"
@@ -316,27 +337,6 @@
                                 app:layout_constraintStart_toEndOf="@id/txt_lbl_condition"
                                 app:layout_constraintTop_toTopOf="@id/txt_lbl_condition" />
 
-                            <androidx.appcompat.widget.AppCompatTextView
-                                android:id="@+id/txt_lbl_status"
-                                style="@style/style_thrid_thrd"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="10dp"
-                                android:text=""
-                                android:visibility="visible"
-                                app:layout_constraintStart_toStartOf="@id/txt_lbl_condition"
-                                app:layout_constraintTop_toBottomOf="@id/txt_condition" />
-
-                            <androidx.appcompat.widget.AppCompatTextView
-                                android:id="@+id/txt_status"
-                                style="@style/style_thrid_thrd"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text=""
-                                android:textStyle="bold"
-                                android:visibility="visible"
-                                app:layout_constraintStart_toEndOf="@id/txt_lbl_status"
-                                app:layout_constraintTop_toTopOf="@id/txt_lbl_status" />
 
 
                             <TextView
@@ -347,8 +347,8 @@
                                 android:layout_marginTop="10dp"
                                 android:gravity="center|start"
                                 android:text=""
-                                app:layout_constraintStart_toStartOf="@id/txt_lbl_status"
-                                app:layout_constraintTop_toBottomOf="@id/txt_status" />
+                                app:layout_constraintStart_toStartOf="@id/txt_lbl_condition"
+                                app:layout_constraintTop_toBottomOf="@id/txt_condition" />
 
                             <androidx.recyclerview.widget.RecyclerView
                                 android:id="@+id/rv_showAttachment"

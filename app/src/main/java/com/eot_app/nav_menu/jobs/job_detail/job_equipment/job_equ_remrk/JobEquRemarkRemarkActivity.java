@@ -32,6 +32,7 @@ import androidx.appcompat.widget.AppCompatTextView;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -597,8 +598,6 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
         txt_lbl_condition = findViewById(R.id.txt_lbl_condition);
         txt_lbl_condition.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.condition)+": ");
         txt_condition = findViewById(R.id.txt_condition);
-        txt_lbl_status = findViewById(R.id.txt_lbl_status);
-        txt_lbl_status.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.status_detail)+": ");
         txt_status = findViewById(R.id.txt_status);
         txt_remark = findViewById(R.id.txt_remark);
         btn_edit = findViewById(R.id.btn_edit);
@@ -1483,9 +1482,7 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
 
             if(equipment.getStatus()!= null && !equipment.getStatus().equals("")) {
                 txt_lbl_condition.setVisibility(View.VISIBLE);
-                txt_lbl_status.setVisibility(View.VISIBLE);
                 txt_condition.setVisibility(View.VISIBLE);
-                txt_status.setVisibility(View.VISIBLE);
                 for (EquipmentStatus status : equipmentStatusList) {
                     if (status.getEsId().equalsIgnoreCase(equipment.getStatus())) {
                         txt_condition.setText(status.getStatusText());
@@ -1493,9 +1490,7 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
                 }
             }else {
                 txt_lbl_condition.setVisibility(View.GONE);
-                txt_lbl_status.setVisibility(View.GONE);
                 txt_condition.setVisibility(View.GONE);
-                txt_status.setVisibility(View.GONE);
             }
             if (!TextUtils.isEmpty(equipment.getEquStatus()) && TextUtils.isDigitsOnly(equipment.getEquStatus())) {
                 int selectedStatusPosition = getEquipmentStatusPosition(equipment.getEquStatus());
@@ -1505,6 +1500,11 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
             }
             for (EquipmentStatus status : equipmentStatusList2) {
                 if(status.getEsId().equalsIgnoreCase(equipment.getEquStatus())){
+                    if (status.getStatusText().equalsIgnoreCase("Discarded")) {
+                        txt_status.setBackgroundColor(ContextCompat.getColor(this, R.color.light_red));
+                    } else {
+                        txt_status.setBackgroundColor(ContextCompat.getColor(this, R.color.dark_yellow));
+                    }
                     txt_status.setText(status.getStatusText());
                 }
             }
@@ -1513,6 +1513,8 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
                     setAttachments(equipment.getAttachments());
                     button_submit.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.update_btn));
                     REMARK_SUBMIT = true;
+                }else {
+                    rv_showAttachment.setVisibility(View.GONE);
                 }
             }else {
                 rv_showAttachment.setVisibility(View.GONE);
@@ -1891,6 +1893,7 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
        part_cardview.setVisibility(View.VISIBLE);
        item_cardview.setVisibility(View.VISIBLE);
        ll_replace.setVisibility(View.VISIBLE);
+       txt_status.setVisibility(View.VISIBLE);
         if(App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsItemRequested() == 0){
             ll_requested_item.setVisibility(View.VISIBLE);
         }else {
@@ -1904,6 +1907,7 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
         part_cardview.setVisibility(View.GONE);
         item_cardview.setVisibility(View.GONE);
         ll_replace.setVisibility(View.GONE);
+        txt_status.setVisibility(View.GONE);
         ll_requested_item.setVisibility(View.GONE);
         attachment_card.setVisibility(View.VISIBLE);
         cv_editRemark.setVisibility(View.VISIBLE);

@@ -32,6 +32,7 @@ import androidx.appcompat.widget.AppCompatTextView;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -184,9 +185,14 @@ public class JobEquPartRemarkRemarkActivity extends UploadDocumentActivity imple
     String brandName = "";
     CompletionAdpterJobDteails jobCompletionAdpter;
     boolean isAction = false, isEdit=false;
+    public static JobEquPartRemarkRemarkActivity jobEquPartRemarkRemarkActivity;
+    public JobEquPartRemarkRemarkActivity getInstance (){
+        return jobEquPartRemarkRemarkActivity;
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        jobEquPartRemarkRemarkActivity =this;
         setContentView(R.layout.activity_job_equ_remark);
 
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
@@ -606,8 +612,6 @@ public class JobEquPartRemarkRemarkActivity extends UploadDocumentActivity imple
         txt_lbl_condition = findViewById(R.id.txt_lbl_condition);
         txt_lbl_condition.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.condition)+": ");
         txt_condition = findViewById(R.id.txt_condition);
-        txt_lbl_status = findViewById(R.id.txt_lbl_status);
-        txt_lbl_status.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.status_detail)+": ");
         txt_status = findViewById(R.id.txt_status);
         txt_remark = findViewById(R.id.txt_remark);
         btn_edit = findViewById(R.id.btn_edit);
@@ -1461,9 +1465,12 @@ public class JobEquPartRemarkRemarkActivity extends UploadDocumentActivity imple
 
 
             if (!TextUtils.isEmpty(equipment.getRemark())){
+                txt_remark.setVisibility(View.VISIBLE);
                 isRemarkUpdated=true;
                 edit_remarks.setText(equipment.getRemark());
                 txt_remark.setText(equipment.getRemark());
+            }else {
+                txt_remark.setVisibility(View.GONE);
             }
 
 
@@ -1474,10 +1481,17 @@ public class JobEquPartRemarkRemarkActivity extends UploadDocumentActivity imple
                     status_spinner.setSelection(selectedStatusPosition);
                 }
             }
-            for (EquipmentStatus status : equipmentStatusList) {
-                if(status.getEsId().equalsIgnoreCase(equipment.getStatus())){
-                    txt_condition.setText(status.getStatusText());
+            if(equipment.getStatus()!= null && !equipment.getStatus().equals("")) {
+                txt_lbl_condition.setVisibility(View.VISIBLE);
+                txt_condition.setVisibility(View.VISIBLE);
+                for (EquipmentStatus status : equipmentStatusList) {
+                    if (status.getEsId().equalsIgnoreCase(equipment.getStatus())) {
+                        txt_condition.setText(status.getStatusText());
+                    }
                 }
+            }else {
+                txt_lbl_condition.setVisibility(View.GONE);
+                txt_condition.setVisibility(View.GONE);
             }
             if (!TextUtils.isEmpty(equipment.getEquStatus()) && TextUtils.isDigitsOnly(equipment.getEquStatus())) {
                 int selectedStatusPosition = getEquipmentStatusPosition(equipment.getEquStatus());
@@ -1487,13 +1501,24 @@ public class JobEquPartRemarkRemarkActivity extends UploadDocumentActivity imple
             }
             for (EquipmentStatus status : equipmentStatusList2) {
                 if(status.getEsId().equalsIgnoreCase(equipment.getEquStatus())){
+                    if (status.getStatusText().equalsIgnoreCase("Discarded")) {
+                        txt_status.setBackgroundColor(ContextCompat.getColor(this, R.color.light_red));
+                    } else {
+                        txt_status.setBackgroundColor(ContextCompat.getColor(this, R.color.dark_yellow));
+                    }
                     txt_status.setText(status.getStatusText());
                 }
             }
             if (equipment != null && equipment.getAttachments() != null) {
-                setAttachments(equipment.getAttachments());
-                button_submit.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.update_btn));
-                REMARK_SUBMIT = true;
+                if (equipment.getAttachments().size() > 0) {
+                    setAttachments(equipment.getAttachments());
+                    button_submit.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.update_btn));
+                    REMARK_SUBMIT = true;
+                }else {
+                    rv_showAttachment.setVisibility(View.GONE);
+                }
+            }else {
+                rv_showAttachment.setVisibility(View.GONE);
             }
 
         }
@@ -1516,6 +1541,11 @@ public class JobEquPartRemarkRemarkActivity extends UploadDocumentActivity imple
         allAttachmentsList = attachments;
         if (equipment != null) {
             if (attachments != null) {
+                if(attachments.size() >0){
+                    rv_showAttachment.setVisibility(View.VISIBLE);
+                }else {
+                    rv_showAttachment.setVisibility(View.GONE);
+                }
                 if (adapter == null) {
                     recyclerView_attachment.setLayoutManager(new GridLayoutManager(this, 3));
                     adapter = new DocumentListAdapter(this, attachments, jobId,"1");
@@ -1877,6 +1907,7 @@ public class JobEquPartRemarkRemarkActivity extends UploadDocumentActivity imple
         part_cardview.setVisibility(View.GONE);
         item_cardview.setVisibility(View.GONE);
         ll_replace.setVisibility(View.VISIBLE);
+        txt_status.setVisibility(View.VISIBLE);
         if(App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsItemRequested() == 0){
             ll_requested_item.setVisibility(View.VISIBLE);
         }else {
@@ -1890,6 +1921,7 @@ public class JobEquPartRemarkRemarkActivity extends UploadDocumentActivity imple
         part_cardview.setVisibility(View.GONE);
         item_cardview.setVisibility(View.GONE);
         ll_replace.setVisibility(View.GONE);
+        txt_status.setVisibility(View.GONE);
         ll_requested_item.setVisibility(View.GONE);
         attachment_card.setVisibility(View.VISIBLE);
         cv_editRemark.setVisibility(View.VISIBLE);
