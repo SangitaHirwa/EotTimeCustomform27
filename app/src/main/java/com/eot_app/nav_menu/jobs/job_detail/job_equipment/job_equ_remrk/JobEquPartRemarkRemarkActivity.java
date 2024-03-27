@@ -1446,7 +1446,7 @@ public class JobEquPartRemarkRemarkActivity extends UploadDocumentActivity imple
             // not for part of equipment
             if (equipment.getIsPart().equalsIgnoreCase("1")) {
                 part_cardview.setVisibility(View.GONE);
-                item_cardview.setVisibility(View.GONE);
+                item_cardview.setVisibility(View.VISIBLE);
             }
 
             setTitles();
@@ -1629,10 +1629,10 @@ public class JobEquPartRemarkRemarkActivity extends UploadDocumentActivity imple
                 jobAuditPi.uploadAttchmentOnserverForJobAudit(myObject,fileNameExt);
             }
         }  else if (requestCode == ADD_ITEM_DATA) {
-            if (data.hasExtra("AddInvoiceItem")) {
+//            if (data.hasExtra("AddInvoiceItem")) {
                 mParam2 = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(jobId);
                 setItemListByJob(mParam2.getItemData());
-            }
+//            }
         } else if (requestCode == ADDPART) {
             Log.e("OnResult", "PartAdded");
             // call api to refresh data
