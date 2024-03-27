@@ -390,6 +390,25 @@ public class AddEditInvoiceItemActivity2 extends
         });
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if(jobModel != null) {
+            for (InvoiceItemDataModel item : jobModel.getItemData()
+            ) {
+
+                if (item.getDataType().equalsIgnoreCase("1") && item.getEquId().equalsIgnoreCase("0")) {
+                    ll_link_note.setVisibility(View.VISIBLE);
+                    break;
+                } else {
+                    ll_link_note.setVisibility(View.GONE);
+                }
+            }
+        }else {
+            ll_link_note.setVisibility(View.GONE);
+        }
+    }
+
     private void getTaxDisType(String jobId){
         if(jobId != null && !jobId.equals("")){
             Job job = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(jobId);
