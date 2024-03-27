@@ -260,6 +260,7 @@ public class DetailFragment extends Fragment
     boolean isAskForCompleteJob = false;
     List<RequestedItemModel> requestedItemList = new ArrayList<>();
     String brandName = "";
+    RecurReqResModel recurData;
 
     public DetailFragment() {
         // Required empty public constructor
@@ -899,8 +900,12 @@ public class DetailFragment extends Fragment
         EotApp.getAppinstance().setNotifyForcompletionInDetail(this);
         EotApp.getAppinstance().setNotifyForRequestedItemList(this);
 
-        if (mParam2.getRecurType() != null && App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsRecur().equals("0") && !mParam2.getRecurType().equals("0")){
-            recur_parent_view.setVisibility(View.VISIBLE);
+        if (mParam2.getRecurType() != null && App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsRecur().equals("0")){
+            if(!mParam2.getParentId().equalsIgnoreCase("0") && mParam2.getIsSubjob().equals("0") || mParam2.getParentId().equalsIgnoreCase("0") && mParam2.getIsRecur().equalsIgnoreCase("1")) {
+                recur_parent_view.setVisibility(View.VISIBLE);
+            }else {
+                recur_parent_view.setVisibility(View.GONE);
+                    }
         }else{
             recur_parent_view.setVisibility(View.GONE);
         }
@@ -929,7 +934,8 @@ public class DetailFragment extends Fragment
 
     @Override
     public void StopRecurPatternHide() {
-        recur_parent_view.setVisibility(View.GONE);
+        recurMsgShow.performClick();
+//        recur_parent_view.setVisibility(View.GONE);
     }
 
     @Override
@@ -1263,14 +1269,21 @@ public class DetailFragment extends Fragment
     @SuppressLint("SetTextI18n")
     @Override
     public void setRecurData(RecurReqResModel recurData) {
+        this.recurData = recurData;
         progressBar_cyclic.setVisibility(View.GONE);
         recurMsgHide.setVisibility(View.VISIBLE);
         recurMsgShow.setVisibility(View.GONE);
         liner_layout_for_recurmsg.setVisibility(View.VISIBLE);
         try {
             if ( recurData != null) {
-
-                if (mParam2.getRecurType() != null && mParam2.getRecurType().equals("1")) {
+                if(recurData.getJobRecurModel().getRecurStatus().equalsIgnoreCase("0") || recurData.getJobRecurModel().getRecurStatus().equalsIgnoreCase("3")) {
+                    btnStopRecurView.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.pause));
+                    btnStopRecurView.setTextColor(this.getResources().getColor(R.color.dark_yellow));
+                }else if(recurData.getJobRecurModel().getRecurStatus().equalsIgnoreCase("2")){
+                    btnStopRecurView.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.resume));
+                    btnStopRecurView.setTextColor(this.getResources().getColor(R.color.green1));
+                }
+                if (mParam2.getRecurType() != null && mParam2.getRecurType().equals("1") || mParam2.getParentRecurType() != null && mParam2.getParentRecurType().equals("1")) {
                     if (recurData.getJobRecurModel().getMode() != null &&recurData.getJobRecurModel().getMode().equals("1") && recurData.getJobRecurModel().getEndRecurMode() != null
                             && recurData.getJobRecurModel().getEndRecurMode().equals("0")) {
                         txt_recur_msg.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.custom_recur_msg1) + " " +
@@ -1290,6 +1303,7 @@ public class DetailFragment extends Fragment
                                         + " " + recurData.getJobRecurModel().getEndDate());
                     }
                 } else if (mParam2.getRecurType() != null && mParam2.getRecurType().equals("2") && recurData.getJobRecurModel().getOccur_days() != null
+                        && recurData.getJobRecurModel().getInterval() != null || mParam2.getParentRecurType() != null && mParam2.getParentRecurType().equals("2") && recurData.getJobRecurModel().getOccur_days() != null
                         && recurData.getJobRecurModel().getInterval() != null) {
                     if (recurData.getJobRecurModel().getEndRecurMode() != null && recurData.getJobRecurModel().getEndRecurMode().equals("0")) {
                         txt_recur_msg.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.weekly_msg1) + " " +
@@ -1314,6 +1328,8 @@ public class DetailFragment extends Fragment
                     }
 
                 } else if (mParam2.getRecurType() != null && mParam2.getRecurType().equals("3")
+                        && recurData.getJobRecurModel().getEndRecurMode() != null && recurData.getJobRecurModel().getWeek_num() != null && recurData.getJobRecurModel().getInterval() != null
+                || mParam2.getParentRecurType() != null && mParam2.getParentRecurType().equals("3")
                         && recurData.getJobRecurModel().getEndRecurMode() != null && recurData.getJobRecurModel().getWeek_num() != null && recurData.getJobRecurModel().getInterval() != null) {
                     if (recurData.getJobRecurModel().getEndRecurMode() != null && recurData.getJobRecurModel().getEndRecurMode().equals("0")) {
                         txt_recur_msg.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.custom_recur_msg1) + " " +
@@ -2560,7 +2576,7 @@ public void setCompletionDetail(){
                 new_status_spinner.performClick();
                 break;
             case R.id.btnStopRecurView:
-                stopRecurpattern();
+                stopRecurpattern(recurData);
                 break;
             case R.id.btn_add_signature:
                 ((JobDetailActivity) requireActivity()).openCustomSignatureDialog(jobstatus.getStatus_no());
@@ -2888,7 +2904,11 @@ public void setCompletionDetail(){
                     if (jobDetail_pi != null) {
                         progressBar_cyclic.setVisibility(View.VISIBLE);
                         /*AppUtility.progressBarShow(getActivity());*/
-                        jobDetail_pi.getRecureDataList(mParam2.getJobId(),mParam2.getRecurType());
+                        if(mParam2.getParentId().equalsIgnoreCase("0")) {
+                            jobDetail_pi.getRecureDataList(mParam2.getJobId(), mParam2.getRecurType());
+                        }else {
+                            jobDetail_pi.getRecureDataList(mParam2.getParentId(), mParam2.getParentRecurType());
+                        }
                     }
                 }else {
                     showErrorDialog(LanguageController.getInstance().getMobileMsgByKey(AppConstant.offline_feature_alert));
@@ -2961,16 +2981,24 @@ public void setCompletionDetail(){
     }
 
 
-    private void stopRecurpattern() {
+    private void stopRecurpattern(RecurReqResModel recurData) {
         if (AppUtility.isInternetConnected()) {
+            String msg = "";
+            if(recurData != null) {
+                if (recurData.getJobRecurModel().getRecurStatus().equalsIgnoreCase("0") || recurData.getJobRecurModel().getRecurStatus().equalsIgnoreCase("3")) {
+                    msg = LanguageController.getInstance().getMobileMsgByKey(AppConstant.pause_recur_msg);
+                } else if (recurData.getJobRecurModel().getRecurStatus().equalsIgnoreCase("2")) {
+                    msg = LanguageController.getInstance().getMobileMsgByKey(AppConstant.resume_recur_msg);
+                }
+            }
             AppUtility.alertDialog2(getActivity(),
                     "",
-                    LanguageController.getInstance().getMobileMsgByKey(AppConstant.delete_recur_msg),
+                    msg,
                     LanguageController.getInstance().getMobileMsgByKey(AppConstant.yes),
                     LanguageController.getInstance().getMobileMsgByKey(AppConstant.no), new Callback_AlertDialog() {
                         @Override
                         public void onPossitiveCall() {
-                            jobDetail_pi.stopRecurpattern(mParam2.getJobId());
+                            jobDetail_pi.pauseResumeRecurr(mParam2, recurData.getJobRecurModel().getRecurStatus());
                         }
 
                         @Override

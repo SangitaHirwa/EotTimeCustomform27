@@ -726,6 +726,9 @@ public abstract class AppDataBase extends RoomDatabase {
                     " PRIMARY KEY(`ebId`)) ");
             database.execSQL("ALTER TABLE Inventry_ReS_Model ADD COLUMN brandNm TEXT");
             database.execSQL("ALTER TABLE Inventry_ReS_Model ADD COLUMN ebId TEXT");
+            /** Alter Table of Job for recurring job*/
+            database.execSQL("ALTER TABLE Job ADD COLUMN isSubjob TEXT");
+            database.execSQL("ALTER TABLE Job ADD COLUMN parentRecurType TEXT");
         }
     };
     private static final String DB_NAME = "eot_db";

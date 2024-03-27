@@ -1906,7 +1906,10 @@
     "link_items": "Link Items",
      "discard_equipments_not_replaced": "Discard equipments cannot be replaced.",
     "order_ref_no": "Order Ref No",
-    "error_msg_job_not_synced":"Please proceed once the job has been synced."
+    "error_msg_job_not_synced":"Please proceed once the job has been synced.",
+    "pause": "Pause",
+    "pause_recur_msg":"Would you like to temporarily pause recurring tasks? They won't create new jobs until you resume them.",
+    "resume_recur_msg":"Do you want to resume the recurring job pattern?"
   }
 }
 

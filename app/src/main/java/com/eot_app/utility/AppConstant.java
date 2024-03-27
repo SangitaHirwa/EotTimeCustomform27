@@ -1009,6 +1009,9 @@ public class AppConstant {
     public static String discarded = "discarded";
     public static String discard_equipments_not_replaced = "discard_equipments_not_replaced";
     public static String order_ref_no = "order_ref_no";
+    public static String pause = "pause";
+    public static String pause_recur_msg = "pause_recur_msg";
+    public static String resume_recur_msg = "resume_recur_msg";
 
 
 

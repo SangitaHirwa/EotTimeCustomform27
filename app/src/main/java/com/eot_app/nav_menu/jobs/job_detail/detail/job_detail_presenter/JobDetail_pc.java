@@ -1129,4 +1129,56 @@ public class JobDetail_pc implements JobDetail_pi {
 
         }
     }
+
+    @Override
+    public void pauseResumeRecurr(Job job, String recurStatus) {
+        String recStatus = "";
+        String recType = "";
+        String _jobId = "";
+        if(recurStatus.equalsIgnoreCase("0") || recurStatus.equalsIgnoreCase("3")){
+            recStatus = "2";
+        }else if(recurStatus.equalsIgnoreCase("2")){
+            recStatus = "3";
+        }
+        /** If child job then send parent Id and if its parent job then we will send job id for pause and resume recurring job*/
+        if(job.getParentId()!= null && job.getParentId().equalsIgnoreCase("0")){
+            _jobId = job.getJobId();
+            recType = job.getRecurType();
+        }else {
+            _jobId = job.getParentId();
+            recType = job.getParentRecurType();
+        }
+
+        ApiClient.getservices().eotServiceCall(Service_apis.pauseResumeRecur, AppUtility.getApiHeaders(),
+                        AppUtility.getJsonObject(new Gson().toJson(new DeleteReCur(_jobId,recStatus,recType))))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<JsonObject>() {
+                    @Override
+                    public void onSubscribe(@NotNull Disposable d) {
+                    }
+                    @Override
+                    public void onNext(@NotNull JsonObject jsonObject) {
+                        Log.e("", "");
+                        if (jsonObject.get("success").getAsBoolean()) {
+                            EotApp.getAppinstance().showToastmsg(LanguageController.getInstance().getServerMsgByKey("recur_deleted"));
+                            view.StopRecurPatternHide();
+                            Log.e("", "");
+                        } else if (jsonObject.get("statusCode") != null && jsonObject.get("statusCode").getAsString().equals(AppConstant.SESSION_EXPIRE)) {
+                            view.sessionExpire(LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
+                        } else {
+                        }
+                    }
+
+                    @Override
+                    public void onError(@NotNull Throwable e) {
+                        Log.e("TAG", e.getMessage());
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Log.e("TAG", " e.getMessage()");
+                    }
+                });
+    }
 }

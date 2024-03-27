@@ -1,5 +1,6 @@
 package com.eot_app.nav_menu.jobs.job_detail.detail.job_detail_presenter;
 
+import com.eot_app.nav_menu.jobs.job_db.Job;
 import com.eot_app.nav_menu.jobs.job_detail.chat.fire_Base_Model.Chat_Send_Msg_Model;
 import com.eot_app.nav_menu.jobs.job_detail.detail.jobdetial_model.CompletionDetailsPost;
 import com.eot_app.nav_menu.jobs.job_detail.detail.jobdetial_model.JobStatusModel;
@@ -35,4 +36,5 @@ public interface JobDetail_pi {
     void getRequestedItemDataList(String jobId);
     void deleteRequestedItem(String irId, String jobId, AddUpdateRequestedModel requestedModel);
     void sendMsg(Chat_Send_Msg_Model chat_send_Msg_model);
+    void pauseResumeRecurr(Job job,String recurStatus);
 }

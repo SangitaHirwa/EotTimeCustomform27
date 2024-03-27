@@ -241,6 +241,7 @@ public interface Service_apis {
     /** Get and Set link Item in Equipment*/
     String getLinkItem ="JobController/getItemListForLinkEqu";
     String linkItemToEqup ="JobController/linkJobItemToEqu";
+    String pauseResumeRecur = "RecurController/pauseResumeRecur";
 
     //no token required & header
     @POST
