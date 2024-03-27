@@ -1161,7 +1161,7 @@ public class JobDetail_pc implements JobDetail_pi {
                     public void onNext(@NotNull JsonObject jsonObject) {
                         Log.e("", "");
                         if (jsonObject.get("success").getAsBoolean()) {
-                            EotApp.getAppinstance().showToastmsg(LanguageController.getInstance().getServerMsgByKey("recur_deleted"));
+                            EotApp.getAppinstance().showToastmsg(LanguageController.getInstance().getServerMsgByKey((jsonObject.get("message").getAsString())));
                             view.StopRecurPatternHide();
                             Log.e("", "");
                         } else if (jsonObject.get("statusCode") != null && jsonObject.get("statusCode").getAsString().equals(AppConstant.SESSION_EXPIRE)) {

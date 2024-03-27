@@ -899,7 +899,8 @@
     "delete_item_req":"Requested item deleted.",
     "not_delete_item_req":"Requested item not deleted.",
     "item_linked": "Item linked successfully.",
-    "item_not_linked": "Unable to link item, please try again."
+    "item_not_linked": "Unable to link item, please try again.",
+    "recur_updated": "Updated"
   },
   "mobileMsgsModel": {
     "accept": "Accept",
