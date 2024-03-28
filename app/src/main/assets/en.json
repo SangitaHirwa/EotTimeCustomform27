@@ -1910,7 +1910,8 @@
     "error_msg_job_not_synced":"Please proceed once the job has been synced.",
     "pause": "Pause",
     "pause_recur_msg":"Would you like to temporarily pause recurring tasks? They won't create new jobs until you resume them.",
-    "resume_recur_msg":"Do you want to resume the recurring job pattern?"
+    "resume_recur_msg":"Do you want to resume the recurring job pattern?",
+    "expired": "Expired"
   }
 }
 

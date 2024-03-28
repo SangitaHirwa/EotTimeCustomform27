@@ -900,7 +900,8 @@ public class DetailFragment extends Fragment
         EotApp.getAppinstance().setNotifyForcompletionInDetail(this);
         EotApp.getAppinstance().setNotifyForRequestedItemList(this);
 
-        if (mParam2.getRecurType() != null && App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsRecur().equals("0")){
+        if (mParam2.getRecurType() != null && App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsRecur().equals("0") && !mParam2.getRecurType().equalsIgnoreCase("0")
+        ||mParam2.getParentRecurType() != null && App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsRecur().equals("0") && !mParam2.getParentRecurType().equalsIgnoreCase("0")){
             if(!mParam2.getParentId().equalsIgnoreCase("0") && mParam2.getIsSubjob().equals("0") || mParam2.getParentId().equalsIgnoreCase("0") && mParam2.getIsRecur().equalsIgnoreCase("1")) {
                 recur_parent_view.setVisibility(View.VISIBLE);
             }else {
@@ -1279,9 +1280,15 @@ public class DetailFragment extends Fragment
                 if(recurData.getJobRecurModel().getRecurStatus().equalsIgnoreCase("0") || recurData.getJobRecurModel().getRecurStatus().equalsIgnoreCase("3")) {
                     btnStopRecurView.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.pause));
                     btnStopRecurView.setTextColor(this.getResources().getColor(R.color.dark_yellow));
+                    btnStopRecurView.setClickable(true);
                 }else if(recurData.getJobRecurModel().getRecurStatus().equalsIgnoreCase("2")){
                     btnStopRecurView.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.resume));
                     btnStopRecurView.setTextColor(this.getResources().getColor(R.color.green1));
+                    btnStopRecurView.setClickable(true);
+                } else if (recurData.getJobRecurModel().getRecurStatus().equalsIgnoreCase("1")) {
+                    btnStopRecurView.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.expired));
+                    btnStopRecurView.setTextColor(this.getResources().getColor(R.color.red_color));
+                    btnStopRecurView.setClickable(false);
                 }
                 if (mParam2.getRecurType() != null && mParam2.getRecurType().equals("1") || mParam2.getParentRecurType() != null && mParam2.getParentRecurType().equals("1")) {
                     if (recurData.getJobRecurModel().getMode() != null &&recurData.getJobRecurModel().getMode().equals("1") && recurData.getJobRecurModel().getEndRecurMode() != null
