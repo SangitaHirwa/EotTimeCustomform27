@@ -262,7 +262,7 @@ public class ReplaceItemEquipmentActivity extends
     @Override
     protected void onStart() {
         super.onStart();
-        if(jobModel != null) {
+        if(jobModel != null && jobModel.getItemData().size() > 0) {
             for (InvoiceItemDataModel item : jobModel.getItemData()
             ) {
 
