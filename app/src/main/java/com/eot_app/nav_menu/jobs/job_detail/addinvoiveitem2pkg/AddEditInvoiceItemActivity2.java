@@ -393,13 +393,22 @@ public class AddEditInvoiceItemActivity2 extends
     @Override
     protected void onStart() {
         super.onStart();
+
         if(jobModel != null) {
             for (InvoiceItemDataModel item : jobModel.getItemData()
             ) {
 
                 if (item.getDataType().equalsIgnoreCase("1") && item.getEquId().equalsIgnoreCase("0")) {
-                    ll_link_note.setVisibility(View.VISIBLE);
-                    break;
+                    if (comeFrom != null && comeFrom.equalsIgnoreCase("AddRemark")) {
+                        ll_link_note.setVisibility(View.VISIBLE);
+                        break;
+                    }else  if (comeFrom != null && comeFrom.equalsIgnoreCase("AddRemarkItem")) {
+                        ll_link_note.setVisibility(View.VISIBLE);
+                        break;
+                    }else {
+                        ll_link_note.setVisibility(View.GONE);
+                    }
+
                 } else {
                     ll_link_note.setVisibility(View.GONE);
                 }

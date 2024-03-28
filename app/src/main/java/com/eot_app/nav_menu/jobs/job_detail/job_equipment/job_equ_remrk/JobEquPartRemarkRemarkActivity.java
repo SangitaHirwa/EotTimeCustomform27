@@ -539,7 +539,7 @@ public class JobEquPartRemarkRemarkActivity extends UploadDocumentActivity imple
         tv_label_part.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.job_equipment_parts));
 
         tv_label_item = findViewById(R.id.tv_label_item);
-        tv_label_item.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.job_equipment_item));
+        tv_label_item.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.items));
 
         tv_label_attachment = findViewById(R.id.tv_label_attachment);
         upload_lable = findViewById(R.id.upload_lable);
