@@ -98,7 +98,7 @@ public class MontlyRecrFragment extends Fragment implements AdapterView.OnItemSe
             defaultJobDateTime = bundle.getString("dateTime");
             Date startDate = null;
             try {
-                startDate = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).parse(defaultJobDateTime);
+                startDate = new SimpleDateFormat("dd-MMM-yyyy", Locale.getDefault()).parse(defaultJobDateTime);
                 schdlStart = startDate.getTime() + "";
             } catch (ParseException e) {
                 e.printStackTrace();

@@ -148,7 +148,7 @@ public class WeeklyRecrFragment extends Fragment implements View.OnClickListener
             defaultJobDateTime = bundle.getString("dateTime");
             Date startDate = null;
             try {
-                startDate = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).parse(defaultJobDateTime);
+                startDate = new SimpleDateFormat("dd-MMM-yyyy", Locale.getDefault()).parse(defaultJobDateTime);
                 schdlStart = startDate.getTime() + "";
 
 
