@@ -26,11 +26,13 @@ import android.widget.Toast;
 
 import com.eot_app.R;
 import com.eot_app.databinding.ActivityDropItemOnMapBinding;
+import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_detail_pkg.inv_detail_model.Inv_Res_Model;
 import com.eot_app.utility.AppUtility;
 import com.eot_app.utility.CompressImageInBack;
 import com.eot_app.utility.util_interfaces.OnImageCompressed;
 import com.github.chrisbanes.photoview.OnScaleChangedListener;
 import com.github.chrisbanes.photoview.PhotoView;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -38,50 +40,53 @@ import java.util.LinkedHashSet;
 import java.util.List;
 
 public class Drop_Item_On_Map_Activity extends AppCompatActivity implements Drop_Item_Adapter.RemoveItem, View.OnClickListener, View.OnDragListener {
-     ActivityDropItemOnMapBinding binding;
+    ActivityDropItemOnMapBinding binding;
     CompressImageInBack compressImageInBack = null;
     Drop_Item_Adapter item_adapter;
     String bitmapString;
-    boolean listshow =false;
+    boolean listshow = false;
     float minX = 0;
     float minY = 0;
     float maxX = 0;
     float maxY = 0;
     List<MapItemModel> availableItems = new ArrayList<>();
     List<MapItemModel> consumedItems = new ArrayList<>();
-   private static View cardViewParentView;
-    View equipmentDropedRl,linearItemListView;
+    private static View cardViewParentView;
+    View equipmentDropedRl, linearItemListView;
     ViewGroup imageviewContainer;
     int position;
     private float xCoOrdinate, yCoOrdinate;
     ViewGroup equCardViewParent;
     SparseArray<View> dropItemList = new SparseArray<>();
-     ViewManager viewManager = new ViewManager();
-     int viewId=1;
-     boolean isMovingView = false;
+    ViewManager viewManager = new ViewManager();
+    int viewId = 1;
+    boolean isMovingView = false;
     private float lastX, lastY;
     private int parentWidth, parentHeight;
     MapItemModel droppedModel;
+    MapItemModel itemModel1;
     private float dX, dY;
+    ImageView itemremove;
+
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_drop_item_on_map);
-       imageviewContainer = (ViewGroup) binding.imageForDropItem.getParent();
+        imageviewContainer = (ViewGroup) binding.imageForDropItem.getParent();
         Uri uri = Uri.parse(getIntent().getStringExtra("uri"));
         imageEditing(uri);
-        MapItemModel itemModel = new MapItemModel(0,0,"AC","widsd","","1",true);
-        MapItemModel itemModel1 = new MapItemModel(0,0,"AC1","widsd","","2",true);
-        MapItemModel itemModel2 = new MapItemModel(0,0,"AC2","widsd","","3",true);
-        MapItemModel itemModel3 = new MapItemModel(0,0,"AC3","widsd","","4",true);
+        MapItemModel itemModel = new MapItemModel(300, 300, "AC", "widsd", "", "1", true);
+        MapItemModel itemModel1 = new MapItemModel(0, 0, "AC1", "widsd", "", "2", true);
+        MapItemModel itemModel2 = new MapItemModel(0, 0, "AC2", "widsd", "", "3", true);
+        MapItemModel itemModel3 = new MapItemModel(0, 0, "AC3", "widsd", "", "4", true);
         availableItems.add(itemModel);
         availableItems.add(itemModel1);
         availableItems.add(itemModel2);
         availableItems.add(itemModel3);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         binding.rvItemList.setLayoutManager(linearLayoutManager);
-        item_adapter = new Drop_Item_Adapter(this, availableItems,this);
+        item_adapter = new Drop_Item_Adapter(this, availableItems, this);
         binding.rvItemList.setAdapter(item_adapter);
         binding.itemShowHide.setOnClickListener(v -> {
             if (!listshow) {
@@ -92,6 +97,8 @@ public class Drop_Item_On_Map_Activity extends AppCompatActivity implements Drop
                 binding.rvItemList.setVisibility(View.GONE);
             }
         });
+        setEquipmentOnImage();
+        binding.tvBack.setOnClickListener(this);
         binding.imageForDropItem.setOnDragListener(this);
 //
 //
@@ -333,6 +340,64 @@ public class Drop_Item_On_Map_Activity extends AppCompatActivity implements Drop
 //        });
 //*/
     }
+
+    private void setEquipmentOnImage() {
+
+    }
+
+    View.OnLongClickListener onLongClickListener = new View.OnLongClickListener() {
+        @Override
+        public boolean onLongClick(View v) {
+            isMovingView = true;
+            String vId="";
+            String json = "";
+            int id = v.getId();
+            for(MapItemModel itemModel : consumedItems){
+                if(itemModel.getItemId().equals(id+"")){
+                    vId = itemModel.getItemId();
+                    Gson gson=new Gson();
+                     json = gson.toJson(itemModel);
+                    break;
+                }
+            }
+            ClipData.Item item = new ClipData.Item(json);
+            ClipData dragData = new ClipData("dragData", new String[]{ClipDescription.MIMETYPE_TEXT_PLAIN}, item);
+            View.DragShadowBuilder myShadow = new View.DragShadowBuilder(v);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                v.startDragAndDrop(dragData, myShadow, v, 0);
+            }
+//                            v.setVisibility(View.INVISIBLE);
+            return true;
+
+        }
+    };
+    View.OnClickListener onClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+
+                    ViewGroup parent1 = (ViewGroup) v.getParent();
+                    ViewGroup parent2 = (ViewGroup) parent1.getParent();
+                              parent2.removeView(parent1);
+                     int id = parent1.getId();
+                     for(MapItemModel itemModel: consumedItems){
+                         if(itemModel.getItemId().equals(id+"")){
+                             availableItems.add(itemModel);
+                             item_adapter.setList(availableItems);
+                         }
+                     }
+         /*   TextView equipmentText = equipmentDropedRl.findViewById(R.id.tv_droped_item);
+                    linearItemListView = cardViewParentView.findViewById(R.id.linear_layout_itemList);
+                    if (linearItemListView != null) linearItemListView.setVisibility(View.VISIBLE);
+                    ViewGroup parent = (ViewGroup) equipmentDropedRl.getParent();
+                    parent.removeView(equipmentDropedRl);
+                    equCardViewParent.addView(equipmentDropedRl);
+                    equipmentDropedRl.setVisibility(View.GONE);*/
+//               list.add(position,equipmentText.getText().toString());
+                    /* item_adapter.setList(list);*//**/
+
+        }
+    };
+
     private boolean isValidDropArea(float dropX, float dropY) {
         // Customize this method based on your drop area validation logic
         // Example: Allow drop only in a specific rectangular area
@@ -432,7 +497,7 @@ public class Drop_Item_On_Map_Activity extends AppCompatActivity implements Drop
             public void onImageCompressed(Bitmap bitmap) {
                 String savedImagePath = compressImageInBack.getSavedImagePath();
                 if (bitmap != null) {
-                    bitmapString= AppUtility.BitMapToString(bitmap);
+                    bitmapString = AppUtility.BitMapToString(bitmap);
                     binding.imageForDropItem.setImageBitmap(bitmap);
                 }
             }
@@ -446,56 +511,69 @@ public class Drop_Item_On_Map_Activity extends AppCompatActivity implements Drop
 
     @Override
     public void onClick(View v) {
-       switch (v.getId()){
-           case R.id.equipment_close_icon:
-               TextView equipmentText = equipmentDropedRl.findViewById(R.id.tv_droped_item);
-               linearItemListView = cardViewParentView.findViewById(R.id.linear_layout_itemList);
-               if(linearItemListView != null) linearItemListView.setVisibility(View.VISIBLE);
-               ViewGroup parent = (ViewGroup) equipmentDropedRl.getParent();
-               parent.removeView(equipmentDropedRl);
-               equCardViewParent.addView(equipmentDropedRl);
-               equipmentDropedRl.setVisibility(View.GONE);
+        switch (v.getId()) {
+           /* case R.id.equipment_close_icon:
+                TextView equipmentText = equipmentDropedRl.findViewById(R.id.tv_droped_item);
+                linearItemListView = cardViewParentView.findViewById(R.id.linear_layout_itemList);
+                if (linearItemListView != null) linearItemListView.setVisibility(View.VISIBLE);
+                ViewGroup parent = (ViewGroup) equipmentDropedRl.getParent();
+                parent.removeView(equipmentDropedRl);
+                equCardViewParent.addView(equipmentDropedRl);
+                equipmentDropedRl.setVisibility(View.GONE);
 //               list.add(position,equipmentText.getText().toString());
-              /* item_adapter.setList(list);*//**/
-       }
+                 item_adapter.setList(list);
+                break;*/
+            case R.id.tv_back:
+                onBackPressed();
+                break;
+        }
     }
 
     @Override
     public boolean onDrag(View v, DragEvent event) {
-//        if(!isMovingView){
-            int action = event.getAction();
-            switch (action) {
-                case DragEvent.ACTION_DROP:
+
+        int action = event.getAction();
+        switch (action) {
+            case DragEvent.ACTION_DROP:
+                listshow = false;
+                binding.rvItemList.setVisibility(View.GONE);
+                if (!isMovingView) {
                     ClipData.Item item = event.getClipData().getItemAt(0);
-                    position = Integer.parseInt(item.getText().toString());
+                    String itemModel = item.getText().toString();
 //                    item_adapter.setList(availableItems);
 //                        if (position >= 0 && position < list.size()) {
+                    Gson gson = new Gson();
+                    itemModel1 = gson.fromJson(itemModel, MapItemModel.class);
+                    if (!consumedItems.contains(itemModel1)) {
+                        consumedItems.add(itemModel1);
 
-                    float dropX = event.getX();
-                    float dropY = event.getY();
-                 if(droppedModel != null){
-                     for (MapItemModel model: availableItems){
-                         if(model.getItemId().equals(droppedModel.getItemId())){
-                              model.setAvailability(droppedModel.getAvailability());
-                              break;
-                         }
-                     }
-                 }
-                    int[] location = new int[2];
-                    binding.imageForDropItem.getLocationOnScreen(location);
-                    int leftX = location[0];   // X coordinate of the left edge
-                    int topY = location[1];    // Y coordinate of the top edge
-                    int rightX = leftX + binding.imageForDropItem.getWidth();  // X coordinate of the right edge
-                    int bottomY = topY + binding.imageForDropItem.getHeight(); // Y coordinate of the bottom edge
+                    }
+                }
+                float dropX = event.getX();
+                float dropY = event.getY();
+                if (droppedModel != null) {
+                    for (MapItemModel model : availableItems) {
+                        if (model.getItemId().equals(droppedModel.getItemId())) {
+                            model.setAvailability(droppedModel.getAvailability());
+                            break;
+                        }
+                    }
+                }
+                int[] location = new int[2];
+                binding.imageForDropItem.getLocationOnScreen(location);
+                int leftX = location[0];   // X coordinate of the left edge
+                int topY = location[1];    // Y coordinate of the top edge
+                int rightX = leftX + binding.imageForDropItem.getWidth();  // X coordinate of the right edge
+                int bottomY = topY + binding.imageForDropItem.getHeight(); // Y coordinate of the bottom edge
 
-                    // Calculate minX, minY, maxX, maxY
-                    minX = leftX;
-                    minY = topY;
-                    maxX = rightX;
-                    maxY = bottomY;
+                // Calculate minX, minY, maxX, maxY
+                minX = leftX;
+                minY = topY;
+                maxX = rightX;
+                maxY = bottomY;
                       /*  list.remove(position);
                         item_adapter.notifyItemRemoved(position);*/
-                    // Validate the drop area (customize this based on your requirements)
+                // Validate the drop area (customize this based on your requirements)
                            /* if (isValidDropArea(dropX, dropY)) {
 
 
@@ -505,11 +583,12 @@ public class Drop_Item_On_Map_Activity extends AppCompatActivity implements Drop
                                 Toast.makeText(getApplicationContext(), "Invalid Drop Area", Toast.LENGTH_SHORT).show();
                             }*/
 
+                if (!isMovingView) {
                     cardViewParentView = (View) event.getLocalState();
                     equipmentDropedRl = cardViewParentView.findViewById(R.id.relative_layout_equipment_item);
                     linearItemListView = cardViewParentView.findViewById(R.id.linear_layout_itemList);
 
-                    if(linearItemListView != null)linearItemListView.setVisibility(View.GONE);
+                    if (linearItemListView != null) linearItemListView.setVisibility(View.GONE);
                     if (equipmentDropedRl != null) {
                         equipmentDropedRl.setVisibility(View.VISIBLE);
                         equCardViewParent = (ViewGroup) equipmentDropedRl.getParent();
@@ -518,34 +597,47 @@ public class Drop_Item_On_Map_Activity extends AppCompatActivity implements Drop
                         equCardViewParent.removeView(equipmentDropedRl);
                     // Add the dragged view to the new parent (dropImage)
                     imageviewContainer.addView(equipmentDropedRl);
-                    // Calculate new position based on drop location
-                    float newX = dropX - (float) equipmentDropedRl.getWidth() / 2;
-                    float newY = dropY - (float) equipmentDropedRl.getHeight() / 2;
 
-                    // Set new position for the dragged view
-                    equipmentDropedRl.setX(newX);
-                    equipmentDropedRl.setY(newY);
+                    equipmentDropedRl.setId(Integer.parseInt(itemModel1.getItemId()));
+                    itemremove = equipmentDropedRl.findViewById(R.id.equipment_close_icon);
+                    equipmentDropedRl.setOnLongClickListener(onLongClickListener);
+                    itemremove.setOnClickListener(onClickListener);
+                } else {
+                    equipmentDropedRl = (View) event.getLocalState();
+                    imageviewContainer = (ViewGroup) equipmentDropedRl.getParent();
+                    imageviewContainer.removeView(equipmentDropedRl);
+                    imageviewContainer.addView(equipmentDropedRl);
+                    equipmentDropedRl.setVisibility(View.VISIBLE);
+                    isMovingView = false;
+                }
+                // Calculate new position based on drop location
+                float newX = dropX - (float) equipmentDropedRl.getWidth() / 2;
+                float newY = dropY - (float) equipmentDropedRl.getHeight() / 2;
 
-                    ImageView itemremove = equipmentDropedRl.findViewById(R.id.equipment_close_icon);
-                    itemremove.setVisibility(View.VISIBLE);
-                    itemremove.setOnClickListener(Drop_Item_On_Map_Activity.this);
+                // Set new position for the dragged view
+                equipmentDropedRl.setX(newX);
+                equipmentDropedRl.setY(newY);
+                itemremove.setVisibility(View.VISIBLE);
 
-                    equipmentDropedRl.setOnLongClickListener(new View.OnLongClickListener() {
-                        @Override
-                        public boolean onLongClick(View v) {
-                            isMovingView = true;
-                            ClipData.Item item = new ClipData.Item("-1");
-                            ClipData dragData = new ClipData("dragData", new String[]{ClipDescription.MIMETYPE_TEXT_PLAIN}, item);
-                            View.DragShadowBuilder myShadow = new View.DragShadowBuilder(v);
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                                v.startDragAndDrop(dragData, myShadow, equipmentDropedRl, 0);
-                            }
-                            v.setVisibility(View.INVISIBLE);
-                            return true;
+
+               /* equipmentDropedRl.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+
+                        isMovingView = true;
+                        ClipData.Item item = new ClipData.Item("" + position);
+                        ClipData dragData = new ClipData("dragData", new String[]{ClipDescription.MIMETYPE_TEXT_PLAIN}, item);
+                        View.DragShadowBuilder myShadow = new View.DragShadowBuilder(v);
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                            v.startDragAndDrop(dragData, myShadow, equipmentDropedRl, 0);
                         }
-                    });
-            }
-            return true;
+//                            v.setVisibility(View.INVISIBLE);
+                        return true;
+                    }
+                });*/
+                break;
+        }
+        return true;
 
 //        }else{
 //            switch (event.getAction()) {
@@ -564,6 +656,7 @@ public class Drop_Item_On_Map_Activity extends AppCompatActivity implements Drop
 //            }
 //        }
     }
+
 
     @SuppressLint("NotifyDataSetChanged")
     @Override

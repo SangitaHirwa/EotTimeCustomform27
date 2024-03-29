@@ -28,10 +28,10 @@
     <TextView
         android:id="@+id/tv_back"
         style="@style/style_sec_sec"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="341dp"
+        android:layout_marginEnd="300dp"
         android:text="Back"
         android:textColor="#03A9F4"
         android:textSize="15dp"
@@ -142,7 +142,7 @@
             android:layout_height="match_parent"
             android:layout_gravity="end"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            android:visibility="visible"
+            android:visibility="gone"
             android:elevation="10dp"
 
             />

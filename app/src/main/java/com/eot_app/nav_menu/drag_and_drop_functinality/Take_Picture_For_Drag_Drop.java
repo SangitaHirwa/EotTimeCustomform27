@@ -65,6 +65,7 @@ public class Take_Picture_For_Drag_Drop extends AppCompatActivity implements Vie
     }
 
     private void initiView() {
+
         binding.tvBack.setOnClickListener(this);
         binding.tvTakePicture.setOnClickListener(this);
         binding.tvDropOnMap.setOnClickListener(this);

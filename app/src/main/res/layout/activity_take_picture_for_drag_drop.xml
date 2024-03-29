@@ -29,10 +29,10 @@
     <TextView
         android:id="@+id/tv_back"
         style="@style/style_sec_sec"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="341dp"
+        android:layout_marginEnd="300dp"
         android:text="Back"
         android:textColor="#03A9F4"
         android:textSize="15dp"
@@ -75,12 +75,14 @@
     <ImageView
         android:id="@+id/selectd_picture"
         android:layout_width="match_parent"
-        android:layout_height="550dp"
+        android:layout_height="0dp"
         android:padding="5dp"
+        android:layout_margin="10dp"
         app:layout_constraintBottom_toTopOf="@+id/tv_take_picture"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_back"
-        app:srcCompat="@drawable/app_logo2" />
+        app:srcCompat="@drawable/app_logo2"
+       />
 </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

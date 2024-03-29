@@ -19,6 +19,7 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.eot_app.R;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,8 +52,9 @@ public class Drop_Item_Adapter extends RecyclerView.Adapter<Drop_Item_ViewHolder
         holder.linearLayoutItemList.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                    removeItem.removeSelectedEqu(itemModel);
-                    ClipData.Item item = new ClipData.Item(""+position);
+                Gson gson=new Gson();
+                String json = gson.toJson(itemModel);
+                ClipData.Item item = new ClipData.Item(json);
                     ClipData dragData = new ClipData("dragData", new String[]{ClipDescription.MIMETYPE_TEXT_PLAIN}, item);
                     View.DragShadowBuilder myShadow = new View.DragShadowBuilder(v);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
