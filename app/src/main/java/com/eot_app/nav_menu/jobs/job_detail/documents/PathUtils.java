@@ -227,9 +227,17 @@ public class PathUtils {
         // MediaStore (and general)
         else if ("content".equalsIgnoreCase(uri.getScheme())) {
             // Return the remote address
-            if (isGooglePhotosUri(uri))
+            if (isGooglePhotosUri(uri)) {
                 return uri.getLastPathSegment();
-            return getDataColumn(context, uri, null, null);
+            }else if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
+            {
+
+                // return getFilePathFromURI(context,uri);
+                return copyFileToInternalStorage(context,uri,"userfiles");
+                // return getRealPathFromURI(context,uri);
+            }else {
+                return getDataColumn(context, uri, null, null);
+            }
         }
         // File
         else if ("file".equalsIgnoreCase(uri.getScheme())) {
@@ -310,7 +318,63 @@ public class PathUtils {
         }
     }
 
+    /***
+     * Used for Android Q+
+     * @param uri
+     * @param newDirName if you want to create a directory, you can set this variable
+     * @return
+     */
+    private static String copyFileToInternalStorage(Context context,Uri uri,String newDirName) {
+        Uri returnUri = uri;
 
+        Cursor returnCursor = context.getContentResolver().query(returnUri, new String[]{
+                OpenableColumns.DISPLAY_NAME,OpenableColumns.SIZE
+        }, null, null, null);
+
+
+        /*
+         * Get the column indexes of the data in the Cursor,
+         *     * move to the first row in the Cursor, get the data,
+         *     * and display it.
+         * */
+        int nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+        int sizeIndex = returnCursor.getColumnIndex(OpenableColumns.SIZE);
+        returnCursor.moveToFirst();
+        String name = (returnCursor.getString(nameIndex));
+        String size = (Long.toString(returnCursor.getLong(sizeIndex)));
+
+        File output;
+        if(!newDirName.equals("")) {
+            File dir = new File(context.getFilesDir() + "/" + newDirName);
+            if (!dir.exists()) {
+                dir.mkdir();
+            }
+            output = new File(context.getFilesDir() + "/" + newDirName + "/" + name);
+        }
+        else{
+            output = new File(context.getFilesDir() + "/" + name);
+        }
+        try {
+            InputStream inputStream = context.getContentResolver().openInputStream(uri);
+            FileOutputStream outputStream = new FileOutputStream(output);
+            int read = 0;
+            int bufferSize = 1024;
+            final byte[] buffers = new byte[bufferSize];
+            while ((read = inputStream.read(buffers)) != -1) {
+                outputStream.write(buffers, 0, read);
+            }
+
+            inputStream.close();
+            outputStream.close();
+
+        }
+        catch (Exception e) {
+
+            Log.e("Exception", e.getMessage());
+        }
+
+        return output.getPath();
+    }
     /**
      * @param uri The Uri to check.
      * @return Whether the Uri authority is ExternalStorageProvider.

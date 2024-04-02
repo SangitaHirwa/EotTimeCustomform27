@@ -908,7 +908,8 @@ public class OfflineDataController {
                     // for sending the log report everytime we send the error log mail
                     sendDeviceLog();
                 }else {
-//                    EotApp.getAppinstance().deleteDir(new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getPath(), "MyFolder/Images"));
+                    /** For delete unnecessary image store directory*/
+                    EotApp.getAppinstance().deleteDir(new File("/data/user/0/com.eot_app", "files/userfiles"));
                 }
 //                remove all jobs, clients, sites, from main tables.
 //                removeAllTempJobClientContactSite();
