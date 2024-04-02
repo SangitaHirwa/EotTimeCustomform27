@@ -5,5 +5,6 @@ import com.eot_app.nav_menu.drag_and_drop_functinality.model.DragAndDropMapModel
 import java.util.List;
 
 public interface DragDropMap_View {
-    void setDragDRopMapData(List<DragAndDropMapModel> data);
+    void setDragDRopMapData(DragAndDropMapModel data);
+    void showToastmsg(String msg);
 }

@@ -427,7 +427,7 @@ public class Take_Picture_For_Drag_Drop extends AppCompatActivity implements Vie
     }
 
     @Override
-    public void setList(ArrayList<Attachments> getFileList_res, String isAttachCompletionNotes, boolean firstCall) {
+    public void setList(ArrayList<Attachments> getFileList_res, String isAttachCompletionNotes, boolean firstCall, boolean isOnline) {
 
     }
 

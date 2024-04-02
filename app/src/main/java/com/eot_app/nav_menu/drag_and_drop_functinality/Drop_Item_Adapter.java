@@ -53,6 +53,7 @@ public class Drop_Item_Adapter extends RecyclerView.Adapter<Drop_Item_ViewHolder
             @Override
             public boolean onLongClick(View v) {
                 Gson gson=new Gson();
+
                 String json = gson.toJson(itemModel);
                 ClipData.Item item = new ClipData.Item(json);
                     ClipData dragData = new ClipData("dragData", new String[]{ClipDescription.MIMETYPE_TEXT_PLAIN}, item);
@@ -79,6 +80,7 @@ public class Drop_Item_Adapter extends RecyclerView.Adapter<Drop_Item_ViewHolder
 
     @SuppressLint("NotifyDataSetChanged")
     public void setList(List<MapItemModel> list){
+
         this.list1=list;
         notifyDataSetChanged();
     }
@@ -88,10 +90,9 @@ public class Drop_Item_Adapter extends RecyclerView.Adapter<Drop_Item_ViewHolder
 }
 class Drop_Item_ViewHolder extends RecyclerView.ViewHolder{
       LinearLayout linearLayoutItemList;
-      RelativeLayout relativeLayout;
       TextView item,equipment;
       CardView cardView;
-      ImageView cross,itemremove;
+      ImageView itemremove;
     public Drop_Item_ViewHolder(@NonNull View itemView) {
         super(itemView);
         linearLayoutItemList =itemView.findViewById(R.id.linear_layout_itemList);

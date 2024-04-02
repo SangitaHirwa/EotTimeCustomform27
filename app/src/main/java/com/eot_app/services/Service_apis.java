@@ -245,7 +245,18 @@ public interface Service_apis {
 
     /**Api for drag and drop**/
     String getJobMap = "CommonController/getJobMap";
-
+    String addUpdateMapData = "CommonController/addUpdateJobMap";
+    @Multipart
+    @POST("CommonController/addUpdateJobMap")
+    Observable<JsonObject>
+    addUpdateMapData(@HeaderMap Map<String, String> map,
+                    @Part("jobId") RequestBody jobId,
+                    @Part("mapId") RequestBody mapId,
+                    @Part("mapItems") RequestBody mapItems,
+                    @Part("mapLength") RequestBody mapLength,
+                    @Part("mapWidth") RequestBody mapWidth,
+                    @Part("title") RequestBody title,
+                    @Part MultipartBody.Part file);
     //no token required & header
     @POST
     Observable<JsonObject> service_Call_Without_Token(@Url String url,

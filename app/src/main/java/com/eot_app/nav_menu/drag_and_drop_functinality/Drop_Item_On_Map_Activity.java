@@ -25,11 +25,13 @@ import com.eot_app.databinding.ActivityDropItemOnMapBinding;
 import com.eot_app.nav_menu.drag_and_drop_functinality.drag_drop_pi_And_pc.DragDropMap_View;
 import com.eot_app.nav_menu.drag_and_drop_functinality.drag_drop_pi_And_pc.MapView_pc;
 import com.eot_app.nav_menu.drag_and_drop_functinality.drag_drop_pi_And_pc.MapView_pi;
+import com.eot_app.nav_menu.drag_and_drop_functinality.model.AddUpdateMapReqModel;
 import com.eot_app.nav_menu.drag_and_drop_functinality.model.DragAndDropMapModel;
 import com.eot_app.nav_menu.drag_and_drop_functinality.model.MapItemModel;
 import com.eot_app.nav_menu.jobs.add_job.add_job_recr.daily_recr_pkg.daily_recr_mvp.DailyRecr_View;
 import com.eot_app.utility.AppUtility;
 import com.eot_app.utility.CompressImageInBack;
+import com.eot_app.utility.EotApp;
 import com.eot_app.utility.util_interfaces.OnImageCompressed;
 import com.google.gson.Gson;
 
@@ -57,7 +59,9 @@ public class Drop_Item_On_Map_Activity extends AppCompatActivity implements Drop
     MapItemModel itemModel1;
     ImageView itemremove;
     MapView_pi mapViewPi;
-
+    DragAndDropMapModel dragAndDropMapModel;
+    String savedImagePath;
+    Uri uri;
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,14 +69,14 @@ public class Drop_Item_On_Map_Activity extends AppCompatActivity implements Drop
         binding = DataBindingUtil.setContentView(this, R.layout.activity_drop_item_on_map);
         mapViewPi = new MapView_pc(Drop_Item_On_Map_Activity.this);
         imageviewContainer = (ViewGroup) binding.imageForDropItem.getParent();
-        Uri uri = Uri.parse(getIntent().getStringExtra("uri"));
-        imageEditing(uri);
+        uri  = Uri.parse(getIntent().getStringExtra("uri"));
+
         try {
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
             binding.rvItemList.setLayoutManager(linearLayoutManager);
-            mapViewPi.getDragAndDropMapDataApi();
             item_adapter = new Drop_Item_Adapter(this, availableItems, this);
             binding.rvItemList.setAdapter(item_adapter);
+
             binding.itemShowHide.setOnClickListener(v -> {
                 if (!listshow) {
                     listshow = true;
@@ -84,6 +88,9 @@ public class Drop_Item_On_Map_Activity extends AppCompatActivity implements Drop
             });
             binding.tvBack.setOnClickListener(this);
             binding.imageForDropItem.setOnDragListener(this);
+            binding.mapSaveBtn.setOnClickListener(this);
+            mapViewPi.getDragAndDropMapDataApi();
+            imageEditing(uri);
         }catch (Exception exception){
             exception.printStackTrace();
         }
@@ -118,6 +125,7 @@ public class Drop_Item_On_Map_Activity extends AppCompatActivity implements Drop
                 itemremove.setVisibility(View.VISIBLE);
             }
         }
+
     }
     View.OnLongClickListener onLongClickListener = new View.OnLongClickListener() {
         @Override
@@ -150,14 +158,25 @@ public class Drop_Item_On_Map_Activity extends AppCompatActivity implements Drop
                     ViewGroup parent2 = (ViewGroup) parent1.getParent();
                               parent2.removeView(parent1);
                      int id = parent1.getId();
+            List<MapItemModel> availableremoveItem = new ArrayList<>();
+            for(MapItemModel avaItem : availableItems){
+                for (MapItemModel conItem:consumedItems){
+                    if(avaItem.getItemId().equals(conItem.getItemId()) || avaItem.getItemId().equals(id+"")){
+                        availableremoveItem.add(avaItem);
+                        break;
+                    }
+                }
+            }
+                availableItems.removeAll(availableremoveItem);
+
                      for(MapItemModel itemModel: consumedItems){
                          if(itemModel.getItemId().equals(id+"")){
+                             itemModel.setAvailability("true");
                              availableItems.add(itemModel);
                              item_adapter.setList(availableItems);
                              break;
                          }
                      }
-                    consumedItems.removeAll(availableItems);
         }
     };
 
@@ -173,7 +192,7 @@ public class Drop_Item_On_Map_Activity extends AppCompatActivity implements Drop
         compressImageInBack = new CompressImageInBack(this, new OnImageCompressed() {
             @Override
             public void onImageCompressed(Bitmap bitmap) {
-                String savedImagePath = compressImageInBack.getSavedImagePath();
+                 savedImagePath = compressImageInBack.getSavedImagePath();
                 if (bitmap != null) {
                     bitmapString = AppUtility.BitMapToString(bitmap);
                     binding.imageForDropItem.setImageBitmap(bitmap);
@@ -191,8 +210,36 @@ public class Drop_Item_On_Map_Activity extends AppCompatActivity implements Drop
             case R.id.tv_back:
                 onBackPressed();
                 break;
+            case R.id.map_save_btn:
+                availableItems.removeAll(consumedItems);
+                addUpdateMapData();
+                break;
         }
     }
+
+    private void addUpdateMapData() {
+                List<MapItemModel> availableremoveItem = new ArrayList<>();
+                for(MapItemModel avaItem : availableItems){
+                    for (MapItemModel conItem:consumedItems){
+                        if(avaItem.getItemId().equals(conItem.getItemId())){
+                            availableremoveItem.add(avaItem);
+                            break;
+                        }
+                    }
+                }
+                availableItems.removeAll(availableremoveItem);
+                availableItems.addAll(consumedItems);
+                dragAndDropMapModel.setMapItems(availableItems);
+
+                AddUpdateMapReqModel addUpdateModel =  new AddUpdateMapReqModel(dragAndDropMapModel.getJobId(),
+                        dragAndDropMapModel.getMapId(),String.valueOf(dragAndDropMapModel.getMapLength()),String.valueOf(dragAndDropMapModel.getMapWidth()),
+                        dragAndDropMapModel.getTitle(),dragAndDropMapModel.getMapItems(),savedImagePath);
+           /* List<AddUpdateMapReqModel> addUpdateList = new ArrayList<>();
+                   addUpdateList.add(addUpdateModel);*/
+        mapViewPi.addUpdateMapItemCordinat(addUpdateModel);
+
+    }
+
     @Override
     public boolean onDrag(View v, DragEvent event) {
         listshow = false;
@@ -205,22 +252,10 @@ public class Drop_Item_On_Map_Activity extends AppCompatActivity implements Drop
                     String itemModel = item.getText().toString();
                     Gson gson = new Gson();
                     itemModel1 = gson.fromJson(itemModel, MapItemModel.class);
-                    availableItems.remove(itemModel1);
-                    if (!consumedItems.contains(itemModel1)) {
-                        consumedItems.add(itemModel1);
 
-                    }
 //                }
                 float dropX = event.getX();
                 float dropY = event.getY();
-                if (droppedModel != null) {
-                    for (MapItemModel model : availableItems) {
-                        if (model.getItemId().equals(droppedModel.getItemId())) {
-                            model.setAvailability(droppedModel.getAvailability());
-                            break;
-                        }
-                    }
-                }
                 int[] location = new int[2];
                 binding.imageForDropItem.getLocationOnScreen(location);
                 int leftX = location[0];   // X coordinate of the left edge
@@ -263,10 +298,32 @@ public class Drop_Item_On_Map_Activity extends AppCompatActivity implements Drop
                 // Set new position for the dragged view
                 equipmentDropedRl.setX(newX);
                 equipmentDropedRl.setY(newY);
-                itemModel1.setCordinetX((int) newX);
-                itemModel1.setCordinetY((int) newY);
-                itemremove.setVisibility(View.VISIBLE);
-
+                if(itemModel1 != null) {
+                    itemModel1.setCordinetX((int) newX);
+                    itemModel1.setCordinetY((int) newY);
+                    itemremove.setVisibility(View.VISIBLE);
+                    if (itemModel1.getAvailability().equals("true")) {
+                        itemModel1.setAvailability("false");
+                        for (MapItemModel model : availableItems) {
+                            if (model.getItemId().equals(itemModel1.getItemId())) {
+                                model.setCordinetX((int) newX);
+                                model.setCordinetY((int) newY);
+                                model.setAvailability("false");
+                                consumedItems.add(model);
+                                break;
+                            }
+                        }
+                    } else {
+                        for (MapItemModel model : consumedItems) {
+                            if (model.getItemId().equals(itemModel1.getItemId())) {
+                                model.setCordinetX((int) newX);
+                                model.setCordinetY((int) newY);
+                                model.setAvailability("false");
+                                break;
+                            }
+                        }
+                    }
+                }
                 break;
         }
         return true;
@@ -283,26 +340,33 @@ public class Drop_Item_On_Map_Activity extends AppCompatActivity implements Drop
         }
 
     @Override
-    public void setDragDRopMapData(List<DragAndDropMapModel> data) {
-        if (data != null && data.size() > 0) {
-            DragAndDropMapModel dragAndDropMapModel = data.get(0);
+    public void setDragDRopMapData(DragAndDropMapModel dragAndDropMapModel) {
+        if (dragAndDropMapModel != null) {
+            this.dragAndDropMapModel = dragAndDropMapModel;
             int layout_width, layout_height;
-            layout_width = Integer.parseInt(dragAndDropMapModel.getMapWidth());
-           layout_height = Integer.parseInt(dragAndDropMapModel.getMapLength());
+            layout_width = dragAndDropMapModel.getMapWidth();
+           layout_height =dragAndDropMapModel.getMapLength();
            FrameLayout.LayoutParams params1 = new FrameLayout.LayoutParams(layout_width, layout_height);
            binding.framLayoutContainer1.setLayoutParams(params1);
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(layout_width, layout_height);
             binding.imageForDropItem.setLayoutParams(params);
             List<MapItemModel> mapItems = dragAndDropMapModel.getMapItems();
-            availableItems = mapItems;
-            for (MapItemModel mapItemModel : availableItems) {
-                if (mapItemModel.getAvailability().equals("true")) {
+            for (MapItemModel mapItemModel : mapItems) {
+                if (mapItemModel.getAvailability().equals("false")) {
                     consumedItems.add(mapItemModel);
+                }else {
+                    availableItems.add(mapItemModel);
                 }
             }
-            availableItems.removeAll(consumedItems);
+            item_adapter.setList(availableItems);
             setEquipmentOnImage();
         }
+    }
+
+    @Override
+    public void showToastmsg(String msg) {
+        EotApp.getAppinstance().showToastmsg(msg);
+        this.finish();
     }
 
 }
