@@ -234,6 +234,9 @@ public interface Service_apis {
     String getSyncJobAttachments = "JobController/syncJobAttachments";
 
 
+    /**Api for drag and drop**/
+    String getJobMap = "CommonController/getJobMap";
+
     //no token required & header
     @POST
     Observable<JsonObject> service_Call_Without_Token(@Url String url,

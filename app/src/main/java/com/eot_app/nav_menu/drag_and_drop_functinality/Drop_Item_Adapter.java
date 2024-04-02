@@ -5,7 +5,6 @@ import android.content.ClipData;
 import android.content.ClipDescription;
 import android.content.Context;
 import android.os.Build;
-import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +18,7 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.eot_app.R;
+import com.eot_app.nav_menu.drag_and_drop_functinality.model.MapItemModel;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
