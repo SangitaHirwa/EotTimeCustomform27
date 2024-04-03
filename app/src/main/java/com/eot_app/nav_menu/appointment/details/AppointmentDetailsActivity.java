@@ -71,6 +71,7 @@ import com.eot_app.nav_menu.appointment.details.documents.fileattach_mvp.Doc_Att
 import com.eot_app.nav_menu.appointment.list.AppointmentListViewModel;
 import com.eot_app.nav_menu.client.client_db.Client;
 import com.eot_app.nav_menu.client.clientlist.client_detail.site.sitelist.editsite.editsitedb.SpinnerCountrySite;
+import com.eot_app.nav_menu.drag_and_drop_functinality.Take_Site_Picture;
 import com.eot_app.nav_menu.jobs.add_job.Add_job_activity;
 import com.eot_app.nav_menu.jobs.job_db.Job;
 import com.eot_app.nav_menu.jobs.job_detail.JobDetailActivity;
@@ -274,14 +275,16 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
         }
 
         binding.tvAddNewItem.setOnClickListener(view -> {
-            Intent intent = new Intent(this, AddEditInvoiceItemActivity2.class);
+          /*  Intent intent = new Intent(this, AddEditInvoiceItemActivity2.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
             intent.putExtra("AddRequirmentGetheringItem",true);
             intent.putExtra("appId",model.getAppId());
             intent.putExtra("getTaxMethodType", "0");
             intent.putExtra("getSingleTaxId", "0");
-            startActivityForResult(intent,GET_ITEM_LIST);
+            startActivityForResult(intent,GET_ITEM_LIST);*/
 
+            Intent intent = new Intent(this, Take_Site_Picture.class);
+            startActivity(intent);
         });
         binding.swiperefresh.setOnRefreshListener(() -> {
             if (itemAdded_pi != null) {

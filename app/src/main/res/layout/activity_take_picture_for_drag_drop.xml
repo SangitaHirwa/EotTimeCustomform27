@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+   >
+    <data>
+
+        <variable
+            name="appointment"
+            type="com.eot_app.nav_menu.appointment.details.AppointmentDetailsViewModel" />
+    </data>
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".nav_menu.drag_and_drop_functinality.Take_Picture_For_Drag_Drop">
+
+    <ImageView
+        android:id="@+id/back_icon"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toStartOf="@+id/tv_back"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/baseline_arrow_back_ios_24" />
+
+    <TextView
+        android:id="@+id/tv_back"
+        style="@style/style_sec_sec"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="300dp"
+        android:text="Back"
+        android:textColor="#03A9F4"
+        android:textSize="15dp"
+        android:textStyle="normal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/back_icon"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_take_picture"
+        style="@style/style_sec_sec"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:gravity="center"
+        android:text="Take Picture"
+        android:textColor="#03A9F4"
+        android:textSize="20dp"
+        android:textStyle="normal"
+        app:layout_constraintBottom_toTopOf="@+id/tv_drop_on_map"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+         />
+
+    <TextView
+        android:id="@+id/tv_drop_on_map"
+        style="@style/style_sec_sec"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Drop Item On Map"
+        android:textSize="20dp"
+        android:textStyle="normal"
+        android:gravity="center"
+        android:layout_marginTop="10dp"
+        android:textColor="#5ECD63"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <ImageView
+        android:id="@+id/selectd_picture"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:padding="5dp"
+        android:layout_margin="10dp"
+        app:layout_constraintBottom_toTopOf="@+id/tv_take_picture"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_back"
+        app:srcCompat="@drawable/app_logo2"
+       />
+</androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

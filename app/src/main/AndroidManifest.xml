@@ -16,6 +16,15 @@
         android:usesCleartextTraffic="true"
         tools:replace="android:allowBackup">
         <activity
+            android:name=".nav_menu.drag_and_drop_functinality.Drop_Item_On_Map_Activity"
+            android:exported="false" />
+        <activity
+            android:name=".nav_menu.drag_and_drop_functinality.Take_Picture_For_Drag_Drop"
+            android:exported="false" />
+        <activity
+            android:name=".nav_menu.drag_and_drop_functinality.Take_Site_Picture"
+            android:exported="false" />
+        <activity
             android:name=".nav_menu.jobs.job_card_view.JobCardViewActivity"
             android:exported="false"
             />

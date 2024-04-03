@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_layout_dragdrop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="2dp"
+        android:layout_marginRight="2dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        >
+
+        <LinearLayout
+            android:id="@+id/linear_layout_itemList"
+            android:layout_width="150dp"
+            android:layout_height="40dp"
+            android:orientation="horizontal"
+            android:visibility="visible"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/bg_for_drop_equipment"
+            >
+
+            <ImageView
+                android:id="@+id/icon_item"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:padding="3dp"
+                android:paddingLeft="2dp"
+                android:layout_gravity="center"
+                app:srcCompat="@drawable/item_tab_on_bkg" />
+
+            <TextView
+                style="@style/style_sec_sec"
+                android:id="@+id/tv_item"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:paddingStart="2dp"
+                android:textSize="15sp"
+               />
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:elevation="20dp"
+            android:id="@+id/relative_layout_equipment_item"
+            >
+
+            <ImageView
+                android:id="@+id/equipment_droped_icon"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                app:srcCompat="@drawable/ic_launcher_foreground" />
+
+            <ImageView
+                android:id="@+id/equipment_close_icon"
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:layout_toRightOf="@+id/equipment_droped_icon"
+                android:src="@drawable/cross_droped_equ_icon" />
+            <TextView
+                style="@style/style_sec_sec"
+                android:id="@+id/tv_droped_item"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="visible"
+                android:layout_below="@+id/equipment_droped_icon"
+                android:paddingLeft="10dp"
+                android:textColor="#21AC21"
+                android:textSize="11sp"
+                android:text="dfgfdg"
+                android:textStyle="bold"
+                tools:ignore="HardcodedText" />
+
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>
+</androidx.constraintlayout.widget.ConstraintLayout>
