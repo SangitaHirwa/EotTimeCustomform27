@@ -67,7 +67,7 @@ public class MapView_pc implements MapView_pi {
 
                         @Override
                         public void onError(Throwable e) {
-
+                         e.printStackTrace();
                         }
 
                         @Override

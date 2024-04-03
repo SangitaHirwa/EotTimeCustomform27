@@ -118,7 +118,9 @@
                 <RelativeLayout
                     android:id="@+id/framLayout_Container1"
                     android:layout_width="800dp"
-                    android:layout_height="800dp">
+                    android:layout_height="800dp"
+                    android:gravity="center"
+                    android:layout_gravity="center">
 
                     <ImageView
                         android:id="@+id/imageForDropItem"

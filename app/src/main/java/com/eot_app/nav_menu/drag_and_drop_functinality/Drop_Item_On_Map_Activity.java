@@ -15,6 +15,7 @@ import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -67,9 +68,9 @@ public class Drop_Item_On_Map_Activity extends AppCompatActivity implements Drop
         Uri uri = Uri.parse(getIntent().getStringExtra("uri"));
         imageEditing(uri);
         try {
-            mapViewPi.getDragAndDropMapDataApi();
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
             binding.rvItemList.setLayoutManager(linearLayoutManager);
+            mapViewPi.getDragAndDropMapDataApi();
             item_adapter = new Drop_Item_Adapter(this, availableItems, this);
             binding.rvItemList.setAdapter(item_adapter);
             binding.itemShowHide.setOnClickListener(v -> {
@@ -199,7 +200,7 @@ public class Drop_Item_On_Map_Activity extends AppCompatActivity implements Drop
         int action = event.getAction();
         switch (action) {
             case DragEvent.ACTION_DROP:
-                if (!isMovingView) {
+//                if (!isMovingView) {
                     ClipData.Item item = event.getClipData().getItemAt(0);
                     String itemModel = item.getText().toString();
                     Gson gson = new Gson();
@@ -209,7 +210,7 @@ public class Drop_Item_On_Map_Activity extends AppCompatActivity implements Drop
                         consumedItems.add(itemModel1);
 
                     }
-                }
+//                }
                 float dropX = event.getX();
                 float dropY = event.getY();
                 if (droppedModel != null) {
@@ -288,9 +289,10 @@ public class Drop_Item_On_Map_Activity extends AppCompatActivity implements Drop
             int layout_width, layout_height;
             layout_width = Integer.parseInt(dragAndDropMapModel.getMapWidth());
            layout_height = Integer.parseInt(dragAndDropMapModel.getMapLength());
-            RelativeLayout.LayoutParams parms = new RelativeLayout.LayoutParams(layout_width,layout_height);
-            binding.imageForDropItem.setLayoutParams(parms);
-            binding.framLayoutContainer1.setLayoutParams(parms);
+           FrameLayout.LayoutParams params1 = new FrameLayout.LayoutParams(layout_width, layout_height);
+           binding.framLayoutContainer1.setLayoutParams(params1);
+            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(layout_width, layout_height);
+            binding.imageForDropItem.setLayoutParams(params);
             List<MapItemModel> mapItems = dragAndDropMapModel.getMapItems();
             availableItems = mapItems;
             for (MapItemModel mapItemModel : availableItems) {
