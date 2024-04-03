@@ -130,19 +130,20 @@ public class JobCompletionAdpter extends RecyclerView.Adapter<RecyclerView.ViewH
 
             final String ext = fileList.getImage_name().substring((fileList.getImage_name()                       .lastIndexOf(".")) + 1).toLowerCase();
             if (!ext.isEmpty()) {
-                if(fileList.getAttachmentId().contains("TempAttach-") && fileList.getAttachThumnailFileName() != null){
-                    Glide.with(context).load(fileList.getAttachThumnailFileName())
-                            .format(DecodeFormat.PREFER_ARGB_8888)
-                            .thumbnail(Glide.with(context).load(R.raw.loader_eot)).placeholder(R.drawable.picture).into(holder.image_thumb_nail);
-                }else
-                if (ext.equals("jpg") || ext.equals("jpeg") || ext.equals("png")) {
 
-                    if(fileList.getAttachmentId().equalsIgnoreCase("0")&&fileList.getBitmap1()!=null)
+                if (ext.equals("jpg") || ext.equals("jpeg") || ext.equals("png")) {
+//                    if(fileList.getAttachmentId().contains("Attachment-") && fileList.getAttachThumnailFileName() != null){
+//                        Glide.with(context).load(fileList.getAttachThumnailFileName())
+//                                .format(DecodeFormat.PREFER_ARGB_8888)
+//                                .thumbnail(Glide.with(context).load(R.raw.loader_eot)).placeholder(R.drawable.picture).into(holder.image_thumb_nail);
+//                    }else
+//                    if(fileList.getAttachmentId().equalsIgnoreCase("0")&&fileList.getBitmap1()!=null)
+//                    {
+//                        holder.image_thumb_nail.setImageBitmap(fileList.getBitmap1());
+//                    }else
+                        if(fileList.getBitmap()!=null && !fileList.getBitmap().isEmpty())
                     {
-                        holder.image_thumb_nail.setImageBitmap(fileList.getBitmap1());
-                    }else if(fileList.getAttachmentId().equalsIgnoreCase("0")&&fileList.getBitmap()!=null || fileList.getBitmap()!=null && !fileList.getBitmap().isEmpty())
-                    {
-                        Bitmap bitmap1= AppUtility.StringToBitMap(fileList.getBitmap());
+                        Bitmap bitmap1= AppUtility.getBitmapFromPath(fileList.getBitmap());
                         holder.image_thumb_nail.setImageBitmap(bitmap1);
                     }
                     else {
@@ -171,14 +172,23 @@ public class JobCompletionAdpter extends RecyclerView.Adapter<RecyclerView.ViewH
                     holder.image_thumb_nail.setImageResource(R.drawable.doc);
                     holder.image_thumb_nail.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
                 }
-                if(fileList.getAttachmentId().equalsIgnoreCase("0") || fileList.getBitmap()!= null && !fileList.getBitmap().isEmpty() || fileList.getAttachmentId().contains("TempAttach-"))
-                {
-                    holder.image_loader.setVisibility(View.VISIBLE);
-                    Glide.with(context).load("")
-                            .thumbnail(Glide.with(context).load(R.raw.loader_eot)).into(holder.image_loader);
-                }
-                else {
-                    holder.image_loader.setVisibility(View.GONE);
+
+                if(AppUtility.isInternetConnected()){
+                    if(fileList.getBitmap()!= null && !fileList.getBitmap().isEmpty() && fileList.getAttachmentId().contains("Attachment-"))
+                    {
+                        holder.image_loader.setVisibility(View.VISIBLE);
+                        Glide.with(context).load("").centerCrop()
+                                .thumbnail(Glide.with(context).load(R.raw.loader_eot2)).into(holder.image_loader);
+                        holder.image_txt.setVisibility(View.GONE);
+                    }
+                    else {
+                        holder.image_loader.setVisibility(View.GONE);
+                        holder.image_txt.setVisibility(View.VISIBLE);
+                    }
+                }else {
+                    if(fileList.getBitmap()== null && fileList.getBitmap().isEmpty() || fileList.getBitmap().isEmpty()){
+                        Glide.with(context).load(R.mipmap.no_internet_placeholder).into(holder.image_thumb_nail);
+                    }
                 }
             }
             holder.image_thumb_nail.setOnClickListener(view -> {

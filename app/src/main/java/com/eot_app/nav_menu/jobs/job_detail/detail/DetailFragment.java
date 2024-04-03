@@ -75,6 +75,7 @@ import com.eot_app.nav_menu.jobs.job_db.JtId;
 import com.eot_app.nav_menu.jobs.job_db.OfflieCompleQueAns;
 import com.eot_app.nav_menu.jobs.job_detail.JobDetailActivity;
 import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.model.InvoiceItemDataModel;
+import com.eot_app.nav_menu.jobs.job_detail.chat.fire_Base_Model.Chat_Send_Msg_Model;
 import com.eot_app.nav_menu.jobs.job_detail.customform.CustomFormCompletionCallBack;
 import com.eot_app.nav_menu.jobs.job_detail.detail.filedworker_list.Filedworker_List_Adapter;
 import com.eot_app.nav_menu.jobs.job_detail.detail.job_detail_presenter.JobDetail_pc;
@@ -91,6 +92,10 @@ import com.eot_app.nav_menu.jobs.job_detail.invoice2list.JoBInvoiceItemList2Acti
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.JobDetailEquipmentAdapter;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.JobEquipmentActivity;
 import com.eot_app.nav_menu.jobs.job_detail.job_status_pkg.JobStatus_Controller;
+import com.eot_app.nav_menu.jobs.job_detail.requested_item.AddUpdateRquestedItemActivity;
+import com.eot_app.nav_menu.jobs.job_detail.requested_item.RequestedItemListAdapter;
+import com.eot_app.nav_menu.jobs.job_detail.requested_item.requested_itemModel.AddUpdateRequestedModel;
+import com.eot_app.nav_menu.jobs.job_detail.requested_item.requested_itemModel.RequestedItemModel;
 import com.eot_app.nav_menu.jobs.job_detail.reschedule.RescheduleActivity;
 import com.eot_app.nav_menu.jobs.job_detail.revisit.RevisitActivity;
 import com.eot_app.nav_menu.jobs.job_list.JobList;
@@ -105,6 +110,7 @@ import com.eot_app.utility.EotApp;
 import com.eot_app.utility.db.AppDataBase;
 import com.eot_app.utility.language_support.LanguageController;
 import com.eot_app.utility.settings.setting_db.FieldWorker;
+import com.eot_app.utility.settings.setting_db.Offlinetable;
 import com.eot_app.utility.settings.setting_db.TagData;
 import com.eot_app.utility.util_interfaces.Callback_AlertDialog;
 import com.eot_app.utility.util_interfaces.OnFragmentInteractionListener;
@@ -122,6 +128,7 @@ import com.squareup.picasso.Picasso;
 import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -148,7 +155,9 @@ public class DetailFragment extends Fragment
         OnMapReadyCallback,
         JobCompletionAdpter.FileDesc_Item_Selected, EotApp.NotifyForEquipmentStatusList,
         NotifyForEquipmentCount
-        , NotifyForAttchCount, DocDeleteNotfy, NotifyForcompletionInDetail {
+        , NotifyForAttchCount, DocDeleteNotfy, NotifyForcompletionInDetail,NotifyForRequestedItemList, RequestedItemListAdapter.DeleteItem,
+        RequestedItemListAdapter.SelectedItemListener
+{
 
     public static final int MY_PERMISSIONS_REQUEST_CALL_PHONE = 1234;
     public static final int CUSTOMFILED = 222;
@@ -174,18 +183,19 @@ public class DetailFragment extends Fragment
             textViewContactperson, textViewTitle,
             textViewInstruction, txtViewHeader, textViewTags, txt_fw_nm_list,
             tv_description, tv_instruction, complation_txt, item_txt, eq_txt,
-            complation_notes, tv_tag, fw_Nm_List, txt_serviceHeader, txt_notesHeader;
+            complation_notes, tv_tag, fw_Nm_List, txt_serviceHeader, txt_notesHeader, requested_item_txt,txt_no_item_found;
     String mParam1;
     RelativeLayout map_layout;
     TextView custom_filed_txt, btnStopRecurView, btnComplationView,
-             btn_add_item, btn_add_eq, recur_txt, txt_recur_msg, contact_name_lable, schdule_details_txt, job_status_lable;
+             btn_add_item, btn_add_eq, recur_txt, txt_recur_msg, contact_name_lable, schdule_details_txt, job_status_lable, btn_add_requested_item;
     TextView customfiled_btn, signature_pad, btn_add_signature, quotes_details_txt, quotes_details_number_txt, quotes_details_number;
     String strAddress = "";
     RecyclerView recyclerView, rv_mark_done;
     InvoiceItemList2Adpter invoice_list_adpter;
-    TextView text_misc;
-    View ll_item, ll_equipment;
-    RecyclerView recyclerView_job_item;
+    RequestedItemListAdapter requestedItemListAdapter;
+//    TextView text_misc;
+    View ll_item, ll_equipment, ll_requested_item;
+    RecyclerView recyclerView_job_item, recyclerView_requested_item;
     RecyclerView recyclerView_job_eq,rv_fw_list;
     TextView tv_label_ac_job_time, date_ac_start;
     TextView date_ac_end;
@@ -194,7 +204,7 @@ public class DetailFragment extends Fragment
     String actualStart = "", actualFinish = "";
     String travelStart = "", travelFinish = "";
     TextView tvTravelJobTime, tvActualJobTime, btnActualEdit, btnTravelEdit;
-    ImageView ivEditAc;
+    ImageView ivEditAc, show_requested_list,hide_requested_list;
     RelativeLayout ll_actual_date_time, ll_travel_date_time;
     LinearLayout ll_completion_detail, liner_layout_for_recurmsg, recurMsgShow, recurMsgHide;
     RelativeLayout rl_Collapse1, rl_Collapse2;
@@ -203,7 +213,7 @@ public class DetailFragment extends Fragment
     String lastStatus, lastStatusTime;
     //    check if travelling is enable or not
     //    for remove contact detail when permission not allowed from admin
-    CardView contact_card, recur_parent_view, tagcardView;//
+    CardView contact_card, recur_parent_view, tagcardView,requested_item_cardView;//
     DialogActualTravelDateTime dialogActualTravelDateTime;
     CompletionDetails completionDetails;
     boolean isClickedActual = false;
@@ -228,7 +238,7 @@ public class DetailFragment extends Fragment
     private Job_Status_Adpter mySpinnerAdapter;
     // job actual and travel time
     private ChipGroup chipGroup;
-    private CardView ll_po_number;
+    private LinearLayout ll_po_number;
     private CompletionAdpterJobDteails1 jobCompletionAdpter;
     private JobDetailEquipmentAdapter adapter;
     private TextView site_name;
@@ -240,7 +250,7 @@ public class DetailFragment extends Fragment
     boolean accept=true,reject=true,travel=true,onhold=true,brack=true;
     String getDisCalculationType, getTaxCalculationType;
     GoogleMap mMap;
-   ConstraintLayout progressBar_cyclic;
+   ConstraintLayout progressBar_cyclic,progressBar_itemRequest;
     ArrayList<QuesRspncModel> complQuestionList;
     List<Attachments> attachmentsList;
     Set<IsMarkDoneWithJtid> isMarkDoneWithJtidsList = new HashSet<>();
@@ -248,6 +258,9 @@ public class DetailFragment extends Fragment
     ConstraintLayout cl_serviceMarkAsDone, cl_pbCompletion;
     ServiceMarkDoneAdapter serviceMarkDoneAdapter;
     boolean isAskForCompleteJob = false;
+    List<RequestedItemModel> requestedItemList = new ArrayList<>();
+    String brandName = "";
+    RecurReqResModel recurData;
 
     public DetailFragment() {
         // Required empty public constructor
@@ -374,6 +387,7 @@ public class DetailFragment extends Fragment
         ll_completion_detail = layout.findViewById(R.id.ll_completion_detail);
         ll_item = layout.findViewById(R.id.ll_item);
         ll_equipment = layout.findViewById(R.id.ll_equipment);
+        ll_requested_item = layout.findViewById(R.id.ll_requested_item);
 
 
         // permission checks for showing equipment and items
@@ -443,9 +457,10 @@ public class DetailFragment extends Fragment
         mMapView.getMapAsync(this);
 
         // adapter for job status dropdown
-        mySpinnerAdapter = new Job_Status_Adpter(getActivity(), statusArray, i -> {
+        mySpinnerAdapter = new Job_Status_Adpter(getActivity(), statusArray,arraystatus, statusKey -> {
+
             Log.e("", "");
-            if (statusArray[i].equals(LanguageController.getInstance().getMobileMsgByKey(AppConstant.reschedule))) {
+            if (statusKey.equalsIgnoreCase(AppConstant.Reschedule)) {
                 if (mParam2.getJobId().equals(mParam2.getTempId())) {
                     showErrorDialog(LanguageController.getInstance().getMobileMsgByKey(AppConstant.job_not_sync));
                 } else if (jobstatus != null && jobstatus.getStatus_no().equals(AppConstant.Completed) ||
@@ -457,7 +472,7 @@ public class DetailFragment extends Fragment
                     String str = new Gson().toJson(mParam2);
                     startActivityForResult(open_reschedule.putExtra("job", str), REQUEST_RESCHEDULE);
                 }
-            } else if (statusArray[i].equals(LanguageController.getInstance().getMobileMsgByKey(AppConstant.require_revisit))) {
+            } else if (statusKey.equals(AppConstant.Revisit)) {
                 if (mParam2.getJobId().equals(mParam2.getTempId())) {
                     showErrorDialog(LanguageController.getInstance().getMobileMsgByKey(AppConstant.job_not_sync));
                 } else if (mParam2.getParentId() != null && mParam2.getParentId().equals("0")) {
@@ -471,20 +486,20 @@ public class DetailFragment extends Fragment
                 //After discussion with Ayush sir, Add new condition for check signature of customer (27/Sep/2023)
 
                 if(App_preference.getSharedprefInstance().getLoginRes().getIsJobCompCustSignEnable().equals("1")) {
-                    if (statusArray[i].equals(LanguageController.getInstance().getMobileMsgByKey(AppConstant.completed))) {
+                    if (statusKey.equalsIgnoreCase(AppConstant.Completed)) {
                         if (mParam2.getSignature() == null || mParam2.getSignature().equals("")) {
                             showErrorDialog(LanguageController.getInstance().getMobileMsgByKey(AppConstant.signature_alert));
                         }else {
-                            checkForIsLeader(i);
+                            checkForIsLeader(statusKey);
 //                            changeStatus(i);
                         }
                     }else {
-                        checkForIsLeader(i);
+                        checkForIsLeader(statusKey);
 //                        changeStatus(i);
                     }
                 }
                 else{
-                    checkForIsLeader(i);
+                    checkForIsLeader(statusKey);
 //                    changeStatus(i);
 
 //                    JobStatusModelNew statusModel = JobStatus_Controller.getInstance().getStatusObjectById(statusArrayForIds[i]);
@@ -527,10 +542,10 @@ public class DetailFragment extends Fragment
 
         return layout;
     }
-    private void checkForIsLeader(int statusArrayForId ){
+    private void checkForIsLeader(String statusId ){
         String[] kprArr = mParam2.getKpr().split(",");
         if (kprArr.length > 1) {
-        if(statusArray[statusArrayForId].equals(LanguageController.getInstance().getMobileMsgByKey(AppConstant.completed))) {
+        if(statusId.equalsIgnoreCase(AppConstant.Completed)) {
             if (mParam2.getIsLeader().equals(App_preference.getSharedprefInstance().getLoginRes().getUsrId())) {
                     if(App_preference.getSharedprefInstance().getLoginRes().getCompPermission().get(0).getIsLeaderChgAllUsrStatusOnJb().equals("0")) {
                         AppUtility.alertDialog2(getActivity(), LanguageController.getInstance()
@@ -540,30 +555,30 @@ public class DetailFragment extends Fragment
                                 LanguageController.getInstance().getMobileMsgByKey(AppConstant.no), new Callback_AlertDialog() {
                                     @Override
                                     public void onPossitiveCall() {
-                                        changeStatus(statusArrayForId, isKprChgStatusTrue,multipleKpr);
+                                        changeStatus(statusId, isKprChgStatusTrue,multipleKpr);
                                     }
 
                                     @Override
                                     public void onNegativeCall() {
-                                        changeStatus(statusArrayForId,isKprChgStatusFalse,multipleKpr);
+                                        changeStatus(statusId,isKprChgStatusFalse,multipleKpr);
                                     }
                                 });
                     }else{
-                        changeStatus(statusArrayForId, isKprChgStatusFalse,multipleKpr);
+                        changeStatus(statusId, isKprChgStatusFalse,multipleKpr);
                     }
             } else {
-                changeStatus(statusArrayForId, isKprChgStatusFalse,multipleKpr);
+                changeStatus(statusId, isKprChgStatusFalse,multipleKpr);
             }
         }else{
-            changeStatus(statusArrayForId, isKprChgStatusFalse,multipleKpr);
+            changeStatus(statusId, isKprChgStatusFalse,multipleKpr);
         }
         }else {
-            changeStatus(statusArrayForId, isKprChgStatusFalse,singelKpr);
+            changeStatus(statusId, isKprChgStatusFalse,singelKpr);
         }
 
     }
-    private void changeStatus(int i, String completeFor, String jobType){
-        JobStatusModelNew statusModel = JobStatus_Controller.getInstance().getStatusObjectById(statusArrayForIds[i]);
+    private void changeStatus(String statusId, String completeFor, String jobType){
+        JobStatusModelNew statusModel = JobStatus_Controller.getInstance().getStatusObjectById(statusId);
         if (statusModel != null) {
             HyperLog.i(TAG, "Selected status:" + statusModel.getStatus_name());
             HyperLog.i(TAG, "onItemSelected:" + "Select status From DropDown");
@@ -726,6 +741,22 @@ public class DetailFragment extends Fragment
         item_txt.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.item));
         btn_add_item = layout.findViewById(R.id.btn_add_item);
         btn_add_item.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add));
+
+        requested_item_txt = layout.findViewById(R.id.requested_item_txt);
+        requested_item_txt.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.item_requested));
+
+        progressBar_itemRequest =layout.findViewById(R.id.progressBar_itemRequest);
+        txt_no_item_found =layout.findViewById(R.id.txt_no_item_found);
+        txt_no_item_found.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.no_item_requested_found));
+
+        requested_item_cardView = layout.findViewById(R.id.requested_item_cardView);
+        show_requested_list = layout.findViewById(R.id.show_requested_list);
+        hide_requested_list = layout.findViewById(R.id.hide_requested_list);
+        show_requested_list.setOnClickListener(this);
+        hide_requested_list.setOnClickListener(this);
+        btn_add_requested_item = layout.findViewById(R.id.btn_add_requested_item);
+        btn_add_requested_item.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add));
+        btn_add_requested_item.setOnClickListener(this);
         if (App_preference.getSharedprefInstance().getLoginRes().getCompPermission().get(0).getIsItemEnable().equals("1")) {
             btn_add_item.setVisibility(View.GONE);
         }
@@ -790,6 +821,7 @@ public class DetailFragment extends Fragment
 
         recyclerView = layout.findViewById(R.id.recyclerView);
         recyclerView_job_item = layout.findViewById(R.id.recyclerView_job_item);
+        recyclerView_requested_item = layout.findViewById(R.id.recyclerView_requested_item);
         recyclerView_job_eq = layout.findViewById(R.id.recyclerView_job_eq);
         signature_pad = layout.findViewById(R.id.signature_pad);
         signature_pad.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.customer_signature));
@@ -806,7 +838,7 @@ public class DetailFragment extends Fragment
         }
 
         site_name = layout.findViewById(R.id.site_name);
-        text_misc = layout.findViewById(R.id.text_misc);
+//        text_misc = layout.findViewById(R.id.text_misc);
         tagcardView = layout.findViewById(R.id.tagcardView);
 
 
@@ -817,7 +849,7 @@ public class DetailFragment extends Fragment
 
         quotes_details_txt.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.quotes_details));
         quotes_details_number_txt.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.quotes_num));
-        text_misc.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.misc));
+//        text_misc.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.misc));
 
 //        customLayoutManager = new CustomLinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL
 //                , false);
@@ -866,13 +898,30 @@ public class DetailFragment extends Fragment
         EotApp.getAppinstance().setNotifyForEquipmentCount(this);
         EotApp.getAppinstance().setNotifyForEquipmentStatusList(this);
         EotApp.getAppinstance().setNotifyForcompletionInDetail(this);
+        EotApp.getAppinstance().setNotifyForRequestedItemList(this);
 
-        if (mParam2.getRecurType() != null && App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsRecur().equals("0") && !mParam2.getRecurType().equals("0")){
-            recur_parent_view.setVisibility(View.VISIBLE);
+        if (mParam2.getRecurType() != null && App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsRecur().equals("0") && !mParam2.getRecurType().equalsIgnoreCase("0")
+        ||mParam2.getParentRecurType() != null && App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsRecur().equals("0") && !mParam2.getParentRecurType().equalsIgnoreCase("0")){
+            if(!mParam2.getParentId().equalsIgnoreCase("0") && mParam2.getIsSubjob().equals("0") || mParam2.getParentId().equalsIgnoreCase("0") && mParam2.getIsRecur().equalsIgnoreCase("1")) {
+                recur_parent_view.setVisibility(View.VISIBLE);
+            }else {
+                recur_parent_view.setVisibility(View.GONE);
+                    }
         }else{
             recur_parent_view.setVisibility(View.GONE);
         }
+        //set Requested item recyclerview in adapter
+        recyclerView_requested_item.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL
+                , false));
+        requestedItemListAdapter = new RequestedItemListAdapter(requestedItemList,getContext(),this,this);//, this, this
+        recyclerView_requested_item.setAdapter(requestedItemListAdapter);
+        recyclerView_requested_item.setNestedScrollingEnabled(false);
 
+        if(App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsItemRequested() == 0){
+            ll_requested_item.setVisibility(View.VISIBLE);
+        }else{
+            ll_requested_item.setVisibility(View.GONE);
+        }
     }
 
     private void addJobServicesInChips(JtId jtildModel) {
@@ -886,7 +935,8 @@ public class DetailFragment extends Fragment
 
     @Override
     public void StopRecurPatternHide() {
-        recur_parent_view.setVisibility(View.GONE);
+        recurMsgShow.performClick();
+//        recur_parent_view.setVisibility(View.GONE);
     }
 
     @Override
@@ -1188,10 +1238,14 @@ public class DetailFragment extends Fragment
         // for completion details
         if (jobDetail_pi != null)
             jobDetail_pi.getJobCompletionDetails(mParam2.getJobId());
-
         // for completion details
         if (jobDetail_pi != null)
             jobDetail_pi.getEquipmentStatus();
+        // for get attachment
+        if (jobDetail_pi != null) {
+            jobDetail_pi.getAttachFileList(mParam2.getJobId(), App_preference.getSharedprefInstance().getLoginRes().getUsrId()
+                    , "");
+        }
     }
 
 
@@ -1203,21 +1257,40 @@ public class DetailFragment extends Fragment
             }
         }
         if(jobCompletionAdpter != null) {
-            (jobCompletionAdpter).updateFileList(getFileList_res);
+
+            if(getFileList_res.size() == 0){
+                recyclerView.setVisibility(View.GONE);
+            }else {
+                recyclerView.setVisibility(View.VISIBLE);
+                (jobCompletionAdpter).updateFileList(getFileList_res);
+            }
         }
     }
 
     @SuppressLint("SetTextI18n")
     @Override
     public void setRecurData(RecurReqResModel recurData) {
+        this.recurData = recurData;
         progressBar_cyclic.setVisibility(View.GONE);
         recurMsgHide.setVisibility(View.VISIBLE);
         recurMsgShow.setVisibility(View.GONE);
         liner_layout_for_recurmsg.setVisibility(View.VISIBLE);
         try {
             if ( recurData != null) {
-
-                if (mParam2.getRecurType() != null && mParam2.getRecurType().equals("1")) {
+                if(recurData.getJobRecurModel().getRecurStatus().equalsIgnoreCase("0") || recurData.getJobRecurModel().getRecurStatus().equalsIgnoreCase("3")) {
+                    btnStopRecurView.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.pause));
+                    btnStopRecurView.setTextColor(this.getResources().getColor(R.color.dark_yellow));
+                    btnStopRecurView.setClickable(true);
+                }else if(recurData.getJobRecurModel().getRecurStatus().equalsIgnoreCase("2")){
+                    btnStopRecurView.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.resume));
+                    btnStopRecurView.setTextColor(this.getResources().getColor(R.color.green1));
+                    btnStopRecurView.setClickable(true);
+                } else if (recurData.getJobRecurModel().getRecurStatus().equalsIgnoreCase("1")) {
+                    btnStopRecurView.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.expired));
+                    btnStopRecurView.setTextColor(this.getResources().getColor(R.color.red_color));
+                    btnStopRecurView.setClickable(false);
+                }
+                if (mParam2.getRecurType() != null && mParam2.getRecurType().equals("1") || mParam2.getParentRecurType() != null && mParam2.getParentRecurType().equals("1")) {
                     if (recurData.getJobRecurModel().getMode() != null &&recurData.getJobRecurModel().getMode().equals("1") && recurData.getJobRecurModel().getEndRecurMode() != null
                             && recurData.getJobRecurModel().getEndRecurMode().equals("0")) {
                         txt_recur_msg.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.custom_recur_msg1) + " " +
@@ -1237,6 +1310,7 @@ public class DetailFragment extends Fragment
                                         + " " + recurData.getJobRecurModel().getEndDate());
                     }
                 } else if (mParam2.getRecurType() != null && mParam2.getRecurType().equals("2") && recurData.getJobRecurModel().getOccur_days() != null
+                        && recurData.getJobRecurModel().getInterval() != null || mParam2.getParentRecurType() != null && mParam2.getParentRecurType().equals("2") && recurData.getJobRecurModel().getOccur_days() != null
                         && recurData.getJobRecurModel().getInterval() != null) {
                     if (recurData.getJobRecurModel().getEndRecurMode() != null && recurData.getJobRecurModel().getEndRecurMode().equals("0")) {
                         txt_recur_msg.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.weekly_msg1) + " " +
@@ -1261,6 +1335,8 @@ public class DetailFragment extends Fragment
                     }
 
                 } else if (mParam2.getRecurType() != null && mParam2.getRecurType().equals("3")
+                        && recurData.getJobRecurModel().getEndRecurMode() != null && recurData.getJobRecurModel().getWeek_num() != null && recurData.getJobRecurModel().getInterval() != null
+                || mParam2.getParentRecurType() != null && mParam2.getParentRecurType().equals("3")
                         && recurData.getJobRecurModel().getEndRecurMode() != null && recurData.getJobRecurModel().getWeek_num() != null && recurData.getJobRecurModel().getInterval() != null) {
                     if (recurData.getJobRecurModel().getEndRecurMode() != null && recurData.getJobRecurModel().getEndRecurMode().equals("0")) {
                         txt_recur_msg.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.custom_recur_msg1) + " " +
@@ -1288,6 +1364,20 @@ public class DetailFragment extends Fragment
     }
 
     @Override
+    public void setRequestItemData(List<RequestedItemModel> requestItemData) {
+        progressBar_itemRequest.setVisibility(View.GONE);
+            if(requestItemData != null && requestItemData.size() > 0){
+                recyclerView_requested_item.setVisibility(View.VISIBLE);
+                txt_no_item_found.setVisibility(View.GONE);
+                requestedItemListAdapter.setReqItemList(requestItemData);
+            }else {
+                requestedItemListAdapter.setReqItemList(new ArrayList<>());
+                txt_no_item_found.setVisibility(View.VISIBLE);
+                recyclerView_requested_item.setVisibility(View.GONE);
+            }
+    }
+
+    @Override
     public void notDataFoundInRecureData(String msg) {
         progressBar_cyclic.setVisibility(View.GONE);
         AppUtility.alertDialog(getActivity(), LanguageController.getInstance().getMobileMsgByKey(AppConstant.dialog_error_title),
@@ -1295,6 +1385,38 @@ public class DetailFragment extends Fragment
             return null;
 
         });
+    }
+
+    @Override
+    public void notDtateFoundInRequestedItemList(String msg) {
+        EotApp.getAppinstance().showToastmsg(msg);
+        progressBar_itemRequest.setVisibility(View.GONE);
+        show_requested_list.setVisibility(View.VISIBLE);
+        recyclerView_requested_item.setVisibility(View.GONE);
+        hide_requested_list.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void deletedRequestData(String message,AddUpdateRequestedModel requestedModel) {
+        EotApp.getAppinstance().showToastmsg(LanguageController.getInstance().getServerMsgByKey(message.trim()));
+        jobDetail_pi.getRequestedItemDataList(mParam2.getJobId());
+        if(requestedModel != null) {
+            if(requestedModel.getEbId() != null && !requestedModel.getEbId().equals("0") && !requestedModel.getEbId().equals("")) {
+                brandName = AppDataBase.getInMemoryDatabase(getContext()).brandDao().getBrandNameById(requestedModel.getEbId());
+            }
+            String msg =
+                    LanguageController.getInstance().getMobileMsgByKey(AppConstant.field_user_made_some_changes_on_the_requested_item)+"\n"+LanguageController.getInstance().getMobileMsgByKey(AppConstant.item_name)+": "+requestedModel.getItemName()+"\n"+
+                            LanguageController.getInstance().getMobileMsgByKey(AppConstant.qty)+": "+requestedModel.getQty()+"\n"+
+                            LanguageController.getInstance().getMobileMsgByKey(AppConstant.part_no)+": "+requestedModel.getModelNo()+"\n"+
+                            LanguageController.getInstance().getMobileMsgByKey(AppConstant.brand)+": "+brandName;
+            Chat_Send_Msg_Model chat_send_Msg_model = new Chat_Send_Msg_Model(
+                    msg, "", AppUtility.getDateByMiliseconds(),
+                    mParam2.getLabel(),
+                    requestedModel.getJobId(), "1");
+            if (jobDetail_pi != null) {
+                jobDetail_pi.sendMsg(chat_send_Msg_model);
+            }
+        }
     }
 
     @Override
@@ -1539,12 +1661,16 @@ public void setCompletionDetail(){
                         site_name.setVisibility(View.VISIBLE);
                         if (!TextUtils.isEmpty(mParam2.getSnm())) {
                             site_name.setText(mParam2.getSnm());
+                            ll_po_number.setVisibility(View.VISIBLE);
                         } else {
                             site_name.setText("");
-                            site_name.setVisibility(View.GONE);
+                            site_name.setVisibility(View.INVISIBLE);
                         }
                     } else {
-                        site_name.setVisibility(View.GONE);
+                        site_name.setVisibility(View.INVISIBLE);
+                        if(textViewPONumber.getVisibility() == View.GONE){
+                            ll_po_number.setVisibility(View.GONE);
+                        }
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -2012,7 +2138,7 @@ public void setCompletionDetail(){
             j++;
         }
         if (mySpinnerAdapter != null) {
-            mySpinnerAdapter.updtaeList(statusArray);
+            mySpinnerAdapter.updtaeList(statusArray,arraystatus);
         }
     }
 
@@ -2101,19 +2227,21 @@ public void setCompletionDetail(){
 
             SpannableStringBuilder builder1 = new SpannableStringBuilder();
             SpannableString str2 = new SpannableString(
-                    LanguageController.getInstance().getMobileMsgByKey(AppConstant.po_number) + " : ");
+                    LanguageController.getInstance().getMobileMsgByKey(AppConstant.order_ref_no) + " : ");
             builder1.append(str2);
 
             if (mParam2.getPono() != null && !mParam2.getPono().isEmpty()) {
+                textViewPONumber.setVisibility(View.VISIBLE);
                 ll_po_number.setVisibility(View.VISIBLE);
                 SpannableString str3 = new SpannableString(mParam2.getPono());
                 str3.setSpan(new android.text.style.StyleSpan(android.graphics.Typeface.BOLD),
                         0, str3.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                 builder1.append(str3);
                 textViewPONumber.setText(builder1, TextView.BufferType.SPANNABLE);
+            } else {
+                textViewPONumber.setVisibility(View.GONE);
 
-            } else
-                ll_po_number.setVisibility(View.GONE);
+            }
 
             String endtime = "", startDatTime = "";
             if (mParam2.getSchdlStart() != null && !mParam2.getSchdlStart().equals("")) {
@@ -2455,10 +2583,10 @@ public void setCompletionDetail(){
                 new_status_spinner.performClick();
                 break;
             case R.id.btnStopRecurView:
-                stopRecurpattern();
+                stopRecurpattern(recurData);
                 break;
             case R.id.btn_add_signature:
-                ((JobDetailActivity) requireActivity()).openCustomSignatureDialog();
+                ((JobDetailActivity) requireActivity()).openCustomSignatureDialog(jobstatus.getStatus_no());
                 break;
             case R.id.customfiled_btn:
                 Intent intent1 = new Intent(getActivity(), CustomFiledListActivity.class);
@@ -2783,7 +2911,11 @@ public void setCompletionDetail(){
                     if (jobDetail_pi != null) {
                         progressBar_cyclic.setVisibility(View.VISIBLE);
                         /*AppUtility.progressBarShow(getActivity());*/
-                        jobDetail_pi.getRecureDataList(mParam2.getJobId(),mParam2.getRecurType());
+                        if(mParam2.getParentId().equalsIgnoreCase("0")) {
+                            jobDetail_pi.getRecureDataList(mParam2.getJobId(), mParam2.getRecurType());
+                        }else {
+                            jobDetail_pi.getRecureDataList(mParam2.getParentId(), mParam2.getParentRecurType());
+                        }
                     }
                 }else {
                     showErrorDialog(LanguageController.getInstance().getMobileMsgByKey(AppConstant.offline_feature_alert));
@@ -2793,6 +2925,40 @@ public void setCompletionDetail(){
                 recurMsgHide.setVisibility(View.GONE);
                 recurMsgShow.setVisibility(View.VISIBLE);
                 liner_layout_for_recurmsg.setVisibility(View.GONE);
+                break;
+
+            case R.id.btn_add_requested_item:
+                show_requested_list.setVisibility(View.VISIBLE);
+                recyclerView_requested_item.setVisibility(View.GONE);
+                hide_requested_list.setVisibility(View.GONE);
+                txt_no_item_found.setVisibility(View.GONE);
+                Intent intent2 = new Intent(getActivity(), AddUpdateRquestedItemActivity.class);
+                intent2.putExtra("addReqItem",true);
+                intent2.putExtra("jobId",mParam2.getJobId());
+                intent2.putExtra("jobLabel",mParam2.getLabel());
+                startActivity(intent2);
+                break;
+
+            case R.id.show_requested_list:
+                if(AppUtility.isInternetConnected()){
+                    progressBar_itemRequest.setVisibility(View.VISIBLE);
+                    show_requested_list.setVisibility(View.GONE);
+                    hide_requested_list.setVisibility(View.VISIBLE);
+                    if (jobDetail_pi != null) {
+                        jobDetail_pi.getRequestedItemDataList(mParam2.getJobId());
+                        recyclerView_requested_item.setVisibility(View.VISIBLE);
+                    }
+                }else {
+                    showErrorDialog(LanguageController.getInstance().getMobileMsgByKey(AppConstant.offline_feature_alert));
+                }
+
+
+                break;
+            case R.id.hide_requested_list:
+                show_requested_list.setVisibility(View.VISIBLE);
+                recyclerView_requested_item.setVisibility(View.GONE);
+                hide_requested_list.setVisibility(View.GONE);
+                txt_no_item_found.setVisibility(View.GONE);
                 break;
         }
     }
@@ -2822,16 +2988,24 @@ public void setCompletionDetail(){
     }
 
 
-    private void stopRecurpattern() {
+    private void stopRecurpattern(RecurReqResModel recurData) {
         if (AppUtility.isInternetConnected()) {
+            String msg = "";
+            if(recurData != null) {
+                if (recurData.getJobRecurModel().getRecurStatus().equalsIgnoreCase("0") || recurData.getJobRecurModel().getRecurStatus().equalsIgnoreCase("3")) {
+                    msg = LanguageController.getInstance().getMobileMsgByKey(AppConstant.pause_recur_msg);
+                } else if (recurData.getJobRecurModel().getRecurStatus().equalsIgnoreCase("2")) {
+                    msg = LanguageController.getInstance().getMobileMsgByKey(AppConstant.resume_recur_msg);
+                }
+            }
             AppUtility.alertDialog2(getActivity(),
                     "",
-                    LanguageController.getInstance().getMobileMsgByKey(AppConstant.delete_recur_msg),
+                    msg,
                     LanguageController.getInstance().getMobileMsgByKey(AppConstant.yes),
                     LanguageController.getInstance().getMobileMsgByKey(AppConstant.no), new Callback_AlertDialog() {
                         @Override
                         public void onPossitiveCall() {
-                            jobDetail_pi.stopRecurpattern(mParam2.getJobId());
+                            jobDetail_pi.pauseResumeRecurr(mParam2, recurData.getJobRecurModel().getRecurStatus());
                         }
 
                         @Override
@@ -2937,13 +3111,13 @@ public void setCompletionDetail(){
             //  ((JobDetailActivity) getActivity()).openFormForEvent(jobstatus.getStatus_no());
             try {
                 HyperLog.i("", "Resume states found");
-                if(jobstatus.getId().equals("9")) {
-                for (int i=0; i<=statusArray.length; i++){
-                    if(statusArray[i].equals(LanguageController.getInstance().getMobileMsgByKey(AppConstant.completed))){
-                        checkForIsLeader(i);
-                        break;
+                if(jobstatus.getKey().equals(AppConstant.Completed)) {
+                        for (Map.Entry mapElement : arraystatus.entrySet()) {
+                            if (mapElement.getKey().equals(AppConstant.Completed)) {
+                                    checkForIsLeader(mapElement.getKey().toString());
+                                  break;
+                            }
                     }
-                }
                 }else {
                     ((JobDetailActivity) requireActivity()).openFormForEvent(jobstatus.getStatus_no(),"0","");
                 }
@@ -3405,6 +3579,69 @@ public void setCompletionDetail(){
             jobDetail_pi.loadFromServer(jobId);
     }
 
+    @Override
+    public void updateReqItemList(String api_name, String message, AddUpdateRequestedModel requestedModel) {
+        switch (api_name){
+            case Service_apis.addItemRequest:
+                showAppInstallDialog(LanguageController.getInstance().getServerMsgByKey(message.trim()));
+                if(requestedModel != null) {
+                    String msg =
+                            LanguageController.getInstance().getMobileMsgByKey(AppConstant.item_requested_by_the_field_user)+"\n"+LanguageController.getInstance().getMobileMsgByKey(AppConstant.item_name)+": "+requestedModel.getItemName()+"\n"+
+                            LanguageController.getInstance().getMobileMsgByKey(AppConstant.qty)+": "+requestedModel.getQty()+"\n"+
+                            LanguageController.getInstance().getMobileMsgByKey(AppConstant.part_no)+": "+requestedModel.getModelNo()+"\n"+
+                            LanguageController.getInstance().getMobileMsgByKey(AppConstant.brand)+": "+requestedModel.getBrandName();
+                    Chat_Send_Msg_Model chat_send_Msg_model = new Chat_Send_Msg_Model(
+                            msg, "", AppUtility.getDateByMiliseconds(),
+                            requestedModel.getJobLabel(),
+                            requestedModel.getJobId(), "1");
+                    if (jobDetail_pi != null) {
+                        jobDetail_pi.sendMsg(chat_send_Msg_model);
+                    }
+                }
+                break;
+            case Service_apis.updateItemRequest:
+                showAppInstallDialog(LanguageController.getInstance().getServerMsgByKey(message.trim()));
+                if(requestedModel != null) {
+                    String msg =
+                            LanguageController.getInstance().getMobileMsgByKey(AppConstant.field_user_made_some_changes_on_the_requested_item)+"\n"+LanguageController.getInstance().getMobileMsgByKey(AppConstant.item_name)+": "+requestedModel.getItemName()+"\n"+
+                                    LanguageController.getInstance().getMobileMsgByKey(AppConstant.qty)+": "+requestedModel.getQty()+"\n"+
+                                    LanguageController.getInstance().getMobileMsgByKey(AppConstant.part_no)+": "+requestedModel.getModelNo()+"\n"+
+                                    LanguageController.getInstance().getMobileMsgByKey(AppConstant.brand)+": "+requestedModel.getBrandName();
+                    Chat_Send_Msg_Model chat_send_Msg_model = new Chat_Send_Msg_Model(
+                            msg, "", AppUtility.getDateByMiliseconds(),
+                            requestedModel.getJobLabel(),
+                            requestedModel.getJobId(), "1");
+                    if (jobDetail_pi != null) {
+                        jobDetail_pi.sendMsg(chat_send_Msg_model);
+                    }
+                }
+                break;
+        }
+    }
+
+    @Override
+    public void itemDelete(String irId,RequestedItemModel requestedModel) {
+        if(AppUtility.isInternetConnected()){
+            progressBar_itemRequest.setVisibility(View.VISIBLE);
+            AddUpdateRequestedModel requestedModel1 = new AddUpdateRequestedModel(requestedModel.getInm(),requestedModel.getEbId(),requestedModel.getQty(),
+                    requestedModel.getModelNo(),"",requestedModel.getItemId(),mParam2.getJobId());
+            jobDetail_pi.deleteRequestedItem(irId,mParam2.getJobId(),requestedModel1);
+        }
+    }
+
+    @Override
+    public void itemSelected(RequestedItemModel updateRequestedItemModel) {
+        show_requested_list.setVisibility(View.VISIBLE);
+        recyclerView_requested_item.setVisibility(View.GONE);
+        hide_requested_list.setVisibility(View.GONE);
+        Intent intent = new Intent(getActivity(),AddUpdateRquestedItemActivity.class);
+        intent.putExtra("updateSelectedReqItem",updateRequestedItemModel);
+        intent.putExtra("UpdateReqItem",true);
+        intent.putExtra("jobId",mParam2.getJobId());
+        intent.putExtra("jobLabel",mParam2.getLabel());
+        startActivity(intent);
+    }
+
 
     /***  method for loading image set into description editor ***/
     @SuppressLint("StaticFieldLeak")
@@ -3482,14 +3719,22 @@ public void setCompletionDetail(){
     public void checkMarkServices(){
         if(isAllServicesDone()){
             int i =0;
-            for (String s: statusArray
-                 ) {
-                if(s.equalsIgnoreCase(LanguageController.getInstance().getMobileMsgByKey(AppConstant.completed))){
+//            for (String s: statusArray
+//                 ) {
+//                if(s.equalsIgnoreCase(arraystatus.get("9"))){
+////                if(s.equalsIgnoreCase(LanguageController.getInstance().getMobileMsgByKey(AppConstant.completed))){
+//                    break;
+//                }
+//                i++;
+//            }
+//
+            for(Map.Entry item:arraystatus.entrySet()){
+                if(item.getKey().equals(AppConstant.Completed)){
+                    checkForIsLeader(item.getKey().toString());
                     break;
                 }
-                i++;
             }
-            checkForIsLeader(i);
+
         }
     }
 }

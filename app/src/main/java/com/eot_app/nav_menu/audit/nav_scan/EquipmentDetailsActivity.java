@@ -299,7 +299,7 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
         location_detail = findViewById(R.id.location_detail);
         site_detail = findViewById(R.id.site_detail);
         equipment_location_detail = findViewById(R.id.equipment_location_detail);
-      equipment_location.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.equipment+" "+AppConstant.location));
+      equipment_location.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.equipment)+" "+LanguageController.getInstance().getMobileMsgByKey(AppConstant.location));
 
         ShowHideEqupHistory();
     }

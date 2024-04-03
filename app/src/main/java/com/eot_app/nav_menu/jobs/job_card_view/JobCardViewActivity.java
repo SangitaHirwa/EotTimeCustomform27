@@ -118,6 +118,7 @@ public class JobCardViewActivity extends AppCompatActivity  implements
     private String isProformaInv = "0";
     private Get_Email_ReS_Model email_reS_model;
     private Object stripLink;
+    private boolean chatApiFirstcalling = false;
 
     ArrayList<String> quoteAttachmentArray=new ArrayList<>();
 
@@ -161,7 +162,9 @@ public class JobCardViewActivity extends AppCompatActivity  implements
         }
 
         if(invId==null && jobId != null && !jobId.isEmpty() ){
-                invoice_email_pi.getJobCardEmailMessageChatList(jobId);
+            chatApiFirstcalling = true;
+            invoice_email_pi.getJobCardEmailTemplate(jobId,tempId,"");
+//                invoice_email_pi.getJobCardEmailMessageChatList(jobId);
         }else if (invId != null && !invId.isEmpty()) {
             setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.email_invoice));
             invoice_email_pi.getInvoiceEmailTempApi(invId, isProformaInv);
@@ -176,7 +179,7 @@ public class JobCardViewActivity extends AppCompatActivity  implements
         if(getIntent().hasExtra("invId") || getIntent().hasExtra("quotId")){
             binding.signatureView.setVisibility(View.GONE);
             if(getIntent().hasExtra("quotId")) {
-                setList(fileList_res, "", false);
+                setList(fileList_res, "", false,true);
             }
         }else {
             binding.signatureView.setVisibility(View.VISIBLE);
@@ -184,7 +187,7 @@ public class JobCardViewActivity extends AppCompatActivity  implements
         binding.rvJobCardAttachment.setLayoutManager(new LinearLayoutManager(this));
         binding.rvJobCardAttachment.setAdapter(jobCardAttachmentAdapter);
         if(jobId != null) {
-            doc_attch_pi.getAttachFileList(jobId, "", "", true);
+            doc_attch_pi.getAttachFileList(jobId, "", "", true, false);
         }
         // Log.e("fwList",new Gson().toJson(fwList));
         binding.jobCardEditor.setVerticalScrollBarEnabled(false);
@@ -267,10 +270,6 @@ public class JobCardViewActivity extends AppCompatActivity  implements
             binding.tvSendJobcardBtn.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.email_quotes));
             binding.sendJobcardBtn.setVisibility(View.VISIBLE);
         }
-
-
-        setEmailData("");
-
     }
 
     @Override
@@ -417,9 +416,11 @@ public class JobCardViewActivity extends AppCompatActivity  implements
         }
     }
     private void  setEmailData(String url) {
-        if (url != null && !url.isEmpty()) {
+        if (url != null && !url.isEmpty() ) {
             invoice_email_pi.getJobCardEmailTemplate(jobId, tempId, url);
-        }
+        }/*else if(invId == null && jobId != null) {
+            invoice_email_pi.getJobCardEmailTemplate(jobId,tempId,"");
+        }*/
 //            jobDetail_pi.getAttachFileList(jobId, "","");
     }
     private void askTedPermission(int type,String[] permissions) {
@@ -474,11 +475,10 @@ public class JobCardViewActivity extends AppCompatActivity  implements
     @Override
     public void onGetEmailTempData(Get_Email_ReS_Model email_reS_model) {
         this.email_reS_model = email_reS_model;
-        if(quotId != null && !quotId.isEmpty()){
+        if(quotId != null && !quotId.isEmpty()) {
             fileList_res = email_reS_model.getAttachment();
-            setList(fileList_res,"",false);
+            setList(fileList_res, "", false, true);
         }
-
         binding.tvLabelTo.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.to));
         binding.tvLabelCc.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.cc));
         binding.tvLabelSub.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.subject));
@@ -525,6 +525,10 @@ public class JobCardViewActivity extends AppCompatActivity  implements
             binding.cbSign.setVisibility(View.GONE);
         }
         if(mailMessage.contains("chatUrl")){
+            if(chatApiFirstcalling){
+                chatApiFirstcalling = false;
+                invoice_email_pi.getJobCardEmailMessageChatList(jobId);
+            }
             binding.cbChat.setVisibility(View.VISIBLE);
             binding.cbChat.setChecked(true);
             isChatCheck = true;
@@ -552,7 +556,7 @@ public class JobCardViewActivity extends AppCompatActivity  implements
                 editedMsg=msgSignWithOutUrl;
                 binding.jobCardEditor.setHtml(editedMsg);
             }
-        } if(isChatCheck){
+        } else if(isChatCheck){
             if(chat){
                 String[] htmlMsgSplit = htlmMessage.split("<p");
                 for(String msgContainP:htmlMsgSplit){
@@ -575,6 +579,8 @@ public class JobCardViewActivity extends AppCompatActivity  implements
                 editedMsg =msgChatWithOutUrl;
                 binding.jobCardEditor.setHtml(editedMsg);
             }
+        }else{
+            binding.jobCardEditor.setHtml(editedMsg);
         }
 
     }
@@ -739,7 +745,7 @@ public class JobCardViewActivity extends AppCompatActivity  implements
         startActivityForResult(galleryIntent, CAPTURE_IMAGE_GALLARY);
     }
     @Override
-    public void setList(ArrayList<Attachments> getFileList_res, String isAttachCompletionNotes, boolean firstCall) {
+    public void setList(ArrayList<Attachments> getFileList_res, String isAttachCompletionNotes, boolean firstCall, boolean isOnline) {
 
         Log.e("Attachment List", ""+getFileList_res.size()+""+isAttachCompletionNotes);
         JobCardAttachmentModel jobCardAttachmentModel=null;
@@ -798,7 +804,7 @@ public class JobCardViewActivity extends AppCompatActivity  implements
         }
         // to add the new entry into existing list
         if (getFileList_res != null) {
-            setList(getFileList_res, "",true);
+            setList(getFileList_res, "",true, true);
             binding.progressBarCyclic.setVisibility(View.GONE);
         }
 

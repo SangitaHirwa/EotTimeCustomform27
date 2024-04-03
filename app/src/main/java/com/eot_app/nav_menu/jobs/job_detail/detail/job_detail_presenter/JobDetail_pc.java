@@ -1,6 +1,13 @@
 package com.eot_app.nav_menu.jobs.job_detail.detail.job_detail_presenter;
 
+import android.app.Service;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
+
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import com.eot_app.activitylog.ActivityLogController;
 import com.eot_app.activitylog.LogModel;
@@ -11,11 +18,13 @@ import com.eot_app.nav_menu.custom_fileds.custom_model.CustOmFormQuestionsRes;
 import com.eot_app.nav_menu.jobs.add_job.add_job_recr.DeleteReCur;
 import com.eot_app.nav_menu.jobs.add_job.add_job_recr.RecurReqResModel;
 import com.eot_app.nav_menu.jobs.job_controller.ChatController;
+import com.eot_app.nav_menu.jobs.job_db.Attachments_Dao;
 import com.eot_app.nav_menu.jobs.job_db.EquArrayModel;
 import com.eot_app.nav_menu.jobs.job_db.Job;
 import com.eot_app.nav_menu.jobs.job_db.JobListRequestModel;
 import com.eot_app.nav_menu.jobs.job_detail.JobDetailActivity;
 import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.model.InvoiceItemDataModel;
+import com.eot_app.nav_menu.jobs.job_detail.chat.fire_Base_Model.Chat_Send_Msg_Model;
 import com.eot_app.nav_menu.jobs.job_detail.detail.job_detail_view.JobDetail_view;
 import com.eot_app.nav_menu.jobs.job_detail.detail.jobdetial_model.CompletionDetails;
 import com.eot_app.nav_menu.jobs.job_detail.detail.jobdetial_model.CompletionDetailsPost;
@@ -26,6 +35,8 @@ import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.GetFileList_req_
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_db.model_pkg.ItembyJobModel;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.model.EquipmentStatusReq;
 import com.eot_app.nav_menu.jobs.job_detail.job_status_pkg.JobStatus_Controller;
+import com.eot_app.nav_menu.jobs.job_detail.requested_item.requested_itemModel.AddUpdateRequestedModel;
+import com.eot_app.nav_menu.jobs.job_detail.requested_item.requested_itemModel.RequestedItemModel;
 import com.eot_app.nav_menu.jobs.joboffline_db.JobOfflineDataModel;
 import com.eot_app.services.ApiClient;
 import com.eot_app.services.Service_apis;
@@ -36,15 +47,27 @@ import com.eot_app.utility.EotApp;
 import com.eot_app.utility.db.AppDataBase;
 import com.eot_app.utility.db.OfflineDataController;
 import com.eot_app.utility.language_support.LanguageController;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.hypertrack.hyperlog.HyperLog;
 import org.jetbrains.annotations.NotNull;
+
+import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Type;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -63,6 +86,7 @@ public class JobDetail_pc implements JobDetail_pi {
     JobStatusModelNew jobstatus;
     String jobId;
     private String img = "";
+    private String startAttachmetSyncTime;
 
 
     public JobDetail_pc(JobDetail_view view) {
@@ -79,13 +103,18 @@ public class JobDetail_pc implements JobDetail_pi {
     @Override
     public void getAttachFileList(final String jobId, final String usrId, final String type) {
         try {
-            GetFileList_req_Model getFileList_model = new GetFileList_req_Model(updateindexAtttachment, updatelimit, jobId, usrId, type);
-            JsonObject jsonObject = AppUtility.getJsonObject(new Gson().toJson(getFileList_model));
+//            GetFileList_req_Model getFileList_model = new GetFileList_req_Model(updateindexAtttachment, updatelimit, jobId, usrId, type);
+//            JsonObject jsonObject = AppUtility.getJsonObject(new Gson().toJson(getFileList_model));
+
+            startAttachmetSyncTime=AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT);
+            App_preference.getSharedprefInstance().setAttachmentStartSyncTime(startAttachmetSyncTime);
+            JobListRequestModel jobListRequestModel = new JobListRequestModel(Integer.parseInt(usrId), updatelimit, updateindex, App_preference.getSharedprefInstance().getAttachmentStartSyncTime(), jobId);
+            JsonObject jsonObject = AppUtility.getJsonObject(new Gson().toJson(jobListRequestModel));
 
             if (AppUtility.isInternetConnected()) {
 
                 ActivityLogController.saveActivity(ActivityLogController.JOB_MODULE, ActivityLogController.JOB_DOCUMENT_LIST, ActivityLogController.JOB_MODULE);
-                ApiClient.getservices().eotServiceCall(Service_apis.getJobAttachments, AppUtility.getApiHeaders(), jsonObject)
+                ApiClient.getservices().eotServiceCall(Service_apis.getSyncJobAttachments, AppUtility.getApiHeaders(), jsonObject)
 
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
@@ -106,12 +135,12 @@ public class JobDetail_pc implements JobDetail_pi {
                                             Type listType = new TypeToken<List<Attachments>>() {
                                             }.getType();
                                             ArrayList<Attachments> getFileList_res = new Gson().fromJson(convert, listType);
-                                            view.setList(getFileList_res, "");
+                                            addAttachmentToDb(getFileList_res,jobId);
                                         } catch (Exception exception) {
                                             exception.printStackTrace();
                                         }
                                     } else {
-                                        view.setList(new ArrayList<>(), "");
+                                        addAttachmentToDb(new ArrayList<>(),jobId);
                                     }
                                 } else if (jsonObject.get("statusCode") != null && jsonObject.get("statusCode").getAsString().equals(AppConstant.SESSION_EXPIRE)) {
                                     //  view.onSessionExpire(LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
@@ -133,9 +162,29 @@ public class JobDetail_pc implements JobDetail_pi {
                                     Log.e("onComplete", "second time call");
                                     updateindexAtttachment +=updatelimit;
                                     getAttachFileList(jobId, usrId, type);
+                                } else {
+                                    if (count != 0) {
+                                        if(App_preference.getSharedprefInstance().getAttachmentStartSyncTime().isEmpty()
+                                                &&startAttachmetSyncTime!=null && !startAttachmetSyncTime.isEmpty()){
+                                            App_preference.getSharedprefInstance().setAttachmentStartSyncTime(startAttachmetSyncTime);
+                                            Log.v("MainSync","startJobSyncTime JobList"+" --" +App_preference.getSharedprefInstance().getJobSyncTime());
+                                        }
+                                        else if(App_preference.getSharedprefInstance().getAttachmentStartSyncTime().isEmpty()){
+
+                                            App_preference.getSharedprefInstance().setAttachmentStartSyncTime(startAttachmetSyncTime);
+                                            Log.v("MainSync","startJobSyncTime JobList"+" --" +App_preference.getSharedprefInstance().getJobSyncTime());
+                                        }
+                                        else {
+                                            App_preference.getSharedprefInstance().setAttachmentStartSyncTime(App_preference.getSharedprefInstance().getAttachmentStartSyncTime());
+                                        }
+
+                                    }
+                                    updateindex = 0;
                                 }
                             }
                         });
+            }else {
+                addAttachmentToDb(new ArrayList<>(),jobId);
             }
         } catch (Exception exception) {
             exception.printStackTrace();
@@ -764,6 +813,109 @@ public class JobDetail_pc implements JobDetail_pi {
             networkDialog();
     }
 
+    @Override
+    public void getRequestedItemDataList(String jobId) {
+        if (AppUtility.isInternetConnected()) {
+            HashMap<String, String> hashMap = new HashMap<>();
+            hashMap.put("jobId", jobId);
+            hashMap.put("limit",updatelimit+"");
+            hashMap.put("index",updateindex+"");
+            ApiClient.getservices().eotServiceCall(Service_apis.getListItemRequest, AppUtility.getApiHeaders(),
+                            AppUtility.getJsonObject(new Gson().toJson(hashMap)))
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<JsonObject>() {
+                        @Override
+                        public void onSubscribe(@NotNull Disposable d) {
+
+                        }
+
+                        @Override
+                        public void onNext(@NotNull JsonObject jsonObject) {
+                            if (jsonObject.get("success").getAsBoolean()) {
+                                try {
+
+                                    String convert = jsonObject.get("data").getAsJsonArray().toString();
+                                    Type listType = new TypeToken<List<RequestedItemModel>>() {
+                                    }.getType();
+                                    List<RequestedItemModel> data = new Gson().fromJson(convert, listType);
+                                        view.setRequestItemData(data);
+
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            } else {
+                                AppUtility.progressBarDissMiss();
+                                view.notDtateFoundInRequestedItemList(LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
+                            }
+                        }
+
+
+                        @Override
+                        public void onError(@NotNull Throwable e) {
+                            AppUtility.progressBarDissMiss();
+                            Log.e("TAG", e.getMessage());
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            AppUtility.progressBarDissMiss();
+                        }
+                    });
+        }
+        else
+            networkDialog();
+    }
+
+    @Override
+    public void deleteRequestedItem(String irId, String jobId, AddUpdateRequestedModel requestedModel) {
+        if (AppUtility.isInternetConnected()) {
+            HashMap<String, String> hashMap = new HashMap<>();
+            hashMap.put("irIds",irId);
+            hashMap.put("jobId", jobId);
+
+            ApiClient.getservices().eotServiceCall(Service_apis.deleteItemRequest, AppUtility.getApiHeaders(),
+                            AppUtility.getJsonObject(new Gson().toJson(hashMap)))
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<JsonObject>() {
+                        @Override
+                        public void onSubscribe(@NotNull Disposable d) {
+
+                        }
+
+                        @Override
+                        public void onNext(@NotNull JsonObject jsonObject) {
+                            AppUtility.progressBarDissMiss();
+                            if (jsonObject.get("success").getAsBoolean()) {
+                                try {
+                                    view.deletedRequestData(jsonObject.get("message").getAsString(),requestedModel);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            } else {
+                                AppUtility.progressBarDissMiss();
+                                view.notDtateFoundInRequestedItemList(LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
+                            }
+                        }
+
+
+                        @Override
+                        public void onError(@NotNull Throwable e) {
+                            AppUtility.progressBarDissMiss();
+                            Log.e("TAG", e.getMessage());
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            AppUtility.progressBarDissMiss();
+                        }
+                    });
+        }
+        else
+            networkDialog();
+    }
+
     private void networkDialog() {
         AppUtility.alertDialog((((Fragment) view).getActivity()), LanguageController.getInstance().getMobileMsgByKey(AppConstant.dialog_alert), LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_check_network), LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), "", () -> null);
     }
@@ -864,5 +1016,169 @@ public class JobDetail_pc implements JobDetail_pi {
         }
         getEquipmentList(jobId);
         view.setOfflineData();
+    }
+
+    @Override
+    public void sendMsg(Chat_Send_Msg_Model chat_send_Msg_model) {
+        if (AppUtility.isInternetConnected()) {
+            FirebaseFirestore.getInstance().collection(ChatController.getInstance().getChatPath(chat_send_Msg_model.getJobCode(), chat_send_Msg_model.getJobId()))
+                    .add(chat_send_Msg_model)
+                    .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                        @Override
+                        public void onSuccess(DocumentReference documentReference) {
+                            Log.e("Message Send", documentReference.getId());
+                            /*
+                             *update read count for all fieldworkers except me***/
+                            ChatController.getInstance().increseUnreadCountforAll(chat_send_Msg_model.getJobCode(), chat_send_Msg_model.getJobId());
+                            /*
+                             * function call for offline user push notification.**/
+                            ChatController.getInstance().getAllUserOffLineDataList(chat_send_Msg_model);
+                            /*
+                             *function call for desktop notification**/
+                            ChatController.getInstance().sendNotificationToAdmins(chat_send_Msg_model);
+                            /*
+                             *function call for increase job count**/
+                            ChatController.getInstance().notifyWebForIncreaseCount("jobCount", "teamChat");
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.e("Msg Not Send", e.getMessage());
+                        }
+                    });
+        } else {
+            networkDialog();
+        }
+    }
+    public void addAttachmentToDb(List<Attachments> data, String jobId){
+        ExecutorService service = Executors.newSingleThreadExecutor();
+        service.execute(new Runnable() {
+            @Override
+            public void run() {
+        if(data.size()>0) {
+            Attachments_Dao attachments_dao = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).attachments_dao();
+            for (Attachments item : data
+            ) {
+                if(item.getAttachmentId() != null && item.getIsdelete().equalsIgnoreCase("1") && !item.getAttachmentId().contains("Attachment-")){
+                    Attachments tempAttach = attachments_dao.getAttachmetById(item.getAttachmentId());
+                    if (attachments_dao.isAttachment(item.getAttachmentId())) {
+                        if (tempAttach.getBitmap() != null && !tempAttach.getBitmap().isEmpty())
+                            item.setBitmap(tempAttach.getBitmap());
+                    }
+                } else if(item.getTempId() != null && item.getIsdelete().equalsIgnoreCase("1")) {
+                    Attachments tempAttach = attachments_dao.getAttachmetByTempId(item.getTempId());
+                    if (attachments_dao.isAttachment(item.getAttachmentId())) {
+                        if (tempAttach.getBitmap() != null && !tempAttach.getBitmap().isEmpty())
+                            item.setBitmap(tempAttach.getBitmap());
+                    }
+                }
+            }
+            attachments_dao.insertAttachments(data);
+            attachments_dao.deleteAttachments();
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    view.setList((ArrayList<Attachments>) attachments_dao.getAttachmentsByJobId(jobId), "");
+                }
+            });
+
+                    for (Attachments item :
+              AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).attachments_dao().getAttachmentsByJobId(jobId)) {
+                            String ImageName = "";
+                        if (item.getBitmap() != null && item.getBitmap().isEmpty()) {
+                            ImageName = item.getAttachFileActualName();
+                            DowloadFile(item.getAttachThumnailFileName(),ImageName, item.getAttachmentId());
+                        } else if ( item.getBitmap() != null && !new File(item.getBitmap()).exists()) {
+                            String[] splitName = item.getBitmap().split("/");
+                            ImageName = splitName[splitName.length-1];
+                            DowloadFile(item.getAttachThumnailFileName(),ImageName, item.getAttachmentId());
+                        }
+                    }
+        }else {
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    view.setList((ArrayList<Attachments>) AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).attachments_dao().getAttachmentsByJobId(jobId), "");
+                }
+            });
+            for (Attachments item :
+                    AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).attachments_dao().getAttachmentsByJobId(jobId)) {
+                String ImageName = "";
+                if (item.getBitmap() != null && item.getBitmap().isEmpty()) {
+                    ImageName = item.getAttachFileActualName();
+                    DowloadFile(item.getAttachThumnailFileName(),ImageName, item.getAttachmentId());
+                } else if ( item.getBitmap() != null && !new File(item.getBitmap()).exists()) {
+                    String[] splitName = item.getBitmap().split("/");
+                    ImageName = splitName[splitName.length-1];
+                    DowloadFile(item.getAttachThumnailFileName(),ImageName, item.getAttachmentId());
+                }
+            }
+        }
+            }
+        });
+    }
+    public void  DowloadFile(String endPoint, String imageName, String attachmentId){
+        try {
+            URL url =  new URL(App_preference.getSharedprefInstance().getBaseURL() + endPoint);
+            Bitmap image = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+            String imagePath = AppUtility.downloadFile(imageName, image).getAbsolutePath();
+            AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).attachments_dao().updateAttachment(imagePath, attachmentId);
+        } catch (IOException e) {
+            Log.e("Error","Error catch of JobDetail_pc 948 == "+ e.getMessage());
+
+        }
+    }
+
+    @Override
+    public void pauseResumeRecurr(Job job, String recurStatus) {
+        String recStatus = "";
+        String recType = "";
+        String _jobId = "";
+        if(recurStatus.equalsIgnoreCase("0") || recurStatus.equalsIgnoreCase("3")){
+            recStatus = "2";
+        }else if(recurStatus.equalsIgnoreCase("2")){
+            recStatus = "3";
+        }
+        /** If child job then send parent Id and if its parent job then we will send job id for pause and resume recurring job*/
+        if(job.getParentId()!= null && job.getParentId().equalsIgnoreCase("0")){
+            _jobId = job.getJobId();
+            recType = job.getRecurType();
+        }else {
+            _jobId = job.getParentId();
+            recType = job.getParentRecurType();
+        }
+
+        ApiClient.getservices().eotServiceCall(Service_apis.pauseResumeRecur, AppUtility.getApiHeaders(),
+                        AppUtility.getJsonObject(new Gson().toJson(new DeleteReCur(_jobId,recStatus,recType))))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<JsonObject>() {
+                    @Override
+                    public void onSubscribe(@NotNull Disposable d) {
+                    }
+                    @Override
+                    public void onNext(@NotNull JsonObject jsonObject) {
+                        Log.e("", "");
+                        if (jsonObject.get("success").getAsBoolean()) {
+                            EotApp.getAppinstance().showToastmsg(LanguageController.getInstance().getServerMsgByKey((jsonObject.get("message").getAsString())));
+                            view.StopRecurPatternHide();
+                            Log.e("", "");
+                        } else if (jsonObject.get("statusCode") != null && jsonObject.get("statusCode").getAsString().equals(AppConstant.SESSION_EXPIRE)) {
+                            view.sessionExpire(LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
+                        } else {
+                        }
+                    }
+
+                    @Override
+                    public void onError(@NotNull Throwable e) {
+                        Log.e("TAG", e.getMessage());
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Log.e("TAG", " e.getMessage()");
+                    }
+                });
     }
 }

@@ -67,9 +67,10 @@ public class Attachments implements Parcelable {
     private String isLinked;
     @SerializedName("isdelete")
     private String isdelete;
+    @SerializedName("tempId")
+    private String tempId;
     @Ignore
     private String complNote;
-    @Ignore
     String  bitmap="";
     @Ignore
     Bitmap bitmap1;
@@ -134,7 +135,7 @@ public class Attachments implements Parcelable {
         this.jobId = jobId;
         this.type = type;
     }
-    public Attachments(@NonNull String attachmentId, String imageName, String attachFileActualName, String attachThumnailFileName, String queId, String jtId, String des, String jobId, String type,String bitmap) {
+    public Attachments(@NonNull String attachmentId, String imageName, String attachFileActualName, String attachThumnailFileName, String queId, String jtId, String des, String jobId, String type,String bitmap,String tempId) {
         this.attachmentId = attachmentId;
         this.image_name = imageName;
         this.attachFileActualName = attachFileActualName;
@@ -145,6 +146,7 @@ public class Attachments implements Parcelable {
         this.jobId = jobId;
         this.type = type;
         this.bitmap = bitmap;
+        this.tempId =tempId;
     }
     public Attachments(String attachmentId, String image_name, String attachFileActualName, String bitmap) {
         this.attachmentId = attachmentId;
@@ -374,6 +376,14 @@ public class Attachments implements Parcelable {
 
     public void setJtId(String jtId) {
         this.jtId = jtId;
+    }
+
+    public String getTempId() {
+        return tempId;
+    }
+
+    public void setTempId(String tempId) {
+        this.tempId = tempId;
     }
 
     @Override

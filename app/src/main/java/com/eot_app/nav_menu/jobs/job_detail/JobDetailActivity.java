@@ -587,19 +587,6 @@ public class JobDetailActivity extends AppCompatActivity implements
                                 exception.printStackTrace();
                             }
                             ChatController.getInstance().setJobdetailListener(JobDetailActivity.this);
-                            try {
-                                if (dataJob != null && dataJob.getJobId() != null) {
-                                    /* *
-                                     * *
-                                     *  create batch count for JOB **/
-                                    showBadge(ChatController.getInstance().getbatchCount(dataJob.getJobId()));
-                                    /* *
-                                     * * client chat batch count ***/
-                                    showBadgeForClientChat(ChatController.getInstance().getClientChatBatchCount(dataJob.getJobId()));
-                                }
-                            } catch (Exception exception) {
-                                exception.printStackTrace();
-                            }
                             LocalBroadcastManager.getInstance(JobDetailActivity.this).registerReceiver(loadfromforserver,
                                     new IntentFilter("loadfromserver"));
                             attachKeyboardListeners();
@@ -639,6 +626,19 @@ public class JobDetailActivity extends AppCompatActivity implements
                                 clientChatTextView = badge.findViewById(R.id.badge_text_view);
                                 itemView.addView(badge);
                             }
+                        }
+                        try {
+                            if (dataJob != null && dataJob.getJobId() != null) {
+                                /* *
+                                 * *
+                                 *  create batch count for JOB **/
+                                showBadge(ChatController.getInstance().getbatchCount(dataJob.getJobId()));
+                                /* *
+                                 * * client chat batch count ***/
+                                showBadgeForClientChat(ChatController.getInstance().getClientChatBatchCount(dataJob.getJobId()));
+                            }
+                        } catch (Exception exception) {
+                            exception.printStackTrace();
                         }
                         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
                         EotApp.getAppinstance().setAddJobObserver(JobDetailActivity.this);
@@ -936,6 +936,7 @@ public class JobDetailActivity extends AppCompatActivity implements
             case ID_DOCUMENTS:
                 DOCUMENTSELECT = false;
                 selectBottomMenu(ID_DOCUMENTS);
+                documentsFragment.updateDocList();
                 viewPager.setCurrentItem(DOCUMENT_VIEW, false);
                 break;
             case ID_PAYMENT:
@@ -1341,8 +1342,9 @@ public class JobDetailActivity extends AppCompatActivity implements
         return super.onPrepareOptionsMenu(menu);
     }
 
-    public void openCustomSignatureDialog() {
+    public void openCustomSignatureDialog(String statusId) {
         if (detail_activity_pi != null && dataJob != null) {
+            dataJob.setStatus(statusId);
             if (TextUtils.isEmpty(dataJob.getSignature())) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 View view = LayoutInflater.from(this).inflate(R.layout.item_customer_signature, null);
@@ -1395,6 +1397,8 @@ public class JobDetailActivity extends AppCompatActivity implements
                     if (mSignature.isSignatureEmpty()) {
                         mfile = null;
                     }
+                    Log.e("Signature Param", "JobId = "+dataJob.getJobId());
+                    Log.e("Signature Param", "File = "+mfile);
                     detail_activity_pi.uploadCustomerSign(
                             dataJob.getJobId(),
                             mfile);

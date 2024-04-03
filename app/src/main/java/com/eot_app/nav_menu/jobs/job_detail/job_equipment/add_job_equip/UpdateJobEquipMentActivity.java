@@ -67,6 +67,8 @@ import com.eot_app.nav_menu.jobs.job_detail.job_equipment.add_job_equip.model_pk
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.add_job_equip.mvp.AddJobEqu_Pc;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.add_job_equip.mvp.AddJobEqu_Pi;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.add_job_equip.mvp.AddJobEqu_View;
+import com.eot_app.nav_menu.jobs.job_detail.job_equipment.job_equ_remrk.JobEquPartRemarkRemarkActivity;
+import com.eot_app.nav_menu.jobs.job_detail.job_equipment.job_equ_remrk.JobEquRemarkRemarkActivity;
 import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.AppUtility;
 import com.eot_app.utility.App_preference;
@@ -151,8 +153,10 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
         try {
             DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy", Locale.US);//hh:mm:ss a
             Date startDate = formatter.parse(selectedDay + "-" + (selectedMonth + 1) + "-" + selectedYear);
+            DateFormat formatter1 = new SimpleDateFormat("dd-MMM-yyyy", Locale.US);
             assert startDate != null;
-            dateselect = formatter.format(startDate);
+            dateselect = formatter1.format(startDate);
+//            dateselect = formatter.format(startDate);
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             params.setMargins(0, 5, 0, -20);
 
@@ -225,7 +229,7 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
                 updateItemDataModel.getWarrantyValue() != null &&
                 !updateItemDataModel.getWarrantyValue().isEmpty() &&
                 !updateItemDataModel.getWarrantyType().isEmpty()) {
-            String date = AppUtility.addDaysInDate(dateselect, Integer.parseInt(updateItemDataModel.getWarrantyValue()), updateItemDataModel.getWarrantyType(), "dd-MM-yyyy");
+            String date = AppUtility.addDaysInDate(dateselect, Integer.parseInt(updateItemDataModel.getWarrantyValue()), updateItemDataModel.getWarrantyType(), "dd-MMM-yyyy");
             setWarrntyViews(date, params);
         }
     }
@@ -576,7 +580,7 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
             job = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(jobId);
         }
         // To set the current date as warranty start date
-        setWarrntyStartViews(AppUtility.getCurrentDateByFormat("dd-MM-yyyy"));
+        setWarrntyStartViews(AppUtility.getCurrentDateByFormat("dd-MMM-yyyy"));
 
         //get equipment list
         addJobEqu_pi.getEquipmentList(jobId);
@@ -650,7 +654,7 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
         try {
             if (updateItemDataModel != null) {
 
-                if (updateItemDataModel.getIsGrouped().equalsIgnoreCase("1") && isPart.equalsIgnoreCase("0")) {
+                if (updateItemDataModel.getIsGrouped() != null && updateItemDataModel.getIsGrouped().equalsIgnoreCase("1") && isPart != null && isPart.equalsIgnoreCase("0")) {
                     AppUtility.alertDialog(UpdateJobEquipMentActivity.this, LanguageController.getInstance().getMobileMsgByKey(AppConstant.are_you_sure), LanguageController.getInstance().getMobileMsgByKey(AppConstant.do_you_want_t), LanguageController.getInstance().getMobileMsgByKey(AppConstant.yes), LanguageController.getInstance().getMobileMsgByKey(AppConstant.no), () -> {
                         isCnvtItemParts = "1";
                         return true;
@@ -1224,7 +1228,12 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
         EotApp.getAppinstance().getNotifyForEquipmentCountRemark();
         EotApp.getAppinstance().showToastmsg(msg);
         new Handler().postDelayed(() -> {
-
+            if( new JobEquRemarkRemarkActivity().getInstance() != null) {
+                new JobEquRemarkRemarkActivity().getInstance().finish();
+            }
+            if( new JobEquPartRemarkRemarkActivity().getInstance() != null) {
+                new JobEquPartRemarkRemarkActivity().getInstance().finish();
+            }
             /*navigate to the job equipment screen *****/
             Intent intent = new Intent();
             setResult(EQUIPMENT_UPDATE_CODE, intent);
@@ -1395,7 +1404,10 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            onBackPressed();
+            Intent intent = new Intent();
+            setResult(RESULT_OK,intent);
+            finish();
+//            onBackPressed();
             return true;
         }
         return true;

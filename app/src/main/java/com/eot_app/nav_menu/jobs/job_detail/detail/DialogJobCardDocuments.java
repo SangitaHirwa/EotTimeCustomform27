@@ -362,7 +362,7 @@ public class DialogJobCardDocuments extends DialogFragment
         if (jobId != null) {
             invoice_email_pi.getJobCardEmailTemplate(jobId,tempId,"");
 //            jobDetail_pi.getAttachFileList(jobId, "","");
-            doc_attch_pi.getAttachFileList(jobId, "", "",true);
+            doc_attch_pi.getAttachFileList(jobId, "", "",true, false);
             jobCardAttachmentAdapter = new JobCardAttachmentAdapter(this);
         }
     }
@@ -470,7 +470,7 @@ public class DialogJobCardDocuments extends DialogFragment
     }
 
     @Override
-    public void setList(ArrayList<Attachments> getFileList_res, String isAttachCompletionNotes, boolean firstCall) {
+    public void setList(ArrayList<Attachments> getFileList_res, String isAttachCompletionNotes, boolean firstCall, boolean isOnline) {
 
         Log.e("Attachment List", ""+getFileList_res.size()+""+isAttachCompletionNotes);
         list.clear();
@@ -515,7 +515,7 @@ public class DialogJobCardDocuments extends DialogFragment
         // to add the new entry into existing list
         if (getFileList_res != null&&fileList_res!=null) {
             fileList_res.addAll(getFileList_res);
-            setList(fileList_res, "",true);
+            setList(fileList_res, "",true, true);
         }
 
     }
@@ -629,7 +629,7 @@ public class DialogJobCardDocuments extends DialogFragment
                         }
                         getFileList_res.add(obj);
 
-                        setList(getFileList_res, "",true);
+                        setList(getFileList_res, "",true, true);
 
                         if(data.getStringExtra("fileName")!=null){
                             try
@@ -644,7 +644,7 @@ public class DialogJobCardDocuments extends DialogFragment
                             {
                                 if (getFileList_res.size()==1) {
                                     fileList_res.remove(getFileList_res.get(0));
-                                    setList(fileList_res, "",true);
+                                    setList(fileList_res, "",true, true);
                                 }
                                 e.printStackTrace();
                             }

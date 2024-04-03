@@ -231,8 +231,17 @@ public interface Service_apis {
     String get_supplier_list = "SupplierController/getSupplierList";
     String upload_document = "JobController/uploadDocument";
     String getRecurDataOfJob = "JobController/getRecurDataOfJob";
-    String getSyncJobAttachments = "JobController/syncJobAttachments";
+    String getSyncJobAttachments = "JobController/syncJobAttachmentsNew";
 
+    /**Add Requested Item api**/
+    String addItemRequest = "JobController/addItemRequest";
+    String  updateItemRequest = "JobController/updateItemRequest";
+    String deleteItemRequest = "JobController/deleteItemRequest";
+    String getListItemRequest ="JobController/listItemRequest";
+    /** Get and Set link Item in Equipment*/
+    String getLinkItem ="JobController/getItemListForLinkEqu";
+    String linkItemToEqup ="JobController/linkJobItemToEqu";
+    String pauseResumeRecur = "RecurController/pauseResumeRecur";
 
     /**Api for drag and drop**/
     String getJobMap = "CommonController/getJobMap";
@@ -308,6 +317,7 @@ public interface Service_apis {
                     @Part("type") RequestBody type,
                     @Part("docNm") RequestBody docNm,
                     @Part("isAddAttachAsCompletionNote") RequestBody isAddAttachAsCompletionNote,
+                    @Part("tempId") RequestBody tempId,
                     @Part MultipartBody.Part file);
 
     @Multipart
@@ -850,5 +860,6 @@ public interface Service_apis {
     @POST
     Observable<JsonObject> login(@Url String url,
                                  @Body Map<String, String> stringMap);
+
 }
 

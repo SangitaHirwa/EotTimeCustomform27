@@ -69,7 +69,7 @@ public class Login2Activity extends AppCompatActivity implements View.OnClickLis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login2);
-        AppUtility.askAllPerMission(this);
+        AppUtility.askAllPerMission1(this);
         if (!isTaskRoot()) {//current activity not finish it's open/lunch root(Top/Current) Activity
             final Intent intent = getIntent();
             final String intentAction = intent.getAction();

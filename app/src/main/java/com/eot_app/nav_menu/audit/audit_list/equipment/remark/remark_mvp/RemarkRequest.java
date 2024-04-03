@@ -14,7 +14,16 @@ public class RemarkRequest {
     String lng;
     String usrId;
     String isJob = "";
+    private String equStatus;
     Ans_Req answerArray = new Ans_Req();
+
+    public String getEquStatus() {
+        return equStatus;
+    }
+
+    public void setEquStatus(String equStatus) {
+        this.equStatus = equStatus;
+    }
 
     //ppor - 2 ggod -1
     public RemarkRequest() {

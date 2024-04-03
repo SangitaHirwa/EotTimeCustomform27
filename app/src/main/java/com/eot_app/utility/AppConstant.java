@@ -44,6 +44,7 @@ public class AppConstant {
     public static final String medium_caps = "Medium";
     public static final String Medium_id = "2";
     //     job states id
+    public static final String Reschedule = "0";
     public static final String Not_Started = "1";
     public static final String Accepted = "2";
     public static final String Reject = "3";
@@ -56,6 +57,7 @@ public class AppConstant {
     public static final String Closed = "10";
     public static final String Multi = "11";
     public static final String New_On_Hold = "12";
+    public static final String Revisit = "revisite";
     public static final String CUSTOM = "110";
     //   job Priority
     public static final String High = "High";
@@ -234,6 +236,7 @@ public class AppConstant {
     public static final String item = "item";
     public static final String fieldworker = "fieldworker";
     public static final String items_name = "items_name";
+    public static final String item_name = "item_name";
     public static final String part_no = "part_no";
     public static final String description = "description";
     public static final String rate = "rate";
@@ -424,6 +427,10 @@ public class AppConstant {
     public static final String capture_barcode = "capture_barcode";
     public static final String barcode_capture_note = "barcode_capture_note";
     public static final String add_contact_name = "add_contact_name";
+    public static final String link_items = "link_items";
+    public static final String item_linked = "item_linked";
+    public static final String item_not_linked = "item_not_linked";
+    public static final String error_msg_job_not_synced = "error_msg_job_not_synced";
 
     /**
      * **** new keys for language support
@@ -921,7 +928,7 @@ public class AppConstant {
     public static String wire_transfer="wire_transfer";
     public static String paypal="PayPal";
     public static String stripe="stripe";
-    public static String Debit_card="Debit_card";
+    public static String Debit_card="debit_card";
     public static String cash= "cash";
     public static String cheque="cheque";
     public static String credit_card="credit_card";
@@ -976,6 +983,37 @@ public class AppConstant {
     public static String equipment_location = "equipment_location";
     public static String leader_change_completed_status_all_members = "leader_change_completed_status_all_members";
     public static String no_term_condition = "no_term_condition";
+    public static String remove_stock_from_inventory = "remove_stock_from_inventory";
+    public static String request_Item = "request_Item";
+    public static String add_request_Item = "add_request_Item";
+    public static String no_brand = "no_brand";
+    public static String update_request_Item = "update_request_Item";
+    public static String item_requested = "item_requested";
+    public static String request_item_empty = "request_item_empty";
+    public static String no_item_requested_found = "no_item_requested_found";
+    public static String remove_requested_item = "remove_requested_item";
+    public static String others = "others";
+    public static String offline_attachment_notes = "offline_attachment_notes";
+    public static String not_possible_to_display_images_from_other_users = "not_possible_to_display_images_from_other_users";
+    public static String item_requested_by_the_field_user = "item_requested_by_the_field_user";
+    public static String field_user_made_some_changes_on_the_requested_item = "field_user_made_some_changes_on_the_requested_item";
+    public static String confirm = "confirm";
+    public static String action = "action";
+    public static String data_Save_On_Draft = "data_Save_On_Draft";
+    public static String parts_are_provided_by_the_client_not_taken_from_the_inventory = "parts_are_provided_by_the_client_not_taken_from_the_inventory";
+    public static String job_items_link_current_equipment = "job_items_link_current_equipment";
+    public static String select_job_items_to_link_equipment = "select_job_items_to_link_equipment";
+    public static String remark_form = "remark_form";
+    public static String link = "link";
+    public static String available = "available";
+    public static String discarded = "discarded";
+    public static String discard_equipments_not_replaced = "discard_equipments_not_replaced";
+    public static String order_ref_no = "order_ref_no";
+    public static String pause = "pause";
+    public static String pause_recur_msg = "pause_recur_msg";
+    public static String resume_recur_msg = "resume_recur_msg";
+    public static String expired = "expired";
+
 
 
 

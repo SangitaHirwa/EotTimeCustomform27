@@ -10,6 +10,7 @@ public class GetFileList_req_Model {
     String jobId;
     String usrId;
     String type;
+    String getOtherUsrImg;
 
     public GetFileList_req_Model(int index, int limit, String jobId ,String usrId,String type) {
         this.index = index;
@@ -17,5 +18,14 @@ public class GetFileList_req_Model {
         this.jobId = jobId;
         this.usrId = usrId;
         this.type  = type;
+    }
+
+    public GetFileList_req_Model(int index, int limit, String jobId, String usrId, String type, String getOtherUsrImg) {
+        this.index = index;
+        this.limit = limit;
+        this.jobId = jobId;
+        this.usrId = usrId;
+        this.type = type;
+        this.getOtherUsrImg = getOtherUsrImg;
     }
 }

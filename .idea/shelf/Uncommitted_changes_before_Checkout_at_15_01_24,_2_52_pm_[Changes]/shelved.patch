@@ -1,0 +1,26 @@
+Index: .idea/modules.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project version=\"4\">\n  <component name=\"ProjectModuleManager\">\n    <modules>\n      <module fileurl=\"file://$PROJECT_DIR$/.idea/modules/GitEyeOnTask.iml\" filepath=\"$PROJECT_DIR$/.idea/modules/GitEyeOnTask.iml\" />\n      <module fileurl=\"file://$PROJECT_DIR$/.idea/modules/app/GitEyeOnTask.app.iml\" filepath=\"$PROJECT_DIR$/.idea/modules/app/GitEyeOnTask.app.iml\" />\n      <module fileurl=\"file://$PROJECT_DIR$/.idea/modules/app/GitEyeOnTask.app.androidTest.iml\" filepath=\"$PROJECT_DIR$/.idea/modules/app/GitEyeOnTask.app.androidTest.iml\" />\n      <module fileurl=\"file://$PROJECT_DIR$/.idea/modules/app/GitEyeOnTask.app.main.iml\" filepath=\"$PROJECT_DIR$/.idea/modules/app/GitEyeOnTask.app.main.iml\" />\n      <module fileurl=\"file://$PROJECT_DIR$/.idea/modules/app/GitEyeOnTask.app.unitTest.iml\" filepath=\"$PROJECT_DIR$/.idea/modules/app/GitEyeOnTask.app.unitTest.iml\" />\n    </modules>\n  </component>\n</project>
+===================================================================
+diff --git a/.idea/modules.xml b/.idea/modules.xml
+--- a/.idea/modules.xml	
++++ b/.idea/modules.xml	
+@@ -2,11 +2,11 @@
+ <project version="4">
+   <component name="ProjectModuleManager">
+     <modules>
+-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/GitEyeOnTask.iml" filepath="$PROJECT_DIR$/.idea/modules/GitEyeOnTask.iml" />
+-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/GitEyeOnTask.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/GitEyeOnTask.app.iml" />
+-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/GitEyeOnTask.app.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/GitEyeOnTask.app.androidTest.iml" />
+-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/GitEyeOnTask.app.main.iml" filepath="$PROJECT_DIR$/.idea/modules/app/GitEyeOnTask.app.main.iml" />
+-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/GitEyeOnTask.app.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/GitEyeOnTask.app.unitTest.iml" />
++      <module fileurl="file://$PROJECT_DIR$/.idea/modules/#Eye015283_-_Job_Card_Preview(.iml" filepath="$PROJECT_DIR$/.idea/modules/#Eye015283_-_Job_Card_Preview(.iml" />
++      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/#Eye015283_-_Job_Card_Preview(.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/#Eye015283_-_Job_Card_Preview(.app.iml" />
++      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/#Eye015283_-_Job_Card_Preview(.app.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/#Eye015283_-_Job_Card_Preview(.app.androidTest.iml" />
++      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/#Eye015283_-_Job_Card_Preview(.app.main.iml" filepath="$PROJECT_DIR$/.idea/modules/app/#Eye015283_-_Job_Card_Preview(.app.main.iml" />
++      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/#Eye015283_-_Job_Card_Preview(.app.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/#Eye015283_-_Job_Card_Preview(.app.unitTest.iml" />
+     </modules>
+   </component>
+ </project>
+\ No newline at end of file

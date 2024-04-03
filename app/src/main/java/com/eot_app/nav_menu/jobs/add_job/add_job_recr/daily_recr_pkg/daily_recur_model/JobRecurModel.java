@@ -24,6 +24,8 @@ public class JobRecurModel {
     private String numOfWeeks;
     private String occur_days;
     private String week_num;
+    /** recurStatus->2= paused, 0 or 3 -> running */
+    private String recurStatus;
 
 
     /**
@@ -203,5 +205,13 @@ public class JobRecurModel {
 
     public void setWeek_num(String week_num) {
         this.week_num = week_num;
+    }
+
+    public String getRecurStatus() {
+        return recurStatus;
+    }
+
+    public void setRecurStatus(String recurStatus) {
+        this.recurStatus = recurStatus;
     }
 }

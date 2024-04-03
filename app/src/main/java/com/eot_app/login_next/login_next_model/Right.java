@@ -24,6 +24,7 @@ public class Right {
     private String isCheckInOutDownload;
     private String isLeaveAddEnable;
     private int isSchedular;
+    private int isItemRequested;
 
     public int getIsSchedular() {
         return isSchedular;
@@ -126,5 +127,9 @@ public class Right {
 
     public void setIsCustomField(int isCustomField) {
         this.isCustomField = isCustomField;
+    }
+
+    public int getIsItemRequested() {
+        return isItemRequested;
     }
 }

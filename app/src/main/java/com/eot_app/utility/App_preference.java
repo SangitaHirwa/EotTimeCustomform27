@@ -84,6 +84,7 @@ public class App_preference implements Sp_model {
     private final String gropList="grp_list";
     private final String CategryList="categry_list";
     private final String CAPTURE_IMG_PATH="captureImgPath";
+    private final String IS_LAUNCH="is_launch";
 //    private final String APP_KILL_TIME = "app_kill_time";
     private String REQUEST_IGNORE_BATTERY_OPTIMIZATIONS;
 
@@ -724,5 +725,16 @@ public class App_preference implements Sp_model {
     @Override
     public String getCapturePath() {
         return sp.getString(CAPTURE_IMG_PATH,"");
+    }
+
+    @Override
+    public void setLaunchFirst() {
+        editor.putBoolean(IS_LAUNCH, false);
+        editor.commit();
+    }
+
+    @Override
+    public boolean isLaunchFirst() {
+        return sp.getBoolean(IS_LAUNCH,true);
     }
 }

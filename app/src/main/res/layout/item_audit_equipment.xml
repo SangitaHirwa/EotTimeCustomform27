@@ -243,19 +243,15 @@
                         android:layout_height="wrap_content"
                         >
                         <TextView
-                            android:id="@+id/add_remark"
+                            android:id="@+id/action_btn"
                             style="@style/style_thrid_thrd"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Add remark"
-                            android:textColor="@color/color_green"
+                            android:textColor="@color/colorPrimary"
                             android:textStyle="bold"
                             tools:ignore="HardcodedText" />
                     </RelativeLayout>
-
-
-
-
                 </LinearLayout>
             </LinearLayout>
 
@@ -270,11 +266,9 @@
             android:visibility="gone" />
 
 
-
         <include
             android:id="@+id/edit_remark_layout"
             layout="@layout/remark_attch_layout" />
-
 
         <LinearLayout
             android:layout_width="match_parent"

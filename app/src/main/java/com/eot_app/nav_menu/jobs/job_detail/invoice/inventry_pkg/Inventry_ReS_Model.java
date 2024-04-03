@@ -55,6 +55,9 @@ public class Inventry_ReS_Model implements Parcelable, DropdownListBean {
     private String warrantyType;
     private String warrantyValue;
     private String isGrouped;
+    private String brandNm;
+    private String ebId;
+
 
     public String getIsGrouped() {
         return isGrouped;
@@ -120,6 +123,9 @@ public class Inventry_ReS_Model implements Parcelable, DropdownListBean {
         warrantyType = in.readString();
         warrantyValue = in.readString();
         isGrouped = in.readString();
+        brandNm = in.readString();
+        ebId = in.readString();
+
     }
 
     public static Creator<Inventry_ReS_Model> getCREATOR() {
@@ -159,6 +165,8 @@ public class Inventry_ReS_Model implements Parcelable, DropdownListBean {
         dest.writeString(warrantyType);
         dest.writeString(warrantyValue);
         dest.writeString(isGrouped);
+        dest.writeString(brandNm);
+        dest.writeString(ebId);
     }
 
     @Override
@@ -343,5 +351,21 @@ public class Inventry_ReS_Model implements Parcelable, DropdownListBean {
 
     public void setIsBillable(String isBillable) {
         this.isBillable = isBillable;
+    }
+
+    public String getBrandNm() {
+        return brandNm;
+    }
+
+    public void setBrandNm(String brandNm) {
+        this.brandNm = brandNm;
+    }
+
+    public String getEbId() {
+        return ebId;
+    }
+
+    public void setEbId(String ebId) {
+        this.ebId = ebId;
     }
 }

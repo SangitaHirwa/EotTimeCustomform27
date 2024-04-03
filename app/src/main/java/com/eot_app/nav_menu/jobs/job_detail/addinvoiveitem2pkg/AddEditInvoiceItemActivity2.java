@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -61,6 +62,7 @@ import com.eot_app.nav_menu.jobs.job_detail.invoice.inventry_pkg.ItemParts;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_detail_pkg.inv_detail_model.Tax;
 import com.eot_app.nav_menu.jobs.job_detail.invoice2list.ItemListPartAdpter;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.add_job_equip.AddJobEquipMentActivity;
+import com.eot_app.nav_menu.jobs.job_detail.job_equipment.job_equ_remrk.JobEquLinkItemActivity;
 import com.eot_app.nav_menu.jobs.joboffline_db.JobOfflineDataModel;
 import com.eot_app.services.Service_apis;
 import com.eot_app.utility.AppConstant;
@@ -99,7 +101,8 @@ public class AddEditInvoiceItemActivity2 extends
         View.OnClickListener,
         RadioGroup.OnCheckedChangeListener {
     public static final int EQUIPMENTCONVERT = 201;
-    RelativeLayout ll_note;
+    public static final int EQUIPMENTLINK = 202;
+    RelativeLayout ll_note, ll_link_note;
     View nm_view, desc_view, qty_view, rate_view, supplier_view, disc_view, tax_view, amount_view, part_no_view, hsncode_view, unit_view, taxrateAmount_view, seroal_no_view, tax_rate_view;
     TextView tax_value_txt, tax_txt_hint, amount_value_txt, taxamount_txt_hint, taxamount_value_txt, amount_txt_hint;
     List<ItemParts> partsList = new ArrayList<>();
@@ -109,7 +112,7 @@ public class AddEditInvoiceItemActivity2 extends
     String equipmentIdName = "";
     String equipmentType = "";
     RelativeLayout add_quote_item_layout;
-    TextView text_default, tv_label_part;
+    TextView text_default, tv_label_part, txt_lbl_link,btn_link_item;
     CardView ll_part_items;
     RecyclerView recyclerView_part_item;
     ItemListPartAdpter invoice_list_adpter;
@@ -177,10 +180,19 @@ public class AddEditInvoiceItemActivity2 extends
     private  String appInm="";
     private AppointmentUpdateItem_Req_Model itemAddRequestModel;
     private  AppointmentAddItem_Res updateItem_res;
+    CheckBox add_stock_checkBox;
+   String isRemoveStock ="1";
+   boolean show_stock_checkbox = false;
+   public static AddEditInvoiceItemActivity2 addEditInvoiceItemActivity2;
 
+   public  AddEditInvoiceItemActivity2 getInstance(){
+
+       return addEditInvoiceItemActivity2;
+   }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        addEditInvoiceItemActivity2 = this;
         setContentView(R.layout.activity_edit__invoice);
 //        initializelables();
         appointmentItemData_pi = new AppointmentItemData_pc();
@@ -196,6 +208,7 @@ public class AddEditInvoiceItemActivity2 extends
                 if (getIntent().hasExtra("comeFrom")) {
                     comeFrom = bundle.getString("comeFrom");
                     cltId = bundle.getString("cltId");
+                    show_stock_checkbox = true;
                     equipment = bundle.getString("equipment");
                     equipmentId = bundle.getString("equipmentId");
                     equipmentIdName = bundle.getString("equipmentIdName");
@@ -204,6 +217,9 @@ public class AddEditInvoiceItemActivity2 extends
                     if (comeFrom != null && comeFrom.equalsIgnoreCase("AddRemark")) {
                         edt_item_qty.setEnabled(false);
                         ll_note.setVisibility(View.VISIBLE);
+                        ll_link_note.setVisibility(View.VISIBLE);
+                    }else  if (comeFrom != null && comeFrom.equalsIgnoreCase("AddRemarkItem")) {
+                        ll_link_note.setVisibility(View.VISIBLE);
                     }
                     layout_fw_item.setVisibility(View.GONE);
                 }
@@ -221,6 +237,7 @@ public class AddEditInvoiceItemActivity2 extends
             if (getIntent().hasExtra("jobId")) {
                 jobId = bundle.getString("jobId");
                 invId = bundle.getString("invId");
+                show_stock_checkbox = true;
                 getTaxDisType(jobId);
                 initializelables();
                 addItemOnInvoice = bundle.getBoolean("addItemOnInvoice");
@@ -242,6 +259,7 @@ public class AddEditInvoiceItemActivity2 extends
             } else if (getIntent().hasExtra("InvoiceItemDataModel")) {
                 jobId = bundle.getString("edit_jobId");
                 invId = bundle.getString("invId");
+                show_stock_checkbox = true;
                 getTaxDisType(jobId);
                 initializelables();
                 addItemOnInvoice = bundle.getBoolean("addItemOnInvoice");
@@ -370,6 +388,34 @@ public class AddEditInvoiceItemActivity2 extends
                 Log.e("", "");
             }
         });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        if(jobModel != null && jobModel.getItemData().size() > 0) {
+            for (InvoiceItemDataModel item : jobModel.getItemData()
+            ) {
+
+                if (item.getDataType().equalsIgnoreCase("1") && item.getEquId().equalsIgnoreCase("0")) {
+                    if (comeFrom != null && comeFrom.equalsIgnoreCase("AddRemark")) {
+                        ll_link_note.setVisibility(View.VISIBLE);
+                        break;
+                    }else  if (comeFrom != null && comeFrom.equalsIgnoreCase("AddRemarkItem")) {
+                        ll_link_note.setVisibility(View.VISIBLE);
+                        break;
+                    }else {
+                        ll_link_note.setVisibility(View.GONE);
+                    }
+
+                } else {
+                    ll_link_note.setVisibility(View.GONE);
+                }
+            }
+        }else {
+            ll_link_note.setVisibility(View.GONE);
+        }
     }
 
     private void getTaxDisType(String jobId){
@@ -663,6 +709,19 @@ public class AddEditInvoiceItemActivity2 extends
         itemType = updateItemDataModel.getItemType();
         inm = updateItemDataModel.getInm();
         jtId = updateItemDataModel.getJtId();
+        if(updateItemDataModel.getItemType() != null && updateItemDataModel.getItemType().equals("0")){
+            if(updateItemDataModel.getIsRemoveStock() != null && updateItemDataModel.getIsRemoveStock().equals("0")){
+                add_stock_checkBox.setChecked(false);
+                isRemoveStock = "0";
+            }else {
+                add_stock_checkBox.setChecked(true);
+                isRemoveStock = "1";
+            }
+            add_stock_checkBox.setVisibility(View.VISIBLE);
+        }else {
+            add_stock_checkBox.setVisibility(View.GONE);
+
+        }
         try {
             if (!NONBILLABLE && updateItemDataModel.getDataType().equals("1")) {
                 if (updateItemDataModel.getIsBillable() != null) {
@@ -807,6 +866,7 @@ public class AddEditInvoiceItemActivity2 extends
         tvLabelStep1.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.step_1_note_new));
 
         ll_note = findViewById(R.id.ll_note);
+        ll_link_note = findViewById(R.id.ll_link_note);
         itemlayout = findViewById(R.id.itemlayout);
         layout_fw_item = findViewById(R.id.layout_fw_item);
         tv_label_part = findViewById(R.id.tv_label_part);
@@ -892,6 +952,14 @@ public class AddEditInvoiceItemActivity2 extends
         radio_none_billable.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.non_billable));
         radio_billable.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.billable));
         text_default.setText(" (" + LanguageController.getInstance().getMobileMsgByKey(AppConstant.text_default) + ")");
+
+        add_stock_checkBox = findViewById(R.id.add_stock_checkBox);
+        add_stock_checkBox.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.remove_stock_from_inventory));
+        txt_lbl_link = findViewById(R.id.txt_lbl_link);
+        txt_lbl_link.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.select_job_items_to_link_equipment));
+        btn_link_item = findViewById(R.id.btn_link_item);
+        btn_link_item.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.yes));
+        btn_link_item.setOnClickListener(this);
 
         intializeViews();
     }
@@ -1003,6 +1071,13 @@ public class AddEditInvoiceItemActivity2 extends
 //        if (!NONBILLABLE) {
 //            rediogrp.setVisibility(View.GONE);
 //        }
+        add_stock_checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if(!isChecked){
+                isRemoveStock = "0";
+            }else {
+                isRemoveStock = "1";
+            }
+        });
 
         invoiceItemPi = new AddEditInvoiceItem_PC(this);
         invoiceItemPi.getInventryItemList();
@@ -1060,6 +1135,34 @@ public class AddEditInvoiceItemActivity2 extends
         intent.putExtra("equipmentIdName", equipmentIdName);
         intent.putExtra("equipmentType", equipmentType);
         startActivityForResult(intent, EQUIPMENTCONVERT);
+    }
+    /** Move Link Item Screen */
+    private void linkItem() {
+        if(comeFrom.equalsIgnoreCase("AddRemarkItem")) {
+            Intent intent = new Intent(AddEditInvoiceItemActivity2.this, JobEquLinkItemActivity.class);
+            intent.putExtra("edit_jobId", jobId);
+            intent.putExtra("comeFrom", "AddItem");
+            intent.putExtra("equipmentId", equipmentId);
+            startActivity(intent);
+//        startActivityForResult(intent, EQUIPMENTLINK);
+        }else {
+            Intent intent = new Intent(AddEditInvoiceItemActivity2.this,  JobEquLinkItemActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+
+            intent.putExtra("edit_jobId", jobId);
+            intent.putExtra("invId", invId);
+            intent.putExtra("comeFrom", comeFrom);
+            intent.putExtra("equipmentId", equipmentId);
+            intent.putExtra("equipmentIdName", equipmentIdName);
+            intent.putExtra("equipmentType", equipmentType);
+            intent.putExtra("InvoiceItemDataModel", updateItemDataModel);
+            try {
+                intent.putExtra("objectStr", new Gson().toJson(updateItemDataModel));
+            } catch (Exception exception) {
+                exception.printStackTrace();
+            }
+            startActivity(intent);
+        }
     }
 
     @Override
@@ -1139,7 +1242,9 @@ public class AddEditInvoiceItemActivity2 extends
             Log.e("checkEmpty:;", warrantyValue + " " + warrantyType);
 
         }
-
+        if(show_stock_checkbox) {
+            add_stock_checkBox.setVisibility(View.VISIBLE);
+        }
         /* 1 For Selected tax on Item************/
         if (itemselected.getTaxType() != null && itemselected.getTaxType().equals("1")) {
             setDefaultTax(itemselected.getTax());
@@ -1184,6 +1289,10 @@ public class AddEditInvoiceItemActivity2 extends
         edt_item_desc.setText(itemselected.getIdes());
         edt_unit.setText(itemselected.getUnit());
         edt_serialNo.setText(itemselected.getSerialNo());
+
+        if(!add_stock_checkBox.isChecked()){
+            isRemoveStock = "0";
+        }
         Log.v("Rate:::", itemselected.getRate());
         if (itemselected.getRate().isEmpty()) {
             edt_item_rate.setText("0");
@@ -1471,6 +1580,7 @@ public class AddEditInvoiceItemActivity2 extends
                 break;
             case R.id.item_select:
                 autocomplete_item.setTag("Item");
+                add_stock_checkBox.setVisibility(View.GONE);
                 invoiceItemPi.getInventryItemList();
                 setTxtBkgColor(1);
                 fw_service_filed_hide(1);
@@ -1488,6 +1598,7 @@ public class AddEditInvoiceItemActivity2 extends
                 autocomplete_item.setTag("Services");
                 setTxtBkgColor(3);
                 invoiceItemPi.getJobServiceTittle();
+                add_stock_checkBox.setVisibility(View.GONE);
                 fw_service_filed_hide(3);
                 break;
             case R.id.tv_skip:
@@ -1505,6 +1616,9 @@ public class AddEditInvoiceItemActivity2 extends
                 Log.d("settax5",String.valueOf(total_tax)+getTotalApplyTax());
                 calculateTaxRate();
                 total_Amount_cal();
+                break;
+            case R.id.btn_link_item:
+                linkItem();
                 break;
         }
     }
@@ -1857,6 +1971,9 @@ public class AddEditInvoiceItemActivity2 extends
                 isPartParent = 1;
                 partTempId = AppUtility.getRandomUUID();
             }
+            if(edt_item_qty.getText().toString().isEmpty()){
+                edt_item_qty.setText("0");
+            }
             InvoiceItemDataModel addItemDataModel =
                     new InvoiceItemDataModel(autocomplete_item.getText().toString().trim(),
                             inm,
@@ -1874,7 +1991,7 @@ public class AddEditInvoiceItemActivity2 extends
                             , edt_item_supplier.getText().toString().trim()
                             , taxListFilter, jtId,
                             edt_serialNo.getText().toString().trim(),
-                            isBillableChange, equipmentId, "", partTempId, isPartParent, 0);
+                            isBillableChange, equipmentId, "", partTempId, isPartParent, 0,isRemoveStock);
 
             try {
                 if (!isBillable.equals("")) {
@@ -1914,7 +2031,7 @@ public class AddEditInvoiceItemActivity2 extends
                         , partsList.get(i).getTax(), "",
                         partsList.get(i).getSerialNo(),
                         partsList.get(i).getIsBillableChange(), equipmentId,
-                        partsList.get(i).getIsBillable(), partTempId, 0, 1
+                        partsList.get(i).getIsBillable(), partTempId, 0, 1,isRemoveStock
                 ));
             }
 //            Add  item's in job**
@@ -2074,7 +2191,9 @@ public class AddEditInvoiceItemActivity2 extends
             HyperLog.i("TAG", "updateItemsOnJob(M) start");
 
 
-
+            if(edt_item_qty.getText().toString().isEmpty()){
+                edt_item_qty.setText("0");
+            }
             int isPartParent = 0, isPartChild = 0;
 
             if (updateItemDataModel.getParentId() != null
@@ -2105,7 +2224,7 @@ public class AddEditInvoiceItemActivity2 extends
                     updateItemDataModel.getItemConvertCount()
                     , isBillableChange, equipmentId,
                     updateItemDataModel.getIsPartTempId()
-                    , isPartParent, isPartChild,updateItemDataModel.getGroupId()
+                    , isPartParent, isPartChild,updateItemDataModel.getGroupId(),isRemoveStock
                     //        , updateItemDataModel.getIsBillable()
             );
 

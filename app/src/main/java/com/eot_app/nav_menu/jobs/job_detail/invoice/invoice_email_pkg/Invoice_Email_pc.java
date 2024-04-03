@@ -37,6 +37,7 @@ import io.reactivex.schedulers.Schedulers;
 public class Invoice_Email_pc implements Invoice_Email_pi {
     Invoice_Email_View email_view;
     Context context;
+    Get_Email_ReS_Model email_reS;
 
     public Invoice_Email_pc(Invoice_Email_View email_view,Context context) {
         this.email_view = email_view;
@@ -666,7 +667,7 @@ public class Invoice_Email_pc implements Invoice_Email_pi {
                             if (jsonObject.get("success").getAsBoolean()) {
                                 Gson gson = new Gson();
                                 Get_Email_ReS_Model email_reS_model = gson.fromJson(jsonObject.get("data"), Get_Email_ReS_Model.class);
-                                email_view.onGetEmailTempData(email_reS_model);
+                               email_reS = email_reS_model;
                             } else if (jsonObject.get("statusCode") != null && jsonObject.get("statusCode").getAsString().equals(AppConstant.SESSION_EXPIRE)) {
                                 email_view.setSessionExpire(LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
                             } else {
@@ -683,6 +684,7 @@ public class Invoice_Email_pc implements Invoice_Email_pi {
                         @Override
                         public void onComplete() {
                             AppUtility.progressBarDissMiss();
+                            email_view.onGetEmailTempData(email_reS);
                         }
                     });
         } else {

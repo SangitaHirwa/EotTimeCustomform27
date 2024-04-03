@@ -270,7 +270,7 @@ public class AuditEquipmentAdapter extends RecyclerView.Adapter<AuditEquipmentAd
             remark_condition_txt = itemView.findViewById(R.id.remark_condition_txt);
             remark_status = itemView.findViewById(R.id.remark_status);
             remark_notes = itemView.findViewById(R.id.remark_notes);
-            add_remark = itemView.findViewById(R.id.add_remark);
+            add_remark = itemView.findViewById(R.id.add_action);
             view_details = itemView.findViewById(R.id.view_details);
             remark_txt = itemView.findViewById(R.id.remark_txt);
 

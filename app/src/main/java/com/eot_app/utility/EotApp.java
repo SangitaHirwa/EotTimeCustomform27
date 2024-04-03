@@ -24,12 +24,15 @@ import com.eot_app.nav_menu.jobs.job_detail.detail.NotifyForEquipmentCountList;
 import com.eot_app.nav_menu.jobs.job_detail.detail.NotifyForEquipmentCountRemark;
 import com.eot_app.nav_menu.jobs.job_detail.detail.NotifyForItemCount;
 import com.eot_app.nav_menu.jobs.job_detail.detail.NotifyForItemCountRemark;
+import com.eot_app.nav_menu.jobs.job_detail.detail.NotifyForRequestedItemList;
 import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.NotifyForMultiDocAdd;
 import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.NotifyForMultiDocAddForAttach;
 import com.eot_app.nav_menu.jobs.job_detail.generate_invoice.InvoiceItemObserver;
+import com.eot_app.nav_menu.jobs.job_detail.requested_item.requested_itemModel.AddUpdateRequestedModel;
 import com.eot_app.nav_menu.jobs.joboffline_db.JobItem_Observer;
 import com.eot_app.nav_menu.jobs.joboffline_db.JobOverViewNotify;
 import com.eot_app.services.ForegroundService2;
+import com.eot_app.utility.settings.setting_db.Offlinetable;
 import com.eot_app.utility.util_interfaces.ApiCallbackObserver;
 import com.eot_app.utility.util_interfaces.ApiContactSiteObserver;
 import com.eot_app.utility.util_interfaces.NotificationObserver;
@@ -72,6 +75,7 @@ public class EotApp extends Application implements Application.ActivityLifecycle
     private NotifyForcompletionInJob notifyForcompletionInJob;
     private NotifyForcompletionInDetail notifyForcompletionInDetail;
     private NotifyForMultiDocAddForAttach notifyForMultiDocAddForAttach;
+    private NotifyForRequestedItemList notifyForRequestedItemList;
     public static synchronized EotApp getAppinstance() {
         return INSTANCE;
     }
@@ -183,18 +187,18 @@ public class EotApp extends Application implements Application.ActivityLifecycle
     public void setNotifyForcompletionInDetail(NotifyForcompletionInDetail notifyForcompletionInDetail) {
         this.notifyForcompletionInDetail = notifyForcompletionInDetail;
     }
-    public void getNotifyForMultiDocAddForAttach(String apiName, String jobId, String type) {
+    public void getNotifyForMultiDocAddForAttach(String apiName, String jobId, String type, boolean isRefreshFromApi) {
         if(this.notifyForMultiDocAddForAttach != null){
-            notifyForMultiDocAddForAttach.updateMultiDoc(apiName,jobId, type);
+            notifyForMultiDocAddForAttach.updateMultiDoc(apiName,jobId, type, isRefreshFromApi);
         }
     }
     public void setNotifyForMultiDocAddForAttach(NotifyForMultiDocAddForAttach notifyForMultiDocAddForAttach) {
         this.notifyForMultiDocAddForAttach = notifyForMultiDocAddForAttach;
     }
 
-    public void getAddMultiDocObserver(String apiName, String jobId, int parentPostion, int postion, String queId, String jtId){
+    public void getAddMultiDocObserver(String apiName, String jobId, int parentPostion, int postion, String queId, String jtId, boolean isRefreshFromApi){
         if(this.notifyForMultiDocAdd != null){
-            notifyForMultiDocAdd.updateMultiDoc(apiName, jobId, parentPostion, postion, queId, jtId);
+            notifyForMultiDocAdd.updateMultiDoc(apiName, jobId, parentPostion, postion, queId, jtId,isRefreshFromApi);
         }
     }
     public void getAddJobObserver(String tempId,String jobId) {
@@ -262,6 +266,14 @@ public class EotApp extends Application implements Application.ActivityLifecycle
     }
     public void setNotifyForEquipmentCountList(NotifyForEquipmentCountList notifyForEquipmentCount) {
         this.notifyForEquipmentCountList = notifyForEquipmentCount;
+    }
+    public void setNotifyForRequestedItemList(NotifyForRequestedItemList notifyForRequestedItemList){
+        this.notifyForRequestedItemList = notifyForRequestedItemList;
+    }
+    public void getNotifyForRequestedItemList(String api_name, String message, AddUpdateRequestedModel requestedModel) {
+        if (notifyForRequestedItemList != null) {
+            notifyForRequestedItemList.updateReqItemList(api_name,message,requestedModel);
+        }
     }
 
     public void getNotifyForInvoiceGenr() {

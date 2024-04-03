@@ -109,7 +109,11 @@ public class EquipmentPartRemarkAdapter extends RecyclerView.Adapter<EquipmentPa
         Log.e("List", "" + new Gson().toJson(list));
         holder.tv_item_name.setText(equArrayModel.getEqunm());
 
-
+        if (!TextUtils.isEmpty(equArrayModel.getStatus()) || equArrayModel.getAttachments() != null && equArrayModel.getAttachments().size() > 0) {
+            holder.img_show_remark.setVisibility(View.VISIBLE);
+        }else {
+            holder.img_show_remark.setVisibility(View.GONE);
+        }
 
 
         if(llDetailHide)
@@ -120,13 +124,13 @@ public class EquipmentPartRemarkAdapter extends RecyclerView.Adapter<EquipmentPa
             holder.ll_views.setVisibility(View.VISIBLE);
         }
         if (!TextUtils.isEmpty(equArrayModel.getStatus()) || equArrayModel.getAttachments() != null && equArrayModel.getAttachments().size() > 0) {
-            holder.add_remark.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.view_edit_remark));
+            holder.add_action.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.action));
         } else {
-            holder.add_remark.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_remark));
+            holder.add_action.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.action));
         }
 
         holder.view_details.setOnClickListener(v -> selectionForDetails.onEquipmentSelectedForDetails(list.get(position)));
-        holder.add_remark.setOnClickListener(v -> setRemarkActivity(holder.getBindingAdapterPosition()));
+        holder.add_action.setOnClickListener(v -> setRemarkActivity(holder.getBindingAdapterPosition(),true));
 
 
         if(equArrayModel.getExpiryDate()!=null&&!equArrayModel.getExpiryDate().isEmpty()){
@@ -203,7 +207,7 @@ public class EquipmentPartRemarkAdapter extends RecyclerView.Adapter<EquipmentPa
     }
 
     public interface OnEquipmentSelection {
-        void onEquipmentSelected(int position, EquArrayModel equipmentRes);
+        void onEquipmentSelected(int position, EquArrayModel equipmentRes, boolean isAction);
     }
 
     private String getCurrentStatusNameById(String statusId) {
@@ -240,8 +244,8 @@ public class EquipmentPartRemarkAdapter extends RecyclerView.Adapter<EquipmentPa
         LinearLayout ll_main;
         LinearLayout ll_views;
         TextView tvWarranty;
-        ImageView ivAlert;
-        TextView view_details, add_remark;
+        ImageView ivAlert, img_show_remark;
+        TextView view_details, add_action;
         LinearLayout ll_status;
 
         public MyViewHolder(@NonNull View itemView) {
@@ -267,17 +271,18 @@ public class EquipmentPartRemarkAdapter extends RecyclerView.Adapter<EquipmentPa
             tv_date = itemView.findViewById(R.id.tv_date);
             ll_status = itemView.findViewById(R.id.ll_status);
             view_details.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.view_details));
-            add_remark = itemView.findViewById(R.id.add_remark);
+            add_action = itemView.findViewById(R.id.add_action);
+            img_show_remark = itemView.findViewById(R.id.img_show_remark);
         }
 
 
     }
 
 
-    void setRemarkActivity(int position) {
+    void setRemarkActivity(int position, boolean isAction) {
         if (onEquipmentSelection != null) {
             list.get(position).setIsPart("1");
-            onEquipmentSelection.onEquipmentSelected(position, list.get(position));
+            onEquipmentSelection.onEquipmentSelected(position, list.get(position), isAction);
         } else {
             String strEqu = new Gson().toJson(list.get(position));
             mContext.startActivity(new Intent(mContext, JobEquRemarkRemarkActivity.class).putExtra("equipment", strEqu));

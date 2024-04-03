@@ -15,6 +15,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.location.LocationManager;
 import android.media.ExifInterface;
+import android.media.MediaScannerConnection;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -903,11 +904,11 @@ public class AppUtility {
         AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).taxesLocationDao().delete();
         AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).clientRefrenceDao().delete();
         AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).shiftTimeDao().delete();
-
+        AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).attachments_dao().deleteTable();// Delete attachment table from database
+        AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).brandDao().delete();// Delete brand data from database
         App_preference.getSharedprefInstance().clearSharedPreference();
-
-
         UserToUserChatController.getInstance().clearAllList();
+        App_preference.getSharedprefInstance().setLaunchFirst();// Set launch first time false because we are want to show prominent screen on one time. When user Install app.
 
     }
 
@@ -1146,12 +1147,14 @@ public static void askAllPerMission(Context context) {
             ||ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
             ||ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED
             ||ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+            ||ContextCompat.checkSelfPermission(context, Manifest.permission.MANAGE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
             ) {
                 ActivityCompat.requestPermissions((Activity) context,
                         new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
                                 Manifest.permission.WRITE_EXTERNAL_STORAGE,
                                 Manifest.permission.CAMERA,
-                                Manifest.permission.ACCESS_FINE_LOCATION
+                                Manifest.permission.ACCESS_FINE_LOCATION,
+                                Manifest.permission.MANAGE_EXTERNAL_STORAGE
                         }, UPLOAD_FILE);
             } else {
                 ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
@@ -1162,15 +1165,79 @@ public static void askAllPerMission(Context context) {
                 ||ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED
                 ||ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 ||ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
+                ||ContextCompat.checkSelfPermission(context, Manifest.permission.MANAGE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
             ) {
                 ActivityCompat.requestPermissions((Activity) context,
                         new String[]{Manifest.permission.READ_MEDIA_IMAGES,
                                     Manifest.permission.CAMERA,
                                    Manifest.permission.ACCESS_FINE_LOCATION,
-                                   Manifest.permission.POST_NOTIFICATIONS
+                                   Manifest.permission.POST_NOTIFICATIONS,
+                                   Manifest.permission.MANAGE_EXTERNAL_STORAGE
                         }, UPLOAD_FILE);
             } else {
                 ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.READ_MEDIA_IMAGES}, 1);
+
+            }
+        }
+
+    }
+    public static void askAllPerMission1(Context context) {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP && Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+            ||ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+            ||ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED
+            ||ContextCompat.checkSelfPermission(context, Manifest.permission.MANAGE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+           ) {
+                ActivityCompat.requestPermissions((Activity) context,
+                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
+                                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                                Manifest.permission.CAMERA,
+                                Manifest.permission.MANAGE_EXTERNAL_STORAGE
+                        }, UPLOAD_FILE);
+            } else {
+                ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+
+            }
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED
+                ||ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED
+                ||ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
+                ||ContextCompat.checkSelfPermission(context, Manifest.permission.MANAGE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+            ) {
+                ActivityCompat.requestPermissions((Activity) context,
+                        new String[]{Manifest.permission.READ_MEDIA_IMAGES,
+                                    Manifest.permission.CAMERA,
+                                   Manifest.permission.POST_NOTIFICATIONS,
+                                   Manifest.permission.MANAGE_EXTERNAL_STORAGE
+                        }, UPLOAD_FILE);
+            } else {
+                ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.READ_MEDIA_IMAGES}, 1);
+
+            }
+        }
+
+    }
+public static void askPerMissionForLocation(Context context) {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP && Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+            ) {
+                ActivityCompat.requestPermissions((Activity) context,
+                        new String[]{
+                                Manifest.permission.ACCESS_FINE_LOCATION
+                        }, UPLOAD_FILE);
+            } else {
+                ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+
+            }
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+            ) {
+                ActivityCompat.requestPermissions((Activity) context,
+                        new String[]{
+                                   Manifest.permission.ACCESS_FINE_LOCATION,
+                                                           }, UPLOAD_FILE);
+            } else {
+                ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
 
             }
         }
@@ -2315,16 +2382,54 @@ public static void askAllPerMission(Context context) {
         }
         return time;
     }
-    public static String getParam(String job_Id, String que_Id, String jtId,String file, String finalFname, String desc, String type, String isAddAttachAsCompletionNote, boolean lastCall,boolean isAttachmentSection, int parentPosition, int position){
+    public static String getParam(String job_Id, String que_Id, String jtId,String file, String finalFname, String desc, String type, String isAddAttachAsCompletionNote, boolean lastCall,boolean isAttachmentSection, int parentPosition, int position, String tempId){
         MultiDocUpdateRequest multi_DocUpdateRequest;
         if(que_Id.equals("") && que_Id.isEmpty()) {
-            multi_DocUpdateRequest = new MultiDocUpdateRequest(job_Id, file, finalFname, desc, type, isAddAttachAsCompletionNote, lastCall, isAttachmentSection);
+            multi_DocUpdateRequest = new MultiDocUpdateRequest(job_Id, file, finalFname, desc, type, isAddAttachAsCompletionNote, lastCall, isAttachmentSection,tempId);
         }else {
-            multi_DocUpdateRequest = new MultiDocUpdateRequest(job_Id, que_Id, jtId,file, finalFname, desc, type, isAddAttachAsCompletionNote, lastCall,isAttachmentSection, parentPosition, position);
+            multi_DocUpdateRequest = new MultiDocUpdateRequest(job_Id, que_Id, jtId,file, finalFname, desc, type, isAddAttachAsCompletionNote, lastCall,isAttachmentSection, parentPosition, position,tempId);
         }
         Gson gson = new Gson();
         String multiDocUpdateRequest = gson.toJson(multi_DocUpdateRequest);
         return multiDocUpdateRequest;
     }
+    public static String getCurrentMiliTiem (){
+        Calendar calendar = Calendar.getInstance();
+       return String.valueOf(calendar.getTime().getTime());
+    }
+
+    public static File downloadFile(String imgName,Bitmap bm) throws IOException {
+
+        //Create Path to save Image
+        File path = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "Eot Directory"); //Creates app specific folder
+        if (!path.exists()) {
+            path.mkdir();
+        }
+        File imageFile = new File(path.getPath()+"/"+imgName);
+        if(!imageFile.exists()) {
+           File imageFile1 = new File(path.getPath()+"/Eot_"+AppUtility.getCurrentMiliTiem()+".jpg");
+
+           imageFile = imageFile1;
+            FileOutputStream out = new FileOutputStream(imageFile);
+            try {
+                bm.compress(Bitmap.CompressFormat.PNG, 100, out); // Compress Image
+                out.flush();
+                out.close();
+
+                // Tell the media scanner about the new file so that it is
+                // immediately available to the user.
+                MediaScannerConnection.scanFile(EotApp.getAppinstance(), new String[]{imageFile.getAbsolutePath()}, null, new MediaScannerConnection.OnScanCompletedListener() {
+                    public void onScanCompleted(String path, Uri uri) {
+                        Log.i("ExternalStorage", "Scanned " + path + ":");
+                        Log.i("ExternalStorage", "-> uri=" + uri);
+                    }
+                });
+            } catch (Exception e) {
+                Log.e("Error", e.getMessage());
+            }
+        }
+        return new File(imageFile.getPath());
+    }
+
 }
 

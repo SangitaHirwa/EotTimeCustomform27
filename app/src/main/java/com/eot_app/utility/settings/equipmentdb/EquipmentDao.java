@@ -9,6 +9,8 @@ import java.util.List;
 
 import static androidx.room.OnConflictStrategy.REPLACE;
 
+import com.eot_app.nav_menu.jobs.job_db.EquArrayModel;
+
 @Dao
 public interface EquipmentDao {
     @Insert(onConflict = REPLACE)

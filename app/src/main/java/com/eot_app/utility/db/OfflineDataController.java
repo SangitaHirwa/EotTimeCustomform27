@@ -26,18 +26,21 @@ import com.eot_app.nav_menu.client.clientlist.client_detail.contact.client_dao.C
 import com.eot_app.nav_menu.client.clientlist.client_detail.site.sitelist.Site_model;
 import com.eot_app.nav_menu.item.QtyReqModel;
 import com.eot_app.nav_menu.jobs.add_job.addjobmodel.AddJob_Req;
+import com.eot_app.nav_menu.jobs.job_complation.ImgPathWithTemp;
 import com.eot_app.nav_menu.jobs.job_complation.compla_model.JobComplation;
 import com.eot_app.nav_menu.jobs.job_controller.ChatController;
 import com.eot_app.nav_menu.jobs.job_db.Job;
 import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.model.AddInvoiceItemReqModel;
 import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.model.InvoiceItemDataModel;
 import com.eot_app.nav_menu.jobs.job_detail.detail.jobdetial_model.Jobdetail_status_res;
+import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.Attachments;
 import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.MultiDocUpdateRequest;
 import com.eot_app.nav_menu.jobs.job_detail.form_form.get_qus_list.Fromdb.CustomFormSubmited;
 import com.eot_app.nav_menu.jobs.job_detail.form_form.get_qus_list.ans_model.AnsModel_Offline;
 import com.eot_app.nav_menu.jobs.job_detail.form_form.get_qus_list.ans_model.Ans_Req;
 
 import com.eot_app.nav_menu.jobs.job_detail.form_form.get_qus_list.ans_model.Answer;
+import com.eot_app.nav_menu.jobs.job_detail.requested_item.requested_itemModel.AddUpdateRequestedModel;
 import com.eot_app.nav_menu.jobs.joboffline_db.JobOfflineDataModel;
 import com.eot_app.services.ApiClient;
 import com.eot_app.services.Service_apis;
@@ -320,6 +323,12 @@ public class OfflineDataController {
             case Service_apis.upload_document:
                 updateDocument(data, obj);
                 break;
+
+            case Service_apis.addItemRequest:
+            case Service_apis.updateItemRequest:
+                updateRequestedItem(data, obj);
+                break;
+
         }
         int check = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).offlinemodel().deleteFromId(data.getId());
         if (check == 1) {
@@ -327,18 +336,33 @@ public class OfflineDataController {
         }
     };
 
+    private void updateRequestedItem(Offlinetable data, JsonObject obj) {
+        AddUpdateRequestedModel requestedModel = gson.fromJson(data.getParams(), AddUpdateRequestedModel.class);
+        EotApp.getAppinstance().getNotifyForRequestedItemList(data.getService_name(), obj.get("message").getAsString(),requestedModel);
+    }
+
     private void updateDocument(Offlinetable data, JsonObject obj){
         MultiDocUpdateRequest multiDocUpdateRequest = new Gson().fromJson(data.getParams(), MultiDocUpdateRequest.class);
-        AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).attachments_dao().deleteAttachmentById("TempAttach-"+multiDocUpdateRequest.getFinalFname());
-        Log.e("Delete ====","TempAttach-"+multiDocUpdateRequest.getFinalFname());
-        if(multiDocUpdateRequest.isLastCall()) {
+        Attachments attachments = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).attachments_dao().getAttachmetByTempId(multiDocUpdateRequest.getTempId());
+        Gson gson = new Gson();
+        Type listType = new com.google.gson.reflect.TypeToken<Attachments>() {}.getType();
+        Attachments attachments1 = gson.fromJson(obj.get("data").getAsJsonArray().get(0),listType);
+        AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).attachments_dao().updateAttachmentIdByTempId(attachments1.getAttachmentId(),attachments.getTempId());
+//        attachments1.setBitmap(attachments.getBitmap());
+//        AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).attachments_dao().insertSingleAttachments(attachments1);
+//        AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).attachments_dao().deleteAttachmentById(multiDocUpdateRequest.getTempId());
+//        File file =new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getPath(), "Eot Directory/Eot-1709290820055.jpg");
+//        if(file != null)
+//        EotApp.getAppinstance().deleteDir(file);
+        Log.e("Delete ====","Attachment-"+multiDocUpdateRequest.getFinalFname());
+//        if(multiDocUpdateRequest.isLastCall()) {
             if(multiDocUpdateRequest.isAttachmentSection()){
-                EotApp.getAppinstance().getNotifyForMultiDocAddForAttach(data.getService_name(), multiDocUpdateRequest.getJob_Id(), multiDocUpdateRequest.getType());
+                EotApp.getAppinstance().getNotifyForMultiDocAddForAttach(data.getService_name(), multiDocUpdateRequest.getJob_Id(), multiDocUpdateRequest.getType(), multiDocUpdateRequest.isLastCall());
             }
             else {
-                EotApp.getAppinstance().getAddMultiDocObserver(data.getService_name(), multiDocUpdateRequest.getJob_Id(), multiDocUpdateRequest.getParentPostion(), multiDocUpdateRequest.getPosition(), multiDocUpdateRequest.getQue_Id(), multiDocUpdateRequest.getJtId());
+                EotApp.getAppinstance().getAddMultiDocObserver(data.getService_name(), multiDocUpdateRequest.getJob_Id(), multiDocUpdateRequest.getParentPostion(), multiDocUpdateRequest.getPosition(), multiDocUpdateRequest.getQue_Id(), multiDocUpdateRequest.getJtId(),multiDocUpdateRequest.isLastCall());
             }
-        }
+//        }
     }
     private void updateAppointmentItems(Offlinetable data, JsonObject obj) {
         try {
@@ -884,7 +908,7 @@ public class OfflineDataController {
                     // for sending the log report everytime we send the error log mail
                     sendDeviceLog();
                 }else {
-                    EotApp.getAppinstance().deleteDir(new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getPath(), "MyFolder/Images"));
+//                    EotApp.getAppinstance().deleteDir(new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getPath(), "MyFolder/Images"));
                 }
 //                remove all jobs, clients, sites, from main tables.
 //                removeAllTempJobClientContactSite();
@@ -914,6 +938,13 @@ public class OfflineDataController {
         }else if (table.getService_name().equals(Service_apis.upload_document))
         {
             callPendingMultiDocumentRequest(table);
+            return;
+        } else if (table.getService_name().equals(Service_apis.addItemRequest)) {
+            callPendingAddReqItemInJobRequest(table);
+            return;
+        }
+        else if (table.getService_name().equals(Service_apis.updateItemRequest)) {
+            callPendingUpdateReqItemInJobRequest(table);
             return;
         }
         // Done by shivani vani
@@ -1034,6 +1065,122 @@ public class OfflineDataController {
                 });
     }
 
+    private synchronized void callPendingUpdateReqItemInJobRequest(Offlinetable table) {
+        AddUpdateRequestedModel model = new Gson().fromJson(table.getParams(), AddUpdateRequestedModel.class);
+        AddUpdateRequestedModel request = new AddUpdateRequestedModel(model.getItemName(), model.getEbId(), model.getQty(),
+                model.getModelNo(), model.getEquId(), model.getItemId(), model.getJobId(), model.getIrId());
+        String data = new Gson().toJson(request);
+        ApiClient.getservices().eotServiceCall(Service_apis.updateItemRequest,AppUtility.getApiHeaders(),AppUtility.getJsonObject(data)
+                )
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<JsonObject>() {
+                    @Override
+                    public void onSubscribe(@NonNull Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(@NonNull JsonObject jsonObject) {
+
+                        if (jsonObject.get("success").getAsBoolean()) {
+                            callBack.getResponse(table, jsonObject);
+                        } else if (jsonObject.get("statusCode") != null && jsonObject.get("statusCode").getAsString().equals(AppConstant.SESSION_EXPIRE)) {
+//                           onSessionExpire(jsonObject.get("message").getAsString());
+//                            when session expires
+                            EotApp.getAppinstance().sessionExpired();
+                            isSync = false;
+                        } else if (jsonObject.get("statusCode") != null && jsonObject.get("statusCode").getAsString().equals(AppConstant.ALREADY_SYNC)) {
+//                            when record already exist.
+//                            Log.e(TAG, jsonObject.get("message").getAsString());
+                            AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).offlinemodel().deleteFromId(table.getId());
+                        } else {
+                            sendForErrorLog(table, LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
+                            if (callBackFirstSync != null) { // for first time call from sync
+                                callBackFirstSync.getCallBackOfComplete(0, "Error Occur");
+                                callBackFirstSync = null;
+                            }
+                            isSync = false;
+                        }
+                    }
+
+                    @Override
+                    public void onError(@NonNull Throwable e) {
+                        sendForErrorLog(table, e.getMessage());
+                        isSync = false;
+                        if (callBackFirstSync != null) { // for first time call from sync
+                            callBackFirstSync.getCallBackOfComplete(0, "Error Occur");
+                            callBackFirstSync = null;
+                        }
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+
+
+    }
+
+    private synchronized void callPendingAddReqItemInJobRequest(Offlinetable table) {
+        AddUpdateRequestedModel model = new Gson().fromJson(table.getParams(), AddUpdateRequestedModel.class);
+        AddUpdateRequestedModel request = new AddUpdateRequestedModel(model.getItemName(),model.getEbId(), model.getQty(), model.getModelNo(), model.getEquId(),
+                model.getItemId(), model.getJobId());
+        String data = new Gson().toJson(request);
+            ApiClient.getservices().eotServiceCall(Service_apis.addItemRequest,AppUtility.getApiHeaders(),AppUtility.getJsonObject(data)
+                           )
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<JsonObject>() {
+                        @Override
+                        public void onSubscribe(@NonNull Disposable d) {
+
+                        }
+
+                        @Override
+                        public void onNext(@NonNull JsonObject jsonObject) {
+
+                            if (jsonObject.get("success").getAsBoolean()) {
+                                callBack.getResponse(table, jsonObject);
+                            } else if (jsonObject.get("statusCode") != null && jsonObject.get("statusCode").getAsString().equals(AppConstant.SESSION_EXPIRE)) {
+//                           onSessionExpire(jsonObject.get("message").getAsString());
+//                            when session expires
+                                EotApp.getAppinstance().sessionExpired();
+                                isSync = false;
+                            } else if (jsonObject.get("statusCode") != null && jsonObject.get("statusCode").getAsString().equals(AppConstant.ALREADY_SYNC)) {
+//                            when record already exist.
+//                            Log.e(TAG, jsonObject.get("message").getAsString());
+                                AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).offlinemodel().deleteFromId(table.getId());
+                            } else {
+                                sendForErrorLog(table, LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
+                                if (callBackFirstSync != null) { // for first time call from sync
+                                    callBackFirstSync.getCallBackOfComplete(0, "Error Occur");
+                                    callBackFirstSync = null;
+                                }
+                                isSync = false;
+                            }
+                        }
+
+                        @Override
+                        public void onError(@NonNull Throwable e) {
+                            sendForErrorLog(table, e.getMessage());
+                            isSync = false;
+                            if (callBackFirstSync != null) { // for first time call from sync
+                                callBackFirstSync.getCallBackOfComplete(0, "Error Occur");
+                                callBackFirstSync = null;
+                            }
+                        }
+
+                        @Override
+                        public void onComplete() {
+
+                        }
+                    });
+
+
+    }
+
     private synchronized void callPendingMultiDocumentRequest(final Offlinetable table){
         final MultiDocUpdateRequest multiDocUpdateRequest = new Gson().fromJson(table.getParams(), MultiDocUpdateRequest.class);
         String job_Id = multiDocUpdateRequest.getJob_Id();
@@ -1044,6 +1191,7 @@ public class OfflineDataController {
         String desc = multiDocUpdateRequest.getDesc();
         String isAddAttachAsCompletionNote = multiDocUpdateRequest.getIsAddAttachAsCompletionNote();
         String type = multiDocUpdateRequest.getType();
+        String temp_Id = multiDocUpdateRequest.getTempId();
         final String[] message_key = new String[1];
         ActivityLogController.saveActivity(ActivityLogController.JOB_MODULE, ActivityLogController.JOB_UPLOAD_DOC, ActivityLogController.JOB_MODULE);
         String mimeType = "";
@@ -1065,6 +1213,7 @@ public class OfflineDataController {
         RequestBody descBody = RequestBody.create(desc, MultipartBody.FORM);
         RequestBody userId = RequestBody.create(App_preference.getSharedprefInstance().getLoginRes().getUsrId(), MultipartBody.FORM);
         RequestBody typeId = RequestBody.create(type, MultipartBody.FORM);
+        RequestBody tempId = RequestBody.create(temp_Id, MultipartBody.FORM);
 
         if (isAddAttachAsCompletionNote == null)
             isAddAttachAsCompletionNote = "0";
@@ -1075,7 +1224,7 @@ public class OfflineDataController {
         String finalIsAddAttachAsCompletionNote = isAddAttachAsCompletionNote;
         ApiClient.getservices().uploadDocements(AppUtility.getApiHeaders(),
                         jobId, queId, jtId,userId, descBody, typeId, docName,
-                        isAddAttachAsCompletionNoteBody, body)
+                        isAddAttachAsCompletionNoteBody,tempId,body)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<JsonObject>() {
@@ -1516,7 +1665,7 @@ public class OfflineDataController {
                 HyperLog.i("ChangeJobStatus", "ChangeJobStatus - table count increases by 2 with message -"+message);
             if(table.getService_name().equalsIgnoreCase(Service_apis.upload_document)){
                 MultiDocUpdateRequest multiDocUpdateRequest = new Gson().fromJson(table.getParams(), MultiDocUpdateRequest.class);
-                AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).attachments_dao().deleteAttachmentById("TempAttach-"+multiDocUpdateRequest.getFinalFname());
+                AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).attachments_dao().deleteAttachmentById("Attachment-"+multiDocUpdateRequest.getFinalFname());
             }
             ErrorLog errorLog = new ErrorLog();
             errorLog.setApiUrl(App_preference.getSharedprefInstance().getBaseURL() + table.getService_name());

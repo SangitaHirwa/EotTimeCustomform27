@@ -6,6 +6,7 @@ import android.content.ContextWrapper;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -134,11 +135,13 @@ public class CompressImageInBack {
     private void saveImageToCache(Bitmap bitmap) {
         String mTimeStamp = new SimpleDateFormat("ddMMyyyy_HHmm").format(new Date());
 
-        String mImageName = "eot_" + mTimeStamp + ".jpg";
+        String mImageName = "eot_" + AppUtility.getCurrentMiliTiem() + ".jpg";
 
         ContextWrapper wrapper = new ContextWrapper(context);
 
-        File file = wrapper.getDir("Images", MODE_PRIVATE);
+        /**Change path for save img locally*/
+//        File file = wrapper.getDir("Images", MODE_PRIVATE);
+        File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "Eot Directory");
 
         file = new File(file, mImageName);
 

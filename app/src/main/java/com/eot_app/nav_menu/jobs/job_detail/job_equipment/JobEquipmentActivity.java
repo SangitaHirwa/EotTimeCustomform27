@@ -300,7 +300,7 @@ public class JobEquipmentActivity extends AppCompatActivity
         //looping through existing elements
         for (EquArrayModel s : myList) {
             //if the existing elements contains the search input
-            if (s.getEqunm() != null && s.getEqunm().contains(text)&&s.getEqunm().equalsIgnoreCase(text.toLowerCase())||
+            if (s.getEqunm() != null && s.getEqunm().contains(text)&&s.getEqunm().equalsIgnoreCase(text.toLowerCase())|| s.getSnm() != null &&
                      s.getSnm().toLowerCase().contains(text.toLowerCase())
                     || (s.getSno() != null && s.getSno().equalsIgnoreCase(text.toLowerCase())) ||
                     (s.getMno() != null && s.getMno().equalsIgnoreCase(text.toLowerCase()))
@@ -431,7 +431,7 @@ public class JobEquipmentActivity extends AppCompatActivity
     }
 
     @Override
-    public void onEquipmentSelected(int positions, EquArrayModel equipmentRes) {
+    public void onEquipmentSelected(int positions, EquArrayModel equipmentRes, boolean isAction) {
         if (!job.getTempId().equals(job.getJobId())) {
             Log.e("getAllEquipments", "JobEqRemark JobEquipmentActivity");
             if(equipmentRes.getIsPart() !=null) {
@@ -444,6 +444,7 @@ public class JobEquipmentActivity extends AppCompatActivity
                     intent.putExtra("cltId", cltId);
                     intent.putExtra("positions", positions);
                     intent.putExtra("isGetData", "");
+                    intent.putExtra("isAction",isAction);
                     startActivityForResult(intent, EQUIPMENT_UPDATE_CODE);
                 } else {
                     Intent intent = new Intent(this, JobEquRemarkRemarkActivity.class);
@@ -454,6 +455,7 @@ public class JobEquipmentActivity extends AppCompatActivity
                     intent.putExtra("cltId", cltId);
                     intent.putExtra("positions", positions);
                     intent.putExtra("isGetData", "");
+                    intent.putExtra("isAction",isAction);
                     startActivityForResult(intent, EQUIPMENT_UPDATE_CODE);
                 }
             }else {
@@ -465,6 +467,7 @@ public class JobEquipmentActivity extends AppCompatActivity
                 intent.putExtra("cltId", cltId);
                 intent.putExtra("positions", positions);
                 intent.putExtra("isGetData", "");
+                intent.putExtra("isAction",isAction);
                 startActivityForResult(intent, EQUIPMENT_UPDATE_CODE);
             }
 
