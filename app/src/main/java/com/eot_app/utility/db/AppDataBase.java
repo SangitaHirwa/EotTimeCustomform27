@@ -714,7 +714,7 @@ public abstract class AppDataBase extends RoomDatabase {
 
         }
     };
-    static final Migration MIGRATION_46_47 = new Migration(45, 46) {
+    static final Migration MIGRATION_46_47 = new Migration(46, 47) {
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) {
             /* **Alter Table for tempId **/
