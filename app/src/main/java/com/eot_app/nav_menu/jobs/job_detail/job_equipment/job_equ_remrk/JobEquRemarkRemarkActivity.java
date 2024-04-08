@@ -146,7 +146,7 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
     LinearLayout formLayout;
     EquipmentPartRemarkAdapter equipmentPartAdapter;
     TextView image_txt, chip_txt, tv_text_for_replace, tv_replace, txt_lbl_remark,txt_lbl_condition, txt_condition, txt_lbl_status, txt_status, txt_remark, btn_edit;
-    ImageView deleteChip,show_requested_list,hide_requested_list;
+    ImageView deleteChip,show_requested_list,hide_requested_list,requested_item_flag;
     Job mParam2;
     ArrayList<Attachments> allAttachmentsList = new ArrayList<>();
     InvoiceItemList2Adpter invoice_list_adpter;
@@ -176,7 +176,7 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
     private boolean isTagSet = false;
     private RadioGroup rediogrp;
     private RadioButton radio_before, radio_after;
-    private RelativeLayout image_with_tag;
+    private RelativeLayout image_with_tag,requested_itemList_show_hide_rl;
     private View chip_layout;
     private DocumentListAdapter adapter;
     View ll_requested_item;
@@ -425,10 +425,14 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
     public void setRequestItemData(List<RequestedItemModel> requestItemData) {
         progressBar_itemRequest.setVisibility(View.GONE);
         if(requestItemData != null && requestItemData.size() > 0){
+            requested_item_flag.setVisibility(View.VISIBLE);
+            requested_itemList_show_hide_rl.setVisibility(View.VISIBLE);
             recyclerView_requested_item.setVisibility(View.VISIBLE);
             txt_no_item_found.setVisibility(View.GONE);
             requestedItemListAdapter.setReqItemList(requestItemData);
         }else {
+            requested_itemList_show_hide_rl.setVisibility(View.GONE);
+            requested_item_flag.setVisibility(View.GONE);
             requestedItemListAdapter.setReqItemList(new ArrayList<>());
             txt_no_item_found.setVisibility(View.VISIBLE);
             recyclerView_requested_item.setVisibility(View.GONE);
@@ -481,6 +485,8 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
         txt_no_item_found.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.no_item_requested_found));
         show_requested_list = findViewById(R.id.show_requested_list);
         hide_requested_list = findViewById(R.id.hide_requested_list);
+        requested_item_flag = findViewById(R.id.requested_item_flag);
+        requested_itemList_show_hide_rl = findViewById(R.id.requested_itemList_show_hide_rl);
         show_requested_list.setOnClickListener(this);
         hide_requested_list.setOnClickListener(this);
         btn_add_requested_item = findViewById(R.id.btn_add_requested_item);
@@ -1333,7 +1339,7 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
         getUpdatedLocation();
         Intent intent = getIntent();
 
-        if(intent.hasExtra("isAction")){
+       /* if(intent.hasExtra("isAction")){
             isAction = intent.getBooleanExtra("isAction",false);
             if(isAction){
                 isEdit = false;
@@ -1343,7 +1349,7 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
                 hideRemarkSection();
             }
         }
-
+*/
         //equipment = intent.getParcelableExtra("equipment");
         if (intent.hasExtra("equipment")) {
             String strEquipment = intent.getExtras().getString("equipment");
@@ -1520,6 +1526,17 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
                 rv_showAttachment.setVisibility(View.GONE);
             }
         }
+        if(intent.hasExtra("isAction")){
+            isAction = intent.getBooleanExtra("isAction",false);
+            if(isAction){
+                isEdit = false;
+                showRemarkSection();
+            }else {
+                isEdit = true;
+                hideRemarkSection();
+            }
+        }
+
     }
 
 
@@ -1850,6 +1867,8 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
         switch (api_name){
             case Service_apis.addItemRequest:
                 EotApp.getAppinstance().showToastmsg(LanguageController.getInstance().getServerMsgByKey(message.trim()));
+                requested_item_flag.setVisibility(View.VISIBLE);
+                requested_itemList_show_hide_rl.setVisibility(View.VISIBLE);
                 if(requestedModel != null) {
                     String msg =
                             LanguageController.getInstance().getMobileMsgByKey(AppConstant.item_requested_by_the_field_user)+"\n"+LanguageController.getInstance().getMobileMsgByKey(AppConstant.item_name)+": "+requestedModel.getItemName()+"\n"+
@@ -1896,6 +1915,13 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
        txt_status.setVisibility(View.VISIBLE);
         if(App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsItemRequested() == 0){
             ll_requested_item.setVisibility(View.VISIBLE);
+            if(mParam2.getItemRequested() != null && mParam2.getItemRequested().equals("1")){
+                requested_item_flag.setVisibility(View.VISIBLE);
+                requested_itemList_show_hide_rl.setVisibility(View.VISIBLE);
+            }else {
+                requested_item_flag.setVisibility(View.GONE);
+                requested_itemList_show_hide_rl.setVisibility(View.GONE);
+            }
         }else {
             ll_requested_item.setVisibility(View.GONE);
         }
