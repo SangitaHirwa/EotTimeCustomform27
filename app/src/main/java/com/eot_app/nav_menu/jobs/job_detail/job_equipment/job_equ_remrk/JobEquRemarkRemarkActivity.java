@@ -814,7 +814,7 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
         if (item.getItemId() == android.R.id.home)
             if(isAction){
                 if(isEdit){
-                    showRemarkSection();
+                    hideRemarkSection();
                     isEdit = false;
                     setTitles();
                 }else {
@@ -934,7 +934,7 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
                 txt_no_item_found.setVisibility(View.GONE);
                 break;
             case  R.id.btn_edit:
-                    hideRemarkSection();
+                    showRemarkSection();
                     isEdit = true;
                     setTitles();
                     break;
@@ -1337,10 +1337,10 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
             isAction = intent.getBooleanExtra("isAction",false);
             if(isAction){
                 isEdit = false;
-                showRemarkSection();
+                hideRemarkSection();
             }else {
                 isEdit = true;
-                hideRemarkSection();
+                showRemarkSection();
             }
         }
 
@@ -1889,35 +1889,37 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
      * showRemarkSection :- For showing Remark
      * hideRemarkSection :- For editing Remark*/
     public void showRemarkSection(){
-       cv_showRemark.setVisibility(View.VISIBLE);
-       part_cardview.setVisibility(View.VISIBLE);
-       item_cardview.setVisibility(View.VISIBLE);
-       ll_replace.setVisibility(View.VISIBLE);
-       txt_status.setVisibility(View.VISIBLE);
+        cv_showRemark.setVisibility(View.GONE);
+        part_cardview.setVisibility(View.GONE);
+        item_cardview.setVisibility(View.GONE);
+        ll_replace.setVisibility(View.GONE);
+        tv_no_replace.setVisibility(View.GONE);
+        txt_status.setVisibility(View.GONE);
+        ll_requested_item.setVisibility(View.GONE);
+        attachment_card.setVisibility(View.VISIBLE);
+        cv_editRemark.setVisibility(View.VISIBLE);
+    }
+    public void hideRemarkSection(){
+        cv_showRemark.setVisibility(View.VISIBLE);
+        part_cardview.setVisibility(View.VISIBLE);
+        item_cardview.setVisibility(View.VISIBLE);
+        ll_replace.setVisibility(txt_status.getText().toString().equalsIgnoreCase("Discarded") ? View.GONE : View.VISIBLE);
+        tv_no_replace.setVisibility(txt_status.getText().toString().equalsIgnoreCase("Discarded") ? View.VISIBLE : View.GONE);
+        txt_status.setVisibility(View.VISIBLE);
         if(App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsItemRequested() == 0){
             ll_requested_item.setVisibility(View.VISIBLE);
         }else {
             ll_requested_item.setVisibility(View.GONE);
         }
         attachment_card.setVisibility(View.GONE);
-       cv_editRemark.setVisibility(View.GONE);
-    }
-    public void hideRemarkSection(){
-        cv_showRemark.setVisibility(View.GONE);
-        part_cardview.setVisibility(View.GONE);
-        item_cardview.setVisibility(View.GONE);
-        ll_replace.setVisibility(View.GONE);
-        txt_status.setVisibility(View.GONE);
-        ll_requested_item.setVisibility(View.GONE);
-        attachment_card.setVisibility(View.VISIBLE);
-        cv_editRemark.setVisibility(View.VISIBLE);
+        cv_editRemark.setVisibility(View.GONE);
     }
 
     @Override
     public void onBackPressed() {
         if(isAction){
             if(isEdit){
-                showRemarkSection();
+                hideRemarkSection();
                 isEdit = false;
                 setTitles();
                 /** For set update data*/
