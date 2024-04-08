@@ -102,6 +102,13 @@ public class AdapterAppointments extends RecyclerView.Adapter<AdapterAppointment
             } else {
                 holder.equi_flag.setVisibility(View.GONE);
             }
+            /**Requested item flag show**/
+            if(appointment.getRequestedItemCount() != null && appointment.getRequestedItemCount().equals("1")){
+                holder.req_item_flag.setVisibility(View.VISIBLE);
+            }else {
+                holder.req_item_flag.setVisibility(View.GONE);
+            }
+
             /*For badge count*/
             int batchCount = ChatController.getInstance().getbatchCount(appointment.getId())
                     + ChatController.getInstance().getClientChatBatchCount(appointment.getId());
@@ -193,7 +200,7 @@ public class AdapterAppointments extends RecyclerView.Adapter<AdapterAppointment
         TextView tv_start_time, tv_type, tv_title, tv_address, tv_not_sync, tv_badge_count;
         ConstraintLayout status_constraints;
         AppCompatImageView img_appointment_status;
-        ImageView item_flag, equi_flag, attachmemt_flag;
+        ImageView item_flag, equi_flag, attachmemt_flag, req_item_flag;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -204,6 +211,7 @@ public class AdapterAppointments extends RecyclerView.Adapter<AdapterAppointment
             tv_address = itemView.findViewById(R.id.tv_address);
             img_appointment_status = itemView.findViewById(R.id.img_appointment_status);
 
+            req_item_flag = itemView.findViewById(R.id.requested_item_flag);
             item_flag = itemView.findViewById(R.id.item_flag);
             equi_flag = itemView.findViewById(R.id.equi_flag);
             attachmemt_flag = itemView.findViewById(R.id.attachmemt_flag);

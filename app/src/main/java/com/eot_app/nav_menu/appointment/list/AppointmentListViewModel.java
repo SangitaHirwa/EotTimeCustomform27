@@ -510,7 +510,7 @@ public class AppointmentListViewModel extends AndroidViewModel implements Server
                                     cm.setType(1);
                                     cm.setId(job.getJobId());
                                     cm.setTempId(job.getTempId());
-
+                                    cm.setRequestedItemCount(job.getItemRequested());
                                     if (!TextUtils.isEmpty(job.getLabel()) && !TextUtils.isEmpty(job.getNm())) {
                                         cm.setTitle(job.getLabel() + " " + job.getNm());
                                         cm.setNm(job.getNm());
@@ -545,7 +545,6 @@ public class AppointmentListViewModel extends AndroidViewModel implements Server
                                     if (job.getAttachCount() != null && Integer.parseInt(job.getAttachCount()) > 0) {
                                         cm.setAttchmentCount(Integer.parseInt(job.getAttachCount()));
                                     } else cm.setAttchmentCount(0);
-
                                     commonList.add(cm);
 
                                 }

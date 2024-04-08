@@ -114,6 +114,7 @@ public class Job implements Parcelable {//
     private String isLeader;
     private String isSubjob ="0";
     private String parentRecurType="0";
+    private String itemRequested;
 
     @TypeConverters(CompliAnsArrayConvrtr.class)
     private List<CompliAnsArray> compliAnsArray = new ArrayList<>() ;
@@ -212,6 +213,7 @@ public class Job implements Parcelable {//
         isMarkDoneWithJtId = in.createTypedArrayList(IsMarkDoneWithJtid.CREATOR);
         isSubjob =in.readString();
         parentRecurType =in.readString();
+        itemRequested = in.readString();
     }
 
     public static Creator<Job> getCREATOR() {
@@ -739,6 +741,7 @@ public class Job implements Parcelable {//
         dest.writeTypedList(isMarkDoneWithJtId);
         dest.writeString(isSubjob);
         dest.writeString(parentRecurType);
+        dest.writeString(itemRequested);
     }
 
     public String getPono() {
@@ -811,5 +814,13 @@ public class Job implements Parcelable {//
 
     public void setParentRecurType(String parentRecurType) {
         this.parentRecurType = parentRecurType;
+    }
+
+    public String getItemRequested() {
+        return itemRequested;
+    }
+
+    public void setItemRequested(String itemRequested) {
+        this.itemRequested = itemRequested;
     }
 }
