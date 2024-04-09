@@ -25,5 +25,7 @@ public class Inventry_ReQ_Model {
         this.withParts= "1";
     }
 
-
+    public void setIsactive(String isactive) {
+        this.isactive = isactive;
+    }
 }

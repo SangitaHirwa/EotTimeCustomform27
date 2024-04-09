@@ -27,4 +27,7 @@ public interface invebtry_ItemDao {
 
     @Query("delete from Inventry_ReS_Model")
     void delete();
+
+    @Query("delete from Inventry_ReS_Model where isactive = '0'")
+    void deleteByIsactive();
 }
