@@ -207,7 +207,7 @@ public class DetailFragment extends Fragment
     ImageView ivEditAc, show_requested_list,hide_requested_list;
     RelativeLayout ll_actual_date_time, ll_travel_date_time;
     LinearLayout ll_completion_detail, liner_layout_for_recurmsg, recurMsgShow, recurMsgHide;
-    RelativeLayout rl_Collapse1, rl_Collapse2;
+    RelativeLayout rl_Collapse1, rl_Collapse2,requested_itemList_show_hide_rl;
     String firstTrvlBrkTime, lastTrvlBrkTime;
     String firstBrkTime, lastBrkTime;
     String lastStatus, lastStatusTime;
@@ -233,7 +233,7 @@ public class DetailFragment extends Fragment
     private CardView customField_view, cardView_signature_pad, quotes_details_card;
     private LinearLayout ll_custom_views;
     private Boolean SAVEANS = false;
-    private ImageView attachmemt_flag, item_flag, equi_flag, arrow_dp_icon, signature_img;
+    private ImageView attachmemt_flag, item_flag, equi_flag, arrow_dp_icon, signature_img,requested_item_flag;
     RelativeLayout arraw_layout;
     private Job_Status_Adpter mySpinnerAdapter;
     // job actual and travel time
@@ -752,6 +752,8 @@ public class DetailFragment extends Fragment
         requested_item_cardView = layout.findViewById(R.id.requested_item_cardView);
         show_requested_list = layout.findViewById(R.id.show_requested_list);
         hide_requested_list = layout.findViewById(R.id.hide_requested_list);
+        requested_item_flag = layout.findViewById(R.id.requested_item_flag);
+        requested_itemList_show_hide_rl = layout.findViewById(R.id.requested_itemList_show_hide_rl);
         show_requested_list.setOnClickListener(this);
         hide_requested_list.setOnClickListener(this);
         btn_add_requested_item = layout.findViewById(R.id.btn_add_requested_item);
@@ -919,6 +921,13 @@ public class DetailFragment extends Fragment
 
         if(App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsItemRequested() == 0){
             ll_requested_item.setVisibility(View.VISIBLE);
+            if(mParam2.getItemRequested() != null && mParam2.getItemRequested().equals("1")){
+                requested_item_flag.setVisibility(View.VISIBLE);
+                requested_itemList_show_hide_rl.setVisibility(View.VISIBLE);
+            }else {
+                requested_item_flag.setVisibility(View.GONE);
+                requested_itemList_show_hide_rl.setVisibility(View.GONE);
+            }
         }else{
             ll_requested_item.setVisibility(View.GONE);
         }
@@ -1367,12 +1376,15 @@ public class DetailFragment extends Fragment
     public void setRequestItemData(List<RequestedItemModel> requestItemData) {
         progressBar_itemRequest.setVisibility(View.GONE);
             if(requestItemData != null && requestItemData.size() > 0){
+                requested_item_flag.setVisibility(View.VISIBLE);
+                requested_itemList_show_hide_rl.setVisibility(View.VISIBLE);
                 recyclerView_requested_item.setVisibility(View.VISIBLE);
                 txt_no_item_found.setVisibility(View.GONE);
                 requestedItemListAdapter.setReqItemList(requestItemData);
             }else {
+                requested_itemList_show_hide_rl.setVisibility(View.GONE);
+                requested_item_flag.setVisibility(View.GONE);
                 requestedItemListAdapter.setReqItemList(new ArrayList<>());
-                txt_no_item_found.setVisibility(View.VISIBLE);
                 recyclerView_requested_item.setVisibility(View.GONE);
             }
     }
@@ -3584,6 +3596,8 @@ public void setCompletionDetail(){
         switch (api_name){
             case Service_apis.addItemRequest:
                 showAppInstallDialog(LanguageController.getInstance().getServerMsgByKey(message.trim()));
+                requested_item_flag.setVisibility(View.VISIBLE);
+                requested_itemList_show_hide_rl.setVisibility(View.VISIBLE);
                 if(requestedModel != null) {
                     String msg =
                             LanguageController.getInstance().getMobileMsgByKey(AppConstant.item_requested_by_the_field_user)+"\n"+LanguageController.getInstance().getMobileMsgByKey(AppConstant.item_name)+": "+requestedModel.getItemName()+"\n"+

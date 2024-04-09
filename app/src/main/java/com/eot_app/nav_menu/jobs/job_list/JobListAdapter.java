@@ -228,6 +228,12 @@ public class JobListAdapter extends RecyclerView.Adapter<JobListAdapter.MyViewHo
         } else {
             holder.attachmemt_flag.setVisibility(View.GONE);
         }
+        /**Requested item flag show**/
+        if(jobdata.get(position).getItemRequested() != null && jobdata.get(position).getItemRequested().equals("1")){
+            holder.req_item_flag.setVisibility(View.VISIBLE);
+        }else {
+            holder.req_item_flag.setVisibility(View.GONE);
+        }
     }
 
 
@@ -306,7 +312,7 @@ public class JobListAdapter extends RecyclerView.Adapter<JobListAdapter.MyViewHo
         ImageView prty, status_img;
         ConstraintLayout status_constraints;
         View blank_view;
-        ImageView item_flag, equi_flag, attachmemt_flag;
+        ImageView item_flag, equi_flag, attachmemt_flag,req_item_flag;
         TextView site_name;
 
         public MyViewHolder(View itemView) {
@@ -329,6 +335,7 @@ public class JobListAdapter extends RecyclerView.Adapter<JobListAdapter.MyViewHo
             item_flag = itemView.findViewById(R.id.item_flag);
             attachmemt_flag = itemView.findViewById(R.id.attachmemt_flag);
             site_name = itemView.findViewById(R.id.site_name);
+            req_item_flag = itemView.findViewById(R.id.requested_item_flag);
 
         }
     }

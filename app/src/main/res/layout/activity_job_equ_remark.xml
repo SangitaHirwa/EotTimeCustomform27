@@ -521,7 +521,7 @@
                         android:id="@+id/ll_requested_item"
                         app:cardBackgroundColor="@color/white"
                         android:layout_margin="8dp"
-                        layout="@layout/requested_item_job_detail"
+                        layout="@layout/requested_item_job_equipment"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
                     <LinearLayout

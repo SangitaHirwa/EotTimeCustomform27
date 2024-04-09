@@ -150,8 +150,19 @@
                         android:text="job - client name"
                         android:textAllCaps="false"
                         android:textStyle="bold"
+                        android:ellipsize="end"
+                        android:singleLine="true"
                         tools:ignore="HardcodedText" />
-
+                    <ImageView
+                        android:id="@+id/requested_item_flag"
+                        android:layout_width="14dp"
+                        android:layout_height="16dp"
+                        android:layout_marginStart="3dp"
+                        android:layout_marginEnd="3dp"
+                        android:layout_marginTop="5dp"
+                        android:src="@drawable/item_requested_20px"
+                        android:visibility="gone"
+                        tools:ignore="ContentDescription" />
 
                     <ImageView
                         android:id="@+id/attachmemt_flag"

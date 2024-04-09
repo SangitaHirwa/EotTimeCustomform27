@@ -14,6 +14,7 @@ public class CommonAppointmentModel implements Comparable {
     private int jobItemCount = 0;
     private int equipmentCount;
     private int attchmentCount;
+    private String requestedItemCount;
 
     public String getEndDateTime() {
         return endDateTime;
@@ -132,5 +133,13 @@ public class CommonAppointmentModel implements Comparable {
 
     public void setJobId(String jobId) {
         this.jobId = jobId;
+    }
+
+    public String getRequestedItemCount() {
+        return requestedItemCount;
+    }
+
+    public void setRequestedItemCount(String requestedItemCount) {
+        this.requestedItemCount = requestedItemCount;
     }
 }
