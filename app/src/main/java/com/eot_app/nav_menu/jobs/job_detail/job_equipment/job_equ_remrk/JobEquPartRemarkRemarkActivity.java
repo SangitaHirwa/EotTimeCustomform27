@@ -650,13 +650,6 @@ public class JobEquPartRemarkRemarkActivity extends UploadDocumentActivity imple
 
         if(App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsItemRequested() == 0){
             ll_requested_item.setVisibility(View.VISIBLE);
-            if(mParam2.getItemRequested() != null && mParam2.getItemRequested().equals("1")){
-                requested_item_flag.setVisibility(View.VISIBLE);
-                requested_itemList_show_hide_rl.setVisibility(View.VISIBLE);
-            }else {
-                requested_item_flag.setVisibility(View.GONE);
-                requested_itemList_show_hide_rl.setVisibility(View.GONE);
-            }
         }else {
             ll_requested_item.setVisibility(View.GONE);
         }
@@ -1363,16 +1356,7 @@ public class JobEquPartRemarkRemarkActivity extends UploadDocumentActivity imple
         getUpdatedLocation();
         Intent intent = getIntent();
 
-        if(intent.hasExtra("isAction")){
-            isAction = intent.getBooleanExtra("isAction",false);
-            if(isAction){
-                isEdit = false;
-                hideRemarkSection();
-            }else {
-                isEdit = true;
-                showRemarkSection();
-            }
-        }
+
         //equipment = intent.getParcelableExtra("equipment");
         if (intent.hasExtra("equipment")) {
             String strEquipment = intent.getExtras().getString("equipment");
@@ -1540,6 +1524,16 @@ public class JobEquPartRemarkRemarkActivity extends UploadDocumentActivity imple
                 rv_showAttachment.setVisibility(View.GONE);
             }
 
+        }
+        if(intent.hasExtra("isAction")){
+            isAction = intent.getBooleanExtra("isAction",false);
+            if(isAction){
+                isEdit = false;
+                hideRemarkSection();
+            }else {
+                isEdit = true;
+                showRemarkSection();
+            }
         }
 
     }

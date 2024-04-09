@@ -1339,16 +1339,6 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
         getUpdatedLocation();
         Intent intent = getIntent();
 
-        if(intent.hasExtra("isAction")){
-            isAction = intent.getBooleanExtra("isAction",false);
-            if(isAction){
-                isEdit = false;
-                hideRemarkSection();
-            }else {
-                isEdit = true;
-                showRemarkSection();
-            }
-        }
 
         //equipment = intent.getParcelableExtra("equipment");
         if (intent.hasExtra("equipment")) {
@@ -1524,6 +1514,16 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
                 }
             }else {
                 rv_showAttachment.setVisibility(View.GONE);
+            }
+        }
+        if(intent.hasExtra("isAction")){
+            isAction = intent.getBooleanExtra("isAction",false);
+            if(isAction){
+                isEdit = false;
+                hideRemarkSection();
+            }else {
+                isEdit = true;
+                showRemarkSection();
             }
         }
     }
