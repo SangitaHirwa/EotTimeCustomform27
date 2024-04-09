@@ -1013,6 +1013,7 @@ public class AppConstant {
     public static String pause_recur_msg = "pause_recur_msg";
     public static String resume_recur_msg = "resume_recur_msg";
     public static String expired = "expired";
+    public static String update_service = "update_service";
 
 
 

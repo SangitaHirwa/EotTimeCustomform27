@@ -1911,7 +1911,8 @@
     "pause": "Pause",
     "pause_recur_msg":"Would you like to temporarily pause recurring tasks? They won't create new jobs until you resume them.",
     "resume_recur_msg":"Do you want to resume the recurring job pattern?",
-    "expired": "Expired"
+    "expired": "Expired",
+    "update_service": "Update Service"
   }
 }
 

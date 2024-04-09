@@ -717,7 +717,11 @@ public class AddEditInvoiceItemActivity2 extends
                 add_stock_checkBox.setChecked(true);
                 isRemoveStock = "1";
             }
-            add_stock_checkBox.setVisibility(View.VISIBLE);
+            if(updateItemDataModel.getDataType() != null && updateItemDataModel.getDataType().equals(("3"))){
+                add_stock_checkBox.setVisibility(View.GONE);
+            }else {
+                add_stock_checkBox.setVisibility(View.VISIBLE);
+            }
         }else {
             add_stock_checkBox.setVisibility(View.GONE);
 
@@ -804,7 +808,11 @@ public class AddEditInvoiceItemActivity2 extends
                     && updateItemDataModel.getItemType().equals("0")) {
                 for (FooterMenu serverList : App_preference.getSharedprefInstance().getLoginRes().getFooterMenu()) {
                     if (serverList.isEnable.equals("1") && serverList.getMenuField().equals("set_equipmentMenuOrdrNo")) {
-                        convert_item_to_equi.setVisibility(View.VISIBLE);
+                        if(updateItemDataModel.getDataType() != null && updateItemDataModel.getDataType().equalsIgnoreCase("3")){
+                            convert_item_to_equi.setVisibility(View.GONE);
+                        }else {
+                            convert_item_to_equi.setVisibility(View.VISIBLE);
+                        }
                         break;
                     }
                 }
@@ -812,7 +820,12 @@ public class AddEditInvoiceItemActivity2 extends
 
             /*this permission for Edit item***/
             if (App_preference.getSharedprefInstance().getLoginRes().getIsItemEditEnable().equals("1")) {
-                Objects.requireNonNull(getSupportActionBar()).setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.update_item));
+                if(updateItemDataModel.getDataType() != null && updateItemDataModel.getDataType().equalsIgnoreCase("3")){
+                    Objects.requireNonNull(getSupportActionBar()).setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.update_service));
+                }
+                else{
+                    Objects.requireNonNull(getSupportActionBar()).setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.update_item));
+                }
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                 add_edit_item_Btn.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.update_btn));
                 DP_OPEN = false;
