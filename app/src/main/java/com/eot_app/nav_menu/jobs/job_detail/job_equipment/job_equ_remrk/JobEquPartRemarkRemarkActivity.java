@@ -438,7 +438,6 @@ public class JobEquPartRemarkRemarkActivity extends UploadDocumentActivity imple
             requested_itemList_show_hide_rl.setVisibility(View.GONE);
             requested_item_flag.setVisibility(View.GONE);
             requestedItemListAdapter.setReqItemList(new ArrayList<>());
-            txt_no_item_found.setVisibility(View.VISIBLE);
             recyclerView_requested_item.setVisibility(View.GONE);
         }
     }
