@@ -921,7 +921,7 @@ public class DetailFragment extends Fragment
 
         if(App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsItemRequested() == 0){
             ll_requested_item.setVisibility(View.VISIBLE);
-            if(mParam2.getItemRequested().equals("1")){
+            if(mParam2.getItemRequested() != null && mParam2.getItemRequested().equals("1")){
                 requested_item_flag.setVisibility(View.VISIBLE);
                 requested_itemList_show_hide_rl.setVisibility(View.VISIBLE);
             }else {
