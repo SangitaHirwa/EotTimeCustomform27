@@ -446,7 +446,11 @@ public class SyncDataJobService extends JobService {
                     "",
 
                     updateLimit, updateIndex, App_preference.getSharedprefInstance().getInventryItemSyncTime());//
-
+            if(App_preference.getSharedprefInstance().getInventryItemSyncTime().equals("")){
+                inventry_model.setIsactive("1");
+            }else{
+                inventry_model.setIsactive("");
+            }
             String data = new Gson().toJson(inventry_model);
             Log.d("Apitimetracking","getItemList:-"+data);
             Log.d("Apitimetracking","time:-"+AppUtility.getCurrentDateByFormat("yyyy-MM-dd HH:mm:ss"));
@@ -515,6 +519,8 @@ public class SyncDataJobService extends JobService {
 
     private void addInvoiceItemInDB(List<Inventry_ReS_Model> inventryitemlist) {
         AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).invoiceItemDao().insertInvebtryItems(inventryitemlist);
+        AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).invoiceItemDao().deleteByIsactive();
+
     }
 
     /***get admin one-to-one chat group chat user list***/

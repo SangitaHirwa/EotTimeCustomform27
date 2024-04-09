@@ -33,6 +33,7 @@ import com.eot_app.nav_menu.jobs.job_detail.requested_item.requested_itemModel.R
 import com.eot_app.services.Service_apis;
 import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.AppUtility;
+import com.eot_app.utility.App_preference;
 import com.eot_app.utility.EotApp;
 import com.eot_app.utility.db.AppDataBase;
 import com.eot_app.utility.db.OfflineDataController;
@@ -422,21 +423,16 @@ public class AddUpdateRquestedItemActivity extends AppCompatActivity implements 
             if (autocomplete_item.getTag() == null) {
                 Log.e("EmptyTag", "");
             } else {
-                switch (autocomplete_item.getTag().toString()) {
-                    case "Item":
-                        Log.e("", "");
                         edt_modelNo.setEnabled(true);
                         linearLayout_brand.setClickable(true);
-
                         if (charSequence.length() >= 1) {
-
                             itemlayout.setHintEnabled(true);
                             IS_ITEM_MANDATRY = true;
                             if (itemsList != null &&
                                     AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).invoiceItemDao().getInventryItemList().size() == 0
                                     && charSequence.length() >= 3) {
                                 if (!AppUtility.isInternetConnected()) {
-
+                                     showDialogForLoadData();
                                 } else {
                                     reqItemPi.getDataFromServer(charSequence.toString());
                                 }
@@ -449,16 +445,13 @@ public class AddUpdateRquestedItemActivity extends AppCompatActivity implements 
                         if (!itemsList.contains(charSequence)) {
                             inm = charSequence.toString();
                         }
-                        break;
-
-                }
             }
 
     }
 
     @Override
     public void afterTextChanged(Editable s) {
-        if (s.length() >= 1) {
+      /*  if (s.length() >= 1) {
             if (s.hashCode() == edt_item_qty.getText().hashCode())
                 item_qty_layout.setHintEnabled(true);
             if(s.hashCode() == edt_modelNo.getText().hashCode())
@@ -468,7 +461,7 @@ public class AddUpdateRquestedItemActivity extends AppCompatActivity implements 
                 item_qty_layout.setHintEnabled(false);
             if (s.hashCode() == edt_modelNo.getText().hashCode())
                 modelNo_layout.setHintEnabled(false);
-        }
+        }*/
         if (!AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).invoiceItemDao().getInventryItemName(s.toString())) {
                         edt_modelNo.setEnabled(true);
                         linearLayout_brand.setClickable(true);
