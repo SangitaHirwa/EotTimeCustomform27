@@ -167,7 +167,8 @@
                     android:layout_height="wrap_content"
                     android:maxLines="2"
                     tools:text="@string/equipment_as_a_part"
-                    android:textStyle="normal" />
+                    android:textStyle="normal"
+                    android:layout_weight="1.5"/>
                 <ImageView
                     android:visibility="gone"
                     android:id="@+id/ivAlert"
