@@ -1254,9 +1254,20 @@ public class AddAppointmentActivity extends UploadDocumentActivity implements Te
                     @Override
                     public void setDateTime(String dateTime) {
                         time_en = dateTime;
-                        DecimalFormat formatter = new DecimalFormat("00");
-                        String[] aa = dateTime.split(":");
-                        binding.timeEnd.setText((formatter.format(Integer.parseInt(aa[0]))) + ":" + aa[1]);
+                        try {
+                            schdlStart = date_str + " " + time_str;
+                            schdlFinish = date_en + " " + time_en;
+
+                            if (conditionCheckTravel(schdlStart,schdlFinish)) {
+                                EotApp.getAppinstance().showToastmsg(LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_start_end_time));
+                            } else {
+                                DecimalFormat formatter = new DecimalFormat("00");
+                                String[] aa = dateTime.split(":");
+                                binding.timeEnd.setText((formatter.format(Integer.parseInt(aa[0]))) + ":" + aa[1]);
+                            }
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
                     }
                 }, LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_due_start_time)), mHour, mMinute, false);
                 timePickerDialog1.show();
@@ -1821,5 +1832,28 @@ public class AddAppointmentActivity extends UploadDocumentActivity implements Te
             i++;
         }
 
+    }
+    private boolean conditionCheckTravel(String travelStart, String travelFinish) {
+        Locale.getDefault().getDisplayLanguage();
+        try {
+            SimpleDateFormat gettingfmt = new SimpleDateFormat(
+                    //"dd-MM-yyyy hh:mm a"
+                    AppUtility.dateTimeByAmPmFormate(AppConstant.DATE_FORMAT+" hh:mm a", AppConstant.DATE_FORMAT+" HH:mm")
+                    , Locale.US);
+                  Date dateStart=null;
+                  Date dateEnd=null;
+                  dateStart = gettingfmt.parse(travelStart);
+                 dateEnd = gettingfmt.parse(travelFinish);
+
+            assert dateEnd != null;
+            assert dateStart != null;
+            if(dateStart.getTime() >= dateEnd.getTime()){
+                    return true;
+                }
+
+            } catch (ParseException ex) {
+            throw new RuntimeException(ex);
+        }
+        return false;
     }
 }
