@@ -21,6 +21,7 @@ import com.eot_app.R;
 import com.eot_app.databinding.FragmentAddLeaveBinding;
 import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.AppUtility;
+import com.eot_app.utility.App_preference;
 import com.eot_app.utility.language_support.LanguageController;
 import com.eot_app.utility.util_interfaces.MySpinnerAdapter;
 
@@ -161,16 +162,23 @@ public class AddLeaveFragment extends AppCompatActivity implements View.OnClickL
         int minute = mcurrentTime.get(Calendar.MINUTE);
         TimePickerDialog mTimePicker;
         mTimePicker = new TimePickerDialog(this, (timePicker, selectedHour, selectedMinute) -> {
-            String stime = updateTimeS(selectedHour, selectedMinute);
-            if (tag.equals("START")) {
-                STARTSELCTETIME = "";
-                STARTSELCTETIME = " " + stime;
-                binding.timeFrom.setText(STARTSELCTEDATE.concat(STARTSELCTETIME));
-            } else if (tag.equals("END")) {
-                ENDSELCTETIME = "";
-                ENDSELCTETIME = " " + stime;
-                binding.timeTo.setText(ENDSELCTEDATE.concat(ENDSELCTETIME));
+            String stime = null;
+            if(App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable().equals("0")) {
+                 stime = updateTimeS(selectedHour, selectedMinute);
+            }else {
+                stime = String.valueOf(selectedHour) + ':' +
+                        selectedMinute + " ";
             }
+                if (tag.equals("START")) {
+                    STARTSELCTETIME = "";
+                    STARTSELCTETIME = " " + stime;
+                    binding.timeFrom.setText(STARTSELCTEDATE.concat(STARTSELCTETIME));
+                } else if (tag.equals("END")) {
+                    ENDSELCTETIME = "";
+                    ENDSELCTETIME = " " + stime;
+                    binding.timeTo.setText(ENDSELCTEDATE.concat(ENDSELCTETIME));
+                }
+            
         }, hour, minute, false);//Yes 24 hour time
         mTimePicker.setTitle("Select Time");
         mTimePicker.show();
@@ -226,8 +234,12 @@ public class AddLeaveFragment extends AppCompatActivity implements View.OnClickL
     }
 
     private void initilaleDateTimeset() {
-        binding.timeFrom.setText(AppUtility.getDateByFormat(AppConstant.DATE_FORMAT).concat(STARTSELCTETIME));
-        binding.timeTo.setText(AppUtility.getDateByFormat(AppConstant.DATE_FORMAT).concat(ENDSELCTETIME));
+            if(App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable().equals("1")){
+                STARTSELCTETIME = " 00:00";
+                ENDSELCTETIME = " 23:59";
+            }
+        binding.timeFrom.setText(AppUtility.getDateByFormat(AppConstant.DATE_FORMAT).concat(" "+STARTSELCTETIME));
+        binding.timeTo.setText(AppUtility.getDateByFormat(AppConstant.DATE_FORMAT).concat(" "+ENDSELCTETIME));
         listuser=new ArrayList<>();
         emptyfields();
     }
@@ -258,7 +270,11 @@ public class AddLeaveFragment extends AppCompatActivity implements View.OnClickL
             case R.id.submit_button:
                 Date startDate, endDate;
                 String s = "", e = "", datetiemform;
-                datetiemform = AppConstant.DATE_FORMAT+" hh:mm a";
+                if (App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable().equals("0")){
+                    datetiemform = AppConstant.DATE_FORMAT+" hh:mm a";
+                }else{
+                    datetiemform = AppConstant.DATE_FORMAT+" HH:mm";
+                }
                 try {
                     startDate = new SimpleDateFormat(datetiemform, Locale.getDefault()).parse(binding.timeFrom.getText().toString().trim());
                     endDate = new SimpleDateFormat(datetiemform, Locale.getDefault()).parse(binding.timeTo.getText().toString().trim());
