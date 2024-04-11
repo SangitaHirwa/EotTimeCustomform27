@@ -54,6 +54,6 @@ public class Requestor {
                         }
                     });
 
-        } /*else serverResponse.onError("No internet connection", requestCode);*/
+        } else serverResponse.onError("No internet connection", requestCode);
     }
 }
