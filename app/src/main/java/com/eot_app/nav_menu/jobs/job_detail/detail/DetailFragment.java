@@ -440,7 +440,8 @@ public class DetailFragment extends Fragment
 
         if (mParam2.getJobId()!=null&&!mParam2.getJobId().isEmpty())
         {
-            if(mParam2.getCanInvoiceCreated()!=null && mParam2.getCanInvoiceCreated().equals("1")) {
+            /**After discussion with Rani change validation of canInvoiceCreated by isJobInvoiced 12/04/2024**/
+            if(mParam2.getIsJobInvoiced()!=null && mParam2.getIsJobInvoiced().equals("1")) {
                     getDisCalculationType = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().disCalculationType(mParam2.getJobId());
                     getTaxCalculationType = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().taxCalculationType(mParam2.getJobId());
                 }

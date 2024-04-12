@@ -417,11 +417,11 @@ public class AddEditInvoiceItemActivity2 extends
             ll_link_note.setVisibility(View.GONE);
         }
     }
-
+/**After discussion with Rani change validation of canInvoiceCreated by isJobInvoiced 12/04/2024**/
     private void getTaxDisType(String jobId){
         if(jobId != null && !jobId.equals("")){
             Job job = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(jobId);
-            if(job.getCanInvoiceCreated().equals("1")) {
+            if(job.getIsJobInvoiced().equals("1")) {
                 getDisCalculationType = AppDataBase.getInMemoryDatabase(this).jobModel().disCalculationType(jobId);
                 getTaxCalculationType = AppDataBase.getInMemoryDatabase(this).jobModel().taxCalculationType(jobId);
             }else {
@@ -1635,7 +1635,7 @@ public class AddEditInvoiceItemActivity2 extends
                 break;
         }
     }
-
+    /**After discussion with Rani change validation of canInvoiceCreated by isJobInvoiced 12/04/2024**/
     String taxId = "0";
     private void checkMandtryFileds() {
         if (!IS_ITEM_MANDATRY && TAB_SELECT == 1) {
@@ -1654,7 +1654,7 @@ public class AddEditInvoiceItemActivity2 extends
                         taxId = tax.getTaxId();
                     }
                 }
-                if( jobModel!= null && jobModel.getCanInvoiceCreated().equals("1")) {
+                if( jobModel!= null && jobModel.getIsJobInvoiced().equals("1")) {
                     if (getTaxMethodType.equals("1")) {
                         if (!taxId.equals(getSingleTaxId)) {
                             AppUtility.alertDialog(this, LanguageController.getInstance().getMobileMsgByKey(AppConstant.are_you_sure),LanguageController.getInstance().getMobileMsgByKey(AppConstant.tax_change_msg) , AppConstant.yes, AppConstant.no, new Callable<Boolean>() {

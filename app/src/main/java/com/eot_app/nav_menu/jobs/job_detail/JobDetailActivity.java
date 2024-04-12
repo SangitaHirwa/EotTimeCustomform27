@@ -172,7 +172,7 @@ public class JobDetailActivity extends AppCompatActivity implements
 
     private final BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
-
+        /**After discussion with Rani change validation of canInvoiceCreated by isJobInvoiced 12/04/2024**/
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
@@ -280,7 +280,7 @@ public class JobDetailActivity extends AppCompatActivity implements
                     //   COMMNENTWINDOW = false;
 //                    if (dataJob != null && dataJob.getCanInvoiceCreated() != null &&
 //                            dataJob.getCanInvoiceCreated().equals("0")) {
-                    if (dataJob != null && dataJob.getCanInvoiceCreated() != null &&
+                    if (dataJob != null && dataJob.getIsJobInvoiced() != null &&
                             dataJob.getInvType().equals("3")) {
                         AppUtility.alertDialog(JobDetailActivity.this,
                                 LanguageController.getInstance().getMobileMsgByKey(AppConstant.title_invoice),
@@ -909,7 +909,7 @@ public class JobDetailActivity extends AppCompatActivity implements
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 3);
         recyclerView.setLayoutManager(gridLayoutManager);
     }
-
+    /**After discussion with Rani change validation of canInvoiceCreated by isJobInvoiced 12/04/2024**/
     private void setMenuPages(int menu_item_id) {
         switch (menu_item_id) {
             case ID_FEEDBACK:
@@ -962,7 +962,7 @@ public class JobDetailActivity extends AppCompatActivity implements
 
 //                if (dataJob != null && dataJob.getCanInvoiceCreated() != null &&
 //                        dataJob.getCanInvoiceCreated().equals("0")) {
-                    if (dataJob != null && dataJob.getCanInvoiceCreated() != null &&
+                    if (dataJob != null && dataJob.getIsJobInvoiced() != null &&
                             dataJob.getInvType().equals("3")) {
                         AppUtility.alertDialog(JobDetailActivity.this,
                                 LanguageController.getInstance().getMobileMsgByKey(AppConstant.title_invoice),

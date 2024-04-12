@@ -187,11 +187,11 @@ public class Generate_Invoice_Activity extends AppCompatActivity implements MyLi
         initializelables();
         intialize_UI_Views();
     }
-
+    /**After discussion with Rani change validation of canInvoiceCreated by isJobInvoiced 12/04/2024**/
     private void getTaxDisType(String jobId){
         if(jobId != null && !jobId.equals("")){
            mjob = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(jobId);
-            if(mjob.getCanInvoiceCreated().equals("1")) {
+            if(mjob.getIsJobInvoiced().equals("1")) {
                 getDisCalculationType = AppDataBase.getInMemoryDatabase(this).jobModel().disCalculationType(jobId);
                 getTaxCalculationType = AppDataBase.getInMemoryDatabase(this).jobModel().taxCalculationType(jobId);
             }else {
