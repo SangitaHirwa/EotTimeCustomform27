@@ -179,7 +179,7 @@ public class AddLeaveFragment extends AppCompatActivity implements View.OnClickL
                     binding.timeTo.setText(ENDSELCTEDATE.concat(ENDSELCTETIME));
                 }
             
-        }, hour, minute, false);//Yes 24 hour time
+        }, hour, minute, true);//Yes 24 hour time
         mTimePicker.setTitle("Select Time");
         mTimePicker.show();
     }
