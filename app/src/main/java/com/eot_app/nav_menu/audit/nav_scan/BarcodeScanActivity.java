@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -193,6 +194,10 @@ public class BarcodeScanActivity extends AppCompatActivity implements ScanBarcod
         }
     }
     private void askTedPermission(int type,String[] permissions) {
+        String permissionMsg ="";
+        if(type == 0){
+            permissionMsg = "<b>Need Camera and Storage Permission</b><br><br>If you reject permission,you can not use this service<br><br>Please turn on permissions at [SettingActivity] > [Permission]";
+        }
         TedPermission.with(EotApp.getAppinstance())
                 .setPermissionListener(new PermissionListener() {
                     @Override
@@ -206,7 +211,7 @@ public class BarcodeScanActivity extends AppCompatActivity implements ScanBarcod
                         startActivity(new Intent(BarcodeScanActivity.this, MainActivity.class));
                     }
                 })
-                .setDeniedMessage("If you reject permission,you can not use this service\n\nPlease turn on permissions at [SettingActivity] > [Permission]")
+                .setDeniedMessage(Html.fromHtml(permissionMsg))
                 .setPermissions(permissions)
                 .check();
     }

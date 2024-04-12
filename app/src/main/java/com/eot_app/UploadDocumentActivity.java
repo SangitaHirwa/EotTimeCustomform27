@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -39,6 +40,7 @@ public class UploadDocumentActivity extends AppCompatActivity implements ImageCr
     private final int ATTACHFILE_CODE = 102;
     String path = "";
     private String captureImagePath;
+    String permissionMsg ="";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -144,6 +146,12 @@ public class UploadDocumentActivity extends AppCompatActivity implements ImageCr
     }
 
     private void askTedPermission(int type,String[] permissions) {
+        if(type == 0){
+            permissionMsg = "<b>Need Camera and Storage Permission</b><br><br>If you reject permission,you can not use this service<br><br>Please turn on permissions at [SettingActivity] > [Permission]";
+        }else {
+            permissionMsg = "<b>Need Storage Permission</b><br><br>If you reject permission,you can not use this service<br><br>Please turn on permissions at [SettingActivity] > [Permission]";
+
+        }
         TedPermission.with(EotApp.getAppinstance())
                 .setPermissionListener(new PermissionListener() {
                     @Override
@@ -161,7 +169,7 @@ public class UploadDocumentActivity extends AppCompatActivity implements ImageCr
 
                     }
                 })
-                .setDeniedMessage("If you reject permission,you can not use this service\n\nPlease turn on permissions at [SettingActivity] > [Permission]")
+                .setDeniedMessage(Html.fromHtml(permissionMsg))
                 .setPermissions(permissions)
                 .check();
     }

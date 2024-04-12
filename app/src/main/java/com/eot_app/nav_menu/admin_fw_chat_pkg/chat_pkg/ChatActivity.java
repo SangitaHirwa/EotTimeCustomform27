@@ -21,6 +21,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.PersistableBundle;
 import android.provider.MediaStore;
+import android.text.Html;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
@@ -92,6 +93,8 @@ public class ChatActivity extends AppCompatActivity implements
     // private String captureImagePath;
     private ImageView chat_im_zoom;
     private SingleChat_PI singleChatPi;
+    String permissionMsg ="";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -386,6 +389,12 @@ public class ChatActivity extends AppCompatActivity implements
         }
     }
     private void askTedPermission(int type,String[] permissions) {
+        if(type == 0){
+            permissionMsg = "<b>Need Camera and Storage Permission</b><br><br>If you reject permission,you can not use this service<br><br>Please turn on permissions at [SettingActivity] > [Permission]";
+        }else {
+            permissionMsg = "<b>Need Storage Permission</b><br><br>If you reject permission,you can not use this service<br><br>Please turn on permissions at [SettingActivity] > [Permission]";
+
+        }
         TedPermission.with(EotApp.getAppinstance())
                 .setPermissionListener(new PermissionListener() {
                     @Override
@@ -401,7 +410,7 @@ public class ChatActivity extends AppCompatActivity implements
 
                     }
                 })
-                .setDeniedMessage("If you reject permission,you can not use this service\n\nPlease turn on permissions at [SettingActivity] > [Permission]")
+                .setDeniedMessage(Html.fromHtml(permissionMsg))
                 .setPermissions(permissions)
                 .check();
     }

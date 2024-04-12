@@ -592,6 +592,11 @@ public class DialogJobCardDocuments extends DialogFragment
         startActivityForResult(documentIntent, ATTACHFILE_CODE);
     }
     private void askTedPermission(int type,String[] permissions) {
+        String permissionMsg ="";
+        if(type == 2){
+            permissionMsg = "<b>Need Storage Permission</b><br><br>If you reject permission,you can not use this service<br><br>Please turn on permissions at [SettingActivity] > [Permission]";
+
+        }
         TedPermission.with(EotApp.getAppinstance())
                 .setPermissionListener(new PermissionListener() {
                     @Override
@@ -605,7 +610,7 @@ public class DialogJobCardDocuments extends DialogFragment
 
                     }
                 })
-                .setDeniedMessage("If you reject permission,you can not use this service\n\nPlease turn on permissions at [SettingActivity] > [Permission]")
+                .setDeniedMessage(Html.fromHtml(permissionMsg))
                 .setPermissions(permissions)
                 .check();
     }

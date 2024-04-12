@@ -16,6 +16,7 @@ import android.os.Looper;
 import android.os.ext.SdkExtensions;
 import android.provider.MediaStore;
 import android.text.Editable;
+import android.text.Html;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -112,6 +113,7 @@ public class DocumentsFragment extends Fragment implements Doc_Attch_View, Docum
     private WorkManager mWorkManager;
     String queId ="", tempId ="";
     ConstraintLayout cl_parentOthersAttach;
+    String permissionMsg ="";
 
     public DocumentsFragment() {
 
@@ -434,6 +436,12 @@ public class DocumentsFragment extends Fragment implements Doc_Attch_View, Docum
     }
 
     private void askTedPermission(int type,String[] permissions) {
+        if(type == 0){
+            permissionMsg = "<b>Need Camera and Storage Permission</b><br><br>If you reject permission,you can not use this service<br><br>Please turn on permissions at [SettingActivity] > [Permission]";
+        }else {
+            permissionMsg = "<b>Need Storage Permission</b><br><br>If you reject permission,you can not use this service<br><br>Please turn on permissions at [SettingActivity] > [Permission]";
+
+        }
         TedPermission.with(EotApp.getAppinstance())
                 .setPermissionListener(new PermissionListener() {
                     @Override
@@ -451,7 +459,7 @@ public class DocumentsFragment extends Fragment implements Doc_Attch_View, Docum
 
                     }
                 })
-                .setDeniedMessage("If you reject permission,you can not use this service\n\nPlease turn on permissions at [SettingActivity] > [Permission]")
+                .setDeniedMessage(Html.fromHtml(permissionMsg))
                 .setPermissions(permissions)
                 .check();
     }
