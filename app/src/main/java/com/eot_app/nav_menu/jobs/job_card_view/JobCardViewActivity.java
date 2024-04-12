@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.Html;
 import android.util.Base64;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -423,7 +424,11 @@ public class JobCardViewActivity extends AppCompatActivity  implements
         }*/
 //            jobDetail_pi.getAttachFileList(jobId, "","");
     }
-    private void askTedPermission(int type,String[] permissions) {
+    private void askTedPermission(int type,String[] permissions) { String permissionMsg ="";
+        if(type == 2){
+            permissionMsg = "<b>Need Storage Permission</b><br><br>If you reject permission,you can not use this service<br><br>Please turn on permissions at [SettingActivity] > [Permission]";
+        }
+
         TedPermission.with(EotApp.getAppinstance())
                 .setPermissionListener(new PermissionListener() {
                     @Override
@@ -437,7 +442,7 @@ public class JobCardViewActivity extends AppCompatActivity  implements
 
                     }
                 })
-                .setDeniedMessage("If you reject permission,you can not use this service\n\nPlease turn on permissions at [SettingActivity] > [Permission]")
+                .setDeniedMessage(Html.fromHtml(permissionMsg))
                 .setPermissions(permissions)
                 .check();
     }
