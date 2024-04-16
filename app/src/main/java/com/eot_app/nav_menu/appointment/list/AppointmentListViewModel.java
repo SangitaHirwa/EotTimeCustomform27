@@ -121,7 +121,7 @@ public class AppointmentListViewModel extends AndroidViewModel implements Server
     }
 
     public void refreshAppoiListFromServer() {
-       loadList();
+       loadJob();
     }
 
     public void refreshListFromServer() {

@@ -121,7 +121,7 @@ public class LinkEquipmentPC implements LinkEquipmentPI {
                                 getAttachedEquipmentList(jobId, "",false);
 
                             }
-                            view.showHideProgressBar(false);
+
                         }
                     });
         } else networkError();
@@ -202,6 +202,7 @@ public class LinkEquipmentPC implements LinkEquipmentPI {
                                     }
 //                                    App_preference.getSharedprefInstance().setJobSyncTime(AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT));
                                 }
+                                view.showHideProgressBar(false);
                                 updateindex = 0;
                                 count = 0;
                                 AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().deleteJobByIsDelete();
