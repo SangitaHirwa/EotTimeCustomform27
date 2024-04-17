@@ -2,8 +2,8 @@ package com.eot_app.nav_menu.drag_and_drop_functinality.model;
 
 public class MapItemModel {
 
-    private int coordinateX;
-    private int coordinateY;
+    private float coordinateX;
+    private float coordinateY;
     private String name;
     private String description;
     private String photoOfItem;
@@ -20,11 +20,11 @@ public class MapItemModel {
         this.availability = availability;
     }
 
-    public int getCordinetX() {
+    public float getCordinetX() {
         return coordinateX;
     }
 
-    public void setCordinetX(int coordinateX) {
+    public void setCordinetX(float coordinateX) {
         this.coordinateX = coordinateX;
     }
 
@@ -68,11 +68,11 @@ public class MapItemModel {
         this.availability = availability;
     }
 
-    public int getCordinetY() {
+    public float getCordinetY() {
         return coordinateY;
     }
 
-    public void setCordinetY(int coordinateY) {
+    public void setCordinetY(float coordinateY) {
         this.coordinateY = coordinateY;
     }
 }

@@ -1,5 +1,6 @@
 package com.eot_app.nav_menu.drag_and_drop_functinality;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -12,7 +13,9 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.DragEvent;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -38,7 +41,7 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Drop_Item_On_Map_Activity extends AppCompatActivity implements Drop_Item_Adapter.RemoveItem, View.OnClickListener, View.OnDragListener, DragDropMap_View {
+public class Drop_Item_On_Map_Activity extends AppCompatActivity implements Drop_Item_Adapter.RemoveItem, View.OnClickListener, View.OnDragListener, DragDropMap_View,View.OnScrollChangeListener {
     ActivityDropItemOnMapBinding binding;
     CompressImageInBack compressImageInBack = null;
     Drop_Item_Adapter item_adapter;
@@ -62,6 +65,9 @@ public class Drop_Item_On_Map_Activity extends AppCompatActivity implements Drop
     DragAndDropMapModel dragAndDropMapModel;
     String savedImagePath;
     Uri uri;
+    private float scrollX = 0;
+    private float scrollY = 0;
+    private float zoomFactor = 1.0f;
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +76,8 @@ public class Drop_Item_On_Map_Activity extends AppCompatActivity implements Drop
         mapViewPi = new MapView_pc(Drop_Item_On_Map_Activity.this);
         imageviewContainer = (ViewGroup) binding.imageForDropItem.getParent();
         uri  = Uri.parse(getIntent().getStringExtra("uri"));
+        binding.imageZoomOut.setOnClickListener(this);
+        binding.imageZoomIn.setOnClickListener(this);
 
         try {
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
@@ -88,13 +96,115 @@ public class Drop_Item_On_Map_Activity extends AppCompatActivity implements Drop
             });
             binding.tvBack.setOnClickListener(this);
             binding.imageForDropItem.setOnDragListener(this);
+            binding.imageForDropItem.setOnDoubleTapListener(new GestureDetector.OnDoubleTapListener() {
+                @Override
+                public boolean onSingleTapConfirmed(@NonNull MotionEvent e) {
+                    return false;
+                }
+
+                @Override
+                public boolean onDoubleTap(@NonNull MotionEvent e) {
+                    return false;
+                }
+
+                @Override
+                public boolean onDoubleTapEvent(@NonNull MotionEvent e) {
+                    return false;
+                }
+            });
             binding.mapSaveBtn.setOnClickListener(this);
             mapViewPi.getDragAndDropMapDataApi();
             imageEditing(uri);
         }catch (Exception exception){
             exception.printStackTrace();
         }
+       /* binding.imageZoomIn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                float currentScaleX = binding.imageForDropItem.getScaleX();
+                float currentScaleY = binding.imageForDropItem.getScaleY();
+                float newScaleX = currentScaleX * 1.1f; // Increase scale by 10%
+                float newScaleY = currentScaleY * 1.1f;
+
+                // Calculate the scale change
+                float scaleXChange = newScaleX - currentScaleX;
+                float scaleYChange = newScaleY - currentScaleY;
+
+                // Update the scale of the image and its container
+                binding.imageForDropItem.setScaleX(newScaleX);
+                binding.imageForDropItem.setScaleY(newScaleY);
+                binding.framLayoutContainer1.setScaleX(newScaleX);
+                binding.framLayoutContainer1.setScaleY(newScaleY);
+
+                // Adjust the positions of the dropped views
+                for (MapItemModel model : consumedItems) {
+                    float newX = model.getCordinetX() * (1 + scaleXChange);
+                    float newY = model.getCordinetY() * (1 + scaleYChange);
+                    model.setCordinetX(newX);
+                    model.setCordinetY(newY);
+                }
+
+                setItemOnZoomInZoomOut();
+            }
+        });
+
+        binding.imageZoomOut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                float currentScaleX = binding.imageForDropItem.getScaleX();
+                float currentScaleY = binding.imageForDropItem.getScaleY();
+                float newScaleX = currentScaleX * 0.9f; // Decrease scale by 10%
+                float newScaleY = currentScaleY * 0.9f;
+
+                // Calculate the scale change
+                float scaleXChange = newScaleX - currentScaleX;
+                float scaleYChange = newScaleY - currentScaleY;
+
+                // Update the scale of the image and its container
+                binding.imageForDropItem.setScaleX(newScaleX);
+                binding.imageForDropItem.setScaleY(newScaleY);
+                binding.framLayoutContainer1.setScaleX(newScaleX);
+                binding.framLayoutContainer1.setScaleY(newScaleY);
+
+                // Adjust the positions of the dropped views
+                for (MapItemModel model : consumedItems) {
+                    float newX = model.getCordinetX() * (1 + scaleXChange);
+                    float newY = model.getCordinetY() * (1 + scaleYChange);
+                    model.setCordinetX(newX);
+                    model.setCordinetY(newY);
+                }
+
+                setItemOnZoomInZoomOut();
+            }
+        });
+*/
     }
+    private void updateDroppedViewsPositions() {
+        for (MapItemModel model : consumedItems) {
+            float newX = model.getCordinetX() * zoomFactor + scrollX;
+            float newY = model.getCordinetY() * zoomFactor + scrollY;
+            View equipmentDropedRl = imageviewContainer.findViewById(Integer.parseInt(model.getItemId()));
+            if (equipmentDropedRl != null) {
+                equipmentDropedRl.setX(newX);
+                equipmentDropedRl.setY(newY);
+            }
+        }
+    }
+    // Update scrollX and scrollY when the ImageView is scrolled
+    @Override
+    public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+        this.scrollX = scrollX;
+        this.scrollY = scrollY;
+        updateDroppedViewsPositions();
+    }
+
+    // Update zoomFactor when the ImageView is zoomed
+    private void updateZoomFactor(float newZoomFactor) {
+        zoomFactor = newZoomFactor;
+        updateDroppedViewsPositions();
+    }
+
+
     private void setEquipmentOnImage() {
         if(consumedItems != null && consumedItems.size() > 0){
             for(MapItemModel mapItemModel : consumedItems){
@@ -127,6 +237,21 @@ public class Drop_Item_On_Map_Activity extends AppCompatActivity implements Drop
         }
 
     }
+   /* private void setItemOnZoomInZoomOut() {
+        if (consumedItems != null && consumedItems.size() > 0) {
+            for (MapItemModel mapItemModel : consumedItems) {
+                // Find the corresponding view for the mapItemModel
+                View equipmentDropedRl = imageviewContainer.findViewById(Integer.parseInt(mapItemModel.getItemId()));
+                if (equipmentDropedRl != null) {
+                    // Update the position of the view
+                    float newX = mapItemModel.getCordinetX();
+                    float newY = mapItemModel.getCordinetY();
+                    equipmentDropedRl.setX(newX);
+                    equipmentDropedRl.setY(newY);
+                }
+            }
+        }
+    }*/
     View.OnLongClickListener onLongClickListener = new View.OnLongClickListener() {
         @Override
         public boolean onLongClick(View v) {
@@ -161,7 +286,7 @@ public class Drop_Item_On_Map_Activity extends AppCompatActivity implements Drop
             List<MapItemModel> availableremoveItem = new ArrayList<>();
             for(MapItemModel avaItem : availableItems){
                 for (MapItemModel conItem:consumedItems){
-                    if(avaItem.getItemId().equals(conItem.getItemId()) || avaItem.getItemId().equals(id+"")){
+                    if(avaItem.getItemId().equals(conItem.getItemId()) && avaItem.getItemId().equals(id+"")){
                         availableremoveItem.add(avaItem);
                         break;
                     }
@@ -213,6 +338,12 @@ public class Drop_Item_On_Map_Activity extends AppCompatActivity implements Drop
             case R.id.map_save_btn:
                 availableItems.removeAll(consumedItems);
                 addUpdateMapData();
+                break;
+            case R.id.image_zoom_in:
+                updateZoomFactor(zoomFactor * 1.1f); // Increase zoom by 10%
+                break;
+            case R.id.image_zoom_out:
+                updateZoomFactor(zoomFactor * 0.9f); // Decrease zoom by 10%
                 break;
         }
     }
@@ -299,15 +430,15 @@ public class Drop_Item_On_Map_Activity extends AppCompatActivity implements Drop
                 equipmentDropedRl.setX(newX);
                 equipmentDropedRl.setY(newY);
                 if(itemModel1 != null) {
-                    itemModel1.setCordinetX((int) newX);
-                    itemModel1.setCordinetY((int) newY);
+                    itemModel1.setCordinetX((float) newX);
+                    itemModel1.setCordinetY((float) newY);
                     itemremove.setVisibility(View.VISIBLE);
                     if (itemModel1.getAvailability().equals("true")) {
                         itemModel1.setAvailability("false");
                         for (MapItemModel model : availableItems) {
                             if (model.getItemId().equals(itemModel1.getItemId())) {
                                 model.setCordinetX((int) newX);
-                                model.setCordinetY((int) newY);
+                                model.setCordinetY((float) newY);
                                 model.setAvailability("false");
                                 consumedItems.add(model);
                                 break;
