@@ -30,9 +30,9 @@ public class TaxComponents implements Parcelable {
     };
     private String taxId;
     private String label;
-    private String isactive;
-    private String show_Invoice;
-    private String rate = "0";
+//    private String isactive;
+//    private String show_Invoice;
+//    private String rate = "0";
     private String percentage = "0";
 
 
@@ -41,9 +41,9 @@ public class TaxComponents implements Parcelable {
     protected TaxComponents(Parcel in) {
         taxId = in.readString();
         label = in.readString();
-        isactive = in.readString();
-        show_Invoice = in.readString();
-        rate = in.readString();
+//        isactive = in.readString();
+//        show_Invoice = in.readString();
+//        rate = in.readString();
         percentage = in.readString();
     }
 
@@ -55,9 +55,9 @@ public class TaxComponents implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(taxId);
         dest.writeString(label);
-        dest.writeString(isactive);
-        dest.writeString(show_Invoice);
-        dest.writeString(rate);
+//        dest.writeString(isactive);
+//        dest.writeString(show_Invoice);
+//        dest.writeString(rate);
         dest.writeString(percentage);
 
     }
@@ -94,29 +94,29 @@ public class TaxComponents implements Parcelable {
         this.label = label;
     }
 
-    public String getIsactive() {
-        return isactive;
-    }
-
-    public void setIsactive(String isactive) {
-        this.isactive = isactive;
-    }
-
-    public String getShow_Invoice() {
-        return show_Invoice;
-    }
-
-    public void setShow_Invoice(String show_Invoice) {
-        this.show_Invoice = show_Invoice;
-    }
-
-    public String getRate() {
-        return rate;
-    }
-
-    public void setRate(String rate) {
-        this.rate = rate;
-    }
+//    public String getIsactive() {
+//        return isactive;
+//    }
+//
+//    public void setIsactive(String isactive) {
+//        this.isactive = isactive;
+//    }
+//
+//    public String getShow_Invoice() {
+//        return show_Invoice;
+//    }
+//
+//    public void setShow_Invoice(String show_Invoice) {
+//        this.show_Invoice = show_Invoice;
+//    }
+//
+//    public String getRate() {
+//        return rate;
+//    }
+//
+//    public void setRate(String rate) {
+//        this.rate = rate;
+//    }
 
 
 
@@ -134,14 +134,14 @@ public class TaxComponents implements Parcelable {
         TaxComponents that = (TaxComponents) o;
         return Objects.equals(taxId, that.taxId) &&
                 Objects.equals(label, that.label)
-                && Objects.equals(isactive, that.isactive)
-                && Objects.equals(show_Invoice, that.show_Invoice)
-                && Objects.equals(rate, that.rate)
+//                && Objects.equals(isactive, that.isactive)
+//                && Objects.equals(show_Invoice, that.show_Invoice)
+//                && Objects.equals(rate, that.rate)
                 && Objects.equals(percentage, that.percentage);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(taxId, label, isactive, show_Invoice, rate, percentage);
+        return Objects.hash(taxId, label, /*isactive, show_Invoice, rate,*/ percentage);
     }
 }

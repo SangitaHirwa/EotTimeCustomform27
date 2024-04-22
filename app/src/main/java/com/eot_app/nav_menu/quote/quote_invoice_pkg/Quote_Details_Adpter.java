@@ -202,10 +202,14 @@ public class Quote_Details_Adpter extends RecyclerView.Adapter<Quote_Details_Adp
 
                 if (App_preference.getSharedprefInstance().getLoginRes().getTaxShowType().equals("2")) {
                     if (invoiceItemList.get(position).getTax().get(0).getTaxComponents() != null && invoiceItemList.get(position).getTax().get(0).getTaxComponents().size() > 0) {
-                        for (Tax tax2 : invoiceItemList.get(position).getTax().get(0).getTaxComponents()
+                        for (TaxComponents tax2 : invoiceItemList.get(position).getTax().get(0).getTaxComponents()
                         ) {
                             List<Tax> tempList = new ArrayList<>();
-                            tempList.add(tax2);
+                            Tax tax = new Tax();
+                            tax.setLabel(tax2.getLabel());
+                            tax.setTaxId(tax2.getTaxId());
+                            tax.setPercentage(tax2.getPercentage());
+                            tempList.add(tax);
                             String __taxAmt = AppUtility.getRoundoff_amount
                                     (AppUtility.getCalculatedAmountForDiscount(invoiceItemList.get(position).getQty(),
                                             invoiceItemList.get(position).getRate(),
@@ -224,7 +228,7 @@ public class Quote_Details_Adpter extends RecyclerView.Adapter<Quote_Details_Adp
                             }else
                             {
                                 TaxData taxData = new TaxData();
-                                taxData.setRate(Double.parseDouble(tax2.getRate()));
+                                taxData.setRate(Double.parseDouble(tax2.getPercentage()));
                                 taxData.setTaxAmount(Double.parseDouble(__taxAmt));
                                 taxData.setLabel(tax2.getLabel());
                                 taxData.setTaxId(invoiceItemList.get(position).getTax().get(0).getTaxId());

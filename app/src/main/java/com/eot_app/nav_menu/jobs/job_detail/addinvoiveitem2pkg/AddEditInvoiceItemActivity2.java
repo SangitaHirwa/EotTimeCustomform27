@@ -1707,7 +1707,7 @@ public class AddEditInvoiceItemActivity2 extends
             }
             if(taxListFilter.size()>0) {
                 appointmentTax = new AppointmentTax(Integer.parseInt(taxListFilter.get(0).getTaxId()),
-                        taxListFilter.get(0).getRate(), taxListFilter.get(0).getLabel(), taxListFilter);
+                        taxListFilter.get(0).getRate(), taxListFilter.get(0).getLabel(), taxListFilter.get(0).getTaxComponents());
                 apptaxList.add(appointmentTax);
             }
 //            else{
@@ -1838,7 +1838,7 @@ public class AddEditInvoiceItemActivity2 extends
 
             }if(taxListFilter.size()>0) {
                 appointmentTax = new AppointmentTax(Integer.parseInt(taxListFilter.get(0).getTaxId()),
-                        taxListFilter.get(0).getRate(), taxListFilter.get(0).getLabel(), taxListFilter);
+                        taxListFilter.get(0).getRate(), taxListFilter.get(0).getLabel(), taxListFilter.get(0).getTaxComponents());
                 apptaxList.add(appointmentTax);
             }
 //            else{

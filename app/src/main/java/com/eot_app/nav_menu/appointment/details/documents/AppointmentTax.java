@@ -6,8 +6,10 @@ import android.os.Parcelable;
 import androidx.room.TypeConverters;
 
 import com.eot_app.nav_menu.appointment.appointment_model.AppointmentItemDataInMap;
+import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_db.tax_dao.TaxComponentsConverter;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_db.tax_dao.TaxConverter;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_detail_pkg.inv_detail_model.Tax;
+import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_detail_pkg.inv_detail_model.TaxComponents;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,10 +21,10 @@ public class AppointmentTax implements Parcelable   {
     private int taxId;
     private int ilmmId;
     private int iltmmId;
-    @TypeConverters(TaxConverter.class)
-    private List<Tax> taxComponents;
+    @TypeConverters(TaxComponentsConverter.class)
+    private List<TaxComponents> taxComponents;
 
-    public AppointmentTax(int taxId,String rate,String label,List<Tax> taxComponents) {
+    public AppointmentTax(int taxId,String rate,String label,List<TaxComponents> taxComponents) {
         this.taxId=taxId;
         this.taxComponents = taxComponents;
         this.rate=rate;
@@ -106,11 +108,11 @@ public class AppointmentTax implements Parcelable   {
         this.iltmmId = iltmmId;
     }
 
-    public List<Tax> getTaxComponents() {
+    public List<TaxComponents> getTaxComponents() {
         return taxComponents;
     }
 
-    public void setTaxComponents(List<Tax> taxComponents) {
+    public void setTaxComponents(List<TaxComponents> taxComponents) {
         this.taxComponents = taxComponents;
     }
 }
