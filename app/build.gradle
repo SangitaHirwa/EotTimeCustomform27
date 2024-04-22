@@ -19,8 +19,8 @@ android {
         applicationId "com.eot_app"
         minSdk 21
         targetSdk 34
-        versionCode 120
-        versionName "3.00"
+        versionCode 121
+        versionName "3.01"
         testInstrumentationRunner 'androidx.test.reyeontask@123' +
                 'unner.AndroidJUnitRunner'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
