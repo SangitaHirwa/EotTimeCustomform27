@@ -19,8 +19,8 @@ android {
         applicationId "com.eot_app"
         minSdk 21
         targetSdk 34
-        versionCode 120
-        versionName "3.00"
+        versionCode 121
+        versionName "3.01"
         testInstrumentationRunner 'androidx.test.reyeontask@123' +
                 'unner.AndroidJUnitRunner'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -124,6 +124,8 @@ dependencies {
 
     implementation 'com.firebaseui:firebase-ui-storage:8.0.2'
     implementation 'com.google.firebase:firebase-auth:22.2.0'
+    /** For  warning of recaptcha in playstore */
+//    implementation 'com.google.firebase:firebase-auth:22.3.1'
 
     implementation 'com.github.bumptech.glide:glide:4.11.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
@@ -166,5 +168,7 @@ dependencies {
     implementation "com.microsoft.appcenter:appcenter-analytics:${appCenterSdkVersion}"
     implementation "com.microsoft.appcenter:appcenter-crashes:${appCenterSdkVersion}"
 
+    /*For Barcode and QR code Scanner*/
+    implementation 'com.google.android.gms:play-services-code-scanner:16.1.0'
 
 }
