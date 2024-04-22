@@ -171,6 +171,7 @@ public class ActivityLinkEquipment extends AppCompatActivity implements View.OnC
             }
         });
         tv_filter_name.setOnClickListener(v -> spinner_filter.performClick());
+        SCANBY = false;
     }
 
     private void setContractMsg(boolean isContractMsg) {
@@ -239,27 +240,48 @@ public class ActivityLinkEquipment extends AppCompatActivity implements View.OnC
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         Log.e("", "");
-        if (data != null) {
+
             if (requestCode == 330) {
-                try {
-                    if (data.hasExtra("str")) {
-                        List<EquArrayModel> list = new ArrayList<>();
-                        String str = data.getStringExtra("str");
-                        //    foundequ_layout.setVisibility(View.VISIBLE);
-                        EquArrayModel model = new Gson().fromJson(str, EquArrayModel.class);
-                        list.add(model);
-                        myEquList.remove(model);
-                        SCANBY = true;
-                        myEquList.add(0, model);
-                        setEquipmentList(myEquList);
+                if(resultCode == RESULT_OK) {
+                    if (data != null) {
+                        try {
+                            if (data.hasExtra("str")) {
+                                List<EquArrayModel> list = new ArrayList<>();
+                                String str = data.getStringExtra("str");
+                                /** Change flow of searchin after discuss with Ayush Sir and Jit Sir 22/4/24*/
+                                //    foundequ_layout.setVisibility(View.VISIBLE);
+//                        EquArrayModel model = new Gson().fromJson(str, EquArrayModel.class);
+                                EquArrayModel model = new EquArrayModel();
+                                boolean isContain = false;
+
+                                for (EquArrayModel item : myEquList
+                                ) {
+                                    if (item.getBarcode().equalsIgnoreCase(str)) {
+                                        model = item;
+                                        isContain = true;
+                                        break;
+                                    }
+                                }
+                                if (isContain) {
+                                    list.add(model);
+                                    myEquList.remove(model);
+                                    SCANBY = true;
+                                    myEquList.add(0, model);
+                                    setEquipmentList(myEquList);
+                                } else {
+                                    System.out.println();
+                                    showDialogTax();
+                                }
+                            }
+                        } catch (JsonSyntaxException e) {
+                            e.printStackTrace();
+                        }
+
+                    } else {
+                        System.out.println();
+                        showDialogTax();
                     }
-                } catch (JsonSyntaxException e) {
-                    e.printStackTrace();
                 }
-            }
-        } else {
-            System.out.println();
-            showDialogTax();
         }
 
         super.onActivityResult(requestCode, resultCode, data);

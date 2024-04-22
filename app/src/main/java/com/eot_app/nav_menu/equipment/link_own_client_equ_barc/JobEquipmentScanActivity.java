@@ -5,11 +5,13 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -38,13 +40,21 @@ import com.eot_app.nav_menu.jobs.job_detail.job_equipment.JobEquipmentActivity;
 import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.AppUtility;
 import com.eot_app.utility.EotApp;
+import com.eot_app.utility.db.AppDataBase;
 import com.eot_app.utility.language_support.LanguageController;
+import com.eot_app.utility.settings.equipmentdb.Equipment;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.google.mlkit.vision.barcode.common.Barcode;
+import com.google.mlkit.vision.codescanner.GmsBarcodeScanner;
+import com.google.mlkit.vision.codescanner.GmsBarcodeScannerOptions;
+import com.google.mlkit.vision.codescanner.GmsBarcodeScanning;
 import com.google.zxing.BarcodeFormat;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
 
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,6 +74,10 @@ public class JobEquipmentScanActivity extends AppCompatActivity implements ScanE
     LinkEquipmentPI linkEquipmentPI;
     ContentLoadingProgressBar content_loading_progress;
     CodeScannerView scannerView = null;
+    GmsBarcodeScannerOptions options;
+    GmsBarcodeScanner scanner;
+    TextView txt_status;
+    boolean isSearching = false;
 
 
     @Override
@@ -76,22 +90,29 @@ public class JobEquipmentScanActivity extends AppCompatActivity implements ScanE
 
         scanBarcode_pc = new ScanEquPc(this);
         linkEquipmentPI = new LinkEquipmentPC(this);
-
+        options = new GmsBarcodeScannerOptions.Builder()
+                .setBarcodeFormats(
+                        Barcode.FORMAT_ALL_FORMATS)
+                .enableAutoZoom()
+                .allowManualInput()
+                .build();
+        scanner = GmsBarcodeScanning.getClient(this, options);
         try {
             if (getIntent().hasExtra("JOBID")) {
                 jobId = getIntent().getStringExtra("JOBID");
                 type = getIntent().getStringExtra("type");
                 cltId = getIntent().getStringExtra("cltId");
                 contrId = getIntent().getStringExtra("contrId");
+                /** We resolved crassh issue by commentd below code #Eye014366 18/8/2023*/
 //                myEqu = getIntent().getStringExtra("myEquList");
 //                Type listType = new TypeToken<List<EquArrayModel>>() {
 //                }.getType();
 //                myEquList = new Gson().fromJson(myEqu, listType);
                 strstatus = getIntent().getStringExtra("strstatus");
-
-                if (TextUtils.isEmpty(contrId))
-                    linkEquipmentPI.getEquipmentList(type, cltId, jobId);
-                else linkEquipmentPI.getContractList(new ContractEquipmentReq(type, jobId, contrId));
+                /**After discuss with Ayush sir and Jit sir stop api callin here*/
+//                if (TextUtils.isEmpty(contrId))
+//                    linkEquipmentPI.getEquipmentList(type, cltId, jobId);
+//                else linkEquipmentPI.getContractList(new ContractEquipmentReq(type, jobId, contrId));
             }
 
         } catch (Exception exception) {
@@ -129,7 +150,15 @@ public class JobEquipmentScanActivity extends AppCompatActivity implements ScanE
     @Override
     public void onResume() {
         super.onResume();
-        startScanner();
+//        startScanner();
+
+        if(isSearching){
+            txt_status.setText("Searching...");
+        }else {
+            txt_status.setText("Loading...");
+            startGoogleScan();
+        }
+
     }
 
     @Override
@@ -142,6 +171,7 @@ public class JobEquipmentScanActivity extends AppCompatActivity implements ScanE
 
         content_loading_progress = findViewById(R.id.content_loading_progress);
         scannerView = findViewById(R.id.scanner_view);
+        txt_status = findViewById(R.id.txt_status);
         mCodeScanner = new CodeScanner(this, scannerView);
         List<BarcodeFormat> list = new ArrayList<>();
         list.add(BarcodeFormat.CODE_128);
@@ -211,6 +241,7 @@ public class JobEquipmentScanActivity extends AppCompatActivity implements ScanE
 
     @Override
     public void onJobEquipmentFound(EquArrayModel equipmentRes) {
+        isSearching = false;
         if (equipmentRes != null) {
             String str = new Gson().toJson(equipmentRes);
             Intent intent = new Intent();
@@ -279,5 +310,36 @@ public class JobEquipmentScanActivity extends AppCompatActivity implements ScanE
             EotApp.getAppinstance().sessionExpired();
             return null;
         });
+    }
+
+    public  void startGoogleScan()  {
+
+        scanner
+                .startScan()
+                .addOnSuccessListener(
+                        barcode -> {
+                            Log.e("ScanResult", barcode.getRawValue());
+//                                    Toast.makeText(BarcodeScanActivity.this, "Searching...", Toast.LENGTH_SHORT).show();
+                            isSearching = true;
+//                            searchEquipment(barcode.getRawValue());
+                            if (barcode.getRawValue() != null) {
+                                String str = barcode.getRawValue();
+                                Intent intent = new Intent();
+                                intent.putExtra("str", str);
+                                setResult(RESULT_OK, intent);
+                            }
+                            finish();
+                        })
+                .addOnCanceledListener(
+                        () -> {
+                            Log.e("ScanResult", "Cancle");
+                            finish();
+                        })
+                .addOnFailureListener(
+                        e -> {
+                            Log.e("ScanResult", "error = "+e.getMessage());
+                            isSearching = false;
+                            startGoogleScan();
+                        });
     }
 }

@@ -5,8 +5,10 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Window;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,10 +17,16 @@ import androidx.lifecycle.ViewModelProvider;
 import com.budiyev.android.codescanner.CodeScanner;
 import com.budiyev.android.codescanner.CodeScannerView;
 import com.eot_app.R;
+import com.eot_app.nav_menu.audit.audit_list.scanbarcode.scan_mvp.ScanBarcode_PC;
 import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.AppUtility;
 import com.eot_app.utility.EotApp;
 import com.eot_app.utility.language_support.LanguageController;
+import com.eot_app.utility.util_interfaces.Callback_AlertDialog;
+import com.google.mlkit.vision.barcode.common.Barcode;
+import com.google.mlkit.vision.codescanner.GmsBarcodeScanner;
+import com.google.mlkit.vision.codescanner.GmsBarcodeScannerOptions;
+import com.google.mlkit.vision.codescanner.GmsBarcodeScanning;
 import com.google.zxing.BarcodeFormat;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
@@ -37,11 +45,16 @@ public class UploadBarcodeActivity extends AppCompatActivity {
     private String codeText;
     private String equipmentId;
     private UploadBarcodeViewModel uploadBarcodeViewModel;
+    GmsBarcodeScannerOptions options;
+    GmsBarcodeScanner scanner;
+    TextView txt_status;
+    boolean isSearching = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_upload_barcode);
+        txt_status = findViewById(R.id.txt_status);
         uploadBarcodeViewModel = new ViewModelProvider(this).get(UploadBarcodeViewModel.class);
         hideActionBar(true);
 
@@ -50,8 +63,14 @@ public class UploadBarcodeActivity extends AppCompatActivity {
         }
 
         CodeScannerView scannerView = findViewById(R.id.scanner_view);
-
-        edit_barcode = findViewById(R.id.edit_barcode);
+        options = new GmsBarcodeScannerOptions.Builder()
+                .setBarcodeFormats(
+                        Barcode.FORMAT_ALL_FORMATS)
+                .enableAutoZoom()
+                .allowManualInput()
+                .build();
+        scanner = GmsBarcodeScanning.getClient(this, options);
+//        edit_barcode = findViewById(R.id.edit_barcode);
 
         mCodeScanner = new CodeScanner(this, scannerView);
         List<BarcodeFormat> list = new ArrayList<>();
@@ -91,7 +110,13 @@ public class UploadBarcodeActivity extends AppCompatActivity {
             if (!TextUtils.isEmpty(s)) {
                 AppUtility.error_Alert_Dialog(UploadBarcodeActivity.this,
                         LanguageController.getInstance().getServerMsgByKey(s),
-                        LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), null);
+                        LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), new Callable<Boolean>() {
+                            @Override
+                            public Boolean call() throws Exception {
+                                onResume();
+                                return null;
+                            }
+                        });
             }
         });
 
@@ -101,15 +126,41 @@ public class UploadBarcodeActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-        startScanner();
+//        startScanner();
+
+        if(isSearching){
+            txt_status.setText("Searching...");
+        }else {
+            txt_status.setText("Loading...");
+            startGoogleScan();
+        }
+
 
     }
 
 
     private void showDialog(final String msg) {
-        AppUtility.alertDialog(this, LanguageController.getInstance().getMobileMsgByKey(AppConstant.equipment_btn), msg, LanguageController.getInstance().getMobileMsgByKey(AppConstant.expense_upload), AppConstant.cancel, new Callable<Boolean>() {
+
+//        AppUtility.alertDialog(this, LanguageController.getInstance().getMobileMsgByKey(AppConstant.equipment_btn), msg, LanguageController.getInstance().getMobileMsgByKey(AppConstant.expense_upload), AppConstant.cancel, new Callable<Boolean>() {
+//            @Override
+//            public Boolean call() {
+//                if (uploadBarcodeViewModel != null)
+//                    if (!TextUtils.isEmpty(equipmentId) && !TextUtils.isEmpty(codeText)) {
+//                        if (AppUtility.isInternetConnected())
+//                            uploadBarcodeViewModel.uploadBarcode(equipmentId, codeText);
+//                        else {
+//                            AppUtility.error_Alert_Dialog(UploadBarcodeActivity.this,
+//                                    LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_check_network),
+//                                    LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), null);
+//                        }
+//                    }
+//                return null;
+//            }
+//        });
+        AppUtility.alertDialog2(this, LanguageController.getInstance().getMobileMsgByKey(AppConstant.equipment_btn), msg, LanguageController.getInstance().getMobileMsgByKey(AppConstant.expense_upload), AppConstant.cancel, new Callback_AlertDialog() {
             @Override
-            public Boolean call() {
+            public void onPossitiveCall() {
+                isSearching = false;
                 if (uploadBarcodeViewModel != null)
                     if (!TextUtils.isEmpty(equipmentId) && !TextUtils.isEmpty(codeText)) {
                         if (AppUtility.isInternetConnected())
@@ -117,10 +168,21 @@ public class UploadBarcodeActivity extends AppCompatActivity {
                         else {
                             AppUtility.error_Alert_Dialog(UploadBarcodeActivity.this,
                                     LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_check_network),
-                                    LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), null);
+                                    LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), new Callable<Boolean>() {
+                                        @Override
+                                        public Boolean call() throws Exception {
+                                            onResume();
+                                            return null;
+                                        }
+                                    });
                         }
                     }
-                return null;
+            }
+
+            @Override
+            public void onNegativeCall() {
+                isSearching = false;
+                onResume();
             }
         });
     }
@@ -179,5 +241,28 @@ public class UploadBarcodeActivity extends AppCompatActivity {
         }
     }
 
+    public  void startGoogleScan()  {
 
+        scanner
+                .startScan()
+                .addOnSuccessListener(
+                        barcode -> {
+                            Log.e("ScanResult", barcode.getRawValue());
+//                                    Toast.makeText(BarcodeScanActivity.this, "Searching...", Toast.LENGTH_SHORT).show();
+                            isSearching = true;
+                            codeText = barcode.getRawValue();
+                            showDialog(codeText);
+                        })
+                .addOnCanceledListener(
+                        () -> {
+                            Log.e("ScanResult", "Cancle");
+                            finish();
+                        })
+                .addOnFailureListener(
+                        e -> {
+                            Log.e("ScanResult", "error = "+e.getMessage());
+                            isSearching = false;
+                            startGoogleScan();
+                        });
+    }
 }
