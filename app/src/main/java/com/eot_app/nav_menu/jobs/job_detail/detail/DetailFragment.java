@@ -3196,6 +3196,7 @@ public void setCompletionDetail(){
     /***** Method call for custom form success ******/
     @Override
     public void onFormSuccess(String statusCompleteFor, String jobType) {
+        String dateTime = AppUtility.getDateByFormat(AppConstant.DATE_FORMAT+", hh:mm a");
         HyperLog.i(TAG, "onFormSuccess(M) Start");
          if (jobstatus != null) {
              if (jobDetail_pi.checkContactHideOrNot()) {
@@ -3224,6 +3225,19 @@ public void setCompletionDetail(){
             } else {
                 isMailSentToClt = "1";
                 updateStatusApiCall(statusCompleteFor,jobType);
+            }
+            /*** Set Actual time and Travel time*/
+            if(jobstatus.getId().equals("5")){
+                date_tr_start.setText("Start : " + dateTime);
+                date_tr_start.setEnabled(true);
+            }else if (jobstatus.getId().equals("7")){
+                date_ac_start.setText("Start : " + dateTime);
+                date_ac_start.setEnabled(true);
+                date_tr_end.setText("End : " + dateTime);
+                date_tr_end.setEnabled(true);
+            }else if (jobstatus.getId().equals("9")){
+                date_ac_end.setText("End : " + dateTime);
+                date_ac_end.setEnabled(true);
             }
         }
         HyperLog.i(TAG, "onFormSuccess(M) Stop");

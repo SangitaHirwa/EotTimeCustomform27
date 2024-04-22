@@ -5,6 +5,7 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
+import com.eot_app.home_screens.MainActivity;
 import com.eot_app.nav_menu.appointment.Requestor;
 import com.eot_app.nav_menu.appointment.list.AppointmentListViewModel;
 import com.eot_app.services.Service_apis;
@@ -59,6 +60,7 @@ public class UploadBarcodeViewModel extends AppointmentListViewModel {
                 if (jsonObject.get("success").getAsBoolean()) {
                     uploadMessage.setValue(jsonObject.get("message").getAsString());
                     uploadMessage.setValue(null);
+                    setSyncDone(new MainActivity());
                     refreshListFromServer();
                 } else if (jsonObject.get("statusCode") != null && jsonObject.get("statusCode").getAsString().equals(AppConstant.SESSION_EXPIRE)) {
 
