@@ -1857,7 +1857,7 @@ public class AddEditInvoiceItemActivity2 extends
                 edt_serialNo.setText("0");
             }
             if(itemType.equals("")){
-                itemType="0";
+                itemType="1";
             }
             if(jtId.equals("")){
                 jtId="0";
