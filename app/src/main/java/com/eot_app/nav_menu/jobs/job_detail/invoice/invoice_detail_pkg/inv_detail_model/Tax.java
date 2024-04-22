@@ -9,6 +9,7 @@ import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
+import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_db.tax_dao.TaxComponentsConverter;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_db.tax_dao.TaxConverter;
 
 import java.util.List;
@@ -43,8 +44,8 @@ public class Tax  implements Parcelable {
     private String appliedTax = "";
     @Ignore
     private String oldTax = "";
-    @TypeConverters(TaxConverter.class)
-    private List<Tax> taxComponents;
+    @TypeConverters(TaxComponentsConverter.class)
+    private List<TaxComponents> taxComponents;
 //    public Tax(String taxId, String rate) {
 //        this.taxId = taxId;
 //        this.rate = rate;
@@ -64,7 +65,7 @@ public class Tax  implements Parcelable {
         oldTax = in.readString();
         locId = in.readString();
         select = in.readByte() != 0;
-        taxComponents = in.createTypedArrayList(Tax.CREATOR);
+        taxComponents = in.createTypedArrayList(TaxComponents.CREATOR);
     }
 
     public static Creator<Tax> getCREATOR() {
@@ -179,11 +180,11 @@ public class Tax  implements Parcelable {
         return super.toString();
     }
 
-    public List<Tax> getTaxComponents() {
+    public List<TaxComponents> getTaxComponents() {
         return taxComponents;
     }
 
-    public void setTaxComponents(List<Tax> tax) {
+    public void setTaxComponents(List<TaxComponents> tax) {
         this.taxComponents = tax;
     }
 

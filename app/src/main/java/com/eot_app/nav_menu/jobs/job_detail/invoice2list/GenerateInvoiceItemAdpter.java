@@ -19,6 +19,7 @@ import com.eot_app.R;
 import com.eot_app.login_next.login_next_model.CompPermission;
 import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.model.InvoiceItemDataModel;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_detail_pkg.inv_detail_model.Tax;
+import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_detail_pkg.inv_detail_model.TaxComponents;
 import com.eot_app.nav_menu.jobs.job_detail.invoice2list.itemlist_model.TaxData;
 import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.AppUtility;
@@ -229,10 +230,14 @@ public class GenerateInvoiceItemAdpter extends RecyclerView.Adapter<GenerateInvo
                 }
                 if (App_preference.getSharedprefInstance().getLoginRes().getTaxShowType().equals("2")) {
                     if (invoiceItemList.get(position).getTax().get(0).getTaxComponents() != null&&invoiceItemList.get(position).getTax().get(0).getTaxComponents().size() > 0) {
-                        for (Tax tax2 : invoiceItemList.get(position).getTax().get(0).getTaxComponents()
+                        for (TaxComponents tax2 : invoiceItemList.get(position).getTax().get(0).getTaxComponents()
                         ) {
-                            List<Tax> tempList = new ArrayList<>();
-                            tempList.add(tax2);
+                             List<Tax> tempList = new ArrayList<>();
+                            Tax tax = new Tax();
+                            tax.setLabel(tax2.getLabel());
+                            tax.setTaxId(tax2.getTaxId());
+                            tax.setPercentage(tax2.getPercentage());
+                            tempList.add(tax);
                             String __taxAmt = AppUtility.getRoundoff_amount
                                     (AppUtility.getCalculatedAmountForDiscount(invoiceItemList.get(position).getQty(),
                                             invoiceItemList.get(position).getRate(),
@@ -253,7 +258,7 @@ public class GenerateInvoiceItemAdpter extends RecyclerView.Adapter<GenerateInvo
                             {
                                 if(invoiceItemList.get(position).getIsBillable().equals("1")) {
                                     TaxData taxData = new TaxData();
-                                    taxData.setRate(Double.parseDouble(tax2.getRate()));
+                                    taxData.setRate(Double.parseDouble(tax2.getPercentage()));
                                     taxData.setTaxAmount(Double.parseDouble(__taxAmt));
                                     taxData.setLabel(tax2.getLabel());
                                     taxData.setTaxId(invoiceItemList.get(position).getTax().get(0).getTaxId());
