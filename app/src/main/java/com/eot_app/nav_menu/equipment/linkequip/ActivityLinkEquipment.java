@@ -91,7 +91,7 @@ public class ActivityLinkEquipment extends AppCompatActivity implements View.OnC
 
         type = getIntent().getStringExtra("type");
         cltId = getIntent().getStringExtra("cltId");
-        id = getIntent().getStringExtra("idJob");
+        id = getIntent().getStringExtra("id");
         contrId = getIntent().getStringExtra("contrId");
         siteId=getIntent().getStringExtra("siteid");
 
