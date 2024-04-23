@@ -1425,8 +1425,9 @@ public class JobEquPartRemarkRemarkActivity extends UploadDocumentActivity imple
                 audit_status_relative_status.setVisibility(View.VISIBLE);
             }
             else{
-                tv_label_status.setVisibility(View.GONE);
-                audit_status_relative_status.setVisibility(View.GONE);
+                /** After discussion with Jit Sir Visible for all 23/4/24*/
+                tv_label_status.setVisibility(View.VISIBLE);
+                audit_status_relative_status.setVisibility(View.VISIBLE);
             }
             //for checking the sttaus of the equipment and hide replace part if duiscarded already
 
