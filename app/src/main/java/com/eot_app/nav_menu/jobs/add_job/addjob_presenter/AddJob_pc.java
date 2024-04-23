@@ -257,10 +257,10 @@ public class AddJob_pc implements Add_job_pi {
         try {
             if (App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable() != null &&
                     App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable().equals("0"))
-                time_str = sch_time[1] + " " + sch_time[2];
+                time_str = sch_time[1]+"";/* + " " + sch_time[2];*/
             else time_str = sch_time[1] + "";
         } catch (Exception e) {
-
+                 e.printStackTrace();
         }
         addjobView.set_Str_DTime(date_str, time_str);
         end_Date_Time();
