@@ -627,7 +627,7 @@ public class JobEquipmentActivity extends AppCompatActivity
                 intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                 intent.putExtra("type", "2");
                 intent.putExtra("cltId", cltId);
-                intent.putExtra("idJob", jobId);
+                intent.putExtra("id", jobId);
                 intent.putExtra("contrId", contrId);
                 startActivityForResult(intent, EQUIPMENT_UPDATE_CODE);
                 closeFABMenu();
@@ -638,7 +638,7 @@ public class JobEquipmentActivity extends AppCompatActivity
                 intent1.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                 intent1.putExtra("type", "1");
                 intent1.putExtra("cltId", "");
-                intent1.putExtra("idJob", jobId);
+                intent1.putExtra("id", jobId);
                 intent1.putExtra("siteid",siteid);
                 startActivityForResult(intent1, EQUIPMENT_UPDATE_CODE);
                 closeFABMenu();

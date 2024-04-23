@@ -162,10 +162,14 @@ public class LinkEquipmentPC implements LinkEquipmentPI {
                                 }.getType();
                                 List<Job> jobData = new Gson().fromJson(convert, listType);
                                 addRecordsToDB(jobData);
-                                Job jobsById = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(jobId);
-                                List<EquArrayModel> data = jobsById.getEquArray();
-                                if (data != null)
-                                    listLinked.addAll(data);
+                                if(jobId != null) {
+                                    Job jobsById = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(jobId);
+                                    if(jobsById!=null) {
+                                        List<EquArrayModel> data = jobsById.getEquArray();
+                                        if (data != null)
+                                            listLinked.addAll(data);
+                                    }
+                                }
                             } else if (jsonObject.get("statusCode") != null && jsonObject.get("statusCode").getAsString().equals(AppConstant.SESSION_EXPIRE)) {
                                 view.onSessionExpired(LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
                             }
