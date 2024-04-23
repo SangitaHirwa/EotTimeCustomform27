@@ -87,15 +87,27 @@ public class BarcodeScanActivity extends AppCompatActivity implements ScanBarcod
             comeFrom=getIntent().getStringExtra("comeFrom");
             if(comeFrom!=null&&comeFrom.equalsIgnoreCase("AddEquipment")){
                 layout_search.setVisibility(View.GONE);
+                options = new GmsBarcodeScannerOptions.Builder()
+                        .setBarcodeFormats(
+                                Barcode.FORMAT_ALL_FORMATS)
+                        .enableAutoZoom()
+                        .build();
+            }else {
+                options = new GmsBarcodeScannerOptions.Builder()
+                        .setBarcodeFormats(
+                                Barcode.FORMAT_ALL_FORMATS)
+                        .enableAutoZoom()
+                        .allowManualInput()
+                        .build();
             }
+        }else {
+            options = new GmsBarcodeScannerOptions.Builder()
+                    .setBarcodeFormats(
+                            Barcode.FORMAT_ALL_FORMATS)
+                    .enableAutoZoom()
+                    .allowManualInput()
+                    .build();
         }
-
-        options = new GmsBarcodeScannerOptions.Builder()
-                .setBarcodeFormats(
-                        Barcode.FORMAT_ALL_FORMATS)
-                .enableAutoZoom()
-                .allowManualInput()
-                .build();
         scanner = GmsBarcodeScanning.getClient(this, options);
         scanBarcode_pc = new ScanBarcode_PC(this, true);
 
@@ -478,9 +490,17 @@ public class BarcodeScanActivity extends AppCompatActivity implements ScanBarcod
                                 barcode -> {
                                     Log.e("ScanResult", barcode.getRawValue());
 //                                    Toast.makeText(BarcodeScanActivity.this, "Searching...", Toast.LENGTH_SHORT).show();
-                                    isSearching = true;
-                                    isScannerValue = true;
-                                    searchEquipment(barcode.getRawValue(),isScannerValue);
+                                    if(comeFrom!=null&&comeFrom.equalsIgnoreCase("AddEquipment")){
+                                        Intent intent = new Intent();
+                                        intent.putExtra("code", barcode.getRawValue());
+                                        setResult(RESULT_OK, intent);
+                                        finish();
+                                    }else
+                                    {
+                                        isSearching = true;
+                                        isScannerValue = true;
+                                        searchEquipment(barcode.getRawValue(), isScannerValue);
+                                    }
                                 })
                         .addOnCanceledListener(
                                 () -> {
