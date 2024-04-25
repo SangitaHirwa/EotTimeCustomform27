@@ -129,9 +129,9 @@ public class UploadBarcodeActivity extends AppCompatActivity {
 //        startScanner();
 
         if(isSearching){
-            txt_status.setText("Searching...");
+            txt_status.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.searching)+"...");
         }else {
-            txt_status.setText("Loading...");
+            txt_status.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.loading)+"...");
             startGoogleScan();
         }
 
