@@ -175,8 +175,9 @@ public class BarcodeScanActivity extends AppCompatActivity implements ScanBarcod
             txt_status.setText("Searching...");
         }else {
             txt_status.setText("Loading...");
+            startGoogleScan();
         }
-          startGoogleScan();
+
     }
 
 
@@ -348,6 +349,7 @@ public class BarcodeScanActivity extends AppCompatActivity implements ScanBarcod
             }
         }else {
             Toast.makeText(this, LanguageController.getInstance().getMobileMsgByKey(AppConstant.eqi_not_foun_txt), Toast.LENGTH_SHORT).show();
+            onResume();
         }
     }
 
