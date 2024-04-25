@@ -1,5 +1,7 @@
 package com.eot_app.services;
 
+import static android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Notification;
@@ -12,6 +14,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.content.pm.ServiceInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
@@ -216,7 +219,11 @@ public class ForegroundService2 extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        startForeground(NOTIFICATION_ID, generateNotification(this,""));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+        startForeground(NOTIFICATION_ID, generateNotification(this,""), FOREGROUND_SERVICE_TYPE_LOCATION);
+        }else {
+            startForeground(NOTIFICATION_ID, generateNotification(this,""));
+        }
     }
 
     @Override
@@ -228,9 +235,14 @@ public class ForegroundService2 extends Service {
                 initializeDistanceParameter();
                 Notification notification = generateNotification(this, "");
                 //            for start in back ground
-                startForeground(FOREGROUND_SERVICE,
-                        notification);
 
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                    startForeground(FOREGROUND_SERVICE,
+                            notification,FOREGROUND_SERVICE_TYPE_LOCATION);
+                }else {
+                    startForeground(FOREGROUND_SERVICE,
+                            notification);
+                }
                 // ******for location tracking :- ******
                 fucedLocationEnableFunction();
                 getLocation();
