@@ -2029,9 +2029,17 @@ public class MainActivity extends UploadDocumentActivity implements MainActivity
                 break;
 
             case R.id.title_scan:
-                Intent intent = new Intent(MainActivity.this, BarcodeScanActivity.class);
-                startActivityForResult(intent, BAR_CODE_REQUEST);
-                drawer.closeDrawer(GravityCompat.START);
+                /**After Discuss with Ayush sir and Jit Sir. This Feature will work only in online mode 25/4/24*/
+                if(AppUtility.isInternetConnected()) {
+                    Intent intent = new Intent(MainActivity.this, BarcodeScanActivity.class);
+                    startActivityForResult(intent, BAR_CODE_REQUEST);
+                    drawer.closeDrawer(GravityCompat.START);
+                }else {
+                        AppUtility.alertDialog(this, LanguageController.getInstance().getMobileMsgByKey(AppConstant.dialog_error_title),
+                                LanguageController.getInstance().getMobileMsgByKey(AppConstant.offline_feature_alert), LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), "", () -> {
+                                    return null;
+                                });
+                }
                 break;
             case R.id.versionUpdateBtn:
                 upateForcefully();
