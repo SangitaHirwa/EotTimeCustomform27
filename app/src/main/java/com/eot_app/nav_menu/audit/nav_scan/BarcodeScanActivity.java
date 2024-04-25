@@ -339,6 +339,7 @@ public class BarcodeScanActivity extends AppCompatActivity implements ScanBarcod
                 intent.putExtra("equipment_id", jobList.get(0).getEquId());
                 startActivity(intent);
             } else {
+                /** If Equipment link with Job */
                 Intent intent = new Intent(this, EquipmentDetailsActivity.class);
                 String jobData = new Gson().toJson(jobList);
                 String auditData = new Gson().toJson(list);
@@ -499,6 +500,7 @@ public class BarcodeScanActivity extends AppCompatActivity implements ScanBarcod
                                         finish();
                                     }else
                                     {
+                                        codeText = barcode.getRawValue();
                                         isSearching = true;
                                         isScannerValue = true;
                                         searchEquipment(barcode.getRawValue(), isScannerValue);
