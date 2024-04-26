@@ -100,7 +100,20 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.title_equ_details));
         initializelables();
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        init();
+    }
+
+    @Override
+    public void finishErroroccur(String msg) {
+        showDilaog(msg);
+    }
+
+    private void init(){
         if (getIntent().hasExtra("equipment")) {
             if (getIntent().hasExtra("job_equip")) {
                 String str = getIntent().getExtras().getString("job_equip_str");
@@ -133,11 +146,6 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
             button_job.setVisibility(View.GONE);
         } else
             setData();
-    }
-
-    @Override
-    public void finishErroroccur(String msg) {
-        showDilaog(msg);
     }
 
     private void initializelables() {
