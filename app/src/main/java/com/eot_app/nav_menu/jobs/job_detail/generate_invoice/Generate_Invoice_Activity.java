@@ -136,27 +136,8 @@ public class Generate_Invoice_Activity extends AppCompatActivity implements MyLi
     private String toJsonTemplate;
     static Dialog dialog;
     Job mjob;
-    private final DatePickerDialog.OnDateSetListener datePickerListener = new DatePickerDialog.OnDateSetListener() {
-        @Override
-        public void onDateSet(DatePicker view, int selectedYear, int selectedMonth, int selectedDay) {
-            String dateselect = "";
-            try {
-                DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy", Locale.US);//hh:mm:ss a
-                Date dueDate = formatter.parse(selectedDay + "-" + (selectedMonth + 1) + "-" + selectedYear);
-                dateselect = new SimpleDateFormat(AppConstant.DATE_FORMAT, Locale.US).format(dueDate);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            DateFormat dateFormat = new SimpleDateFormat(
-                    AppUtility.dateTimeByAmPmFormate("hh:mm:ss a", "HH:mm:ss"), Locale.US);//append current time
-            dateFormat.format(new Date());
-            String tag = ((String) view.getTag());
+    final Calendar myCalendar = Calendar.getInstance();
 
-            if (tag.equals(End_Date)) {
-                txt_date.setText(dateselect);
-            }
-        }
-    };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -778,6 +759,13 @@ public class Generate_Invoice_Activity extends AppCompatActivity implements MyLi
                 break;
 
             case R.id.date_end:
+                if(!txt_date.getText().toString().isEmpty()) {
+                    String date =AppUtility.getDateWithFormate(Long.parseLong(invResModelForDueDate.getDuedate()), "dd-M-yyyy");
+                    String[] dat= date.split("-");
+                    myCalendar.set(Calendar.YEAR, Integer.parseInt(dat[2]));
+                    myCalendar.set(Calendar.MONTH,Integer.parseInt(dat[1])-1);
+                    myCalendar.set(Calendar.DAY_OF_MONTH,Integer.parseInt(dat[0]));
+                }
                 SelectStartDate(End_Date);
                 break;
             case R.id.cancel:
@@ -800,7 +788,8 @@ public class Generate_Invoice_Activity extends AppCompatActivity implements MyLi
                             dateFormat1.setTimeZone(TimeZone.getDefault());
                         }
                         String dueDateFormat = dateFormat1.format(date);
-                        itemListPi.setDueDate(invResModelForDueDate.getInvId(), dueDateFormat);
+                        itemListPi.setDueDate(invResModelForDueDate.getInvId(), dueDateFormat,jobId);
+
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
@@ -823,12 +812,37 @@ public class Generate_Invoice_Activity extends AppCompatActivity implements MyLi
         return false;
     }
     private void SelectStartDate(String endDate) {
-        Calendar myCalendar = Calendar.getInstance();
         int year = myCalendar.get(Calendar.YEAR);
         int month = myCalendar.get(Calendar.MONTH);
         int dayOfMonth = myCalendar.get(Calendar.DAY_OF_MONTH);
+       final DatePickerDialog.OnDateSetListener datePickerListener = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int selectedYear, int selectedMonth, int selectedDay) {
+                myCalendar.set(Calendar.YEAR, selectedYear);
+                myCalendar.set(Calendar.MONTH, selectedMonth);
+                myCalendar.set(Calendar.DAY_OF_MONTH, selectedDay);
+                String dateselect = "";
+                try {
+                    DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy", Locale.US);//hh:mm:ss a
+                    Date dueDate = formatter.parse(selectedDay + "-" + (selectedMonth + 1) + "-" + selectedYear);
+                    dateselect = new SimpleDateFormat(AppConstant.DATE_FORMAT, Locale.US).format(dueDate);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                DateFormat dateFormat = new SimpleDateFormat(
+                        AppUtility.dateTimeByAmPmFormate("hh:mm:ss a", "HH:mm:ss"), Locale.US);//append current time
+                dateFormat.format(new Date());
+                String tag = ((String) view.getTag());
+
+                if (tag.equals(End_Date)) {
+                    txt_date.setText(dateselect);
+                }
+            }
+
+        };
         DatePickerDialog datePickerDialog = new DatePickerDialog(Generate_Invoice_Activity.this, datePickerListener, year, month, dayOfMonth);
         datePickerDialog.getDatePicker().setTag(endDate);
+        datePickerDialog.updateDate(year, month, dayOfMonth);
         datePickerDialog.show();
     }
 

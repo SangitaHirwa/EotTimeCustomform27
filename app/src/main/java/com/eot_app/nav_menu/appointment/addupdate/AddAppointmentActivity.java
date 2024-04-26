@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.CompoundButton;
+import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -66,6 +67,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.select.Elements;
 import java.io.File;
 import java.io.Serializable;
+import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -106,6 +108,8 @@ public class AddAppointmentActivity extends UploadDocumentActivity implements Te
     private final LinkedHashMap<String, String> arraystatus = new LinkedHashMap<>();
     private  String[] statusArray = new String[arraystatus.size()];
     List<AppointmentStatusModel> allAppointmentStatusList =new ArrayList<>();
+    final Calendar cStart = Calendar.getInstance();
+    final Calendar cEnd = Calendar.getInstance();
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -1168,19 +1172,17 @@ public class AddAppointmentActivity extends UploadDocumentActivity implements Te
 
     //get start date
     private void selectStartDate() {
-        final Calendar c = Calendar.getInstance();
-        year = c.get(Calendar.YEAR);
-        month = c.get(Calendar.MONTH);
-        day = c.get(Calendar.DAY_OF_MONTH);
+        year = cStart.get(Calendar.YEAR);
+        month = cStart.get(Calendar.MONTH);
+        day = cStart.get(Calendar.DAY_OF_MONTH);
         showDialogPicker(R.id.date_start);
     }
 
     //get end date
     private void selectEndDate() {
-        final Calendar c = Calendar.getInstance();
-        year = c.get(Calendar.YEAR);
-        month = c.get(Calendar.MONTH);
-        day = c.get(Calendar.DAY_OF_MONTH);
+        year = cEnd.get(Calendar.YEAR);
+        month =cEnd.get(Calendar.MONTH);
+        day = cEnd.get(Calendar.DAY_OF_MONTH);
         showDialogPicker(R.id.date_end);
     }
 
@@ -1208,7 +1210,37 @@ public class AddAppointmentActivity extends UploadDocumentActivity implements Te
     void showDialogPicker(int id) {
         switch (id) {
             case R.id.date_start:
-                DatePickerDialog datePickerDialogSelectDate = new DatePickerDialog(this, AppUtility.InputDateSets(this, new Add_job_activity.DateTimeCallback() {
+                final DatePickerDialog.OnDateSetListener datePickerListener1 = new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int selectedYear, int selectedMonth, int selectedDay) {
+                        cStart.set(Calendar.YEAR, selectedYear);
+                        cStart.set(Calendar.MONTH, selectedMonth);
+                        cStart.set(Calendar.DAY_OF_MONTH, selectedDay);
+                        cEnd.set(Calendar.YEAR, selectedYear);
+                        cEnd.set(Calendar.MONTH, selectedMonth);
+                        cEnd.set(Calendar.DAY_OF_MONTH, selectedDay);
+                        String dateselect = "";
+                        try {
+                            DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy", Locale.US);//hh:mm:ss a
+                            Date endDate = formatter.parse(selectedDay + "-" + (selectedMonth + 1) + "-" + selectedYear);
+                            dateselect = new SimpleDateFormat(AppConstant.DATE_FORMAT, Locale.US).format(endDate);
+                            binding.dateStart.setText(dateselect);
+                            date_en = date_str = dateselect;
+                            binding.dateEnd.setText(date_en);
+                            selectStartTime();
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+
+                };
+                DatePickerDialog datePickerDialog1 = new DatePickerDialog(AddAppointmentActivity.this, datePickerListener1, year, month, day);
+                datePickerDialog1.getDatePicker();
+                datePickerDialog1.updateDate(year, month, day);
+                datePickerDialog1.show();
+                break;
+               /* DatePickerDialog datePickerDialogSelectDate = new DatePickerDialog(this, AppUtility.InputDateSets(this, new Add_job_activity.DateTimeCallback() {
                     @Override
                     public void setDateTime(String dateTime) {
                         binding.dateStart.setText(dateTime);
@@ -1220,9 +1252,34 @@ public class AddAppointmentActivity extends UploadDocumentActivity implements Te
                 }, LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_start_end_date)), year, month, day);
                 datePickerDialogSelectDate.show();
                 break;
-
+*/
             case R.id.date_end:
-                final DatePickerDialog datePickerDialog = new DatePickerDialog(this, AppUtility.CompareInputOutputDates(this, new Add_job_activity.DateTimeCallback() {
+                final DatePickerDialog.OnDateSetListener datePickerListener = new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int selectedYear, int selectedMonth, int selectedDay) {
+                        cEnd.set(Calendar.YEAR, selectedYear);
+                        cEnd.set(Calendar.MONTH, selectedMonth);
+                        cEnd.set(Calendar.DAY_OF_MONTH, selectedDay);
+                        String dateselect = "";
+                        try {
+                            DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy", Locale.US);//hh:mm:ss a
+                            Date endDate = formatter.parse(selectedDay + "-" + (selectedMonth + 1) + "-" + selectedYear);
+                            dateselect = new SimpleDateFormat(AppConstant.DATE_FORMAT, Locale.US).format(endDate);
+                            binding.dateEnd.setText(dateselect);
+                            date_en = dateselect;
+                            selectEndTime();
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                };
+                DatePickerDialog datePickerDialog = new DatePickerDialog(AddAppointmentActivity.this, datePickerListener, year, month, day);
+                datePickerDialog.getDatePicker();
+                datePickerDialog.updateDate(year, month, day);
+                datePickerDialog.show();
+
+               /* final DatePickerDialog datePickerDialog = new DatePickerDialog(this, AppUtility.CompareInputOutputDates(this, new Add_job_activity.DateTimeCallback() {
                     @Override
                     public void setDateTime(String dateTime) {
                         binding.dateEnd.setText(dateTime);
@@ -1231,7 +1288,7 @@ public class AddAppointmentActivity extends UploadDocumentActivity implements Te
                     }
                 }, LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_due_start_date)), year, month, day);
                 datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
-                datePickerDialog.show();
+                datePickerDialog.show();*/
                 break;
 
             case R.id.time_start:

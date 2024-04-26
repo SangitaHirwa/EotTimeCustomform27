@@ -30,6 +30,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -104,6 +105,8 @@ import com.hypertrack.hyperlog.HyperLog;
 import org.jetbrains.annotations.NotNull;
 import org.jsoup.Jsoup;
 import org.jsoup.select.Elements;
+
+import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -223,6 +226,8 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
     View schl_view;
     String status="1";
     private ExecutorService executorService;
+    final Calendar cStart = Calendar.getInstance();
+    final Calendar cEnd = Calendar.getInstance();
 
 
     @Override
@@ -2264,6 +2269,7 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
                 break;
 
             case R.id.date_start:
+
                 SelectDate();
                 break;
             case R.id.date_end:
@@ -2891,19 +2897,17 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
 
     //get start date
     private void SelectDate() {
-        final Calendar c = Calendar.getInstance();
-        year = c.get(Calendar.YEAR);
-        month = c.get(Calendar.MONTH);
-        day = c.get(Calendar.DAY_OF_MONTH);
+        year = cStart.get(Calendar.YEAR);
+        month = cStart.get(Calendar.MONTH);
+        day = cStart.get(Calendar.DAY_OF_MONTH);
         showDialogPicker(R.id.date_start);
     }
 
     //get end date
     private void SelectDate1() {
-        final Calendar c = Calendar.getInstance();
-        year = c.get(Calendar.YEAR);
-        month = c.get(Calendar.MONTH);
-        day = c.get(Calendar.DAY_OF_MONTH);
+        year = cEnd.get(Calendar.YEAR);
+        month =cEnd.get(Calendar.MONTH);
+        day = cEnd.get(Calendar.DAY_OF_MONTH);
         showDialogPicker(R.id.date_end);
     }
 
@@ -2936,44 +2940,97 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
                 break;
 
             case R.id.date_start:
-                DatePickerDialog datePickerDialogSelectDate = new DatePickerDialog(this, AppUtility.InputDateSets(this, dateTime -> {
-                    date_start.setText(dateTime);
-                    date_end.setText(dateTime);
-                    date_en = date_str = dateTime;
-                    if (time_str != null && time_str.equals("")) {
-                        Date date = new Date(System.currentTimeMillis());
-                        String formate = AppUtility.dateTimeByAmPmFormate("hh:mm aa", "HH:mm");
-                        SimpleDateFormat dateFormat = new SimpleDateFormat(formate,
-                                Locale.getDefault());
-                        time_str = dateFormat.format(date);
-                        time_start.setText(time_str);
+                final DatePickerDialog.OnDateSetListener datePickerListener1 = new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int selectedYear, int selectedMonth, int selectedDay) {
+                        cStart.set(Calendar.YEAR, selectedYear);
+                        cStart.set(Calendar.MONTH, selectedMonth);
+                        cStart.set(Calendar.DAY_OF_MONTH, selectedDay);
+                        cEnd.set(Calendar.YEAR, selectedYear);
+                        cEnd.set(Calendar.MONTH, selectedMonth);
+                        cEnd.set(Calendar.DAY_OF_MONTH, selectedDay);
+                        String dateselect = "";
+                        try {
+                            DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy", Locale.US);//hh:mm:ss a
+                            Date endDate = formatter.parse(selectedDay + "-" + (selectedMonth + 1) + "-" + selectedYear);
+                            dateselect = new SimpleDateFormat(AppConstant.DATE_FORMAT, Locale.US).format(endDate);
+                            date_start.setText(dateselect);
+                            date_end.setText(dateselect);
+                            date_en = date_str = dateselect;
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+
+                        if (time_str != null && time_str.equals("")) {
+                            Date date = new Date(System.currentTimeMillis());
+                            String formate = AppUtility.dateTimeByAmPmFormate("hh:mm aa", "HH:mm");
+                            SimpleDateFormat dateFormat = new SimpleDateFormat(formate,
+                                    Locale.getDefault());
+                            time_str = dateFormat.format(date);
+                            time_start.setText(time_str);
+                        }
+
+                        if (time_en != null && time_en.equals("")) {
+                            addJob_pc.getEndTime(date_str, time_str);
+                        }
+
+                        schdlStart = date_start + " " + time_str;
+
+
+                        /*set start date for Recurance only when add recurance permission Allow***/
+                        if (App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsRecur().equals("0")
+                                && !date_start.getText().toString().equals("") && add_recur_checkBox.isChecked()) {
+                            if (recur_pattern_view.getVisibility() == View.GONE)
+                                recur_pattern_view.setVisibility(View.VISIBLE);
+                            jobWeeklyRecur();
+                        }
                     }
 
-                    if (time_en != null && time_en.equals("")) {
-                        addJob_pc.getEndTime(date_str, time_str);
-                    }
-
-                    schdlStart = date_start + " " + time_str;
-
-
-                    /*set start date for Recurance only when add recurance permission Allow***/
-                    if (App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsRecur().equals("0")
-                            && !date_start.getText().toString().equals("") && add_recur_checkBox.isChecked()) {
-                        if (recur_pattern_view.getVisibility() == View.GONE)
-                            recur_pattern_view.setVisibility(View.VISIBLE);
-                        jobWeeklyRecur();
-                    }
-
-
-                }, LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_start_end_date)), year, month, day);
-                datePickerDialogSelectDate.show();
+                };
+        DatePickerDialog datePickerDialog1 = new DatePickerDialog(Add_job_activity.this, datePickerListener1, year, month, day);
+        datePickerDialog1.getDatePicker().setTag(endDate);
+        datePickerDialog1.updateDate(year, month, day);
+        datePickerDialog1.show();
                 break;
 
             case R.id.date_end:
-                final DatePickerDialog datePickerDialog = new DatePickerDialog(this, AppUtility.CompareInputOutputDate(this, dateTime -> {
+                final DatePickerDialog.OnDateSetListener datePickerListener = new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int selectedYear, int selectedMonth, int selectedDay) {
+                        cEnd.set(Calendar.YEAR, selectedYear);
+                        cEnd.set(Calendar.MONTH, selectedMonth);
+                        cEnd.set(Calendar.DAY_OF_MONTH, selectedDay);
+                        String dateselect = "";
+                        try {
+                            DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy", Locale.US);//hh:mm:ss a
+                            Date endDate = formatter.parse(selectedDay + "-" + (selectedMonth + 1) + "-" + selectedYear);
+                            dateselect = new SimpleDateFormat(AppConstant.DATE_FORMAT, Locale.US).format(endDate);
+                            date_end.setText(dateselect);
+                            date_en = dateselect;
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                        DateFormat dateFormat = new SimpleDateFormat(
+                                AppUtility.dateTimeByAmPmFormate("hh:mm:ss a", "HH:mm:ss"), Locale.US);//append current time
+                        dateFormat.format(new Date());
+                        time_end.setText(time_en);
+
+                    }
+
+                };
+                DatePickerDialog datePickerDialog = new DatePickerDialog(Add_job_activity.this, datePickerListener, year, month, day);
+                datePickerDialog.getDatePicker().setTag(endDate);
+                datePickerDialog.updateDate(year, month, day);
+                datePickerDialog.show();
+
+                /*final DatePickerDialog datePickerDialog = new DatePickerDialog(this, AppUtility.CompareInputOutputDate(this, dateTime -> {
+                    String date_string =AppUtility.changeDateFormat(Long.parseLong(dateTime), "dd-MMM-yyyy");
+                    String[] dat= date_string.split("-");
+                    c.set(Calendar.YEAR, Integer.parseInt(dat[2]));
+                    c.set(Calendar.MONTH,Integer.parseInt(dat[1])-1);
+                    c.set(Calendar.DAY_OF_MONTH,Integer.parseInt(dat[0]));
                     date_end.setText(dateTime);
                     date_en = dateTime;
-
                     if (time_en != null && time_en.equals("")) {
                         Date date = new Date(System.currentTimeMillis());
                         String formate = AppUtility.dateTimeByAmPmFormate("hh:mm aa", "HH:mm");
@@ -2984,7 +3041,8 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
                     }
                 }, LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_due_start_date)), year, month, day);
                 datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
-                datePickerDialog.show();
+                datePickerDialog.updateDate(year, month, day);
+                datePickerDialog.show();*/
                 break;
 
             case R.id.time_start:
