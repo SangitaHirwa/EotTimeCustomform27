@@ -21,6 +21,7 @@ import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -73,6 +74,8 @@ import com.eot_app.utility.util_interfaces.MyAdapter;
 import com.google.android.material.textfield.TextInputLayout;
 import org.jsoup.Jsoup;
 import org.jsoup.select.Elements;
+
+import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -139,6 +142,8 @@ public class AddAuditActivity extends UploadDocumentActivity implements Add_Adui
     private boolean APPOINMENTJOB = true;//
     private RecyclerView recyclerViewCustomField;
     private CustomFieldJobAdapter customFiledQueAdpter;
+    final Calendar cStart = Calendar.getInstance();
+    final Calendar cEnd = Calendar.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -1846,19 +1851,17 @@ public class AddAuditActivity extends UploadDocumentActivity implements Add_Adui
 
     //get start date
     private void SelectDate() {
-        final Calendar c = Calendar.getInstance();
-        year = c.get(Calendar.YEAR);
-        month = c.get(Calendar.MONTH);
-        day = c.get(Calendar.DAY_OF_MONTH);
+        year = cStart.get(Calendar.YEAR);
+        month = cStart.get(Calendar.MONTH);
+        day = cStart.get(Calendar.DAY_OF_MONTH);
         showDialogPicker(R.id.date_start);
     }
 
     //get end date
     private void SelectDate1() {
-        final Calendar c = Calendar.getInstance();
-        year = c.get(Calendar.YEAR);
-        month = c.get(Calendar.MONTH);
-        day = c.get(Calendar.DAY_OF_MONTH);
+        year = cEnd.get(Calendar.YEAR);
+        month =cEnd.get(Calendar.MONTH);
+        day = cEnd.get(Calendar.DAY_OF_MONTH);
         showDialogPicker(R.id.date_end);
     }
 
@@ -1883,19 +1886,65 @@ public class AddAuditActivity extends UploadDocumentActivity implements Add_Adui
     public void showDialogPicker(int id) {
         switch (id) {
             case R.id.date_start:
-                DatePickerDialog datePickerDialogSelectDate = new DatePickerDialog(this, AppUtility.InputDateSets(this, dateTime -> {
+                final DatePickerDialog.OnDateSetListener datePickerListener1 = new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int selectedYear, int selectedMonth, int selectedDay) {
+                        cStart.set(Calendar.YEAR, selectedYear);
+                        cStart.set(Calendar.MONTH, selectedMonth);
+                        cStart.set(Calendar.DAY_OF_MONTH, selectedDay);
+                        cEnd.set(Calendar.YEAR, selectedYear);
+                        cEnd.set(Calendar.MONTH, selectedMonth);
+                        cEnd.set(Calendar.DAY_OF_MONTH, selectedDay);
+                        String dateselect = "";
+                        try {
+                            DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy", Locale.US);//hh:mm:ss a
+                            Date endDate = formatter.parse(selectedDay + "-" + (selectedMonth + 1) + "-" + selectedYear);
+                            dateselect = new SimpleDateFormat(AppConstant.DATE_FORMAT, Locale.US).format(endDate);
+                            date_start.setText(dateselect);
+                            date_end.setText(dateselect);
+                            date_en = date_str = dateselect;
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+
+                };
+                DatePickerDialog datePickerDialog1 = new DatePickerDialog(AddAuditActivity.this, datePickerListener1, year, month, day);
+                datePickerDialog1.getDatePicker();
+                datePickerDialog1.updateDate(year, month, day);
+                datePickerDialog1.show();
+                break;
+               /* DatePickerDialog datePickerDialogSelectDate = new DatePickerDialog(this, AppUtility.InputDateSets(this, dateTime -> {
                     date_start.setText(dateTime);
                     date_end.setText(dateTime);
                     date_en = date_str = dateTime;
                 }, LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_start_end_date)), year, month, day);
                 datePickerDialogSelectDate.show();
-                break;
+                break;*/
             case R.id.date_end:
-                final DatePickerDialog datePickerDialog = new DatePickerDialog(this, AppUtility.CompareInputOutputDates(this, dateTime -> {
-                    date_end.setText(dateTime);
-                    date_en = dateTime;
-                }, LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_due_start_date)), year, month, day);
-                datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
+                final DatePickerDialog.OnDateSetListener datePickerListener = new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int selectedYear, int selectedMonth, int selectedDay) {
+                        cEnd.set(Calendar.YEAR, selectedYear);
+                        cEnd.set(Calendar.MONTH, selectedMonth);
+                        cEnd.set(Calendar.DAY_OF_MONTH, selectedDay);
+                        String dateselect = "";
+                        try {
+                            DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy", Locale.US);//hh:mm:ss a
+                            Date endDate = formatter.parse(selectedDay + "-" + (selectedMonth + 1) + "-" + selectedYear);
+                            dateselect = new SimpleDateFormat(AppConstant.DATE_FORMAT, Locale.US).format(endDate);
+                            date_end.setText(dateselect);
+                            date_en = dateselect;
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                };
+                DatePickerDialog datePickerDialog = new DatePickerDialog(AddAuditActivity.this, datePickerListener, year, month, day);
+                datePickerDialog.getDatePicker();
+                datePickerDialog.updateDate(year, month, day);
                 datePickerDialog.show();
                 break;
             case R.id.time_start:
