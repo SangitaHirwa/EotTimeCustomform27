@@ -8,12 +8,15 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.DatePicker;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.DialogFragment;
 import com.eot_app.R;
 import com.eot_app.databinding.DialogActualTravelDateTimeBinding;
+import com.eot_app.nav_menu.audit.addAudit.AddAuditActivity;
 import com.eot_app.nav_menu.jobs.add_job.Add_job_activity;
 import com.eot_app.nav_menu.jobs.job_detail.detail.job_detail_presenter.JobDetail_pi;
 import com.eot_app.nav_menu.jobs.job_detail.detail.jobdetial_model.CompletionDetails;
@@ -23,6 +26,9 @@ import com.eot_app.utility.AppUtility;
 import com.eot_app.utility.App_preference;
 import com.eot_app.utility.EotApp;
 import com.eot_app.utility.language_support.LanguageController;
+
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -41,7 +47,10 @@ public class DialogActualTravelDateTime extends DialogFragment implements View.O
     String date_start_ac, time_str_ac = "", actualStart = "", actualFinish = "", time_en_ac = "", date_end_ac;
     String date_start_tr, time_str_tr = "", travelStart = "", travelFinish = "", time_en_tr = "", date_end_tr;
     CompletionDetails completionDetails;
-
+    final Calendar cActualStart = Calendar.getInstance();
+    final Calendar cActualEnd = Calendar.getInstance();
+    final Calendar cTravelStart = Calendar.getInstance();
+    final Calendar cTravelEnd = Calendar.getInstance();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -137,16 +146,16 @@ public class DialogActualTravelDateTime extends DialogFragment implements View.O
                 callApiForCompletionDetails(logType);
                 break;
             case R.id.date_ac_start:
-                showDialogPicker(R.id.date_ac_start);
+                selectActualStartDate();
                 break;
             case R.id.date_ac_end:
-                showDialogPicker(R.id.date_ac_end);
+                selectActualEndDate();
                 break;
             case R.id.date_tr_start:
-                showDialogPicker(R.id.date_tr_start);
+                 selectTravelStartDate();
                 break;
             case R.id.date_tr_end:
-                showDialogPicker(R.id.date_tr_end);
+                selectTravelEndDate();
                 break;
             case R.id.button_cancel:
                 dismiss();
@@ -218,20 +227,87 @@ public class DialogActualTravelDateTime extends DialogFragment implements View.O
         dismiss();
 
     }
+    private void selectActualStartDate() {
+        year = cActualStart.get(Calendar.YEAR);
+        month = cActualStart.get(Calendar.MONTH);
+        day = cActualStart.get(Calendar.DAY_OF_MONTH);
+        showDialogPicker(R.id.date_ac_start);
+    }
 
+    //get end date
+    private void selectActualEndDate() {
+        year = cActualEnd.get(Calendar.YEAR);
+        month =cActualEnd.get(Calendar.MONTH);
+        day = cActualEnd.get(Calendar.DAY_OF_MONTH);
+        showDialogPicker(R.id.date_ac_end);
+    }
+
+    //schedule start time
+    private void selectTravelStartDate() {
+        year = cTravelStart.get(Calendar.YEAR);
+        month =cTravelStart.get(Calendar.MONTH);
+        day = cTravelStart.get(Calendar.DAY_OF_MONTH);
+        showDialogPicker(R.id.date_tr_start);
+    }
+
+    //schedule end time
+    private void selectTravelEndDate() {
+        year = cTravelEnd.get(Calendar.YEAR);
+        month =cTravelEnd.get(Calendar.MONTH);
+        day = cTravelEnd.get(Calendar.DAY_OF_MONTH);
+        showDialogPicker(R.id.date_tr_end);
+
+    }
     @SuppressLint("NonConstantResourceId")
     public void showDialogPicker(int id) {
 
         final Calendar c = Calendar.getInstance();
-        year = c.get(Calendar.YEAR);
-        month = c.get(Calendar.MONTH);
-        day = c.get(Calendar.DAY_OF_MONTH);
         mHour = c.get(Calendar.HOUR_OF_DAY);
         mMinute = c.get(Calendar.MINUTE);
 
         switch (id) {
             case R.id.date_ac_start:
-                DatePickerDialog datePickerDialogSelectDate = new DatePickerDialog(getActivity(), AppUtility.InputDateSet(getActivity(), new Add_job_activity.DateTimeCallback() {
+
+                final DatePickerDialog.OnDateSetListener datePickerListener1 = new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int selectedYear, int selectedMonth, int selectedDay) {
+                        cActualStart.set(Calendar.YEAR, selectedYear);
+                        cActualStart.set(Calendar.MONTH, selectedMonth);
+                        cActualStart.set(Calendar.DAY_OF_MONTH, selectedDay);
+                        String dateselect = "";
+                        try {
+                            DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy", Locale.US);//hh:mm:ss a
+                            Date endDate = formatter.parse(selectedDay + "-" + (selectedMonth + 1) + "-" + selectedYear);
+                            dateselect = new SimpleDateFormat(AppConstant.DATE_FORMAT, Locale.US).format(endDate);
+                            date_start_ac = dateselect;
+                            TimePickerDialog timePickerDialog = new TimePickerDialog(getActivity(), AppUtility.InputTimeSet(getActivity(), new Add_job_activity.DateTimeCallback() {
+                                @SuppressLint("SetTextI18n")
+                                @Override
+                                public void setDateTime(String dateTime) {
+                                    time_str_ac = dateTime;
+                                    if (actualFinish != null && !actualFinish.isEmpty() && !conditionCheck(date_start_ac + " " + time_str_ac, actualFinish)) {
+                                        EotApp.getAppinstance().showToastmsg(LanguageController.getInstance().getMobileMsgByKey(AppConstant.error_actual_start_end));
+                                    } else {
+                                        actualStart = date_start_ac + " " + time_str_ac;
+                                        binding.dateAcStart.setText(actualStart);
+                                    }
+                                }
+                            }, LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_start_end_time)), mHour, mMinute, true);
+                            timePickerDialog.show();
+
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+
+                };
+                DatePickerDialog datePickerDialogSelectDate = new DatePickerDialog(getActivity(), datePickerListener1, year, month, day);
+                datePickerDialogSelectDate.getDatePicker();
+                datePickerDialogSelectDate.updateDate(year, month, day);
+                datePickerDialogSelectDate.show();
+                break;
+              /*  DatePickerDialog datePickerDialogSelectDate = new DatePickerDialog(getActivity(), AppUtility.InputDateSet(getActivity(), new Add_job_activity.DateTimeCallback() {
                     @Override
                     public void setDateTime(String dateTime) {
                         date_start_ac = dateTime;
@@ -252,10 +328,11 @@ public class DialogActualTravelDateTime extends DialogFragment implements View.O
                     }
                 }, LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_start_end_date)), year, month, day);
                 datePickerDialogSelectDate.show();
-                break;
+                break;*/
 
             case R.id.date_ac_end:
-                final DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), AppUtility.CompareInputOutputDate(getActivity(), new Add_job_activity.DateTimeCallback() {
+
+               /* final DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), AppUtility.CompareInputOutputDate(getActivity(), new Add_job_activity.DateTimeCallback() {
                     @Override
                     public void setDateTime(String dateTime) {
                         date_end_ac = dateTime;
@@ -277,11 +354,48 @@ public class DialogActualTravelDateTime extends DialogFragment implements View.O
                     }
                 }, LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_due_start_date)), year, month, day);
                 datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
-                datePickerDialog.show();
-                break;
+                datePickerDialog.show();*/
+            final DatePickerDialog.OnDateSetListener datePickerListenerAEnd = new DatePickerDialog.OnDateSetListener() {
+                @Override
+                public void onDateSet(DatePicker view, int selectedYear, int selectedMonth, int selectedDay) {
+                    cActualEnd.set(Calendar.YEAR, selectedYear);
+                    cActualEnd.set(Calendar.MONTH, selectedMonth);
+                    cActualEnd.set(Calendar.DAY_OF_MONTH, selectedDay);
+                    String dateselect = "";
+                    try {
+                        DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy", Locale.US);//hh:mm:ss a
+                        Date endDate = formatter.parse(selectedDay + "-" + (selectedMonth + 1) + "-" + selectedYear);
+                        dateselect = new SimpleDateFormat(AppConstant.DATE_FORMAT, Locale.US).format(endDate);
+                        date_end_ac = dateselect;
+                        TimePickerDialog timePickerDialog1 = new TimePickerDialog(getActivity(), AppUtility.OutPutTime(getActivity(), new Add_job_activity.DateTimeCallback() {
+                            @SuppressLint("SetTextI18n")
+                            @Override
+                            public void setDateTime(String dateTime) {
+                                time_en_ac = dateTime;
+                                if (actualStart != null && !actualStart.isEmpty() && !conditionCheck(actualStart, date_end_ac + " " + time_en_ac)) {
+                                    EotApp.getAppinstance().showToastmsg(LanguageController.getInstance().getMobileMsgByKey(AppConstant.error_actual_start_end));
+                                } else {
+                                    actualFinish = date_end_ac + " " + time_en_ac;
+                                    binding.dateAcEnd.setText(actualFinish);
+                                }
+                            }
+                        }, LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_due_start_time)), mHour, mMinute, true);
+                        timePickerDialog1.show();
 
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+
+            };
+            DatePickerDialog datePickerDialogSelectAEndDate = new DatePickerDialog(getActivity(), datePickerListenerAEnd, year, month, day);
+                datePickerDialogSelectAEndDate.getDatePicker().setMinDate(System.currentTimeMillis());
+                datePickerDialogSelectAEndDate.updateDate(year, month, day);
+                datePickerDialogSelectAEndDate.show();
+            break;
             case R.id.date_tr_start:
-                DatePickerDialog datePickerDialogSelectDate1 = new DatePickerDialog(getActivity(), AppUtility.InputDateSet(getActivity(), new Add_job_activity.DateTimeCallback() {
+              /*  DatePickerDialog datePickerDialogSelectDate1 = new DatePickerDialog(getActivity(), AppUtility.InputDateSet(getActivity(), new Add_job_activity.DateTimeCallback() {
                     @Override
                     public void setDateTime(String dateTime) {
                         date_start_tr = dateTime;
@@ -304,10 +418,50 @@ public class DialogActualTravelDateTime extends DialogFragment implements View.O
                     }
                 }, LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_start_end_date)), year, month, day);
                 datePickerDialogSelectDate1.show();
+                break;*/
+                final DatePickerDialog.OnDateSetListener datePickerListenerTstart = new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int selectedYear, int selectedMonth, int selectedDay) {
+                        cTravelStart.set(Calendar.YEAR, selectedYear);
+                        cTravelStart.set(Calendar.MONTH, selectedMonth);
+                        cTravelStart.set(Calendar.DAY_OF_MONTH, selectedDay);
+                        String dateselect = "";
+                        try {
+                            DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy", Locale.US);//hh:mm:ss a
+                            Date endDate = formatter.parse(selectedDay + "-" + (selectedMonth + 1) + "-" + selectedYear);
+                            dateselect = new SimpleDateFormat(AppConstant.DATE_FORMAT, Locale.US).format(endDate);
+                            date_start_tr = dateselect;
+                            TimePickerDialog timePickerDialog2 = new TimePickerDialog(getActivity(), AppUtility.InputTimeSet(getActivity(), new Add_job_activity.DateTimeCallback() {
+                                @Override
+                                public void setDateTime(String dateTime) {
+                                    time_str_tr = dateTime;
+                                    if (!conditionCheckTravel(date_start_tr + " " + time_str_tr, travelFinish, 0)) {
+                                        timeOutOfScopeAlert();
+                                    } else if (travelFinish != null && !travelFinish.isEmpty() && !conditionCheck(date_start_tr + " " + time_str_tr, travelFinish)) {
+                                        EotApp.getAppinstance().showToastmsg(LanguageController.getInstance().getMobileMsgByKey(AppConstant.error_travel_start_end));
+                                    } else {
+                                        travelStart = date_start_tr + " " + time_str_tr;
+                                        binding.dateTrStart.setText(travelStart);
+                                    }
+                                }
+                            }, LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_start_end_time)), mHour, mMinute, true);
+                            timePickerDialog2.show();
+
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+
+                };
+                DatePickerDialog datePickerDialogSelectTstartDate = new DatePickerDialog(getActivity(), datePickerListenerTstart, year, month, day);
+                datePickerDialogSelectTstartDate.getDatePicker();
+                datePickerDialogSelectTstartDate.updateDate(year, month, day);
+                datePickerDialogSelectTstartDate.show();
                 break;
 
             case R.id.date_tr_end:
-                final DatePickerDialog datePickerDialog1 = new DatePickerDialog(getActivity(), AppUtility.CompareInputOutputDate(getActivity(), new Add_job_activity.DateTimeCallback() {
+              /*  final DatePickerDialog datePickerDialog1 = new DatePickerDialog(getActivity(), AppUtility.CompareInputOutputDate(getActivity(), new Add_job_activity.DateTimeCallback() {
                     @Override
                     public void setDateTime(String dateTime) {
                         date_end_tr = dateTime;
@@ -330,8 +484,49 @@ public class DialogActualTravelDateTime extends DialogFragment implements View.O
                     }
                 }, LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_due_start_date)), year, month, day);
                 datePickerDialog1.show();
-                break;
+                break;*/
 
+                final DatePickerDialog.OnDateSetListener datePickerListenerTend = new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int selectedYear, int selectedMonth, int selectedDay) {
+                        cTravelEnd.set(Calendar.YEAR, selectedYear);
+                        cTravelEnd.set(Calendar.MONTH, selectedMonth);
+                        cTravelEnd.set(Calendar.DAY_OF_MONTH, selectedDay);
+                        String dateselect = "";
+                        try {
+                            DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy", Locale.US);//hh:mm:ss a
+                            Date endDate = formatter.parse(selectedDay + "-" + (selectedMonth + 1) + "-" + selectedYear);
+                            dateselect = new SimpleDateFormat(AppConstant.DATE_FORMAT, Locale.US).format(endDate);
+                            date_end_tr = dateselect;
+                            TimePickerDialog timePickerDialog3 = new TimePickerDialog(getActivity(), AppUtility.OutPutTime(getActivity(), new Add_job_activity.DateTimeCallback() {
+                                @SuppressLint("SetTextI18n")
+                                @Override
+                                public void setDateTime(String dateTime) {
+                                    time_en_tr = dateTime;
+                                    if (!conditionCheckTravel(travelStart, date_end_tr + " " + time_en_tr, 1)) {
+                                        timeOutOfScopeAlert();
+                                    } else if (travelStart != null && !travelStart.isEmpty() && !conditionCheck(travelStart, date_end_tr + " " + time_en_tr)) {
+                                        EotApp.getAppinstance().showToastmsg(LanguageController.getInstance().getMobileMsgByKey(AppConstant.error_travel_start_end));
+                                    } else {
+                                        travelFinish = date_end_tr + " " + time_en_tr;
+                                        binding.dateTrEnd.setText(travelFinish);
+                                    }
+                                }
+                            }, LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_due_start_time)), mHour, mMinute, true);
+                            timePickerDialog3.show();
+
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+
+                };
+                DatePickerDialog datePickerDialogSelectTendDate = new DatePickerDialog(getActivity(), datePickerListenerTend, year, month, day);
+                datePickerDialogSelectTendDate.getDatePicker();
+                datePickerDialogSelectTendDate.updateDate(year, month, day);
+                datePickerDialogSelectTendDate.show();
+                break;
         }
     }
 

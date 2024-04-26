@@ -53,6 +53,7 @@ public class ItemList_PC implements ItemList_PI {
     private final int updatelimit;
     private int count;
     private int updateindex;
+    boolean isDeuDateUpdate = false;
 
     public ItemList_PC(ItemList_View itemListView) {
         this.itemListView = itemListView;
@@ -370,7 +371,9 @@ public class ItemList_PC implements ItemList_PI {
             LogModel logModel = ActivityLogController
                     .getObj(ActivityLogController.JOB_MODULE, ActivityLogController.JOB_INVOICE_LIST, ActivityLogController.JOB_MODULE);
             ActivityLogController.saveOfflineTable(logModel);
-            AppUtility.progressBarShow((Context) itemListView);
+            if(!isDeuDateUpdate) {
+                AppUtility.progressBarShow((Context) itemListView);
+            }
             ApiClient.getservices().eotServiceCall(Service_apis.getInvoiceDetailMobile, AppUtility.getApiHeaders(), jsonObject)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -537,10 +540,11 @@ public class ItemList_PC implements ItemList_PI {
     }
 
     @Override
-    public void setDueDate(String invId, String dueDate) {
+    public void setDueDate(String invId, String dueDate,String jobId) {
         Invoice_Due_Date_ReqModel due_date_reqModel =new Invoice_Due_Date_ReqModel(invId,dueDate);
         JsonObject jsonObject = AppUtility.getJsonObject(new Gson().toJson(due_date_reqModel));
         if(AppUtility.isInternetConnected()) {
+            AppUtility.progressBarShow((Context) itemListView);
             ApiClient.getservices().eotServiceCall(Service_apis.updateInvDueDate, AppUtility.getApiHeaders(), jsonObject)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -561,13 +565,15 @@ public class ItemList_PC implements ItemList_PI {
 
                         @Override
                         public void onError(Throwable e) {
-                            AppUtility.progressBarDissMiss();
+
                             Log.e("", e.getMessage());
                         }
 
                         @Override
                         public void onComplete() {
-
+                            AppUtility.progressBarDissMiss();
+                            isDeuDateUpdate =true;
+                            getinvoicedetails(jobId);
                         }
                     });
 

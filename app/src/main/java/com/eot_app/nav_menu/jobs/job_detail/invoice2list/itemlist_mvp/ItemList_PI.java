@@ -26,5 +26,5 @@ public interface ItemList_PI {
 
     void loadFromServer();
     void getJobInvoicetemplateList();
-    void setDueDate(String invId,String dueDate);
+    void setDueDate(String invId,String dueDate,String jobId);
 }
