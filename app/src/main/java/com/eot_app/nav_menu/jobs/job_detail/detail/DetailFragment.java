@@ -2917,6 +2917,8 @@ public void setCompletionDetail(){
                     ll_travel_date_time.setVisibility(View.VISIBLE);
                     rl_Collapse2.setVisibility(View.VISIBLE);
                     isClickedActual = true;
+                    if (jobDetail_pi != null)
+                        jobDetail_pi.getJobCompletionDetails(mParam2.getJobId());
                 }
                 break;
             case R.id.liner_layout_for_recurmsg_show:

@@ -369,11 +369,14 @@ public class JobDetail_pc implements JobDetail_pi {
             ((JobDetailActivity) ((Fragment) view).getActivity()).finishActivityWithSetResult();
             HyperLog.i("JobDetail_pc", "delete job with status cancel or reject");
 
-        } else {
+        }
+        else {
             HyperLog.i("JobDetail_pc", "Local DB updated with selected job status");
             view.setButtonsUI(jobstatus);
         }
-
+       if(jobStatus.getStatus_no().equals(AppConstant.Completed)){
+           getJobCompletionDetails(jobId);
+        }
         LogModel logModel = ActivityLogController
                 .getObj(ActivityLogController.JOB_MODULE, ActivityLogController.JOB_STATUS, ActivityLogController.JOB_MODULE);
         ActivityLogController.saveOfflineTable(logModel);
@@ -662,6 +665,7 @@ public class JobDetail_pc implements JobDetail_pi {
             hashMap.put("jobId", jobId);
             hashMap.put("usrId", App_preference.getSharedprefInstance().getLoginRes().getUsrId());
             hashMap.put("type", "1");
+
             ApiClient.getservices().eotServiceCall(Service_apis.getJobCompletionNOte, AppUtility.getApiHeaders(),
                     AppUtility.getJsonObject(new Gson().toJson(hashMap)))
                     .subscribeOn(Schedulers.io())
