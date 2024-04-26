@@ -19,6 +19,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.eot_app.R;
 import com.eot_app.databinding.FragmentAddLeaveBinding;
+import com.eot_app.nav_menu.quote.add_quotes_pkg.AddQuotes_Activity;
 import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.AppUtility;
 import com.eot_app.utility.App_preference;
@@ -49,6 +50,9 @@ public class AddLeaveFragment extends AppCompatActivity implements View.OnClickL
 
             try {
                 if (view.getTag().equals("time_from")) {
+                    myCalendar.set(Calendar.YEAR,selectedYear);
+                    myCalendar.set(Calendar.MONTH,selectedMonth);
+                    myCalendar.set(Calendar.DAY_OF_MONTH,selectedDay);
                     DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy", Locale.US);//hh:mm:ss a
                     Date startDate = formatter.parse(selectedDay + "-" + (selectedMonth + 1) + "-" + selectedYear);
                     STARTSELCTEDATE = "";
@@ -60,6 +64,9 @@ public class AddLeaveFragment extends AppCompatActivity implements View.OnClickL
 
 
                 } else if (view.getTag().equals("time_to")) {
+                    myCalendar1.set(Calendar.YEAR,selectedYear);
+                    myCalendar1.set(Calendar.MONTH,selectedMonth);
+                    myCalendar1.set(Calendar.DAY_OF_MONTH,selectedDay);
                     DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy", Locale.US);//hh:mm:ss a
                     Date startDate = formatter.parse(selectedDay + "-" + (selectedMonth + 1) + "-" + selectedYear);
                     ENDSELCTEDATE = "";
@@ -78,6 +85,8 @@ public class AddLeaveFragment extends AppCompatActivity implements View.OnClickL
     };
     private AddLeaveViewModel addLeaveViewModel;
     int year, month, day;
+    final Calendar myCalendar = Calendar.getInstance();
+    final Calendar myCalendar1 = Calendar.getInstance();
 
     public AddLeaveFragment() {
         // Required empty public constructor
@@ -262,7 +271,7 @@ public class AddLeaveFragment extends AppCompatActivity implements View.OnClickL
                 selectStartDate("time_from");
                 break;
             case R.id.time_to:
-                selectStartDate("time_to");
+                SelectEndDate("time_to");
                 break;
             case R.id.user_name:
                 binding.languageSpinner.performClick();
@@ -308,11 +317,18 @@ public class AddLeaveFragment extends AppCompatActivity implements View.OnClickL
     }
 
     private void selectStartDate(String tag) {
-        final Calendar c = Calendar.getInstance();
-        year = c.get(Calendar.YEAR);
-        month = c.get(Calendar.MONTH);
-        day = c.get(Calendar.DAY_OF_MONTH);
-        DatePickerDialog datePickerDialog = new DatePickerDialog(this, datePickerListener, year, month, day);
+        int year = myCalendar.get(Calendar.YEAR);
+        int month = myCalendar.get(Calendar.MONTH);
+        int dayOfMonth = myCalendar.get(Calendar.DAY_OF_MONTH);
+        DatePickerDialog datePickerDialog = new DatePickerDialog(this, datePickerListener, year, month, dayOfMonth);
+        datePickerDialog.getDatePicker().setTag(tag);
+        datePickerDialog.show();
+    }
+    private void SelectEndDate(String tag) {
+        int year = myCalendar1.get(Calendar.YEAR);
+        int month = myCalendar1.get(Calendar.MONTH);
+        int dayOfMonth = myCalendar1.get(Calendar.DAY_OF_MONTH);
+        DatePickerDialog datePickerDialog = new DatePickerDialog(this, datePickerListener, year, month, dayOfMonth);
         datePickerDialog.getDatePicker().setTag(tag);
         datePickerDialog.show();
     }

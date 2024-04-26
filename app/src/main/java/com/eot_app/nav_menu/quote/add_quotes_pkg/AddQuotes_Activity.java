@@ -99,7 +99,8 @@ public class AddQuotes_Activity extends UploadDocumentActivity implements View.O
     private final Set<String> jtIdList = new HashSet<>();
     final List<JtId> Edit_jtIdList = new ArrayList<>();
     private final ArrayList<JobTitle> datastr = new ArrayList<>();
-    Calendar myCalendar;
+   final Calendar myCalendar = Calendar.getInstance();
+   final Calendar myCalendar1 = Calendar.getInstance();
     LocationTracker locationTracker;
     CustomDPController customDPController;
     CustomEditor mEditor;
@@ -143,12 +144,18 @@ public class AddQuotes_Activity extends UploadDocumentActivity implements View.O
             dateFormat.format(new Date());
             String tag = ((String) view.getTag());
             if (tag.equals(Start_Date)) {
+                myCalendar.set(Calendar.YEAR,selectedYear);
+                myCalendar.set(Calendar.MONTH,selectedMonth);
+                myCalendar.set(Calendar.DAY_OF_MONTH,selectedDay);
                 date_start.setText(dateselect);
                 SimpleDateFormat stf = new SimpleDateFormat("hh:mm:ss", Locale.US);
                 String time = stf.format(Calendar.getInstance().getTime());
                 invDate = dateselect + " "+time;// + dateFormat.format(new Date());
                 //dueDate= dateselect + " " + dateFormat.format(new Date());
             } else if (tag.equals(End_Date)) {
+                myCalendar1.set(Calendar.YEAR,selectedYear);
+                myCalendar1.set(Calendar.MONTH,selectedMonth);
+                myCalendar1.set(Calendar.DAY_OF_MONTH,selectedDay);
                 date_end.setText(dateselect);
                 SimpleDateFormat stf = new SimpleDateFormat("hh:mm:ss", Locale.US);
                 String time = stf.format(Calendar.getInstance().getTime());
@@ -902,7 +909,7 @@ public class AddQuotes_Activity extends UploadDocumentActivity implements View.O
                 SelectStartDate("StartDate");
                 break;
             case R.id.date_end:
-                SelectStartDate("EndDate");
+                SelectEndDate("EndDate");
                 break;
             case R.id.time_start:
                 break;
@@ -1007,14 +1014,21 @@ public class AddQuotes_Activity extends UploadDocumentActivity implements View.O
 
 
     private void SelectStartDate(String tag) {
-        myCalendar = Calendar.getInstance();
         int year = myCalendar.get(Calendar.YEAR);
         int month = myCalendar.get(Calendar.MONTH);
         int dayOfMonth = myCalendar.get(Calendar.DAY_OF_MONTH);
         DatePickerDialog datePickerDialog = new DatePickerDialog(AddQuotes_Activity.this, datePickerListener, year, month, dayOfMonth);
         datePickerDialog.getDatePicker().setTag(tag);
         datePickerDialog.show();
+    } private void SelectEndDate(String tag) {
+        int year = myCalendar1.get(Calendar.YEAR);
+        int month = myCalendar1.get(Calendar.MONTH);
+        int dayOfMonth = myCalendar1.get(Calendar.DAY_OF_MONTH);
+        DatePickerDialog datePickerDialog = new DatePickerDialog(AddQuotes_Activity.this, datePickerListener, year, month, dayOfMonth);
+        datePickerDialog.getDatePicker().setTag(tag);
+        datePickerDialog.show();
     }
+
 
     @Override
     public void setJobServiceslist(List<JobTitle> jobServiceslist) {

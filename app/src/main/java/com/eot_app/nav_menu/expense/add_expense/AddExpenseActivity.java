@@ -94,12 +94,16 @@ public class AddExpenseActivity extends UploadDocumentActivity implements TextWa
     private String ecId = "", etId = "", jobId = "", cltId = "";
     RelativeLayout layout;
     private String exDate = "", image_path = "";
+    final Calendar myCalendar = Calendar.getInstance();
     /**
      * select date from picker & concanate current time
      */
     private final DatePickerDialog.OnDateSetListener datePickerListener = new DatePickerDialog.OnDateSetListener() {
         @Override
         public void onDateSet(DatePicker view, int selectedYear, int selectedMonth, int selectedDay) {
+            myCalendar.set(Calendar.YEAR,selectedYear);
+            myCalendar.set(Calendar.MONTH,selectedMonth);
+            myCalendar.set(Calendar.DAY_OF_MONTH,selectedDay);
             String dateselect = "";
             try {
                 DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy", Locale.US);//hh:mm:ss a
@@ -638,6 +642,11 @@ public class AddExpenseActivity extends UploadDocumentActivity implements TextWa
                     auto_group.showDropDown();
                 break;
             case R.id.edt_expense_date:
+                String[] date_ary = AppUtility.getDateWithFormate
+                        (Long.parseLong(expenseDetails.getDateTime()), "dd-MM-yyy").split("-");
+                myCalendar.set(Calendar.YEAR, Integer.parseInt(date_ary[2]));
+                myCalendar.set(Calendar.MONTH,Integer.parseInt(date_ary[1])-1);
+                myCalendar.set(Calendar.DAY_OF_MONTH,Integer.parseInt(date_ary[0]));
                 SelectStartDate();
                 break;
             case R.id.auto_job:
@@ -781,7 +790,6 @@ public class AddExpenseActivity extends UploadDocumentActivity implements TextWa
 
 
     private void SelectStartDate() {
-        Calendar myCalendar = Calendar.getInstance();
         int year = myCalendar.get(Calendar.YEAR);
         int month = myCalendar.get(Calendar.MONTH);
         int dayOfMonth = myCalendar.get(Calendar.DAY_OF_MONTH);

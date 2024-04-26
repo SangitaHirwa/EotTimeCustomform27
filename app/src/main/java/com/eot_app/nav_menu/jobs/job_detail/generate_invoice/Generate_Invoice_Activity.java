@@ -760,7 +760,7 @@ public class Generate_Invoice_Activity extends AppCompatActivity implements MyLi
 
             case R.id.date_end:
                 if(!txt_date.getText().toString().isEmpty()) {
-                    String date =AppUtility.getDateWithFormate(Long.parseLong(invResModelForDueDate.getDuedate()), "dd-M-yyyy");
+                    String date =AppUtility.getDateWithFormate(Long.parseLong(invResModelForDueDate.getDuedate()), "dd-MM-yyyy");
                     String[] dat= date.split("-");
                     myCalendar.set(Calendar.YEAR, Integer.parseInt(dat[2]));
                     myCalendar.set(Calendar.MONTH,Integer.parseInt(dat[1])-1);
