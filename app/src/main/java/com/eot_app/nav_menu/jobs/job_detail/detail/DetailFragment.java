@@ -3096,24 +3096,28 @@ public void setCompletionDetail(){
     /***** method to check the current status and set the next action to perform ******/
 
     private void setButtonsAction(String status, int btn_id) {
-        HyperLog.i("", "setButtonsAction(M) Start");
-        if (App_preference.getSharedprefInstance().getLoginRes() != null &&
-                App_preference.getSharedprefInstance().getLoginRes().getIsHideTravelBtn().equals("1") && status.equals(AppConstant.Accepted)) {
-            //When Permission denny for fw travling start not show travel start status name on button
-            //   jobstatus = JobStatus_Controller.getInstance().getStatusByButtonAction(AppConstant.Pending, 1);
-            jobstatus = JobStatus_Controller.getInstance().getStatusByButtonAction(AppConstant.New_On_Hold, 1);
-        } else {
-            jobstatus = JobStatus_Controller.getInstance().getStatusByButtonAction(status, btn_id);
-        }
+        try {
+            HyperLog.i("", "setButtonsAction(M) Start");
+            if (App_preference.getSharedprefInstance().getLoginRes() != null &&
+                    App_preference.getSharedprefInstance().getLoginRes().getIsHideTravelBtn().equals("1") && status.equals(AppConstant.Accepted)) {
+                //When Permission denny for fw travling start not show travel start status name on button
+                //   jobstatus = JobStatus_Controller.getInstance().getStatusByButtonAction(AppConstant.Pending, 1);
+                jobstatus = JobStatus_Controller.getInstance().getStatusByButtonAction(AppConstant.New_On_Hold, 1);
+            } else {
+                jobstatus = JobStatus_Controller.getInstance().getStatusByButtonAction(status, btn_id);
+            }
 
-        if (jobstatus.getStatus_no().equals(AppConstant.Cancel) ||
-                jobstatus.getStatus_no().equals(AppConstant.Reject)) {
-            showDialogForRejectionConfirmation();
-        } else {
-            showTriggerForStatusChange();
-        }
+            if (jobstatus.getStatus_no().equals(AppConstant.Cancel) ||
+                    jobstatus.getStatus_no().equals(AppConstant.Reject)) {
+                showDialogForRejectionConfirmation();
+            } else {
+                showTriggerForStatusChange();
+            }
 
-        HyperLog.i("", "setButtonsAction(M) Stop");
+            HyperLog.i("", "setButtonsAction(M) Stop");
+        }catch (Exception e){
+            Log.e("Error Detail Fragment", "setButtonAction"+e.getMessage());
+        }
     }
 
     /***** check the current status and update the next status accordingly ******/
@@ -3575,18 +3579,24 @@ public void setCompletionDetail(){
 
     @Override
     public void updateCountItem() {
-        Log.e("OnCreateDetail", "Item Notify Called");
-        mParam2 = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(mParam2.getJobId());
-        // for updating items added from equipment parts
-        Log.e("OnCreateDetail", "Item Notify Called" + new Gson().toJson(mParam2.getItemData()));
-        if (mParam2.getItemData() != null && mParam2.getItemData().size() > 0) {
-            // for updating data
-            invoice_list_adpter.updateitemlist(mParam2.getItemData());
-        }
-        if (mParam2.getEquArray() != null && mParam2.getEquArray().size() > 0) {
-            // for updating data
-            setEuqipmentList(mParam2.getEquArray());
-            Log.e("mParam2::", new Gson().toJson(mParam2.getEquArray()));
+        try {
+            Log.e("OnCreateDetail", "Item Notify Called");
+            if(mParam2.getJobId() != null) {
+                mParam2 = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(mParam2.getJobId());
+                // for updating items added from equipment parts
+                Log.e("OnCreateDetail", "Item Notify Called" + new Gson().toJson(mParam2.getItemData()));
+                if (mParam2.getItemData() != null && mParam2.getItemData().size() > 0) {
+                    // for updating data
+                    invoice_list_adpter.updateitemlist(mParam2.getItemData());
+                }
+                if (mParam2.getEquArray() != null && mParam2.getEquArray().size() > 0) {
+                    // for updating data
+                    setEuqipmentList(mParam2.getEquArray());
+                    Log.e("mParam2::", new Gson().toJson(mParam2.getEquArray()));
+                }
+            }
+        }catch (Exception e){
+            Log.e("Detail Fragment Error","After on Resume "+ e.getMessage());
         }
     }
 

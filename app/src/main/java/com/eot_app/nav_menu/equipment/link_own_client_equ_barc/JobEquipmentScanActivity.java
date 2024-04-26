@@ -153,9 +153,9 @@ public class JobEquipmentScanActivity extends AppCompatActivity implements ScanE
 //        startScanner();
 
         if(isSearching){
-            txt_status.setText("Searching...");
+            txt_status.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.searching)+"...");
         }else {
-            txt_status.setText("Loading...");
+            txt_status.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.loading)+"...");
             startGoogleScan();
         }
 

@@ -172,11 +172,12 @@ public class BarcodeScanActivity extends AppCompatActivity implements ScanBarcod
         super.onResume();
 //        startScanner();
         if(isSearching){
-            txt_status.setText("Searching...");
+            txt_status.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.searching)+"...");
         }else {
-            txt_status.setText("Loading...");
+            txt_status.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.loading)+"...");
+            startGoogleScan();
         }
-          startGoogleScan();
+
     }
 
 
@@ -338,6 +339,7 @@ public class BarcodeScanActivity extends AppCompatActivity implements ScanBarcod
                 intent.putExtra("equipment_id", jobList.get(0).getEquId());
                 startActivity(intent);
             } else {
+                /** If Equipment link with Job */
                 Intent intent = new Intent(this, EquipmentDetailsActivity.class);
                 String jobData = new Gson().toJson(jobList);
                 String auditData = new Gson().toJson(list);
@@ -348,6 +350,7 @@ public class BarcodeScanActivity extends AppCompatActivity implements ScanBarcod
             }
         }else {
             Toast.makeText(this, LanguageController.getInstance().getMobileMsgByKey(AppConstant.eqi_not_foun_txt), Toast.LENGTH_SHORT).show();
+            onResume();
         }
     }
 
@@ -497,6 +500,7 @@ public class BarcodeScanActivity extends AppCompatActivity implements ScanBarcod
                                         finish();
                                     }else
                                     {
+                                        codeText = barcode.getRawValue();
                                         isSearching = true;
                                         isScannerValue = true;
                                         searchEquipment(barcode.getRawValue(), isScannerValue);
