@@ -3137,8 +3137,6 @@ public void setCompletionDetail(){
                                   break;
                             }
                     }
-                    if (jobDetail_pi != null)
-                        jobDetail_pi.getJobCompletionDetails(mParam2.getJobId());
                 }else {
                     ((JobDetailActivity) requireActivity()).openFormForEvent(jobstatus.getStatus_no(),"0","");
                 }
