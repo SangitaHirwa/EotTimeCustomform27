@@ -39,6 +39,9 @@ import com.eot_app.nav_menu.jobs.job_db.Job;
 import com.eot_app.nav_menu.jobs.job_detail.JobDetailActivity;
 import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.model.InvoiceItemDataModel;
 import com.eot_app.nav_menu.jobs.job_detail.invoice2list.InvoiceItemList2Adpter;
+import com.eot_app.nav_menu.jobs.job_detail.job_equipment.job_equ_mvp.Job_equim_PC;
+import com.eot_app.nav_menu.jobs.job_detail.job_equipment.job_equ_mvp.Job_equim_PI;
+import com.eot_app.nav_menu.jobs.job_detail.job_equipment.job_equ_mvp.Job_equim_View;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.job_equ_remrk.EquipmentPartRemarkAdapter;
 import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.AppUtility;
@@ -57,7 +60,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class EquipmentDetailsActivity extends UploadDocumentActivity implements View.OnClickListener,
-        Audit_Job_History_View, AdpterAuditHistory.OnAuditSelection, AdpterJobHistory.OnJobSelection {
+        Audit_Job_History_View, AdpterAuditHistory.OnAuditSelection, AdpterJobHistory.OnJobSelection, Job_equim_View {
     TextView equipment_name, barnd_name, model_no, serial_no,
             traiff_rate, warrenty_expiry_date, manufacture_date,
             purchase_date, installed_date, type, equipment_group, equipment_location;
@@ -91,6 +94,7 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
             custom_filed_txt_1, custom_filed_txt_2,supplier_txt,supplier;
     private boolean REFRESH = false;
     private String cltId;
+    private Job_equim_PI jobEquimPi;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,6 +118,9 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
     }
 
     private void init(){
+        jobEquimPi = new Job_equim_PC(this);
+        jobEquimPi.getEquipmentStatus();
+        AppUtility.progressBarDissMiss();
         if (getIntent().hasExtra("equipment")) {
             if (getIntent().hasExtra("job_equip")) {
                 String str = getIntent().getExtras().getString("job_equip_str");
@@ -1014,4 +1021,23 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
     }
 
 
+    @Override
+    public void setEuqipmentList(List<EquArrayModel> equArray) {
+
+    }
+
+    @Override
+    public void onSessionExpired(String msg) {
+
+    }
+
+    @Override
+    public void showErrorAlertDialog(String message) {
+
+    }
+
+    @Override
+    public void swipeRefresh() {
+
+    }
 }

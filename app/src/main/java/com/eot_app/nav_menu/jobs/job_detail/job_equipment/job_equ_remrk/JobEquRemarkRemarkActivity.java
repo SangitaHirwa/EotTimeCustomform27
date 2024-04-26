@@ -1495,14 +1495,16 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
                     equ_status_spinner.setSelection(selectedStatusPosition);
                 }
             }
-            for (EquipmentStatus status : equipmentStatusList2) {
-                if(status.getEsId().equalsIgnoreCase(equipment.getEquStatus())){
-                    if (status.getStatusText().equalsIgnoreCase("Discarded")) {
-                        txt_status.setBackgroundColor(ContextCompat.getColor(this, R.color.light_red));
-                    } else {
-                        txt_status.setBackgroundColor(ContextCompat.getColor(this, R.color.dark_yellow));
+            if(equipmentStatusList2 != null && equipmentStatusList2.size() > 0) {
+                for (EquipmentStatus status : equipmentStatusList2) {
+                    if (status.getEsId().equalsIgnoreCase(equipment.getEquStatus())) {
+                        if (status.getStatusText().equalsIgnoreCase("Discarded")) {
+                            txt_status.setBackgroundColor(ContextCompat.getColor(this, R.color.light_red));
+                        } else {
+                            txt_status.setBackgroundColor(ContextCompat.getColor(this, R.color.dark_yellow));
+                        }
+                        txt_status.setText(status.getStatusText());
                     }
-                    txt_status.setText(status.getStatusText());
                 }
             }
             if (equipment != null && equipment.getAttachments() != null) {

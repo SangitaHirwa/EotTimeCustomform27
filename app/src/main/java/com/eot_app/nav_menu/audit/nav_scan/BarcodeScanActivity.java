@@ -72,6 +72,7 @@ public class BarcodeScanActivity extends AppCompatActivity implements ScanBarcod
     List<EquArrayModel> jobList;
     boolean isScannerValue;
     boolean isSearching = false;
+    boolean isFailuer = false;
     GmsBarcodeScannerOptions options;
     GmsBarcodeScanner scanner;
     TextView txt_status;
@@ -529,9 +530,17 @@ public class BarcodeScanActivity extends AppCompatActivity implements ScanBarcod
                                 })
                         .addOnFailureListener(
                                 e -> {
+                                    isSearching = true;
                                     Log.e("ScanResult", "error = "+e.getMessage());
-                                    isSearching = false;
-                                   startGoogleScan();
+                                    AppUtility.alertDialog(this, "", LanguageController.getInstance().getMobileMsgByKey(AppConstant.scanner_error), LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), "", new Callable<Boolean>() {
+                                        @Override
+                                        public Boolean call() throws Exception {
+                                            isSearching = false;
+                                            finish();
+                                            return null;
+                                        }
+                                    });
+
                                 });
  }
 }

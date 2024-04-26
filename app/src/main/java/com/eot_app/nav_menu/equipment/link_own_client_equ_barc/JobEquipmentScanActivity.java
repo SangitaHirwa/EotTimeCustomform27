@@ -57,6 +57,7 @@ import com.gun0912.tedpermission.TedPermission;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 
 public class JobEquipmentScanActivity extends AppCompatActivity implements ScanEquView, LinkEquipmentView {
@@ -345,9 +346,16 @@ public class JobEquipmentScanActivity extends AppCompatActivity implements ScanE
                         })
                 .addOnFailureListener(
                         e -> {
+                            isSearching = true;
                             Log.e("ScanResult", "error = "+e.getMessage());
-                            isSearching = false;
-                            startGoogleScan();
+                            AppUtility.alertDialog(this, "", LanguageController.getInstance().getMobileMsgByKey(AppConstant.scanner_error), LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), "", new Callable<Boolean>() {
+                                @Override
+                                public Boolean call() throws Exception {
+                                    isSearching = false;
+                                    finish();
+                                    return null;
+                                }
+                            });
                         });
     }
 }

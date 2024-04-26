@@ -1913,7 +1913,8 @@
     "resume_recur_msg":"Do you want to resume the recurring job pattern?",
     "expired": "Expired",
     "update_service": "Update Job Type/Service",
-    "searching": "Searching"
+    "searching": "Searching",
+    "scanner_error":"This feature is not supported to your device version, Please upgrade your device version."
   }
 }
 

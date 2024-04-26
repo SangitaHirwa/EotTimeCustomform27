@@ -268,9 +268,16 @@ public class UploadBarcodeActivity extends AppCompatActivity {
                         })
                 .addOnFailureListener(
                         e -> {
+                            isSearching = true;
                             Log.e("ScanResult", "error = "+e.getMessage());
-                            isSearching = false;
-                            startGoogleScan();
+                            AppUtility.alertDialog(this, "", LanguageController.getInstance().getMobileMsgByKey(AppConstant.scanner_error), LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), "", new Callable<Boolean>() {
+                                @Override
+                                public Boolean call() throws Exception {
+                                    isSearching = false;
+                                    finish();
+                                    return null;
+                                }
+                            });
                         });
     }
 }
