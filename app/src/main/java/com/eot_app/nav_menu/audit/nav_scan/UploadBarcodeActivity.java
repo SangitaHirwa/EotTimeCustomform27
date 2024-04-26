@@ -63,12 +63,20 @@ public class UploadBarcodeActivity extends AppCompatActivity {
         }
 
         CodeScannerView scannerView = findViewById(R.id.scanner_view);
-        options = new GmsBarcodeScannerOptions.Builder()
-                .setBarcodeFormats(
-                        Barcode.FORMAT_ALL_FORMATS)
-                .enableAutoZoom()
-                .allowManualInput()
-                .build();
+        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
+            options = new GmsBarcodeScannerOptions.Builder()
+                    .setBarcodeFormats(
+                            Barcode.FORMAT_ALL_FORMATS)
+                    .enableAutoZoom()
+                    .allowManualInput()
+                    .build();
+        }else {
+            options = new GmsBarcodeScannerOptions.Builder()
+                    .setBarcodeFormats(
+                            Barcode.FORMAT_ALL_FORMATS)
+                    .enableAutoZoom()
+                    .build();
+        }
         scanner = GmsBarcodeScanning.getClient(this, options);
 //        edit_barcode = findViewById(R.id.edit_barcode);
 

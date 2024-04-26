@@ -93,20 +93,36 @@ public class BarcodeScanActivity extends AppCompatActivity implements ScanBarcod
                         .enableAutoZoom()
                         .build();
             }else {
+                if(Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
+                    options = new GmsBarcodeScannerOptions.Builder()
+                            .setBarcodeFormats(
+                                    Barcode.FORMAT_ALL_FORMATS)
+                            .enableAutoZoom()
+                            .allowManualInput()
+                            .build();
+                }else {
+                    options = new GmsBarcodeScannerOptions.Builder()
+                            .setBarcodeFormats(
+                                    Barcode.FORMAT_ALL_FORMATS)
+                            .enableAutoZoom()
+                            .build();
+                }
+            }
+        }else {
+            if(Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
                 options = new GmsBarcodeScannerOptions.Builder()
                         .setBarcodeFormats(
                                 Barcode.FORMAT_ALL_FORMATS)
                         .enableAutoZoom()
                         .allowManualInput()
                         .build();
+            }else {
+                options = new GmsBarcodeScannerOptions.Builder()
+                        .setBarcodeFormats(
+                                Barcode.FORMAT_ALL_FORMATS)
+                        .enableAutoZoom()
+                        .build();
             }
-        }else {
-            options = new GmsBarcodeScannerOptions.Builder()
-                    .setBarcodeFormats(
-                            Barcode.FORMAT_ALL_FORMATS)
-                    .enableAutoZoom()
-                    .allowManualInput()
-                    .build();
         }
         scanner = GmsBarcodeScanning.getClient(this, options);
         scanBarcode_pc = new ScanBarcode_PC(this, true);

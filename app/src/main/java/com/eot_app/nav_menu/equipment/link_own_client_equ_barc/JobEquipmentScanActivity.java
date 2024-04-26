@@ -90,12 +90,20 @@ public class JobEquipmentScanActivity extends AppCompatActivity implements ScanE
 
         scanBarcode_pc = new ScanEquPc(this);
         linkEquipmentPI = new LinkEquipmentPC(this);
-        options = new GmsBarcodeScannerOptions.Builder()
-                .setBarcodeFormats(
-                        Barcode.FORMAT_ALL_FORMATS)
-                .enableAutoZoom()
-                .allowManualInput()
-                .build();
+        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
+            options = new GmsBarcodeScannerOptions.Builder()
+                    .setBarcodeFormats(
+                            Barcode.FORMAT_ALL_FORMATS)
+                    .enableAutoZoom()
+                    .allowManualInput()
+                    .build();
+        }else {
+            options = new GmsBarcodeScannerOptions.Builder()
+                    .setBarcodeFormats(
+                            Barcode.FORMAT_ALL_FORMATS)
+                    .enableAutoZoom()
+                    .build();
+        }
         scanner = GmsBarcodeScanning.getClient(this, options);
         try {
             if (getIntent().hasExtra("JOBID")) {
