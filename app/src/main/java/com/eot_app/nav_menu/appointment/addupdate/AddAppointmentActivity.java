@@ -116,6 +116,15 @@ public class AddAppointmentActivity extends UploadDocumentActivity implements Te
 
         if (getIntent() != null && getIntent().getStringExtra("CalenderDate") != null) {
             calenderDate = getIntent().getStringExtra("CalenderDate");
+            if(!calenderDate.isEmpty()) {
+                String[] cDate_ary = calenderDate.split("-");
+                cStart.set(Calendar.YEAR, Integer.parseInt(cDate_ary[2]));
+                cStart.set(Calendar.MONTH, Integer.parseInt(cDate_ary[1])-1);
+                cStart.set(Calendar.DAY_OF_MONTH, Integer.parseInt(cDate_ary[0]));
+                cEnd.set(Calendar.YEAR, Integer.parseInt(cDate_ary[2]));
+                cEnd.set(Calendar.MONTH, Integer.parseInt(cDate_ary[1])-1);
+                cEnd.set(Calendar.DAY_OF_MONTH, Integer.parseInt(cDate_ary[0]));
+            }
         }
         appointmentViewModel = new ViewModelProvider(this)
                 .get(AppointmentViewModel.class);
