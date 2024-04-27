@@ -244,6 +244,15 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
                 if(getIntent()!=null&&getIntent().getStringExtra("CalenderDate")!=null)
                 {
                     calenderDate=getIntent().getStringExtra("CalenderDate");
+                    if(!calenderDate.isEmpty()) {
+                        String[] cDate_ary = calenderDate.split("-");
+                        cStart.set(Calendar.YEAR, Integer.parseInt(cDate_ary[2]));
+                        cStart.set(Calendar.MONTH, Integer.parseInt(cDate_ary[1])-1);
+                        cStart.set(Calendar.DAY_OF_MONTH, Integer.parseInt(cDate_ary[0]));
+                        cEnd.set(Calendar.YEAR, Integer.parseInt(cDate_ary[2]));
+                        cEnd.set(Calendar.MONTH, Integer.parseInt(cDate_ary[1])-1);
+                        cEnd.set(Calendar.DAY_OF_MONTH, Integer.parseInt(cDate_ary[0]));
+                    }
                 }
                 //check the add job called form appointment and get the appId
                 if (Objects.requireNonNull(getIntent()).hasExtra("appId")) {

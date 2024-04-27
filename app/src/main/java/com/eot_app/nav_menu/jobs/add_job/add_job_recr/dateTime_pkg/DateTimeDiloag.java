@@ -21,24 +21,32 @@ import java.util.Locale;
 public class DateTimeDiloag extends DialogFragment implements DatePickerDialog.OnDateSetListener {
 
     private final DateTimeCallBack dateTimeCallBack;
+    final Calendar calendar = Calendar.getInstance();
     private final boolean StartRecrCheck;
-
+    int year,month,day;
+    boolean isNewCalanderInstance;
     public DateTimeDiloag(DateTimeCallBack dateTimeCallBack, boolean StartRecrCheck) {
         this.dateTimeCallBack = dateTimeCallBack;
         /***@StartRecrCheck use for Prevoius Date Disable for Start Date Filed*******/
         this.StartRecrCheck = StartRecrCheck;
     }
-
+    public DateTimeDiloag(DateTimeCallBack dateTimeCallBack, boolean StartRecrCheck, int year,int month, int day, Boolean isNewCalanderInstance) {
+        this.dateTimeCallBack = dateTimeCallBack;
+        /***@StartRecrCheck use for Prevoius Date Disable for Start Date Filed*******/
+        this.StartRecrCheck = StartRecrCheck;
+        this.year = year;
+        this.month = month;
+        this.day = day;
+        this.isNewCalanderInstance = isNewCalanderInstance;
+    }
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        Calendar calendar = Calendar.getInstance();
-
-        int year = calendar.get(Calendar.YEAR);
-        int month = calendar.get(Calendar.MONTH);
-        int day = calendar.get(Calendar.DAY_OF_MONTH);
-
-
+        if(isNewCalanderInstance) {
+            year = calendar.get(Calendar.YEAR);
+            month = calendar.get(Calendar.MONTH);
+            day = calendar.get(Calendar.DAY_OF_MONTH);
+        }
         DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), this, year, month, day);
         if (StartRecrCheck)
             datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
@@ -47,6 +55,9 @@ public class DateTimeDiloag extends DialogFragment implements DatePickerDialog.O
 
 
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+        calendar.set(Calendar.YEAR,year);
+        calendar.set(Calendar.MONTH,month);
+        calendar.set(Calendar.DATE,day);
         String currentDateString = "";
         try {
             DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());

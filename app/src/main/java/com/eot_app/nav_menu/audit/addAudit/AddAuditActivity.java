@@ -152,6 +152,15 @@ public class AddAuditActivity extends UploadDocumentActivity implements Add_Adui
         if(getIntent()!=null&&getIntent().getStringExtra("CalenderDate")!=null)
         {
             calenderDate=getIntent().getStringExtra("CalenderDate");
+            if(!calenderDate.isEmpty()) {
+                String[] cDate_ary = calenderDate.split("-");
+                cStart.set(Calendar.YEAR, Integer.parseInt(cDate_ary[2]));
+                cStart.set(Calendar.MONTH, Integer.parseInt(cDate_ary[1])-1);
+                cStart.set(Calendar.DAY_OF_MONTH, Integer.parseInt(cDate_ary[0]));
+                cEnd.set(Calendar.YEAR, Integer.parseInt(cDate_ary[2]));
+                cEnd.set(Calendar.MONTH, Integer.parseInt(cDate_ary[1])-1);
+                cEnd.set(Calendar.DAY_OF_MONTH, Integer.parseInt(cDate_ary[0]));
+            }
         }
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.title_add_audit));
