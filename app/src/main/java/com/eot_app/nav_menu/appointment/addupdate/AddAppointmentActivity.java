@@ -110,6 +110,7 @@ public class AddAppointmentActivity extends UploadDocumentActivity implements Te
     List<AppointmentStatusModel> allAppointmentStatusList =new ArrayList<>();
     final Calendar cStart = Calendar.getInstance();
     final Calendar cEnd = Calendar.getInstance();
+    private boolean isTime24Format= false;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -141,7 +142,12 @@ public class AddAppointmentActivity extends UploadDocumentActivity implements Te
             getSupportActionBar().setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.appointment_edit));
             appointment =  getIntent().getParcelableExtra("appointment");
         }
-
+        if (App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable() != null
+                && App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable().equals("0")) {
+            isTime24Format = false;
+        }else{
+            isTime24Format = true;
+        }
         initializelables();
 
         setAppointmentStatusList();
@@ -1323,7 +1329,7 @@ public class AddAppointmentActivity extends UploadDocumentActivity implements Te
                         String[] aa = dateTime.split(":");
                         binding.timeStart.setText((formatter.format(Integer.parseInt(aa[0]))) + ":" + aa[1]);
                     }
-                }, LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_start_end_time)), mHour, mMinute, false);
+                }, LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_start_end_time)), mHour, mMinute, isTime24Format);
                 timePickerDialog.show();
                 break;
 
@@ -1348,7 +1354,7 @@ public class AddAppointmentActivity extends UploadDocumentActivity implements Te
                             e.printStackTrace();
                         }
                     }
-                }, LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_due_start_time)), mHour, mMinute, false);
+                }, LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_due_start_time)), mHour, mMinute, isTime24Format);
                 timePickerDialog1.show();
                 break;
         }

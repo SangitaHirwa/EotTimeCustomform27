@@ -38,6 +38,7 @@ import com.eot_app.utility.EotApp;
 import com.eot_app.utility.language_support.LanguageController;
 import com.google.gson.Gson;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -60,7 +61,8 @@ public class DailyRecrFragment extends Fragment implements View.OnClickListener,
     private String schdlStart, mode = "1", endRecurMode = "0";
     private Button submit_btn;
     private String endDate = "", startDate = "", occurances = "";
-
+    int year,month,day;
+    boolean isNewCalanderInstance = false;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -216,10 +218,20 @@ public class DailyRecrFragment extends Fragment implements View.OnClickListener,
                 break;
             case R.id.date_start:
                 StartRecrCheck = true;
+                if(date_start.getText().toString().isEmpty()){
+                    isNewCalanderInstance = true;
+                }else {
+                    isNewCalanderInstance = false;
+                }
                 getDatePickerDialog("date_start");
                 break;
             case R.id.end_date_by:
                 StartRecrCheck = false;
+                if(end_date_by.getText().toString().isEmpty()){
+                    isNewCalanderInstance = true;
+                }else {
+                    isNewCalanderInstance = false;
+                }
                 getDatePickerDialog("end_date_by");
                 break;
         }
@@ -247,6 +259,18 @@ public class DailyRecrFragment extends Fragment implements View.OnClickListener,
         DialogFragment datePicker = new DateTimeDiloag(new DateTimeCallBack() {
             @Override
             public void getDateTimeFromPicker(String currentDateString) {
+                DateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy", Locale.US);//hh:mm:ss a
+                Date date = null;
+                try {
+                    date = formatter.parse(currentDateString);
+                    String dateselect = new SimpleDateFormat("dd-MM-yyyy", Locale.US).format(date);
+                    String[] date_ary = dateselect.split("-");
+                    year = Integer.parseInt(date_ary[2]);
+                    month = Integer.parseInt(date_ary[1]) - 1;
+                    day = Integer.parseInt(date_ary[0]);
+                } catch (ParseException e) {
+                    throw new RuntimeException(e);
+                }
                 if (dateView.equals("date_start")) {
                     date_start.setText(currentDateString);
                 } else if (radio_end_by.isChecked())
@@ -258,7 +282,7 @@ public class DailyRecrFragment extends Fragment implements View.OnClickListener,
 
             }
 
-        }, StartRecrCheck);
+        }, StartRecrCheck,year,month,day,isNewCalanderInstance);
         datePicker.show(getParentFragmentManager(), dateView);
     }
 
