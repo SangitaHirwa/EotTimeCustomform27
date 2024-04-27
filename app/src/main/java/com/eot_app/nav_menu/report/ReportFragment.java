@@ -27,6 +27,12 @@ import com.eot_app.utility.language_support.LanguageController;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.concurrent.Callable;
 
@@ -47,7 +53,8 @@ public class ReportFragment extends Fragment implements View.OnClickListener {
     boolean PERMMISSIONALLOW = false;
     ReportViewModel reportViewModel;
 
-
+    int year,month,day;
+    boolean isNewCalanderInstance = false;
 
     public ReportFragment() {
         // Required empty public constructor
@@ -128,9 +135,19 @@ public class ReportFragment extends Fragment implements View.OnClickListener {
                 }
                 break;
             case R.id.from_report_lay:
+                if(reportBinding.timeFrom.getText().toString().isEmpty()){
+                    isNewCalanderInstance = true;
+                }else {
+                    isNewCalanderInstance = false;
+                }
                 getDatePickerDialog("time_from");
                 break;
             case R.id.ll_timereport_to:
+                if(reportBinding.timeTo.getText().toString().isEmpty()){
+                    isNewCalanderInstance = true;
+                }else {
+                    isNewCalanderInstance = false;
+                }
                 getDatePickerDialog("time_to");
                 break;
         }
@@ -138,7 +155,21 @@ public class ReportFragment extends Fragment implements View.OnClickListener {
 
     private void getDatePickerDialog(final String dateView) {
         DialogFragment datePicker = new DateTimeDiloag(currentDateString -> {
+            DateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy", Locale.US);//hh:mm:ss a
+            Date date = null;
+            try {
+                date = formatter.parse(currentDateString);
+                String dateselect = new SimpleDateFormat("dd-MM-yyyy", Locale.US).format(date);
+                String[] date_ary = dateselect.split("-");
+                year = Integer.parseInt(date_ary[2]);
+                month = Integer.parseInt(date_ary[1]) - 1;
+                day = Integer.parseInt(date_ary[0]);
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
+            }
+
             if (dateView.equals("time_from")) {
+
                 reportBinding.timeFrom.setText(currentDateString);
                 reportBinding.fromLable.setVisibility(View.VISIBLE);
 
@@ -146,8 +177,9 @@ public class ReportFragment extends Fragment implements View.OnClickListener {
                 reportBinding.timeTo.setText(currentDateString);
                 reportBinding.toLable.setVisibility(View.VISIBLE);
             }
-        }, false);
+        }, false,year,month,day,isNewCalanderInstance);
         datePicker.show(getParentFragmentManager(), dateView);
+
     }
 
 
