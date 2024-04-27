@@ -320,6 +320,13 @@ public class AddAppointmentActivity extends UploadDocumentActivity implements Te
             time_str = timeFormat;
 
             String dateFormat = AppUtility.getDateWithFormates(longStartTime, AppConstant.DATE_FORMAT);
+            String[] dat_ary_start = AppUtility.getDateWithFormates(longStartTime, "dd-MM-yyyy").split("-");
+            if(dat_ary_start.length > 0) {
+                cStart.set(Calendar.YEAR, Integer.parseInt(dat_ary_start[2]));
+                cStart.set(Calendar.MONTH, Integer.parseInt(dat_ary_start[1])-1);
+                cStart.set(Calendar.DAY_OF_MONTH, Integer.parseInt(dat_ary_start[0]));
+            }
+
             binding.dateStart.setText(dateFormat);
             date_str = dateFormat;
 
@@ -330,6 +337,12 @@ public class AddAppointmentActivity extends UploadDocumentActivity implements Te
             time_en = timeFormat;
 
             dateFormat = AppUtility.getDateWithFormates(endTime, AppConstant.DATE_FORMAT);
+            String[] dat_ary_end = AppUtility.getDateWithFormates(longStartTime, "dd-MM-yyyy").split("-");
+            if(dat_ary_end.length > 0) {
+                cStart.set(Calendar.YEAR, Integer.parseInt(dat_ary_end[2]));
+                cStart.set(Calendar.MONTH, Integer.parseInt(dat_ary_end[1])-1);
+                cStart.set(Calendar.DAY_OF_MONTH, Integer.parseInt(dat_ary_end[0]));
+            }
             binding.dateEnd.setText(dateFormat);
             date_en = dateFormat;
 
