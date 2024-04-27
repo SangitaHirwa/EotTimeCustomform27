@@ -40,6 +40,7 @@ import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatTextView;
@@ -228,6 +229,8 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
     private ExecutorService executorService;
     final Calendar cStart = Calendar.getInstance();
     final Calendar cEnd = Calendar.getInstance();
+    final Calendar cTStart = Calendar.getInstance();
+    final Calendar cTEnd = Calendar.getInstance();
 
 
     @Override
@@ -2922,17 +2925,15 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
 
     //schedule start time
     private void SelectTime() {
-        final Calendar c = Calendar.getInstance();
-        mHour = c.get(Calendar.HOUR_OF_DAY);
-        mMinute = c.get(Calendar.MINUTE);
+        mHour = cTStart.get(Calendar.HOUR_OF_DAY);
+        mMinute = cTStart.get(Calendar.MINUTE);
         showDialogPicker(R.id.time_start);
     }
 
     //schedule end time
     private void SelectTime1() {
-        final Calendar c = Calendar.getInstance();
-        mHour = c.get(Calendar.HOUR_OF_DAY);
-        mMinute = c.get(Calendar.MINUTE);
+        mHour = cTEnd.get(Calendar.HOUR_OF_DAY);
+        mMinute = cTEnd.get(Calendar.MINUTE);
         showDialogPicker(R.id.time_end);
     }
 
@@ -3055,7 +3056,7 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
                 break;
 
             case R.id.time_start:
-                TimePickerDialog timePickerDialog = new TimePickerDialog(this, AppUtility.InputTimeSet(this, dateTime -> {
+               /* TimePickerDialog timePickerDialog = new TimePickerDialog(this, AppUtility.InputTimeSet(this, dateTime -> {
                     time_str = dateTime;
                     DecimalFormat formatter = new DecimalFormat("00");
                     String[] aa = dateTime.split(":");
@@ -3064,15 +3065,44 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
                 }, LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_start_end_time)), mHour, mMinute, true);
 
                 timePickerDialog.show();
+                break;*/
+                TimePickerDialog timePickerDialog = new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                        cTStart.set(Calendar.HOUR_OF_DAY,hourOfDay);
+                        cTStart.set(Calendar.MINUTE,minute);
+                        String dateTime = AppUtility.updateTime(hourOfDay,minute);
+                        time_str = dateTime;
+                        DecimalFormat formatter = new DecimalFormat("00");
+                        String[] aa = dateTime.split(":");
+                        time_start.setText((formatter.format(Integer.parseInt(aa[0]))) + ":" + aa[1]);
+                        oldTime_str = (formatter.format(Integer.parseInt(aa[0]))) + ":" + aa[1];
+                    }
+                },mHour, mMinute,true);
+                timePickerDialog.show();
                 break;
-
             case R.id.time_end:
-                TimePickerDialog timePickerDialog1 = new TimePickerDialog(this, AppUtility.OutPutTime(this, dateTime -> {
+                /*TimePickerDialog timePickerDialog1 = new TimePickerDialog(this, AppUtility.OutPutTime(this, dateTime -> {
                     time_en = dateTime;
                     DecimalFormat formatter = new DecimalFormat("00");
                     String[] aa = dateTime.split(":");
                     time_end.setText((formatter.format(Integer.parseInt(aa[0]))) + ":" + aa[1]);
                 }, LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_due_start_time)), mHour, mMinute, true);
+                timePickerDialog1.show();
+                break;*/
+                TimePickerDialog timePickerDialog1 = new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                        cTEnd.set(Calendar.HOUR_OF_DAY,hourOfDay);
+                        cTEnd.set(Calendar.MINUTE,minute);
+                        String dateTime = AppUtility.updateTime(hourOfDay,minute);
+                        time_en = dateTime;
+                        DecimalFormat formatter = new DecimalFormat("00");
+                        String[] aa = dateTime.split(":");
+                        time_end.setText((formatter.format(Integer.parseInt(aa[0]))) + ":" + aa[1]);
+                        oldTime_en = (formatter.format(Integer.parseInt(aa[0]))) + ":" + aa[1];
+                    }
+                },mHour, mMinute,true);
                 timePickerDialog1.show();
                 break;
         }
