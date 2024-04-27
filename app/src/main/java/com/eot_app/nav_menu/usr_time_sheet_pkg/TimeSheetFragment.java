@@ -28,6 +28,11 @@ import com.eot_app.utility.language_support.LanguageController;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 import java.util.Objects;
 
 
@@ -46,7 +51,8 @@ public class TimeSheetFragment extends Fragment implements View.OnClickListener 
     FragmentTimeSheetBinding binding;
 
     boolean SHEETPERMMISSIONALLOW = false;
-
+    int year,month,day;
+    boolean isNewCalanderInstance = false;
 
     public TimeSheetFragment() {
         // Required empty public constructor
@@ -83,6 +89,18 @@ public class TimeSheetFragment extends Fragment implements View.OnClickListener 
 
     private void getDatePickerDialog(final String dateView) {
         DialogFragment datePicker = new DateTimeDiloag(currentDateString -> {
+            DateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy", Locale.US);//hh:mm:ss a
+            Date date = null;
+            try {
+                date = formatter.parse(currentDateString);
+                String dateselect = new SimpleDateFormat("dd-MM-yyyy", Locale.US).format(date);
+                String[] date_ary = dateselect.split("-");
+                year = Integer.parseInt(date_ary[2]);
+                month = Integer.parseInt(date_ary[1]) - 1;
+                day = Integer.parseInt(date_ary[0]);
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
+            }
             if (dateView.equals("time_from")) {
                 binding.timeFrom.setText(currentDateString);
                 binding.fromLable.setVisibility(View.VISIBLE);
@@ -90,7 +108,7 @@ public class TimeSheetFragment extends Fragment implements View.OnClickListener 
                 binding.timeTo.setText(currentDateString);
                 binding.toLable.setVisibility(View.VISIBLE);
             }
-        }, false);
+        }, false,year,month,day,isNewCalanderInstance);
         datePicker.show(getParentFragmentManager(), dateView);
     }
 
@@ -205,9 +223,19 @@ public class TimeSheetFragment extends Fragment implements View.OnClickListener 
                 }
                 break;
             case R.id.linear_fromdate_lay:
+                if( binding.timeFrom.getText().toString().isEmpty()){
+                    isNewCalanderInstance = true;
+                }else {
+                    isNewCalanderInstance = false;
+                }
                 getDatePickerDialog("time_from");
                 break;
             case R.id.ll_timesheet_to:
+                if(binding.timeTo.getText().toString().isEmpty()){
+                    isNewCalanderInstance = true;
+                }else {
+                    isNewCalanderInstance = false;
+                }
                 getDatePickerDialog("time_to");
 
                 break;
