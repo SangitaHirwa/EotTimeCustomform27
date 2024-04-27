@@ -149,6 +149,7 @@ public class AddAuditActivity extends UploadDocumentActivity implements Add_Adui
     final Calendar cEnd = Calendar.getInstance();
     final Calendar cTEnd = Calendar.getInstance();
     private String oldDate_str, oldTime_str, oldDate_en, oldTime_en;
+    private boolean isTime24Format= false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -166,6 +167,12 @@ public class AddAuditActivity extends UploadDocumentActivity implements Add_Adui
                 cEnd.set(Calendar.MONTH, Integer.parseInt(cDate_ary[1])-1);
                 cEnd.set(Calendar.DAY_OF_MONTH, Integer.parseInt(cDate_ary[0]));
             }
+        }
+        if (App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable() != null
+                && App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable().equals("0")) {
+            isTime24Format = false;
+        }else{
+            isTime24Format = true;
         }
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.title_add_audit));
@@ -1979,7 +1986,7 @@ public class AddAuditActivity extends UploadDocumentActivity implements Add_Adui
                         time_start.setText((formatter.format(Integer.parseInt(aa[0]))) + ":" + aa[1]);
                         oldTime_str = (formatter.format(Integer.parseInt(aa[0]))) + ":" + aa[1];
                     }
-                },mHour, mMinute,true);
+                },mHour, mMinute,isTime24Format);
                 timePickerDialog.show();
                 break;
               /*  TimePickerDialog timePickerDialog = new TimePickerDialog(this, AppUtility.InputTimeSet(this, dateTime -> {
@@ -2005,7 +2012,7 @@ public class AddAuditActivity extends UploadDocumentActivity implements Add_Adui
                         time_end.setText((formatter.format(Integer.parseInt(aa[0]))) + ":" + aa[1]);
                         oldTime_en = (formatter.format(Integer.parseInt(aa[0]))) + ":" + aa[1];
                     }
-                },mHour, mMinute,true);
+                },mHour, mMinute,isTime24Format);
                 timePickerDialog1.show();
                 break;
                 /*TimePickerDialog timePickerDialog1 = new TimePickerDialog(this, AppUtility.OutPutTime(this, dateTime -> {

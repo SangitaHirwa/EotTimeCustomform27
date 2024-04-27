@@ -231,6 +231,7 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
     final Calendar cEnd = Calendar.getInstance();
     final Calendar cTStart = Calendar.getInstance();
     final Calendar cTEnd = Calendar.getInstance();
+    private boolean isTime24Format= false;
 
 
     @Override
@@ -1195,6 +1196,12 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
                 // add job form setting page permission
                 && App_preference.getSharedprefInstance().getLoginRes().getIsAddJobCustomFieldEnable().equals("1")) {
             setAdapterOfCustomField();
+        }
+        if (App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable() != null
+                && App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable().equals("0")) {
+            isTime24Format = false;
+        }else{
+            isTime24Format = true;
         }
 
     }
@@ -3078,7 +3085,7 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
                         time_start.setText((formatter.format(Integer.parseInt(aa[0]))) + ":" + aa[1]);
                         oldTime_str = (formatter.format(Integer.parseInt(aa[0]))) + ":" + aa[1];
                     }
-                },mHour, mMinute,true);
+                },mHour, mMinute,isTime24Format);
                 timePickerDialog.show();
                 break;
             case R.id.time_end:
@@ -3102,7 +3109,7 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
                         time_end.setText((formatter.format(Integer.parseInt(aa[0]))) + ":" + aa[1]);
                         oldTime_en = (formatter.format(Integer.parseInt(aa[0]))) + ":" + aa[1];
                     }
-                },mHour, mMinute,true);
+                },mHour, mMinute,isTime24Format);
                 timePickerDialog1.show();
                 break;
         }
