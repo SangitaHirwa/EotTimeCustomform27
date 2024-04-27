@@ -128,7 +128,7 @@ public class AddExpenseActivity extends UploadDocumentActivity implements TextWa
     private TextView tv_hint_category, tv_spinner_category;
     private Spinner spinn_category;
     private boolean rmvImg, JOBCHECK, CLIENTCHECK;
-
+    private boolean updateExp = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -143,6 +143,7 @@ public class AddExpenseActivity extends UploadDocumentActivity implements TextWa
             if (getIntent().hasExtra("EditExpense")) {
                 String str = getIntent().getExtras().getString("EditExpense");
                 expenseDetails = new Gson().fromJson(str, ExpenseRes.class);// getIntent().getExtras().getParcelable(".");
+                updateExp =true;
                 getServerImage();
                 editExpanse();
             }
@@ -642,11 +643,14 @@ public class AddExpenseActivity extends UploadDocumentActivity implements TextWa
                     auto_group.showDropDown();
                 break;
             case R.id.edt_expense_date:
-                String[] date_ary = AppUtility.getDateWithFormate
-                        (Long.parseLong(expenseDetails.getDateTime()), "dd-MM-yyy").split("-");
-                myCalendar.set(Calendar.YEAR, Integer.parseInt(date_ary[2]));
-                myCalendar.set(Calendar.MONTH,Integer.parseInt(date_ary[1])-1);
-                myCalendar.set(Calendar.DAY_OF_MONTH,Integer.parseInt(date_ary[0]));
+                if(expenseDetails != null && updateExp) {
+                    updateExp = false;
+                    String[] date_ary = AppUtility.getDateWithFormate
+                            (Long.parseLong(expenseDetails.getDateTime()), "dd-MM-yyy").split("-");
+                    myCalendar.set(Calendar.YEAR, Integer.parseInt(date_ary[2]));
+                    myCalendar.set(Calendar.MONTH, Integer.parseInt(date_ary[1]) - 1);
+                    myCalendar.set(Calendar.DAY_OF_MONTH, Integer.parseInt(date_ary[0]));
+                }
                 SelectStartDate();
                 break;
             case R.id.auto_job:
