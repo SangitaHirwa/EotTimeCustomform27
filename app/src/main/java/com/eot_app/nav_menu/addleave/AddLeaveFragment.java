@@ -42,12 +42,13 @@ public class AddLeaveFragment extends AppCompatActivity implements View.OnClickL
     FragmentAddLeaveBinding binding;
     private UserLeave_pi userLeave_pi;
     List<LeaveUserModel> listuser;
+    final Calendar mcurrentTime = Calendar.getInstance();
+    final Calendar mEndTime = Calendar.getInstance();
 
     private String STARTSELCTEDATE = "", STARTSELCTETIME = " 12:00 AM", ENDSELCTETIME = " 11:59 PM", ENDSELCTEDATE = "";
     private final DatePickerDialog.OnDateSetListener datePickerListener = new DatePickerDialog.OnDateSetListener() {
         @Override
         public void onDateSet(DatePicker view, int selectedYear, int selectedMonth, int selectedDay) {
-
             try {
                 if (view.getTag().equals("time_from")) {
                     myCalendar.set(Calendar.YEAR,selectedYear);
@@ -60,6 +61,8 @@ public class AddLeaveFragment extends AppCompatActivity implements View.OnClickL
                     STARTSELCTEDATE = " " + new SimpleDateFormat(AppConstant.DATE_FORMAT, Locale.US).format(startDate);
                     binding.timeFrom.setText("");
                     binding.timeFrom.setText(STARTSELCTEDATE.concat(STARTSELCTETIME));
+                    hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
+                    minute = mcurrentTime.get(Calendar.MINUTE);
                     selectStartTime("START");
 
 
@@ -74,6 +77,8 @@ public class AddLeaveFragment extends AppCompatActivity implements View.OnClickL
                     ENDSELCTEDATE = " " + new SimpleDateFormat(AppConstant.DATE_FORMAT, Locale.US).format(startDate);
                     binding.timeTo.setText("");
                     binding.timeTo.setText(ENDSELCTEDATE.concat(ENDSELCTETIME));
+                    hour = mEndTime.get(Calendar.HOUR_OF_DAY);
+                    minute = mEndTime.get(Calendar.MINUTE);
                     selectStartTime("END");
                 }
             } catch (ParseException e) {
@@ -84,7 +89,7 @@ public class AddLeaveFragment extends AppCompatActivity implements View.OnClickL
         }
     };
     private AddLeaveViewModel addLeaveViewModel;
-    int year, month, day;
+    int year, month, day,hour,minute;
     final Calendar myCalendar = Calendar.getInstance();
     final Calendar myCalendar1 = Calendar.getInstance();
     boolean isTime24Format= false;
@@ -166,9 +171,6 @@ public class AddLeaveFragment extends AppCompatActivity implements View.OnClickL
     }
 
     private void selectStartTime(final String tag) {
-        Calendar mcurrentTime = Calendar.getInstance();
-        int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
-        int minute = mcurrentTime.get(Calendar.MINUTE);
         TimePickerDialog mTimePicker;
         mTimePicker = new TimePickerDialog(this, (timePicker, selectedHour, selectedMinute) -> {
             String stime = null;
@@ -181,10 +183,14 @@ public class AddLeaveFragment extends AppCompatActivity implements View.OnClickL
                         selectedMinute + " ";
             }
                 if (tag.equals("START")) {
+                    mcurrentTime.set(Calendar.HOUR_OF_DAY,selectedHour);
+                    mcurrentTime.set(Calendar.MINUTE,selectedMinute);
                     STARTSELCTETIME = "";
                     STARTSELCTETIME = " " + stime;
                     binding.timeFrom.setText(STARTSELCTEDATE.concat(STARTSELCTETIME));
                 } else if (tag.equals("END")) {
+                    mEndTime.set(Calendar.HOUR_OF_DAY,selectedHour);
+                    mEndTime.set(Calendar.MINUTE,selectedMinute);
                     ENDSELCTETIME = "";
                     ENDSELCTETIME = " " + stime;
                     binding.timeTo.setText(ENDSELCTEDATE.concat(ENDSELCTETIME));
