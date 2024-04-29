@@ -61,10 +61,12 @@ public class CustomFieldJobAdapter extends RecyclerView.Adapter<CustomFieldJobAd
     Context context;
     String time = "", date = "";
     ArrayList<CustOmFormQuestionsRes> questionList;
+    private boolean isTime24Format;
 
-    public CustomFieldJobAdapter(ArrayList<CustOmFormQuestionsRes> typeList, Context context) {
+    public CustomFieldJobAdapter(ArrayList<CustOmFormQuestionsRes> typeList, Context context,Boolean isTime24Format) {
         this.context = context;
         this.questionList = typeList;
+        this.isTime24Format = isTime24Format;
         String currentDateTime = AppUtility.getDateByFormat(AppUtility.dateTimeByAmPmFormate(
                 "dd-MMM-yyyy hh:mm a", "dd-MMM-yyyy HH:mm"));
         String[] currentDateTimeArry = currentDateTime.split(" ");
@@ -480,6 +482,8 @@ public class CustomFieldJobAdapter extends RecyclerView.Adapter<CustomFieldJobAd
         if (timePickerDialog == null) {
             timePickerDialog = new TimePickerDialog(context,
                     (view, hourOfDay, minute) -> {
+                myCalendar.set(Calendar.HOUR_OF_DAY,hourOfDay);
+                myCalendar.set(Calendar.MINUTE,minute);
                         String timeData = updateTime(hourOfDay, minute);
 
                         DecimalFormat formatter = new DecimalFormat("00");
@@ -505,7 +509,7 @@ public class CustomFieldJobAdapter extends RecyclerView.Adapter<CustomFieldJobAd
                             }
 
                         }
-                    }, myCalendar.get(Calendar.HOUR_OF_DAY), myCalendar.get(Calendar.MINUTE), true
+                    }, myCalendar.get(Calendar.HOUR_OF_DAY), myCalendar.get(Calendar.MINUTE), isTime24Format
             );
         }
         timePickerDialog.show();
