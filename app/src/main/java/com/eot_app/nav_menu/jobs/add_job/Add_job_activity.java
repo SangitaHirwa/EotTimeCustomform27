@@ -231,6 +231,7 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
     final Calendar cEnd = Calendar.getInstance();
     final Calendar cTStart = Calendar.getInstance();
     final Calendar cTEnd = Calendar.getInstance();
+    final Calendar cJobRecur = Calendar.getInstance();
     private boolean isTime24Format= false;
 
 
@@ -1212,7 +1213,7 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
     private void setAdapterOfCustomField() {
         ArrayList<CustOmFormQuestionsRes> custOmFormQuestionsList = App_preference.getSharedprefInstance().getJobCustomFields();
         if (custOmFormQuestionsList != null) {
-            customFiledQueAdpter = new CustomFieldJobAdapter(custOmFormQuestionsList, this);
+            customFiledQueAdpter = new CustomFieldJobAdapter(custOmFormQuestionsList, this,isTime24Format);
             recyclerViewCustomField.setAdapter(customFiledQueAdpter);
         }
     }
@@ -2473,6 +2474,9 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
 
     /***Recur Date Picker*******/
     private void selectRecurtillDate() {
+        year = cJobRecur.get(Calendar.YEAR);
+        month =cJobRecur.get(Calendar.MONTH);
+        day = cJobRecur.get(Calendar.DAY_OF_MONTH);
         showDialogPicker(R.id.end_date_for_weekly_recur);
     }
 
@@ -2949,11 +2953,32 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
     public void showDialogPicker(int id) {
         switch (id) {
             case R.id.end_date_for_weekly_recur:
+                final DatePickerDialog.OnDateSetListener endDateForjobRecur = new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int selectedYear, int selectedMonth, int selectedDay) {
+                        cJobRecur.set(Calendar.YEAR, selectedYear);
+                        cJobRecur.set(Calendar.MONTH, selectedMonth);
+                        cJobRecur.set(Calendar.DAY_OF_MONTH, selectedDay);
+                        String dateselect = "";
+                        try {
+                            DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy", Locale.US);//hh:mm:ss a
+                            Date endDate = formatter.parse(selectedDay + "-" + (selectedMonth + 1) + "-" + selectedYear);
+                            dateselect = new SimpleDateFormat(AppConstant.DATE_FORMAT, Locale.US).format(endDate);
+                            end_date_for_weekly_recur.setText(dateselect);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                    }
 
-                DatePickerDialog endDateForjobRecur = new DatePickerDialog(this, AppUtility.recurendDates(dateTime -> end_date_for_weekly_recur.setText(dateTime)), year, month, day);
+                };
+                DatePickerDialog dateEndDateForjobRecur = new DatePickerDialog(Add_job_activity.this, endDateForjobRecur, year, month, day);
+                dateEndDateForjobRecur.getDatePicker().setMinDate(Calendar.getInstance().getTimeInMillis());
+                dateEndDateForjobRecur.show();
+
+              /*  DatePickerDialog endDateForjobRecur = new DatePickerDialog(this, AppUtility.recurendDates(dateTime -> end_date_for_weekly_recur.setText(dateTime)), year, month, day);
 
                 endDateForjobRecur.getDatePicker().setMinDate(Calendar.getInstance().getTimeInMillis());
-                endDateForjobRecur.show();
+                endDateForjobRecur.show();*/
                 break;
 
             case R.id.date_start:
@@ -3083,6 +3108,7 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
                         DecimalFormat formatter = new DecimalFormat("00");
                         String[] aa = dateTime.split(":");
                         time_start.setText((formatter.format(Integer.parseInt(aa[0]))) + ":" + aa[1]);
+                        schdlStart = date_str + " " + time_str;
                         oldTime_str = (formatter.format(Integer.parseInt(aa[0]))) + ":" + aa[1];
                     }
                 },mHour, mMinute,isTime24Format);

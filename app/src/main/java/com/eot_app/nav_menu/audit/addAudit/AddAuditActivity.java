@@ -490,7 +490,7 @@ public class AddAuditActivity extends UploadDocumentActivity implements Add_Adui
     private void setAdapterOfCustomField() {
         ArrayList<CustOmFormQuestionsRes> custOmFormQuestionsList = App_preference.getSharedprefInstance().getAuditCustomFiled();
         if (custOmFormQuestionsList != null) {
-            customFiledQueAdpter = new CustomFieldJobAdapter(custOmFormQuestionsList, this);
+            customFiledQueAdpter = new CustomFieldJobAdapter(custOmFormQuestionsList, this, isTime24Format);
             recyclerViewCustomField.setAdapter(customFiledQueAdpter);
         }
 

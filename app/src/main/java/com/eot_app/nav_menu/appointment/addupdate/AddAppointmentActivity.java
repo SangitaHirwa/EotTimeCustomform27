@@ -24,6 +24,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
@@ -110,6 +111,9 @@ public class AddAppointmentActivity extends UploadDocumentActivity implements Te
     List<AppointmentStatusModel> allAppointmentStatusList =new ArrayList<>();
     final Calendar cStart = Calendar.getInstance();
     final Calendar cEnd = Calendar.getInstance();
+    final Calendar cTStart = Calendar.getInstance();
+    final Calendar cTEnd = Calendar.getInstance();
+
     private boolean isTime24Format= false;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -1216,17 +1220,15 @@ public class AddAppointmentActivity extends UploadDocumentActivity implements Te
 
     //schedule start time
     private void selectStartTime() {
-        final Calendar c = Calendar.getInstance();
-        mHour = c.get(Calendar.HOUR_OF_DAY);
-        mMinute = c.get(Calendar.MINUTE);
+        mHour = cTStart.get(Calendar.HOUR_OF_DAY);
+        mMinute = cTStart.get(Calendar.MINUTE);
         showDialogPicker(R.id.time_start);
     }
 
     //schedule end time
     private void selectEndTime() {
-        final Calendar c = Calendar.getInstance();
-        mHour = c.get(Calendar.HOUR_OF_DAY);
-        mMinute = c.get(Calendar.MINUTE);
+        mHour = cTEnd.get(Calendar.HOUR_OF_DAY);
+        mMinute = cTEnd.get(Calendar.MINUTE);
         showDialogPicker(R.id.time_end);
     }
 
@@ -1320,7 +1322,7 @@ public class AddAppointmentActivity extends UploadDocumentActivity implements Te
                 break;
 
             case R.id.time_start:
-                TimePickerDialog timePickerDialog = new TimePickerDialog(this, AppUtility.InputTimeSet(this, new Add_job_activity.DateTimeCallback() {
+                /*TimePickerDialog timePickerDialog = new TimePickerDialog(this, AppUtility.InputTimeSet(this, new Add_job_activity.DateTimeCallback() {
                     @SuppressLint("SetTextI18n")
                     @Override
                     public void setDateTime(String dateTime) {
@@ -1331,10 +1333,49 @@ public class AddAppointmentActivity extends UploadDocumentActivity implements Te
                     }
                 }, LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_start_end_time)), mHour, mMinute, isTime24Format);
                 timePickerDialog.show();
+                break;*/
+                TimePickerDialog timePickerDialog = new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                        cTStart.set(Calendar.HOUR_OF_DAY,hourOfDay);
+                        cTStart.set(Calendar.MINUTE,minute);
+                        String dateTime = AppUtility.updateTime(hourOfDay,minute);
+                        time_str = dateTime;
+                        DecimalFormat formatter = new DecimalFormat("00");
+                        String[] aa = dateTime.split(":");
+                        binding.timeStart.setText((formatter.format(Integer.parseInt(aa[0]))) + ":" + aa[1]);
+                    }
+                },mHour, mMinute,isTime24Format);
+                timePickerDialog.show();
                 break;
 
             case R.id.time_end:
-                TimePickerDialog timePickerDialog1 = new TimePickerDialog(this, AppUtility.OutPutTime(this, new Add_job_activity.DateTimeCallback() {
+                TimePickerDialog timePickerDialog1 = new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                        cTEnd.set(Calendar.HOUR_OF_DAY,hourOfDay);
+                        cTEnd.set(Calendar.MINUTE,minute);
+                        String dateTime = AppUtility.updateTime(hourOfDay,minute);
+                        time_en = dateTime;
+                        try {
+                            schdlStart = date_str + " " + time_str;
+                            schdlFinish = date_en + " " + time_en;
+
+                            if (conditionCheckTravel(schdlStart,schdlFinish)) {
+                                EotApp.getAppinstance().showToastmsg(LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_start_end_time));
+                            } else {
+                                DecimalFormat formatter = new DecimalFormat("00");
+                                String[] aa = dateTime.split(":");
+                                binding.timeEnd.setText((formatter.format(Integer.parseInt(aa[0]))) + ":" + aa[1]);
+                            }
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
+                    }
+                },mHour, mMinute,isTime24Format);
+                timePickerDialog1.show();
+                break;
+              /*  TimePickerDialog timePickerDialog1 = new TimePickerDialog(this, AppUtility.OutPutTime(this, new Add_job_activity.DateTimeCallback() {
                     @SuppressLint("SetTextI18n")
                     @Override
                     public void setDateTime(String dateTime) {
@@ -1356,7 +1397,7 @@ public class AddAppointmentActivity extends UploadDocumentActivity implements Te
                     }
                 }, LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_due_start_time)), mHour, mMinute, isTime24Format);
                 timePickerDialog1.show();
-                break;
+                break;*/
         }
     }
 

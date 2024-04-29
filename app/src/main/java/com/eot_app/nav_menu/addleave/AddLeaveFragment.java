@@ -87,7 +87,7 @@ public class AddLeaveFragment extends AppCompatActivity implements View.OnClickL
     int year, month, day;
     final Calendar myCalendar = Calendar.getInstance();
     final Calendar myCalendar1 = Calendar.getInstance();
-
+    boolean isTime24Format= false;
     public AddLeaveFragment() {
         // Required empty public constructor
     }
@@ -173,8 +173,10 @@ public class AddLeaveFragment extends AppCompatActivity implements View.OnClickL
         mTimePicker = new TimePickerDialog(this, (timePicker, selectedHour, selectedMinute) -> {
             String stime = null;
             if(App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable().equals("0")) {
+                isTime24Format = false;
                  stime = updateTimeS(selectedHour, selectedMinute);
             }else {
+                isTime24Format = true;
                 stime = String.valueOf(selectedHour) + ':' +
                         selectedMinute + " ";
             }
@@ -188,7 +190,7 @@ public class AddLeaveFragment extends AppCompatActivity implements View.OnClickL
                     binding.timeTo.setText(ENDSELCTEDATE.concat(ENDSELCTETIME));
                 }
             
-        }, hour, minute, true);//Yes 24 hour time
+        }, hour, minute, isTime24Format);
         mTimePicker.setTitle("Select Time");
         mTimePicker.show();
     }
