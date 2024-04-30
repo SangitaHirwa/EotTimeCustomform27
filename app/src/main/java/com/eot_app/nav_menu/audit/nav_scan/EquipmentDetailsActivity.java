@@ -676,83 +676,89 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
      * equipment details which is not linked with any job or audit
      */
     private void setEquipmentDetails(Equipment equipment) {
-        String clientArd ="";
-        equipmentID = equipment.getEquId();
-        equipment_name.setText(equipment.getEqunm());
-        barnd_name_detail.setText(equipment.getBrand());
-        model_no_detail.setText(equipment.getMno());
-        serial_no_detail.setText(equipment.getSno());
-        custom_filed_txt_1.setText(equipment.getExtraField1());
-        custom_filed_txt_2.setText(equipment.getExtraField2());
+        if(equipment != null) {
+            String clientArd = "";
+            equipmentID = equipment.getEquId();
+            equipment_name.setText(equipment.getEqunm());
+            barnd_name_detail.setText(equipment.getBrand());
+            model_no_detail.setText(equipment.getMno());
+            serial_no_detail.setText(equipment.getSno());
+            custom_filed_txt_1.setText(equipment.getExtraField1());
+            custom_filed_txt_2.setText(equipment.getExtraField2());
 
-        if(equipment.getCltId() != null && !equipment.getCltId().equals("0")) {
-           String clientNm= AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).clientModel().getClientNmByClientId(equipment.getCltId());
-            client_name_detail.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.client_name) + ":- " +clientNm);
-        }else {
-            client_name_detail.setVisibility(View.GONE);
-            site_detail.setVisibility(View.GONE);
-        }
-        if( equipment.getAdr()  != null && !equipment.getAdr().equals("") ){
-            clientArd =  clientArd.concat(equipment.getAdr());
-        }if(equipment.getCity()  != null && !equipment.getCity().equals("")){
-            clientArd = clientArd.concat(","+equipment.getCity());
-        }if(equipment.getState()  != null && !equipment.getState().equals("") ){
-            clientArd = clientArd.concat(","+ SpinnerCountrySite.getStatenameById(equipment.getCtry(),equipment.getState()));
-        }if(equipment.getCtry()  != null && !equipment.getCtry().equals("") ){
-            clientArd = clientArd.concat(","+SpinnerCountrySite.getCountryNameById(equipment.getCtry()));
-        }if(equipment.getZip()  != null && !equipment.getZip().equals("")){
-            clientArd =  clientArd.concat(","+equipment.getZip());
-        }
-        location_detail.setText(clientArd);
-
-        supplier.setText(equipment.getSupplier());
-        try {
-            if (TextUtils.isEmpty(equipment.getRate()))
-                traiff_rate_detail.setText("");
-            else
-                traiff_rate_detail.setText(AppUtility.getRoundoff_amount(String.valueOf(equipment.getRate())));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        equipment_group_detail.setText(equipment.getGroupName());
-
-
-        setDateInView(warrenty_expiry_date_detail, equipment.getExpiryDate());
-        setDateInView(manufacture_date_detail, equipment.getManufactureDate());
-        setDateInView(purchase_date_detail, equipment.getPurchaseDate());
-        setDateInView(install_date_detail, equipment.getInstalledDate());
-
-
-        if (!TextUtils.isEmpty(equipment.getType())) {
-            if (equipment.getType().equals("2"))
-                ll_provider.setVisibility(View.GONE);
-            else ll_provider.setVisibility(View.VISIBLE);
-            type_detail.setText(getEquipmentType(equipment.getType()));
-        }
-
-        if (!TextUtils.isEmpty(equipment.getImage()))
-            Glide.with(this).load(App_preference.getSharedprefInstance().getBaseURL() + equipment.getImage())
-                    .thumbnail(Glide.with(this).load(R.raw.loader_eot)).placeholder(R.drawable.app_logo2).into(profile_img);
-
-
-        if (!TextUtils.isEmpty(equipment.getUsrManualDoc())) {
-            path = equipment.getUsrManualDoc();
-        }
-
-        if (equipment.getCltId() != null && !TextUtils.isEmpty(equipment.getCltId())) {
-            cltId = equipment.getCltId();
-            if (App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsJobAddOrNot() != 0) {//0
-                go_to_addjob.setVisibility(View.GONE);
+            if (equipment.getCltId() != null && !equipment.getCltId().equals("0")) {
+                String clientNm = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).clientModel().getClientNmByClientId(equipment.getCltId());
+                client_name_detail.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.client_name) + ":- " + clientNm);
             } else {
-                go_to_addjob.setVisibility(View.VISIBLE);
+                client_name_detail.setVisibility(View.GONE);
+                site_detail.setVisibility(View.GONE);
             }
-        }
-        try {
-            if (equipment != null && equipment.getBarcode() != null)
-                equ_bar_code_num_txt.setText(equipment.getBarcode());
-        } catch (Exception exception) {
-            exception.printStackTrace();
+            if (equipment.getAdr() != null && !equipment.getAdr().equals("")) {
+                clientArd = clientArd.concat(equipment.getAdr());
+            }
+            if (equipment.getCity() != null && !equipment.getCity().equals("")) {
+                clientArd = clientArd.concat("," + equipment.getCity());
+            }
+            if (equipment.getState() != null && !equipment.getState().equals("")) {
+                clientArd = clientArd.concat("," + SpinnerCountrySite.getStatenameById(equipment.getCtry(), equipment.getState()));
+            }
+            if (equipment.getCtry() != null && !equipment.getCtry().equals("")) {
+                clientArd = clientArd.concat("," + SpinnerCountrySite.getCountryNameById(equipment.getCtry()));
+            }
+            if (equipment.getZip() != null && !equipment.getZip().equals("")) {
+                clientArd = clientArd.concat("," + equipment.getZip());
+            }
+            location_detail.setText(clientArd);
+
+            supplier.setText(equipment.getSupplier());
+            try {
+                if (TextUtils.isEmpty(equipment.getRate()))
+                    traiff_rate_detail.setText("");
+                else
+                    traiff_rate_detail.setText(AppUtility.getRoundoff_amount(String.valueOf(equipment.getRate())));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            equipment_group_detail.setText(equipment.getGroupName());
+
+
+            setDateInView(warrenty_expiry_date_detail, equipment.getExpiryDate());
+            setDateInView(manufacture_date_detail, equipment.getManufactureDate());
+            setDateInView(purchase_date_detail, equipment.getPurchaseDate());
+            setDateInView(install_date_detail, equipment.getInstalledDate());
+
+
+            if (!TextUtils.isEmpty(equipment.getType())) {
+                if (equipment.getType().equals("2"))
+                    ll_provider.setVisibility(View.GONE);
+                else ll_provider.setVisibility(View.VISIBLE);
+                type_detail.setText(getEquipmentType(equipment.getType()));
+            }
+
+            if (!TextUtils.isEmpty(equipment.getImage()))
+                Glide.with(this).load(App_preference.getSharedprefInstance().getBaseURL() + equipment.getImage())
+                        .thumbnail(Glide.with(this).load(R.raw.loader_eot)).placeholder(R.drawable.app_logo2).into(profile_img);
+
+
+            if (!TextUtils.isEmpty(equipment.getUsrManualDoc())) {
+                path = equipment.getUsrManualDoc();
+            }
+
+            if (equipment.getCltId() != null && !TextUtils.isEmpty(equipment.getCltId())) {
+                cltId = equipment.getCltId();
+                if (App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsJobAddOrNot() != 0) {//0
+                    go_to_addjob.setVisibility(View.GONE);
+                } else {
+                    go_to_addjob.setVisibility(View.VISIBLE);
+                }
+            }
+            try {
+                if (equipment != null && equipment.getBarcode() != null)
+                    equ_bar_code_num_txt.setText(equipment.getBarcode());
+            } catch (Exception exception) {
+                exception.printStackTrace();
+            }
         }
     }
 
