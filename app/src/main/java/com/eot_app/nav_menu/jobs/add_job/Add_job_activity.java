@@ -2375,7 +2375,7 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
                 }
 
 
-                if (TextUtils.isEmpty(appId) && !cltId.equals("0") && !cltId.equals("")) {
+                if (TextUtils.isEmpty(appId) && cltId != null && !cltId.equals("0") && !cltId.equals("")) {
                     String contact_name = auto_contact.getText().toString().trim();
                     if (contact_name.length() > 0) {
                         List<String> contact = new ArrayList<>();

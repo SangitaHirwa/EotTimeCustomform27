@@ -208,6 +208,7 @@ public class DetailFragment extends Fragment
     RelativeLayout ll_actual_date_time, ll_travel_date_time;
     LinearLayout ll_completion_detail, liner_layout_for_recurmsg, recurMsgShow, recurMsgHide;
     RelativeLayout rl_Collapse1, rl_Collapse2,requested_itemList_show_hide_rl;
+    ConstraintLayout progressBar_timing;
     String firstTrvlBrkTime, lastTrvlBrkTime;
     String firstBrkTime, lastBrkTime;
     String lastStatus, lastStatusTime;
@@ -654,7 +655,7 @@ public class DetailFragment extends Fragment
 
         tv_label_job_travel_time = layout.findViewById(R.id.tv_label_job_travel_time);
         tv_label_job_travel_time.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.travel_job_time));
-
+        progressBar_timing = layout.findViewById(R.id.progressBar_timing);
 
         date_tr_start = layout.findViewById(R.id.date_tr_start);
         date_tr_start.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.travel_start_date_time));
@@ -1022,6 +1023,7 @@ public class DetailFragment extends Fragment
         if (completionDetailsList.get(0).getLastStatusTime() != null && !completionDetailsList.get(0).getLastStatusTime().isEmpty()) {
             lastStatusTime = AppUtility.getDate(Long.parseLong(completionDetailsList.get(0).getLastStatusTime()), timeFormate1);
         }
+        progressBar_timing.setVisibility(View.GONE);
     }
 
 
@@ -2917,8 +2919,10 @@ public void setCompletionDetail(){
                     ll_travel_date_time.setVisibility(View.VISIBLE);
                     rl_Collapse2.setVisibility(View.VISIBLE);
                     isClickedActual = true;
-                    if (jobDetail_pi != null)
+                    if (jobDetail_pi != null) {
+                        progressBar_timing.setVisibility(View.VISIBLE);
                         jobDetail_pi.getJobCompletionDetails(mParam2.getJobId());
+                    }
                 }
                 break;
             case R.id.liner_layout_for_recurmsg_show:
@@ -3246,6 +3250,12 @@ public void setCompletionDetail(){
                 date_ac_end.setEnabled(true);
             }
         }
+         /**drop up actual and travel time***/
+        ivEditAc.setImageDrawable(ContextCompat.getDrawable(requireActivity(), R.drawable.ic_arrow_drop_down_black_24dp));
+        isClickedActual = false;
+        ll_actual_date_time.setVisibility(View.GONE);
+        ll_travel_date_time.setVisibility(View.GONE);
+        rl_Collapse2.setVisibility(View.GONE);
         HyperLog.i(TAG, "onFormSuccess(M) Stop");
     }
 
