@@ -333,7 +333,7 @@ public class DetailFragment extends Fragment
                         map_loc_txt.setVisibility(View.VISIBLE);
                         image_txt.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.location_not_found));
                     } else {
-                        Log.e("Api_Map_Key", BuildConfig.MAPS_API_KEY);
+//                        Log.e("Api_Map_Key", BuildConfig.MAPS_API_KEY);
                         LatLng latLng = new LatLng(Double.parseDouble(mParam2.getLat()), Double.parseDouble(mParam2.getLng()));
                         mMap.addMarker(new MarkerOptions()
                                 .position(latLng)
