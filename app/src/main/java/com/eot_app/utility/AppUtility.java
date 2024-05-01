@@ -38,6 +38,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+
+import com.eot_app.BuildConfig;
 import com.eot_app.R;
 import com.eot_app.nav_menu.admin_fw_chat_pkg.sonam_user_user_chat_pkg.user_chat_controller.UserToUserChatController;
 import com.eot_app.nav_menu.jobs.add_job.Add_job_activity;
@@ -1027,6 +1029,10 @@ public class AppUtility {
         }
         headers.put("Token", App_preference.getSharedprefInstance().getLoginRes().getToken());
         headers.put("Origin", getBaserUrlToOrigin());
+        /** After discussion with Jit sir, Added below two new Header param for validation and check on backend side 1/may/24*/
+        headers.put("deviceInfo", Build.BRAND + " " + Build.MODEL+" OS:- "+Build.VERSION.RELEASE
+                + " " + Build.VERSION_CODES.class.getFields()[Build.VERSION.SDK_INT].getName());
+        headers.put("appVersion", BuildConfig.VERSION_NAME);
         return headers;
     }
 
