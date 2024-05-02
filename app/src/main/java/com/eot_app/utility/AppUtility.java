@@ -2381,8 +2381,8 @@ public static void askPerMissionForLocation(Context context) {
     public static String get24HoursTimeFormate(String timeS){
         String time=null;
         try {
-            Date date = new SimpleDateFormat(AppConstant.DATE_FORMAT+" hh:mm a", Locale.getDefault()).parse(timeS);
-            time= new SimpleDateFormat(AppConstant.DATE_FORMAT+" HH:mm", Locale.getDefault()).format(date);
+            Date date = new SimpleDateFormat(AppConstant.DATE_FORMAT+" hh:mm a", Locale.ENGLISH).parse(timeS);
+            time= new SimpleDateFormat(AppConstant.DATE_FORMAT+" HH:mm", Locale.ENGLISH).format(date);
         } catch (ParseException e) {
             e.printStackTrace();
         }
