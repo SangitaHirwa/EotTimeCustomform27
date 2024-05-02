@@ -2250,10 +2250,10 @@ public static void askPerMissionForLocation(Context context) {
             month = selectedMonth;
             day = selectedDay;
             try {
-                DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
+                DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy",  Locale.ENGLISH);
                 Date startDate1 = formatter.parse(day + "-" + (month + 1) + "-" + year);
                 assert startDate1 != null;
-                callback.setDateTime(new SimpleDateFormat(AppConstant.DATE_FORMAT, Locale.getDefault()).format(startDate1));
+                callback.setDateTime(new SimpleDateFormat(AppConstant.DATE_FORMAT,  Locale.ENGLISH).format(startDate1));
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -2308,7 +2308,7 @@ public static void askPerMissionForLocation(Context context) {
                     AppUtility.dateTimeByAmPmFormate("EEE, "+AppConstant.DATE_FORMAT+"/hh:mm/a", "EEE, "+AppConstant.DATE_FORMAT+"/HH:mm");
             // Create a DateFormatter object for displaying date in specified format.
 //            SimpleDateFormat formatter = new SimpleDateFormat(timeFormate, Locale.US);
-            SimpleDateFormat formatter = new SimpleDateFormat(timeFormate, Locale.getDefault());
+            SimpleDateFormat formatter = new SimpleDateFormat(timeFormate,  Locale.ENGLISH);
             // Create a calendar object that will convert the date and time value in milliseconds to date.
             Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis(Long.parseLong(updateDate) * 1000);

@@ -744,9 +744,9 @@ public class AddAppointmentActivity extends UploadDocumentActivity implements Te
                     }
                     //time_str = time_str + " " + "PM";}
                     if (t2 != 12) {
-                        endDate = new SimpleDateFormat("hh:mm", Locale.getDefault()).parse(time_en);
+                        endDate = new SimpleDateFormat("hh:mm",  Locale.ENGLISH).parse(time_en);
                         time_en = "";
-                        time_en = new SimpleDateFormat("hh:mm a", Locale.getDefault()).format(endDate);
+                        time_en = new SimpleDateFormat("hh:mm a",  Locale.ENGLISH).format(endDate);
                     } else {
                         time_en = "";
                         time_en = binding.timeEnd.getText().toString() + " " + "PM";
@@ -1429,9 +1429,9 @@ public class AddAppointmentActivity extends UploadDocumentActivity implements Te
                     int t2 = Integer.valueOf(words2[0]);
                     try {
                         if (t1 != 12) {
-                            startDate = new SimpleDateFormat("hh:mm", Locale.getDefault()).parse(time_str);
+                            startDate = new SimpleDateFormat("hh:mm",  Locale.ENGLISH).parse(time_str);
                             time_str = "";
-                            time_str = new SimpleDateFormat("hh:mm a", Locale.getDefault()).format(startDate);
+                            time_str = new SimpleDateFormat("hh:mm a",  Locale.ENGLISH).format(startDate);
                         } else {
                             time_str = "";
                             time_str = binding.timeStart.getText().toString() + " " + "PM";
@@ -1439,9 +1439,9 @@ public class AddAppointmentActivity extends UploadDocumentActivity implements Te
                             //   time_str = time_str + " " + "PM";
                         }
                         if (t2 != 12) {
-                            endDate = new SimpleDateFormat("hh:mm", Locale.getDefault()).parse(time_en);
+                            endDate = new SimpleDateFormat("hh:mm",  Locale.ENGLISH).parse(time_en);
                             time_en = "";
-                            time_en = new SimpleDateFormat("hh:mm a", Locale.getDefault()).format(endDate);
+                            time_en = new SimpleDateFormat("hh:mm a",  Locale.ENGLISH).format(endDate);
                         } else {
                             //   time_en = time_en + " " + "PM";
                             time_en = "";
