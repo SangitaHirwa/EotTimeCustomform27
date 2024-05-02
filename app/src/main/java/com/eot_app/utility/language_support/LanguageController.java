@@ -277,14 +277,14 @@ public class LanguageController implements Language_pi {
                 e.printStackTrace();
         }
         try {
-            if (staticLabelModel != null && staticLabelModel.getString(key) != null)
+            if (staticLabelModel != null && !staticLabelModel.isNull(key) && staticLabelModel.getString(key) != null )
                 return staticLabelModel.getString(key);
         } catch (Exception ex) {
             HyperLog.i("", "getMobileMsgByKey(M) Exception" + key);
             ex.printStackTrace();
         }
         try {
-            if (mobileMsgsModel.getString(key) != null) {
+            if (mobileMsgsModel != null && !mobileMsgsModel.isNull(key) && mobileMsgsModel.getString(key) != null) {
                 return mobileMsgsModel.getString(key);
             } else return key;
         } catch (JSONException e) {
