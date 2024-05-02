@@ -324,10 +324,24 @@ public class AddAppointmentActivity extends UploadDocumentActivity implements Te
 
         try {
             long longStartTime = Long.parseLong(appointment.getSchdlStart());
-            String timeFormat = AppUtility.getDateWithFormates(longStartTime, AppUtility.dateTimeByAmPmFormate("hh:mm a",
+            String startTimeFormat = AppUtility.getDateWithFormates(longStartTime, AppUtility.dateTimeByAmPmFormate("hh:mm a",
                     "HH:mm"));
-            binding.timeStart.setText(timeFormat);
-            time_str = timeFormat;
+            binding.timeStart.setText(startTimeFormat);
+            time_str = startTimeFormat;
+            if (App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable() != null &&
+                    App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable().equals("0")) {
+                String time_format = AppUtility.getDateWithFormates(longStartTime,
+                        "HH:mm");
+                String[] datestr =  time_format.split(" ");
+                String[] time_ary_end = datestr[0].split(":");
+                cTStart.set(Calendar.HOUR_OF_DAY, Integer.parseInt(time_ary_end[0]));
+                cTStart.set(Calendar.MINUTE, Integer.parseInt(time_ary_end[1]));
+
+            }else{
+                String[] time_ary_str = startTimeFormat.split(":");
+                cTStart.set(Calendar.HOUR_OF_DAY,Integer.parseInt(time_ary_str[0]));
+                cTStart.set(Calendar.MINUTE,Integer.parseInt(time_ary_str[1]));
+            }
 
             String dateFormat = AppUtility.getDateWithFormates(longStartTime, AppConstant.DATE_FORMAT);
             String[] dat_ary_start = AppUtility.getDateWithFormates(longStartTime, "dd-MM-yyyy").split("-");
@@ -341,17 +355,31 @@ public class AddAppointmentActivity extends UploadDocumentActivity implements Te
             date_str = dateFormat;
 
             long endTime = Long.parseLong(appointment.getSchdlFinish());
-            timeFormat = AppUtility.getDateWithFormates(endTime, AppUtility
+             String endTimeFormat = AppUtility.getDateWithFormates(endTime, AppUtility
                     .dateTimeByAmPmFormate("hh:mm a", "HH:mm"));
-            binding.timeEnd.setText(timeFormat);
-            time_en = timeFormat;
+            binding.timeEnd.setText(endTimeFormat);
+            time_en = endTimeFormat;
+            if (App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable() != null &&
+                    App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable().equals("0")) {
+                String time_format = AppUtility.getDateWithFormates(endTime,
+                        "HH:mm");
+                String[] datestr =  time_format.split(" ");
+                String[] time_ary_end = datestr[0].split(":");
+                cTEnd.set(Calendar.HOUR_OF_DAY, Integer.parseInt(time_ary_end[0]));
+                cTEnd.set(Calendar.MINUTE, Integer.parseInt(time_ary_end[1]));
+
+            }else{
+                String[] time_ary_end = endTimeFormat.split(":");
+                cTEnd.set(Calendar.HOUR_OF_DAY,Integer.parseInt(time_ary_end[0]));
+                cTEnd.set(Calendar.MINUTE,Integer.parseInt(time_ary_end[1]));
+            }
 
             dateFormat = AppUtility.getDateWithFormates(endTime, AppConstant.DATE_FORMAT);
-            String[] dat_ary_end = AppUtility.getDateWithFormates(longStartTime, "dd-MM-yyyy").split("-");
+            String[] dat_ary_end = AppUtility.getDateWithFormates(endTime, "dd-MM-yyyy").split("-");
             if(dat_ary_end.length > 0) {
-                cStart.set(Calendar.YEAR, Integer.parseInt(dat_ary_end[2]));
-                cStart.set(Calendar.MONTH, Integer.parseInt(dat_ary_end[1])-1);
-                cStart.set(Calendar.DAY_OF_MONTH, Integer.parseInt(dat_ary_end[0]));
+                cEnd.set(Calendar.YEAR, Integer.parseInt(dat_ary_end[2]));
+                cEnd.set(Calendar.MONTH, Integer.parseInt(dat_ary_end[1])-1);
+                cEnd.set(Calendar.DAY_OF_MONTH, Integer.parseInt(dat_ary_end[0]));
             }
             binding.dateEnd.setText(dateFormat);
             date_en = dateFormat;
@@ -1028,10 +1056,22 @@ public class AddAppointmentActivity extends UploadDocumentActivity implements Te
                 AppConstant.DATE_FORMAT+" hh:mm:ss a", AppConstant.DATE_FORMAT+" HH:mm:ss"));
         String[] date_Time = dateTime.split(" ");
         String datestr = date_Time[0];
-
+        String datestr1 = null;
         String time1 = App_preference.getSharedprefInstance().getLoginRes().getJobSchedule();
         if (!TextUtils.isEmpty(time1)) {
-            schdul_Start_Date_Time(AppUtility.getFormatedTimes(time1), datestr);
+            if(calenderDate.isEmpty()) {
+                schdul_Start_Date_Time(AppUtility.getFormatedTimes(time1), datestr);
+            }else {
+                try {
+                SimpleDateFormat dateFormat = new SimpleDateFormat("dd-M-yyyy");
+                Date parse = dateFormat.parse(calenderDate);
+                SimpleDateFormat dateFormat1 = new SimpleDateFormat("dd-MMM-yyyy");
+                datestr1 = dateFormat1.format(parse);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+                schdul_Start_Date_Time(AppUtility.getFormatedTimes(time1), datestr1);
+            }
         }
 
         String sch_tm_dt = App_preference.getSharedprefInstance().getLoginRes().getJobCurrentTime();
@@ -1124,9 +1164,26 @@ public class AddAppointmentActivity extends UploadDocumentActivity implements Te
         date_str = time_duration[0];
         try {
             if (App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable() != null &&
-                    App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable().equals("0"))
+                    App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable().equals("0")){
                 time_str = time_duration[1] + " " + time_duration[2];
-            else time_str = time_duration[1] + "";
+                try {
+                    SimpleDateFormat spf = new SimpleDateFormat("dd-MMM-yyyy hh:mm a");
+                    Date date = spf.parse(std);
+                    spf = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+                    String[] datestr = spf.format(date).split(" ");
+                    String[] time_ary_end = datestr[1].split(":");
+                    cTStart.set(Calendar.HOUR_OF_DAY, Integer.parseInt(time_ary_end[0]));
+                    cTStart.set(Calendar.MINUTE, Integer.parseInt(time_ary_end[1]));
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+
+            }else {
+                time_str = time_duration[1] + "";
+                String[] time_ary_str = time_str.split(":");
+                cTStart.set(Calendar.HOUR_OF_DAY,Integer.parseInt(time_ary_str[0]));
+                cTStart.set(Calendar.MINUTE,Integer.parseInt(time_ary_str[1]));
+            }
 
         } catch (Exception e) {
             e.getMessage();
@@ -1157,6 +1214,25 @@ public class AddAppointmentActivity extends UploadDocumentActivity implements Te
         this.time_str = time_str;
         binding.dateStart.setText(date_str);
         binding.timeStart.setText(this.time_str);
+        String date_str_c= str_dt_tm+" "+time_str;
+        if (App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable() != null &&
+                App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable().equals("0")) {
+            try {
+                SimpleDateFormat spf = new SimpleDateFormat("dd-MMM-yyyy hh:mm a");
+                Date date = spf.parse(date_str_c);
+                spf = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+                String[] datestr = spf.format(date).split(" ");
+                String[] time_ary_end = datestr[1].split(":");
+                cTStart.set(Calendar.HOUR_OF_DAY, Integer.parseInt(time_ary_end[0]));
+                cTStart.set(Calendar.MINUTE, Integer.parseInt(time_ary_end[1]));
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }else {
+            String[] time_ary_str = time_str.split(":");
+            cTStart.set(Calendar.HOUR_OF_DAY,Integer.parseInt(time_ary_str[0]));
+            cTStart.set(Calendar.MINUTE,Integer.parseInt(time_ary_str[1]));
+        }
     }
 
     private void end_Date_Time() {
@@ -1183,9 +1259,26 @@ public class AddAppointmentActivity extends UploadDocumentActivity implements Te
         try {
             if (App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable() != null &&
                     App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable().equals("0"))
+            {
                 time_en = time_duration[1] + " " + time_duration[2];
-            else time_en = time_duration[1] + "";
+                try {
+                    SimpleDateFormat spf = new SimpleDateFormat("dd-MMM-yyyy hh:mm a");
+                    Date date = spf.parse(std);
+                    spf = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+                    String[] datestr = spf.format(date).split(" ");
+                    String[] time_ary_end = datestr[1].split(":");
+                    cTEnd.set(Calendar.HOUR_OF_DAY, Integer.parseInt(time_ary_end[0]));
+                    cTEnd.set(Calendar.MINUTE, Integer.parseInt(time_ary_end[1]));
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
 
+            } else {
+                time_en = time_duration[1] + "";
+                String[] time_ary_end = time_en.split(":");
+                cTEnd.set(Calendar.HOUR_OF_DAY,Integer.parseInt(time_ary_end[0]));
+                cTEnd.set(Calendar.MINUTE,Integer.parseInt(time_ary_end[1]));
+            }
         } catch (Exception e) {
             e.getMessage();
         }
@@ -1246,9 +1339,6 @@ public class AddAppointmentActivity extends UploadDocumentActivity implements Te
                         cStart.set(Calendar.YEAR, selectedYear);
                         cStart.set(Calendar.MONTH, selectedMonth);
                         cStart.set(Calendar.DAY_OF_MONTH, selectedDay);
-                        cEnd.set(Calendar.YEAR, selectedYear);
-                        cEnd.set(Calendar.MONTH, selectedMonth);
-                        cEnd.set(Calendar.DAY_OF_MONTH, selectedDay);
                         String dateselect = "";
                         try {
                             DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy", Locale.US);//hh:mm:ss a

@@ -272,10 +272,22 @@ public class AddAudit_pc implements AddAduit_pi {
                 , AppConstant.DATE_FORMAT+" HH:mm:ss"));
         String[] date_Time = dateTime.split(" ");
         String datestr = date_Time[0];
-
+        String datestr1 = null;
         String time1 = App_preference.getSharedprefInstance().getLoginRes().getJobSchedule();
         if (!TextUtils.isEmpty(time1)) {
-            schdul_Start_Date_Time(AppUtility.getFormatedTimes(time1), datestr);
+            if(calenderDate.isEmpty()) {
+                schdul_Start_Date_Time(AppUtility.getFormatedTimes(time1), datestr);
+            }else {
+                try {
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+                    Date parse = dateFormat.parse(calenderDate);
+                    SimpleDateFormat dateFormat1 = new SimpleDateFormat("dd-MMM-yyyy");
+                    datestr1 = dateFormat1.format(parse);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                schdul_Start_Date_Time(AppUtility.getFormatedTimes(time1), datestr1);
+            }
         }
 
         String sch_tm_dt = App_preference.getSharedprefInstance().getLoginRes().getJobCurrentTime();
@@ -374,11 +386,13 @@ public class AddAudit_pc implements AddAduit_pi {
 
         try {
             if (App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable() != null &&
-                    App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable().equals("0"))
+                    App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable().equals("0")) {
                 time_str = sch_time[1] + " " + sch_time[2];
-            else time_str = sch_time[1] + " ";
+            } else{
+                time_str = sch_time[1] + "";
+            }
         } catch (Exception e) {
-
+                  e.printStackTrace();
         }
         add_aduitView.set_Str_DTime(date_str, time_str);
         end_Date_Time();
