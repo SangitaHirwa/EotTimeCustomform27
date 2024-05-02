@@ -23,16 +23,16 @@ public class JOB_weekly_recur_PC implements JOB_weekly_recur_PI {
     public void getTillDateForRecur(String startDate) {
 
         Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MMM-yyyy", Locale.getDefault());
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH);
 
         Date date = null;
         try {
-            date = new SimpleDateFormat("dd-MMM-yyyy", Locale.getDefault()).parse(startDate);
+            date = new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH).parse(startDate);
         } catch (ParseException e) {
             e.printStackTrace();
         }
 
-        startDate = new SimpleDateFormat("dd-MMM-yyyy", Locale.getDefault()).format(date);
+        startDate = new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH).format(date);
         startDate = AppUtility.getDate(startDate);
 
         try {

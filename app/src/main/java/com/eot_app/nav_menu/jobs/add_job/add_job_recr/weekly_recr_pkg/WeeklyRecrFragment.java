@@ -105,23 +105,23 @@ public class WeeklyRecrFragment extends Fragment implements View.OnClickListener
         if (RECRMSG == 2 && dailyMsgResModel.getEnd_date() != null && !dailyMsgResModel.getEnd_date().equals("")) {
             Date start_Date = null;
             try {
-                start_Date = new SimpleDateFormat("dd-MMM-yyyy", Locale.getDefault()).parse(dailyMsgResModel.getEnd_date());
+                start_Date = new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH).parse(dailyMsgResModel.getEnd_date());
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-            endDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(start_Date);
-            end_date_by.setText(new SimpleDateFormat("dd-MMM-yyyy", Locale.getDefault()).format(start_Date));
+            endDate = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).format(start_Date);
+            end_date_by.setText(new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH).format(start_Date));
             Log.e("", "");
         } else if (RECRMSG == 3 && dailyMsgResModel.getOccurences() != null) {
             end_after_edt.setVisibility(View.VISIBLE);
             end_after_edt.setText(dailyMsgResModel.getOccurences());
             Date start_Date = null;
             try {
-                start_Date = new SimpleDateFormat("dd-MMM-yyyy", Locale.getDefault()).parse(dailyMsgResModel.getEnd_date());
+                start_Date = new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH).parse(dailyMsgResModel.getEnd_date());
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-            end_date_by.setText(new SimpleDateFormat("dd-MMM-yyyy", Locale.getDefault()).format(start_Date));
+            end_date_by.setText(new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH).format(start_Date));
         }
 
         if (RECRMSG == 1) {
@@ -150,14 +150,14 @@ public class WeeklyRecrFragment extends Fragment implements View.OnClickListener
             defaultJobDateTime = bundle.getString("dateTime");
             Date startDate = null;
             try {
-                startDate = new SimpleDateFormat("dd-MMM-yyyy", Locale.getDefault()).parse(defaultJobDateTime);
+                startDate = new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH).parse(defaultJobDateTime);
                 schdlStart = startDate.getTime() + "";
 
 
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-            defaultJobDateTime = new SimpleDateFormat("dd-MMM-yyyy", Locale.getDefault()).format(startDate);
+            defaultJobDateTime = new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH).format(startDate);
             defaultJobDateTime = AppUtility.getDate(defaultJobDateTime);
 
         }
@@ -377,7 +377,7 @@ public class WeeklyRecrFragment extends Fragment implements View.OnClickListener
 
         Calendar calendar = Calendar.getInstance();
         try {
-            calendar.setTime(new SimpleDateFormat("dd-MMM-yyyy", Locale.getDefault()).parse(currentDateString));
+            calendar.setTime(new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH).parse(currentDateString));
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -576,11 +576,11 @@ public class WeeklyRecrFragment extends Fragment implements View.OnClickListener
             if (RECRMSG == 3 && !end_date_by.getText().toString().equals("")) {
                 Date startDate = null;
                 try {
-                    startDate = new SimpleDateFormat("dd-MMM-yyyy", Locale.getDefault()).parse(end_date_by.getText().toString());
+                    startDate = new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH).parse(end_date_by.getText().toString());
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
-                endDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(startDate);
+                endDate = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).format(startDate);
                 numberOfOcurrences = "";
             } else {
                 endDate = "";
@@ -588,11 +588,11 @@ public class WeeklyRecrFragment extends Fragment implements View.OnClickListener
             if (!date_start.getText().toString().equals("")) {
                 Date start_Date = null;
                 try {
-                    start_Date = new SimpleDateFormat("dd-MMM-yyyy", Locale.getDefault()).parse(date_start.getText().toString());
+                    start_Date = new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH).parse(date_start.getText().toString());
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
-                startDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(start_Date);
+                startDate = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).format(start_Date);
             }
 
             if (selectedDays.size() > 0) {

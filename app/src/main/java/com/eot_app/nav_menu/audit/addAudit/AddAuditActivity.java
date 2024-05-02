@@ -1623,20 +1623,20 @@ public class AddAuditActivity extends UploadDocumentActivity implements Add_Adui
             int t2 = Integer.parseInt(words2[0]);
             try {
                 if (t1 != 12) {
-                    startDate = new SimpleDateFormat("hh:mm", Locale.getDefault()).parse(time_str);
+                    startDate = new SimpleDateFormat("hh:mm", Locale.ENGLISH).parse(time_str);
                     time_str = "";
                     assert startDate != null;
-                    time_str = new SimpleDateFormat("hh:mm a", Locale.getDefault()).format(startDate);
+                    time_str = new SimpleDateFormat("hh:mm a", Locale.ENGLISH).format(startDate);
                 } else {
                     time_str = "";
                     time_str = time_start.getText().toString() + " " + "PM";
                     //   time_str = time_str + " " + "PM";
                 }
                 if (t2 != 12) {
-                    endDate = new SimpleDateFormat("hh:mm", Locale.getDefault()).parse(time_en);
+                    endDate = new SimpleDateFormat("hh:mm", Locale.ENGLISH).parse(time_en);
                     time_en = "";
                     assert endDate != null;
-                    time_en = new SimpleDateFormat("hh:mm a", Locale.getDefault()).format(endDate);
+                    time_en = new SimpleDateFormat("hh:mm a", Locale.ENGLISH).format(endDate);
                 } else {
                     time_en = "";
                     time_en = time_end.getText().toString() + " " + "PM";
