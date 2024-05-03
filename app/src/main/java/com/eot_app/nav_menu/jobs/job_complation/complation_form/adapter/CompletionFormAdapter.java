@@ -374,10 +374,7 @@ public class CompletionFormAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 }
             };
 
-            /**initialize Date picker***/
-            final DatePickerDialog datePickerDialog = new DatePickerDialog(context, datePicker, myCalendar
-                    .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
-                    myCalendar.get(Calendar.DAY_OF_MONTH));
+
             type_Number.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -591,6 +588,10 @@ public class CompletionFormAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                             e.printStackTrace();
                         }
                     }
+                    /**initialize Date picker***/
+                    final DatePickerDialog datePickerDialog = new DatePickerDialog(context, datePicker, myCalendar
+                            .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+                            myCalendar.get(Calendar.DAY_OF_MONTH));
                     datePickerDialog.getDatePicker().setTag("DateType5");
                     datePickerDialog.show();
                 }
@@ -722,6 +723,10 @@ public class CompletionFormAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                                 e.printStackTrace();
                             }
                     }
+                    /**initialize Date picker***/
+                    final DatePickerDialog datePickerDialog = new DatePickerDialog(context, datePicker, myCalendar
+                            .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+                            myCalendar.get(Calendar.DAY_OF_MONTH));
                     datePickerDialog.getDatePicker().setTag("DateType7");
                     datePickerDialog.show();
                 }
