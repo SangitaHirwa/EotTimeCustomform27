@@ -185,7 +185,7 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
     RequestedItemListAdapter requestedItemListAdapter;
     String brandName = "";
     CompletionAdpterJobDteails jobCompletionAdpter;
-    boolean isAction = false, isEdit=false;
+    boolean isAction = false, isEdit=false, isRefresh=false;
     public static JobEquRemarkRemarkActivity jobEquRemarkRemarkActivity;
 
     public JobEquRemarkRemarkActivity getInstance (){
@@ -203,6 +203,13 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
         setLanguage();
         setData();
         getCustomFormSLists();
+        if(jobId != null && !jobId.isEmpty()) {
+            if(AppUtility.isInternetConnected()) {
+                isRefresh = true;
+                progressBar_itemRequest.setVisibility(View.VISIBLE);
+                jobEquimPi.getRequestedItemDataList(jobId);
+            }
+        }
     }
 
 
@@ -425,16 +432,28 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
     public void setRequestItemData(List<RequestedItemModel> requestItemData) {
         progressBar_itemRequest.setVisibility(View.GONE);
         if(requestItemData != null && requestItemData.size() > 0){
-            requested_item_flag.setVisibility(View.VISIBLE);
-            requested_itemList_show_hide_rl.setVisibility(View.VISIBLE);
-            recyclerView_requested_item.setVisibility(View.VISIBLE);
-            txt_no_item_found.setVisibility(View.GONE);
-            requestedItemListAdapter.setReqItemList(requestItemData);
+            if(isRefresh){
+                isRefresh = false;
+                requested_item_flag.setVisibility(View.VISIBLE);
+                requested_itemList_show_hide_rl.setVisibility(View.VISIBLE);
+
+            }else {
+                requested_item_flag.setVisibility(View.VISIBLE);
+                requested_itemList_show_hide_rl.setVisibility(View.VISIBLE);
+                recyclerView_requested_item.setVisibility(View.VISIBLE);
+                txt_no_item_found.setVisibility(View.GONE);
+                requestedItemListAdapter.setReqItemList(requestItemData);
+            }
         }else {
+            if(isRefresh){
+                isRefresh = false;
+                txt_no_item_found.setVisibility(View.GONE);
+            }else {
+                txt_no_item_found.setVisibility(View.VISIBLE);
+            }
             requested_itemList_show_hide_rl.setVisibility(View.GONE);
             requested_item_flag.setVisibility(View.GONE);
             requestedItemListAdapter.setReqItemList(new ArrayList<>());
-            txt_no_item_found.setVisibility(View.VISIBLE);
             recyclerView_requested_item.setVisibility(View.GONE);
         }
     }
@@ -1935,19 +1954,19 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
 
     @Override
     public void onBackPressed() {
-        if(isAction){
-            if(isEdit){
+        if (isAction) {
+            if (isEdit) {
                 hideRemarkSection();
                 isEdit = false;
                 setTitles();
                 /** For set update data*/
-                if(isRemarkUpdated){
+                if (isRemarkUpdated) {
                     setData();
                 }
-            }else {
+            } else {
                 super.onBackPressed();
             }
-        }else {
+        } else {
             super.onBackPressed();
         }
 

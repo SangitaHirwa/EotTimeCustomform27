@@ -229,7 +229,8 @@
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/add_notes_layout"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/input_field_height"
+                    android:layout_height="wrap_content"
+                    android:minHeight="@dimen/input_field_height"
                     android:layout_below="@+id/note_view"
                     android:layout_marginTop="8dp"
                     android:gravity="center"
@@ -244,7 +245,6 @@
                         android:layout_height="wrap_content"
                         android:background="@android:color/transparent"
                         android:hint="@string/add_notes"
-                        android:singleLine="true"
                         tools:ignore="Autofill" />
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -259,7 +259,8 @@
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/add_reason_layout"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/input_field_height"
+                    android:layout_height="wrap_content"
+                    android:minHeight="@dimen/input_field_height"
                     android:layout_below="@+id/view"
                     android:layout_marginTop="8dp"
                     android:gravity="center"
@@ -274,7 +275,6 @@
                         android:layout_height="wrap_content"
                         android:background="@android:color/transparent"
                         android:hint="@string/reason"
-                        android:singleLine="true"
                         tools:ignore="Autofill" />
                 </com.google.android.material.textfield.TextInputLayout>
 
