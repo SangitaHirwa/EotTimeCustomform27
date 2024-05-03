@@ -47,7 +47,7 @@ public class RescheduleActivity extends AppCompatActivity implements View.OnClic
     Button cancel_btn, submit_btn, date_time_clear_btn;
     TextView date_start, time_start, date_end, time_end, schel_start, schel_end;
     private Job job;
-
+   boolean isTime24Format = false;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -329,6 +329,12 @@ public class RescheduleActivity extends AppCompatActivity implements View.OnClic
     }
 
     void showDialogPicker(int id) {
+        if (App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable() != null
+                && App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable().equals("0")) {
+            isTime24Format = false;
+        }else{
+            isTime24Format = true;
+        }
         switch (id) {
             case R.id.date_start:
                 DatePickerDialog datePickerDialogSelectDate = new DatePickerDialog(this, AppUtility.InputDateSet(this, new Add_job_activity.DateTimeCallback() {
@@ -363,7 +369,7 @@ public class RescheduleActivity extends AppCompatActivity implements View.OnClic
                         String[] aa = dateTime.split(":");
                         time_start.setText((formatter.format(Integer.parseInt(aa[0]))) + ":" + aa[1]);
                     }
-                }, LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_start_end_time)), mHour, mMinute, true);
+                }, LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_start_end_time)), mHour, mMinute, isTime24Format);
                 timePickerDialog.show();
                 break;
 

@@ -1291,8 +1291,26 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
         date_str = str_dt_tm;
         this.time_str = time_str;
         date_start.setText(date_str);
+        String date_str_c= str_dt_tm+" "+time_str;
         time_start.setText(this.time_str);
-
+        if (App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable() != null &&
+                App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable().equals("0")) {
+            try {
+                SimpleDateFormat spf = new SimpleDateFormat("dd-MMM-yyyy hh:mm a");
+                Date date = spf.parse(date_str_c);
+                spf = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+                String[] datestr = spf.format(date).split(" ");
+                String[] time_ary_end = datestr[1].split(":");
+                cTStart.set(Calendar.HOUR_OF_DAY, Integer.parseInt(time_ary_end[0]));
+                cTStart.set(Calendar.MINUTE, Integer.parseInt(time_ary_end[1]));
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }else {
+            String[] time_ary_str = time_str.split(":");
+            cTStart.set(Calendar.HOUR_OF_DAY,Integer.parseInt(time_ary_str[0]));
+            cTStart.set(Calendar.MINUTE,Integer.parseInt(time_ary_str[1]));
+        }
         /* *this for  add recur**/
         schdlStart = date_str + " " + time_str;
     }
@@ -1303,10 +1321,26 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
         date_str = time_duration[0];
         try {
             if (App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable() != null &&
-                    App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable().equals("0"))
+                    App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable().equals("0")) {
                 time_str = time_duration[1] + " " + time_duration[2];
-            else time_str = time_duration[1] + "";
+                try {
+                    SimpleDateFormat spf = new SimpleDateFormat("dd-MMM-yyyy hh:mm a");
+                    Date date = spf.parse(std);
+                    spf = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+                    String[] datestr = spf.format(date).split(" ");
+                    String[] time_ary_end = datestr[1].split(":");
+                    cTStart.set(Calendar.HOUR_OF_DAY, Integer.parseInt(time_ary_end[0]));
+                    cTStart.set(Calendar.MINUTE, Integer.parseInt(time_ary_end[1]));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
+            } else {
+                time_str = time_duration[1] + "";
+                String[] time_ary_str = time_str.split(":");
+                cTStart.set(Calendar.HOUR_OF_DAY,Integer.parseInt(time_ary_str[0]));
+                cTStart.set(Calendar.MINUTE,Integer.parseInt(time_ary_str[1]));
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1330,9 +1364,25 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
         date_en = time_duration[0];
         try {
             if (App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable() != null &&
-                    App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable().equals("0"))
+                    App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable().equals("0")) {
                 time_en = time_duration[1] + " " + time_duration[2];
-            else time_en = time_duration[1] + " ";
+                try {
+                    SimpleDateFormat spf = new SimpleDateFormat("dd-MMM-yyyy hh:mm a");
+                    Date date = spf.parse(std);
+                    spf = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+                    String[] datestr = spf.format(date).split(" ");
+                    String[] time_ary_end = datestr[1].split(":");
+                    cTEnd.set(Calendar.HOUR_OF_DAY, Integer.parseInt(time_ary_end[0]));
+                    cTEnd.set(Calendar.MINUTE, Integer.parseInt(time_ary_end[1]));
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            } else{
+                time_en = time_duration[1] + "";
+                String[] time_ary_end = time_en.split(":");
+                cTEnd.set(Calendar.HOUR_OF_DAY,Integer.parseInt(time_ary_end[0]));
+                cTEnd.set(Calendar.MINUTE,Integer.parseInt(time_ary_end[1]));
+            }
         } catch (Exception e) {
              e.printStackTrace();
         }

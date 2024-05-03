@@ -447,8 +447,17 @@ public class AddQuotes_Activity extends UploadDocumentActivity implements View.O
                             , "dd-MMM-yyyy HH:mm:ss"));
             date_start.setText(AppUtility.getDateWithFormate
                     (Long.parseLong(quotesDetails.getInvData().getInvDate()), AppConstant.DATE_FORMAT));
+            String dateStart = AppUtility.getDateWithFormate(Long.parseLong(quotesDetails.getInvData().getInvDate()), "dd-MM-yyyy");
+            String[] dateStart_ary = dateStart.split("-");
+            myCalendar.set(Calendar.YEAR,Integer.parseInt(dateStart_ary[2]));
+            myCalendar.set(Calendar.MONTH,Integer.parseInt(dateStart_ary[1])-1);
+            myCalendar.set(Calendar.DAY_OF_MONTH,Integer.parseInt(dateStart_ary[0]));
             date_end.setText(AppUtility.getDateWithFormate(Long.parseLong(quotesDetails.getInvData().getDuedate()), AppConstant.DATE_FORMAT));
-
+            String dateEnd = AppUtility.getDateWithFormate(Long.parseLong(quotesDetails.getInvData().getDuedate()), "dd-MM-yyyy");
+            String[] dateEnd_ary = dateEnd.split("-");
+            myCalendar1.set(Calendar.YEAR,Integer.parseInt(dateEnd_ary[2]));
+            myCalendar1.set(Calendar.MONTH,Integer.parseInt(dateEnd_ary[1])-1);
+            myCalendar1.set(Calendar.DAY_OF_MONTH,Integer.parseInt(dateEnd_ary[0]));
             quote_notes_edt.setText(quotesDetails.getInvData().getNote());
             quote_status_notes_edt.setText(quotesDetails.getInvData().getCommets());
 

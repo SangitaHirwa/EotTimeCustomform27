@@ -1725,6 +1725,13 @@ public class AddLeadFragment extends androidx.fragment.app.Fragment
      * Take time from picker for Question Type 6 & 7
      ***/
     public void getTimeFromPicker(Calendar myCalendar, final String queType, final TextView textView) {
+        boolean isTime24Format;
+        if (App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable() != null
+                && App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable().equals("0")) {
+            isTime24Format = false;
+        }else{
+            isTime24Format = true;
+        }
         TimePickerDialog timePickerDialog;
         timePickerDialog = new TimePickerDialog(getActivity(),
                 (view, hourOfDay, minute) -> {
@@ -1752,7 +1759,7 @@ public class AddLeadFragment extends androidx.fragment.app.Fragment
                         }
 
                     }
-                }, myCalendar.get(Calendar.HOUR_OF_DAY), myCalendar.get(Calendar.MINUTE), true
+                }, myCalendar.get(Calendar.HOUR_OF_DAY), myCalendar.get(Calendar.MINUTE), isTime24Format
         );
         timePickerDialog.show();
     }
@@ -1804,6 +1811,13 @@ public class AddLeadFragment extends androidx.fragment.app.Fragment
         final Calendar c = Calendar.getInstance();
         mHour = c.get(Calendar.HOUR_OF_DAY);
         mMinute = c.get(Calendar.MINUTE);
+        boolean isTime24Format;
+        if (App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable() != null
+                && App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable().equals("0")) {
+            isTime24Format = false;
+        }else{
+            isTime24Format = true;
+        }
         @SuppressLint("SetTextI18n") TimePickerDialog timePickerDialog = new TimePickerDialog(getActivity(), AppUtility.InputTimeSet(getActivity(), dateTime -> {
             time_str = dateTime;
             DecimalFormat formatter = new DecimalFormat("00");
@@ -1816,7 +1830,7 @@ public class AddLeadFragment extends androidx.fragment.app.Fragment
                 holder.time_start.setText((formatter.format(Integer.parseInt(aa[0]))) + ":" + aa[1]);
                 addLeadPost.setLeadEndDate(schdlStart);
             }
-        }, LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_start_end_time)), mHour, mMinute, true);
+        }, LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_start_end_time)), mHour, mMinute, isTime24Format);
 
         timePickerDialog.show();
     }
@@ -2022,6 +2036,13 @@ public class AddLeadFragment extends androidx.fragment.app.Fragment
 
     @SuppressLint("NonConstantResourceId")
     public void showDialogPicker(int id, FieldListAdapter.ViewHolder holder) {
+        boolean isTime24Format = false;
+        if (App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable() != null
+                && App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable().equals("0")) {
+            isTime24Format = false;
+        }else{
+            isTime24Format = true;
+        }
         switch (id) {
             case R.id.end_date_for_weekly_recur:
 
@@ -2091,7 +2112,7 @@ public class AddLeadFragment extends androidx.fragment.app.Fragment
                     String[] aa = dateTime.split(":");
                     holder.time_start.setText((formatter.format(Integer.parseInt(aa[0]))) + ":" + aa[1]);
                     schdlStart = date_str + " " + time_str;
-                }, LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_start_end_time)), mHour, mMinute, true);
+                }, LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_start_end_time)), mHour, mMinute, isTime24Format);
 
                 timePickerDialog.show();
                 break;
@@ -2102,7 +2123,7 @@ public class AddLeadFragment extends androidx.fragment.app.Fragment
                     DecimalFormat formatter = new DecimalFormat("00");
                     String[] aa = dateTime.split(":");
                     holder.time_end.setText((formatter.format(Integer.parseInt(aa[0]))) + ":" + aa[1]);
-                }, LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_due_start_time)), mHour, mMinute, true);
+                }, LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_due_start_time)), mHour, mMinute, isTime24Format);
                 timePickerDialog1.show();
                 break;
         }
