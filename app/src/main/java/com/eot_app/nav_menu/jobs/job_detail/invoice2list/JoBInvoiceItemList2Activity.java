@@ -764,6 +764,9 @@ public class JoBInvoiceItemList2Activity extends AppCompatActivity implements Vi
                         /* ***Filter List QTY ***/
                         List<ItemDatum> qitemList = new ArrayList<>();
                         for (InvoiceItemDataModel dataModel : adpterUpdateQtyList) {
+                            if(dataModel.getQty().isEmpty()){
+                                dataModel.setQty("0");
+                            }
                             Log.d("Mytag", dataModel.getInm() + " qty " + dataModel.getQty());
                             qitemList.add(new ItemDatum(dataModel.getIjmmId(), dataModel.getQty()));
                         }

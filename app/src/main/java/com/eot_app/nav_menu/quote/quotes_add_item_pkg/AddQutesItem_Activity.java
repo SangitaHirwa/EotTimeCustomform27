@@ -1031,7 +1031,9 @@ public class AddQutesItem_Activity extends AppCompatActivity implements TextWatc
 
     }
     public void AddUpdateQuot(List<Tax> taxListFilter){
-
+        if(edt_item_qty.getText().toString().isEmpty()){
+            edt_item_qty.setText("0");
+        }
         if (quote_itemData != null) {
             /*Remove invId variable after discuss with Rani Yadav for 2.92 release on 26 Dec 2023*/
             /*Update_Quote_ReQ updateModel = new Update_Quote_ReQ(iqmmId, invId, type,

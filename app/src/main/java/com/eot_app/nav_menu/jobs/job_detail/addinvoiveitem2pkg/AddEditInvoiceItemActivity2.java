@@ -1733,6 +1733,9 @@ public class AddEditInvoiceItemActivity2 extends
             if(edt_serialNo.getText().toString().equals("")) {
                 edt_serialNo.setText("0");
             }
+            if(edt_item_qty.getText().toString().isEmpty()){
+                edt_item_qty.setText("0");
+            }
             updateAppintmentItemDataModel= new AppintmentItemDataModel(edt_item_desc.getText().toString(),"",appInm
                     ,edt_part_no.getText().toString(),edt_item_qty.getText().toString(),
                     edt_item_rate.getText().toString(),edt_unit.getText().toString(),apptaxList,
@@ -1861,6 +1864,9 @@ public class AddEditInvoiceItemActivity2 extends
             }
             if(jtId.equals("")){
                 jtId="0";
+            }
+            if(edt_item_qty.getText().toString().isEmpty()){
+                edt_item_qty.setText("0");
             }
 
             appintmentItemDataModel= new AppintmentItemDataModel(edt_item_desc.getText().toString(),"",
