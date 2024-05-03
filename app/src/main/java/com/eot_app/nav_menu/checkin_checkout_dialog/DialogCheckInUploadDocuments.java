@@ -295,13 +295,20 @@ public class DialogCheckInUploadDocuments extends DialogFragment implements View
     private void showDialogTimePicker() {
 //        Calendar minDate = Calendar.getInstance();
 //        minDate.setTime(lastCheckInDate);
+        boolean isTime24Format = false;
+        if (App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable() != null
+                && App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable().equals("0")) {
+            isTime24Format = false;
+        }else{
+            isTime24Format = true;
+        }
         TimePickerDialog timePickerDialog = new TimePickerDialog(activity, AppUtility.InputTimeSet(activity, dateTime -> {
             DecimalFormat formatter = new DecimalFormat("00");
             String[] aa = dateTime.split(":");
             System.out.println("strings::" + new Gson().toJson(aa));
             binding.tvTime.setText((formatter.format(Integer.parseInt(aa[0]))) + ":" + aa[1]);
         }, LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_start_end_time))
-                , mHour, mMinute, false);
+                , mHour, mMinute, isTime24Format);
 
         timePickerDialog.show();
     }

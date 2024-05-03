@@ -905,6 +905,13 @@ public class QuestionListAdapter extends RecyclerView.Adapter<QuestionListAdapte
      ***/
     private void getTimeFromPicker(Calendar myCalendar, final String queType, final TextView textView) {
         final String timeString;
+        boolean isTime24Format;
+        if (App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable() != null
+                && App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable().equals("0")) {
+            isTime24Format = false;
+        }else{
+            isTime24Format = true;
+        }
         TimePickerDialog timePickerDialog = null;
         if (timePickerDialog == null) {
             timePickerDialog = new TimePickerDialog(context,
@@ -937,7 +944,7 @@ public class QuestionListAdapter extends RecyclerView.Adapter<QuestionListAdapte
 
                             }
                         }
-                    }, myCalendar.get(Calendar.HOUR_OF_DAY), myCalendar.get(Calendar.MINUTE), true
+                    }, myCalendar.get(Calendar.HOUR_OF_DAY), myCalendar.get(Calendar.MINUTE), isTime24Format
             );
         }
         timePickerDialog.show();
