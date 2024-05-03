@@ -764,13 +764,6 @@ public class CustomFiledQueAdpter extends RecyclerView.Adapter<CustomFiledQueAdp
 
                 }
             };
-
-            /* *initialize Date picker***/
-            final DatePickerDialog datePickerDialog = new DatePickerDialog(context, datePicker, myCalendar
-                    .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
-                    myCalendar.get(Calendar.DAY_OF_MONTH));
-
-
             linearDate.setOnClickListener(view -> {
                 if( !tvDate.getText().toString().isEmpty()) {
                     myCalendar.clear();
@@ -789,6 +782,11 @@ public class CustomFiledQueAdpter extends RecyclerView.Adapter<CustomFiledQueAdp
                         e.printStackTrace();
                     }
                 }
+
+                /* *initialize Date picker***/
+                final DatePickerDialog datePickerDialog = new DatePickerDialog(context, datePicker, myCalendar
+                        .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+                        myCalendar.get(Calendar.DAY_OF_MONTH));
                 datePickerDialog.getDatePicker().setTag("DateType5");
                 datePickerDialog.show();
             });
@@ -930,10 +928,14 @@ public class CustomFiledQueAdpter extends RecyclerView.Adapter<CustomFiledQueAdp
                         e.printStackTrace();
                     }
                 }
+
+                /* *initialize Date picker***/
+                final DatePickerDialog datePickerDialog = new DatePickerDialog(context, datePicker, myCalendar
+                        .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+                        myCalendar.get(Calendar.DAY_OF_MONTH));
                 datePickerDialog.getDatePicker().setTag("DateType7");
                 datePickerDialog.show();
             });
-
 
             timeImg.setOnClickListener(v ->{
                 if(!tvTimeDate.getText().toString().isEmpty()) {
