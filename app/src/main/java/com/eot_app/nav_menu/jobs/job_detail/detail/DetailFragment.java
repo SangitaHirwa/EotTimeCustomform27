@@ -248,7 +248,7 @@ public class DetailFragment extends Fragment
     private String isKprChgStatusTrue = "1";
     private String multipleKpr ="2";
     private String singelKpr = "";
-    boolean accept=true,reject=true,travel=true,onhold=true,brack=true;
+    boolean accept=true,reject=true,travel=true,onhold=true,brack=true, isRefreshReqItem=false;
     String getDisCalculationType, getTaxCalculationType;
     GoogleMap mMap;
    ConstraintLayout progressBar_cyclic,progressBar_itemRequest;
@@ -1379,11 +1379,18 @@ public class DetailFragment extends Fragment
     public void setRequestItemData(List<RequestedItemModel> requestItemData) {
         progressBar_itemRequest.setVisibility(View.GONE);
             if(requestItemData != null && requestItemData.size() > 0){
-                requested_item_flag.setVisibility(View.VISIBLE);
-                requested_itemList_show_hide_rl.setVisibility(View.VISIBLE);
-                recyclerView_requested_item.setVisibility(View.VISIBLE);
-                txt_no_item_found.setVisibility(View.GONE);
-                requestedItemListAdapter.setReqItemList(requestItemData);
+                if(isRefreshReqItem){
+                    isRefreshReqItem = false;
+                    requested_item_flag.setVisibility(View.VISIBLE);
+                    requested_itemList_show_hide_rl.setVisibility(View.VISIBLE);
+
+                }else {
+                    requested_item_flag.setVisibility(View.VISIBLE);
+                    requested_itemList_show_hide_rl.setVisibility(View.VISIBLE);
+                    recyclerView_requested_item.setVisibility(View.VISIBLE);
+                    txt_no_item_found.setVisibility(View.GONE);
+                    requestedItemListAdapter.setReqItemList(requestItemData);
+                }
             }else {
                 requested_itemList_show_hide_rl.setVisibility(View.GONE);
                 requested_item_flag.setVisibility(View.GONE);
@@ -2573,6 +2580,13 @@ public void setCompletionDetail(){
         mMapView.onResume();
         // for updating item count
         updateCountItem();
+        if (jobDetail_pi != null) {
+            if(AppUtility.isInternetConnected()) {
+                isRefreshReqItem = true;
+                progressBar_itemRequest.setVisibility(View.VISIBLE);
+                jobDetail_pi.getRequestedItemDataList(mParam2.getJobId());
+            }
+        }
     }
 
     @Override
