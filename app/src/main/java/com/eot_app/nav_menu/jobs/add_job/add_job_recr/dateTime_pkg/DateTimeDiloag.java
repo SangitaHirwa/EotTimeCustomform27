@@ -60,10 +60,10 @@ public class DateTimeDiloag extends DialogFragment implements DatePickerDialog.O
         calendar.set(Calendar.DATE,day);
         String currentDateString = "";
         try {
-            DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
+            DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
 
             Date startDate = formatter.parse(dayOfMonth + "-" + (month + 1) + "-" + year);
-            currentDateString = new SimpleDateFormat(AppConstant.DATE_FORMAT, Locale.getDefault()).format(startDate);
+            currentDateString = new SimpleDateFormat(AppConstant.DATE_FORMAT, Locale.ENGLISH).format(startDate);
         } catch (ParseException e) {
             e.printStackTrace();
         }

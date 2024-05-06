@@ -2548,13 +2548,13 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
             if (!date_start.getText().toString().equals("")) {
                 Date start_Date = null;
                 try {
-                    start_Date = new SimpleDateFormat("dd-MMM-yyyy", Locale.getDefault()).parse(date_start.getText().toString());
+                    start_Date = new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH).parse(date_start.getText().toString());
 
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
                 assert start_Date != null;
-                startDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(start_Date);
+                startDate = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).format(start_Date);
 
 
             }
@@ -2563,12 +2563,12 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
             if (radio_on.isChecked() && !end_date_for_weekly_recur.equals("")) {
                 Date end_Date = null;
                 try {
-                    end_Date = new SimpleDateFormat("dd-MMM-yyyy", Locale.getDefault()).parse(end_date_for_weekly_recur.getText().toString());
+                    end_Date = new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH).parse(end_date_for_weekly_recur.getText().toString());
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
                 assert end_Date != null;
-                endDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(end_Date);
+                endDate = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).format(end_Date);
             } else {
                 endDate = "";
             }
@@ -2601,20 +2601,20 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
             int t2 = Integer.parseInt(words2[0]);
             try {
                 if (t1 != 12) {
-                    startDate = new SimpleDateFormat("hh:mm", Locale.getDefault()).parse(time_str);
+                    startDate = new SimpleDateFormat("hh:mm", Locale.ENGLISH).parse(time_str);
                     // time_str = "";
                     assert startDate != null;
-                    time_str = new SimpleDateFormat("hh:mm a", Locale.getDefault()).format(startDate);
+                    time_str = new SimpleDateFormat("hh:mm a", Locale.ENGLISH).format(startDate);
                 } else {
                     // time_str = time_str + " " + "PM";
                     time_str = "";
                     time_str = time_start.getText().toString() + " " + "PM";
                 }
                 if (t2 != 12) {
-                    endDate = new SimpleDateFormat("hh:mm", Locale.getDefault()).parse(time_en);
+                    endDate = new SimpleDateFormat("hh:mm", Locale.ENGLISH).parse(time_en);
                     time_en = "";
                     assert endDate != null;
-                    time_en = new SimpleDateFormat("hh:mm a", Locale.getDefault()).format(endDate);
+                    time_en = new SimpleDateFormat("hh:mm a", Locale.ENGLISH).format(endDate);
                 } else {
                     //time_en = time_en + " " + "PM";
                     time_en = "";

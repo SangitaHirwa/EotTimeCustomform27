@@ -779,7 +779,7 @@ public class Generate_Invoice_Activity extends AppCompatActivity implements MyLi
                     invoice_due_dt.setText(txt_date.getText().toString());
                     dialog.dismiss();
                     try {
-                        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-yyyy", Locale.getDefault());
+                        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH);
                         Date date = dateFormat.parse(txt_date.getText().toString());
                         SimpleDateFormat dateFormat1 = new SimpleDateFormat("yyyy-MM-dd", Locale.UK);
                         if (App_preference.getSharedprefInstance().getLoginRes().getIsAutoTimeZone().equals("1")) {
