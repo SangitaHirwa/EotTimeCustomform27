@@ -780,10 +780,11 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
 
     private void setDateInView(TextView tv, String dateString) {
         try {
+            if(dateString != null && !dateString.isEmpty()){
             long longStartTime = Long.parseLong(dateString);
             String dateWithFormate = AppUtility.getDateWithFormate(longStartTime, "dd-MMM-yyyy");
             tv.setText(dateWithFormate);
-
+            }
         } catch (Exception ex) {
                 ex.printStackTrace();
         }

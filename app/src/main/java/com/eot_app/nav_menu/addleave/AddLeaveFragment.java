@@ -50,6 +50,11 @@ public class AddLeaveFragment extends AppCompatActivity implements View.OnClickL
         @Override
         public void onDateSet(DatePicker view, int selectedYear, int selectedMonth, int selectedDay) {
             try {
+                if(App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable().equals("0")) {
+                    isTime24Format = false;
+                }else {
+                    isTime24Format = true;
+                }
                 if (view.getTag().equals("time_from")) {
                     myCalendar.set(Calendar.YEAR,selectedYear);
                     myCalendar.set(Calendar.MONTH,selectedMonth);
@@ -175,10 +180,8 @@ public class AddLeaveFragment extends AppCompatActivity implements View.OnClickL
         mTimePicker = new TimePickerDialog(this, (timePicker, selectedHour, selectedMinute) -> {
             String stime = null;
             if(App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable().equals("0")) {
-                isTime24Format = false;
                  stime = updateTimeS(selectedHour, selectedMinute);
             }else {
-                isTime24Format = true;
                 stime = String.valueOf(selectedHour) + ':' +
                         selectedMinute + " ";
             }

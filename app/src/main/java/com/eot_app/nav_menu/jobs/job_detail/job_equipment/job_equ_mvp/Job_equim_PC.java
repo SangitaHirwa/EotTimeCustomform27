@@ -209,7 +209,6 @@ public class Job_equim_PC implements Job_equim_PI {
         if (AppUtility.isInternetConnected()) {
             EquipmentStatusReq equipmentListReq = new EquipmentStatusReq();
             String data = new Gson().toJson(equipmentListReq);
-            AppUtility.progressBarShow((Context)jobEquimView);
             ApiClient.getservices().eotServiceCall(Service_apis.getEquipmentStatus, AppUtility.getApiHeaders(), AppUtility.getJsonObject(data))
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -241,7 +240,6 @@ public class Job_equim_PC implements Job_equim_PI {
 
                         @Override
                         public void onComplete() {
-
                         }
                     });
         }
