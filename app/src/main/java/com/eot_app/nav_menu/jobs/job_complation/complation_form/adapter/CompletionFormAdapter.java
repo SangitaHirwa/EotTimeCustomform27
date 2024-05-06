@@ -707,8 +707,16 @@ public class CompletionFormAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 @Override
                 public void onClick(View v) {
                     if(!tvTimeDate.getText().toString().isEmpty()) {
-                        String[] ary_inputTime = AppUtility.get24HoursTimeFormate(tvTimeDate.getText().toString()).split(" ");
-                        String inputTime = ary_inputTime[0];
+                        String inputTime = "";
+                        if (App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable() != null
+                                && App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable().equals("0")) {
+                            String[] ary_inputTime = AppUtility.get24HoursTimeFormate(tvTimeDate.getText().toString()).split(" ");
+                             inputTime = ary_inputTime[0];
+                        }else{
+                            String[] ary_inputTime = tvTimeDate.getText().toString().split(" ");
+                            inputTime = ary_inputTime[0];
+                        }
+
                             SimpleDateFormat inputFormat = new SimpleDateFormat("dd-MMM-yyyy", Locale.getDefault());
                             SimpleDateFormat outputFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
 
