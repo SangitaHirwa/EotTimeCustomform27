@@ -18,6 +18,7 @@ import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 import com.eot_app.R;
+import com.eot_app.login_next.FooterMenu;
 import com.eot_app.nav_menu.jobs.job_controller.ChatController;
 import com.eot_app.nav_menu.jobs.job_db.Job;
 import com.eot_app.nav_menu.jobs.job_db.JtId;
@@ -104,13 +105,32 @@ public class JobListAdapter extends RecyclerView.Adapter<JobListAdapter.MyViewHo
 
         int batchCount = ChatController.getInstance().getbatchCount(jobdata.get(position).getJobId())
                 + ChatController.getInstance().getClientChatBatchCount(jobdata.get(position).getJobId());
+        for (FooterMenu serverList : App_preference.getSharedprefInstance().getLoginRes().getFooterMenu()) {
+
+            switch (serverList.getMenuField()) {
+                case "set_clientChatMenuOdrNo":
+                    /* ** add client chat tab in more tab**/
+                    if (serverList.isEnable.equals("1")){
+                        if (batchCount > 0) {
+                            holder.badge_count.setVisibility(View.VISIBLE);
+                            holder.badge_count.setText(String.valueOf(batchCount));
+                        } else {
+                            holder.badge_count.setVisibility(View.GONE);
+                        }
+                    }else {
+                        holder.badge_count.setVisibility(View.GONE);
+                    }
+                    break;
+            }
+        }
+      /*
         if (batchCount > 0) {
             holder.badge_count.setVisibility(View.VISIBLE);
             holder.badge_count.setText(String.valueOf(batchCount));
         } else {
             holder.badge_count.setVisibility(View.GONE);
         }
-
+*/
         switchDefaultColor(holder, EotApp.getAppinstance().getResources().getColor(R.color.body_font_color));
         if (jobdata.get(position).getSchdlStart() != null && !jobdata.get(position).getSchdlStart().equals("")) {
             String[] date = AppUtility.getFormatedTime(jobdata.get(position).getSchdlStart());
