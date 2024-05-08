@@ -14,10 +14,12 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.eot_app.R;
+import com.eot_app.login_next.FooterMenu;
 import com.eot_app.nav_menu.appointment.list.common.CommonAppointmentModel;
 import com.eot_app.nav_menu.jobs.job_controller.ChatController;
 import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.AppUtility;
+import com.eot_app.utility.App_preference;
 import com.eot_app.utility.db.AppDataBase;
 import com.eot_app.utility.language_support.LanguageController;
 
@@ -112,11 +114,23 @@ public class AdapterAppointments extends RecyclerView.Adapter<AdapterAppointment
             /*For badge count*/
             int batchCount = ChatController.getInstance().getbatchCount(appointment.getId())
                     + ChatController.getInstance().getClientChatBatchCount(appointment.getId());
-            if (batchCount > 0) {
-                holder.tv_badge_count.setVisibility(View.VISIBLE);
-                holder.tv_badge_count.setText(String.valueOf(batchCount));
-            } else {
-                holder.tv_badge_count.setVisibility(View.GONE);
+            for (FooterMenu serverList : App_preference.getSharedprefInstance().getLoginRes().getFooterMenu()) {
+
+                    switch (serverList.getMenuField()) {
+                        case "set_clientChatMenuOdrNo":
+                            /* ** add client chat tab in more tab**/
+                            if (serverList.isEnable.equals("1")){
+                                if (batchCount > 0) {
+                                    holder.tv_badge_count.setVisibility(View.VISIBLE);
+                                    holder.tv_badge_count.setText(String.valueOf(batchCount));
+                                } else {
+                                    holder.tv_badge_count.setVisibility(View.GONE);
+                                }
+                            }else {
+                                holder.tv_badge_count.setVisibility(View.GONE);
+                            }
+                            break;
+                    }
             }
             //Chat notification
             if(!appointment.getId().equals(appointment.getTempId()))
