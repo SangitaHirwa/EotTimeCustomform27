@@ -62,6 +62,7 @@ public class CustomFieldJobAdapter extends RecyclerView.Adapter<CustomFieldJobAd
     String time = "", date = "";
     ArrayList<CustOmFormQuestionsRes> questionList;
     private boolean isTime24Format;
+    final Calendar myCalendar = Calendar.getInstance();
 
     public CustomFieldJobAdapter(ArrayList<CustOmFormQuestionsRes> typeList, Context context,Boolean isTime24Format) {
         this.context = context;
@@ -477,6 +478,12 @@ public class CustomFieldJobAdapter extends RecyclerView.Adapter<CustomFieldJobAd
      * Take time from picker for Question Type 6 & 7
      ***/
     private void getTimeFromPicker(Calendar myCalendar, final String queType, final TextView textView) {
+        if (App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable() != null
+                && App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable().equals("0")) {
+            isTime24Format = false;
+        }else{
+            isTime24Format = true;
+        }
         final String timeString;
         TimePickerDialog timePickerDialog = null;
         if (timePickerDialog == null) {
@@ -691,12 +698,12 @@ public class CustomFieldJobAdapter extends RecyclerView.Adapter<CustomFieldJobAd
             });
 
 
-            final Calendar myCalendar = Calendar.getInstance();
+
             /* * Get Date from picker call back***/
             final DatePickerDialog.OnDateSetListener datePicker = (view, year, monthOfYear, dayOfMonth) -> {
-                myCalendar.set(Calendar.YEAR, year);
+               /* myCalendar.set(Calendar.YEAR, year);
                 myCalendar.set(Calendar.MONTH, monthOfYear);
-                myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);*/
                 /* *type 5 for Time Type Question**/
                 if (view.getTag().equals("DateType5")) {
 
@@ -738,13 +745,28 @@ public class CustomFieldJobAdapter extends RecyclerView.Adapter<CustomFieldJobAd
                 }
             };
 
-            /* *initialize Date picker***/
-            final DatePickerDialog datePickerDialog = new DatePickerDialog(context, datePicker, myCalendar
-                    .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
-                    myCalendar.get(Calendar.DAY_OF_MONTH));
-
-
             linearDate.setOnClickListener(view -> {
+                if( !tvDate.getText().toString().isEmpty()) {
+                    myCalendar.clear();
+                    String inputTime = tvDate.getText().toString();
+                    SimpleDateFormat inputFormat = new SimpleDateFormat("dd-MMM-yyyy", Locale.getDefault());
+                    SimpleDateFormat outputFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
+
+                    try {
+                        Date date = inputFormat.parse(inputTime);
+                        String outputTime = outputFormat.format(date);
+                        String[] ary_tv_time = outputTime.split("-");
+                        myCalendar.set(Calendar.YEAR, Integer.parseInt(ary_tv_time[2].trim()));
+                        myCalendar.set(Calendar.MONTH, Integer.parseInt(ary_tv_time[1].trim())-1);
+                        myCalendar.set(Calendar.DAY_OF_MONTH, Integer.parseInt(ary_tv_time[0].trim()));
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                }
+                /**initialize Date picker***/
+                final DatePickerDialog datePickerDialog = new DatePickerDialog(context, datePicker, myCalendar
+                        .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+                        myCalendar.get(Calendar.DAY_OF_MONTH));
                 datePickerDialog.getDatePicker().setTag("DateType5");
                 datePickerDialog.show();
             });
@@ -793,8 +815,34 @@ public class CustomFieldJobAdapter extends RecyclerView.Adapter<CustomFieldJobAd
             });
 
 
-            linearTime.setOnClickListener(v -> getTimeFromPicker(myCalendar, "TimeType6", tvTime));
+            linearTime.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String inputTime = tvTime.getText().toString();
+                    if(!tvTime.getText().toString().isEmpty()) {
+                        if (App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable() != null
+                                && App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable().equals("0")) {
+                            SimpleDateFormat inputFormat = new SimpleDateFormat("hh:mm a", Locale.getDefault());
+                            SimpleDateFormat outputFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
 
+                            try {
+                                Date date = inputFormat.parse(inputTime);
+                                String outputTime = outputFormat.format(date);
+                                String[] ary_tv_time = outputTime.split(":");
+                                myCalendar.set(Calendar.HOUR_OF_DAY, Integer.parseInt(ary_tv_time[0].trim()));
+                                myCalendar.set(Calendar.MINUTE, Integer.parseInt(ary_tv_time[1].trim()));
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+                        } else {
+                            String[] ary_tv_time = inputTime.split(":");
+                            myCalendar.set(Calendar.HOUR_OF_DAY, Integer.parseInt(ary_tv_time[0].trim()));
+                            myCalendar.set(Calendar.MINUTE, Integer.parseInt(ary_tv_time[1].trim()));
+                        }
+                    }
+                    getTimeFromPicker(myCalendar, "TimeType6", tvTime);
+                }
+            });
 
             /* *question type & for date time ***/
             linearDateTime = itemView.findViewById(R.id.linearDateTime);
@@ -843,12 +891,69 @@ public class CustomFieldJobAdapter extends RecyclerView.Adapter<CustomFieldJobAd
             dateImg = itemView.findViewById(R.id.dateImg);
 
             dateImg.setOnClickListener(v -> {
+                if(!tvTimeDate.getText().toString().isEmpty()) {
+                    String inputTime = "";
+                    if (App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable() != null
+                            && App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable().equals("0")) {
+                        String[] ary_inputTime = AppUtility.get24HoursTimeFormate(tvTimeDate.getText().toString()).split(" ");
+                        inputTime = ary_inputTime[0];
+                    }else{
+                        String[] ary_inputTime = tvTimeDate.getText().toString().split(" ");
+                        inputTime = ary_inputTime[0];
+                    }
+
+                    SimpleDateFormat inputFormat = new SimpleDateFormat("dd-MMM-yyyy", Locale.getDefault());
+                    SimpleDateFormat outputFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
+
+                    try {
+                        Date date = inputFormat.parse(inputTime);
+                        String outputTime = outputFormat.format(date);
+                        String[] ary_tv_time = outputTime.split("-");
+                        myCalendar.set(Calendar.YEAR, Integer.parseInt(ary_tv_time[2].trim()));
+                        myCalendar.set(Calendar.MONTH, Integer.parseInt(ary_tv_time[1].trim())-1);
+                        myCalendar.set(Calendar.DAY_OF_MONTH, Integer.parseInt(ary_tv_time[0].trim()));
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                }
+                /**initialize Date picker***/
+                final DatePickerDialog datePickerDialog = new DatePickerDialog(context, datePicker, myCalendar
+                        .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+                        myCalendar.get(Calendar.DAY_OF_MONTH));
                 datePickerDialog.getDatePicker().setTag("DateType7");
                 datePickerDialog.show();
             });
 
 
-            timeImg.setOnClickListener(v -> getTimeFromPicker(myCalendar, "TimeType7", tvTimeDate));
+            timeImg.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(!tvTimeDate.getText().toString().isEmpty()) {
+                        String[] ary_inputTime = tvTimeDate.getText().toString().split(" ");
+                        if (App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable() != null
+                                && App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable().equals("0")) {
+                            String inputTime = ary_inputTime[1] + " " + ary_inputTime[2];
+                            SimpleDateFormat inputFormat = new SimpleDateFormat("hh:mm a", Locale.getDefault());
+                            SimpleDateFormat outputFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
+
+                            try {
+                                Date date = inputFormat.parse(inputTime);
+                                String outputTime = outputFormat.format(date);
+                                String[] ary_tv_time = outputTime.split(":");
+                                myCalendar.set(Calendar.HOUR_OF_DAY, Integer.parseInt(ary_tv_time[0].trim()));
+                                myCalendar.set(Calendar.MINUTE, Integer.parseInt(ary_tv_time[1].trim()));
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+                        }else {
+                            String[] ary_tv_time = ary_inputTime[1].split(":");
+                            myCalendar.set(Calendar.HOUR_OF_DAY, Integer.parseInt(ary_tv_time[0].trim()));
+                            myCalendar.set(Calendar.MINUTE, Integer.parseInt(ary_tv_time[1].trim()));
+                        }
+                    }
+                    getTimeFromPicker(myCalendar, "TimeType7", tvTimeDate);
+                }
+            });
 
             //   txt_lable = itemView.findViewById(R.id.txt_lable);
         }
