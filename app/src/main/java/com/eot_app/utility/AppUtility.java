@@ -1038,11 +1038,12 @@ public class AppUtility {
 
     public static Map<String, String> getResgistrationApiHeaders() {
         Map<String, String> headers = new HashMap<>();
-        if (App_preference.getSharedprefInstance().getLoginRes().getIsAutoTimeZone().equals("1")){
-            headers.put("User-Time-Zone", TimeZone.getTimeZone(App_preference.getSharedprefInstance().getLoginRes().getLoginUsrTz()).getID());
-        }else {
+        /** After discussion with Jit Sir (10/may/2024) Remove code of time zone that get by local storage b/c we do not have store any type of data on registration time*/
+//        if (App_preference.getSharedprefInstance().getLoginRes().getIsAutoTimeZone().equals("1")){
+//            headers.put("User-Time-Zone", TimeZone.getTimeZone(App_preference.getSharedprefInstance().getLoginRes().getLoginUsrTz()).getID());
+//        }else {
             headers.put("User-Time-Zone", TimeZone.getDefault().getID());
-        }
+//        }
         headers.put("Token", App_preference.getSharedprefInstance().getResgistartionToken());
         headers.put("Origin", getBaserUrlToOrigin());
         return headers;
