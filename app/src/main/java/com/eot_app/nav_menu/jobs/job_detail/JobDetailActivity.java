@@ -608,18 +608,18 @@ public class JobDetailActivity extends AppCompatActivity implements
                             }
                         }
                         /* ** add view for chat batch icon ***/
-                        BottomNavigationMenuView bottomNavigationMenuView = (BottomNavigationMenuView) navigation.getChildAt(0);
-                        for (int i = 0; i < bottomNavigationMenuView.getChildCount(); i++) {
-                            int chatId = bottomNavigationMenuView.getChildAt(i).getId();
+//                        BottomNavigationMenuView bottomNavigationMenuView = (BottomNavigationMenuView) navigation.getChildAt(0);
+                        for (int i = 0; i < navigation.getChildCount(); i++) {
+                            int chatId = navigation.getChildAt(i).getId();
                             if (chatId == ID_CHAT) {
-                                View v = bottomNavigationMenuView.getChildAt(i);
+                                View v = navigation.getChildAt(i);
                                 BottomNavigationItemView itemView = (BottomNavigationItemView) v;
                                 /* ** add view for chat batch icon ***/
                                 View badge = LayoutInflater.from(JobDetailActivity.this).inflate(R.layout.chat_batch_count_layout, navigation, false);
                                 text = badge.findViewById(R.id.badge_text_view);
                                 itemView.addView(badge);
                             } else if (chatId == ID_CLIENT_CHAT) {
-                                View v = bottomNavigationMenuView.getChildAt(i);
+                                View v = navigation.getChildAt(i);
                                 BottomNavigationItemView itemView = (BottomNavigationItemView) v;
                                 /* ** add view for chat batch icon ***/
                                 View badge = LayoutInflater.from(JobDetailActivity.this).inflate(R.layout.chat_batch_count_layout, navigation, false);

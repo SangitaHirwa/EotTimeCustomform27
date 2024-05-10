@@ -438,23 +438,28 @@ public class DetailFragment extends Fragment
 
 //        getData from
         mParam2 = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(param3);
-
-        if (mParam2.getJobId()!=null&&!mParam2.getJobId().isEmpty())
-        {
-            /**After discussion with Rani change validation of canInvoiceCreated by isJobInvoiced 12/04/2024**/
-            if(mParam2.getIsJobInvoiced()!=null && mParam2.getIsJobInvoiced().equals("1")) {
-                    getDisCalculationType = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().disCalculationType(mParam2.getJobId());
-                    getTaxCalculationType = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().taxCalculationType(mParam2.getJobId());
+        try {
+            if (mParam2 != null) {
+                if (mParam2.getJobId() != null && !mParam2.getJobId().isEmpty()) {
+                    /**After discussion with Rani change validation of canInvoiceCreated by isJobInvoiced 12/04/2024**/
+                    if (mParam2.getIsJobInvoiced() != null && mParam2.getIsJobInvoiced().equals("1")) {
+                        getDisCalculationType = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().disCalculationType(mParam2.getJobId());
+                        getTaxCalculationType = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().taxCalculationType(mParam2.getJobId());
+                    } else {
+                        getDisCalculationType = App_preference.getSharedprefInstance().getLoginRes().getDisCalculationType();
+                        getTaxCalculationType = App_preference.getSharedprefInstance().getLoginRes().getTaxCalculationType();
+                    }
+                } else {
+                    getDisCalculationType = App_preference.getSharedprefInstance().getLoginRes().getDisCalculationType();
+                    getTaxCalculationType = App_preference.getSharedprefInstance().getLoginRes().getTaxCalculationType();
                 }
-                else{
-                getDisCalculationType= App_preference.getSharedprefInstance().getLoginRes().getDisCalculationType();
-                getTaxCalculationType= App_preference.getSharedprefInstance().getLoginRes().getTaxCalculationType();
-                }
-        }else{
-            getDisCalculationType= App_preference.getSharedprefInstance().getLoginRes().getDisCalculationType();
-            getTaxCalculationType= App_preference.getSharedprefInstance().getLoginRes().getTaxCalculationType();
+            } else {
+                getDisCalculationType = App_preference.getSharedprefInstance().getLoginRes().getDisCalculationType();
+                getTaxCalculationType = App_preference.getSharedprefInstance().getLoginRes().getTaxCalculationType();
+            }
+        }catch (Exception e){
+            Log.e("Error", e.getMessage());
         }
-
         initializelables();
         mMapView.getMapAsync(this);
 
