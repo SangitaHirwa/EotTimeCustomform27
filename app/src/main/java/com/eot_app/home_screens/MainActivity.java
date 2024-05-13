@@ -211,6 +211,15 @@ public class MainActivity extends UploadDocumentActivity implements MainActivity
     BroadcastReceiver updateUIReceiver;
     BroadcastReceiver showAlertReceiver;
     BottomSheetDialog bottomSheetDialog;
+    private ExecutorService executorService;
+    LinearLayout parent_quotes;
+    LinearLayout audit_menu_layout;
+    LinearLayout parent_scan;
+    LinearLayout parent_expence;
+    LinearLayout timezonelayout;
+    LinearLayout parent_calender;
+    LinearLayout parent_timeSheet;
+    LinearLayout parent_report;
     /**
      * internet off/on event to update user status
      */
@@ -294,211 +303,242 @@ public class MainActivity extends UploadDocumentActivity implements MainActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        AppUtility.progressBarShow(MainActivity.this);
+        executorService = Executors.newSingleThreadExecutor();
+        executorService.execute(new Runnable() {
+            @Override
+            public void run() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
 
-        AppUtility.askAllPerMission(this);
+                        initializelables();
+                    }
+                });
+
+                AppUtility.askAllPerMission(MainActivity.this);
         /*
            after language change update status json according the language
          **/
-        // first sync start
+                // first sync start
 
-        sync_iv = findViewById(R.id.sync_iv);
+                sync_iv = findViewById(R.id.sync_iv);
 
-        if (AppUtility.isInternetConnected()) {
+                if (AppUtility.isInternetConnected()) {
 
-            Animation animation = AnimationUtils.loadAnimation(this, R.anim.progress_anim);
-            sync_iv.startAnimation(animation);
-            sync_iv.setVisibility(View.VISIBLE);
+                    Animation animation = AnimationUtils.loadAnimation(MainActivity.this, R.anim.progress_anim);
+                    sync_iv.startAnimation(animation);
+                    sync_iv.setVisibility(View.VISIBLE);
 
-            if (!isSyncDone) {
-                SyncDataJobS.scheduleJob(this);
-                Log.v("Main Activity", "Sync completed " + " --" + isSyncDone);
-            }
+                    if (!isSyncDone) {
+                        SyncDataJobS.scheduleJob(MainActivity.this);
+                        Log.v("Main Activity", "Sync completed " + " --" + isSyncDone);
+                    }
 
-            IntentFilter filter = new IntentFilter();
-            filter.addAction("updateUi");
-            // update ui sync data
-            updateUIReceiver = new BroadcastReceiver() {
-                @Override
-                public void onReceive(Context context, Intent intent) {
-                    //UI update here
-                    Log.v("Main Activity", "Sync completed");
-                    isSyncDone = true;
-                    sync_iv.clearAnimation();
-                    sync_iv.setVisibility(View.GONE);
-                    stopService(new Intent(MainActivity.this, SyncDataJobService.class));
+                    IntentFilter filter = new IntentFilter();
+                    filter.addAction("updateUi");
+                    // update ui sync data
+                    updateUIReceiver = new BroadcastReceiver() {
+                        @Override
+                        public void onReceive(Context context, Intent intent) {
+                            //UI update here
+                            Log.v("Main Activity", "Sync completed");
+                            isSyncDone = true;
+                            sync_iv.clearAnimation();
+                            sync_iv.setVisibility(View.GONE);
+                            stopService(new Intent(MainActivity.this, SyncDataJobService.class));
+                        }
+                    };
+                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+                        registerReceiver(updateUIReceiver, filter);
+                    } else {
+                        registerReceiver(updateUIReceiver, filter, RECEIVER_EXPORTED);
+                    }
                 }
-            };
-            if(Build.VERSION.SDK_INT< Build.VERSION_CODES.O) {
-                registerReceiver(updateUIReceiver, filter);
-            }else {
-                registerReceiver(updateUIReceiver, filter,RECEIVER_EXPORTED);
-            }
-        }
 
-        IntentFilter filter = new IntentFilter();
-        filter.addAction("showAlert");
-        // update ui sync data
-        showAlertReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                //UI update here
-                Log.v("Main Activity", "Network error");
-                showRetryDialog();
-            }
-        };
-        if(Build.VERSION.SDK_INT< Build.VERSION_CODES.O) {
-            registerReceiver(showAlertReceiver, filter);
-        }else {
-            registerReceiver(showAlertReceiver, filter,RECEIVER_EXPORTED);
-        }
+                IntentFilter filter = new IntentFilter();
+                filter.addAction("showAlert");
+                // update ui sync data
+                showAlertReceiver = new BroadcastReceiver() {
+                    @Override
+                    public void onReceive(Context context, Intent intent) {
+                        //UI update here
+                        Log.v("Main Activity", "Network error");
+                        showRetryDialog();
+                    }
+                };
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+                    registerReceiver(showAlertReceiver, filter);
+                } else {
+                    registerReceiver(showAlertReceiver, filter, RECEIVER_EXPORTED);
+                }
 
-        // first sync end
+                // first sync end
 
-        JobStatus_Controller.getInstance().getStatusList();
-        JobStatus_Controller.getInstance().setDynamicStatusList();
-        //init the hyperlog when super admin enabled the permission for report bug
-        if (App_preference.getSharedprefInstance().getLoginRes().getIsEmailLogEnable().equals("1")) {
-            HyperLog.initialize(this, logExpireTime, new CustomLogMessageFormat(this));
-            HyperLog.setLogLevel(Log.VERBOSE);
-        }
+                JobStatus_Controller.getInstance().getStatusList();
+                JobStatus_Controller.getInstance().setDynamicStatusList();
+                //init the hyperlog when super admin enabled the permission for report bug
+                if (App_preference.getSharedprefInstance().getLoginRes().getIsEmailLogEnable().equals("1")) {
+                    HyperLog.initialize(MainActivity.this, logExpireTime, new CustomLogMessageFormat(MainActivity.this));
+                    HyperLog.setLogLevel(Log.VERBOSE);
+                }
 
-        UserToUserChatController.getInstance().setMainActivity(this);
-        craeteUserChatListner();
-        initializelables();
+                UserToUserChatController.getInstance().setMainActivity(MainActivity.this);
+                craeteUserChatListner();
+                registerDeregisterReceiver(true);
 
-        registerDeregisterReceiver(true);
-        final Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
 //        Launch Current/root activity when app at background
-        if (!isTaskRoot()) {
-            final Intent intent = getIntent();
-            final String intentAction = intent.getAction();
+                if (!isTaskRoot()) {
+                    final Intent intent = getIntent();
+                    final String intentAction = intent.getAction();
 
-            if (intent.hasCategory(Intent.CATEGORY_LAUNCHER) && intentAction != null && intentAction.equals(Intent.ACTION_MAIN)) {
-                finish();
-                return;
-            }
-        }
-
-
+                    if (intent.hasCategory(Intent.CATEGORY_LAUNCHER) && intentAction != null && intentAction.equals(Intent.ACTION_MAIN)) {
+                        finish();
+                        return;
+                    }
+                }
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
 //      View Initialization
-        initializeViews();
+                        initializeViews();
+                    }
+                });
+
 
 //        set user online offline in in app version
-        ChatController.getInstance().setAppUserOnline(1);
+                ChatController.getInstance().setAppUserOnline(1);
 
 //        Set Observer for handle callback of offline data about add job and add client
-        EotApp.getAppinstance().setApiObserver(this);
+                EotApp.getAppinstance().setApiObserver(MainActivity.this);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        final Toolbar toolbar = findViewById(R.id.toolbar);
+                        setSupportActionBar(toolbar);
+                        fab.setOnClickListener(view -> {
+                            EotApp.getAppinstance().setApiObserver(MainActivity.this);
+                            if (toolbar.getTitle().equals(LanguageController.getInstance().getMobileMsgByKey(AppConstant.jobs))) {
+                                Intent intent = new Intent(MainActivity.this, Add_job_activity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                                startActivityForResult(intent, ADDJOB);
+                            } else if (toolbar.getTitle().equals(LanguageController.getInstance().getMobileMsgByKey(AppConstant.clients))) {
+                                Intent intent = new Intent(MainActivity.this, AddClient.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                                startActivityForResult(intent, ClientADD);
+                            } else if (toolbar.getTitle().equals(LanguageController.getInstance().getMobileMsgByKey(AppConstant.quotes))) {
+                                Intent addQuoetIntent = new Intent(MainActivity.this, AddQuotes_Activity.class);
+                                addQuoetIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                                startActivity(addQuoetIntent);
+                            } else if (toolbar.getTitle().equals(LanguageController.getInstance().getMobileMsgByKey(AppConstant.title_expence))) {
+                                Intent intent = new Intent(MainActivity.this, AddExpenseActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                                startActivityForResult(intent, ADDEXPENSES);
+                            } else if (toolbar.getTitle().equals(LanguageController.getInstance().getMobileMsgByKey(AppConstant.title_report))) {
+                                Intent intent = new Intent(MainActivity.this, AddExpenseActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                                startActivityForResult(intent, ADDEXPENSES);
+                            } else if (isCalendarSelected) {
+                                if (appointmentListFragment != null)
+                                    appointmentListFragment.showFloatingButtons();
+                            } else if (toolbar.getTitle().equals(LanguageController.getInstance().getMobileMsgByKey(AppConstant.audit_nav))) {
+                                Intent intent = new Intent(MainActivity.this, AddAuditActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                                startActivityForResult(intent, AuditADD);
+                            } else if (toolbar.getTitle().equals(LanguageController.getInstance().getMobileMsgByKey(AppConstant.user_leave))) {
+                                Intent intent = new Intent(MainActivity.this, AddLeaveFragment.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                                startActivityForResult(intent, ADDUSERLEAVE);
+                            }
+                        });
+//        job_navigation drawer setup
+                        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+                        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(MainActivity.this, drawer, toolbar,
+                                R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
+                            @Override
+                            public void onDrawerClosed(View drawerView) {
+                                super.onDrawerClosed(drawerView);
+                                setChatbatchCount();
+                                Log.e("", "");
+// do what ever you want
+                            }
 
+                            @Override
+                            public void onDrawerOpened(View drawerView) {
+                                super.onDrawerOpened(drawerView);
+// do what ever you want
+                                setChatbatchCount();
+                                Log.e("", "");
+                                AppUtility.hideSoftKeyboard(MainActivity.this);
+                            }
+                        };
+                        drawer.addDrawerListener(toggle);
+                        toggle.syncState();
+                        navigationView = findViewById(R.id.nav_view);
+                        /* new dynamic menu add in main drawer   */
+                        setValues();
+
+                        try {
+                            Bundle bundle = getIntent().getExtras();
+                            if (bundle != null) {
+                                if (bundle.containsKey("NOTIFICATIONTAG")) {
+                                    if (bundle.containsKey("id")) {
+                                        notificationDataId = bundle.getString("id");
+                                    }
+                                    if (Objects.equals(bundle.get("NOTIFICATIONTAG"), "AUDIT")) {
+                                        if (fab != null)
+                                            fab.show();
+                                        auditNoti = true;
+                                        updateFragment(LanguageController.getInstance().getMobileMsgByKey(AppConstant.audit_nav),
+                                                fragmentAuditList);
+                                    } else if (Objects.equals(bundle.get("NOTIFICATIONTAG"), "JOB")) {
+                                        jobNoti = true;
+                                        updateFragment(LanguageController.getInstance().getMobileMsgByKey(AppConstant.jobs), joblistfragment);
+                                    } else if (Objects.equals(bundle.get("NOTIFICATIONTAG"), "APPOINTMENT")) {
+                                        isCalendarSelected = true;
+                                        title_calender.performClick();
+                                    } else if (Objects.equals(bundle.get("NOTIFICATIONTAG"), "updateLeave")) {
+                                        updateFragment(LanguageController.getInstance().getMobileMsgByKey(AppConstant.user_leave), userLeaveListFragment);
+                                    } else if (Objects.equals(bundle.get("NOTIFICATIONTAG"), "MULTI_JOB")) {
+                                        jobNoti = true;
+                                        setNotificationDataId("");
+                                        updateFragment(LanguageController.getInstance().getMobileMsgByKey(AppConstant.jobs), joblistfragment);
+                                    } else if (Objects.equals(bundle.get("NOTIFICATIONTAG"), "quote_update")) {
+                                        quoteNoti = true;
+                                        title_qoutes.performClick();
+                                    } else {
+                                        title_jobs.performClick();
+                                    }
+                                } else {
+                                    title_jobs.performClick();
+                                }
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            title_jobs.performClick();
+                        }
 //  generalized fab for all the screens to add the particular screen data
-        fab.setOnClickListener(view -> {
-            EotApp.getAppinstance().setApiObserver(MainActivity.this);
-            if (toolbar.getTitle().equals(LanguageController.getInstance().getMobileMsgByKey(AppConstant.jobs))) {
-                Intent intent = new Intent(MainActivity.this, Add_job_activity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-                startActivityForResult(intent, ADDJOB);
-            } else if (toolbar.getTitle().equals(LanguageController.getInstance().getMobileMsgByKey(AppConstant.clients))) {
-                Intent intent = new Intent(MainActivity.this, AddClient.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-                startActivityForResult(intent, ClientADD);
-            } else if (toolbar.getTitle().equals(LanguageController.getInstance().getMobileMsgByKey(AppConstant.quotes))) {
-                Intent addQuoetIntent = new Intent(MainActivity.this, AddQuotes_Activity.class);
-                addQuoetIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                startActivity(addQuoetIntent);
-            } else if (toolbar.getTitle().equals(LanguageController.getInstance().getMobileMsgByKey(AppConstant.title_expence))) {
-                Intent intent = new Intent(MainActivity.this, AddExpenseActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-                startActivityForResult(intent, ADDEXPENSES);
-            } else if (toolbar.getTitle().equals(LanguageController.getInstance().getMobileMsgByKey(AppConstant.title_report))) {
-                Intent intent = new Intent(MainActivity.this, AddExpenseActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-                startActivityForResult(intent, ADDEXPENSES);
-            } else if (isCalendarSelected) {
-                if (appointmentListFragment != null)
-                    appointmentListFragment.showFloatingButtons();
-            } else if (toolbar.getTitle().equals(LanguageController.getInstance().getMobileMsgByKey(AppConstant.audit_nav))) {
-                Intent intent = new Intent(MainActivity.this, AddAuditActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-                startActivityForResult(intent, AuditADD);
-            } else if (toolbar.getTitle().equals(LanguageController.getInstance().getMobileMsgByKey(AppConstant.user_leave))) {
-                Intent intent = new Intent(MainActivity.this, AddLeaveFragment.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-                startActivityForResult(intent, ADDUSERLEAVE);
+
+
+                        Log.e("", "");
+                        try {
+                            MyDigitalClock.getInstance().setNotifyClock(MainActivity.this);
+                        } catch (Exception exception) {
+                            exception.printStackTrace();
+                        }
+                    }
+                });
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                AppUtility.progressBarDissMiss();
+                            }
+                        });
+
             }
         });
-//        job_navigation drawer setup
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar,
-                R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
-            @Override
-            public void onDrawerClosed(View drawerView) {
-                super.onDrawerClosed(drawerView);
-                setChatbatchCount();
-                Log.e("", "");
-// do what ever you want
-            }
-            @Override
-            public void onDrawerOpened(View drawerView) {
-                super.onDrawerOpened(drawerView);
-// do what ever you want
-                setChatbatchCount();
-                Log.e("", "");
-                AppUtility.hideSoftKeyboard(MainActivity.this);
-            }
-        };
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
-        navigationView = findViewById(R.id.nav_view);
-        /* new dynamic menu add in main drawer   */
-        setValues();
-        try {
-            Bundle bundle = getIntent().getExtras();
-            if (bundle != null) {
-                if (bundle.containsKey("NOTIFICATIONTAG")) {
-                    if (bundle.containsKey("id")) {
-                        notificationDataId = bundle.getString("id");
-                    }
-                    if (Objects.equals(bundle.get("NOTIFICATIONTAG"), "AUDIT")) {
-                        if (fab != null)
-                            fab.show();
-                        auditNoti = true;
-                        updateFragment(LanguageController.getInstance().getMobileMsgByKey(AppConstant.audit_nav),
-                                fragmentAuditList);
-                    } else if (Objects.equals(bundle.get("NOTIFICATIONTAG"), "JOB")) {
-                        jobNoti= true;
-                        updateFragment(LanguageController.getInstance().getMobileMsgByKey(AppConstant.jobs), joblistfragment);
-                    } else if (Objects.equals(bundle.get("NOTIFICATIONTAG"), "APPOINTMENT")) {
-                        isCalendarSelected = true;
-                        title_calender.performClick();
-                    } else if (Objects.equals(bundle.get("NOTIFICATIONTAG"), "updateLeave")) {
-                        updateFragment(LanguageController.getInstance().getMobileMsgByKey(AppConstant.user_leave), userLeaveListFragment);
-                    } else if (Objects.equals(bundle.get("NOTIFICATIONTAG"), "MULTI_JOB")) {
-                        jobNoti= true;
-                        setNotificationDataId("");
-                        updateFragment(LanguageController.getInstance().getMobileMsgByKey(AppConstant.jobs), joblistfragment);
-                    }else if (Objects.equals(bundle.get("NOTIFICATIONTAG"), "quote_update")) {
-                        quoteNoti = true;
-                        title_qoutes.performClick();
-                    } else {
-                        title_jobs.performClick();
-                    }
-                } else {
-                    title_jobs.performClick();
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            title_jobs.performClick();
-        }
-        Log.e("", "");
-        try {
-            MyDigitalClock.getInstance().setNotifyClock(this);
-        } catch (Exception exception) {
-            exception.printStackTrace();
-        }
     }
-
     private void loadDefaultPageView() {
         /*check default page view permission and load fragment*/
         Right right = App_preference.getSharedprefInstance().getLoginRes().getRights().get(0);
@@ -652,6 +692,35 @@ public class MainActivity extends UploadDocumentActivity implements MainActivity
 
         text_clock = findViewById(R.id.text_clock);
         check_in_time = findViewById(R.id.check_in_time);
+        fab = findViewById(R.id.fab);
+
+        parent_client = findViewById(R.id.parent_client);
+        parent_quotes = findViewById(R.id.parent_quotes);
+        audit_menu_layout = findViewById(R.id.audit_menu_layout);
+        parent_expence = findViewById(R.id.parent_expence);
+        timezonelayout=findViewById(R.id.timezonelayout);
+        parent_calender = findViewById(R.id.parent_calender);
+        parent_timeSheet = findViewById(R.id.parent_timeSheet);
+        parent_report = findViewById(R.id.parent_report);
+        parent_scan = findViewById(R.id.parent_scan);
+
+        title_jobs.setOnClickListener(this);
+        parent_client.setOnClickListener(this);
+        //title_language.setOnClickListener(this);
+        title_qoutes.setOnClickListener(this);
+        title_audit.setOnClickListener(this);
+        title_scan.setOnClickListener(this);
+        chat_textview.setOnClickListener(this);
+        title_expence.setOnClickListener(this);
+        title_report.setOnClickListener(this);
+        title_timeSheet.setOnClickListener(this);
+        title_calender.setOnClickListener(this);
+        title_addLeave.setOnClickListener(this);
+
+
+        findViewById(R.id.logout_layout).setOnClickListener(this);
+        findViewById(R.id.setting).setOnClickListener(this);
+        title_check_in_out.setOnClickListener(this);
         updateVersionForcFully();
 
     }
@@ -756,7 +825,6 @@ public class MainActivity extends UploadDocumentActivity implements MainActivity
 
         registerNetworkReceiver();
 
-        parent_client = findViewById(R.id.parent_client);
 
 
         if (App_preference.getSharedprefInstance().getLoginRes().getRights() != null)
@@ -765,14 +833,11 @@ public class MainActivity extends UploadDocumentActivity implements MainActivity
             }
 
 //      hide/show quotes
-        LinearLayout parent_quotes = findViewById(R.id.parent_quotes);
+
         if (App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsQuoteVisible() != 0) {
             parent_quotes.setVisibility(View.GONE);
         }
-
         /*visible/gone audit according to permission**/
-        LinearLayout audit_menu_layout = findViewById(R.id.audit_menu_layout);
-        LinearLayout parent_scan = findViewById(R.id.parent_scan);
         if (App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsAuditVisible() != 0) {
             audit_menu_layout.setVisibility(View.GONE);
             parent_scan.setVisibility(View.GONE);
@@ -784,14 +849,13 @@ public class MainActivity extends UploadDocumentActivity implements MainActivity
 
 
         /*visible/gone Expense according to permission**/
-        LinearLayout parent_expence = findViewById(R.id.parent_expence);
+
         if (App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsExpenseVisible() != 0) {
             parent_expence.setVisibility(View.GONE);
         }
 
 
         //visible/gone TimeZone text
-        LinearLayout timezonelayout=findViewById(R.id.timezonelayout);
         if (App_preference.getSharedprefInstance().getLoginRes().getIsAutoTimeZone().equals("1")
                 &&!App_preference.getSharedprefInstance().getLoginRes().getLoginUsrTz().equals(TimeZone.getDefault().getID()))
         {
@@ -801,7 +865,6 @@ public class MainActivity extends UploadDocumentActivity implements MainActivity
 
         /*visible/gone appointment according to permission**/
         // this permission will work on the basis of issheduler
-        LinearLayout parent_calender = findViewById(R.id.parent_calender);
         /*if (App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsAppointmentVisible() != 0) {*/
         if (App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsSchedular() != 0) {
             parent_calender.setVisibility(View.GONE);
@@ -815,36 +878,17 @@ public class MainActivity extends UploadDocumentActivity implements MainActivity
         }
 
 
-        LinearLayout parent_timeSheet = findViewById(R.id.parent_timeSheet);
         if (App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsTimeSheetEnableMobile() != null && App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsTimeSheetEnableMobile().equals("0")) {
             parent_timeSheet.setVisibility(View.VISIBLE);
         } else {
             parent_timeSheet.setVisibility(View.GONE);
         }
-        LinearLayout parent_report = findViewById(R.id.parent_report);
+
         if (App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsCheckInOutEnableMobile() != null && App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsCheckInOutEnableMobile().equals("0")) {
             parent_report.setVisibility(View.VISIBLE);
         } else {
             parent_report.setVisibility(View.GONE);
         }
-
-
-        title_jobs.setOnClickListener(this);
-        parent_client.setOnClickListener(this);
-        //title_language.setOnClickListener(this);
-        title_qoutes.setOnClickListener(this);
-        title_audit.setOnClickListener(this);
-        title_scan.setOnClickListener(this);
-        chat_textview.setOnClickListener(this);
-        title_expence.setOnClickListener(this);
-        title_report.setOnClickListener(this);
-        title_timeSheet.setOnClickListener(this);
-        title_calender.setOnClickListener(this);
-        title_addLeave.setOnClickListener(this);
-
-
-        findViewById(R.id.logout_layout).setOnClickListener(this);
-        findViewById(R.id.setting).setOnClickListener(this);
 
         mainActivity_pi = new MainActivity_pc(this);
         clientList2Fragment = ClientListNav.newInstance("1", "2");
@@ -883,18 +927,13 @@ public class MainActivity extends UploadDocumentActivity implements MainActivity
         }
 
 
-        title_check_in_out.setOnClickListener(this);
+
 
         // initialize the clock timer instance
         MyDigitalClock.getInstance().createTimerInstance();
 
         //check the time shift ,and last check in time for calculation and UI set
         testTimeShiftEbd();
-
-
-        fab = findViewById(R.id.fab);
-
-
         initFirebase();
     }
 
