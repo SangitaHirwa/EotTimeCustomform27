@@ -347,7 +347,7 @@ public class JoBInvoiceItemList2Activity extends AppCompatActivity implements Vi
                 showLocationData(locId);
 
 
-            } else if (App_preference.getSharedprefInstance().getLoginRes().getLocId() != null && !App_preference.getSharedprefInstance().getLoginRes().getLocId().equals("0")) {
+            } else if (App_preference.getSharedprefInstance().getLoginRes().getCompPermission().get(0).getIsLocationEnable().equals("1") && App_preference.getSharedprefInstance().getLoginRes().getLocId() != null && !App_preference.getSharedprefInstance().getLoginRes().getLocId().equals("0")) {
                 locId = App_preference.getSharedprefInstance().getLoginRes().getLocId();
                 showLocationData(locId);
             }
@@ -863,7 +863,8 @@ public class JoBInvoiceItemList2Activity extends AppCompatActivity implements Vi
 
 
     @Override
-    public void setCalculation(Double Subtotal, List<TaxData> listTax, boolean isShippingData, String singleTaxId) {
-        this.SingleTaxId = singleTaxId;
+    public void setCalculation(Double Subtotal, List<TaxData> listTax,boolean isShippingData,String SingleTaxId,String SingleTaxRate) {
+
+        this.SingleTaxId = SingleTaxId;
     }
 }

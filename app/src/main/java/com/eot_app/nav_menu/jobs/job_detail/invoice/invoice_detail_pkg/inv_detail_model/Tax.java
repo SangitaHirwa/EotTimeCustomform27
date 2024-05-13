@@ -33,8 +33,11 @@ public class Tax  implements Parcelable {
     @NonNull
     private String taxId;
     private String label;
-    private String isactive;
-    private String show_Invoice;
+//    private String isactive;
+//    private String show_Invoice;
+//    @Ignore
+    /**1 - Active and 0 - deactive*/
+    private String status = "0";
     private String rate = "0";
     private String percentage = "0";
     private String locId = "0";
@@ -57,8 +60,7 @@ public class Tax  implements Parcelable {
     protected Tax(Parcel in) {
         taxId = in.readString();
         label = in.readString();
-        isactive = in.readString();
-        show_Invoice = in.readString();
+        status = in.readString();
         rate = in.readString();
         percentage = in.readString();
         appliedTax = in.readString();
@@ -76,8 +78,7 @@ public class Tax  implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(taxId);
         dest.writeString(label);
-        dest.writeString(isactive);
-        dest.writeString(show_Invoice);
+        dest.writeString(status);
         dest.writeString(rate);
         dest.writeString(percentage);
         dest.writeString(appliedTax);
@@ -126,20 +127,12 @@ public class Tax  implements Parcelable {
         this.label = label;
     }
 
-    public String getIsactive() {
-        return isactive;
+    public String getStatus() {
+        return status;
     }
 
-    public void setIsactive(String isactive) {
-        this.isactive = isactive;
-    }
-
-    public String getShow_Invoice() {
-        return show_Invoice;
-    }
-
-    public void setShow_Invoice(String show_Invoice) {
-        this.show_Invoice = show_Invoice;
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public String getRate() {
@@ -188,6 +181,22 @@ public class Tax  implements Parcelable {
         this.taxComponents = tax;
     }
 
+//    public String getIsactive() {
+//        return isactive;
+//    }
+//
+//    public void setIsactive(String isactive) {
+//        this.isactive = isactive;
+//    }
+//
+//    public String getShow_Invoice() {
+//        return show_Invoice;
+//    }
+//
+//    public void setShow_Invoice(String show_Invoice) {
+//        this.show_Invoice = show_Invoice;
+//    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -196,8 +205,7 @@ public class Tax  implements Parcelable {
         return isSelect() == tax.isSelect() &&
                 getTaxId().equals(tax.getTaxId()) &&
                 Objects.equals(getLabel(), tax.getLabel()) &&
-                Objects.equals(getIsactive(), tax.getIsactive()) &&
-                Objects.equals(getShow_Invoice(), tax.getShow_Invoice()) &&
+                Objects.equals(getStatus(), tax.getStatus()) &&
                 Objects.equals(getRate(), tax.getRate()) &&
                 Objects.equals(getPercentage(), tax.getPercentage()) &&
                 Objects.equals(getLocId(), tax.getLocId()) &&
@@ -208,6 +216,6 @@ public class Tax  implements Parcelable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(getTaxId(), getLabel(), getIsactive(), getShow_Invoice(), getRate(), getPercentage(), getLocId(), isSelect(), getAppliedTax(), getOldTax()/*,getTaxComponents()*/);
+        return Objects.hash(getTaxId(), getLabel(), getStatus(), getRate(), getPercentage(), getLocId(), isSelect(), getAppliedTax(), getOldTax()/*,getTaxComponents()*/);
     }
 }

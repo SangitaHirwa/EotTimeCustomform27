@@ -106,7 +106,7 @@ import com.eot_app.utility.settings.setting_db.TagData;
         CustomFormSubmited.class, CustomFormListOffline.class, AuditStatusModel.class, AppointmentStatusModel.class, OfflieCompleQueAns.class,
         Attachments.class, BrandData.class},
 
-        version = 48, exportSchema = false)
+        version = 49, exportSchema = false)
 @TypeConverters({TaxDataConverter.class, TagDataConverter.class, InvoiceItemDataModelConverter.class, TaxConverter.class
         , EquipmentTypeConverter.class, EquArrayConvrtr.class, EquCategoryConvrtr.class
         , SiteCustomFieldConverter.class, JobRecurTypeConvert.class, SelecetedDaysConverter.class
@@ -739,6 +739,19 @@ public abstract class AppDataBase extends RoomDatabase {
 
         }
     };
+    static final Migration MIGRATION_48_49 = new Migration(48, 49) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            /* **Alter Table for Tax new response **/
+            database.execSQL("CREATE TABLE IF NOT EXISTS _new_Tax (taxId TEXT NOT NULL UNIQUE,label TEXT," +
+                    "status TEXT,rate TEXT,percentage TEXT,locId TEXT,taxComponents TEXT,"
+                    + "PRIMARY KEY(taxId))");
+            database.execSQL("INSERT INTO _new_Tax (taxId,label,status,rate,percentage,locId,taxComponents) SELECT taxId,label," +
+                    "CASE WHEN isactive = '0' OR show_Invoice = '0' THEN '0' ELSE '1' END AS status,rate,percentage,locId,taxComponents FROM Tax");
+            database.execSQL("DROP TABLE Tax");
+            database.execSQL("ALTER TABLE _new_Tax RENAME TO Tax");
+        }
+    };
     private static final String DB_NAME = "eot_db";
 
     private static AppDataBase INSTANCE;
@@ -801,6 +814,7 @@ public abstract class AppDataBase extends RoomDatabase {
                     .addMigrations(MIGRATION_45_46)
                     .addMigrations(MIGRATION_46_47)
                     .addMigrations(MIGRATION_47_48)
+                    .addMigrations(MIGRATION_48_49)
                     .fallbackToDestructiveMigration()
                     .build();
         }

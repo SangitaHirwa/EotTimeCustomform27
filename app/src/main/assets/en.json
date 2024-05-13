@@ -1914,7 +1914,9 @@
     "expired": "Expired",
     "update_service": "Update Job Type/Service",
     "searching": "Searching",
-    "scanner_error":"Your current device is not compatible with this feature. You'll need a higher version of Android to run the scanner."
+    "scanner_error":"Your current device is not compatible with this feature. You'll need a higher version of Android to run the scanner.",
+    "quote": "Quote",
+    "jobcard": "Jobcard"
   }
 }
 

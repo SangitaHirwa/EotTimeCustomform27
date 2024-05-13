@@ -462,7 +462,7 @@ public class Generate_Invoice_Activity extends AppCompatActivity implements MyLi
                     locId = invResModel.getLocId();
                     if (locId != null && !locId.equals("0")) {
                         showLocationData(locId);
-                    } else if (App_preference.getSharedprefInstance().getLoginRes().getLocId() != null && !App_preference.getSharedprefInstance().getLoginRes().getLocId().equals("0")) {
+                    } else if (App_preference.getSharedprefInstance().getLoginRes().getCompPermission().get(0).getIsLocationEnable().equals("1") && App_preference.getSharedprefInstance().getLoginRes().getLocId() != null && !App_preference.getSharedprefInstance().getLoginRes().getLocId().equals("0")) {
                         locId = App_preference.getSharedprefInstance().getLoginRes().getLocId();
                         showLocationData(locId);
                     }
@@ -856,6 +856,7 @@ public class Generate_Invoice_Activity extends AppCompatActivity implements MyLi
         intent.putExtra("NONBILLABLE", true);
         intent.putExtra("getTaxMethodType", invoice_Details.getIsAddisDiscBefore());
         intent.putExtra("getSingleTaxId", SingleTaxId);
+        intent.putExtra("getSingleTaxRate", SingleTaxRate);
         startActivityForResult(intent, ADD_ITEM_DATA);
     }
 
@@ -904,6 +905,7 @@ public class Generate_Invoice_Activity extends AppCompatActivity implements MyLi
         intent.putExtra("NONBILLABLE", true);
         intent.putExtra("getTaxMethodType", invoice_Details.getIsAddisDiscBefore());
         intent.putExtra("getSingleTaxId", SingleTaxId);
+        intent.putExtra("getSingleTaxRate", SingleTaxRate);
         startActivityForResult(intent, ADD_ITEM_DATA);
     }
 
@@ -1079,9 +1081,11 @@ public class Generate_Invoice_Activity extends AppCompatActivity implements MyLi
     }
     Double totalOfShippingItem = 0.0;
     String SingleTaxId="0";
+    String SingleTaxRate="0";
 
     @Override
-    public void setCalculation(Double Subtotal, List<TaxData> listTax,boolean isShippingData,String SingleTaxId) {
+    public void setCalculation(Double Subtotal, List<TaxData> listTax,boolean isShippingData,String SingleTaxId,String SingleTaxRate) {
+
         String additionalDiscount =invoice_Details.getDiscount();
 
         if(totalItemSize==0){
@@ -1128,6 +1132,7 @@ public class Generate_Invoice_Activity extends AppCompatActivity implements MyLi
         else if(invoice_Details.getIsAddisDiscBefore().equals("1")){
             Log.e("Invoice additional type", "before "+invoice_Details.getIsAddisDiscBefore());
             this.SingleTaxId = SingleTaxId;
+            this.SingleTaxRate = SingleTaxRate;
             Double taxRate = 0.0;
             txt_additional_discount.setVisibility(View.VISIBLE);
             txt_lbl_additional_discount.setVisibility(View.VISIBLE);

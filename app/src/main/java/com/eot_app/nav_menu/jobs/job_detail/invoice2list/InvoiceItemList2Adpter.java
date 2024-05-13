@@ -347,7 +347,7 @@ public class InvoiceItemList2Adpter extends RecyclerView.Adapter<InvoiceItemList
         if(position == invoiceItemList.size()-1){
             List<TaxData> tempList = new ArrayList<>();
             if(getListData!= null) {
-                getListData.setCalculation(0.0, tempList, false, singleTaxId);
+                getListData.setCalculation(0.0, tempList, false, singleTaxId,"0");
             }
             getDataOfTaxComponent = true;
         }

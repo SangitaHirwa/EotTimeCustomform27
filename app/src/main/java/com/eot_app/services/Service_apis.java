@@ -79,7 +79,7 @@ public interface Service_apis {
     String getInvoiceDetail = "InvoiceController/getInvoiceDetail";
     //Remove after discussion with Jit Sir 8/nov/23
 //    String updateInvoice = "InvoiceController/updateInvoice";
-    String getTaxList = "CompanyController/getTaxList";
+    String getTaxList = "CompanyController/getTaxListNew";
     String addInvoice = "InvoiceController/addInvoice";
     String postPaymentInvoice = "InvoiceController/invoicePaymentRecieve";
     String getInvoiceEmailTemplate = "InvoiceController/getInvoiceEmailTemplate";

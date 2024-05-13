@@ -8,6 +8,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
+import android.text.Html;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -36,6 +37,7 @@ import com.eot_app.nav_menu.jobs.job_detail.invoice.add_edit_invoice_pkg.dropdow
 import com.eot_app.nav_menu.jobs.job_detail.invoice.add_edit_invoice_pkg.dropdown_item_pkg.Services_item_Adapter;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.inventry_pkg.Inventry_ReS_Model;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_detail_pkg.inv_detail_model.Tax;
+import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_detail_pkg.inv_detail_model.TaxComponents;
 import com.eot_app.nav_menu.quote.add_quotes_pkg.model_pkg.Update_Quote_ReQ;
 import com.eot_app.nav_menu.quote.quote_invoice_pkg.quote_model_pkg.Quote_ItemData;
 import com.eot_app.nav_menu.quote.quote_invoice_pkg.quote_model_pkg.QuotesDetails;
@@ -97,7 +99,9 @@ public class AddQutesItem_Activity extends AppCompatActivity implements TextWatc
     private boolean ITEMSYNC = false;
     RadioGroup rediogrp;
     private ImageButton tax_cancel;
-    private String getTaxMethodType="", getSingleTaxId="0", getTaxCalculationType, getDisCalculationType;
+    private String getTaxMethodType="", getSingleTaxId="0", getTaxCalculationType, getDisCalculationType,getSingleTaxRate = "0";
+    boolean isTaxUpdated = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,6 +122,7 @@ public class AddQutesItem_Activity extends AppCompatActivity implements TextWatc
             intializeViews();
             if(getTaxMethodType.equals("1")) {
                 getSingleTaxId = bundle.getString("getSingleTaxId");
+                getSingleTaxRate = bundle.getString("getSingleTaxRate");
             }
             if (quotesDetails == null) {
                 return;
@@ -139,6 +144,7 @@ public class AddQutesItem_Activity extends AppCompatActivity implements TextWatc
             getTaxMethodType = bundle.getString("getTaxMethodType");
             if(getTaxMethodType.equals("1")) {
                 getSingleTaxId = bundle.getString("getSingleTaxId");
+                getSingleTaxRate = bundle.getString("getSingleTaxRate");
             }
             quotesDetails = new Gson().fromJson(detailsobject, QuotesDetails.class);
             getTaxCalculationType = quotesDetails.getInvData().getTaxCalculationType();
@@ -722,7 +728,7 @@ public class AddQutesItem_Activity extends AppCompatActivity implements TextWatc
         for (Tax tax1 : listFilter) {
             for (Tax tax2 : tax_default_list) {
                 if (tax1.getTaxId().equals(tax2.getTaxId())) {
-                    tax1.setRate(tax2.getRate());
+//                    tax1.setRate(tax2.getRate());
                     tax1.setSelect(true);
                     total_tax = Float.parseFloat(tax1.getRate()) + total_tax;
                 }
@@ -736,7 +742,6 @@ public class AddQutesItem_Activity extends AppCompatActivity implements TextWatc
     public void setTaxList(List<Tax> taxList) {
         listFilter = new ArrayList<>();
         for (Tax tax : taxList) {
-            if (tax.getIsactive().equals("1") && tax.getShow_Invoice().equals("1")) {
                 if (tax.getRate() == null && tax.getPercentage() == null) {
                     tax.setRate("0");
                 } else if (tax.getPercentage() != null) {
@@ -745,8 +750,6 @@ public class AddQutesItem_Activity extends AppCompatActivity implements TextWatc
                     tax.setRate("0");
                 }
                 listFilter.add(tax);
-
-            }
         }
     }
 
@@ -851,7 +854,7 @@ public class AddQutesItem_Activity extends AppCompatActivity implements TextWatc
             for (TaxData taxData : taxDataList) {
                 if (tax.getTaxId().equals(taxData.getTaxId())) {
                     /**In previous app***/
-                    tax.setRate(taxData.getRate());
+//                    tax.setRate(taxData.getRate());
                     tax.setSelect(true);
                     total_tax = Float.parseFloat(tax.getRate()) + total_tax;
                 }
@@ -953,7 +956,8 @@ public class AddQutesItem_Activity extends AppCompatActivity implements TextWatc
 
         }
     }
-    String taxId = "";
+    String taxId = "0";
+    String taxRate = "0";
     private void checkMandatryFields() {
         if (!isMandtryItem && isfwOrItem == 1) {
             AppUtility.alertDialog(this, "", LanguageController.getInstance().getMobileMsgByKey(AppConstant.item_empty), LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok),
@@ -984,8 +988,27 @@ public class AddQutesItem_Activity extends AppCompatActivity implements TextWatc
             List<Tax> taxListFilter = new ArrayList<>();
             for (Tax tax : listFilter) {
                 if (tax.isSelect()) {
-                    taxListFilter.add(tax);
-                    taxId = tax.getTaxId();
+                    if(getIntent().hasExtra("quotesDetails")) {
+                        if (isTaxUpdated) {
+                            taxListFilter.add(tax);
+                            getTaxIdForCheckSigleTax(tax);
+                        } else {
+                            if (quote_itemData != null && quote_itemData.getTax().size() > 0 ) {
+                                Tax addTax = new Tax();
+                                addTax.setTaxId(quote_itemData.getTax().get(0).getTaxId());
+                                addTax.setLabel(quote_itemData.getTax().get(0).getLabel());
+                                addTax.setStatus(quote_itemData.getTax().get(0).getStatus());
+                                addTax.setRate(quote_itemData.getTax().get(0).getRate());
+                                addTax.setLocId(quote_itemData.getTax().get(0).getLocId());
+                                addTax.setTaxComponents(quote_itemData.getTax().get(0).getTaxComponents());
+                                taxListFilter.add(addTax);
+                                getTaxIdForCheckSigleTax(addTax);
+                            }
+                        }
+                    }else {
+                        taxListFilter.add(tax);
+                        getTaxIdForCheckSigleTax(tax);
+                    }
                 }
             }
             if(getTaxMethodType.equals("1")) {
@@ -1098,7 +1121,19 @@ public class AddQutesItem_Activity extends AppCompatActivity implements TextWatc
                 public void onClick(View v) {
                     float localtax = getTotalApplyTax();
                     total_tax = localtax;
-                    tax_value_txt.setText((String.valueOf(localtax)));
+                    if(getIntent().hasExtra("quotesDetails")) {
+                        if (isTaxUpdated) {
+                            tax_value_txt.setText((String.valueOf(localtax)));
+                        } else {
+                            if (quote_itemData != null && quote_itemData.getTax().size() > 0) {
+                                tax_value_txt.setText("" + Float.parseFloat(quote_itemData.getTax().get(0).getRate()));
+                            } else {
+                                tax_value_txt.setText("0.0");
+                            }
+                        }
+                    }else {
+                        tax_value_txt.setText((String.valueOf(localtax)));
+                    }
                     calculateTaxRate();
                     total_Amount_cal();
                     dialog.dismiss();
@@ -1178,8 +1213,20 @@ public class AddQutesItem_Activity extends AppCompatActivity implements TextWatc
             if (tax.getRate() != null){
                 if (tax.getRate().isEmpty()) {
                     radioButton.setText(tax.getLabel() + " (0 %)");
+                    if(tax.getStatus().equals("0")){
+                        radioButton.setEnabled(false);
+//                        radioButton.setText(Html.fromHtml("<font color= \"#EBEBE4\">" +tax.getLabel() + " (0 %) </font>"+"<font color= \"#ff0000\">" + "("+LanguageController.getInstance().getMobileMsgByKey(AppConstant.inactive_radio_btn)+") </font>") );
+                        radioButton.setText(tax.getLabel() + " (0 %) ("+LanguageController.getInstance().getMobileMsgByKey(AppConstant.inactive_radio_btn)+")");
+                        radioButton.setTextColor(Color.parseColor("#EBEBE4"));
+                    }
                 } else {
                     radioButton.setText(tax.getLabel() + " (" + tax.getRate() + "%)");
+                    if(tax.getStatus().equals("0")){
+                        radioButton.setEnabled(false);
+//                        radioButton.setText(Html.fromHtml("<font color= \"#EBEBE4\">" +tax.getLabel() + " (" + tax.getRate() + "%) "+ "</font>"+"<font color= \"#ff0000\">" + "("+LanguageController.getInstance().getMobileMsgByKey(AppConstant.inactive_radio_btn)+") </font>") );
+                        radioButton.setText(tax.getLabel() + " (" + tax.getRate() + "%) "+ "("+LanguageController.getInstance().getMobileMsgByKey(AppConstant.inactive_radio_btn)+")");
+                        radioButton.setTextColor(Color.parseColor("#EBEBE4"));
+                    }
                 }
             }
             if (updateItem) {
@@ -1198,6 +1245,7 @@ public class AddQutesItem_Activity extends AppCompatActivity implements TextWatc
             int position = radioButton.getId();// String tagId=radioButton.getTag().toString();
             listFilter.get(position).setSelect(true);
             setSelectedTaxLable(new HashSet<String>(), selected_tax_nm);
+            isTaxUpdated = true;
         });
     }
 
@@ -1571,5 +1619,23 @@ public class AddQutesItem_Activity extends AppCompatActivity implements TextWatc
         });
     }
 
-
+    private  void  getTaxIdForCheckSigleTax(Tax tax){
+        if (App_preference.getSharedprefInstance().getLoginRes().getTaxShowType().equals("2")) {
+            if (tax.getTaxComponents() != null && tax.getTaxComponents().size() > 0) {
+                for (TaxComponents tax2 : tax.getTaxComponents()
+                ) {
+                    taxId = tax2.getTaxId();
+                }
+            }else {
+                taxId = tax.getTaxId();
+            }
+        }else {
+            taxId = tax.getTaxId();
+            if(tax.getRate() != null && !tax.getRate().isBlank() && tax.getRate() != "0" ) {
+                taxRate = tax.getRate();
+            }else {
+                taxRate = tax.getPercentage();
+            }
+        }
+    }
 }

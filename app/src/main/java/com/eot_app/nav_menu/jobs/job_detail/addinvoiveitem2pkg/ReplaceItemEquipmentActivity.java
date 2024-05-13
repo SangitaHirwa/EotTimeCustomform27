@@ -1098,7 +1098,6 @@ public class ReplaceItemEquipmentActivity extends
 
         for (Tax tax : taxList) {
 
-            if (tax.getIsactive().equals("1") && tax.getShow_Invoice().equals("1")) {
                 if (tax.getRate() == null && tax.getPercentage() == null) {
                     tax.setRate("0");
                 } else if (tax.getPercentage() != null) {
@@ -1116,7 +1115,6 @@ public class ReplaceItemEquipmentActivity extends
 
                 // listFilter.add(tax);
                 Log.e("", "");
-            }
         }
 
         Collections.sort(listFilter, (o1, o2) -> o2.getLabel().compareTo(o1.getLabel()));

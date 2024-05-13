@@ -335,6 +335,7 @@ public class Quote_Invoice_Details_Activity extends AppCompatActivity implements
         intent.putExtra("itemId", itemData.getItemId());
         intent.putExtra("getTaxMethodType", quotes_Details_Inv.getIsAddisDiscBefore());
         intent.putExtra("getSingleTaxId", SingleTaxId);
+        intent.putExtra("getSingleTaxRate", SingleTaxRate);
         startActivityForResult(intent, ADD_ITEM_DATA);
     }
 
@@ -548,6 +549,7 @@ public class Quote_Invoice_Details_Activity extends AppCompatActivity implements
         intent.putExtra("AddQuotesItem", new Gson().toJson(quotesDetails));
         intent.putExtra("getTaxMethodType", quotes_Details_Inv.getIsAddisDiscBefore());
         intent.putExtra("getSingleTaxId", SingleTaxId);
+        intent.putExtra("getSingleTaxRate", SingleTaxRate);
         startActivity(intent);
     }
 
@@ -653,8 +655,9 @@ public class Quote_Invoice_Details_Activity extends AppCompatActivity implements
     }
     Double totalOfShippingItem = 0.0;
     String SingleTaxId="0";
+    String SingleTaxRate="0";
     @Override
-    public void setCalculation(Double Subtotal, List<TaxData> listTax,boolean isShippingData,String SingleTaxId) {
+    public void setCalculation(Double Subtotal, List<TaxData> listTax,boolean isShippingData,String SingleTaxId,String SingleTaxRate) {
         String additionalDiscount =quotes_Details_Inv.getDiscount();
         if(listCount==0){
             cl_parent_calculation.setVisibility(View.GONE);
@@ -698,6 +701,7 @@ public class Quote_Invoice_Details_Activity extends AppCompatActivity implements
         else if(quotes_Details_Inv.getIsAddisDiscBefore().equals("1")){
             Double taxRate = 0.0;
             this.SingleTaxId = SingleTaxId;
+            this.SingleTaxRate = SingleTaxRate;
             txt_additional_discount.setVisibility(View.VISIBLE);
             txt_lbl_additional_discount.setVisibility(View.VISIBLE);
             txt_additional_discount1.setVisibility(View.GONE);

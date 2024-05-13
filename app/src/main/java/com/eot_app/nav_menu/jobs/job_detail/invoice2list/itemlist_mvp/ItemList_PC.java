@@ -386,6 +386,7 @@ public class ItemList_PC implements ItemList_PI {
                         @Override
                         public void onNext(JsonObject jsonObject) {
                             if (jsonObject.get("success").getAsBoolean()) {
+                                getItemFromServer(jobId);
                                 Gson gson = new Gson();
                                 InvoiceItemDetailsModel invResModel = gson.fromJson(jsonObject.get("data"), InvoiceItemDetailsModel.class);
                                 itemListView.setInvoiceDetails(invResModel);
@@ -394,7 +395,6 @@ public class ItemList_PC implements ItemList_PI {
                             } else {
                                 itemListView.InvoiceNotFound(LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
                             }
-
 
                         }
 

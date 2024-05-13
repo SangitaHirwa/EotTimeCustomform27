@@ -13,7 +13,6 @@ public class TaxList_ReQ_Model {
         this.compId = compId;
         this.limit = limit;
         this.index = index;
-        this.show_Invoice = "1";
         this.dateTime = dateTime;
     }
 }

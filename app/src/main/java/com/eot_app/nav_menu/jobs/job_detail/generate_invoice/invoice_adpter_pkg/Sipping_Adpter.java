@@ -53,7 +53,7 @@ public class Sipping_Adpter extends RecyclerView.Adapter<Sipping_Adpter.MyViewHo
             myViewHolder.shpinng_item_rate.setText(AppUtility.getRoundoff_amount(AppUtility.getCalculatedAmount("1", shippingItemList.get(pos).getRate(), "0", taxList, taxCalculationType)));
             total += Double.parseDouble(AppUtility.getRoundoff_amount(AppUtility.getCalculatedAmount("1", shippingItemList.get(pos).getRate(), "0", taxList, taxCalculationType)));
             if(pos == shippingItemList.size()-1) {
-                getListData.setCalculation(total, new ArrayList<>(), true, "0");
+                getListData.setCalculation(total, new ArrayList<>(), true, "0","0");
                 total =0.0;
             }
         }

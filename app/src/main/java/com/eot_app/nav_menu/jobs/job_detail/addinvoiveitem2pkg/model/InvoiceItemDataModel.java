@@ -64,7 +64,7 @@ public class InvoiceItemDataModel implements Parcelable {
     private String taxType;
     private String warrantyType;
     private String warrantyValue;
-    private String equId;
+    private String equId = "0";
     private String partTempId;
     private int isPartParent=0;
     private int isPartChild=0;
