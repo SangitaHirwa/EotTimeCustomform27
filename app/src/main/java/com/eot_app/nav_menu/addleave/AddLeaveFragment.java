@@ -308,7 +308,7 @@ public class AddLeaveFragment extends AppCompatActivity implements View.OnClickL
                 }
 
                 if (!AppUtility.compareTwoDatesForTimeSheet2(s, e, AppConstant.DATE_FORMAT+" hh:mm:ss a")) {
-                    showMyDialog(LanguageController.getInstance().getMobileMsgByKey(AppConstant.time_sheet_date_error));
+                    showMyDialog(LanguageController.getInstance().getMobileMsgByKey(AppConstant.leave_date_error));
                 } else {
                     AppUtility.progressBarShow(this);
                     int id=0;
