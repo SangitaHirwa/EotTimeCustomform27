@@ -1016,7 +1016,7 @@ public class AppConstant {
     public static String update_service = "update_service";
     public static String searching = "searching";
     public static String scanner_error = "scanner_error";
-
+    public static String leave_date_error = "leave_date_error";
 
 
 
