@@ -302,7 +302,7 @@ public class AddLeaveFragment extends AppCompatActivity implements View.OnClickL
                     s = new SimpleDateFormat(AppConstant.DATE_FORMAT+" hh:mm:ss a", Locale.ENGLISH).format(startDate);
                     assert endDate != null;
                     e = new SimpleDateFormat(AppConstant.DATE_FORMAT+" hh:mm:ss a", Locale.ENGLISH).format(endDate);
-                    e = AppUtility.getDate(e);
+//                    e = AppUtility.getDate(e);
                 } catch (Exception exception) {
                     exception.printStackTrace();
                 }

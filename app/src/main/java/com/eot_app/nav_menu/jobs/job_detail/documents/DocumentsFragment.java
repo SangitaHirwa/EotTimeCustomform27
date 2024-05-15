@@ -642,7 +642,7 @@ public class DocumentsFragment extends Fragment implements Doc_Attch_View, Docum
 
                             Uri galreyImguriUri = data.getClipData().getItemAt(0).getUri();
                             //  String gallery_image_Path = PathUtils.getPath(getActivity(), galreyImguriUri);
-                            String gallery_image_Path = PathUtils.getRealPath(getActivity(), galreyImguriUri);
+                            String gallery_image_Path = PathUtils.getRealPath(getActivity().getApplicationContext(), galreyImguriUri);
                             String img_extension = gallery_image_Path.substring(gallery_image_Path.lastIndexOf("."));
                             if (data.getClipData().getItemCount() > 1) {
                                 isMultipleImages = true;
@@ -693,7 +693,7 @@ public class DocumentsFragment extends Fragment implements Doc_Attch_View, Docum
                     try {
                         Uri galreyImguriUri = data.getData();
                         //  String gallery_image_Path = PathUtils.getPath(getActivity(), galreyImguriUri);
-                        String gallery_image_Path = PathUtils.getRealPath(getActivity(), galreyImguriUri);
+                        String gallery_image_Path = PathUtils.getRealPath(getActivity().getApplicationContext(), galreyImguriUri);
                         String img_extension = gallery_image_Path.substring(gallery_image_Path.lastIndexOf("."));
                         //('jpg','png','jpeg','pdf','doc','docx','xlsx','csv','xls'); supporting extensions
                         if (img_extension.equals(".jpg") || img_extension.equals(".png") || img_extension.equals(".jpeg")) {
@@ -836,9 +836,9 @@ public class DocumentsFragment extends Fragment implements Doc_Attch_View, Docum
                 Uri uri = data.getClipData().getItemAt(i).getUri();
                 CompressImg compressImg = new CompressImg(requireActivity());
                 String savedImagePath = compressImg.compressImage(uri.toString());
-                String fileNameExt = AppUtility.getFileNameWithExtension(PathUtils.getRealPath(getActivity(), uri));
+                String fileNameExt = AppUtility.getFileNameWithExtension(PathUtils.getRealPath(getActivity().getApplicationContext(), uri));
                 String[] fileName = fileNameExt.split("\\.");
-                imgPathArray[i] = PathUtils.getRealPath(getActivity(), uri);
+                imgPathArray[i] = PathUtils.getRealPath(getActivity().getApplicationContext(), uri);
                 tempId = "Attachment-"+App_preference.getSharedprefInstance().getLoginRes().getUsrId()+"-"+jobId+"-"+i+"-"+AppUtility.getCurrentMiliTiem();
 
 //                Bitmap bitmap = AppUtility.getBitmapFromPath(PathUtils.getRealPath(getActivity(), uri));
@@ -888,7 +888,7 @@ public class DocumentsFragment extends Fragment implements Doc_Attch_View, Docum
         builder.putBoolean("isAttachmentSection",true);
         builder.putString("tempId",tempId);
 
-        mWorkManager = WorkManager.getInstance(getActivity().getApplication());
+        mWorkManager = WorkManager.getInstance(getActivity().getApplicationContext());
 
         OneTimeWorkRequest request = new OneTimeWorkRequest.Builder(UploadMultiImgWorker.class)
                 .setInputData(builder.build())

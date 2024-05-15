@@ -935,13 +935,15 @@ public class AppUtility {
     }
 
     static public void progressBarShow(Context context) {
-        progressDialog = new ProgressDialog(context, (R.style.progressbarstyle));
-        progressDialog.setMessage(LanguageController.getInstance().getMobileMsgByKey(AppConstant.loading) + "...");
-        progressDialog.setCancelable(false);
-        progressDialog.setCanceledOnTouchOutside(false);
-        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        progressDialog.setIndeterminate(true);
-        progressDialog.show();
+        if (context instanceof Activity && !((Activity) context).isFinishing()) {
+            progressDialog = new ProgressDialog(context, (R.style.progressbarstyle));
+            progressDialog.setMessage(LanguageController.getInstance().getMobileMsgByKey(AppConstant.loading) + "...");
+            progressDialog.setCancelable(false);
+            progressDialog.setCanceledOnTouchOutside(false);
+            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            progressDialog.setIndeterminate(true);
+            progressDialog.show();
+        }
     }
 
     public static void progressBarDissMiss() {

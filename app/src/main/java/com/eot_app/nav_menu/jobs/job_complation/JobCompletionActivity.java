@@ -1363,7 +1363,7 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
                 String savedImagePath = compressImg.compressImage(uri.toString());
                 String fileNameExt = AppUtility.getFileNameWithExtension(savedImagePath);
                 String[] fileName = fileNameExt.split("\\.");
-                imgPathArray[i] = PathUtils.getRealPath(this, uri);
+                imgPathArray[i] = PathUtils.getRealPath(JobCompletionActivity.this, uri);
                 tempId = "Attachment-"+App_preference.getSharedprefInstance().getLoginRes().getUsrId()+"-"+jobData.getJobId()+"-"+i+"-"+AppUtility.getCurrentMiliTiem();
 
 //                Bitmap bitmap = AppUtility.getBitmapFromPath(PathUtils.getRealPath(this, uri));
