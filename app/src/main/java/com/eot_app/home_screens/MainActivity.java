@@ -18,6 +18,8 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
@@ -890,7 +892,7 @@ public class MainActivity extends UploadDocumentActivity implements MainActivity
             parent_report.setVisibility(View.GONE);
         }
 
-        mainActivity_pi = new MainActivity_pc(this);
+        mainActivity_pi = new MainActivity_pc(MainActivity.this);
         clientList2Fragment = ClientListNav.newInstance("1", "2");
         fragmentAuditList = FragmentAuditList.newInstance(true);
         addLeadFragment = AddLeadFragment.newInstance();
@@ -1161,9 +1163,15 @@ public class MainActivity extends UploadDocumentActivity implements MainActivity
         if (!EotApp.getAppinstance().isMyServiceRunning(ForegroundService2.class)) {
             Intent startIntent = new Intent(this, ForegroundService2.class);
             startIntent.setAction(ForegroundService2.STARTFOREGROUND_ACTION);
+
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                //this.startForegroundService(startIntent);
-                startForegroundService(startIntent);
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    @Override
+                    public void run() {
+                        //this.startForegroundService(startIntent);
+                        startForegroundService(startIntent);
+                    }
+                });
             } else {
                 startService(new Intent(startIntent));
             }
