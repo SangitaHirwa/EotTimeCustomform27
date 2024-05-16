@@ -2735,7 +2735,15 @@ public class AddEditInvoiceItemActivity2 extends
             if (updateItem) {
                 tax.setOldTax(tax.getRate());
             }
-            radioGroup.addView(radioButton);
+            if(tax.getStatus().equals("0")) {
+
+                    if (updateItemDataModel != null && updateItemDataModel.getTax().get(0).getTaxId().equals(tax.getTaxId()) || updateAppintmentItemDataModel != null && String.valueOf(updateAppintmentItemDataModel.getTax().get(0).getTaxId()).equals(tax.getTaxId())) {
+                        radioGroup.addView(radioButton);
+                    }
+
+            }else {
+                radioGroup.addView(radioButton);
+            }
             setSelectedTaxLable(selected_tax_nm);
         }
 

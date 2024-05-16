@@ -1232,7 +1232,15 @@ public class AddQutesItem_Activity extends AppCompatActivity implements TextWatc
             if (updateItem) {
                 tax.setOldTax(tax.getRate());
             }
-            radioGroup.addView(radioButton);
+            if(tax.getStatus().equals("0")) {
+
+                if (quote_itemData != null && quote_itemData.getTax().get(0).getTaxId().equals(tax.getTaxId())) {
+                    radioGroup.addView(radioButton);
+                }
+
+            }else {
+                radioGroup.addView(radioButton);
+            }
             setSelectedTaxLable(new HashSet<String>(), selected_tax_nm);
         }
 
