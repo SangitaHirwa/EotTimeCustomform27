@@ -1093,12 +1093,11 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
                 if (resultCode == RESULT_OK)
                     if (doc_attch_pi != null){
                         String fileNameExt = AppUtility.getFileNameWithExtension(data.getStringExtra("imgPath"));
-//                        String bitmapString = "";
-//                        if (data.getBooleanExtra("isFileImage", false)) {
-//                            Bitmap bitmap = AppUtility.getBitmapFromPath(data.getStringExtra("imgPath"));
-//                            bitmapString = AppUtility.BitMapToString(bitmap);
-//                        }
-
+                        String img_extension = data.getStringExtra("imgPath").substring(data.getStringExtra("imgPath").lastIndexOf("."));
+                        //('jpg','png','jpeg','pdf','doc','docx','xlsx','csv','xls'); supporting extensions
+                        if (img_extension.equals(".jpg") || img_extension.equals(".png") || img_extension.equals(".jpeg")
+                                ||img_extension.equals(".pdf") || img_extension.equals(".doc") || img_extension.equals(".docx")
+                                ||img_extension.equals(".xlsx") || img_extension.equals(".csv") || img_extension.equals(".xls")) {
                         tempId = "Attachment-"+App_preference.getSharedprefInstance().getLoginRes().getUsrId()+"-"+jobData.getJobId()+"-0-"+AppUtility.getCurrentMiliTiem();
                         Attachments attachments = new Attachments(tempId,fileNameExt,fileNameExt,data.getStringExtra("imgPath"),queId, jtId,"",jobData.getJobId(),"6",data.getStringExtra("imgPath"),tempId);
                         AppDataBase.getInMemoryDatabase(this).attachments_dao().insertSingleAttachments(attachments);
@@ -1162,6 +1161,9 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
                                 e.printStackTrace();
                             }
                         }
+                        }else {
+                            showImageErrorDialog("Image is not uploaded, because we support only jpg/png/jpeg/pdf/doc/docx/xlsx/csv/xls extension.");
+                        }
                     }
                 break;
             case CAMERA_CODE:
@@ -1217,6 +1219,8 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
                                 //('jpg','png','jpeg','pdf','doc','docx','xlsx','csv','xls'); supporting extensions
                                 if (img_extension.equals(".jpg") || img_extension.equals(".png") || img_extension.equals(".jpeg")) {
                                     imageEditing(data.getData(), true);
+                                }else {
+                                    showImageErrorDialog("Image is not uploaded, because we support only jpg/png/jpeg/pdf/doc/docx/xlsx/csv/xls extension.");
                                 }
 
                             } catch (Exception e) {
@@ -1351,8 +1355,9 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
         return value;
 
     }
-
+    int notSupportImgCount;
     private void uploadMultipleImges(Intent data,boolean imgPath,String jobId, String queId, String jtId){
+        notSupportImgCount = 0;
         String [] imgPathArray = new String[data.getClipData().getItemCount()];
         JsonArray jsonArray = new JsonArray();
         ExecutorService service = Executors.newSingleThreadExecutor();
@@ -1362,12 +1367,11 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
                 CompressImg compressImg = new CompressImg(this);
                 String savedImagePath = compressImg.compressImage(uri.toString());
                 String fileNameExt = AppUtility.getFileNameWithExtension(savedImagePath);
+                String img_extension = savedImagePath.substring(savedImagePath.lastIndexOf("."));
                 String[] fileName = fileNameExt.split("\\.");
+                if(img_extension.equals(".jpg") || img_extension.equals(".png") || img_extension.equals(".jpeg")) {
                 imgPathArray[i] = PathUtils.getRealPath(this, uri);
                 tempId = "Attachment-"+App_preference.getSharedprefInstance().getLoginRes().getUsrId()+"-"+jobData.getJobId()+"-"+i+"-"+AppUtility.getCurrentMiliTiem();
-
-//                Bitmap bitmap = AppUtility.getBitmapFromPath(PathUtils.getRealPath(this, uri));
-//                String bitmapString = AppUtility.BitMapToString(bitmap);
                 Attachments attachments = new Attachments(tempId,fileNameExt,fileNameExt,imgPathArray[i],queId, jtId,"",jobData.getJobId(),"6",savedImagePath,tempId);
                 AppDataBase.getInMemoryDatabase(this).attachments_dao().insertSingleAttachments(attachments);
                 JsonObject  jsonObject = new JsonObject();
@@ -1381,21 +1385,22 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
                         onDocumentSelected("","",false,parentPositon,position,queId,jtId);
                     }
                 });
-
+                }else {
+                    notSupportImgCount++;
+                }
 
             }
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
+                    if(notSupportImgCount > 0){
+                        String msg = "Image is not uploaded, because we support only jpg/png/jpeg/pdf/doc/docx/xlsx/csv/xls extension.";
+                        if(notSupportImgCount > 1){
+                            msg = notSupportImgCount+" Images are not uploaded, because we support only jpg/png/jpeg/pdf/doc/docx/xlsx/csv/xls these extention.";
+                        }
+                        showImageErrorDialog(msg);
+                    }
                     uploadOffline(jsonArray.toString(),true,false,jobId,queId,jtId,tempId);
-//                    Log.e("String list", jsonArray.toString() );
-//                    Gson gson = new Gson();
-//                    Type listType = new TypeToken<ArrayList<ImgPathWithTemp>>() {}.getType();
-//                    List <ImgPathWithTemp> list1 = gson.fromJson(jsonArray.toString(),listType);
-//                    for (ImgPathWithTemp item : list1
-//                         ) {
-//                        Log.e("String list", item.getName() );
-//                    }
                 }
             });
         });
@@ -1771,5 +1776,9 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
     }
     public void setCompletionNotesPosition(int i){
         this.competionNotesPostion = i;
+    }
+    public void showImageErrorDialog(String msg) {
+        AppUtility.alertDialog(this, LanguageController.getInstance().getMobileMsgByKey(AppConstant.dialog_alert), msg,
+                "",LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), null);
     }
 }

@@ -6,13 +6,10 @@ import static android.app.Activity.RESULT_OK;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
-import android.os.Looper;
 import android.os.ext.SdkExtensions;
 import android.provider.MediaStore;
 import android.text.Editable;
@@ -43,12 +40,9 @@ import androidx.work.WorkInfo;
 import androidx.work.WorkManager;
 
 import com.eot_app.R;
-import com.eot_app.home_screens.MainActivity;
-import com.eot_app.nav_menu.jobs.job_detail.JobDetailActivity;
 import com.eot_app.nav_menu.jobs.job_detail.detail.DetailFragment;
 import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.Attachments;
 import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.CompressImg;
-import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.NotifyForMultiDocAdd;
 import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.NotifyForMultiDocAddForAttach;
 import com.eot_app.nav_menu.jobs.job_detail.documents.fileattach_mvp.Doc_Attch_Pc;
 import com.eot_app.nav_menu.jobs.job_detail.documents.fileattach_mvp.Doc_Attch_Pi;
@@ -64,6 +58,7 @@ import com.eot_app.utility.EotApp;
 import com.eot_app.utility.db.AppDataBase;
 import com.eot_app.utility.db.OfflineDataController;
 import com.eot_app.utility.language_support.LanguageController;
+import com.eot_app.utility.language_support.Language_Preference;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.gson.JsonArray;
@@ -71,6 +66,8 @@ import com.google.gson.JsonObject;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
 import com.hypertrack.hyperlog.HyperLog;
+
+import org.checkerframework.checker.units.qual.A;
 
 import java.io.File;
 import java.io.IOException;
@@ -80,6 +77,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import ja.burhanrashid52.photoeditor.OnPhotoEditorListener;
 import ja.burhanrashid52.photoeditor.ViewType;
@@ -470,13 +468,13 @@ public class DocumentsFragment extends Fragment implements Doc_Attch_View, Docum
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && SdkExtensions.getExtensionVersion(Build.VERSION_CODES.R) >= 2){
 
             Intent galleryIntent = new Intent(MediaStore.ACTION_PICK_IMAGES);
-            galleryIntent.setType("image/*");
+            galleryIntent.setType("image/png");
             galleryIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
             galleryIntent.putExtra(MediaStore.EXTRA_PICK_IMAGES_MAX,MediaStore.getPickImagesMaxLimit());
             startActivityForResult(Intent.createChooser(galleryIntent,"Select Picture"), CAPTURE_IMAGE_GALLARY);
         }else {
             Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-            galleryIntent.setType("image/*");
+            galleryIntent.setType("image/png");
             galleryIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
             this.startActivityForResult(galleryIntent, CAPTURE_IMAGE_GALLARY);
         }
@@ -567,53 +565,37 @@ public class DocumentsFragment extends Fragment implements Doc_Attch_View, Docum
                     if (doc_attch_pi != null&&data!=null) {
                         tempId = "Attachment-"+App_preference.getSharedprefInstance().getLoginRes().getUsrId()+"-"+jobId+"-0-"+AppUtility.getCurrentMiliTiem();
                         String fileNameExt = AppUtility.getFileNameWithExtension(data.getStringExtra("imgPath"));
-//                        String bitmapString="";
-//                        if(data.getBooleanExtra("isFileImage",false)){
-//                            Bitmap bitmap = AppUtility.getBitmapFromPath(data.getStringExtra("imgPath"));
-//                            bitmapString = AppUtility.BitMapToString(bitmap);
-//                        }
-//                        Attachments obj=new Attachments("0",fileNameExt,fileNameExt,bitmapString);
-//                        ArrayList<Attachments> getFileList_res =new ArrayList<>();
-//                        if (fileList_res != null) {
-//                            getFileList_res.addAll(fileList_res);
-//                        }
-//                        getFileList_res.add(obj);
-                        Attachments attachments = new Attachments(tempId,fileNameExt,fileNameExt,data.getStringExtra("imgPath"),"", "",data.getStringExtra("desc"),jobId,data.getStringExtra("type"),data.getStringExtra("imgPath"), tempId);
-                        AppDataBase.getInMemoryDatabase(getActivity()).attachments_dao().insertSingleAttachments(attachments);
-                        String type = "2";
-//                        setList((ArrayList<Attachments>) AppDataBase.getInMemoryDatabase(getActivity()).attachments_dao().getAllAttachmentsOfJob(jobId), "",true);
-                        if(data.getStringExtra("type") != null && !data.getStringExtra("type").isEmpty()){
-                            type = data.getStringExtra("type");
-                        }
-                        setMultiList((ArrayList<Attachments>) AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).attachments_dao().getAllAttachmentsOfJob(jobId), type, true, -1, -1, queId, jobId);
+                        String img_extension = data.getStringExtra("imgPath").substring(data.getStringExtra("imgPath").lastIndexOf("."));
+                        //('jpg','png','jpeg','pdf','doc','docx','xlsx','csv','xls'); supporting extensions
+                        if (img_extension.equals(".jpg") || img_extension.equals(".png") || img_extension.equals(".jpeg")
+                        ||img_extension.equals(".pdf") || img_extension.equals(".doc") || img_extension.equals(".docx")
+                    ||img_extension.equals(".xlsx") || img_extension.equals(".csv") || img_extension.equals(".xls")) {
+                            Attachments attachments = new Attachments(tempId, fileNameExt, fileNameExt, data.getStringExtra("imgPath"), "", "", data.getStringExtra("desc"), jobId, data.getStringExtra("type"), data.getStringExtra("imgPath"), tempId);
+                            AppDataBase.getInMemoryDatabase(getActivity()).attachments_dao().insertSingleAttachments(attachments);
+                            String type = "2";
+                            if (data.getStringExtra("type") != null && !data.getStringExtra("type").isEmpty()) {
+                                type = data.getStringExtra("type");
+                            }
+                            setMultiList((ArrayList<Attachments>) AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).attachments_dao().getAllAttachmentsOfJob(jobId), type, true, -1, -1, queId, jobId);
 
-                        if(data.getStringExtra("fileName")!=null){
-                            try
-                            {
-//                                doc_attch_pi.uploadDocuments(jobId, data.getStringExtra("imgPath"),
-//                                        data.getStringExtra("fileName"),
-//                                        data.getStringExtra("desc"),
-//                                        data.getStringExtra("type") ,
-//                                        data.getStringExtra("isFromCmpletion"));
-                                String _queId = "";
-                                if(data.getStringExtra("type").equals("6")){
-                                    _queId = queId;
+                            if (data.getStringExtra("fileName") != null) {
+                                try {
+                                    String _queId = "";
+                                    if (data.getStringExtra("type").equals("6")) {
+                                        _queId = queId;
+                                    }
+                                    OfflineDataController.getInstance().addInOfflineDB(Service_apis.upload_document, AppUtility.getParam(jobId, _queId, "",
+                                            data.getStringExtra("imgPath"),
+                                            data.getStringExtra("fileName"),
+                                            data.getStringExtra("desc"),
+                                            data.getStringExtra("type"),
+                                            data.getStringExtra("isAttach"), true, true, -1, -1, tempId), AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT));
+                                } catch (Exception e) {
+                                    e.printStackTrace();
                                 }
-                                OfflineDataController.getInstance().addInOfflineDB(Service_apis.upload_document, AppUtility.getParam(jobId, _queId,"",
-                                        data.getStringExtra("imgPath"),
-                                        data.getStringExtra("fileName"),
-                                        data.getStringExtra("desc"),
-                                        data.getStringExtra("type"),
-                                        data.getStringExtra("isAttach"), true,true,-1,-1,tempId), AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT));
                             }
-                            catch (Exception e)
-                            {
-//                                if (getFileList_res.size()==1) {
-//                                    fileList_res.remove(getFileList_res.get(0));
-//                                    setList(fileList_res, "",true);
-//                                }
-                                e.printStackTrace();
-                            }
+                        }else {
+                            showImageErrorDialog("Image is not uploaded, because we support only jpg/png/jpeg/pdf/doc/docx/xlsx/csv/xls extension.");
                         }
                     }
                 break;
@@ -671,11 +653,10 @@ public class DocumentsFragment extends Fragment implements Doc_Attch_View, Docum
                                 //('jpg','png','jpeg','pdf','doc','docx','xlsx','csv','xls'); supporting extensions
                                 if (img_extension.equals(".jpg") || img_extension.equals(".png") || img_extension.equals(".jpeg")) {
                                     imageEditing(data.getData(), true);
+                                }else {
+                                    showImageErrorDialog("Image is not uploaded, because we support only jpg/png/jpeg/pdf/doc/docx/xlsx/csv/xls extension.");
                                 }
-//                                else {
-//                                    String filename = gallery_image_Path.substring(gallery_image_Path.lastIndexOf("/") + 1);
-//                                    onDocumentSelected(gallery_image_Path, filename, false,parentPositon, position, this.queId, this.jtId);
-//                                }
+
                             } catch (Exception e) {
                                 AppCenterLogs.addLogToAppCenterOnAPIFail("JobCompletion","","onActivityResult()-->ATTACHFILE_CODE"+e.getMessage(),"JobCompletionActivity","");
                                 e.printStackTrace();
@@ -824,50 +805,51 @@ public class DocumentsFragment extends Fragment implements Doc_Attch_View, Docum
 
     }
 
-
+    int notSupportImgCount;
     private void uploadMultipleImges(Intent data, boolean imgPath){
 
-
+        notSupportImgCount = 0;
         String [] imgPathArray = new String[data.getClipData().getItemCount()];
         JsonArray jsonArray = new JsonArray();
         ExecutorService service = Executors.newSingleThreadExecutor();
+
         service.execute(()->{
             for(int i =0; i<data.getClipData().getItemCount();i++) {
                 Uri uri = data.getClipData().getItemAt(i).getUri();
                 CompressImg compressImg = new CompressImg(requireActivity());
                 String savedImagePath = compressImg.compressImage(uri.toString());
                 String fileNameExt = AppUtility.getFileNameWithExtension(PathUtils.getRealPath(getActivity(), uri));
+                String img_extension = savedImagePath.substring(savedImagePath.lastIndexOf("."));
                 String[] fileName = fileNameExt.split("\\.");
-                imgPathArray[i] = PathUtils.getRealPath(getActivity(), uri);
-                tempId = "Attachment-"+App_preference.getSharedprefInstance().getLoginRes().getUsrId()+"-"+jobId+"-"+i+"-"+AppUtility.getCurrentMiliTiem();
-
-//                Bitmap bitmap = AppUtility.getBitmapFromPath(PathUtils.getRealPath(getActivity(), uri));
-//                String bitmapString = AppUtility.BitMapToString(bitmap);
-                Attachments attachments = new Attachments(tempId,fileNameExt,fileNameExt,imgPathArray[i],"", "","",jobId,"2",savedImagePath,tempId);
-                AppDataBase.getInMemoryDatabase(getActivity()).attachments_dao().insertSingleAttachments(attachments);
-                JsonObject jsonObject = new JsonObject();
-                jsonObject.addProperty("name",imgPathArray[i]);
-                jsonObject.addProperty("tempId", tempId);
-                jsonArray.add(jsonObject);
-//                Attachments obj=new Attachments("0",fileNameExt,fileNameExt,bitmap);
-//                ArrayList<Attachments> getFileList_res =new ArrayList<>();
-//                if (fileList_res != null) {
-//                    getFileList_res.clear();
-//                    getFileList_res.addAll(fileList_res);
-//                }
-//                getFileList_res.add(obj);
-
-                requireActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-//                        setList((ArrayList<Attachments>) AppDataBase.getInMemoryDatabase(getActivity()).attachments_dao().getAllAttachmentsOfJob(jobId), "",true);
-                        setMultiList((ArrayList<Attachments>) AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).attachments_dao().getAllAttachmentsOfJob(jobId), "2", true, -1, -1, queId, jobId);
-                    }
-                });
+                if(img_extension.equals(".jpg") || img_extension.equals(".png") || img_extension.equals(".jpeg")) {
+                    imgPathArray[i] = PathUtils.getRealPath(getActivity(), uri);
+                    tempId = "Attachment-" + App_preference.getSharedprefInstance().getLoginRes().getUsrId() + "-" + jobId + "-" + i + "-" + AppUtility.getCurrentMiliTiem();
+                    Attachments attachments = new Attachments(tempId, fileNameExt, fileNameExt, imgPathArray[i], "", "", "", jobId, "2", savedImagePath, tempId);
+                    AppDataBase.getInMemoryDatabase(getActivity()).attachments_dao().insertSingleAttachments(attachments);
+                    JsonObject jsonObject = new JsonObject();
+                    jsonObject.addProperty("name", imgPathArray[i]);
+                    jsonObject.addProperty("tempId", tempId);
+                    jsonArray.add(jsonObject);
+                    requireActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            setMultiList((ArrayList<Attachments>) AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).attachments_dao().getAllAttachmentsOfJob(jobId), "2", true, -1, -1, queId, jobId);
+                        }
+                    });
+                }else {
+                    notSupportImgCount++;
+                }
             }
             requireActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
+                    if(notSupportImgCount > 0){
+                        String msg = "Image is not uploaded, because we support only jpg/png/jpeg/pdf/doc/docx/xlsx/csv/xls extension.";
+                        if(notSupportImgCount > 1){
+                            msg = notSupportImgCount+" Images are not uploaded, because we support only jpg/png/jpeg/pdf/doc/docx/xlsx/csv/xls these extention.";
+                        }
+                       showImageErrorDialog(msg);
+                    }
                     uploadOffline(jsonArray.toString(),true,false,jobId);
                 }
             });
@@ -918,6 +900,10 @@ public class DocumentsFragment extends Fragment implements Doc_Attch_View, Docum
     public void showErrorDialog(String msg) {
         AppUtility.error_Alert_Dialog(getActivity(), msg, LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok)
                 , () -> null);
+    }
+    public void showImageErrorDialog(String msg) {
+        AppUtility.alertDialog(getContext(), LanguageController.getInstance().getMobileMsgByKey(AppConstant.dialog_alert), msg,
+                "",LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), null);
     }
 
 }
