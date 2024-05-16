@@ -10,12 +10,15 @@ import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.eot_app.R;
+import com.eot_app.nav_menu.appointment.addupdate.AddAppointmentActivity;
 import com.eot_app.nav_menu.jobs.add_job.Add_job_activity;
 import com.eot_app.nav_menu.jobs.job_db.Job;
 import com.eot_app.nav_menu.jobs.job_detail.reschedule.reschedule_mvp.RescheduleRequest;
@@ -29,6 +32,7 @@ import com.eot_app.utility.EotApp;
 import com.eot_app.utility.language_support.LanguageController;
 import com.google.gson.Gson;
 
+import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -47,6 +51,10 @@ public class RescheduleActivity extends AppCompatActivity implements View.OnClic
     Button cancel_btn, submit_btn, date_time_clear_btn;
     TextView date_start, time_start, date_end, time_end, schel_start, schel_end;
     private Job job;
+    final Calendar cStart = Calendar.getInstance();
+    final Calendar cEnd = Calendar.getInstance();
+    final Calendar cTStart = Calendar.getInstance();
+    final Calendar cTEnd = Calendar.getInstance();
    boolean isTime24Format = false;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -124,10 +132,31 @@ public class RescheduleActivity extends AppCompatActivity implements View.OnClic
                         AppUtility.dateTimeByAmPmFormate("hh:mm a", "HH:mm"));
                 time_start.setText(timeFormat);
                 time_str = timeFormat;
+                if (App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable() != null &&
+                        App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable().equals("0")) {
+                    String time_format = AppUtility.getDateWithFormates(longStartTime,
+                            "HH:mm");
+                    String[] datestr =  time_format.split(" ");
+                    String[] time_ary_end = datestr[0].split(":");
+                    cTStart.set(Calendar.HOUR_OF_DAY, Integer.parseInt(time_ary_end[0]));
+                    cTStart.set(Calendar.MINUTE, Integer.parseInt(time_ary_end[1]));
+
+                }else{
+                    String[] time_ary_str = timeFormat.split(":");
+                    cTStart.set(Calendar.HOUR_OF_DAY,Integer.parseInt(time_ary_str[0]));
+                    cTStart.set(Calendar.MINUTE,Integer.parseInt(time_ary_str[1]));
+                }
 
                 String dateFormat = AppUtility.getDateWithFormate(longStartTime, "dd-MMM-yyyy");
                 date_start.setText(dateFormat);
                 date_str = dateFormat;
+
+                String[] dat_ary_start = AppUtility.getDateWithFormates(longStartTime, "dd-MM-yyyy").split("-");
+                if(dat_ary_start.length > 0) {
+                    cStart.set(Calendar.YEAR, Integer.parseInt(dat_ary_start[2]));
+                    cStart.set(Calendar.MONTH, Integer.parseInt(dat_ary_start[1])-1);
+                    cStart.set(Calendar.DAY_OF_MONTH, Integer.parseInt(dat_ary_start[0]));
+                }
 
                 long endTime = Long.parseLong(job.getSchdlFinish());
                 timeFormat = AppUtility.getDateWithFormate(endTime,
@@ -135,7 +164,28 @@ public class RescheduleActivity extends AppCompatActivity implements View.OnClic
                 time_end.setText(timeFormat);
                 time_en = timeFormat;
 
+                if (App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable() != null &&
+                        App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable().equals("0")) {
+                    String time_format = AppUtility.getDateWithFormates(endTime,
+                            "HH:mm");
+                    String[] datestr =  time_format.split(" ");
+                    String[] time_ary_end = datestr[0].split(":");
+                    cTEnd.set(Calendar.HOUR_OF_DAY, Integer.parseInt(time_ary_end[0]));
+                    cTEnd.set(Calendar.MINUTE, Integer.parseInt(time_ary_end[1]));
+
+                }else{
+                    String[] time_ary_end = timeFormat.split(":");
+                    cTEnd.set(Calendar.HOUR_OF_DAY,Integer.parseInt(time_ary_end[0]));
+                    cTEnd.set(Calendar.MINUTE,Integer.parseInt(time_ary_end[1]));
+                }
+
                 dateFormat = AppUtility.getDateWithFormate(endTime, "dd-MMM-yyyy");
+                String[] dat_ary_end = AppUtility.getDateWithFormates(endTime, "dd-MM-yyyy").split("-");
+                if(dat_ary_end.length > 0) {
+                    cEnd.set(Calendar.YEAR, Integer.parseInt(dat_ary_end[2]));
+                    cEnd.set(Calendar.MONTH, Integer.parseInt(dat_ary_end[1])-1);
+                    cEnd.set(Calendar.DAY_OF_MONTH, Integer.parseInt(dat_ary_end[0]));
+                }
                 date_end.setText(dateFormat);
                 date_en = dateFormat;
             } catch (Exception ex) {
@@ -256,35 +306,31 @@ public class RescheduleActivity extends AppCompatActivity implements View.OnClic
 
     //get start date
     private void SelectDate() {
-        final Calendar c = Calendar.getInstance();
-        year = c.get(Calendar.YEAR);
-        month = c.get(Calendar.MONTH);
-        day = c.get(Calendar.DAY_OF_MONTH);
+        year = cStart.get(Calendar.YEAR);
+        month = cStart.get(Calendar.MONTH);
+        day = cStart.get(Calendar.DAY_OF_MONTH);
         showDialogPicker(R.id.date_start);
     }
 
     //get end date
     private void SelectDate1() {
-        final Calendar c = Calendar.getInstance();
-        year = c.get(Calendar.YEAR);
-        month = c.get(Calendar.MONTH);
-        day = c.get(Calendar.DAY_OF_MONTH);
+        year = cEnd.get(Calendar.YEAR);
+        month =cEnd.get(Calendar.MONTH);
+        day = cEnd.get(Calendar.DAY_OF_MONTH);
         showDialogPicker(R.id.date_end);
     }
 
     //schedule start time
     private void SelectTime() {
-        final Calendar c = Calendar.getInstance();
-        mHour = c.get(Calendar.HOUR_OF_DAY);
-        mMinute = c.get(Calendar.MINUTE);
+        mHour = cTStart.get(Calendar.HOUR_OF_DAY);
+        mMinute = cTStart.get(Calendar.MINUTE);
         showDialogPicker(R.id.time_start);
     }
 
     //schedule end time
     private void SelectTime1() {
-        final Calendar c = Calendar.getInstance();
-        mHour = c.get(Calendar.HOUR_OF_DAY);
-        mMinute = c.get(Calendar.MINUTE);
+        mHour = cTEnd.get(Calendar.HOUR_OF_DAY);
+        mMinute = cTEnd.get(Calendar.MINUTE);
         showDialogPicker(R.id.time_end);
     }
 
@@ -337,7 +383,33 @@ public class RescheduleActivity extends AppCompatActivity implements View.OnClic
         }
         switch (id) {
             case R.id.date_start:
-                DatePickerDialog datePickerDialogSelectDate = new DatePickerDialog(this, AppUtility.InputDateSet(this, new Add_job_activity.DateTimeCallback() {
+                final DatePickerDialog.OnDateSetListener datePickerListener1 = new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int selectedYear, int selectedMonth, int selectedDay) {
+                        cStart.set(Calendar.YEAR, selectedYear);
+                        cStart.set(Calendar.MONTH, selectedMonth);
+                        cStart.set(Calendar.DAY_OF_MONTH, selectedDay);
+                        String dateselect = "";
+                        try {
+                            DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy", Locale.US);//hh:mm:ss a
+                            Date endDate = formatter.parse(selectedDay + "-" + (selectedMonth + 1) + "-" + selectedYear);
+                            dateselect = new SimpleDateFormat(AppConstant.DATE_FORMAT, Locale.US).format(endDate);
+                            date_start.setText(dateselect);
+                            date_en = date_str = dateselect;
+                            date_end.setText(date_en);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+
+                };
+                DatePickerDialog datePickerDialog1 = new DatePickerDialog(RescheduleActivity.this, datePickerListener1, year, month, day);
+                datePickerDialog1.getDatePicker();
+                datePickerDialog1.updateDate(year, month, day);
+                datePickerDialog1.show();
+                break;
+               /* DatePickerDialog datePickerDialogSelectDate = new DatePickerDialog(this, AppUtility.InputDateSet(this, new Add_job_activity.DateTimeCallback() {
                     @Override
                     public void setDateTime(String dateTime) {
                         date_start.setText(dateTime);
@@ -347,9 +419,34 @@ public class RescheduleActivity extends AppCompatActivity implements View.OnClic
                 }, LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_start_end_date)), year, month, day);
                 datePickerDialogSelectDate.show();
                 break;
-
+*/
             case R.id.date_end:
-                final DatePickerDialog datePickerDialog = new DatePickerDialog(this, AppUtility.CompareInputOutputDate(this, new Add_job_activity.DateTimeCallback() {
+                final DatePickerDialog.OnDateSetListener datePickerListener = new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int selectedYear, int selectedMonth, int selectedDay) {
+                        cEnd.set(Calendar.YEAR, selectedYear);
+                        cEnd.set(Calendar.MONTH, selectedMonth);
+                        cEnd.set(Calendar.DAY_OF_MONTH, selectedDay);
+                        String dateselect = "";
+                        try {
+                            DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy", Locale.US);//hh:mm:ss a
+                            Date endDate = formatter.parse(selectedDay + "-" + (selectedMonth + 1) + "-" + selectedYear);
+                            dateselect = new SimpleDateFormat(AppConstant.DATE_FORMAT, Locale.US).format(endDate);
+                            date_end.setText(dateselect);
+                            date_en = dateselect;
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                };
+                DatePickerDialog datePickerDialog = new DatePickerDialog(RescheduleActivity.this, datePickerListener, year, month, day);
+                datePickerDialog.getDatePicker();
+                datePickerDialog.updateDate(year, month, day);
+                datePickerDialog.show();
+                break;
+
+               /* final DatePickerDialog datePickerDialog = new DatePickerDialog(this, AppUtility.CompareInputOutputDate(this, new Add_job_activity.DateTimeCallback() {
                     @Override
                     public void setDateTime(String dateTime) {
                         date_end.setText(dateTime);
@@ -358,10 +455,11 @@ public class RescheduleActivity extends AppCompatActivity implements View.OnClic
                 }, LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_due_start_date)), year, month, day);
                 datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
                 datePickerDialog.show();
-                break;
+                break;*/
 
             case R.id.time_start:
-                TimePickerDialog timePickerDialog = new TimePickerDialog(this, AppUtility.InputTimeSet(this, new Add_job_activity.DateTimeCallback() {
+
+              /*  TimePickerDialog timePickerDialog = new TimePickerDialog(this, AppUtility.InputTimeSet(this, new Add_job_activity.DateTimeCallback() {
                     @Override
                     public void setDateTime(String dateTime) {
                         time_str = dateTime;
@@ -371,10 +469,37 @@ public class RescheduleActivity extends AppCompatActivity implements View.OnClic
                     }
                 }, LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_start_end_time)), mHour, mMinute, isTime24Format);
                 timePickerDialog.show();
+                break;*/
+                TimePickerDialog timePickerDialog = new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                        cTStart.set(Calendar.HOUR_OF_DAY,hourOfDay);
+                        cTStart.set(Calendar.MINUTE,minute);
+                        String dateTime = AppUtility.updateTime(hourOfDay,minute);
+                        time_str = dateTime;
+                        DecimalFormat formatter = new DecimalFormat("00");
+                        String[] aa = dateTime.split(":");
+                        time_start.setText((formatter.format(Integer.parseInt(aa[0]))) + ":" + aa[1]);
+                    }
+                },mHour, mMinute,isTime24Format);
+                timePickerDialog.show();
                 break;
-
             case R.id.time_end:
-                TimePickerDialog timePickerDialog1 = new TimePickerDialog(this, AppUtility.OutPutTime(this, new Add_job_activity.DateTimeCallback() {
+                TimePickerDialog timePickerDialog1 = new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                        cTEnd.set(Calendar.HOUR_OF_DAY,hourOfDay);
+                        cTEnd.set(Calendar.MINUTE,minute);
+                        String dateTime = AppUtility.updateTime(hourOfDay,minute);
+                        time_en = dateTime;
+                        DecimalFormat formatter = new DecimalFormat("00");
+                        String[] aa = dateTime.split(":");
+                        time_end.setText((formatter.format(Integer.parseInt(aa[0]))) + ":" + aa[1]);
+                    }
+                },mHour, mMinute,isTime24Format);
+                timePickerDialog1.show();
+                break;
+                /*TimePickerDialog timePickerDialog1 = new TimePickerDialog(this, AppUtility.OutPutTime(this, new Add_job_activity.DateTimeCallback() {
                     @Override
                     public void setDateTime(String dateTime) {
                         time_en = dateTime;
@@ -382,9 +507,9 @@ public class RescheduleActivity extends AppCompatActivity implements View.OnClic
                         String[] aa = dateTime.split(":");
                         time_end.setText((formatter.format(Integer.parseInt(aa[0]))) + ":" + aa[1]);
                     }
-                }, LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_due_start_time)), mHour, mMinute, true);
+                }, LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_due_start_time)), mHour, mMinute, isTime24Format);
                 timePickerDialog1.show();
-                break;
+                break;*/
 
         }
     }

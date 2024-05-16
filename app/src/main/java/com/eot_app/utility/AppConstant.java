@@ -1018,6 +1018,7 @@ public class AppConstant {
     public static String scanner_error = "scanner_error";
     public static String quote = "quote";
     public static String jobcard = "jobcard";
+    public static String leave_date_error = "leave_date_error";
 
 
 

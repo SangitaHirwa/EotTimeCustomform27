@@ -2589,7 +2589,9 @@ public void setCompletionDetail(){
             if(AppUtility.isInternetConnected()) {
                 isRefreshReqItem = true;
                 progressBar_itemRequest.setVisibility(View.VISIBLE);
-                jobDetail_pi.getRequestedItemDataList(mParam2.getJobId());
+                if(mParam2 !=null) {
+                    jobDetail_pi.getRequestedItemDataList(mParam2.getJobId());
+                }
             }
         }
     }
@@ -3612,18 +3614,20 @@ public void setCompletionDetail(){
     public void updateCountItem() {
         try {
             Log.e("OnCreateDetail", "Item Notify Called");
-            if(mParam2.getJobId() != null) {
+            if(mParam2 != null && mParam2.getJobId() != null) {
                 mParam2 = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(mParam2.getJobId());
                 // for updating items added from equipment parts
                 Log.e("OnCreateDetail", "Item Notify Called" + new Gson().toJson(mParam2.getItemData()));
-                if (mParam2.getItemData() != null && mParam2.getItemData().size() > 0) {
-                    // for updating data
-                    invoice_list_adpter.updateitemlist(mParam2.getItemData());
-                }
-                if (mParam2.getEquArray() != null && mParam2.getEquArray().size() > 0) {
-                    // for updating data
-                    setEuqipmentList(mParam2.getEquArray());
-                    Log.e("mParam2::", new Gson().toJson(mParam2.getEquArray()));
+                if(mParam2 != null) {
+                    if (mParam2.getItemData() != null && mParam2.getItemData().size() > 0) {
+                        // for updating data
+                        invoice_list_adpter.updateitemlist(mParam2.getItemData());
+                    }
+                    if (mParam2.getEquArray() != null && mParam2.getEquArray().size() > 0) {
+                        // for updating data
+                        setEuqipmentList(mParam2.getEquArray());
+                        Log.e("mParam2::", new Gson().toJson(mParam2.getEquArray()));
+                    }
                 }
             }
         }catch (Exception e){

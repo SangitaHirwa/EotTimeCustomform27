@@ -1370,7 +1370,7 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
                 String img_extension = savedImagePath.substring(savedImagePath.lastIndexOf("."));
                 String[] fileName = fileNameExt.split("\\.");
                 if(img_extension.equals(".jpg") || img_extension.equals(".png") || img_extension.equals(".jpeg")) {
-                imgPathArray[i] = PathUtils.getRealPath(this, uri);
+                imgPathArray[i] = PathUtils.getRealPath(JobCompletionActivity.this, uri);
                 tempId = "Attachment-"+App_preference.getSharedprefInstance().getLoginRes().getUsrId()+"-"+jobData.getJobId()+"-"+i+"-"+AppUtility.getCurrentMiliTiem();
                 Attachments attachments = new Attachments(tempId,fileNameExt,fileNameExt,imgPathArray[i],queId, jtId,"",jobData.getJobId(),"6",savedImagePath,tempId);
                 AppDataBase.getInMemoryDatabase(this).attachments_dao().insertSingleAttachments(attachments);
