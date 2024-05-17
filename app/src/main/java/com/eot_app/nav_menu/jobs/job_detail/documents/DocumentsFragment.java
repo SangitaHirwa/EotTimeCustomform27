@@ -595,7 +595,7 @@ public class DocumentsFragment extends Fragment implements Doc_Attch_View, Docum
                                 }
                             }
                         }else {
-                            showImageErrorDialog(LanguageController.getInstance().getMobileMsgByKey(AppConstant.invalid_extension));
+                            showImageErrorDialog(LanguageController.getInstance().getServerMsgByKey(AppConstant.invalid_extension));
                         }
                     }
                 break;
@@ -654,7 +654,7 @@ public class DocumentsFragment extends Fragment implements Doc_Attch_View, Docum
                                 if (img_extension.equals(".jpg") || img_extension.equals(".png") || img_extension.equals(".jpeg")) {
                                     imageEditing(data.getData(), true);
                                 }else {
-                                    showImageErrorDialog(LanguageController.getInstance().getMobileMsgByKey(AppConstant.invalid_extension));
+                                    showImageErrorDialog(LanguageController.getInstance().getServerMsgByKey(AppConstant.invalid_extension));
                                 }
 
                             } catch (Exception e) {
@@ -844,9 +844,9 @@ public class DocumentsFragment extends Fragment implements Doc_Attch_View, Docum
                 @Override
                 public void run() {
                     if(notSupportImgCount > 0){
-                        String msg = LanguageController.getInstance().getMobileMsgByKey(AppConstant.invalid_extension);
+                        String msg = LanguageController.getInstance().getServerMsgByKey(AppConstant.invalid_extension);
                         if(notSupportImgCount > 1){
-                            msg = notSupportImgCount+" "+LanguageController.getInstance().getMobileMsgByKey(AppConstant.invalid_extension);
+                            msg = notSupportImgCount+" "+LanguageController.getInstance().getServerMsgByKey(AppConstant.invalid_extension);
                         }
                        showImageErrorDialog(msg);
                     }
