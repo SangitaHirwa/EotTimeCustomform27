@@ -1019,6 +1019,7 @@ public class AppConstant {
     public static String quote = "quote";
     public static String jobcard = "jobcard";
     public static String leave_date_error = "leave_date_error";
+    public static String invalid_extension = "invalid_extension";
 
 
 

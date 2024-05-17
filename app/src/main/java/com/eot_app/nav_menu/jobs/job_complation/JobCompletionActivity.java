@@ -1162,7 +1162,7 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
                             }
                         }
                         }else {
-                            showImageErrorDialog("Image is not uploaded, because we support only jpg/png/jpeg/pdf/doc/docx/xlsx/csv/xls extension.");
+                            showImageErrorDialog(LanguageController.getInstance().getMobileMsgByKey(AppConstant.invalid_extension));
                         }
                     }
                 break;
@@ -1220,7 +1220,7 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
                                 if (img_extension.equals(".jpg") || img_extension.equals(".png") || img_extension.equals(".jpeg")) {
                                     imageEditing(data.getData(), true);
                                 }else {
-                                    showImageErrorDialog("Image is not uploaded, because we support only jpg/png/jpeg/pdf/doc/docx/xlsx/csv/xls extension.");
+                                    showImageErrorDialog(LanguageController.getInstance().getMobileMsgByKey(AppConstant.invalid_extension));
                                 }
 
                             } catch (Exception e) {
@@ -1394,9 +1394,9 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
                 @Override
                 public void run() {
                     if(notSupportImgCount > 0){
-                        String msg = "Image is not uploaded, because we support only jpg/png/jpeg/pdf/doc/docx/xlsx/csv/xls extension.";
+                        String msg = LanguageController.getInstance().getMobileMsgByKey(AppConstant.invalid_extension);
                         if(notSupportImgCount > 1){
-                            msg = notSupportImgCount+" Images are not uploaded, because we support only jpg/png/jpeg/pdf/doc/docx/xlsx/csv/xls these extention.";
+                            msg = notSupportImgCount+" "+LanguageController.getInstance().getMobileMsgByKey(AppConstant.invalid_extension);
                         }
                         showImageErrorDialog(msg);
                     }

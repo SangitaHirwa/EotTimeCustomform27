@@ -867,6 +867,8 @@ public class JobCardViewActivity extends AppCompatActivity  implements
 
     @Override
     public void fileExtensionNotSupport(String msg) {
+        binding.progressBarCyclic.setVisibility(View.GONE);
+        AppUtility.alertDialog(this,"",msg,LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok),"",null );
 
     }
 
