@@ -575,8 +575,8 @@
                         <RadioButton
                             android:id="@+id/radio_owner"
                             style="@style/style_thrid"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_width="68dp"
+                            android:layout_height="match_parent"
                             android:checked="true"
                             android:text="@string/owner" />
 
@@ -595,25 +595,234 @@
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:background="@color/border_font_color" />
+               <androidx.constraintlayout.widget.ConstraintLayout
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:layout_marginStart="-5dp"
+                   android:gravity="center|start"
+                   android:paddingBottom="5dp"
+                   >
+                   <androidx.constraintlayout.widget.Guideline
+                       android:id="@+id/guideline"
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:orientation="vertical"
+                       app:layout_constraintGuide_percent="0.5" />
+
+                   <androidx.constraintlayout.widget.ConstraintLayout
+                       android:id="@+id/add_edit_barcode_cl"
+                       android:layout_width="0dp"
+                       android:layout_height="wrap_content"
+                       app:layout_constraintBottom_toBottomOf="parent"
+                       app:layout_constraintEnd_toStartOf="@+id/guideline"
+                       app:layout_constraintStart_toStartOf="parent"
+                       app:layout_constraintTop_toTopOf="parent">
+                       <ImageButton
+                           android:id="@+id/add_barcode_icon"
+                           android:layout_width="wrap_content"
+                           android:layout_height="wrap_content"
+                           android:background="@android:color/transparent"
+                           android:visibility="visible"
+                           android:paddingLeft="5dp"
+                           android:paddingTop="5dp"
+                           android:paddingRight="2dp"
+                           android:src="@drawable/add_barcode_qr"
+                           app:layout_constraintStart_toStartOf="parent"
+                           app:layout_constraintTop_toTopOf="parent"
+                           />
+                       <ImageButton
+                           android:id="@+id/edit_barcode_icon"
+                           android:layout_width="wrap_content"
+                           android:layout_height="wrap_content"
+                           android:background="@android:color/transparent"
+                           android:visibility="gone"
+                           android:paddingLeft="5dp"
+                           android:paddingTop="5dp"
+                           android:paddingRight="2dp"
+                           android:src="@drawable/ic_sign_edit"
+                           app:layout_constraintStart_toStartOf="parent"
+                           app:layout_constraintTop_toTopOf="parent"
+                           />
+                       <TextView
+                           android:id="@+id/txt_add_barcode"
+                           android:layout_width="0dp"
+                           android:layout_height="wrap_content"
+                           style="@style/style_sec_sec"
+                           android:textColor="@color/colorPrimary"
+                           android:gravity="start"
+                           android:textStyle="bold"
+                           android:textSize="15dp"
+                           android:paddingTop="5dp"
+                           android:text="Add Barcode"
+                           android:visibility="visible"
+                           app:layout_constraintStart_toEndOf="@+id/add_barcode_icon"
+                           app:layout_constraintTop_toTopOf="parent"
+                           />
+                       <TextView
+                       android:id="@+id/txt_edit_barcode"
+                       android:layout_width="0dp"
+                       android:layout_height="wrap_content"
+                       style="@style/style_sec_sec"
+                       android:textColor="@color/colorPrimary"
+                       android:gravity="start"
+                       android:textStyle="bold"
+                       android:textSize="15dp"
+                           android:paddingTop="5dp"
+                       android:text="Edit Barcode"
+                           android:visibility="gone"
+                       app:layout_constraintStart_toEndOf="@+id/edit_barcode_icon"
+                       app:layout_constraintTop_toTopOf="parent"
+                       />
 
 
-                    <CheckBox
-                        android:id="@+id/checkbox_barCode"
-                        style="@style/style_sec_sec"
-                        android:layout_width="wrap_content"
-                        android:layout_height="@dimen/input_field_height"
+                   </androidx.constraintlayout.widget.ConstraintLayout>
+                   <androidx.constraintlayout.widget.ConstraintLayout
+                       android:id="@+id/add_edit_qrcode_cl"
+                       android:layout_width="0dp"
+                       android:layout_height="wrap_content"
+                       app:layout_constraintBottom_toBottomOf="@+id/add_edit_barcode_cl"
+                       app:layout_constraintEnd_toEndOf="parent"
+                       app:layout_constraintStart_toEndOf="@+id/guideline"
+                       app:layout_constraintTop_toTopOf="@+id/add_edit_barcode_cl">
+                       <ImageButton
+                           android:id="@+id/add_qrcode_icon"
+                           android:layout_width="wrap_content"
+                           android:layout_height="wrap_content"
+                           android:background="@android:color/transparent"
+                           android:visibility="visible"
+                           android:src="@drawable/add_barcode_qr"
+                           android:paddingLeft="5dp"
+                           android:paddingTop="5dp"
+                           android:paddingRight="2dp"
+                           app:layout_constraintStart_toStartOf="parent"
+                           app:layout_constraintTop_toTopOf="parent"
+                           />
+                       <ImageButton
+                           android:id="@+id/edit_qrcode_icon"
+                           android:layout_width="wrap_content"
+                           android:layout_height="wrap_content"
+                           android:background="@android:color/transparent"
+                           android:visibility="gone"
+                           android:paddingLeft="5dp"
+                           android:paddingTop="5dp"
+                           android:paddingRight="2dp"
+                           android:src="@drawable/ic_sign_edit"
+                           app:layout_constraintStart_toStartOf="parent"
+                           app:layout_constraintTop_toTopOf="parent"
+                           />
+                       <TextView
+                           android:id="@+id/txt_add_qrcode"
+                           android:layout_width="0dp"
+                           android:layout_height="wrap_content"
+                           android:textColor="@color/colorPrimary"
+                           android:gravity="start"
+                           style="@style/style_sec_sec"
+                           android:text="Add QR Code"
+                           android:textStyle="bold"
+                           android:paddingTop="5dp"
+                           android:textSize="15sp"
+                           android:visibility="visible"
+                           app:layout_constraintStart_toEndOf="@+id/add_qrcode_icon"
+                           app:layout_constraintTop_toTopOf="parent"
+                          />
+                       <TextView
+                           android:id="@+id/txt_edit_qrcode"
+                           android:layout_width="0dp"
+                           android:layout_height="wrap_content"
+                           style="@style/style_sec_sec"
+                           android:textColor="@color/colorPrimary"
+                           android:gravity="start"
+                           android:textStyle="bold"
+                           android:textSize="15dp"
+                           android:paddingTop="5dp"
+                           android:text="edit QR Code"
+                           android:visibility="gone"
+                           app:layout_constraintStart_toEndOf="@+id/edit_qrcode_icon"
+                           app:layout_constraintTop_toTopOf="parent"
+                           />
+
+                   </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+               </androidx.constraintlayout.widget.ConstraintLayout>
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_marginStart="-5dp"
-                        android:gravity="center|start"
-                        android:text="@string/auto_generate_barcode" />
+                        android:gravity="start"
 
-                    <CheckBox
-                        android:id="@+id/checkbox_scan_barCode"
-                        style="@style/style_sec_sec"
-                        android:layout_width="wrap_content"
-                        android:layout_height="@dimen/input_field_height"
-                        android:layout_marginStart="-5dp"
-                        android:gravity="center|start"
-                        android:text="@string/scan_insert_barcode" />
+                        >
+                        <androidx.constraintlayout.widget.Guideline
+                            android:id="@+id/guideline_for_image"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            app:layout_constraintGuide_percent="0.5" />
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/barcode_image_cl"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toStartOf="@+id/guideline_for_image"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            android:layout_alignParentStart="true"
+                            >
+                            <ImageButton
+                                android:id="@+id/barcode_image"
+                                android:layout_width="wrap_content"
+                                android:layout_height="70dp"
+                                android:background="@android:color/transparent"
+                                android:visibility="visible"
+                                android:paddingLeft="20dp"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                />
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/qrcode_image_cl"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            app:layout_constraintBottom_toBottomOf="@+id/barcode_image_cl"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toEndOf="@+id/guideline_for_image"
+                            app:layout_constraintTop_toTopOf="@+id/barcode_image_cl">
+                            <ImageButton
+                                android:id="@+id/qrcode_image"
+                                android:layout_width="wrap_content"
+                                android:layout_height="70dp"
+                                android:background="@android:color/transparent"
+                                android:visibility="visible"
+                                android:paddingLeft="25dp"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                />
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                      <CheckBox
+                          android:id="@+id/checkbox_barCode"
+                          style="@style/style_sec_sec"
+                          android:layout_width="wrap_content"
+                          android:layout_height="@dimen/input_field_height"
+                          android:layout_marginStart="-5dp"
+                          android:gravity="center|start"
+                          android:text="@string/auto_generate_barcode" />
+
+                      <CheckBox
+                          android:id="@+id/checkbox_scan_barCode"
+                          style="@style/style_sec_sec"
+                          android:layout_width="wrap_content"
+                          android:layout_height="@dimen/input_field_height"
+                          android:layout_marginStart="-5dp"
+                          android:gravity="center|start"
+                          android:text="@string/scan_insert_barcode" />
 
                     <RelativeLayout
                         android:id="@+id/scan_barcode_layout"
