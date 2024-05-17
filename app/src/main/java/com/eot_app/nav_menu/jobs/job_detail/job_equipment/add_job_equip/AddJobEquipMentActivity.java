@@ -71,6 +71,7 @@ import com.eot_app.nav_menu.jobs.job_detail.job_equipment.add_job_equip.mvp.AddE
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.add_job_equip.mvp.AddJobEqu_Pc;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.add_job_equip.mvp.AddJobEqu_Pi;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.add_job_equip.mvp.AddJobEqu_View;
+import com.eot_app.nav_menu.jobs.job_detail.job_equipment.add_job_equip.mvp.QRCOde_Barcode_Res_Model;
 import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.AppUtility;
 import com.eot_app.utility.App_preference;
@@ -125,7 +126,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
     RadioGroup rediogrpForTag, rediogrp, rediogrp_interval;
     TextView tvLabelStep2,txt_add_barcode,txt_edit_barcode,txt_add_qrcode,txt_edit_qrcode;
     ImageView add_barcode_icon,edit_barcode_icon,add_qrcode_icon,edit_qrcode_icon,barcode_image,qrcode_image;
-    ConstraintLayout add_edit_barcode_cl,add_edit_qrcode_cl,barcode_image_cl,qrcode_image_cl;
+    ConstraintLayout add_edit_barcode_cl,add_edit_qrcode_cl,barcode_image_cl,qrcode_image_cl,cl_qr_bar_image;
     String equipmentIdName;
     private String brandId = "", siteId = "", status = "", invId, supplierId="";
     private CheckBox ch_equ_as_part;
@@ -149,12 +150,13 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
     private String egId = "";
     private String ecId = "";
     private String jobId = "";
-    private boolean isOnCreate = false;
     private LinearLayout manuf_date_layout, date_purchase_layout, date_warnty_layout, date_warnty_layout_start, linearLayout_status;
     private LinearLayout lay;
     private Job job;
     private InvoiceItemDataModel updateItemDataModel;
     AddEdit_QRCode_BarCode_Dialog addEditQrCodeBarCodeDialog;
+    String barcodeString ="";
+    String qrCodeString ="";
     /**
      * select date from picker & concanate current time
      */
@@ -293,7 +295,6 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
 
 
     private void initializeViewS() {
-        isOnCreate = true;
         custom_filed_header_1 = findViewById(R.id.custom_filed_header_1);
         custom_filed_header_2 = findViewById(R.id.custom_filed_header_2);
         custom_filed_txt_1 = findViewById(R.id.custom_filed_txt_1);
@@ -417,7 +418,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
         tvService_inv_label = findViewById(R.id.tvService_inv_label);
         tvService_inv_label.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.service_interval_type));
 
-        checkbox_barCode = findViewById(R.id.checkbox_barCode);
+       /* checkbox_barCode = findViewById(R.id.checkbox_barCode);
         checkbox_barCode.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.auto_gen_bar_code));
 
         checkbox_scan_insert = findViewById(R.id.checkbox_scan_barCode);
@@ -425,7 +426,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
 
         binding.etBarcode.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.insert_barcode));
         binding.tvScanBarcode.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.scan));
-
+*/
         status_type = findViewById(R.id.type);
         status_type.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.type));
 
@@ -505,6 +506,10 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
         txt_edit_qrcode.setText(LanguageController.getInstance().getMobileMsgByKey("Edit QR Code"));
         qrcode_image_cl = findViewById(R.id.qrcode_image_cl);
         barcode_image_cl = findViewById(R.id.barcode_image_cl);
+        barcode_image = findViewById(R.id.barcode_image);
+        qrcode_image = findViewById(R.id.qrcode_image);
+        cl_qr_bar_image = findViewById(R.id.cl_qr_bar_image);
+
 
 
         binding.manufDateCancel.setOnClickListener(this);
@@ -907,8 +912,8 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
         date_warnty_layout_start.setOnClickListener(this);
 
         add_edit_item_Btn.setOnClickListener(this);
-        binding.tvScanBarcode.setOnClickListener(this);
-
+       /* binding.tvScanBarcode.setOnClickListener(this);
+*/
         rediogrp.setOnCheckedChangeListener(this);
         checkbox_barCode.setOnCheckedChangeListener(this);
         checkbox_scan_insert.setOnCheckedChangeListener(this);
@@ -1078,11 +1083,11 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.tv_scan_barcode:
+            /*case R.id.tv_scan_barcode:
                 Intent intent = new Intent(AddJobEquipMentActivity.this, BarcodeScanActivity.class);
                 intent.putExtra("comeFrom", "AddEquipment");
                 startActivityForResult(intent, BAR_CODE_REQUEST);
-                break;
+                break;*/
             case R.id.remove_txt:
                 removeTagData();
                 break;
@@ -1167,20 +1172,32 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
                 break;
             case R.id.add_edit_barcode_cl:
                 if(barcode_image== null) {
-                    addEditQrCodeBarCodeDialog = new AddEdit_QRCode_BarCode_Dialog();
-                    addEditQrCodeBarCodeDialog.show(getSupportFragmentManager(), "1");
+                    addEditQrCodeBarCodeDialog = new AddEdit_QRCode_BarCode_Dialog(this);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("barcod_qrcode_dialog", "addBarcode");
+                    addEditQrCodeBarCodeDialog.setArguments(bundle);
+                    addEditQrCodeBarCodeDialog.show(getSupportFragmentManager(), "");
                 }else{
-                     addEditQrCodeBarCodeDialog = new AddEdit_QRCode_BarCode_Dialog();
-                    addEditQrCodeBarCodeDialog.show(getSupportFragmentManager(), "2");
+                     addEditQrCodeBarCodeDialog = new AddEdit_QRCode_BarCode_Dialog(this);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("barcod_qrcode_dialog", "editBarcode");
+                    addEditQrCodeBarCodeDialog.setArguments(bundle);
+                    addEditQrCodeBarCodeDialog.show(getSupportFragmentManager(), "");
                 }
                 break;
             case R.id.add_edit_qrcode_cl:
                 if(qrcode_image == null) {
-                    addEditQrCodeBarCodeDialog = new AddEdit_QRCode_BarCode_Dialog();
-                    addEditQrCodeBarCodeDialog.show(getSupportFragmentManager(), "3");
+                    addEditQrCodeBarCodeDialog = new AddEdit_QRCode_BarCode_Dialog(this);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("barcod_qrcode_dialog", "addQRcode");
+                    addEditQrCodeBarCodeDialog.setArguments(bundle);
+                    addEditQrCodeBarCodeDialog.show(getSupportFragmentManager(), "");
                 }else{
-                    addEditQrCodeBarCodeDialog = new AddEdit_QRCode_BarCode_Dialog();
-                    addEditQrCodeBarCodeDialog.show(getSupportFragmentManager(), "4");
+                    addEditQrCodeBarCodeDialog = new AddEdit_QRCode_BarCode_Dialog(this);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("barcod_qrcode_dialog", "editQRcode");
+                    addEditQrCodeBarCodeDialog.setArguments(bundle);
+                    addEditQrCodeBarCodeDialog.show(getSupportFragmentManager(), "");
                 }
                 break;
         }
@@ -1232,7 +1249,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
                                     edt_equ_service_interval.getText().toString(),
                                     isCnvtItemParts, binding.installedDateLable.getText().toString().trim()+" "+formatetime,supplierId),
                             path,
-                            binding.etBarcode.getText().toString(), equipmentId);
+                            barcodeString, equipmentId);
                 } else if (audit != null) {
                     addJobEqu_pi.addNewEquipment(
                             new AddEquReq(type, egId, ecId, edt_equ_zip.getText().toString().trim(),
@@ -1246,7 +1263,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
                                     brandId, edt_equ.getText().toString().trim(), audit.getAudId(), audit.getCltId(),
                                     audit.getContrId(), siteId, isPart, status, custom_filed_txt_1.getText().toString().trim(),
                                     custom_filed_txt_2.getText().toString().trim(), servIntvalType, edt_equ_service_interval.getText().toString(),supplierId)
-                            , path, binding.etBarcode.getText().toString(),
+                            , path, barcodeString,barcodeString,
                             binding.installedDateLable.getText().toString().trim()+" "+formatetime, equipmentId);
                 } else {
                     addJobEqu_pi.addNewEquipment(
@@ -1261,7 +1278,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
                                     brandId, edt_equ.getText().toString().trim(), jobId, job.getCltId(),
                                     job.getContrId(), siteId, isPart, status, custom_filed_txt_1.getText().toString().trim(),
                                     custom_filed_txt_2.getText().toString().trim(), servIntvalType, edt_equ_service_interval.getText().toString(),supplierId)
-                            , path, binding.etBarcode.getText().toString(),
+                            , path, barcodeString,barcodeString,
                             binding.installedDateLable.getText().toString().trim()+" "+formatetime, equipmentId)
                     ;
                 }
@@ -1289,7 +1306,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
                                 servIntvalType,
                                 edt_equ_service_interval.getText().toString(),
                                 isCnvtItemParts, binding.installedDateLable.getText().toString().trim()+" "+formatetime,supplierId), path,
-                        binding.etBarcode.getText().toString(), equipmentId);
+                        barcodeString, equipmentId);
             }
         }
     }
@@ -1418,7 +1435,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         switch (buttonView.getId()) {
-            case R.id.checkbox_barCode:
+           /* case R.id.checkbox_barCode:
                 isBarcodeGenerate = buttonView.isChecked() ? "1" : "0";
                 if (isChecked) {
                     binding.checkboxScanBarCode.setChecked(false);
@@ -1431,7 +1448,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
                     binding.scanBarcodeLayout.setVisibility(View.VISIBLE);
                 }
                 break;
-
+*/
             case R.id.ch_equ_as_part:
                 isPart = buttonView.isChecked() ? "1" : "0";
                 if (buttonView.isChecked()) {
@@ -1457,7 +1474,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
         }
     }
 
-    @Override
+  /*  @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (data != null) {
@@ -1471,7 +1488,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
 
 
     }
-
+*/
     @SuppressLint("NonConstantResourceId")
     @Override
     public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -1946,7 +1963,22 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
 
 
     @Override
-    public void onDataPass(String data) {
-
+    public void onDataPass(QRCOde_Barcode_Res_Model data) {
+        if(data != null && data.getBarCode()!= null && !data.getBarCode().isEmpty()){
+             this.barcodeString = data.getBarCode();
+            if (data.getBarcodeImg() != null && !data.getBarcodeImg().isEmpty()) {
+                Picasso.get().load(App_preference.getSharedprefInstance().getBaseURL() + data.getBarcodeImg()).placeholder(R.drawable.ic_profile).error(R.drawable.ic_profile).into(barcode_image);
+                cl_qr_bar_image.setVisibility(View.VISIBLE);
+                barcode_image_cl.setVisibility(View.VISIBLE);
+            }
+        }
+        if(data != null && data.getQrcode()!= null && !data.getQrcode().isEmpty()){
+            this.qrCodeString = data.getQrcode();
+            if (data.getQrcodeImg() != null && !data.getQrcodeImg().isEmpty()) {
+                Picasso.get().load(App_preference.getSharedprefInstance().getBaseURL() + data.getQrcodeImg()).placeholder(R.drawable.ic_profile).error(R.drawable.ic_profile).into(qrcode_image);
+                cl_qr_bar_image.setVisibility(View.VISIBLE);
+                qrcode_image_cl.setVisibility(View.VISIBLE);
+            }
+        }
     }
 }

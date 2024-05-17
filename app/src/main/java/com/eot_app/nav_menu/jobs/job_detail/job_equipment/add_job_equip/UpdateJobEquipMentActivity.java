@@ -145,6 +145,8 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
     private Job job;
     private InvoiceItemDataModel updateItemDataModel;
     private List<GetSupplierData> supplierDataList;
+    String barcodeString;
+    String qrCodeString;
     /**
      * select date from picker & concanate current time
      */
@@ -391,7 +393,7 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
         radio_serv_prov = findViewById(R.id.radio_serv_prov);
         radio_serv_prov.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.clients_eq));
 
-        checkbox_barCode = findViewById(R.id.checkbox_barCode);
+        /*checkbox_barCode = findViewById(R.id.checkbox_barCode);
         checkbox_barCode.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.auto_gen_bar_code));
 
         checkbox_scan_insert = findViewById(R.id.checkbox_scan_barCode);
@@ -399,7 +401,7 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
 
         binding.etBarcode.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.insert_barcode));
         binding.tvScanBarcode.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.scan));
-
+*/
         status_type = findViewById(R.id.type);
         status_type.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.type));
 
@@ -854,7 +856,7 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
         date_warnty_layout_start.setOnClickListener(this);
 
         add_edit_item_Btn.setOnClickListener(this);
-        binding.tvScanBarcode.setOnClickListener(this);
+        /*binding.tvScanBarcode.setOnClickListener(this);*/
 
         rediogrp.setOnCheckedChangeListener(this);
         checkbox_barCode.setOnCheckedChangeListener(this);
@@ -1026,11 +1028,11 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.tv_scan_barcode:
+           /* case R.id.tv_scan_barcode:
                 Intent intent = new Intent(UpdateJobEquipMentActivity.this, BarcodeScanActivity.class);
                 intent.putExtra("comeFrom", "AddEquipment");
                 startActivityForResult(intent, BAR_CODE_REQUEST);
-                break;
+                break;*/
             case R.id.remove_txt:
                 removeTagData();
                 break;
@@ -1134,7 +1136,7 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
                                     edt_equ_service_interval.getText().toString(), "1",
                                     equipmentId,
                                     isCnvtItemParts, binding.installedDateLable.getText().toString().trim(),supplierId), path,
-                            binding.etBarcode.getText().toString(), parentId);
+                            barcodeString, parentId);
                 } else if (audit != null) {
                     addJobEqu_pi.addNewEquipment(
                             new AddEquReq(type, egId, ecId, edt_equ_zip.getText().toString().trim(),
@@ -1153,7 +1155,7 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
                                     custom_filed_txt_1.getText().toString().trim(),
                                     custom_filed_txt_2.getText().toString().trim(),
                                     servIntvalType, edt_equ_service_interval.getText().toString(),supplierId)
-                            , path, binding.etBarcode.getText().toString(),
+                            , path, barcodeString,barcodeString,
                             binding.installedDateLable.getText().toString().trim(), equipmentId);
                 } else {
                     addJobEqu_pi.addNewEquipment(
@@ -1168,7 +1170,7 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
                                     brandId, edt_equ.getText().toString().trim(), jobId, job.getCltId(),
                                     job.getContrId(), siteId, isPart, status, custom_filed_txt_1.getText().toString().trim(),
                                     custom_filed_txt_2.getText().toString().trim(), servIntvalType, edt_equ_service_interval.getText().toString(),supplierId)
-                            , path, binding.etBarcode.getText().toString(),
+                            , path, barcodeString,barcodeString,
                             binding.installedDateLable.getText().toString().trim(), equipmentId);
                 }
             }
@@ -1200,7 +1202,7 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
                                 edt_equ_service_interval.getText().toString(), "1",
                                 equipmentId,
                                 isCnvtItemParts, binding.installedDateLable.getText().toString().trim(),supplierId), path,
-                        binding.etBarcode.getText().toString(), parentId);
+                        barcodeString, parentId);
             }
         }
     }
@@ -1328,7 +1330,7 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         switch (buttonView.getId()) {
-            case R.id.checkbox_barCode:
+            /*case R.id.checkbox_barCode:
                 isBarcodeGenerate = buttonView.isChecked() ? "1" : "0";
                 if (isChecked) {
                     binding.checkboxScanBarCode.setChecked(false);
@@ -1341,7 +1343,7 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
                     binding.scanBarcodeLayout.setVisibility(View.VISIBLE);
                 }
                 break;
-
+*/
             case R.id.ch_equ_as_part:
                 isPart = buttonView.isChecked() ? "1" : "0";
                 if (buttonView.isChecked()) {
@@ -1355,7 +1357,7 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
         }
     }
 
-    @Override
+   /* @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (data != null) {
@@ -1368,7 +1370,7 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
         }
 
 
-    }
+    }*/
 
     @SuppressLint("NonConstantResourceId")
     @Override

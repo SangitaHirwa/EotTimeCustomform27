@@ -243,6 +243,10 @@ public interface Service_apis {
     String linkItemToEqup ="JobController/linkJobItemToEqu";
     String pauseResumeRecur = "RecurController/pauseResumeRecur";
 
+    /** QR code and Barcode generate api for add equipment new flow**/
+    String autoGenerateQrcode = "AssetsController/autoGenerateQrcode";
+    String autoGenerateBarcode = "AssetsController/autoGenerateBarcode";
+
     //no token required & header
     @POST
     Observable<JsonObject> service_Call_Without_Token(@Url String url,
