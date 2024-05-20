@@ -179,6 +179,19 @@
                 android:layout_marginTop="5dp"
                 android:background="@color/border_font_color" />
 
+            <TextView
+                android:id="@+id/serv_due_date"
+                style="@style/style_sec"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="2dp"
+                android:layout_weight="1"
+                android:gravity="end|center_vertical"
+                android:paddingTop="5dp"
+                android:paddingEnd="10dp"
+                android:textStyle="normal"
+                tools:ignore="RtlSymmetry" />
+
             <LinearLayout
                 android:id="@+id/equipment_location_detail"
                 android:layout_width="match_parent"
@@ -570,19 +583,6 @@
                     android:textColor="@color/black"
                     tools:ignore="RtlSymmetry" />
 
-                <TextView
-                    android:id="@+id/serv_due_date"
-                    style="@style/style_sec"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="2dp"
-                    android:layout_weight="1"
-                    android:gravity="end|center_vertical"
-                    android:paddingTop="5dp"
-                    android:paddingEnd="10dp"
-                    android:textStyle="normal"
-                    tools:ignore="RtlSymmetry" />
-
 
             </LinearLayout>
 
@@ -803,6 +803,69 @@
                 android:layout_marginTop="5dp"
                 android:background="@color/border_font_color" />
 
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                >
+
+                <TextView
+                    android:id="@+id/txt_addBarcode"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:drawableStart="@drawable/ic_plus"
+                    android:gravity="start|center"
+                    android:text="Add barcode"
+                    android:padding="2dp"
+                    app:layout_constraintEnd_toStartOf="@+id/guideline1"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/img_barcode"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="13dp"
+                    android:layout_marginTop="8dp"
+                    android:src="@drawable/barcode"
+                    android:scaleType="fitStart"
+                    android:visibility="gone"
+                    app:layout_constraintEnd_toStartOf="@+id/guideline1"
+                    app:layout_constraintStart_toStartOf="@id/txt_addBarcode"
+                    app:layout_constraintTop_toBottomOf="@id/txt_addBarcode" />
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline1"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent=".5"/>
+
+                <TextView
+                    android:id="@+id/txt_addQrcode"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:drawableStart="@drawable/ic_plus"
+                    android:text="Add QR code"
+                    android:padding="2dp"
+                    android:gravity="start|center"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/guideline1"
+                    app:layout_constraintTop_toTopOf="parent"
+                    />
+
+                <ImageView
+                    android:id="@+id/img_Qrcode"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="13dp"
+                    android:layout_marginTop="8dp"
+                    android:scaleType="fitStart"
+                    android:src="@drawable/qrcode"
+                    android:visibility="gone"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@id/txt_addQrcode"
+                    app:layout_constraintTop_toBottomOf="@id/txt_addQrcode" />
+</androidx.constraintlayout.widget.ConstraintLayout>
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/tv_upload_barcode"
                 style="@style/style_sec"

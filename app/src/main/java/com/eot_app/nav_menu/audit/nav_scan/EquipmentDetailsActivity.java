@@ -12,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.appcompat.widget.AppCompatTextView;
@@ -39,6 +40,8 @@ import com.eot_app.nav_menu.jobs.job_db.Job;
 import com.eot_app.nav_menu.jobs.job_detail.JobDetailActivity;
 import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.model.InvoiceItemDataModel;
 import com.eot_app.nav_menu.jobs.job_detail.invoice2list.InvoiceItemList2Adpter;
+import com.eot_app.nav_menu.jobs.job_detail.job_equipment.add_job_equip.mvp.AddEdit_QRCode_BarCode_Dialog;
+import com.eot_app.nav_menu.jobs.job_detail.job_equipment.add_job_equip.mvp.QRCOde_Barcode_Res_Model;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.job_equ_mvp.Job_equim_PC;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.job_equ_mvp.Job_equim_PI;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.job_equ_mvp.Job_equim_View;
@@ -53,6 +56,8 @@ import com.eot_app.utility.language_support.LanguageController;
 import com.eot_app.utility.settings.equipmentdb.Equipment;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.squareup.picasso.Picasso;
+
 import java.io.File;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -60,7 +65,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class EquipmentDetailsActivity extends UploadDocumentActivity implements View.OnClickListener,
-        Audit_Job_History_View, AdpterAuditHistory.OnAuditSelection, AdpterJobHistory.OnJobSelection, Job_equim_View {
+        Audit_Job_History_View, AdpterAuditHistory.OnAuditSelection, AdpterJobHistory.OnJobSelection, Job_equim_View, AddEdit_QRCode_BarCode_Dialog.QR_Bar_DataPass {
     TextView equipment_name, barnd_name, model_no, serial_no,
             traiff_rate, warrenty_expiry_date, manufacture_date,
             purchase_date, installed_date, type, equipment_group, equipment_location;
@@ -91,10 +96,13 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
     private LinearLayout ll_audit_job;
     private LinearLayout job_ll, audit_ll, equipment_location_detail;
     TextView custom_filed_1, custom_filed_2,
-            custom_filed_txt_1, custom_filed_txt_2,supplier_txt,supplier;
+            custom_filed_txt_1, custom_filed_txt_2,supplier_txt,supplier,txt_addBarcode,txt_addQrcode;
+    ImageView img_barcode,img_Qrcode;
     private boolean REFRESH = false;
     private String cltId;
     private Job_equim_PI jobEquimPi;
+    public  AddEdit_QRCode_BarCode_Dialog addEditQrCodeBarCodeDialog;
+    public  String barCode = "", qrcode = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -314,7 +322,13 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
         location_detail = findViewById(R.id.location_detail);
         site_detail = findViewById(R.id.site_detail);
         equipment_location_detail = findViewById(R.id.equipment_location_detail);
-      equipment_location.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.equipment)+" "+LanguageController.getInstance().getMobileMsgByKey(AppConstant.location));
+        txt_addBarcode = findViewById(R.id.txt_addBarcode);
+        txt_addQrcode = findViewById(R.id.txt_addQrcode);
+        img_Qrcode = findViewById(R.id.img_Qrcode);
+        img_barcode = findViewById(R.id.img_barcode);
+        equipment_location.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.equipment)+" "+LanguageController.getInstance().getMobileMsgByKey(AppConstant.location));
+        txt_addBarcode.setOnClickListener(this);
+        txt_addQrcode.setOnClickListener(this);
 
         ShowHideEqupHistory();
     }
@@ -558,8 +572,32 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
         }
 
         try {
-            if (equipment != null && equipment.getBarcode() != null)
+            if (equipment != null && equipment.getBarcode() != null && !equipment.getBarcode().isBlank()&& equipment.getBarcodeImg() != null && !equipment.getBarcodeImg().isBlank()){
+                txt_addBarcode.setText(LanguageController.getInstance().getMobileMsgByKey("Edit Barcode"));
+                txt_addBarcode.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.ic_sign_edit),null,null,null);
+                img_barcode.setVisibility(View.VISIBLE);
+                Picasso.get().load(App_preference.getSharedprefInstance().getBaseURL() + equipment.getBarcodeImg()).placeholder(R.drawable.ic_profile).error(R.drawable.ic_profile).into(img_barcode);
                 equ_bar_code_num_txt.setText(equipment.getBarcode());
+                barCode = equipment.getBarcode();
+            }else {
+                txt_addBarcode.setText(LanguageController.getInstance().getMobileMsgByKey("Add Barcode" ));
+                txt_addBarcode.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.ic_plus),null,null,null);
+                img_barcode.setVisibility(View.GONE);
+                equ_bar_code_num_txt.setText(equipment.getBarcode());
+            }
+            if (equipment != null && equipment.getQrcode() != null && !equipment.getQrcode().isBlank() && !equipment.getQrcode().isBlank()&& equipment.getQrcodeImg() != null && !equipment.getQrcodeImg().isBlank()){
+                txt_addQrcode.setText(LanguageController.getInstance().getMobileMsgByKey("Edit QR code"));
+                txt_addQrcode.setCompoundDrawablesWithIntrinsicBounds(getDrawable(R.drawable.ic_sign_edit),null,null,null);
+                img_Qrcode.setVisibility(View.VISIBLE);
+                Picasso.get().load(App_preference.getSharedprefInstance().getBaseURL() + equipment.getQrcodeImg()).placeholder(R.drawable.ic_profile).error(R.drawable.ic_profile).into(img_Qrcode);
+                equ_bar_code_num_txt.setText(equipment.getQrcode());
+                qrcode = equipment.getQrcode();
+            }else {
+                txt_addQrcode.setText(LanguageController.getInstance().getMobileMsgByKey("Add QR code"));
+                txt_addQrcode.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.ic_plus),null,null,null);
+                img_Qrcode.setVisibility(View.GONE);
+                equ_bar_code_num_txt.setText(equipment.getQrcode());
+            }
         } catch (Exception exception) {
             exception.printStackTrace();
         }
@@ -662,8 +700,32 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
         }
 
         try {
-            if (equipment != null && equipment.getBarcode() != null)
+            if (equipment != null && equipment.getBarcode() != null && !equipment.getBarcode().isBlank() && !equipment.getBarcode().isBlank()&& equipment.getBarcodeImg() != null && !equipment.getBarcodeImg().isBlank()){
+                txt_addBarcode.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit_client));
+                txt_addBarcode.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.ic_sign_edit),null,null,null);
+                img_barcode.setVisibility(View.VISIBLE);
+                Picasso.get().load(App_preference.getSharedprefInstance().getBaseURL() + equipment.getBarcodeImg()).placeholder(R.drawable.ic_profile).error(R.drawable.ic_profile).into(img_barcode);
                 equ_bar_code_num_txt.setText(equipment.getBarcode());
+                barCode = equipment.getBarcode();
+            }else {
+                txt_addBarcode.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_client));
+                txt_addBarcode.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.ic_plus),null,null,null);
+                img_barcode.setVisibility(View.GONE);
+                equ_bar_code_num_txt.setText(equipment.getBarcode());
+            }
+            if (equipment != null && equipment.getQrcode() != null && !equipment.getQrcode().isBlank() && !equipment.getQrcode().isBlank()&& equipment.getQrcodeImg() != null && !equipment.getQrcodeImg().isBlank()){
+                txt_addQrcode.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit_client));
+                txt_addQrcode.setCompoundDrawablesWithIntrinsicBounds(getDrawable(R.drawable.ic_sign_edit),null,null,null);
+                img_Qrcode.setVisibility(View.VISIBLE);
+                Picasso.get().load(App_preference.getSharedprefInstance().getBaseURL() + equipment.getQrcodeImg()).placeholder(R.drawable.ic_profile).error(R.drawable.ic_profile).into(img_Qrcode);
+                equ_bar_code_num_txt.setText(equipment.getQrcode());
+                qrcode = equipment.getQrcode();
+            }else {
+                txt_addQrcode.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_client));
+                txt_addQrcode.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.ic_plus),null,null,null);
+                img_Qrcode.setVisibility(View.GONE);
+                equ_bar_code_num_txt.setText(equipment.getQrcode());
+            }
         } catch (Exception exception) {
             exception.printStackTrace();
         }
@@ -754,8 +816,33 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
                 }
             }
             try {
-                if (equipment != null && equipment.getBarcode() != null)
+                if (equipment != null && equipment.getBarcode() != null && !equipment.getBarcode().isBlank() && !equipment.getBarcode().isBlank()&& equipment.getBarcodeImg() != null && !equipment.getBarcodeImg().isBlank()){
+                    txt_addBarcode.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit_client));
+                    txt_addBarcode.setCompoundDrawablesWithIntrinsicBounds(getDrawable(R.drawable.ic_sign_edit),null,null,null);
+                    img_barcode.setVisibility(View.VISIBLE);
+                    Picasso.get().load(App_preference.getSharedprefInstance().getBaseURL() + equipment.getBarcodeImg()).placeholder(R.drawable.ic_profile).error(R.drawable.ic_profile).into(img_barcode);
                     equ_bar_code_num_txt.setText(equipment.getBarcode());
+                    barCode = equipment.getBarcode();
+                }else {
+                    txt_addBarcode.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_client));
+                    txt_addBarcode.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.ic_plus),null,null,null);
+                    img_barcode.setVisibility(View.GONE);
+                    equ_bar_code_num_txt.setText(equipment.getBarcode());
+                }
+                if (equipment != null && equipment.getQrcode() != null && !equipment.getQrcode().isBlank() && !equipment.getQrcode().isBlank()&& equipment.getQrcodeImg() != null && !equipment.getQrcodeImg().isBlank()){
+                    txt_addQrcode.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit_client));
+                    txt_addQrcode.setCompoundDrawablesWithIntrinsicBounds(getDrawable(R.drawable.ic_sign_edit),null,null,null);
+                    img_Qrcode.setVisibility(View.VISIBLE);
+                    Picasso.get().load(App_preference.getSharedprefInstance().getBaseURL() + equipment.getQrcodeImg()).placeholder(R.drawable.ic_profile).error(R.drawable.ic_profile).into(img_Qrcode);
+                    equ_bar_code_num_txt.setText(equipment.getQrcode());
+                    qrcode = equipment.getQrcode();
+                }else {
+                    txt_addQrcode.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_client));
+                    txt_addQrcode.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.ic_plus),null,null,null);
+                    img_Qrcode.setVisibility(View.GONE);
+                    equ_bar_code_num_txt.setText(equipment.getQrcode());
+                }
+
             } catch (Exception exception) {
                 exception.printStackTrace();
             }
@@ -845,6 +932,44 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
                 ClipData clip1 = ClipData.newPlainText("Copied", serial_no_detail.getText().toString());
                 clipboard1.setPrimaryClip(clip1);
                 EotApp.getAppinstance().showToastmsg("Copied");
+                break;
+            case  R.id.txt_addBarcode:
+                if(barCode != null && !barCode.isBlank()) {
+                    addEditQrCodeBarCodeDialog = new AddEdit_QRCode_BarCode_Dialog(this);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("barCode",barCode);
+                    bundle.putString("equipmentId",equipmentID);
+                    bundle.putBoolean("isComeFromDetail",true);
+                    addEditQrCodeBarCodeDialog.setArguments(bundle);
+                    addEditQrCodeBarCodeDialog.show(getSupportFragmentManager(),"1");
+                }else{
+                    addEditQrCodeBarCodeDialog = new AddEdit_QRCode_BarCode_Dialog(this);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("barCode",barCode);
+                    bundle.putString("equipmentId",equipmentID);
+                    bundle.putBoolean("isComeFromDetail",true);
+                    addEditQrCodeBarCodeDialog.setArguments(bundle);
+                    addEditQrCodeBarCodeDialog.show(getSupportFragmentManager(), "2");
+                }
+                break;
+            case  R.id.txt_addQrcode:
+                if(barCode != null && !barCode.isBlank()) {
+                    addEditQrCodeBarCodeDialog = new AddEdit_QRCode_BarCode_Dialog(this);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("qrcode",qrcode);
+                    bundle.putString("equipmentId",equipmentID);
+                    bundle.putBoolean("isComeFromDetail",true);
+                    addEditQrCodeBarCodeDialog.setArguments(bundle);
+                    addEditQrCodeBarCodeDialog.show(getSupportFragmentManager(),"1");
+                }else{
+                    addEditQrCodeBarCodeDialog = new AddEdit_QRCode_BarCode_Dialog(this);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("qrcode",qrcode);
+                    bundle.putString("equipmentId",equipmentID);
+                    bundle.putBoolean("isComeFromDetail",true);
+                    addEditQrCodeBarCodeDialog.setArguments(bundle);
+                    addEditQrCodeBarCodeDialog.show(getSupportFragmentManager(), "2");
+                }
                 break;
 
         }
@@ -1046,5 +1171,27 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
     @Override
     public void swipeRefresh() {
 
+    }
+
+    @Override
+    public void onDataPass(QRCOde_Barcode_Res_Model data) {
+        try {
+            if (data != null && data.getBarCode() != null && !data.getBarCode().isBlank() && data.getBarcodeImg() != null && !data.getBarcodeImg().isBlank()){
+                txt_addBarcode.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit_client));
+                txt_addBarcode.setCompoundDrawablesWithIntrinsicBounds(getDrawable(R.drawable.ic_sign_edit),null,null,null);
+                img_barcode.setVisibility(View.VISIBLE);
+                Picasso.get().load(App_preference.getSharedprefInstance().getBaseURL() + data.getBarcodeImg()).placeholder(R.drawable.ic_profile).error(R.drawable.ic_profile).into(img_barcode);
+                barCode = data.getBarCode();
+            }else if (data != null && data.getQrcode() != null && !data.getQrcode().isBlank() && !data.getQrcode().isBlank()&& data.getQrcodeImg() != null && !data.getQrcodeImg().isBlank()){
+                txt_addQrcode.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit_client));
+                txt_addQrcode.setCompoundDrawablesWithIntrinsicBounds(getDrawable(R.drawable.ic_sign_edit),null,null,null);
+                img_Qrcode.setVisibility(View.VISIBLE);
+                Picasso.get().load(App_preference.getSharedprefInstance().getBaseURL() + data.getQrcodeImg()).placeholder(R.drawable.ic_profile).error(R.drawable.ic_profile).into(img_Qrcode);
+                qrcode = data.getQrcode();
+            }
+
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
     }
 }

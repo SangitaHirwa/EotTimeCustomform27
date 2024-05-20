@@ -49,6 +49,18 @@ public class UploadBarcodeViewModel extends AppointmentListViewModel {
         Requestor requestor = new Requestor(this, reqCode4);
         requestor.sendRequestToServer(Service_apis.generateBarcodeWithGiveCode, hashMap);
     }
+    public void uploadQrcode(String equipmentId, String qrcodeNO) {
+        isUploadingBarcode.setValue(true);
+
+        this.equipmentCode=qrcodeNO;
+        this.equipmentId=equipmentId;
+
+        HashMap<String, String> hashMap = new HashMap<>();
+        hashMap.put("equId", equipmentId);
+        hashMap.put("qrcode", qrcodeNO);
+        Requestor requestor = new Requestor(this, reqCode4);
+        requestor.sendRequestToServer(Service_apis.generateQRcode, hashMap);
+    }
 
     @Override
     public void onSuccess(Object successObject, int requestCode) {

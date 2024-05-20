@@ -157,6 +157,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
     AddEdit_QRCode_BarCode_Dialog addEditQrCodeBarCodeDialog;
     String barcodeString ="";
     String qrCodeString ="";
+
     /**
      * select date from picker & concanate current time
      */
@@ -915,8 +916,8 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
        /* binding.tvScanBarcode.setOnClickListener(this);
 */
         rediogrp.setOnCheckedChangeListener(this);
-        checkbox_barCode.setOnCheckedChangeListener(this);
-        checkbox_scan_insert.setOnCheckedChangeListener(this);
+//        checkbox_barCode.setOnCheckedChangeListener(this);
+//        checkbox_scan_insert.setOnCheckedChangeListener(this);
         ch_equ_as_part.setOnCheckedChangeListener(this);
         supplier_layout.setOnClickListener(this);
 //        upload_lable.setOnClickListener(this);
@@ -1174,13 +1175,13 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
                 if(barcode_image== null) {
                     addEditQrCodeBarCodeDialog = new AddEdit_QRCode_BarCode_Dialog(this);
                     Bundle bundle = new Bundle();
-                    bundle.putString("barcod_qrcode_dialog", "addBarcode");
+                    bundle.putString("barCode",barcodeString);
                     addEditQrCodeBarCodeDialog.setArguments(bundle);
                     addEditQrCodeBarCodeDialog.show(getSupportFragmentManager(), "");
                 }else{
                      addEditQrCodeBarCodeDialog = new AddEdit_QRCode_BarCode_Dialog(this);
                     Bundle bundle = new Bundle();
-                    bundle.putString("barcod_qrcode_dialog", "editBarcode");
+                    bundle.putString("barCode",barcodeString);
                     addEditQrCodeBarCodeDialog.setArguments(bundle);
                     addEditQrCodeBarCodeDialog.show(getSupportFragmentManager(), "");
                 }
@@ -1189,13 +1190,13 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
                 if(qrcode_image == null) {
                     addEditQrCodeBarCodeDialog = new AddEdit_QRCode_BarCode_Dialog(this);
                     Bundle bundle = new Bundle();
-                    bundle.putString("barcod_qrcode_dialog", "addQRcode");
+                    bundle.putString("qrcode",qrCodeString);
                     addEditQrCodeBarCodeDialog.setArguments(bundle);
                     addEditQrCodeBarCodeDialog.show(getSupportFragmentManager(), "");
                 }else{
                     addEditQrCodeBarCodeDialog = new AddEdit_QRCode_BarCode_Dialog(this);
                     Bundle bundle = new Bundle();
-                    bundle.putString("barcod_qrcode_dialog", "editQRcode");
+                    bundle.putString("qrcode",qrCodeString);
                     addEditQrCodeBarCodeDialog.setArguments(bundle);
                     addEditQrCodeBarCodeDialog.show(getSupportFragmentManager(), "");
                 }
@@ -1263,7 +1264,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
                                     brandId, edt_equ.getText().toString().trim(), audit.getAudId(), audit.getCltId(),
                                     audit.getContrId(), siteId, isPart, status, custom_filed_txt_1.getText().toString().trim(),
                                     custom_filed_txt_2.getText().toString().trim(), servIntvalType, edt_equ_service_interval.getText().toString(),supplierId)
-                            , path, barcodeString,barcodeString,
+                            , path, barcodeString,qrCodeString,
                             binding.installedDateLable.getText().toString().trim()+" "+formatetime, equipmentId);
                 } else {
                     addJobEqu_pi.addNewEquipment(
@@ -1278,7 +1279,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
                                     brandId, edt_equ.getText().toString().trim(), jobId, job.getCltId(),
                                     job.getContrId(), siteId, isPart, status, custom_filed_txt_1.getText().toString().trim(),
                                     custom_filed_txt_2.getText().toString().trim(), servIntvalType, edt_equ_service_interval.getText().toString(),supplierId)
-                            , path, barcodeString,barcodeString,
+                            , path, barcodeString,qrCodeString,
                             binding.installedDateLable.getText().toString().trim()+" "+formatetime, equipmentId)
                     ;
                 }

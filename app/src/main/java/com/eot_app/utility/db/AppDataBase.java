@@ -742,7 +742,7 @@ public abstract class AppDataBase extends RoomDatabase {
     static final Migration MIGRATION_48_49 = new Migration(48, 49) {
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) {
-            /* **Alter Table for Tax new response **/
+            /* **Alter  Tax Table for Tax new response **/
             database.execSQL("CREATE TABLE IF NOT EXISTS _new_Tax (taxId TEXT NOT NULL UNIQUE,label TEXT," +
                     "status TEXT,rate TEXT,percentage TEXT,locId TEXT,taxComponents TEXT,"
                     + "PRIMARY KEY(taxId))");
@@ -750,6 +750,9 @@ public abstract class AppDataBase extends RoomDatabase {
                     "CASE WHEN isactive = '0' OR show_Invoice = '0' THEN '0' ELSE '1' END AS status,rate,percentage,locId,taxComponents FROM Tax");
             database.execSQL("DROP TABLE Tax");
             database.execSQL("ALTER TABLE _new_Tax RENAME TO Tax");
+            /* **Alter Equipment table **/
+            database.execSQL("ALTER TABLE Equipment ADD COLUMN qrcode TEXT");
+            database.execSQL("ALTER TABLE Equipment ADD COLUMN qrcodeImg TEXT");
         }
     };
     private static final String DB_NAME = "eot_db";

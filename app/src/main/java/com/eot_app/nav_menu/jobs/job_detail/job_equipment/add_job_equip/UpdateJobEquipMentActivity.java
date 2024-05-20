@@ -859,8 +859,8 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
         /*binding.tvScanBarcode.setOnClickListener(this);*/
 
         rediogrp.setOnCheckedChangeListener(this);
-        checkbox_barCode.setOnCheckedChangeListener(this);
-        checkbox_scan_insert.setOnCheckedChangeListener(this);
+//        checkbox_barCode.setOnCheckedChangeListener(this);
+//        checkbox_scan_insert.setOnCheckedChangeListener(this);
         ch_equ_as_part.setOnCheckedChangeListener(this);
 //        upload_lable.setOnClickListener(this);
         lay.setOnClickListener(this);

@@ -2,6 +2,7 @@ package com.eot_app.utility.settings.equipmentdb;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "Equipment")
@@ -51,7 +52,8 @@ public class Equipment {
     private String extraField1;
     private String extraField2;
     private String installedDate;
-
+    private String qrcode;
+    private String qrcodeImg;
     public String getInstalledDate() {
         return installedDate;
     }
@@ -403,5 +405,21 @@ public class Equipment {
 
     public void setUsrManualDoc(String usrManualDoc) {
         this.usrManualDoc = usrManualDoc;
+    }
+
+    public String getQrcode() {
+        return qrcode;
+    }
+
+    public void setQrcode(String qrcode) {
+        this.qrcode = qrcode;
+    }
+
+    public String getQrcodeImg() {
+        return qrcodeImg;
+    }
+
+    public void setQrcodeImg(String qrcodeImg) {
+        this.qrcodeImg = qrcodeImg;
     }
 }
