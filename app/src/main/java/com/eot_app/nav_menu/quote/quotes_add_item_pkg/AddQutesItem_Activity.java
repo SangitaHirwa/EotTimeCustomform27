@@ -726,10 +726,13 @@ public class AddQutesItem_Activity extends AppCompatActivity implements TextWatc
     private void setDefaultTax(List<Tax> tax_default_list) {
         for (Tax tax1 : listFilter) {
             for (Tax tax2 : tax_default_list) {
-                if (tax1.getTaxId().equals(tax2.getTaxId())) {
+                if(tax1.getStatus().equals("1")) {
+                    if (tax1.getTaxId().equals(tax2.getTaxId())) {
 //                    tax1.setRate(tax2.getRate());
-                    tax1.setSelect(true);
-                    total_tax = Float.parseFloat(tax1.getRate()) + total_tax;
+                        tax1.setSelect(true);
+                        total_tax = Float.parseFloat(tax1.getRate()) + total_tax;
+                        break;
+                    }
                 }
             }
         }
@@ -850,14 +853,16 @@ public class AddQutesItem_Activity extends AppCompatActivity implements TextWatc
 
     private void setServicesTax(List<TaxData> taxDataList) { //set tax value for specifiec lable when set default job service tax amount
         for (Tax tax : listFilter) {
-            for (TaxData taxData : taxDataList) {
-                if (tax.getTaxId().equals(taxData.getTaxId())) {
-                    /**In previous app***/
+                for (TaxData taxData : taxDataList) {
+                    if(tax.getStatus().equals("1")) {
+                    if (tax.getTaxId().equals(taxData.getTaxId())) {
+                        /**In previous app***/
 //                    tax.setRate(taxData.getRate());
-                    tax.setSelect(true);
-                    total_tax = Float.parseFloat(tax.getRate()) + total_tax;
+                        tax.setSelect(true);
+                        total_tax = Float.parseFloat(tax.getRate()) + total_tax;
+                    }
+                    break;
                 }
-                break;
             }
         }
         tax_value_txt.setText((String.valueOf(total_tax)));
