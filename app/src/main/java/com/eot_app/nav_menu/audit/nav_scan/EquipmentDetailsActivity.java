@@ -573,27 +573,27 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
 
         try {
             if (equipment != null && equipment.getBarcode() != null && !equipment.getBarcode().isBlank()&& equipment.getBarcodeImg() != null && !equipment.getBarcodeImg().isBlank()){
-                txt_addBarcode.setText(LanguageController.getInstance().getMobileMsgByKey("Edit Barcode"));
+                txt_addBarcode.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit_Barcode));
                 txt_addBarcode.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.ic_sign_edit),null,null,null);
                 img_barcode.setVisibility(View.VISIBLE);
                 Picasso.get().load(App_preference.getSharedprefInstance().getBaseURL() + equipment.getBarcodeImg()).placeholder(R.drawable.ic_profile).error(R.drawable.ic_profile).into(img_barcode);
                 equ_bar_code_num_txt.setText(equipment.getBarcode());
                 barCode = equipment.getBarcode();
             }else {
-                txt_addBarcode.setText(LanguageController.getInstance().getMobileMsgByKey("Add Barcode" ));
+                txt_addBarcode.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit_Barcode));
                 txt_addBarcode.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.ic_plus),null,null,null);
                 img_barcode.setVisibility(View.GONE);
                 equ_bar_code_num_txt.setText(equipment.getBarcode());
             }
             if (equipment != null && equipment.getQrcode() != null && !equipment.getQrcode().isBlank() && !equipment.getQrcode().isBlank()&& equipment.getQrcodeImg() != null && !equipment.getQrcodeImg().isBlank()){
-                txt_addQrcode.setText(LanguageController.getInstance().getMobileMsgByKey("Edit QR code"));
+                txt_addQrcode.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit_QR_Code));
                 txt_addQrcode.setCompoundDrawablesWithIntrinsicBounds(getDrawable(R.drawable.ic_sign_edit),null,null,null);
                 img_Qrcode.setVisibility(View.VISIBLE);
                 Picasso.get().load(App_preference.getSharedprefInstance().getBaseURL() + equipment.getQrcodeImg()).placeholder(R.drawable.ic_profile).error(R.drawable.ic_profile).into(img_Qrcode);
                 equ_bar_code_num_txt.setText(equipment.getQrcode());
                 qrcode = equipment.getQrcode();
             }else {
-                txt_addQrcode.setText(LanguageController.getInstance().getMobileMsgByKey("Add QR code"));
+                txt_addQrcode.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_QR_Code));
                 txt_addQrcode.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.ic_plus),null,null,null);
                 img_Qrcode.setVisibility(View.GONE);
                 equ_bar_code_num_txt.setText(equipment.getQrcode());
@@ -1177,13 +1177,13 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
     public void onDataPass(QRCOde_Barcode_Res_Model data) {
         try {
             if (data != null && data.getBarCode() != null && !data.getBarCode().isBlank() && data.getBarcodeImg() != null && !data.getBarcodeImg().isBlank()){
-                txt_addBarcode.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit_client));
+                txt_addBarcode.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit_Barcode));
                 txt_addBarcode.setCompoundDrawablesWithIntrinsicBounds(getDrawable(R.drawable.ic_sign_edit),null,null,null);
                 img_barcode.setVisibility(View.VISIBLE);
                 Picasso.get().load(App_preference.getSharedprefInstance().getBaseURL() + data.getBarcodeImg()).placeholder(R.drawable.ic_profile).error(R.drawable.ic_profile).into(img_barcode);
                 barCode = data.getBarCode();
             }else if (data != null && data.getQrcode() != null && !data.getQrcode().isBlank() && !data.getQrcode().isBlank()&& data.getQrcodeImg() != null && !data.getQrcodeImg().isBlank()){
-                txt_addQrcode.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit_client));
+                txt_addQrcode.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit_QR_Code));
                 txt_addQrcode.setCompoundDrawablesWithIntrinsicBounds(getDrawable(R.drawable.ic_sign_edit),null,null,null);
                 img_Qrcode.setVisibility(View.VISIBLE);
                 Picasso.get().load(App_preference.getSharedprefInstance().getBaseURL() + data.getQrcodeImg()).placeholder(R.drawable.ic_profile).error(R.drawable.ic_profile).into(img_Qrcode);

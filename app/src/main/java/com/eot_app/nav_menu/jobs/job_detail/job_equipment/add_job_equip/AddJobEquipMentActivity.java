@@ -124,9 +124,8 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
     String isCnvtItemParts = "0";
     TextView tvService_inv_label;
     RadioGroup rediogrpForTag, rediogrp, rediogrp_interval;
-    TextView tvLabelStep2,txt_add_barcode,txt_edit_barcode,txt_add_qrcode,txt_edit_qrcode;
-    ImageView add_barcode_icon,edit_barcode_icon,add_qrcode_icon,edit_qrcode_icon,barcode_image,qrcode_image;
-    ConstraintLayout add_edit_barcode_cl,add_edit_qrcode_cl,barcode_image_cl,qrcode_image_cl,cl_qr_bar_image;
+    TextView tvLabelStep2,txt_addBarcode,txt_addQrcode;
+    ImageView barcode_image,qrcode_image,img_barcode,img_Qrcode;
     String equipmentIdName;
     private String brandId = "", siteId = "", status = "", invId, supplierId="";
     private CheckBox ch_equ_as_part;
@@ -493,33 +492,20 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
         rediogrp_interval.setOnCheckedChangeListener(this);
 
         /**Add barcode and QRcode**/
-        add_barcode_icon = findViewById(R.id.add_barcode_icon);
-        txt_add_barcode = findViewById(R.id.txt_add_barcode);
-        txt_add_barcode.setText(LanguageController.getInstance().getMobileMsgByKey("Add Barcode"));
-        edit_barcode_icon = findViewById(R.id.edit_barcode_icon);
-        txt_edit_barcode = findViewById(R.id.txt_edit_barcode);
-        txt_edit_barcode.setText(LanguageController.getInstance().getMobileMsgByKey("Edit Barcode"));
-        add_qrcode_icon = findViewById(R.id.add_qrcode_icon);
-        edit_qrcode_icon = findViewById(R.id.edit_qrcode_icon);
-        txt_add_qrcode = findViewById(R.id.txt_add_qrcode);
-        txt_add_qrcode.setText(LanguageController.getInstance().getMobileMsgByKey("Add QR Code"));
-        txt_edit_qrcode = findViewById(R.id.txt_edit_qrcode);
-        txt_edit_qrcode.setText(LanguageController.getInstance().getMobileMsgByKey("Edit QR Code"));
-        qrcode_image_cl = findViewById(R.id.qrcode_image_cl);
-        barcode_image_cl = findViewById(R.id.barcode_image_cl);
-        barcode_image = findViewById(R.id.barcode_image);
-        qrcode_image = findViewById(R.id.qrcode_image);
-        cl_qr_bar_image = findViewById(R.id.cl_qr_bar_image);
-
-
+        txt_addBarcode = findViewById(R.id.txt_addBarcode);
+        img_barcode = findViewById(R.id.img_barcode);
+        txt_addBarcode.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_barcode));
+        txt_addQrcode = findViewById(R.id.txt_addQrcode);
+        img_Qrcode = findViewById(R.id.img_Qrcode);
+        txt_addQrcode.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_QR_Code));
 
         binding.manufDateCancel.setOnClickListener(this);
         binding.warntyDateCancel.setOnClickListener(this);
         binding.purchaseDateCancel.setOnClickListener(this);
         binding.installedDateCancel.setOnClickListener(this);
         binding.warntyStartDateCancel.setOnClickListener(this);
-        binding.addEditBarcodeCl.setOnClickListener(this);
-        binding.addEditQrcodeCl.setOnClickListener(this);
+        txt_addBarcode.setOnClickListener(this);
+        txt_addQrcode.setOnClickListener(this);
 
 
         radio_before = findViewById(R.id.radio_before);
@@ -1171,7 +1157,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
                     warnty_date_lable_start.setText("");
                 binding.warntyStartDateCancel.setVisibility(View.GONE);
                 break;
-            case R.id.add_edit_barcode_cl:
+            case R.id.txt_addBarcode:
                 if(barcode_image== null) {
                     addEditQrCodeBarCodeDialog = new AddEdit_QRCode_BarCode_Dialog(this);
                     Bundle bundle = new Bundle();
@@ -1186,7 +1172,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
                     addEditQrCodeBarCodeDialog.show(getSupportFragmentManager(), "");
                 }
                 break;
-            case R.id.add_edit_qrcode_cl:
+            case R.id.txt_addQrcode:
                 if(qrcode_image == null) {
                     addEditQrCodeBarCodeDialog = new AddEdit_QRCode_BarCode_Dialog(this);
                     Bundle bundle = new Bundle();
@@ -1965,21 +1951,23 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
 
     @Override
     public void onDataPass(QRCOde_Barcode_Res_Model data) {
-        if(data != null && data.getBarCode()!= null && !data.getBarCode().isEmpty()){
-             this.barcodeString = data.getBarCode();
-            if (data.getBarcodeImg() != null && !data.getBarcodeImg().isEmpty()) {
-                Picasso.get().load(App_preference.getSharedprefInstance().getBaseURL() + data.getBarcodeImg()).placeholder(R.drawable.ic_profile).error(R.drawable.ic_profile).into(barcode_image);
-                cl_qr_bar_image.setVisibility(View.VISIBLE);
-                barcode_image_cl.setVisibility(View.VISIBLE);
+        try {
+            if (data != null && data.getBarCode() != null && !data.getBarCode().isBlank() && data.getBarcodeImg() != null && !data.getBarcodeImg().isBlank()){
+                txt_addBarcode.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit_Barcode));
+                txt_addBarcode.setCompoundDrawablesWithIntrinsicBounds(getDrawable(R.drawable.ic_sign_edit),null,null,null);
+                img_barcode.setVisibility(View.VISIBLE);
+                Picasso.get().load(App_preference.getSharedprefInstance().getBaseURL() + data.getBarcodeImg()).placeholder(R.drawable.ic_profile).error(R.drawable.ic_profile).into(img_barcode);
+                barcodeString = data.getBarCode();
+            }else if (data != null && data.getQrcode() != null && !data.getQrcode().isBlank() && !data.getQrcode().isBlank()&& data.getQrcodeImg() != null && !data.getQrcodeImg().isBlank()){
+                txt_addQrcode.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit_QR_Code));
+                txt_addQrcode.setCompoundDrawablesWithIntrinsicBounds(getDrawable(R.drawable.ic_sign_edit),null,null,null);
+                img_Qrcode.setVisibility(View.VISIBLE);
+                Picasso.get().load(App_preference.getSharedprefInstance().getBaseURL() + data.getQrcodeImg()).placeholder(R.drawable.ic_profile).error(R.drawable.ic_profile).into(img_Qrcode);
+                qrCodeString = data.getQrcode();
             }
-        }
-        if(data != null && data.getQrcode()!= null && !data.getQrcode().isEmpty()){
-            this.qrCodeString = data.getQrcode();
-            if (data.getQrcodeImg() != null && !data.getQrcodeImg().isEmpty()) {
-                Picasso.get().load(App_preference.getSharedprefInstance().getBaseURL() + data.getQrcodeImg()).placeholder(R.drawable.ic_profile).error(R.drawable.ic_profile).into(qrcode_image);
-                cl_qr_bar_image.setVisibility(View.VISIBLE);
-                qrcode_image_cl.setVisibility(View.VISIBLE);
-            }
+
+        } catch (Exception exception) {
+            exception.printStackTrace();
         }
     }
 }
