@@ -430,7 +430,7 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
                 !TextUtils.isEmpty(model.getQuotLabel()) &&
                 App_preference.getSharedprefInstance().getLoginRes().getCompPermission().get(0).getIsQuoteNoShowOnAppointment() != null
                 && App_preference.getSharedprefInstance().getLoginRes().getCompPermission().get(0).getIsQuoteNoShowOnAppointment().equals("0")) {
-            binding.quoteViews.setVisibility(View.VISIBLE);
+        /*    binding.quoteViews.setVisibility(View.VISIBLE);*/
             binding.tvRecentQuote.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.recent_quote) + " : ");
             binding.tvLabelQuotationId.setText(model.getQuotLabel());
             binding.llQuote.setVisibility(View.VISIBLE);
@@ -442,7 +442,7 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
             });
         } else {
             binding.llQuote.setVisibility(View.GONE);
-            binding.quoteViews.setVisibility(View.GONE);
+//            binding.quoteViews.setVisibility(View.GONE);
         }
 
 
