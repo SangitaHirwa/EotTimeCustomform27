@@ -2742,7 +2742,8 @@ public class AddEditInvoiceItemActivity2 extends
             }
             if(tax.getStatus().equals("0")) {
 
-                    if (updateItemDataModel != null && updateItemDataModel.getTax().get(0).getTaxId().equals(tax.getTaxId()) || updateAppintmentItemDataModel != null && String.valueOf(updateAppintmentItemDataModel.getTax().get(0).getTaxId()).equals(tax.getTaxId())) {
+                    if (updateItemDataModel != null && updateItemDataModel.getTax() != null && updateItemDataModel.getTax().size() > 0 && updateItemDataModel.getTax().get(0).getTaxId().equals(tax.getTaxId())
+                            || updateAppintmentItemDataModel != null && updateAppintmentItemDataModel.getTax() != null && updateAppintmentItemDataModel.getTax().size() > 0 && String.valueOf(updateAppintmentItemDataModel.getTax().get(0).getTaxId()).equals(tax.getTaxId())) {
                         radioGroup.addView(radioButton);
                     }
 
