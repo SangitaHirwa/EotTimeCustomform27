@@ -817,6 +817,7 @@
                     android:gravity="start|center"
                     android:text="Add barcode"
                     android:padding="2dp"
+                    android:paddingStart="10dp"
                     android:textColor="@color/colorPrimary"
                     android:textStyle="bold"
                     android:drawablePadding="5dp"
