@@ -178,7 +178,7 @@ public class AddJobEqu_Pc implements AddJobEqu_Pi {
 
 
     @Override
-    public void convertItemToequip(final AddEquReq addEquReq, String path, String barcode, String equipmentId) {
+    public void convertItemToequip(final AddEquReq addEquReq, String path, String barcode, String qrcode, String equipmentId) {
         if (AppUtility.isInternetConnected()) {
             RequestBody equnm = null;
             RequestBody brand = null;
@@ -210,6 +210,7 @@ public class AddJobEqu_Pc implements AddJobEqu_Pi {
             RequestBody extraField1 = null;
             RequestBody extraField2 = null;
             RequestBody barcodeBody = null;
+            RequestBody qrcodeBody = null;
             RequestBody equipmentIdBody = null;
 
             RequestBody servIntvalTypeBody = null;
@@ -251,6 +252,7 @@ public class AddJobEqu_Pc implements AddJobEqu_Pi {
                 extraField1 = RequestBody.create(addEquReq.getExtraField1(), MultipartBody.FORM);
                 extraField2 = RequestBody.create(addEquReq.getExtraField2(), MultipartBody.FORM);
                 barcodeBody = RequestBody.create(barcode, MultipartBody.FORM);
+                qrcodeBody = RequestBody.create(qrcode, MultipartBody.FORM);
                 equipmentIdBody = RequestBody.create(equipmentId, MultipartBody.FORM);
                 servIntvalTypeBody = RequestBody.create(addEquReq.getServIntvalType(), MultipartBody.FORM);
                 servIntvalValueBody = RequestBody.create(addEquReq.getServIntvalValue(), MultipartBody.FORM);
@@ -292,7 +294,7 @@ public class AddJobEqu_Pc implements AddJobEqu_Pi {
                     , ctry, adr, city, zip, ecId, type,
                     egId, jobId, cltId, contrId,
                     itemId, supplier, rate, isPart, siteId, invId, extraField1,
-                    extraField2, barcodeBody, equipmentIdBody,servIntvalTypeBody,
+                    extraField2, barcodeBody, qrcodeBody, equipmentIdBody,servIntvalTypeBody,
                     servIntvalValueBody,rplacedEquId,isEquReplaced,isCnvtItemPartsBody,installedDateBody,supplierIdBody)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -492,7 +494,7 @@ public class AddJobEqu_Pc implements AddJobEqu_Pi {
     }
 
     @Override
-    public void addNewEquipment(AddEquReq addEquReq, String path, String barcode, String installedDate, String equipmentId) {
+    public void addNewEquipment(AddEquReq addEquReq, String path, String barcode, String qrcode,String installedDate, String equipmentId) {
         if (AppUtility.isInternetConnected()) {
             RequestBody equnm = null;
             RequestBody brand = null;
@@ -520,6 +522,7 @@ public class AddJobEqu_Pc implements AddJobEqu_Pi {
             RequestBody extraField1 = null;
             RequestBody extraField2 = null;
             RequestBody barcodeBody = null;
+            RequestBody qrcodeBody = null;
             RequestBody installedDateBody = null;
             RequestBody equipmentIdBody = null;
             RequestBody servIntvalTypeBody = null;
@@ -556,6 +559,7 @@ public class AddJobEqu_Pc implements AddJobEqu_Pi {
                 extraField1 = RequestBody.create(addEquReq.getExtraField1(), MultipartBody.FORM);
                 extraField2 = RequestBody.create(addEquReq.getExtraField2(), MultipartBody.FORM);
                 barcodeBody = RequestBody.create(barcode, MultipartBody.FORM);
+                qrcodeBody = RequestBody.create(qrcode, MultipartBody.FORM);
                 installedDateBody = RequestBody.create(installedDate, MultipartBody.FORM);
                 equipmentIdBody = RequestBody.create(equipmentId, MultipartBody.FORM);
                 servIntvalTypeBody = RequestBody.create(addEquReq.getServIntvalType(), MultipartBody.FORM);
@@ -592,7 +596,7 @@ public class AddJobEqu_Pc implements AddJobEqu_Pi {
                     status, notes, isBarcodeGenerate, state
                     , ctry, adr, city, zip, ecId, type,
                     egId, jobId, cltId, contrId, isPart, siteId,
-                    extraField1, extraField2, barcodeBody, installedDateBody,
+                    extraField1, extraField2, barcodeBody, qrcodeBody,installedDateBody,
                     equipmentIdBody,servIntvalTypeBody,servIntvalValueBody,supplierId,supplier)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())

@@ -1020,7 +1020,16 @@ public class AppConstant {
     public static String jobcard = "jobcard";
     public static String leave_date_error = "leave_date_error";
     public static String invalid_extension = "invalid_extension";
-
+    public static String add_barcode = "add_barcode";
+    public static String add_QR_Code = "add_QR_Code";
+    public static String edit_Barcode = "edit_Barcode";
+    public static String edit_QR_Code = "edit_QR_Code";
+    public static String or = "or";
+    public static String auto_Generate_QR_code = "auto_Generate_QR_code";
+    public static String barcode = "barcode";
+    public static String qrcode = "qrcode";
+    public static String do_you_have_a_Barcode_please_insert_it_here_OR_Scan_the_Barcode = "do_you_have_a_Barcode_please_insert_it_here_OR_Scan_the_Barcode";
+    public static String do_you_have_a_Qrcode_please_insert_it_here_OR_Scan_the_QRcode = "do_you_have_a_Qrcode_please_insert_it_here_OR_Scan_the_QRcode";
 
 
 

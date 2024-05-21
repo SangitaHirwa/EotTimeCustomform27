@@ -1,0 +1,20 @@
+{
+  "version": 3,
+  "artifactType": {
+    "type": "APK",
+    "kind": "Directory"
+  },
+  "applicationId": "com.eot_app",
+  "variantName": "prodRelease",
+  "elements": [
+    {
+      "type": "SINGLE",
+      "filters": [],
+      "attributes": [],
+      "versionCode": 114,
+      "versionName": "2.94",
+      "outputFile": "app-prod-release.apk"
+    }
+  ],
+  "elementType": "File"
+}

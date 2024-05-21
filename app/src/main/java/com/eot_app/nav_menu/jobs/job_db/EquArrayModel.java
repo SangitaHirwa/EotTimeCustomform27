@@ -77,6 +77,10 @@ public class EquArrayModel implements Parcelable {
     private String zip;
     private String cltId;
     private String siteId;
+    private String barcodeImg;
+    private String qrcode;
+    private String qrcodeImg;
+
 
     public String getSupId() {
         return supId;
@@ -231,6 +235,9 @@ public class EquArrayModel implements Parcelable {
         zip = in.readString();
         cltId = in.readString();
         siteId = in.readString();
+        qrcode = in.readString();
+        qrcodeImg = in.readString();
+        barcodeImg = in.readString();
     }
 
     public static Creator<EquArrayModel> getCREATOR() {
@@ -347,6 +354,9 @@ public class EquArrayModel implements Parcelable {
         dest.writeString(zip);
         dest.writeString(cltId);
         dest.writeString(siteId);
+        dest.writeString(qrcode);
+        dest.writeString(qrcodeImg);
+        dest.writeString(barcodeImg);
     }
 
     @Override
@@ -386,12 +396,15 @@ public class EquArrayModel implements Parcelable {
                 ", installedDate='" + installedDate + '\'' +
                 ", parentName='" + parentName + '\'' +
                 ", usrManualDoc='" + usrManualDoc + '\'' +
-                ", usrManualDoc='" + adr + '\'' +
-                ", usrManualDoc='" + city + '\'' +
-                ", usrManualDoc='" + ctry + '\'' +
-                ", usrManualDoc='" + state + '\'' +
-                ", usrManualDoc='" + zip + '\'' +
-                ", usrManualDoc='" + siteId + '\'' +
+                ", adr='" + adr + '\'' +
+                ", city='" + city + '\'' +
+                ", ctry='" + ctry + '\'' +
+                ", state='" + state + '\'' +
+                ", zip='" + zip + '\'' +
+                ", siteId='" + siteId + '\'' +
+                ", qrcode='" + qrcode + '\'' +
+                ", qrcodeImg='" + qrcodeImg + '\'' +
+                ", barcodeImg='" + barcodeImg + '\'' +
 
                 '}';
     }
@@ -714,5 +727,29 @@ public class EquArrayModel implements Parcelable {
 
     public void setSiteId(String siteId) {
         this.siteId = siteId;
+    }
+
+    public String getBarcodeImg() {
+        return barcodeImg;
+    }
+
+    public void setBarcodeImg(String barcodeImg) {
+        this.barcodeImg = barcodeImg;
+    }
+
+    public String getQrcode() {
+        return qrcode;
+    }
+
+    public void setQrcode(String qrcode) {
+        this.qrcode = qrcode;
+    }
+
+    public String getQrcodeImg() {
+        return qrcodeImg;
+    }
+
+    public void setQrcodeImg(String qrcodeImg) {
+        this.qrcodeImg = qrcodeImg;
     }
 }

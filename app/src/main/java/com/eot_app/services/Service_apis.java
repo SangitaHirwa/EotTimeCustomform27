@@ -191,6 +191,7 @@ public interface Service_apis {
 
     String getEquipmentStatus = "AssetsController/getEquipmentStatus";
     String generateBarcodeWithGiveCode = "AssetsController/generateBarcodeUsingGivenCode";
+    String generateQRcode = "AssetsController/generateQRcode";
 
 
     /***Equipment Module**/
@@ -242,6 +243,12 @@ public interface Service_apis {
     String getLinkItem ="JobController/getItemListForLinkEqu";
     String linkItemToEqup ="JobController/linkJobItemToEqu";
     String pauseResumeRecur = "RecurController/pauseResumeRecur";
+
+    /** QR code and Barcode generate api for add equipment new flow**/
+    String autoGenerateQrcode = "AssetsController/autoGenerateQrcode";
+    String autoGenerateBarcode = "AssetsController/autoGenerateBarcode";
+    String updateQRCode = "AssetsController/generateQRcode";
+    String updateBarcode = "AssetsController/generateBarcodeUsingGivenCode";
 
     //no token required & header
     @POST
@@ -755,6 +762,7 @@ public interface Service_apis {
                                         @Part("extraField1") RequestBody extraField1,
                                         @Part("extraField2") RequestBody extraField2,
                                         @Part("barCode") RequestBody barcode,
+                                        @Part("qrcode") RequestBody qrcode,
                                         @Part("installedDate") RequestBody installedDate,
                                         @Part("parentId") RequestBody parentId,
                                         @Part("servIntvalType") RequestBody servIntvalType,
@@ -797,6 +805,7 @@ public interface Service_apis {
                                                   @Part("extraField1") RequestBody extraField1,
                                                   @Part("extraField2") RequestBody extraField2,
                                                   @Part("barCode") RequestBody barcode,
+                                                  @Part("qrcode") RequestBody qrcode,
                                                   @Part("parentId") RequestBody parentId,
                                                   @Part("servIntvalType") RequestBody servIntvalType,
                                                   @Part("servIntvalValue") RequestBody servIntvalValue,

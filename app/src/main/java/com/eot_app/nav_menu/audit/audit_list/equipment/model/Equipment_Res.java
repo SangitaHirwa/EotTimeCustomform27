@@ -67,6 +67,9 @@ public class Equipment_Res implements Parcelable {
     private String cltId;
     private String adr;
     private String siteId;
+    private String barcodeImg;
+    private String qrcode;
+    private String qrcodeImg;
 
     public String getSupId() {
         return supId;
@@ -505,5 +508,29 @@ public class Equipment_Res implements Parcelable {
 
     public void setSiteId(String siteId) {
         this.siteId = siteId;
+    }
+
+    public String getBarcodeImg() {
+        return barcodeImg;
+    }
+
+    public void setBarcodeImg(String barcodeImg) {
+        this.barcodeImg = barcodeImg;
+    }
+
+    public String getQrcode() {
+        return qrcode;
+    }
+
+    public void setQrcode(String qrcode) {
+        this.qrcode = qrcode;
+    }
+
+    public String getQrcodeImg() {
+        return qrcodeImg;
+    }
+
+    public void setQrcodeImg(String qrcodeImg) {
+        this.qrcodeImg = qrcodeImg;
     }
 }

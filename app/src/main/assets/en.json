@@ -900,7 +900,8 @@
     "not_delete_item_req":"Requested item not deleted.",
     "item_linked": "Item linked successfully.",
     "item_not_linked": "Unable to link item, please try again.",
-    "recur_updated": "Job recurrence updated successfully"
+    "recur_updated": "Job recurrence updated successfully",
+    "qrcode_already_exist": "This Qr is already allocated to another equipment, please choose another one."
   },
   "mobileMsgsModel": {
     "accept": "Accept",
@@ -1916,7 +1917,17 @@
     "searching": "Searching",
     "scanner_error":"Your current device is not compatible with this feature. You'll need a higher version of Android to run the scanner.",
     "quote": "Quote",
-    "jobcard": "Jobcard"
+    "jobcard": "Jobcard",
+    "add_barcode": "Add Barcode",
+    "add_QR_Code": "Add QR Code",
+    "edit_Barcode": "Edit Barcode",
+    "edit_QR_Code": "Edit QR Code",
+    "or": "OR",
+    "auto_Generate_QR_code": "Auto Generate QR code",
+    "barcode": "Barcode",
+    "qrcode": "QRcode",
+    "do_you_have_a_Barcode_please_insert_it_here_OR_Scan_the_Barcode": "Do you have a Barcode, please insert it here OR Scan the Barcode",
+    "do_you_have_a_Qrcode_please_insert_it_here_OR_Scan_the_QRcode": "Do you have a QR code, please insert it here OR Scan the QR code"
   }
 }
 

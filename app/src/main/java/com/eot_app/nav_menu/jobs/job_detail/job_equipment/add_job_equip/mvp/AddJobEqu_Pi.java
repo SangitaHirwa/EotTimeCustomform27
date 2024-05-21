@@ -20,9 +20,9 @@ public interface AddJobEqu_Pi {
 
     void getBrandList();
 
-    void addNewEquipment(AddEquReq addEquReq, String path,String barcode,String installedDate,String equipmentId);
+    void addNewEquipment(AddEquReq addEquReq, String path,String barcode,String qrcode,String installedDate,String equipmentId);
 
-    void convertItemToequip(AddEquReq addEquReq, String path,String barcode,String equipmentId);
+    void convertItemToequip(AddEquReq addEquReq, String path,String barcode, String qrcode,String equipmentId);
 
     void getClientSiteList(String clientId);
 
