@@ -64,9 +64,11 @@ import com.eot_app.nav_menu.jobs.job_detail.job_equipment.add_job_equip.model_pk
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.add_job_equip.model_pkg.GetCatgData;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.add_job_equip.model_pkg.GetSupplierData;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.add_job_equip.model_pkg.GetgrpData;
+import com.eot_app.nav_menu.jobs.job_detail.job_equipment.add_job_equip.mvp.AddEdit_QRCode_BarCode_Dialog;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.add_job_equip.mvp.AddJobEqu_Pc;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.add_job_equip.mvp.AddJobEqu_Pi;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.add_job_equip.mvp.AddJobEqu_View;
+import com.eot_app.nav_menu.jobs.job_detail.job_equipment.add_job_equip.mvp.QRCOde_Barcode_Res_Model;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.job_equ_remrk.JobEquPartRemarkRemarkActivity;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.job_equ_remrk.JobEquRemarkRemarkActivity;
 import com.eot_app.utility.AppConstant;
@@ -97,7 +99,7 @@ import static com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.AddEditInv
 
 public class UpdateJobEquipMentActivity extends UploadDocumentActivity implements TextWatcher, AddJobEqu_View, View.OnClickListener
         , RadioGroup.OnCheckedChangeListener, CheckBox.OnCheckedChangeListener, ImageCropFragment.MyDialogInterface
-        , Spinner.OnItemSelectedListener {
+        , Spinner.OnItemSelectedListener, AddEdit_QRCode_BarCode_Dialog.QR_Bar_DataPass {
 
     private static final int BAR_CODE_REQUEST = 122;
     private final int EQUIPMENT_UPDATE_CODE = 141;
@@ -145,8 +147,11 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
     private Job job;
     private InvoiceItemDataModel updateItemDataModel;
     private List<GetSupplierData> supplierDataList;
-    String barcodeString;
-    String qrCodeString;
+    String barcodeString ="";
+    String qrCodeString ="";
+    TextView txt_addBarcode,txt_addQrcode;
+    ImageView barcode_image,qrcode_image,img_barcode,img_Qrcode;
+    AddEdit_QRCode_BarCode_Dialog addEditQrCodeBarCodeDialog;
     /**
      * select date from picker & concanate current time
      */
@@ -450,6 +455,17 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
         linearLayout_status = findViewById(R.id.linearLayout_status);
         image_with_tag = findViewById(R.id.image_with_tag);
         image_txt = findViewById(R.id.image_txt);
+
+        /**Add barcode and QRcode**/
+        txt_addBarcode = findViewById(R.id.txt_addBarcode);
+        img_barcode = findViewById(R.id.img_barcode);
+        txt_addBarcode.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_barcode));
+        txt_addQrcode = findViewById(R.id.txt_addQrcode);
+        img_Qrcode = findViewById(R.id.img_Qrcode);
+        txt_addQrcode.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_QR_Code));
+
+        txt_addBarcode.setOnClickListener(this);
+        txt_addQrcode.setOnClickListener(this);
 
         remove_txt = findViewById(R.id.remove_txt);
         remove_txt.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.remove_the_image_tag));
@@ -1090,7 +1106,36 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
             case R.id.date_installed_layout:
                 SelectStartDate("installed");
                 break;
-
+            case R.id.txt_addBarcode:
+                if(barcode_image== null) {
+                    addEditQrCodeBarCodeDialog = new AddEdit_QRCode_BarCode_Dialog(this);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("barCode",barcodeString);
+                    addEditQrCodeBarCodeDialog.setArguments(bundle);
+                    addEditQrCodeBarCodeDialog.show(getSupportFragmentManager(), "");
+                }else{
+                    addEditQrCodeBarCodeDialog = new AddEdit_QRCode_BarCode_Dialog(this);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("barCode",barcodeString);
+                    addEditQrCodeBarCodeDialog.setArguments(bundle);
+                    addEditQrCodeBarCodeDialog.show(getSupportFragmentManager(), "");
+                }
+                break;
+            case R.id.txt_addQrcode:
+                if(qrcode_image == null) {
+                    addEditQrCodeBarCodeDialog = new AddEdit_QRCode_BarCode_Dialog(this);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("qrcode",qrCodeString);
+                    addEditQrCodeBarCodeDialog.setArguments(bundle);
+                    addEditQrCodeBarCodeDialog.show(getSupportFragmentManager(), "");
+                }else{
+                    addEditQrCodeBarCodeDialog = new AddEdit_QRCode_BarCode_Dialog(this);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("qrcode",qrCodeString);
+                    addEditQrCodeBarCodeDialog.setArguments(bundle);
+                    addEditQrCodeBarCodeDialog.show(getSupportFragmentManager(), "");
+                }
+                break;
         }
     }
 
@@ -1136,7 +1181,7 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
                                     edt_equ_service_interval.getText().toString(), "1",
                                     equipmentId,
                                     isCnvtItemParts, binding.installedDateLable.getText().toString().trim(),supplierId), path,
-                            barcodeString, parentId);
+                            barcodeString,qrCodeString, parentId);
                 } else if (audit != null) {
                     addJobEqu_pi.addNewEquipment(
                             new AddEquReq(type, egId, ecId, edt_equ_zip.getText().toString().trim(),
@@ -1202,7 +1247,7 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
                                 edt_equ_service_interval.getText().toString(), "1",
                                 equipmentId,
                                 isCnvtItemParts, binding.installedDateLable.getText().toString().trim(),supplierId), path,
-                        barcodeString, parentId);
+                        barcodeString,qrCodeString, parentId);
             }
         }
     }
@@ -1836,4 +1881,25 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
         }
     }
 
+    @Override
+    public void onDataPass(QRCOde_Barcode_Res_Model data) {
+        try {
+            if (data != null && data.getBarCode() != null && !data.getBarCode().isBlank() && data.getBarcodeImg() != null && !data.getBarcodeImg().isBlank()){
+                txt_addBarcode.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit_Barcode));
+                txt_addBarcode.setCompoundDrawablesWithIntrinsicBounds(getDrawable(R.drawable.ic_sign_edit),null,null,null);
+                img_barcode.setVisibility(View.VISIBLE);
+                Picasso.get().load(App_preference.getSharedprefInstance().getBaseURL() + data.getBarcodeImg()).placeholder(R.drawable.ic_profile).error(R.drawable.ic_profile).into(img_barcode);
+                barcodeString = data.getBarCode();
+            }else if (data != null && data.getQrcode() != null && !data.getQrcode().isBlank() && !data.getQrcode().isBlank()&& data.getQrcodeImg() != null && !data.getQrcodeImg().isBlank()){
+                txt_addQrcode.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit_QR_Code));
+                txt_addQrcode.setCompoundDrawablesWithIntrinsicBounds(getDrawable(R.drawable.ic_sign_edit),null,null,null);
+                img_Qrcode.setVisibility(View.VISIBLE);
+                Picasso.get().load(App_preference.getSharedprefInstance().getBaseURL() + data.getQrcodeImg()).placeholder(R.drawable.ic_profile).error(R.drawable.ic_profile).into(img_Qrcode);
+                qrCodeString = data.getQrcode();
+            }
+
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+    }
 }

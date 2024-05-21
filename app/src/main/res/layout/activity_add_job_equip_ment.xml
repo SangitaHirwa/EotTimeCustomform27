@@ -575,7 +575,7 @@
                         <RadioButton
                             android:id="@+id/radio_owner"
                             style="@style/style_thrid"
-                            android:layout_width="68dp"
+                            android:layout_width="70dp"
                             android:layout_height="match_parent"
                             android:checked="true"
                             android:text="@string/owner" />
@@ -599,7 +599,9 @@
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:padding="10dp"
+                        android:minHeight="50dp"
+                        android:layout_marginTop="5dp"
+                        android:padding="1dp"
                         >
 
                         <TextView
@@ -611,9 +613,9 @@
                             android:text="Add barcode"
                             android:padding="2dp"
                             android:textColor="@color/colorPrimary"
-                            android:textSize="15dp"
                             android:textStyle="bold"
-                            style="@style/style_sec_sec"
+                            android:drawablePadding="5dp"
+                            style="@style/style_thrid"
                             app:layout_constraintEnd_toStartOf="@+id/guideline1"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
@@ -642,13 +644,11 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:drawableStart="@drawable/add_barcode_qr"
-                            android:text="Add QR code"
                             android:padding="2dp"
-                            android:gravity="start|center"
+                            android:gravity="start|center"                            android:drawablePadding="5dp"
                             android:textColor="@color/colorPrimary"
-                            android:textSize="15dp"
                             android:textStyle="bold"
-                            style="@style/style_sec_sec"
+                            style="@style/style_thrid"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toEndOf="@id/guideline1"
                             app:layout_constraintTop_toTopOf="parent"

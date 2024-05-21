@@ -805,6 +805,7 @@ public interface Service_apis {
                                                   @Part("extraField1") RequestBody extraField1,
                                                   @Part("extraField2") RequestBody extraField2,
                                                   @Part("barCode") RequestBody barcode,
+                                                  @Part("qrcode") RequestBody qrcode,
                                                   @Part("parentId") RequestBody parentId,
                                                   @Part("servIntvalType") RequestBody servIntvalType,
                                                   @Part("servIntvalValue") RequestBody servIntvalValue,

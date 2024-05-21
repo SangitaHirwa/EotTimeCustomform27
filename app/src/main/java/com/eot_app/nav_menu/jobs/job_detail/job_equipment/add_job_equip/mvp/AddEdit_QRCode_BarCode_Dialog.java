@@ -66,7 +66,8 @@ public class AddEdit_QRCode_BarCode_Dialog  extends DialogFragment implements Vi
     boolean isFristTime = true;
 
     public AddEdit_QRCode_BarCode_Dialog(QR_Bar_DataPass qrBarDataPass) {
-        this.qrBarDataPass = qrBarDataPass;
+            this.qrBarDataPass = qrBarDataPass;
+
     }
 
     @Override
@@ -283,7 +284,6 @@ public class AddEdit_QRCode_BarCode_Dialog  extends DialogFragment implements Vi
                                qrBarPi.getQRCode("");
                        }
                    }else {
-                       progressBar_auto_gen_bar_qr.setVisibility(View.GONE);
                        radio_barcode_qr_generate.setChecked(false);
                    }
                     break;
@@ -299,22 +299,18 @@ public class AddEdit_QRCode_BarCode_Dialog  extends DialogFragment implements Vi
                 auto_gen_barcode_qr_image.setVisibility(View.VISIBLE);
                 if (bar_res_Model.getBarcodeImg() != null && !bar_res_Model.getBarcodeImg().isEmpty() && radio_barcode_qr_generate.isChecked()) {
                     Picasso.get().load(App_preference.getSharedprefInstance().getBaseURL() + bar_res_Model.getBarcodeImg()).placeholder(R.drawable.ic_profile).error(R.drawable.ic_profile).into(auto_gen_barcode_qr_image);
-                    progressBar_auto_gen_bar_qr.setVisibility(View.GONE);
-                } else {
-                    progressBar_auto_gen_bar_qr.setVisibility(View.GONE);
                 }
             }else{
                 if(isComeFromDetail && isbarcodeQrEdtTxtChange){
                     btn_save.performClick();
-                    progressBar_auto_gen_bar_qr.setVisibility(View.GONE);
                     isbarcodeQrEdtTxtChange = false;
                 }else {
                     isbarcodeQrEdtTxtChange = false;
-                    progressBar_auto_gen_bar_qr.setVisibility(View.GONE);
                     qrBarDataPass.onDataPass(res_Model);
                     dismiss();
                 }
             }
+            progressBar_auto_gen_bar_qr.setVisibility(View.GONE);
         }
     }
 
@@ -327,9 +323,7 @@ public class AddEdit_QRCode_BarCode_Dialog  extends DialogFragment implements Vi
                 auto_gen_barcode_qr_image.setVisibility(View.VISIBLE);
                 if (qr_res_Model.getQrcodeImg() != null && !qr_res_Model.getQrcodeImg().isEmpty() && radio_barcode_qr_generate.isChecked()) {
                     Picasso.get().load(App_preference.getSharedprefInstance().getBaseURL() + qr_res_Model.getQrcodeImg()).placeholder(R.drawable.ic_profile).error(R.drawable.ic_profile).into(auto_gen_barcode_qr_image);
-                    progressBar_auto_gen_bar_qr.setVisibility(View.GONE);
-                } else {
-                    progressBar_auto_gen_bar_qr.setVisibility(View.GONE);
+
                 }
             }else {
                 if(isComeFromDetail && isbarcodeQrEdtTxtChange){
@@ -343,6 +337,7 @@ public class AddEdit_QRCode_BarCode_Dialog  extends DialogFragment implements Vi
                     dismiss();
                 }
             }
+            progressBar_auto_gen_bar_qr.setVisibility(View.GONE);
         }
     }
 

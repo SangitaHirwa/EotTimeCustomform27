@@ -594,7 +594,7 @@
                 android:background="@color/border_font_color" />
 
 
-            <LinearLayout
+           <!-- <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:orientation="horizontal"
@@ -628,7 +628,7 @@
 
 
             </LinearLayout>
-
+-->
 
             <View
                 android:layout_width="match_parent"
@@ -806,7 +806,7 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="10dp"
+                android:padding="2dp"
                 >
 
                 <TextView
@@ -818,9 +818,9 @@
                     android:text="Add barcode"
                     android:padding="2dp"
                     android:textColor="@color/colorPrimary"
-                    android:textSize="15dp"
                     android:textStyle="bold"
-                    style="@style/style_sec_sec"
+                    android:drawablePadding="5dp"
+                    style="@style/style_thrid"
                     app:layout_constraintEnd_toStartOf="@+id/guideline1"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -853,9 +853,9 @@
                     android:padding="2dp"
                     android:gravity="start|center"
                     android:textColor="@color/colorPrimary"
-                    android:textSize="15dp"
                     android:textStyle="bold"
-                    style="@style/style_sec_sec"
+                    style="@style/style_thrid"
+                    android:drawablePadding="5dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/guideline1"
                     app:layout_constraintTop_toTopOf="parent"
@@ -874,7 +874,7 @@
                     app:layout_constraintStart_toStartOf="@id/txt_addQrcode"
                     app:layout_constraintTop_toBottomOf="@id/txt_addQrcode" />
 </androidx.constraintlayout.widget.ConstraintLayout>
-            <androidx.appcompat.widget.AppCompatButton
+          <!--  <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/tv_upload_barcode"
                 style="@style/style_sec"
                 android:layout_width="wrap_content"
@@ -899,7 +899,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:layout_marginBottom="10dp"
-                android:padding="5dp" />
+                android:padding="5dp" />-->
 
             <!--part for Equipment-->
             <androidx.cardview.widget.CardView
