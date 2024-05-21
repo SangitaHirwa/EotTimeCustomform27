@@ -1,19 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-      >
+    <androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_dialog_barqrcode"
+        >
     <androidx.cardview.widget.CardView
-        android:layout_width="300dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="visible"
-        android:elevation="2dp"
-        app:cardCornerRadius="15dp"
         app:cardElevation="5dp"
+        app:cardCornerRadius="12dp"
         app:cardPreventCornerOverlap="false"
         android:paddingHorizontal="20dp"
         android:layout_gravity="center"
-        android:background="@color/custom_search_bg">
+        android:background="@color/custom_search_bg"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        >
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/progressBar_auto_gen_bar_qr"
             android:layout_width="match_parent"
@@ -41,39 +49,45 @@
         android:layout_height="match_parent"
         android:paddingBottom="20dp"
         >
-   <androidx.constraintlayout.widget.ConstraintLayout
-       android:layout_width="match_parent"
-       android:layout_height="40dp"
-       android:id="@+id/hading_txt_cl"
-       android:background="#F6F2F3"
-       android:padding="5dp"
-       app:layout_constraintTop_toTopOf="parent"
-       android:paddingHorizontal="20dp"
-       >
-       <TextView
-           android:id="@+id/txt_add_edit_barcode_qr"
-           android:layout_width="match_parent"
-           android:layout_height="wrap_content"
-           style="@style/text_style"
-           android:text=""
-           android:textStyle="bold"
-           android:layout_marginStart="20dp"
-           app:layout_constraintTop_toTopOf="parent"
-           app:layout_constraintBottom_toBottomOf="parent"
-           />
-   </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/hading_txt_cl"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:background="#F6F2F3"
+            android:padding="5dp"
+            android:paddingHorizontal="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/txt_add_edit_barcode_qr"
+                style="@style/text_style"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:text=""
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/insert_barcode_qr_cl"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:paddingHorizontal="20dp"
         app:layout_constraintTop_toBottomOf="@+id/hading_txt_cl"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         >
         <RadioButton
             android:id="@+id/radio_barcode_qr_insert"
             style="@style/text_style"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:checked="true"
@@ -84,6 +98,7 @@
             android:layout_marginTop="10dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             />
 
         <EditText
@@ -137,11 +152,14 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/generate_qr_barcode_cl"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:paddingHorizontal="20dp"
         android:layout_marginTop="5dp"
-        app:layout_constraintTop_toBottomOf="@+id/insert_barcode_qr_cl">
+        app:layout_constraintTop_toBottomOf="@+id/insert_barcode_qr_cl"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        >
         <RadioButton
             android:id="@+id/radio_barcode_qr_generate"
             style="@style/text_style"
@@ -156,17 +174,19 @@
             android:layout_marginBottom="2dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             />
+
         <ImageView
             android:id="@+id/auto_gen_barcode_qr_image"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:minHeight="70dp"
             android:visibility="gone"
-            app:layout_constraintTop_toBottomOf="@+id/radio_barcode_qr_generate"
+            app:layout_constraintEnd_toEndOf="@+id/radio_barcode_qr_generate"
             app:layout_constraintStart_toStartOf="@+id/radio_barcode_qr_generate"
-           android:layout_marginStart="20dp"
-
+            app:layout_constraintTop_toBottomOf="@+id/radio_barcode_qr_generate"
+            android:layout_marginStart="20dp"
             />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -181,10 +201,12 @@
             />
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:paddingHorizontal="20dp"
             app:layout_constraintTop_toBottomOf="@+id/view_auto"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             >
             <Button
                 android:id="@+id/btn_save"
@@ -217,4 +239,4 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
-</layout>
+    </androidx.constraintlayout.widget.ConstraintLayout>

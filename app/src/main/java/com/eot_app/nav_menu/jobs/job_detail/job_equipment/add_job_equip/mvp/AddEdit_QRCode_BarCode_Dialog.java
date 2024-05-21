@@ -73,7 +73,7 @@ public class AddEdit_QRCode_BarCode_Dialog  extends DialogFragment implements Vi
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setStyle(DialogFragment.STYLE_NORMAL, androidx.appcompat.R.style.Theme_AppCompat_Light_Dialog_Alert);
+        setStyle(DialogFragment.STYLE_NO_FRAME, R.style.CustomDialog);
         uploadBarcodeViewModel = new ViewModelProvider(this).get(UploadBarcodeViewModel.class);
         uploadBarcodeViewModel.getUploadMessage().observe(this, s -> {
             if (!TextUtils.isEmpty(s)) {
