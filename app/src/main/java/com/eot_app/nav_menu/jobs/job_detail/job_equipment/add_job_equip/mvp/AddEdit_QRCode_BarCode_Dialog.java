@@ -316,8 +316,9 @@ public class AddEdit_QRCode_BarCode_Dialog  extends DialogFragment implements Vi
             this.res_Model = bar_res_Model;
             if(!isbarcodeQrEdtTxtChange) {
                 barCode = bar_res_Model.getBarCode();
-                auto_gen_barcode_qr_image.setVisibility(View.VISIBLE);
+
                 if (bar_res_Model.getBarcodeImg() != null && !bar_res_Model.getBarcodeImg().isEmpty() && radio_barcode_qr_generate.isChecked()) {
+                    auto_gen_barcode_qr_image.setVisibility(View.VISIBLE);
                     Picasso.get().load(App_preference.getSharedprefInstance().getBaseURL() + bar_res_Model.getBarcodeImg()).placeholder(R.drawable.ic_profile).error(R.drawable.ic_profile).into(auto_gen_barcode_qr_image);
                 }
             }else{
@@ -340,10 +341,10 @@ public class AddEdit_QRCode_BarCode_Dialog  extends DialogFragment implements Vi
             this.res_Model = qr_res_Model;
             if(!isbarcodeQrEdtTxtChange) {
                 qrcode = qr_res_Model.getQrcode();
-                auto_gen_barcode_qr_image.setVisibility(View.VISIBLE);
-                if (qr_res_Model.getQrcodeImg() != null && !qr_res_Model.getQrcodeImg().isEmpty() && radio_barcode_qr_generate.isChecked()) {
-                    Picasso.get().load(App_preference.getSharedprefInstance().getBaseURL() + qr_res_Model.getQrcodeImg()).placeholder(R.drawable.ic_profile).error(R.drawable.ic_profile).into(auto_gen_barcode_qr_image);
 
+                if (qr_res_Model.getQrcodeImg() != null && !qr_res_Model.getQrcodeImg().isEmpty() && radio_barcode_qr_generate.isChecked()) {
+                    auto_gen_barcode_qr_image.setVisibility(View.VISIBLE);
+                    Picasso.get().load(App_preference.getSharedprefInstance().getBaseURL() + qr_res_Model.getQrcodeImg()).placeholder(R.drawable.ic_profile).error(R.drawable.ic_profile).into(auto_gen_barcode_qr_image);
                 }
             }else {
                 if(isComeFromDetail && isbarcodeQrEdtTxtChange){
