@@ -65,6 +65,7 @@ public class AddEdit_QRCode_BarCode_Dialog  extends DialogFragment implements Vi
     String equipmentId;
     boolean isFristTime = true;
 
+
     public AddEdit_QRCode_BarCode_Dialog(QR_Bar_DataPass qrBarDataPass) {
             this.qrBarDataPass = qrBarDataPass;
 
@@ -155,6 +156,7 @@ public class AddEdit_QRCode_BarCode_Dialog  extends DialogFragment implements Vi
         radio_barcode_qr_generate.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.auto_Generate_QR_code));
         if (qrcode.isEmpty()){
             Log.e("qrcode", "Add");
+            btn_save.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.save_btn));
             edt_barcode_qr.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.qrcode));
             txt_add_edit_barcode_qr.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_QR_Code));
         }else {
@@ -173,26 +175,40 @@ public class AddEdit_QRCode_BarCode_Dialog  extends DialogFragment implements Vi
             case R.id.btn_save:
                     if(res_Model != null ){
                         if(isComeFromDetail){
-                            AppUtility.alertDialog2(getContext(), LanguageController.getInstance().getMobileMsgByKey(AppConstant.equipment_btn), "If you upload it, Your old data will be deleted.", LanguageController.getInstance().getMobileMsgByKey(AppConstant.expense_upload), AppConstant.cancel, new Callback_AlertDialog() {
-                                @Override
-                                public void onPossitiveCall() {
-                                    if (uploadBarcodeViewModel != null)
-                                        if (!TextUtils.isEmpty(equipmentId)) {
-                                            if (AppUtility.isInternetConnected()) {
-                                                if (barCode != null && !barCode.isEmpty()) {
-                                                    uploadBarcodeViewModel.uploadBarcode(equipmentId, barCode);
-                                                } else if (qrcode != null && !qrcode.isEmpty()) {
-                                                    uploadBarcodeViewModel.uploadQrcode(equipmentId, qrcode);
+                            if(txt_add_edit_barcode_qr.getText().toString().equals(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_QR_Code)) ||
+                                    txt_add_edit_barcode_qr.getText().toString().equals(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_barcode))) {
+                                if (!TextUtils.isEmpty(equipmentId)) {
+                                    if (AppUtility.isInternetConnected()) {
+                                        if (barCode != null && !barCode.isEmpty()) {
+                                            uploadBarcodeViewModel.uploadBarcode(equipmentId, barCode);
+                                        } else if (qrcode != null && !qrcode.isEmpty()) {
+                                            uploadBarcodeViewModel.uploadQrcode(equipmentId, qrcode);
+                                        }
+                                    }
+                                }
+                            }else {
+                                AppUtility.alertDialog2(getContext(), LanguageController.getInstance().getMobileMsgByKey(AppConstant.equipment_btn), "If you upload it, Your old data will be deleted.", LanguageController.getInstance().getMobileMsgByKey(AppConstant.expense_upload), AppConstant.cancel, new Callback_AlertDialog() {
+                                    @Override
+                                    public void onPossitiveCall() {
+                                        if (uploadBarcodeViewModel != null) {
+                                            if (!TextUtils.isEmpty(equipmentId)) {
+                                                if (AppUtility.isInternetConnected()) {
+                                                    if (barCode != null && !barCode.isEmpty()) {
+                                                        uploadBarcodeViewModel.uploadBarcode(equipmentId, barCode);
+                                                    } else if (qrcode != null && !qrcode.isEmpty()) {
+                                                        uploadBarcodeViewModel.uploadQrcode(equipmentId, qrcode);
+                                                    }
                                                 }
                                             }
                                         }
-                                }
+                                    }
 
-                                @Override
-                                public void onNegativeCall() {
-                                }
-                            });
+                                    @Override
+                                    public void onNegativeCall() {
+                                    }
+                                });
 
+                            }
 //                            uploadBarcodeViewModel.uploadBarcode(equipmentId,barCode);
                         }else {
                             qrBarDataPass.onDataPass(res_Model);
@@ -205,12 +221,16 @@ public class AddEdit_QRCode_BarCode_Dialog  extends DialogFragment implements Vi
                         if (barCode != null && !barCode.isEmpty()) {
                             progressBar_auto_gen_bar_qr.setVisibility(View.VISIBLE);
                             qrBarPi.getBarCode(edtbarCode);
-                        }
-                        if (qrcode != null && !qrcode.isEmpty()) {
+                        }else if (qrcode != null && !qrcode.isEmpty()) {
                             progressBar_auto_gen_bar_qr.setVisibility(View.VISIBLE);
                             qrBarPi.getQRCode(edtqrcode);
+                        }else{
+                            alertShow1(LanguageController.getInstance().getMobileMsgByKey(AppConstant.please_enter_code));
                         }
-                    }
+                    }else if(txt_add_edit_barcode_qr.getText().toString().equals(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_QR_Code)) ||
+                                txt_add_edit_barcode_qr.getText().toString().equals(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_barcode))) {
+                            alertShow1(LanguageController.getInstance().getMobileMsgByKey(AppConstant.please_enter_code));
+                        }
                     }
                 break;
             case R.id.scan_button:
@@ -340,9 +360,18 @@ public class AddEdit_QRCode_BarCode_Dialog  extends DialogFragment implements Vi
             progressBar_auto_gen_bar_qr.setVisibility(View.GONE);
         }
     }
-
+    public void alertShow1(String msg){
+        AppUtility.error_Alert_Dialog(getActivity(), msg, LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                isbarcodeQrEdtTxtChange = false;
+                return null;
+            }
+        });
+    }
     @Override
     public void alertShow(String msg) {
+
         AppUtility.alertDialog(getActivity(),
                 "", msg, LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), "", new Callable<Boolean>() {
                     @Override

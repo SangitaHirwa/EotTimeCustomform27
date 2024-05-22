@@ -1927,7 +1927,8 @@
     "barcode": "Barcode",
     "qrcode": "QRcode",
     "do_you_have_a_Barcode_please_insert_it_here_OR_Scan_the_Barcode": "Do you have a Barcode, please insert it here OR Scan the Barcode",
-    "do_you_have_a_Qrcode_please_insert_it_here_OR_Scan_the_QRcode": "Do you have a QR code, please insert it here OR Scan the QR code"
+    "do_you_have_a_Qrcode_please_insert_it_here_OR_Scan_the_QRcode": "Do you have a QR code, please insert it here OR Scan the QR code",
+    "please_enter_code": "Please enter code."
   }
 }
 

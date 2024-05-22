@@ -152,6 +152,11 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
     TextView txt_addBarcode,txt_addQrcode;
     ImageView barcode_image,qrcode_image,img_barcode,img_Qrcode;
     AddEdit_QRCode_BarCode_Dialog addEditQrCodeBarCodeDialog;
+    Calendar manufCalendar = Calendar.getInstance();
+    Calendar purchesCalendar = Calendar.getInstance();
+    Calendar warntyCalendar = Calendar.getInstance();
+    Calendar startWarntyCalendar = Calendar.getInstance();
+    Calendar installCalendar = Calendar.getInstance();
     /**
      * select date from picker & concanate current time
      */
@@ -166,21 +171,35 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
 //            dateselect = formatter.format(startDate);
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             params.setMargins(0, 5, 0, -20);
-
             if (view.getTag().equals("Manufacture")) {
                 Log.e("", "");
+                manufCalendar.set(Calendar.YEAR,selectedYear);
+                manufCalendar.set(Calendar.MONTH,selectedMonth);
+                manufCalendar.set(Calendar.DAY_OF_MONTH,selectedDay);
                 setManufactureViews(dateselect, params);
             } else if (view.getTag().equals("Warranty")) {
                 Log.e("", "");
+                warntyCalendar.set(Calendar.YEAR,selectedYear);
+                warntyCalendar.set(Calendar.MONTH,selectedMonth);
+                warntyCalendar.set(Calendar.DAY_OF_MONTH,selectedDay);
                 setWarrntyViews(dateselect, params);
             } else if (view.getTag().equals("Warranty_start")) {
                 Log.e("", "");
+                startWarntyCalendar.set(Calendar.YEAR,selectedYear);
+                startWarntyCalendar.set(Calendar.MONTH,selectedMonth);
+                startWarntyCalendar.set(Calendar.DAY_OF_MONTH,selectedDay);
                 setWarrntyStartViews(dateselect);
             } else if (view.getTag().equals("Purchase")) {
                 Log.e("", "");
+                purchesCalendar.set(Calendar.YEAR,selectedYear);
+                purchesCalendar.set(Calendar.MONTH,selectedMonth);
+                purchesCalendar.set(Calendar.DAY_OF_MONTH,selectedDay);
                 setPurchaseViews(dateselect, params);
             } else if (view.getTag().equals("installed")) {
                 Log.e("", "");
+                installCalendar.set(Calendar.YEAR,selectedYear);
+                installCalendar.set(Calendar.MONTH,selectedMonth);
+                installCalendar.set(Calendar.DAY_OF_MONTH,selectedDay);
                 setInstalledViews(dateselect, params);
             }
         } catch (ParseException e) {
@@ -1092,19 +1111,19 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
                     auto_brand.showDropDown();
                 break;
             case R.id.manuf_date_layout:
-                SelectStartDate("Manufacture");
+                SelectManufDate("Manufacture");
                 break;
             case R.id.date_purchase_layout:
-                SelectStartDate("Purchase");
+                SelectPurchaseDate("Purchase");
                 break;
             case R.id.date_warnty_layout:
-                SelectStartDate("Warranty");
+                SelectWarntyDate("Warranty");
                 break;
             case R.id.date_warnty_layout_start:
-                SelectStartDate("Warranty_start");
+                SelectWarntyStartDate("Warranty_start");
                 break;
             case R.id.date_installed_layout:
-                SelectStartDate("installed");
+                SelectInstalleDate("installed");
                 break;
             case R.id.txt_addBarcode:
                 if(barcode_image== null) {
@@ -1746,15 +1765,51 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
 
     }
 
-    private void SelectStartDate(String tag) {
-        Calendar myCalendar = Calendar.getInstance();
-        int year = myCalendar.get(Calendar.YEAR);
-        int month = myCalendar.get(Calendar.MONTH);
-        int dayOfMonth = myCalendar.get(Calendar.DAY_OF_MONTH);
+    private void SelectInstalleDate(String tag) {
+        int year = installCalendar.get(Calendar.YEAR);
+        int month = installCalendar.get(Calendar.MONTH);
+        int dayOfMonth = installCalendar.get(Calendar.DAY_OF_MONTH);
         DatePickerDialog datePickerDialog = new DatePickerDialog(UpdateJobEquipMentActivity.this, datePickerListener, year, month, dayOfMonth);
         datePickerDialog.getDatePicker().setTag(tag);
         datePickerDialog.show();
     }
+
+    private void SelectWarntyStartDate(String tag) {
+        int year = startWarntyCalendar.get(Calendar.YEAR);
+        int month = startWarntyCalendar.get(Calendar.MONTH);
+        int dayOfMonth = startWarntyCalendar.get(Calendar.DAY_OF_MONTH);
+        DatePickerDialog datePickerDialog = new DatePickerDialog(UpdateJobEquipMentActivity.this, datePickerListener, year, month, dayOfMonth);
+        datePickerDialog.getDatePicker().setTag(tag);
+        datePickerDialog.show();
+    }
+
+    private void SelectWarntyDate(String tag) {
+        int year = warntyCalendar.get(Calendar.YEAR);
+        int month = warntyCalendar.get(Calendar.MONTH);
+        int dayOfMonth = warntyCalendar.get(Calendar.DAY_OF_MONTH);
+        DatePickerDialog datePickerDialog = new DatePickerDialog(UpdateJobEquipMentActivity.this, datePickerListener, year, month, dayOfMonth);
+        datePickerDialog.getDatePicker().setTag(tag);
+        datePickerDialog.show();
+    }
+
+    private void SelectPurchaseDate(String tag) {
+        int year = purchesCalendar.get(Calendar.YEAR);
+        int month = purchesCalendar.get(Calendar.MONTH);
+        int dayOfMonth = purchesCalendar.get(Calendar.DAY_OF_MONTH);
+        DatePickerDialog datePickerDialog = new DatePickerDialog(UpdateJobEquipMentActivity.this, datePickerListener, year, month, dayOfMonth);
+        datePickerDialog.getDatePicker().setTag(tag);
+        datePickerDialog.show();
+    }
+
+    private void SelectManufDate(String tag) {
+        int year = manufCalendar.get(Calendar.YEAR);
+        int month = manufCalendar.get(Calendar.MONTH);
+        int dayOfMonth = manufCalendar.get(Calendar.DAY_OF_MONTH);
+        DatePickerDialog datePickerDialog = new DatePickerDialog(UpdateJobEquipMentActivity.this, datePickerListener, year, month, dayOfMonth);
+        datePickerDialog.getDatePicker().setTag(tag);
+        datePickerDialog.show();
+    }
+
 
     @Override
     public void setEquReqError(String msg) {
