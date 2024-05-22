@@ -187,7 +187,7 @@ public class AddEdit_QRCode_BarCode_Dialog  extends DialogFragment implements Vi
                                     }
                                 }
                             }else {
-                                AppUtility.alertDialog2(getContext(), LanguageController.getInstance().getMobileMsgByKey(AppConstant.equipment_btn), LanguageController.getInstance().getMobileMsgByKey(AppConstant.codes_Confirmation), LanguageController.getInstance().getMobileMsgByKey(AppConstant.expense_upload), AppConstant.cancel, new Callback_AlertDialog() {
+                                AppUtility.alertDialog2(getContext(), "", LanguageController.getInstance().getMobileMsgByKey(AppConstant.codes_Confirmation), LanguageController.getInstance().getMobileMsgByKey(AppConstant.expense_upload), AppConstant.cancel, new Callback_AlertDialog() {
                                     @Override
                                     public void onPossitiveCall() {
                                         if (uploadBarcodeViewModel != null) {

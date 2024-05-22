@@ -901,7 +901,9 @@
     "item_linked": "Item linked successfully.",
     "item_not_linked": "Unable to link item, please try again.",
     "recur_updated": "Job recurrence updated successfully",
-    "qrcode_already_exist": "This Qr is already allocated to another equipment, please choose another one."
+    "qrcode_already_exist": "This Qr is already allocated to another equipment, please choose another one.",
+    "qrcode_generate_success": "QR code generated successfully.",
+    "qrcode_not_generated": "Unable to generate QR code, please try again."
   },
   "mobileMsgsModel": {
     "accept": "Accept",
@@ -1929,7 +1931,7 @@
     "do_you_have_a_Barcode_please_insert_it_here_OR_Scan_the_Barcode": "Do you have a Barcode, please insert it here OR Scan the Barcode",
     "do_you_have_a_Qrcode_please_insert_it_here_OR_Scan_the_QRcode": "Do you have a QR code, please insert it here OR Scan the QR code",
     "please_enter_code": "Please enter code.",
-    "codes_Confirmation": "If you upload it, Your old data will be deleted."
+    "codes_Confirmation": "Would you like to overwrite the existing barcode?"
   }
 }
 
