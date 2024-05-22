@@ -632,7 +632,7 @@
                             android:layout_marginTop="8dp"
                             android:src="@drawable/barcode"
                             android:scaleType="fitXY"
-                            android:visibility="visible"
+                            android:visibility="gone"
                             app:layout_constraintEnd_toStartOf="@+id/guideline1"
                             app:layout_constraintStart_toStartOf="@id/txt_addBarcode"
                             app:layout_constraintTop_toBottomOf="@id/txt_addBarcode" />
@@ -668,7 +668,7 @@
                             android:layout_marginTop="8dp"
                             android:scaleType="fitStart"
                             android:src="@drawable/qrcode"
-                            android:visibility="visible"
+                            android:visibility="gone"
                             app:layout_constraintStart_toStartOf="@id/txt_addQrcode"
                             app:layout_constraintTop_toBottomOf="@id/txt_addQrcode" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
