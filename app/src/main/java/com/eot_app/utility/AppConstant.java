@@ -1030,7 +1030,7 @@ public class AppConstant {
     public static String qrcode = "qrcode";
     public static String do_you_have_a_Barcode_please_insert_it_here_OR_Scan_the_Barcode = "do_you_have_a_Barcode_please_insert_it_here_OR_Scan_the_Barcode";
     public static String do_you_have_a_Qrcode_please_insert_it_here_OR_Scan_the_QRcode = "do_you_have_a_Qrcode_please_insert_it_here_OR_Scan_the_QRcode";
-
+    public static String please_enter_code = "please_enter_code";
 
 
     public static String server(String location) {

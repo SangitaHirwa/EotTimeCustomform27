@@ -81,6 +81,8 @@
     <color name="invoice_calculation_bd">#EFFEFF</color>
     <color name="invoice_sub_total_amount">#4F4F4F</color>
     <color name="invoice_total_amount">#222222</color>
+    <color name="edt_hint_barcode">#666666</color>
+    <color name="scan_btn_barcode">#01848C</color>
     <color name="dialog_edit_text_lbl_color">#72777A</color>
     <color name="scroll_thumb_color">#1E5F62</color>
     <color name="scroll_track_color">#CED4DA</color>
