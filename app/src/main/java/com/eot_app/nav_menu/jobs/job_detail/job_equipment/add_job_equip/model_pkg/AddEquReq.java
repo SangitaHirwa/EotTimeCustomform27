@@ -18,7 +18,7 @@ public class AddEquReq {
     private String adr;
     private String ctry;
     private String state;
-    private String isBarcodeGenerate;
+//    private String isBarcodeGenerate;
     private String notes;
     private String status;
     private String rate;
@@ -109,7 +109,7 @@ public class AddEquReq {
      * Convert Item TO equipment
      ****/
     public AddEquReq(String type, String egId, String ecId, String zip, String city, String adr,
-                     String ctry, String state, String isBarcodeGenerate, String notes, String purchaseDate,
+                     String ctry, String state, /*String isBarcodeGenerate,*/ String notes, String purchaseDate,
                      String manufactureDate, String expiryDate, String supplier, String sno, String mno, String brand,
                      String equnm, String jobId, String cltId, String contrId
             , String itemId, String rate, String siteId, String isPart,
@@ -124,7 +124,7 @@ public class AddEquReq {
         this.adr = adr;
         this.ctry = ctry;
         this.state = state;
-        this.isBarcodeGenerate = isBarcodeGenerate;
+//        this.isBarcodeGenerate = isBarcodeGenerate;
         this.notes = notes;
         this.status = status;
         this.purchaseDate = purchaseDate;
@@ -156,7 +156,7 @@ public class AddEquReq {
      * replace  equipment
      ****/
     public AddEquReq(String type, String egId, String ecId, String zip, String city, String adr,
-                     String ctry, String state, String isBarcodeGenerate, String notes, String purchaseDate,
+                     String ctry, String state, /*String isBarcodeGenerate,*/ String notes, String purchaseDate,
                      String manufactureDate, String expiryDate, String supplier, String sno, String mno, String brand,
                      String equnm, String jobId, String cltId, String contrId
             , String itemId, String rate, String siteId, String isPart,
@@ -171,7 +171,7 @@ public class AddEquReq {
         this.adr = adr;
         this.ctry = ctry;
         this.state = state;
-        this.isBarcodeGenerate = isBarcodeGenerate;
+//        this.isBarcodeGenerate = isBarcodeGenerate;
         this.notes = notes;
         this.status = status;
         this.purchaseDate = purchaseDate;
@@ -205,7 +205,7 @@ public class AddEquReq {
      * Add equipment
      ****/
     public AddEquReq(String type, String egId, String ecId, String zip, String city, String adr,
-                     String ctry, String state, String isBarcodeGenerate, String notes, String purchaseDate,
+                     String ctry, String state, /*String isBarcodeGenerate,*/ String notes, String purchaseDate,
                      String manufactureDate, String expiryDate, String supplier, String sno, String mno, String brand,
                      String equnm, String jobId, String cltId, String contrId, String siteId, String isPart, String status,
                      String extraField1,String extraField2,String servIntvalType,String servIntvalValue,String supplierId) {
@@ -217,7 +217,7 @@ public class AddEquReq {
         this.adr = adr;
         this.ctry = ctry;
         this.state = state;
-        this.isBarcodeGenerate = isBarcodeGenerate;
+//        this.isBarcodeGenerate = isBarcodeGenerate;
         this.notes = notes;
         this.purchaseDate = purchaseDate;
         this.manufactureDate = manufactureDate;
@@ -304,9 +304,9 @@ public class AddEquReq {
         return state;
     }
 
-    public String getIsBarcodeGenerate() {
-        return isBarcodeGenerate;
-    }
+//    public String getIsBarcodeGenerate() {
+//        return isBarcodeGenerate;
+//    }
 
     public String getNotes() {
         return notes;

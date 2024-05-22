@@ -189,7 +189,7 @@ public class AddJobEqu_Pc implements AddJobEqu_Pi {
             RequestBody purchaseDate = null;
             RequestBody status = null;
             RequestBody notes = null;
-            RequestBody isBarcodeGenerate = null;
+//            RequestBody isBarcodeGenerate = null;
             RequestBody state = null;
             RequestBody ctry = null;
             RequestBody adr = null;
@@ -231,7 +231,7 @@ public class AddJobEqu_Pc implements AddJobEqu_Pi {
                 purchaseDate = RequestBody.create(addEquReq.getPurchaseDate(), MultipartBody.FORM);
                 status = RequestBody.create(addEquReq.getStatus(), MultipartBody.FORM);
                 notes = RequestBody.create(addEquReq.getNotes(), MultipartBody.FORM);
-                isBarcodeGenerate = RequestBody.create(addEquReq.getIsBarcodeGenerate(), MultipartBody.FORM);
+//                isBarcodeGenerate = RequestBody.create(addEquReq.getIsBarcodeGenerate(), MultipartBody.FORM);
                 state = RequestBody.create(addEquReq.getState(), MultipartBody.FORM);
                 ctry = RequestBody.create(addEquReq.getCtry(), MultipartBody.FORM);
                 adr = RequestBody.create(addEquReq.getAdr(), MultipartBody.FORM);
@@ -290,7 +290,7 @@ public class AddJobEqu_Pc implements AddJobEqu_Pi {
             ApiClient.getservices().convertItemToEquipment(AppUtility.getApiHeaders(),
                     filesList, equnm, brand, mno, sno,
                     expiryDate, manufactureDate, purchaseDate,
-                    status, notes, isBarcodeGenerate, state
+                    status, notes, /*isBarcodeGenerate,*/ state
                     , ctry, adr, city, zip, ecId, type,
                     egId, jobId, cltId, contrId,
                     itemId, supplier, rate, isPart, siteId, invId, extraField1,
@@ -505,7 +505,7 @@ public class AddJobEqu_Pc implements AddJobEqu_Pi {
             RequestBody purchaseDate = null;
             RequestBody status = null;
             RequestBody notes = null;
-            RequestBody isBarcodeGenerate = null;
+//            RequestBody isBarcodeGenerate = null;
             RequestBody state = null;
             RequestBody ctry = null;
             RequestBody adr = null;
@@ -542,7 +542,7 @@ public class AddJobEqu_Pc implements AddJobEqu_Pi {
                 purchaseDate = RequestBody.create(addEquReq.getPurchaseDate(), MultipartBody.FORM);
                 status = RequestBody.create(addEquReq.getStatus(), MultipartBody.FORM);
                 notes = RequestBody.create(addEquReq.getNotes(), MultipartBody.FORM);
-                isBarcodeGenerate = RequestBody.create(addEquReq.getIsBarcodeGenerate(), MultipartBody.FORM);
+//                isBarcodeGenerate = RequestBody.create(addEquReq.getIsBarcodeGenerate(), MultipartBody.FORM);
                 state = RequestBody.create(addEquReq.getState(), MultipartBody.FORM);
                 ctry = RequestBody.create(addEquReq.getCtry(), MultipartBody.FORM);
                 adr = RequestBody.create(addEquReq.getAdr(), MultipartBody.FORM);
@@ -593,7 +593,7 @@ public class AddJobEqu_Pc implements AddJobEqu_Pi {
             ApiClient.getservices().addEquipment(AppUtility.getApiHeaders(),
                     filesList, equnm, brand, mno, sno,
                     expiryDate, manufactureDate, purchaseDate,
-                    status, notes, isBarcodeGenerate, state
+                    status, notes,/* isBarcodeGenerate,*/ state
                     , ctry, adr, city, zip, ecId, type,
                     egId, jobId, cltId, contrId, isPart, siteId,
                     extraField1, extraField2, barcodeBody, qrcodeBody,installedDateBody,

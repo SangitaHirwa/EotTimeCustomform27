@@ -138,7 +138,7 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
     private TextView image_txt, remove_txt;
     private AddJobEqu_Pi addJobEqu_pi;
     private CheckBox checkbox_barCode, checkbox_scan_insert;
-    private String isBarcodeGenerate = "0", isPart = "0";
+    private String /*isBarcodeGenerate = "0",*/ isPart = "0";
     private String egId = "";
     private String ecId = "";
     private String jobId = "";
@@ -1163,7 +1163,7 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
                     }
                     addJobEqu_pi.convertItemToequip(new AddEquReq(type, egId, ecId, edt_equ_zip.getText().toString().trim(),
                                     edt_equ_city.getText().toString().trim(), edt_equ_adrs.getText().toString().trim(),
-                                    ctry, state, isBarcodeGenerate,
+                                    ctry, state, /*isBarcodeGenerate,*/
                                     quote_notes_edt.getText().toString().trim(),
                                     purchase_date_lable.getText().toString().trim(),
                                     manuf_date_lable.getText().toString().trim(),
@@ -1186,7 +1186,7 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
                     addJobEqu_pi.addNewEquipment(
                             new AddEquReq(type, egId, ecId, edt_equ_zip.getText().toString().trim(),
                                     edt_equ_city.getText().toString().trim(), edt_equ_adrs.getText().toString().trim(),
-                                    ctry, state, isBarcodeGenerate,
+                                    ctry, state, /*isBarcodeGenerate,*/
                                     quote_notes_edt.getText().toString().trim(),
                                     purchase_date_lable.getText().toString().trim(),
                                     manuf_date_lable.getText().toString().trim(),
@@ -1206,7 +1206,7 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
                     addJobEqu_pi.addNewEquipment(
                             new AddEquReq(type, egId, ecId, edt_equ_zip.getText().toString().trim(),
                                     edt_equ_city.getText().toString().trim(), edt_equ_adrs.getText().toString().trim(),
-                                    ctry, state, isBarcodeGenerate,
+                                    ctry, state, /*isBarcodeGenerate,*/
                                     quote_notes_edt.getText().toString().trim(),
                                     purchase_date_lable.getText().toString().trim(),
                                     manuf_date_lable.getText().toString().trim(), warnty_date_lable.getText().toString().trim(),
@@ -1229,7 +1229,7 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
                 }
                 addJobEqu_pi.convertItemToequip(new AddEquReq(type, egId, ecId, edt_equ_zip.getText().toString().trim(),
                                 edt_equ_city.getText().toString().trim(), edt_equ_adrs.getText().toString().trim(),
-                                ctry, state, isBarcodeGenerate,
+                                ctry, state, /*isBarcodeGenerate,*/
                                 quote_notes_edt.getText().toString().trim(),
                                 purchase_date_lable.getText().toString().trim(),
                                 manuf_date_lable.getText().toString().trim(),
