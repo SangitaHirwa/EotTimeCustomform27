@@ -61,6 +61,7 @@ public class AddEdit_QRCode_BarCode_Dialog  extends DialogFragment implements Vi
     QR_Bar_DataPass qrBarDataPass;
     boolean isComeFromDetail = false;
     boolean isbarcodeQrEdtTxtChange = false;
+    boolean isScaned = false;
     private UploadBarcodeViewModel uploadBarcodeViewModel;
     String equipmentId;
     boolean isFristTime = true;
@@ -251,6 +252,7 @@ public class AddEdit_QRCode_BarCode_Dialog  extends DialogFragment implements Vi
         if (data != null) {
             if (requestCode == BAR_CODE_REQUEST) {
                 if (data.getStringExtra("code") != null) {
+                    isScaned = true;
                     barCode = data.getStringExtra("code");
                     edt_barcode_qr.setText(barCode);
                         if(barCode!= null && !barCode.isEmpty()) {
@@ -260,6 +262,7 @@ public class AddEdit_QRCode_BarCode_Dialog  extends DialogFragment implements Vi
             }
             else if (requestCode == QR_CODE_REQUEST) {
                 if (data.getStringExtra("code") != null) {
+                    isScaned = true;
                     qrcode = data.getStringExtra("code");
                     edt_barcode_qr.setText(qrcode);
                         if(qrcode!= null && !qrcode.isEmpty()) {
@@ -323,12 +326,17 @@ public class AddEdit_QRCode_BarCode_Dialog  extends DialogFragment implements Vi
                 }
             }else{
                 if(isComeFromDetail && isbarcodeQrEdtTxtChange){
-                    btn_save.performClick();
+                    if(!isScaned){
+                        btn_save.performClick();
+                    }
+                    isScaned = false;
                     isbarcodeQrEdtTxtChange = false;
                 }else {
                     isbarcodeQrEdtTxtChange = false;
                     qrBarDataPass.onDataPass(res_Model);
-                    dismiss();
+                    if(!isScaned) {
+                        dismiss();
+                    }
                 }
             }
             progressBar_auto_gen_bar_qr.setVisibility(View.GONE);
@@ -348,14 +356,19 @@ public class AddEdit_QRCode_BarCode_Dialog  extends DialogFragment implements Vi
                 }
             }else {
                 if(isComeFromDetail && isbarcodeQrEdtTxtChange){
-                    btn_save.performClick();
+                    if(!isScaned){
+                        btn_save.performClick();
+                    }
+                    isScaned = false;
                     progressBar_auto_gen_bar_qr.setVisibility(View.GONE);
                     isbarcodeQrEdtTxtChange = false;
                 }else {
                     isbarcodeQrEdtTxtChange = false;
                     progressBar_auto_gen_bar_qr.setVisibility(View.GONE);
                     qrBarDataPass.onDataPass(res_Model);
-                    dismiss();
+                    if(!isScaned) {
+                        dismiss();
+                    }
                 }
             }
             progressBar_auto_gen_bar_qr.setVisibility(View.GONE);
