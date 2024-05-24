@@ -102,7 +102,8 @@ public class ScanBarcode_PC implements ScanBarcode_PI {
             if (equArray != null) {
                 for (Equipment_Res equipment : equArray) {
                     if (equipment.getSno() != null && equipment.getSno().equals(request.getBarCode()) ||
-                            equipment.getBarcode() != null && equipment.getBarcode().equals(request.getBarCode())) {
+                            equipment.getBarcode() != null && equipment.getBarcode().equals(request.getBarCode()) ||
+                            equipment.getQrcode() != null && equipment.getQrcode().equals(request.getBarCode())) {
                         isEquipmentFound = true;
                         scanBarcode_view.onEquipmentFound(equipment);
                         break;

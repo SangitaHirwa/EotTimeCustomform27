@@ -488,7 +488,8 @@ public class BarcodeScanActivity extends AppCompatActivity implements ScanBarcod
                 if (equArray != null) {
                     for (Equipment_Res equipment : equArray) {
                         if (equipment.getSno() != null && equipment.getSno().equals(codeText) ||
-                                equipment.getBarcode() != null && equipment.getBarcode().equals(codeText)) {
+                                equipment.getBarcode() != null && equipment.getBarcode().equals(codeText)||
+                                equipment.getQrcode() != null && equipment.getQrcode().equals(codeText)) {
                             String strEqu = new Gson().toJson(equipment);
                             startActivity(new Intent(this, RemarkActivity.class)
                                     .putExtra("equipment", strEqu)
