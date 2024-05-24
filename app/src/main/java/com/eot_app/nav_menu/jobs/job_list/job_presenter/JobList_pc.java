@@ -107,7 +107,8 @@ public class JobList_pc implements JobList_pi {
             if (equArray != null) {
                 for (EquArrayModel equipment : equArray) {
                     if (equipment.getSno() != null && equipment.getSno().equals(barcode) ||
-                            equipment.getBarcode() != null && equipment.getBarcode().equals(barcode)) {
+                            equipment.getBarcode() != null && equipment.getBarcode().equals(barcode) ||
+                            equipment.getQrcode() != null && equipment.getQrcode().equals(barcode)) {
                         isEquipmentFound = true;
                         joblist_view.onEquipmentFound(equipment,jobId);
                         break;
