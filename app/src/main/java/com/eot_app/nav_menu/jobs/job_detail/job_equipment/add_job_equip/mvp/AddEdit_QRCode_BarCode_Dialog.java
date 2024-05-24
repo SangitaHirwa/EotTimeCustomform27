@@ -1,9 +1,7 @@
 package com.eot_app.nav_menu.jobs.job_detail.job_equipment.add_job_equip.mvp;
 
-import android.content.DialogInterface;
+
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -16,33 +14,24 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.ViewModelProvider;
-
 import com.eot_app.R;
-import com.eot_app.eoteditor.Utils;
 import com.eot_app.nav_menu.audit.nav_scan.BarcodeScanActivity;
-import com.eot_app.nav_menu.audit.nav_scan.UploadBarcodeActivity;
 import com.eot_app.nav_menu.audit.nav_scan.UploadBarcodeViewModel;
-import com.eot_app.nav_menu.jobs.job_detail.job_equipment.add_job_equip.AddJobEquipMentActivity;
 import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.AppUtility;
 import com.eot_app.utility.App_preference;
-import com.eot_app.utility.CompressImageInBack;
 import com.eot_app.utility.EotApp;
 import com.eot_app.utility.language_support.LanguageController;
 import com.eot_app.utility.util_interfaces.Callback_AlertDialog;
 import com.squareup.picasso.Picasso;
-
-import java.io.File;
 import java.util.concurrent.Callable;
 
 public class AddEdit_QRCode_BarCode_Dialog  extends DialogFragment implements View.OnClickListener, CompoundButton.OnCheckedChangeListener, QR_Bar_View, TextWatcher {
@@ -60,8 +49,6 @@ public class AddEdit_QRCode_BarCode_Dialog  extends DialogFragment implements Vi
     QRCOde_Barcode_Res_Model res_Model;
     QR_Bar_DataPass qrBarDataPass;
     boolean isComeFromDetail = false;
-    boolean isbarcodeQrEdtTxtChange = false;
-    boolean isScaned = false;
     private UploadBarcodeViewModel uploadBarcodeViewModel;
     String equipmentId;
     boolean isFristTime = true;
@@ -184,6 +171,9 @@ public class AddEdit_QRCode_BarCode_Dialog  extends DialogFragment implements Vi
                                             uploadBarcodeViewModel.uploadBarcode(equipmentId, barCode);
                                         } else if (qrcode != null && !qrcode.isEmpty()) {
                                             uploadBarcodeViewModel.uploadQrcode(equipmentId, qrcode);
+                                        }else{
+                                            barCode = ""; qrcode = "";
+                                            alertShow1(LanguageController.getInstance().getMobileMsgByKey(AppConstant.please_enter_code));
                                         }
                                     }
                                 }
@@ -198,6 +188,8 @@ public class AddEdit_QRCode_BarCode_Dialog  extends DialogFragment implements Vi
                                                         uploadBarcodeViewModel.uploadBarcode(equipmentId, barCode);
                                                     } else if (qrcode != null && !qrcode.isEmpty()) {
                                                         uploadBarcodeViewModel.uploadQrcode(equipmentId, qrcode);
+                                                    }else{
+                                                        alertShow1(LanguageController.getInstance().getMobileMsgByKey(AppConstant.please_enter_code));
                                                     }
                                                 }
                                             }
@@ -206,17 +198,16 @@ public class AddEdit_QRCode_BarCode_Dialog  extends DialogFragment implements Vi
 
                                     @Override
                                     public void onNegativeCall() {
+                                        res_Model = null;
                                     }
                                 });
 
                             }
-//                            uploadBarcodeViewModel.uploadBarcode(equipmentId,barCode);
                         }else {
                             qrBarDataPass.onDataPass(res_Model);
                             dismiss();
                         }
                     }else{
-                        if(isbarcodeQrEdtTxtChange) {
                         String edtbarCode = edt_barcode_qr.getText().toString();
                        String edtqrcode = edt_barcode_qr.getText().toString();
                         if (barCode != null && !barCode.isEmpty()) {
@@ -226,10 +217,6 @@ public class AddEdit_QRCode_BarCode_Dialog  extends DialogFragment implements Vi
                             progressBar_auto_gen_bar_qr.setVisibility(View.VISIBLE);
                             qrBarPi.getQRCode(edtqrcode);
                         }else{
-                            alertShow1(LanguageController.getInstance().getMobileMsgByKey(AppConstant.please_enter_code));
-                        }
-                    }else if(txt_add_edit_barcode_qr.getText().toString().equals(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_QR_Code)) ||
-                                txt_add_edit_barcode_qr.getText().toString().equals(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_barcode))) {
                             alertShow1(LanguageController.getInstance().getMobileMsgByKey(AppConstant.please_enter_code));
                         }
                     }
@@ -252,22 +239,16 @@ public class AddEdit_QRCode_BarCode_Dialog  extends DialogFragment implements Vi
         if (data != null) {
             if (requestCode == BAR_CODE_REQUEST) {
                 if (data.getStringExtra("code") != null) {
-                    isScaned = true;
                     barCode = data.getStringExtra("code");
                     edt_barcode_qr.setText(barCode);
-                        if(barCode!= null && !barCode.isEmpty()) {
-                            qrBarPi.getBarCode(barCode);
-                    }
+
                 }
             }
             else if (requestCode == QR_CODE_REQUEST) {
                 if (data.getStringExtra("code") != null) {
-                    isScaned = true;
                     qrcode = data.getStringExtra("code");
                     edt_barcode_qr.setText(qrcode);
-                        if(qrcode!= null && !qrcode.isEmpty()) {
-                            qrBarPi.getQRCode(qrcode);
-                    }
+
                 }
             }
         }
@@ -286,6 +267,8 @@ public class AddEdit_QRCode_BarCode_Dialog  extends DialogFragment implements Vi
                        txt_or.setVisibility(View.VISIBLE);
                        edt_barcode_qr.setVisibility(View.VISIBLE);
                        scan_button.setVisibility(View.VISIBLE);
+                       edt_barcode_qr.setText("");
+                       barCode = ""; qrcode ="";
                        auto_gen_barcode_qr_image.setVisibility(View.GONE);
                        radio_barcode_qr_generate.setChecked(false);
                        radio_barcode_qr_insert.setChecked(true);
@@ -317,26 +300,17 @@ public class AddEdit_QRCode_BarCode_Dialog  extends DialogFragment implements Vi
     public void setBarCodeData(QRCOde_Barcode_Res_Model bar_res_Model) {
         if(bar_res_Model != null) {
             this.res_Model = bar_res_Model;
-            if(!isbarcodeQrEdtTxtChange) {
                 barCode = bar_res_Model.getBarCode();
 
                 if (bar_res_Model.getBarcodeImg() != null && !bar_res_Model.getBarcodeImg().isEmpty() && radio_barcode_qr_generate.isChecked()) {
                     auto_gen_barcode_qr_image.setVisibility(View.VISIBLE);
                     Picasso.get().load(App_preference.getSharedprefInstance().getBaseURL() + bar_res_Model.getBarcodeImg()).placeholder(R.drawable.ic_profile).error(R.drawable.ic_profile).into(auto_gen_barcode_qr_image);
-                }
             }else{
-                if(isComeFromDetail && isbarcodeQrEdtTxtChange){
-                    if(!isScaned){
+                if(isComeFromDetail){
                         btn_save.performClick();
-                    }
-                    isScaned = false;
-                    isbarcodeQrEdtTxtChange = false;
                 }else {
-                    isbarcodeQrEdtTxtChange = false;
                     qrBarDataPass.onDataPass(res_Model);
-                    if(!isScaned) {
                         dismiss();
-                    }
                 }
             }
             progressBar_auto_gen_bar_qr.setVisibility(View.GONE);
@@ -347,28 +321,19 @@ public class AddEdit_QRCode_BarCode_Dialog  extends DialogFragment implements Vi
     public void setQRCodeData(QRCOde_Barcode_Res_Model qr_res_Model) {
         if(qr_res_Model != null) {
             this.res_Model = qr_res_Model;
-            if(!isbarcodeQrEdtTxtChange) {
                 qrcode = qr_res_Model.getQrcode();
 
                 if (qr_res_Model.getQrcodeImg() != null && !qr_res_Model.getQrcodeImg().isEmpty() && radio_barcode_qr_generate.isChecked()) {
                     auto_gen_barcode_qr_image.setVisibility(View.VISIBLE);
                     Picasso.get().load(App_preference.getSharedprefInstance().getBaseURL() + qr_res_Model.getQrcodeImg()).placeholder(R.drawable.ic_profile).error(R.drawable.ic_profile).into(auto_gen_barcode_qr_image);
-                }
             }else {
-                if(isComeFromDetail && isbarcodeQrEdtTxtChange){
-                    if(!isScaned){
+                if(isComeFromDetail ){
                         btn_save.performClick();
-                    }
-                    isScaned = false;
                     progressBar_auto_gen_bar_qr.setVisibility(View.GONE);
-                    isbarcodeQrEdtTxtChange = false;
                 }else {
-                    isbarcodeQrEdtTxtChange = false;
                     progressBar_auto_gen_bar_qr.setVisibility(View.GONE);
                     qrBarDataPass.onDataPass(res_Model);
-                    if(!isScaned) {
                         dismiss();
-                    }
                 }
             }
             progressBar_auto_gen_bar_qr.setVisibility(View.GONE);
@@ -378,7 +343,6 @@ public class AddEdit_QRCode_BarCode_Dialog  extends DialogFragment implements Vi
         AppUtility.error_Alert_Dialog(getActivity(), msg, LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
-                isbarcodeQrEdtTxtChange = false;
                 return null;
             }
         });
@@ -390,8 +354,8 @@ public class AddEdit_QRCode_BarCode_Dialog  extends DialogFragment implements Vi
                 "", msg, LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), "", new Callable<Boolean>() {
                     @Override
                     public Boolean call() throws Exception {
+                        barCode = ""; qrcode = "";
                         progressBar_auto_gen_bar_qr.setVisibility(View.GONE);
-                        isbarcodeQrEdtTxtChange = false;
                         return null;
                     }
                 });
@@ -400,16 +364,6 @@ public class AddEdit_QRCode_BarCode_Dialog  extends DialogFragment implements Vi
     @Override
     public void toastShow(String msg) {
         EotApp.getAppinstance().showToastmsg(msg);
-    }
-
-    public void showAlert(String msg){
-        AppUtility.alertDialog(getContext(), "", msg, LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), LanguageController.getInstance().getMobileMsgByKey(AppConstant.cancel), new Callable<Boolean>() {
-            @Override
-            public Boolean call() throws Exception {
-                qrBarPi.getBarCode(barCode);
-                return null;
-            }
-        });
     }
 
     @Override
@@ -425,7 +379,6 @@ public class AddEdit_QRCode_BarCode_Dialog  extends DialogFragment implements Vi
     @Override
     public void afterTextChanged(Editable s) {
         if(!isFristTime) {
-            isbarcodeQrEdtTxtChange = true;
             if(barCode != null){
                 barCode = s.toString();
             }else if(qrcode != null){

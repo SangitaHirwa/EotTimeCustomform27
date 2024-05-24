@@ -346,6 +346,8 @@ public class BarcodeScanActivity extends AppCompatActivity implements ScanBarcod
             List<String> jobEquipmentByEquipmentId = null;
             if(!jobList.get(0).getBarcode().equals("")) {
                  jobEquipmentByEquipmentId = AppDataBase.getInMemoryDatabase(this).jobModel().getjobidsbyequid("%" + jobList.get(0).getBarcode() + "%");
+            }else if(!jobList.get(0).getQrcode().equals("")) {
+                jobEquipmentByEquipmentId = AppDataBase.getInMemoryDatabase(this).jobModel().getjobidsbyequid("%" + jobList.get(0).getQrcode() + "%");
             }else{
                 jobEquipmentByEquipmentId = AppDataBase.getInMemoryDatabase(this).jobModel().getjobidsbyequid("%" + jobList.get(0).getSno() + "%");
             }
@@ -390,7 +392,7 @@ public class BarcodeScanActivity extends AppCompatActivity implements ScanBarcod
                 for (Job item : jobList1
                 ) {
                     for (EquArrayModel item1 : item.getEquArray()) {
-                        if (item1.getBarcode().equals(barcode) || item1.getSno().equals(barcode)) {
+                        if (item1.getBarcode().equals(barcode) || item1.getSno().equals(barcode) || item1.getQrcode().equals(barcode)) {
                             jobList.add(item1);
                             break outerloop;
                         }

@@ -1941,13 +1941,13 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
         try {
             if (data != null && data.getBarCode() != null && !data.getBarCode().isBlank() && data.getBarcodeImg() != null && !data.getBarcodeImg().isBlank()){
                 txt_addBarcode.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit_Barcode));
-                txt_addBarcode.setCompoundDrawablesWithIntrinsicBounds(getDrawable(R.drawable.vector),null,null,null);
+                txt_addBarcode.setCompoundDrawablesWithIntrinsicBounds(getDrawable(R.drawable.edit),null,null,null);
                 img_barcode.setVisibility(View.VISIBLE);
                 Picasso.get().load(App_preference.getSharedprefInstance().getBaseURL() + data.getBarcodeImg()).placeholder(R.drawable.ic_profile).error(R.drawable.ic_profile).into(img_barcode);
                 barcodeString = data.getBarCode();
             }else if (data != null && data.getQrcode() != null && !data.getQrcode().isBlank() && !data.getQrcode().isBlank()&& data.getQrcodeImg() != null && !data.getQrcodeImg().isBlank()){
                 txt_addQrcode.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit_QR_Code));
-                txt_addQrcode.setCompoundDrawablesWithIntrinsicBounds(getDrawable(R.drawable.vector),null,null,null);
+                txt_addQrcode.setCompoundDrawablesWithIntrinsicBounds(getDrawable(R.drawable.edit),null,null,null);
                 img_Qrcode.setVisibility(View.VISIBLE);
                 Picasso.get().load(App_preference.getSharedprefInstance().getBaseURL() + data.getQrcodeImg()).placeholder(R.drawable.ic_profile).error(R.drawable.ic_profile).into(img_Qrcode);
                 qrCodeString = data.getQrcode();

@@ -87,7 +87,8 @@ public class ScanEquipmentsInBack { // extends AsyncTask<String, Void, Void> {
                             if (equArray != null) {
                                 for (Equipment_Res equipment : equArray) {
                                     if (equipment.getSno() != null && equipment.getSno().equals(searchKey) ||
-                                            equipment.getBarcode() != null && equipment.getBarcode().equals(searchKey)) {
+                                            equipment.getBarcode() != null && equipment.getBarcode().equals(searchKey)||
+                                            equipment.getQrcode() != null && equipment.getQrcode().equals(searchKey)) {
                                         auditEquipmetnList.add(audit);
                                     }
                                 }

@@ -256,7 +256,7 @@ public class ActivityLinkEquipment extends AppCompatActivity implements View.OnC
 
                                 for (EquArrayModel item : myEquList
                                 ) {
-                                    if (item.getBarcode().equalsIgnoreCase(str)) {
+                                    if (item.getBarcode().equalsIgnoreCase(str) || item.getQrcode().equalsIgnoreCase(str)) {
                                         model = item;
                                         isContain = true;
                                         break;
