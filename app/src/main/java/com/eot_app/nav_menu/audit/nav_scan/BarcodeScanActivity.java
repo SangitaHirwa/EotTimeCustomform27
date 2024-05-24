@@ -353,10 +353,16 @@ public class BarcodeScanActivity extends AppCompatActivity implements ScanBarcod
             }
             String s = new Gson().toJson(jobEquipmentByEquipmentId);
             if (jobEquipmentByEquipmentId.size() == 0 && list.size() == 0) {
-                Intent intent = new Intent(this, EquipmentDetailsActivity.class);
-                intent.putExtra("equipment", true);
-                intent.putExtra("equipment_id", jobList.get(0).getEquId());
-                startActivity(intent);
+                Equipment equipment = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).equipmentDao().getEquipmentById(jobList.get(0).getEquId());
+                if(equipment != null) {
+                    Intent intent = new Intent(this, EquipmentDetailsActivity.class);
+                    intent.putExtra("equipment", true);
+                    intent.putExtra("equipment_id", jobList.get(0).getEquId());
+                    startActivity(intent);
+                }else {
+                    Toast.makeText(this, LanguageController.getInstance().getMobileMsgByKey(AppConstant.eqi_not_foun_txt), Toast.LENGTH_SHORT).show();
+                    onResume();
+                }
             } else {
                 /** If Equipment link with Job */
                 Intent intent = new Intent(this, EquipmentDetailsActivity.class);
