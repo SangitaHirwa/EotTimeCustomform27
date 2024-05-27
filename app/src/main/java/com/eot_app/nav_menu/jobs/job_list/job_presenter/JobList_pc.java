@@ -86,7 +86,7 @@ public class JobList_pc implements JobList_pi {
             this.jobFilterModel = jobFilterModel;
             this.visibilityFlag = visibilityFlag;
             loadFromServer();
-            updateDataToView(this.jobFilterModel);
+//            updateDataToView(this.jobFilterModel);
         }
     }
 
@@ -203,6 +203,7 @@ public class JobList_pc implements JobList_pi {
                     });
         } else {
             joblist_view.setRefereshPullOff();
+            updateDataToView(jobFilterModel);
         }
     }
 
