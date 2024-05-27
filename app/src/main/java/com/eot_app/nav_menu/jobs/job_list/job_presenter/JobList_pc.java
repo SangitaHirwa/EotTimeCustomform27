@@ -70,14 +70,14 @@ public class JobList_pc implements JobList_pi {
 // get Records from database
         loadFromServer();
 
-        List<Job> data = new ArrayList<>();
-        if (sortedBy.equals(START_DATE_FIELD)) {
-            data = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJoblistByScheduleStart();
-        } else {
-            data = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJoblist();
-        }
-
-        joblist_view.setdata(data, visibilityFlag);
+//        List<Job> data = new ArrayList<>();
+//        if (sortedBy.equals(START_DATE_FIELD)) {
+//            data = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJoblistByScheduleStart();
+//        } else {
+//            data = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJoblist();
+//        }
+//
+//        joblist_view.setdata(data, visibilityFlag);
     }
 
     @Override
@@ -444,6 +444,7 @@ public class JobList_pc implements JobList_pi {
     public void getJobListByFilter(JobFilterModel filterModel) {
 /**         get job list by client name/job lable & job status, job prity , job tag* */
         Log.e("", "");
+
 
         try {
             String searchString;
