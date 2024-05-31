@@ -1866,6 +1866,7 @@ public class JobEquPartRemarkRemarkActivity extends UploadDocumentActivity imple
                             msg, "", AppUtility.getDateByMiliseconds(),
                             requestedModel.getJobLabel(),
                             requestedModel.getJobId(), "1");
+                    AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().updateRequestedItem("1",requestedModel.getJobId());
                     if (jobEquimPi != null) {
                         jobEquimPi.sendMsg(chat_send_Msg_model);
                     }

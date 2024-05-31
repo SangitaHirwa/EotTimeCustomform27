@@ -33,6 +33,8 @@
     <color name="actual_taxt_time">#685F5F</color>
     <color name="txt_sub_color">#757575</color>
     <color name="txt_sub_color_">#838383</color>
+    <color name="about_equipment">#656565</color>
+    <color name="date_colore">#000000</color>
     <color name="recyclerview">#f6f2f3</color>
     <color name="card_view_color">#f5f2f2</color>
     <color name="task_color">#e2e2e2</color>
@@ -101,6 +103,9 @@
     <color name="requested_List">#edfcf2</color>
     <color name="bg_link_item_note">#FEF3C7</color>
     <color name="equp_link_item">#666666</color>
+    <color name="bule_service">#0057FF</color>
+    <color name="green_upcomingservice">#00AB33</color>
+    <color name="discard_link_equ">#FFE7E9</color>
 
 
 </resources>

@@ -1451,7 +1451,7 @@ public class DetailFragment extends Fragment
         isMarkDoneWithJtidsList.clear();
         if(AppUtility.isInternetConnected()) {
             mParam2 = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(mParam2.getJobId());
-            if(mParam2.getComplNote() != null && mParam2.getComplNote().isEmpty() && mParam2.getCompliAnsArray() != null && mParam2.getCompliAnsArray().isEmpty()){
+            if(mParam2 != null && mParam2.getComplNote() != null && mParam2.getComplNote().isEmpty() && mParam2.getCompliAnsArray() != null && mParam2.getCompliAnsArray().isEmpty()){
                 txt_notesHeader.setVisibility(View.GONE);
                 complation_notes.setVisibility(View.GONE);
                 btnComplationView.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add));
@@ -2585,13 +2585,11 @@ public void setCompletionDetail(){
         mMapView.onResume();
         // for updating item count
         updateCountItem();
-        if (jobDetail_pi != null) {
-            if(AppUtility.isInternetConnected()) {
-                isRefreshReqItem = true;
-                progressBar_itemRequest.setVisibility(View.VISIBLE);
-                if(mParam2 !=null) {
-                    jobDetail_pi.getRequestedItemDataList(mParam2.getJobId());
-                }
+        if(param3 != null && !param3.isEmpty()) {
+            String itemRequested = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getItemRequested(param3);
+            if (itemRequested != null && itemRequested.equals("1")) {
+                requested_item_flag.setVisibility(View.VISIBLE);
+                requested_itemList_show_hide_rl.setVisibility(View.VISIBLE);
             }
         }
     }
@@ -3668,6 +3666,7 @@ public void setCompletionDetail(){
                             msg, "", AppUtility.getDateByMiliseconds(),
                             requestedModel.getJobLabel(),
                             requestedModel.getJobId(), "1");
+                    AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().updateRequestedItem("1",requestedModel.getJobId());
                     if (jobDetail_pi != null) {
                         jobDetail_pi.sendMsg(chat_send_Msg_model);
                     }
