@@ -529,7 +529,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="20dp"
-                        android:layout_marginBottom="50dp"
                         android:background="@color/bg_job"
                         android:orientation="horizontal"
                         android:padding="25dp"
@@ -561,7 +560,115 @@
                             android:textColor="@color/white"
                             tools:ignore="HardcodedText" />
                     </LinearLayout>
+                    <LinearLayout
+                        android:id="@+id/ll_repair"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:background="@color/bg_link_item_note"
+                        android:orientation="horizontal"
+                        android:padding="25dp"
+                        android:visibility="visible"
+                        android:weightSum="1">
 
+                        <TextView
+                            android:id="@+id/tv_text_for_repair"
+                            style="@style/style_sec"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="10dp"
+                            android:layout_weight="0.7"
+                            android:text="The equipment requires maintenance and will need to be taken for repair."
+                            tools:ignore="HardcodedText" />
+
+                        <TextView
+                            android:id="@+id/tv_repair"
+                            style="@style/style_sec"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginTop="5dp"
+                            android:layout_weight="0.3"
+                            android:background="@drawable/submit_btn"
+                            android:gravity="center"
+                            android:padding="6dp"
+                            android:text="Repair"
+                            android:textColor="@color/white"
+                            tools:ignore="HardcodedText" />
+                    </LinearLayout>
+                    <LinearLayout
+                        android:id="@+id/ll_reallocate"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:background="@color/white"
+                        android:orientation="horizontal"
+                        android:padding="25dp"
+                        android:visibility="visible"
+                        android:weightSum="1">
+
+                        <TextView
+                            android:id="@+id/tv_text_for_reallocate"
+                            style="@style/style_sec"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="10dp"
+                            android:layout_weight="0.7"
+                            android:text="Do you want to move this part from one equipment to another?"
+                            tools:ignore="HardcodedText" />
+
+                        <TextView
+                            android:id="@+id/tv_reallocate"
+                            style="@style/style_sec"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginTop="5dp"
+                            android:layout_weight="0.3"
+                            android:background="@drawable/submit_btn"
+                            android:gravity="center"
+                            android:padding="6dp"
+                            android:text="Reallocate"
+                            android:textColor="@color/white"
+                            tools:ignore="HardcodedText" />
+                    </LinearLayout>
+                    <LinearLayout
+                        android:id="@+id/ll_discard"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="50dp"
+                        android:background="@color/discard_link_equ"
+                        android:orientation="horizontal"
+                        android:padding="25dp"
+                        android:visibility="visible"
+                        android:weightSum="1">
+
+                        <TextView
+                            android:id="@+id/tv_text_for_discard"
+                            style="@style/style_sec"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="10dp"
+                            android:layout_weight="0.7"
+                            android:text="Do you want to completely discard this equipment/part?"
+                            tools:ignore="HardcodedText" />
+
+                        <TextView
+                            android:id="@+id/tv_discard"
+                            style="@style/style_sec"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginTop="5dp"
+                            android:layout_weight="0.3"
+                            android:background="@drawable/submit_btn"
+                            android:gravity="center"
+                            android:padding="6dp"
+                            android:text="Discard"
+                            android:textColor="@color/white"
+                            tools:ignore="HardcodedText" />
+                    </LinearLayout>
                     <TextView
                         android:id="@+id/tv_no_replace"
                         style="@style/style_sec"

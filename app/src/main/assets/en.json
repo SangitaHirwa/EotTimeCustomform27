@@ -1931,7 +1931,26 @@
     "do_you_have_a_Barcode_please_insert_it_here_OR_Scan_the_Barcode": "Do you have a Barcode, please insert it here OR Scan the Barcode",
     "do_you_have_a_Qrcode_please_insert_it_here_OR_Scan_the_QRcode": "Do you have a QR Code, please insert it here OR Scan the QR Code",
     "please_enter_code": "Please enter code.",
-    "codes_Confirmation": "Would you like to overwrite the existing barcode?"
+    "codes_Confirmation": "Would you like to overwrite the existing barcode?",
+    "show_more_details": "Show More Details",
+    "show_less_details": "Show Less Details",
+    "about_equipment": "About Equipment",
+    "last_service": "Last Service",
+    "service_due": "Service Due",
+    "service_history": "Service History",
+    "upcoming_service": "Upcoming Services",
+    "item_not_currently_linked_with_job_want_to_link": "This item is not currently linked with this job. Do you want to link it for further actions?",
+    "install_or_deploy_new_item": "Would you like to install or deploy this as a new item?",
+    "system_can_not_find_item_you_scanned": "The system can't find the item you scanned.",
+    "installed_date": "Installed Date",
+     "repair": "Repair",
+    "discard":"Discard",
+    "reallocate" : "Reallocate",
+    "equipment_requires_maintenance_will_need_taken_for_repair": "The equipment requires maintenance and will need to be taken for repair.",
+    "do_you_want_to_move_from_one_equipment_to_another": "Do you want to move this part from one equipment to another?",
+    "do_you_want_to_completely_discard_this_equipment": "Do you want to completely discard this equipment/part?"
+
+
   }
 }
 

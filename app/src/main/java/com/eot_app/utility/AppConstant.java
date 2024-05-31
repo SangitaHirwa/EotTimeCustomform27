@@ -436,7 +436,7 @@ public class AppConstant {
      * **** new keys for language support
      ****/
 //TODO
-    public static String installed_date  = "Installed Date";
+    public static String installed_date  = "installed_date";
 
     public static String tax_rate = "tax_rate";
     public static String job_not_sync = "job_not_sync";
@@ -1032,8 +1032,23 @@ public class AppConstant {
     public static String do_you_have_a_Qrcode_please_insert_it_here_OR_Scan_the_QRcode = "do_you_have_a_Qrcode_please_insert_it_here_OR_Scan_the_QRcode";
     public static String please_enter_code = "please_enter_code";
     public static String codes_Confirmation = "codes_Confirmation";
+    public static String show_more_details = "show_more_details";
+    public static String show_less_details = "show_less_details";
+    public static String about_equipment = "about_equipment";
+    public static String last_service = "last_service";
+    public static String service_due = "service_due";
+    public static String service_history = "service_history";
+    public static String upcoming_service = "upcoming_service";
+    public static String item_not_currently_linked_with_job_want_to_link = "item_not_currently_linked_with_job_want_to_link";
+    public static String install_or_deploy_new_item = "install_or_deploy_new_item";
+    public static String system_can_not_find_item_you_scanned = "system_can_not_find_item_you_scanned";
 
-
+    public static String repair = "repair";
+    public static String discard = "discard";
+    public static String reallocate = "reallocate";
+    public static String equipment_requires_maintenance_will_need_taken_for_repair = "equipment_requires_maintenance_will_need_taken_for_repair";
+    public static String do_you_want_to_move_from_one_equipment_to_another= "do_you_want_to_move_from_one_equipment_to_another";
+    public static String do_you_want_to_completely_discard_this_equipment= "do_you_want_to_completely_discard_this_equipment";
     public static String server(String location) {
         switch (location) {
             case "America":
