@@ -225,4 +225,14 @@ public class JobEquLinkItemActivity extends AppCompatActivity implements JobEquR
     public void deletedRequestData(String msg, AddUpdateRequestedModel requestedModel) {
 
     }
+
+    @Override
+    public void setRepairStatus() {
+
+    }
+
+    @Override
+    public void setDiscardStatus() {
+
+    }
 }

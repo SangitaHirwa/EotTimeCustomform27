@@ -810,7 +810,8 @@ public class AddEditInvoiceItemActivity2 extends
             }
         }else if (updateItemDataModel == null) {
             if (comeFrom != null && comeFrom.equalsIgnoreCase("AddRemark"))
-                Objects.requireNonNull(getSupportActionBar()).setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.step_1));
+                Objects.requireNonNull(getSupportActionBar()).setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.step_1)+" ("+
+                        LanguageController.getInstance().getMobileMsgByKey(AppConstant.title_add_equipment)+")");
             else
                 Objects.requireNonNull(getSupportActionBar()).setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.addItem_screen_title));
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);

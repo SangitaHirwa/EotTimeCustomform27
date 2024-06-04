@@ -1054,6 +1054,7 @@ public class AppConstant {
     public static String equ_item_not_found= "equ_item_not_found";
     public static String equ_parts_not_found= "equ_parts_not_found";
     public static String equ_audit_not_found= "equ_audit_not_found";
+    public static String discard_equipments_not_discarded_again= "discard_equipments_not_discarded_again";
     public static String server(String location) {
         switch (location) {
             case "America":

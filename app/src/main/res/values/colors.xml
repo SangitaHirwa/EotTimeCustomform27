@@ -107,6 +107,7 @@
     <color name="green_upcomingservice">#00AB33</color>
     <color name="discard_link_equ">#FFE7E9</color>
     <color name="reallocate_screen">#f5f0f2</color>
+    <color name="disable_btn">#78bdc3</color>
 
 
 </resources>

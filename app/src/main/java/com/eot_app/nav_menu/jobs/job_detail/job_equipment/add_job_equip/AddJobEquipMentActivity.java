@@ -559,7 +559,8 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
                 }
                 // for adding parts with item set data in the views
                 if (comeFrom != null && comeFrom.equalsIgnoreCase("AddRemark")) {
-                    setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.step_2));
+                    setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.step_2)+" ("+
+                            LanguageController.getInstance().getMobileMsgByKey(AppConstant.title_add_equipment)+")");
                     tvLabelStep2.setVisibility(View.VISIBLE);
                     add_edit_item_Btn.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.title_add_equipment_part));
                     ch_equ_as_part.setEnabled(false);
@@ -588,7 +589,8 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
                 addJobEqu_pi.getClientSiteListServer(cltId);
                 siteId = job.getSiteId();
                 setJobData(job);
-                setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.step_2));
+                setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.step_2)+" ("+
+                        LanguageController.getInstance().getMobileMsgByKey(AppConstant.title_add_equipment)+")");
                 tvLabelStep2.setVisibility(View.GONE);
                 add_edit_item_Btn.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.title_add_equipment_part));
                 ch_equ_as_part.setEnabled(false);

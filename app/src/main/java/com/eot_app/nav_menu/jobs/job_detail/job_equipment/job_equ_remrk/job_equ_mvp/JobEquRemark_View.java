@@ -29,4 +29,7 @@ public interface JobEquRemark_View {
     void setRequestItemData(List<RequestedItemModel> requestItemData);
     void notDtateFoundInRequestedItemList(String msg);
     void deletedRequestData(String msg, AddUpdateRequestedModel requestedModel);
+    void setRepairStatus();
+    void setDiscardStatus();
+
 }

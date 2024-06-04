@@ -703,6 +703,88 @@ public class JobEquRemark_PC implements JobEquRemark_PI {
         }
     }
 
+    @Override
+    public void getRepairStatus(String data) {
+        if (AppUtility.isInternetConnected()) {
+            ApiClient.getservices().eotServiceCall(Service_apis.linkItemToEqup, AppUtility.getApiHeaders(),
+                            AppUtility.getJsonObject(new Gson().toJson(data)))
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<JsonObject>() {
+                        @Override
+                        public void onSubscribe(@NotNull Disposable d) {
+
+                        }
+
+                        @Override
+                        public void onNext(@NotNull JsonObject jsonObject) {
+                            AppUtility.progressBarDissMiss();
+                            if (jsonObject.get("success").getAsBoolean()) {
+                              jobEquimView.setRepairStatus();
+                            } else {
+                                AppUtility.progressBarDissMiss();
+                                jobEquimView.setRepairStatus();
+                            }
+                        }
+
+
+                        @Override
+                        public void onError(@NotNull Throwable e) {
+                            AppUtility.progressBarDissMiss();
+                            Log.e("TAG", e.getMessage());
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            AppUtility.progressBarDissMiss();
+                        }
+                    });
+        } else {
+            networkError();
+        }
+    }
+
+    @Override
+    public void getDiscardStatus(String data) {
+        if (AppUtility.isInternetConnected()) {
+            ApiClient.getservices().eotServiceCall(Service_apis.linkItemToEqup, AppUtility.getApiHeaders(),
+                            AppUtility.getJsonObject(new Gson().toJson(data)))
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<JsonObject>() {
+                        @Override
+                        public void onSubscribe(@NotNull Disposable d) {
+
+                        }
+
+                        @Override
+                        public void onNext(@NotNull JsonObject jsonObject) {
+                            AppUtility.progressBarDissMiss();
+                            if (jsonObject.get("success").getAsBoolean()) {
+                                jobEquimView.setDiscardStatus();
+                            } else {
+                                AppUtility.progressBarDissMiss();
+                                jobEquimView.setDiscardStatus();
+                            }
+                        }
+
+
+                        @Override
+                        public void onError(@NotNull Throwable e) {
+                            AppUtility.progressBarDissMiss();
+                            Log.e("TAG", e.getMessage());
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            AppUtility.progressBarDissMiss();
+                        }
+                    });
+        } else {
+            networkError();
+        }
+    }
+
     public void networkError() {
         AppUtility.alertDialog(((Context) jobEquimView), LanguageController.getInstance().
                         getMobileMsgByKey(AppConstant.dialog_alert), LanguageController.getInstance().getMobileMsgByKey

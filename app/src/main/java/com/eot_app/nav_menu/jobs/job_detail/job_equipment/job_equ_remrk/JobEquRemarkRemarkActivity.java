@@ -152,8 +152,7 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
     ArrayList<Attachments> allAttachmentsList = new ArrayList<>();
     InvoiceItemList2Adpter invoice_list_adpter;
     boolean isRemarkUpdated = false;
-    LinearLayout ll_replace;
-    TextView tv_no_replace;
+    LinearLayout ll_replace,ll_repair,ll_reallocate,ll_discard;
     String equStatusId="";
     AppCompatTextView tv_label_status;
     private ArrayList<CustomFormList_Res> customFormLists = new ArrayList<>();
@@ -484,6 +483,20 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
         }
     }
 
+    @Override
+    public void setRepairStatus() {
+        showRemarkSection();
+        isEdit = true;
+        setTitles();
+    }
+
+    @Override
+    public void setDiscardStatus() {
+        showRemarkSection();
+        isEdit = true;
+        setTitles();
+    }
+
     private void initViews() {
 
         tv_label_status = findViewById(R.id.tv_label_status);
@@ -506,8 +519,6 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
         btn_add_requested_item.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add));
         btn_add_requested_item.setTextSize(15);
         btn_add_requested_item.setOnClickListener(this);
-        tv_no_replace = findViewById(R.id.tv_no_replace);
-        tv_no_replace.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.discarded_eq));
 
         ll_replace = findViewById(R.id.ll_replace);
         item_cardview = findViewById(R.id.item_cardview);
@@ -537,6 +548,9 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
          tv_reallocate = findViewById(R.id.tv_reallocate);
          tv_text_for_discard = findViewById(R.id.tv_text_for_discard);
          tv_discard = findViewById(R.id.tv_discard);
+         ll_repair = findViewById(R.id.ll_repair);
+         ll_discard = findViewById(R.id.ll_discard);
+         ll_reallocate = findViewById(R.id.ll_reallocate);
 
         tv_text_for_repair.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.repair_action_msg));
         tv_repair.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.repair));
@@ -978,6 +992,18 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
                 Intent intent = new Intent(this, JobEquReallocateActivity.class);
                 intent.putExtra("old_location",equipment.getLocation());
                 startActivity(intent);
+                break;
+            case R.id.tv_repair:
+                showRemarkSection();
+                isEdit = true;
+                setTitles();
+//                jobEquimPi.getRepairStatus("shjdgfhjsd");
+                break;
+            case R.id.tv_discard:
+                showRemarkSection();
+                isEdit = true;
+                setTitles();
+//                jobEquimPi.getDiscardStatus("shjdgfhjsd");
                 break;
         }
     }
@@ -1458,11 +1484,33 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
             //for checking the sttaus of the equipment and hide replace part if duiscarded already
 
             if(isAction) {
-                ll_replace.setVisibility(getCurrentEquipmentStatus(equipment.getEquStatus()).equalsIgnoreCase("Discarded") ? View.GONE : View.VISIBLE);
+                if(txt_status.getText().toString().equalsIgnoreCase("Discarded")){
+                    ll_replace.setVisibility(View.VISIBLE);
+                    ll_discard.setVisibility(View.VISIBLE);
+                    tv_replace.setEnabled(false);
+                    tv_discard.setEnabled(false);
+                    tv_discard.setBackgroundResource(R.drawable.disable_submit_btn);
+                    tv_replace.setBackgroundResource(R.drawable.disable_submit_btn);
+                    tv_text_for_replace.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.discard_equipments_not_replaced));
+                    tv_text_for_discard.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.discard_equipments_not_discarded_again));
+                }else{
+                    ll_repair.setVisibility(View.VISIBLE);
+                    ll_reallocate.setVisibility(View.VISIBLE);
+                    ll_replace.setVisibility(View.VISIBLE);
+                    ll_discard.setVisibility(View.VISIBLE);
+                    tv_replace.setEnabled(true);
+                    tv_discard.setEnabled(true);
+                    tv_discard.setBackgroundResource(R.drawable.disable_submit_btn);
+                    tv_replace.setBackgroundResource(R.drawable.disable_submit_btn);
+                    tv_text_for_replace.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.do_you_want_to_discard));
+                    tv_text_for_discard.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.discard_action_msg));
+                }
             }else {
                 ll_replace.setVisibility(View.GONE);
+                ll_repair.setVisibility(View.GONE);
+                ll_reallocate.setVisibility(View.GONE);
+                ll_discard.setVisibility(View.GONE);
             }
-            tv_no_replace.setVisibility(getCurrentEquipmentStatus(equipment.getEquStatus()).equalsIgnoreCase("Discarded") ? View.VISIBLE : View.GONE);
 
             Log.e("mParam2", new Gson().toJson(mParam2));
             Log.e("jobId", jobId);
@@ -1950,7 +1998,9 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
         part_cardview.setVisibility(View.GONE);
         item_cardview.setVisibility(View.GONE);
         ll_replace.setVisibility(View.GONE);
-        tv_no_replace.setVisibility(View.GONE);
+        ll_repair.setVisibility(View.GONE);
+        ll_reallocate.setVisibility(View.GONE);
+        ll_discard.setVisibility(View.GONE);
         txt_status.setVisibility(View.GONE);
         ll_requested_item.setVisibility(View.GONE);
         attachment_card.setVisibility(View.VISIBLE);
@@ -1960,8 +2010,29 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
         cv_showRemark.setVisibility(View.VISIBLE);
         part_cardview.setVisibility(View.VISIBLE);
         item_cardview.setVisibility(View.VISIBLE);
-        ll_replace.setVisibility(txt_status.getText().toString().equalsIgnoreCase("Discarded") ? View.GONE : View.VISIBLE);
-        tv_no_replace.setVisibility(txt_status.getText().toString().equalsIgnoreCase("Discarded") ? View.VISIBLE : View.GONE);
+        ll_reallocate.setVisibility(View.VISIBLE);
+        ll_repair.setVisibility(View.VISIBLE);
+        if(txt_status.getText().toString().equalsIgnoreCase("Discarded")){
+            ll_replace.setVisibility(View.VISIBLE);
+            ll_discard.setVisibility(View.VISIBLE);
+            tv_replace.setEnabled(false);
+            tv_discard.setEnabled(false);
+            tv_discard.setBackgroundResource(R.drawable.disable_submit_btn);
+            tv_replace.setBackgroundResource(R.drawable.disable_submit_btn);
+            tv_text_for_replace.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.discard_equipments_not_replaced));
+            tv_text_for_discard.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.discard_equipments_not_discarded_again));
+        } else{
+                ll_repair.setVisibility(View.VISIBLE);
+                ll_reallocate.setVisibility(View.VISIBLE);
+                ll_replace.setVisibility(View.VISIBLE);
+                ll_discard.setVisibility(View.VISIBLE);
+                tv_replace.setEnabled(true);
+                tv_discard.setEnabled(true);
+            tv_discard.setBackgroundResource(R.drawable.submit_btn);
+            tv_replace.setBackgroundResource(R.drawable.submit_btn);
+                tv_text_for_replace.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.do_you_want_to_discard));
+                tv_text_for_discard.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.discard_action_msg));
+            }
         txt_status.setVisibility(View.VISIBLE);
         if(App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsItemRequested() == 0){
             ll_requested_item.setVisibility(View.VISIBLE);

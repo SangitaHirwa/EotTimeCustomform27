@@ -1953,7 +1953,8 @@
     "upcoming_service_not_found": "No Upcoming Service Found",
     "equ_item_not_found": "No Equipment Item Found",
     "equ_parts_not_found": "No Equipment Part Found",
-    "equ_audit_not_found": "No Equipment Audit Found"
+    "equ_audit_not_found": "No Equipment Audit Found",
+    "discard_equipments_not_discarded_again": "Discard equipments cannot be discarded again."
   }
 }
 

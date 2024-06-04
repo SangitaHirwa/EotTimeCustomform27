@@ -271,7 +271,8 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_add_job_equip_ment);
-        setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.step_2));
+        setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.step_2)+" ("+
+                LanguageController.getInstance().getMobileMsgByKey(AppConstant.title_add_equipment)+")");
         initializeViewS();
         supplier_txt.addTextChangedListener(new TextWatcher() {
             @Override

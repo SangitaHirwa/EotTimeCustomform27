@@ -669,7 +669,7 @@
                             android:textColor="@color/white"
                             tools:ignore="HardcodedText" />
                     </LinearLayout>
-                    <TextView
+                    <!--<TextView
                         android:id="@+id/tv_no_replace"
                         style="@style/style_sec"
                         android:layout_width="match_parent"
@@ -682,8 +682,8 @@
                         android:padding="15dp"
                         android:text="Discarded equipments cannot be replaced"
                         android:textStyle="bold"
-                        android:visibility="gone"
-                        tools:ignore="HardcodedText" />
+                        android:visibility="visible"
+                        tools:ignore="HardcodedText" />-->
 
                     <!--Document View End-->
 

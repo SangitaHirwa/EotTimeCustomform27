@@ -442,27 +442,31 @@ public class ReplaceItemEquipmentActivity extends
 
     private void set_Title() {
         if (updateItemDataModel == null) {
-            Objects.requireNonNull(getSupportActionBar()).setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.step_1));
+            Objects.requireNonNull(getSupportActionBar()).setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.step_1)+" ("+
+                    LanguageController.getInstance().getMobileMsgByKey(AppConstant.title_add_equipment)+")");
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             add_edit_item_Btn.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.save_btn));
         } else {
 
             /*this permission for Edit item***/
             if (App_preference.getSharedprefInstance().getLoginRes().getIsItemEditEnable().equals("1")) {
-                Objects.requireNonNull(getSupportActionBar()).setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.step_1));
+                Objects.requireNonNull(getSupportActionBar()).setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.step_1)+" ("+
+                        LanguageController.getInstance().getMobileMsgByKey(AppConstant.title_add_equipment)+")");
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                 add_edit_item_Btn.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.save_btn));
                 DP_OPEN = false;
             } else {
                 EnableDisbleFields();
-                Objects.requireNonNull(getSupportActionBar()).setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.step_1));
+                Objects.requireNonNull(getSupportActionBar()).setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.step_1)+" ("+
+                        LanguageController.getInstance().getMobileMsgByKey(AppConstant.title_add_equipment)+")");
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                 add_edit_item_Btn.setVisibility(View.GONE);
             }
 
             if (updateItemDataModel != null && updateItemDataModel.getDataType() != null && updateItemDataModel.getDataType().equals("6")) {
                 EnableDisbleFields();
-                getSupportActionBar().setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.step_1));
+                getSupportActionBar().setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.step_1)+" ("+
+                        LanguageController.getInstance().getMobileMsgByKey(AppConstant.title_add_equipment)+")");
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                 add_edit_item_Btn.setVisibility(View.GONE);
             }
