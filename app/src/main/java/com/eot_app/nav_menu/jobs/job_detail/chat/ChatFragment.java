@@ -277,7 +277,9 @@ public class ChatFragment extends UploadDocumentFragment implements View.OnClick
     public void onPause() {
         ChatController.getInstance().setChatScreenState(2, "");
         /******/
-        ChatController.getInstance().setChatScreenState(0, jobData.getJobId());
+        if(jobData!=null&&jobData.getJobId()!=null) {
+            ChatController.getInstance().setChatScreenState(0, jobData.getJobId());
+        }
         super.onPause();
     }
 

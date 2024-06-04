@@ -1400,8 +1400,9 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
                 jobId = intent.getExtras().getString("jobId");
             }else if (getIntent().hasExtra("jobid"))
             {
-                if (intent.getExtras().getString("jobid")!=null)
-                jobId=intent.getExtras().getString("jobid");
+                if (intent.getExtras().getString("jobid")!=null) {
+                    jobId = intent.getExtras().getString("jobid");
+                }
             }
             if (getIntent().hasExtra("cltId")) {
                 cltId = intent.getExtras().getString("cltId");

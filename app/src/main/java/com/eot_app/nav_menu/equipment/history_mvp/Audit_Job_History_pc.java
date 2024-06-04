@@ -219,8 +219,6 @@ public class Audit_Job_History_pc implements Audit_Job_History_pi {
         } else {
             if (audit_history_view != null)
                 audit_history_view.setNetworkError(LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_check_network));
-
-
         }
     }
 
@@ -423,8 +421,9 @@ public class Audit_Job_History_pc implements Audit_Job_History_pi {
                                 Type listType = new com.google.common.reflect.TypeToken<List<InvoiceItemDataModel>>() {
                                 }.getType();
                                 List<InvoiceItemDataModel> data = new Gson().fromJson(convert, listType);
-                                if(data!=null)
-                                audit_history_view.setEquipmentItemList(data,jobId);
+                                if(data!=null) {
+                                    audit_history_view.setEquipmentItemList(data, jobId);
+                                }
 
                             } else if (jsonObject.get("statusCode") != null && jsonObject.get("statusCode").getAsString().equals(AppConstant.SESSION_EXPIRE)) {
                                 audit_history_view.sessionExpire(LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));

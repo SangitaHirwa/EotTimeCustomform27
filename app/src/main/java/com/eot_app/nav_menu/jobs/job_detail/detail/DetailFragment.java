@@ -491,55 +491,19 @@ public class DetailFragment extends Fragment
                     showErrorDialog(LanguageController.getInstance().getMobileMsgByKey(AppConstant.cannot_raise_revisit_request_for_job_which_is_already_marked_as_recurring));
             } else {
                 //After discussion with Ayush sir, Add new condition for check signature of customer (27/Sep/2023)
-
                 if(App_preference.getSharedprefInstance().getLoginRes().getIsJobCompCustSignEnable().equals("1")) {
                     if (statusKey.equalsIgnoreCase(AppConstant.Completed)) {
                         if (mParam2.getSignature() == null || mParam2.getSignature().equals("")) {
                             showErrorDialog(LanguageController.getInstance().getMobileMsgByKey(AppConstant.signature_alert));
                         }else {
                             checkForIsLeader(statusKey);
-//                            changeStatus(i);
                         }
                     }else {
                         checkForIsLeader(statusKey);
-//                        changeStatus(i);
                     }
                 }
                 else{
                     checkForIsLeader(statusKey);
-//                    changeStatus(i);
-
-//                    JobStatusModelNew statusModel = JobStatus_Controller.getInstance().getStatusObjectById(statusArrayForIds[i]);
-//                    if (statusModel != null) {
-//                        HyperLog.i(TAG, "Selected status:" + statusModel.getStatus_name());
-//                        HyperLog.i(TAG, "onItemSelected:" + "Select status From DropDown");
-//                        jobstatus.setStatus_name(statusModel.getStatus_name());
-//                        jobstatus.setStatus_no(statusModel.getStatus_no());
-//                    } else {
-//                        return;
-//                    }
-//                    if (!jobDetail_pi.isOldStaus(jobstatus.getStatus_no(), mParam2.getJobId())) {
-//                        //&& (i != -1){
-//                        AppUtility.alertDialog2(getActivity(), LanguageController.getInstance()
-//                                        .getMobileMsgByKey(AppConstant.status_dialog),
-//                                LanguageController.getInstance().getMobileMsgByKey(AppConstant.job_status_change),
-//                                LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok),
-//                                LanguageController.getInstance().getMobileMsgByKey(AppConstant.cancel), new Callback_AlertDialog() {
-//                                    @Override
-//                                    public void onPossitiveCall() {
-//                                        HyperLog.i(TAG, "Request change status start");
-//                                        ((JobDetailActivity) requireActivity()).openFormForEvent(jobstatus.getStatus_no());
-//                                    }
-//
-//                                    @Override
-//                                    public void onNegativeCall() {
-//                                        HyperLog.i(TAG, "onNegativeCall::");
-//                                        jobDetail_pi.setJobCurrentStatus(mParam2.getJobId());
-//                                    }
-//                                });
-//                    } else {
-//                        jobDetail_pi.setJobCurrentStatus(mParam2.getJobId());
-//                    }
                 }
             }
         });
@@ -870,15 +834,15 @@ public class DetailFragment extends Fragment
 
 
         // set item data
-
-
-
         recyclerView_job_item.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL
                 , false));
-        invoice_list_adpter = new InvoiceItemList2Adpter(getActivity(), new ArrayList<>(), true, mParam2.getJobId(),getDisCalculationType,getTaxCalculationType);//, this, this
+        String jobId = "";
+        if(mParam2 != null && mParam2.getJobId() != null) {
+            jobId = mParam2.getJobId();
+        }
+        invoice_list_adpter = new InvoiceItemList2Adpter(getActivity(), new ArrayList<>(), true, jobId, getDisCalculationType, getTaxCalculationType);//, this, this
         recyclerView_job_item.setAdapter(invoice_list_adpter);
         recyclerView_job_item.setNestedScrollingEnabled(false);
-
         //set service data
         rv_mark_done.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL
                 , false));
@@ -886,7 +850,7 @@ public class DetailFragment extends Fragment
         rv_mark_done.setAdapter(serviceMarkDoneAdapter);
 
 
-        if (mParam2.getItemData() != null && invoice_list_adpter != null && !mParam2.getItemData().isEmpty()) {
+        if (mParam2 != null && mParam2.getItemData() != null && invoice_list_adpter != null && !mParam2.getItemData().isEmpty()) {
             invoice_list_adpter.updateitemlist(mParam2.getItemData());
         }
         // set equipment data
@@ -909,7 +873,7 @@ public class DetailFragment extends Fragment
         EotApp.getAppinstance().setNotifyForcompletionInDetail(this);
         EotApp.getAppinstance().setNotifyForRequestedItemList(this);
 
-        if (mParam2.getRecurType() != null && App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsRecur().equals("0") && !mParam2.getRecurType().equalsIgnoreCase("0")
+        if (mParam2!= null && mParam2.getRecurType() != null && App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsRecur().equals("0") && !mParam2.getRecurType().equalsIgnoreCase("0")
         ||mParam2.getParentRecurType() != null && App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsRecur().equals("0") && !mParam2.getParentRecurType().equalsIgnoreCase("0")){
             if(!mParam2.getParentId().equalsIgnoreCase("0") && mParam2.getIsSubjob().equals("0") || mParam2.getParentId().equalsIgnoreCase("0") && mParam2.getIsRecur().equalsIgnoreCase("1")) {
                 recur_parent_view.setVisibility(View.VISIBLE);
@@ -928,7 +892,7 @@ public class DetailFragment extends Fragment
 
         if(App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsItemRequested() == 0){
             ll_requested_item.setVisibility(View.VISIBLE);
-            if(mParam2.getItemRequested() != null && mParam2.getItemRequested().equals("1")){
+            if(mParam2 != null && mParam2.getItemRequested() != null && mParam2.getItemRequested().equals("1")){
                 requested_item_flag.setVisibility(View.VISIBLE);
                 requested_itemList_show_hide_rl.setVisibility(View.VISIBLE);
             }else {
@@ -1455,11 +1419,11 @@ public class DetailFragment extends Fragment
                 txt_notesHeader.setVisibility(View.GONE);
                 complation_notes.setVisibility(View.GONE);
                 btnComplationView.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add));
-            }else if(mParam2.getComplNote() != null && mParam2.getComplNote().isEmpty() &&  mParam2.getCompliAnsArray() != null && !mParam2.getCompliAnsArray().isEmpty()){
+            }else if(mParam2 != null && mParam2.getComplNote() != null && mParam2.getComplNote().isEmpty() &&  mParam2.getCompliAnsArray() != null && !mParam2.getCompliAnsArray().isEmpty()){
                 txt_notesHeader.setVisibility(View.GONE);
                 complation_notes.setVisibility(View.GONE);
                 btnComplationView.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit));
-            }else if(mParam2.getComplNote() != null && mParam2.getComplNote().isEmpty()){
+            }else if(mParam2 != null && mParam2.getComplNote() != null && mParam2.getComplNote().isEmpty()){
                 txt_notesHeader.setVisibility(View.GONE);
                 complation_notes.setVisibility(View.GONE);
                 btnComplationView.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add));
@@ -1471,30 +1435,33 @@ public class DetailFragment extends Fragment
                 txt_notesHeader.setVisibility(View.VISIBLE);
                 complation_notes.setVisibility(View.VISIBLE);
             }
-            if(mParam2.getIsMarkDoneWithJtId() !=null && mParam2.getIsMarkDoneWithJtId().size()>0) {
+            if(mParam2 != null && mParam2.getIsMarkDoneWithJtId() !=null && mParam2.getIsMarkDoneWithJtId().size()>0) {
                 cl_serviceMarkAsDone.setVisibility(View.VISIBLE);
                 isMarkDoneWithJtidsList.addAll(mParam2.getIsMarkDoneWithJtId());
                 serviceMarkDoneAdapter.updatList(mParam2.getIsMarkDoneWithJtId());
             }else {
                 cl_serviceMarkAsDone.setVisibility(View.GONE);
             }
-        }else if(AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).offline_completion_ans_dao().getComplQueAnsById(mParam2.getJobId()) != null){
+        }else if(mParam2 != null && AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).offline_completion_ans_dao().getComplQueAnsById(mParam2.getJobId()) != null){
             OfflieCompleQueAns offlieCompleQueAns = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).offline_completion_ans_dao().getComplQueAnsById(mParam2.getJobId());
             mParam2 = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(mParam2.getJobId());
             if(mParam2.getComplNote() != null && mParam2.getComplNote().isEmpty() && offlieCompleQueAns.getAllQuestionAnswer().isEmpty()){
                 txt_notesHeader.setVisibility(View.GONE);
                 complation_notes.setVisibility(View.GONE);
                 btnComplationView.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add));
-            }else if(mParam2.getComplNote() != null && mParam2.getComplNote().isEmpty() && mParam2.getCompliAnsArray() != null &&  !mParam2.getCompliAnsArray().isEmpty()){
+            }else if(mParam2 != null && mParam2.getComplNote() != null && mParam2.getComplNote().isEmpty() && mParam2.getCompliAnsArray() != null &&  !mParam2.getCompliAnsArray().isEmpty()){
                 txt_notesHeader.setVisibility(View.GONE);
                 complation_notes.setVisibility(View.GONE);
                 btnComplationView.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit));
-            }else if(mParam2.getComplNote() != null && mParam2.getComplNote().isEmpty()){
+            }else if(mParam2 != null && mParam2.getComplNote() != null && mParam2.getComplNote().isEmpty()){
                 txt_notesHeader.setVisibility(View.GONE);
                 complation_notes.setVisibility(View.GONE);
                 btnComplationView.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add));
             }else {
-                String tempstring=mParam2.getComplNote().replace("null", "");
+                String tempstring = "";
+                if(mParam2 != null) {
+                     tempstring = mParam2.getComplNote().replace("null", "");
+                }
                 tempstring.replace("<br>","");
                 complation_notes.setText(tempstring);
                 btnComplationView.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit));
@@ -1511,33 +1478,38 @@ public class DetailFragment extends Fragment
             }
 
         }else {
-            mParam2 = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(mParam2.getJobId());
-            if(mParam2.getComplNote() !=null && mParam2.getComplNote().isEmpty() && mParam2.getCompliAnsArray() != null &&  mParam2.getCompliAnsArray().isEmpty()){
-                txt_notesHeader.setVisibility(View.GONE);
-                complation_notes.setVisibility(View.GONE);
-                btnComplationView.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add));
-            }else if(mParam2.getComplNote() != null&& mParam2.getComplNote().isEmpty() && mParam2.getCompliAnsArray() != null &&  !mParam2.getCompliAnsArray().isEmpty()){
-                txt_notesHeader.setVisibility(View.GONE);
-                complation_notes.setVisibility(View.GONE);
-                btnComplationView.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit));
-            }else if(mParam2.getComplNote() != null && mParam2.getComplNote().isEmpty()){
-                txt_notesHeader.setVisibility(View.GONE);
-                complation_notes.setVisibility(View.GONE);
-                btnComplationView.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add));
-            }else {
-                String tempstring=mParam2.getComplNote().replace("null", "");
-                tempstring.replace("<br>","");
-                complation_notes.setText(tempstring);
-                btnComplationView.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit));
-                txt_notesHeader.setVisibility(View.VISIBLE);
-                complation_notes.setVisibility(View.VISIBLE);
-            }
-            if(mParam2.getIsMarkDoneWithJtId() !=null && mParam2.getIsMarkDoneWithJtId().size()>0) {
-                cl_serviceMarkAsDone.setVisibility(View.VISIBLE);
-                isMarkDoneWithJtidsList.addAll(mParam2.getIsMarkDoneWithJtId());
-                serviceMarkDoneAdapter.updatList(mParam2.getIsMarkDoneWithJtId());
-            }else {
-                cl_serviceMarkAsDone.setVisibility(View.GONE);
+            if(mParam2 != null) {
+                mParam2 = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(mParam2.getJobId());
+                if (mParam2 != null && mParam2.getComplNote() != null && mParam2.getComplNote().isEmpty() && mParam2.getCompliAnsArray() != null && mParam2.getCompliAnsArray().isEmpty()) {
+                    txt_notesHeader.setVisibility(View.GONE);
+                    complation_notes.setVisibility(View.GONE);
+                    btnComplationView.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add));
+                } else if (mParam2 != null && mParam2.getComplNote() != null && mParam2.getComplNote().isEmpty() && mParam2.getCompliAnsArray() != null && !mParam2.getCompliAnsArray().isEmpty()) {
+                    txt_notesHeader.setVisibility(View.GONE);
+                    complation_notes.setVisibility(View.GONE);
+                    btnComplationView.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit));
+                } else if (mParam2 != null && mParam2.getComplNote() != null && mParam2.getComplNote().isEmpty()) {
+                    txt_notesHeader.setVisibility(View.GONE);
+                    complation_notes.setVisibility(View.GONE);
+                    btnComplationView.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add));
+                } else {
+                    String tempstring = "";
+                    if (mParam2 != null) {
+                        tempstring = mParam2.getComplNote().replace("null", "");
+                    }
+                    tempstring.replace("<br>", "");
+                    complation_notes.setText(tempstring);
+                    btnComplationView.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit));
+                    txt_notesHeader.setVisibility(View.VISIBLE);
+                    complation_notes.setVisibility(View.VISIBLE);
+                }
+                if (mParam2 != null && mParam2.getIsMarkDoneWithJtId() != null && mParam2.getIsMarkDoneWithJtId().size() > 0) {
+                    cl_serviceMarkAsDone.setVisibility(View.VISIBLE);
+                    isMarkDoneWithJtidsList.addAll(mParam2.getIsMarkDoneWithJtId());
+                    serviceMarkDoneAdapter.updatList(mParam2.getIsMarkDoneWithJtId());
+                } else {
+                    cl_serviceMarkAsDone.setVisibility(View.GONE);
+                }
             }
         }
         cl_pbCompletion.setVisibility(View.GONE);
@@ -1546,7 +1518,7 @@ public class DetailFragment extends Fragment
 //        addComplationButtonTxt();
         if(App_preference.getSharedprefInstance().getLoginRes().getIsCompleShowMarkDone().equals("1")) {
             if (App_preference.getSharedprefInstance().getLoginRes().getIsJobCompCustSignEnable().equals("0")) {
-                if(mParam2.getStatus() != null && !mParam2.getStatus().equalsIgnoreCase("9")) {
+                if(mParam2 != null && mParam2.getStatus() != null && !mParam2.getStatus().equalsIgnoreCase("9")) {
                     if(isAskForCompleteJob) {
                         checkMarkServices();
                         isAskForCompleteJob = false;

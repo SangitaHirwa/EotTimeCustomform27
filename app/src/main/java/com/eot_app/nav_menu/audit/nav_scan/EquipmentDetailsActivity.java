@@ -111,10 +111,10 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
     private String cltId;
     private Job_equim_PI jobEquimPi;
     public  AddEdit_QRCode_BarCode_Dialog addEditQrCodeBarCodeDialog;
-    public  String barCode = "", qrcode = "", equpId ="";
     boolean clicked_service_history,clicked_upcoming_service,click_part,click_item,click_audit = false;
     String equ_found_or_not = "";
 
+    public  String barCode = "", qrcode = "", equpId ="",jobId ="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -130,29 +130,30 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
                 EquArrayModel equipment = new Gson().fromJson(str, EquArrayModel.class);
                 setJobEquipment(equipment);
                 equpId = equipment.getEquId();
-                equ_details_pc.getEquipmentAduitHistory(equipment.getEquId());
-                equ_details_pc.getEquipmentJobHistory(equipment.getEquId());
-                equ_details_pc.getEqItemFromServer(equipment.getEquId(),getIntent().getStringExtra("jobId"));
-                equ_details_pc.getEqPartsFromServer(equipment.getEquId());
+                jobId = getIntent().getStringExtra("jobId");
+//                equ_details_pc.getEquipmentAduitHistory(equipment.getEquId());
+//                equ_details_pc.getEquipmentJobHistory(equipment.getEquId());
+//                equ_details_pc.getEqItemFromServer(equipment.getEquId(),jobId);
+//                equ_details_pc.getEqPartsFromServer(equipment.getEquId());
 
             } else if (getIntent().hasExtra("audit_equip")) {
                 String str = getIntent().getExtras().getString("audit_equip_str");
                 Equipment_Res equipment = new Gson().fromJson(str, Equipment_Res.class);
                 setAuditEquipment(equipment);
                 equpId = equipment.getEquId();
-                equ_details_pc.getEquipmentAduitHistory(equipment.getEquId());
-                equ_details_pc.getEquipmentJobHistory(equipment.getEquId());
-                equ_details_pc.getEqItemFromServer(equipment.getEquId(),null);
-                equ_details_pc.getEqPartsFromServer(equipment.getEquId());
+//                equ_details_pc.getEquipmentAduitHistory(equipment.getEquId());
+//                equ_details_pc.getEquipmentJobHistory(equipment.getEquId());
+//                equ_details_pc.getEqItemFromServer(equipment.getEquId(),jobId);
+//                equ_details_pc.getEqPartsFromServer(equipment.getEquId());
 
             } else if (getIntent().hasExtra("equipment_id")) {
                 Equipment equipment = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).equipmentDao().getEquipmentById(getIntent().getStringExtra("equipment_id"));
                 setEquipmentDetails(equipment);
                 equpId = equipment.getEquId();
-                equ_details_pc.getEquipmentAduitHistory(equipment.getEquId());
-                equ_details_pc.getEquipmentJobHistory(equipment.getEquId());
-                equ_details_pc.getEqItemFromServer(equipment.getEquId(),null);
-                equ_details_pc.getEqPartsFromServer(equipment.getEquId());
+//                equ_details_pc.getEquipmentAduitHistory(equipment.getEquId());
+//                equ_details_pc.getEquipmentJobHistory(equipment.getEquId());
+//                equ_details_pc.getEqItemFromServer(equipment.getEquId(),jobId);
+//                equ_details_pc.getEqPartsFromServer(equipment.getEquId());
 
             }
             if(getIntent().hasExtra("found_or_not")) {
@@ -189,7 +190,7 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
             if (equpId != null && !equpId.isEmpty()) {
                 equ_details_pc.getEquipmentAduitHistory(equpId);
                 equ_details_pc.getEquipmentJobHistory(equpId);
-                equ_details_pc.getEqItemFromServer(equpId, null);
+                equ_details_pc.getEqItemFromServer(equpId, jobId);
                 equ_details_pc.getEqPartsFromServer(equpId);
             }
         }
