@@ -342,8 +342,9 @@ public class JobEquipmentActivity extends AppCompatActivity
     @Override
     public void onResume() {
         super.onResume();
-        if(jobEquimPi!=null)
-        jobEquimPi.getEquipmentList(jobId);
+        if(jobEquimPi!=null) {
+            jobEquimPi.getEquipmentList(jobId);
+        }
 
     }
 
@@ -358,10 +359,12 @@ public class JobEquipmentActivity extends AppCompatActivity
 
         if (swipeRefreshLayout != null) swipeRefreshLayout.setRefreshing(false);
         if (list != null) {
-            if (list.size() == 0)
+            if (list.size() == 0) {
                 nolist_linear.setVisibility(View.VISIBLE);
-            else nolist_linear.setVisibility(View.GONE);
-
+            }
+            else {
+                nolist_linear.setVisibility(View.GONE);
+            }
             adapter.setList(list);
             // to set the list of status
             if(App_preference.getSharedprefInstance().getEquipmentStatusList()!=null&&!App_preference.getSharedprefInstance().getEquipmentStatusList().isEmpty())

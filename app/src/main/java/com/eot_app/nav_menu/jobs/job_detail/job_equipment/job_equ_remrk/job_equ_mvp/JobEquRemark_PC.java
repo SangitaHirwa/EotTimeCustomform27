@@ -297,6 +297,7 @@ public class JobEquRemark_PC implements JobEquRemark_PI {
                              List<MultipartBody.Part> signAns,
                              ArrayList<String> signQueIdArrays,boolean isAutoUpdatedRemark,String equStatusId) {
         if (AppUtility.isInternetConnected()) {
+            HyperLog.i("Param","Request of Remark :"+new Gson().toJson(remarkRequest)+" file path = "+ file+" Equipment status Id = "+equStatusId);
             HyperLog.i("", "JobEquRemark_PC: " + "addNewRemark:::: Start");
 
             String mimeType = "";
