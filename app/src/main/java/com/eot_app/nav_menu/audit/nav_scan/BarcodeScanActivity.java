@@ -86,6 +86,7 @@ public class BarcodeScanActivity extends AppCompatActivity implements ScanBarcod
         if(getIntent()!=null)
         {
             comeFrom=getIntent().getStringExtra("comeFrom");
+
             if(comeFrom!=null&&comeFrom.equalsIgnoreCase("AddEquipment")){
                 layout_search.setVisibility(View.GONE);
                 options = new GmsBarcodeScannerOptions.Builder()
@@ -93,7 +94,15 @@ public class BarcodeScanActivity extends AppCompatActivity implements ScanBarcod
                                 Barcode.FORMAT_ALL_FORMATS)
                         .enableAutoZoom()
                         .build();
-            }else {
+            }else if(comeFrom!=null&&comeFrom.equalsIgnoreCase("linkFromEquList")){
+                layout_search.setVisibility(View.GONE);
+                options = new GmsBarcodeScannerOptions.Builder()
+                        .setBarcodeFormats(
+                                Barcode.FORMAT_ALL_FORMATS)
+                        .enableAutoZoom()
+                        .build();
+            }
+            else {
                 if(Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
                     options = new GmsBarcodeScannerOptions.Builder()
                             .setBarcodeFormats(
@@ -358,6 +367,9 @@ public class BarcodeScanActivity extends AppCompatActivity implements ScanBarcod
                     Intent intent = new Intent(this, EquipmentDetailsActivity.class);
                     intent.putExtra("equipment", true);
                     intent.putExtra("equipment_id", jobList.get(0).getEquId());
+                    if(comeFrom!=null&&comeFrom.equalsIgnoreCase("linkFromEquList")){
+                        intent.putExtra("found_or_not","equipmentFound");
+                    }
                     startActivity(intent);
                 }else {
                     Toast.makeText(this, LanguageController.getInstance().getMobileMsgByKey(AppConstant.eqi_not_foun_txt), Toast.LENGTH_SHORT).show();
@@ -371,9 +383,17 @@ public class BarcodeScanActivity extends AppCompatActivity implements ScanBarcod
                 intent.putExtra("jobids", s);
                 intent.putExtra("AUDITDATA", auditData);
                 intent.putExtra("codetext", codeText);
+                if(comeFrom!=null&&comeFrom.equalsIgnoreCase("linkFromEquList")){
+                    intent.putExtra("found_or_not","equipmentFound");
+                }
                 startActivityForResult(intent, 100);
             }
-        }else {
+        }else if(comeFrom!=null&&comeFrom.equalsIgnoreCase("linkFromEquList")){
+            Intent intent = new Intent(this, EquipmentNotFroundActivity.class);
+            intent.putExtra("codetext", codeText);
+            startActivityForResult(intent, 100);
+        }
+        else {
             Toast.makeText(this, LanguageController.getInstance().getMobileMsgByKey(AppConstant.eqi_not_foun_txt), Toast.LENGTH_SHORT).show();
             onResume();
         }

@@ -106,6 +106,7 @@
     <color name="bule_service">#0057FF</color>
     <color name="green_upcomingservice">#00AB33</color>
     <color name="discard_link_equ">#FFE7E9</color>
+    <color name="reallocate_screen">#f5f0f2</color>
 
 
 </resources>

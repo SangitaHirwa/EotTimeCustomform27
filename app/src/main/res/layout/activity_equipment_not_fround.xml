@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".nav_menu.audit.nav_scan.EquipmentNotFroundActivity">
+    <LinearLayout
+        android:id="@+id/equ_not_found_ll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="visible"
+        android:gravity="center"
+        android:layout_marginHorizontal="70dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/txt_for_link_or_not"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        >
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_no_equ"/>
+        <TextView
+            android:id="@+id/txt_equ_not_found"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="The system can't find the item you scanned."
+            style="@style/header_text_style"
+            />
+    </LinearLayout>
+    <TextView
+        android:id="@+id/txt_for_link_or_not"
+        style="@style/style_thrid"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginVertical="8dp"
+        android:background="@color/white"
+        android:visibility="visible"
+        android:layout_marginHorizontal="21dp"
+        app:layout_constraintBottom_toTopOf="@+id/ll_bottom"
+        android:textColor="@color/date_colore"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:text="Would you like to install or deploy this as a new item?" />
+    <LinearLayout
+        android:id="@+id/ll_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:padding="5dp">
+
+    <Button
+        android:id="@+id/button_yes"
+        style="@style/style_thrid"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/button_field_height"
+        android:layout_margin="5dp"
+        android:layout_weight="1"
+        android:background="@drawable/submit_btn"
+        android:singleLine="true"
+        android:text=""
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/button_no"
+        style="@style/style_thrid"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/button_field_height"
+        android:layout_margin="5dp"
+        android:layout_weight="1"
+        android:background="@drawable/scan_button_shap"
+        android:singleLine="true"
+        android:text=""
+        android:textAllCaps="false"
+        android:textColor="@color/colorPrimary"
+        android:textStyle="bold" />
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

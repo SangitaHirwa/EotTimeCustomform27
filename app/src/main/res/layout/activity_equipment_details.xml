@@ -4,12 +4,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
 
     >
-    <!--android:layout_marginTop="12dp"-->
+    <!--android:layout_marginTop="8dp"-->
     <RelativeLayout
         android:id="@+id/relative_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="5dp"
+        android:background="@color/bg_job"
         android:descendantFocusability="beforeDescendants"
         android:focusableInTouchMode="true"
         >
@@ -17,963 +17,878 @@
     <androidx.core.widget.NestedScrollView
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@id/ll_bottom"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/not_found_btn_ll"
+        android:visibility="visible"
         android:isScrollContainer="true">
 
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-
-            <com.eot_app.utility.RoundedImageView
-                android:id="@+id/profile_img"
-                android:layout_width="120dp"
-                android:layout_height="120dp"
-                android:layout_gravity="center"
-                android:layout_marginTop="10dp"
-                android:paddingTop="@dimen/nav_header_vertical_spacing"
-                android:src="@drawable/app_logo2" />
-
-
-            <TextView
-                android:id="@+id/equipment_name"
-                style="@style/style_sec"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center_horizontal"
-                android:paddingStart="10dp"
-                android:paddingTop="10dp"
-                android:textColor="@color/black"
-                tools:ignore="RtlSymmetry" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="30dp"
-                android:background="@color/border_font_color" />
-
+            android:orientation="vertical"
+            android:layout_marginTop="8dp"
+            android:visibility="visible"
+            android:layout_marginHorizontal="13dp"
+            android:background="@color/bg_job"
+            >
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:orientation="horizontal"
-                android:weightSum="2">
-
-
-                <TextView
-                    android:id="@+id/barnd_name"
-                    style="@style/style_sec"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical"
-                    android:paddingStart="10dp"
-                    android:paddingTop="5dp"
-                    android:textColor="@color/black"
-
-                    tools:ignore="RtlSymmetry" />
-
-                <TextView
-                    android:id="@+id/barnd_name_detail"
-                    style="@style/style_sec"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="2dp"
-                    android:layout_weight="1"
-                    android:gravity="end|center_vertical"
-                    android:paddingTop="5dp"
-                    android:paddingEnd="10dp"
-                    android:textStyle="normal"
-                    tools:ignore="RtlSymmetry" />
-
-
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="5dp"
-                android:background="@color/border_font_color" />
-
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:orientation="horizontal"
-                android:weightSum="2">
-
-
-                <TextView
-                    android:id="@+id/model_no"
-                    style="@style/style_sec"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical"
-                    android:paddingStart="10dp"
-                    android:paddingTop="5dp"
-                    android:textColor="@color/black"
-                    tools:ignore="RtlSymmetry" />
-
-                <TextView
-                    android:id="@+id/model_no_detail"
-                    style="@style/style_sec"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="2dp"
-                    android:layout_weight="1"
-                    android:gravity="end|center_vertical"
-                    android:paddingTop="5dp"
-                    android:paddingEnd="10dp"
-                    android:textStyle="normal"
-                    tools:ignore="RtlSymmetry" />
-
-
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="5dp"
-                android:background="@color/border_font_color" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:orientation="horizontal"
-                android:weightSum="2">
-
-
-                <TextView
-                    android:id="@+id/serial_no"
-                    style="@style/style_sec"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical"
-                    android:paddingStart="10dp"
-                    android:paddingTop="5dp"
-                    android:textColor="@color/black"
-                    tools:ignore="RtlSymmetry" />
-
-                <TextView
-                    android:id="@+id/serial_no_detail"
-                    style="@style/style_sec"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="2dp"
-                    android:layout_weight="1"
-                    android:gravity="end|center_vertical"
-                    android:paddingTop="5dp"
-                    android:paddingEnd="10dp"
-                    android:textStyle="normal"
-                    tools:ignore="RtlSymmetry" />
-
-
-            </LinearLayout>
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="5dp"
-                android:background="@color/border_font_color" />
-
-            <TextView
-                android:id="@+id/serv_due_date"
-                style="@style/style_sec"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="2dp"
-                android:layout_weight="1"
-                android:gravity="end|center_vertical"
-                android:paddingTop="5dp"
-                android:paddingEnd="10dp"
-                android:textStyle="normal"
-                tools:ignore="RtlSymmetry" />
-
-            <LinearLayout
-                android:id="@+id/equipment_location_detail"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:weightSum="2">
-
-
-                <TextView
-                    android:id="@+id/equipment_location"
-                    style="@style/style_sec"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:paddingStart="10dp"
-                    android:paddingTop="5dp"
-                    android:textColor="@color/black"
-                    tools:ignore="RtlSymmetry" />
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    style="@style/style_sec"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="2dp"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:paddingVertical="5dp"
-                     android:paddingHorizontal="10dp"
-                    android:textStyle="normal"
-                    tools:ignore="RtlSymmetry">
-
-                    <TextView
-                        android:id="@+id/client_name_detail"
-                        style="@style/style_sec"
-                        android:textStyle="normal"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="3dp"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        />
-
-                    <TextView
-                        android:id="@+id/site_detail"
-                        style="@style/style_sec"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:textStyle="normal"
-                        app:layout_constraintTop_toBottomOf="@+id/client_name_detail"
-                        app:layout_constraintStart_toStartOf="@+id/client_name_detail"
-                       />
-
-                    <TextView
-                        android:id="@+id/location_detail"
-                        style="@style/style_sec"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        app:layout_constraintTop_toBottomOf="@+id/site_detail"
-                        app:layout_constraintStart_toStartOf="@+id/site_detail"
-                        />
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="5dp"
-                android:background="@color/border_font_color" />
-
-
-            <LinearLayout
-                android:id="@+id/ll_provider"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:visibility="gone">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:orientation="horizontal"
-                    android:weightSum="2">
-
-
-                    <TextView
-                        android:id="@+id/traiff_rate"
-                        style="@style/style_sec"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="center_vertical"
-                        android:paddingStart="10dp"
-                        android:paddingTop="5dp"
-                        android:textColor="@color/black"
-                        tools:ignore="RtlSymmetry" />
-
-                    <TextView
-                        android:id="@+id/traiff_rate_detail"
-                        style="@style/style_sec"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginStart="2dp"
-                        android:layout_weight="1"
-                        android:gravity="end|center_vertical"
-                        android:paddingTop="5dp"
-                        android:paddingEnd="10dp"
-                        android:textStyle="normal"
-                        tools:ignore="RtlSymmetry" />
-                </LinearLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginTop="5dp"
-                    android:background="@color/border_font_color"
-                    android:visibility="visible" />
-
-            </LinearLayout>
-
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:orientation="horizontal"
-                android:weightSum="2">
-
-                <TextView
-                    android:id="@+id/warrenty_expiry_date"
-                    style="@style/style_sec"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical"
-                    android:paddingStart="10dp"
-                    android:paddingTop="5dp"
-                    android:textColor="@color/black"
-                    tools:ignore="RtlSymmetry" />
-
-                <TextView
-                    android:id="@+id/warrenty_expiry_date_detail"
-                    style="@style/style_sec"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="2dp"
-                    android:layout_weight="1"
-                    android:gravity="end|center_vertical"
-                    android:paddingTop="5dp"
-                    android:paddingEnd="10dp"
-                    android:textStyle="normal"
-                    tools:ignore="RtlSymmetry" />
-
-
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="5dp"
-                android:background="@color/border_font_color" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:orientation="horizontal"
-                android:weightSum="2">
-
-
-                <TextView
-                    android:id="@+id/manufacture_date"
-                    style="@style/style_sec"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical"
-                    android:paddingStart="10dp"
-                    android:paddingTop="5dp"
-                    android:textColor="@color/black"
-                    tools:ignore="RtlSymmetry" />
-
-                <TextView
-                    android:id="@+id/manufacture_date_detail"
-                    style="@style/style_sec"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="2dp"
-                    android:layout_weight="1"
-                    android:gravity="end|center_vertical"
-                    android:paddingTop="5dp"
-                    android:paddingEnd="10dp"
-                    android:textStyle="normal"
-                    tools:ignore="RtlSymmetry" />
-
-
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="5dp"
-                android:background="@color/border_font_color" />
-
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:orientation="horizontal"
-                android:weightSum="2">
-
-                <TextView
-                    android:id="@+id/purchase_date"
-                    style="@style/style_sec"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical"
-                    android:paddingStart="10dp"
-                    android:paddingTop="5dp"
-                    android:textColor="@color/black"
-                    tools:ignore="RtlSymmetry" />
-
-                <TextView
-                    android:id="@+id/purchase_date_detail"
-                    style="@style/style_sec"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="2dp"
-                    android:layout_weight="1"
-                    android:gravity="end|center_vertical"
-                    android:paddingTop="5dp"
-                    android:paddingEnd="10dp"
-                    android:textStyle="normal"
-                    tools:ignore="RtlSymmetry" />
-
-
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="5dp"
-                android:background="@color/border_font_color" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:orientation="horizontal"
-                android:weightSum="2">
-
-                <TextView
-                    android:id="@+id/installed_date"
-                    style="@style/style_sec"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical"
-                    android:paddingStart="10dp"
-                    android:paddingTop="5dp"
-                    android:textColor="@color/black"
-                    tools:ignore="RtlSymmetry" />
-
-                <TextView
-                    android:id="@+id/install_date_detail"
-                    style="@style/style_sec"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="2dp"
-                    android:layout_weight="1"
-                    android:gravity="end|center_vertical"
-                    android:paddingTop="5dp"
-                    android:paddingEnd="10dp"
-                    android:textStyle="normal"
-                    tools:ignore="RtlSymmetry" />
-
-
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="5dp"
-                android:background="@color/border_font_color" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:orientation="horizontal"
-                android:weightSum="2">
-
-
-                <TextView
-                    android:id="@+id/type"
-                    style="@style/style_sec"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical"
-                    android:paddingStart="10dp"
-                    android:paddingTop="5dp"
-                    android:textColor="@color/black"
-                    tools:ignore="RtlSymmetry" />
-
-                <TextView
-                    android:id="@+id/type_detail"
-                    style="@style/style_sec"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="2dp"
-                    android:layout_weight="1"
-                    android:gravity="end|center_vertical"
-                    android:paddingTop="5dp"
-                    android:paddingEnd="10dp"
-                    android:textStyle="normal"
-                    tools:ignore="RtlSymmetry" />
-
-
-            </LinearLayout>
-
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="5dp"
-                android:background="@color/border_font_color" />
-
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:orientation="horizontal"
-                android:weightSum="2">
-
-
-                <TextView
-                    android:id="@+id/last_serv_date"
-                    style="@style/style_sec"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical"
-                    android:paddingStart="10dp"
-                    android:paddingTop="5dp"
-                    android:textColor="@color/black"
-                    tools:ignore="RtlSymmetry" />
-
-                <TextView
-                    android:id="@+id/last_serv_date_lable"
-                    style="@style/style_sec"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="2dp"
-                    android:layout_weight="1"
-                    android:gravity="end|center_vertical"
-                    android:paddingTop="5dp"
-                    android:paddingEnd="10dp"
-                    android:textStyle="normal"
-                    tools:ignore="RtlSymmetry" />
-
-
-            </LinearLayout>
-
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="5dp"
-                android:background="@color/border_font_color" />
-
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:orientation="horizontal"
-                android:weightSum="2">
-
-
-                <TextView
-                    android:id="@+id/serv_due_date_label"
-                    style="@style/style_sec"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical"
-                    android:paddingStart="10dp"
-                    android:paddingTop="5dp"
-                    android:textColor="@color/black"
-                    tools:ignore="RtlSymmetry" />
-
-
-            </LinearLayout>
-
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="5dp"
-                android:background="@color/border_font_color" />
-
-
-           <!-- <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:orientation="horizontal"
-                android:weightSum="2">
-
-
-                <TextView
-                    android:id="@+id/equ_bar_code_num_lable"
-                    style="@style/style_sec"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical"
-                    android:paddingStart="10dp"
-                    android:paddingTop="5dp"
-                    android:textColor="@color/black"
-                    tools:ignore="RtlSymmetry" />
-
-                <TextView
-                    android:id="@+id/equ_bar_code_num_txt"
-                    style="@style/style_sec"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="2dp"
-                    android:layout_weight="1"
-                    android:gravity="end|center_vertical"
-                    android:paddingTop="5dp"
-                    android:paddingEnd="10dp"
-                    android:textStyle="normal"
-                    tools:ignore="RtlSymmetry" />
-
-
-            </LinearLayout>
--->
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="5dp"
-                android:background="@color/border_font_color" />
-
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:orientation="horizontal"
-                android:weightSum="2">
-
-
-                <TextView
-                    android:id="@+id/equipment_group"
-                    style="@style/style_sec"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical"
-                    android:paddingStart="10dp"
-                    android:paddingTop="5dp"
-                    android:textColor="@color/black"
-                    tools:ignore="RtlSymmetry" />
-
-                <TextView
-                    android:id="@+id/equipment_group_detail"
-                    style="@style/style_sec"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="2dp"
-                    android:layout_weight="1"
-                    android:gravity="end|center_vertical"
-                    android:paddingTop="5dp"
-                    android:paddingEnd="10dp"
-                    android:textStyle="normal"
-                    tools:ignore="RtlSymmetry" />
-
-
-            </LinearLayout>
-
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="5dp"
-                android:background="@color/border_font_color" />
-
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:orientation="horizontal"
-                android:weightSum="2">
-
-
-                <TextView
-                    android:id="@+id/custom_filed_1"
-                    style="@style/style_sec"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical"
-                    android:paddingStart="10dp"
-                    android:paddingTop="5dp"
-                    android:textColor="@color/black"
-                    tools:ignore="RtlSymmetry" />
-
-                <TextView
-                    android:id="@+id/custom_filed_txt_1"
-                    style="@style/style_sec"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="2dp"
-                    android:layout_weight="1"
-                    android:gravity="end|center_vertical"
-                    android:paddingTop="5dp"
-                    android:paddingEnd="10dp"
-                    android:textStyle="normal"
-                    tools:ignore="RtlSymmetry" />
-
-
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="5dp"
-                android:background="@color/border_font_color" />
-
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:orientation="horizontal"
-                android:weightSum="2">
-
-
-                <TextView
-                    android:id="@+id/custom_filed_2"
-                    style="@style/style_sec"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical"
-                    android:paddingStart="10dp"
-                    android:paddingTop="5dp"
-                    android:textColor="@color/black"
-                    tools:ignore="RtlSymmetry" />
-
-                <TextView
-                    android:id="@+id/custom_filed_txt_2"
-                    style="@style/style_sec"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="2dp"
-                    android:layout_weight="1"
-                    android:gravity="end|center_vertical"
-                    android:paddingTop="5dp"
-                    android:paddingEnd="10dp"
-                    android:textStyle="normal"
-                    tools:ignore="RtlSymmetry" />
-
-
-            </LinearLayout>
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="5dp"
-                android:background="@color/border_font_color" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:orientation="horizontal"
-                android:weightSum="2">
-
-
-                <TextView
-                    android:id="@+id/supplier_txt"
-                    style="@style/style_sec"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical"
-                    android:paddingStart="10dp"
-                    android:paddingTop="5dp"
-                    android:textColor="@color/black"
-                    tools:ignore="RtlSymmetry" />
-
-                <TextView
-                    android:id="@+id/supplier"
-                    style="@style/style_sec"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="2dp"
-                    android:layout_weight="1"
-                    android:gravity="end|center_vertical"
-                    android:paddingTop="5dp"
-                    android:paddingEnd="10dp"
-                    android:textStyle="normal"
-                    tools:ignore="RtlSymmetry" />
-
-
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="5dp"
-                android:background="@color/border_font_color" />
+                android:background="@color/white"
+                android:padding="8dp">
+            <TextView
+                android:id="@+id/txt_about_equipment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:layout_marginTop="10dp"
+                style="@style/style_thrid"
+                android:textColor="@color/about_equipment"
+                />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="2dp"
+                android:layout_marginTop="8dp"
+
                 >
+            <com.eot_app.utility.RoundedImageView
+                android:id="@+id/profile_img"
+                android:layout_width="65dp"
+                android:layout_height="64dp"
+                android:src="@drawable/app_logo2"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
 
-                <TextView
-                    android:id="@+id/txt_addBarcode"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:drawableStart="@drawable/plus"
-                    android:gravity="start|center"
-                    android:text="Add barcode"
-                    android:padding="2dp"
-                    android:paddingStart="10dp"
-                    android:textColor="@color/colorPrimary"
-                    android:textStyle="bold"
-                    android:drawablePadding="5dp"
-                    style="@style/style_thrid"
-                    app:layout_constraintEnd_toStartOf="@+id/guideline1"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <ImageView
-                    android:id="@+id/img_barcode"
-                    android:layout_width="0dp"
-                    android:layout_height="55dp"
-                    android:minHeight="50dp"
-                    android:layout_marginHorizontal="13dp"
-                    android:layout_marginTop="8dp"
-                    android:src="@drawable/barcode"
-                    android:scaleType="fitXY"
-                    android:visibility="gone"
-                    app:layout_constraintEnd_toStartOf="@+id/guideline1"
-                    app:layout_constraintStart_toStartOf="@id/txt_addBarcode"
-                    app:layout_constraintTop_toBottomOf="@id/txt_addBarcode" />
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline1"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent=".5"/>
-
-                <TextView
-                    android:id="@+id/txt_addQrcode"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:drawableStart="@drawable/plus"
-                    android:text="Add QR code"
-                    android:padding="2dp"
-                    android:gravity="start|center"
-                    android:textColor="@color/colorPrimary"
-                    android:textStyle="bold"
-                    style="@style/style_thrid"
-                    android:drawablePadding="5dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/guideline1"
-                    app:layout_constraintTop_toTopOf="parent"
-                    />
-
-                <ImageView
-                    android:id="@+id/img_Qrcode"
-                    android:layout_width="55dp"
-                    android:layout_height="55dp"
-                    android:layout_marginHorizontal="13dp"
-                    android:layout_marginTop="8dp"
-                    android:scaleType="fitStart"
-                    android:src="@drawable/qrcode"
-                    android:visibility="gone"
-                    app:layout_constraintStart_toStartOf="@id/txt_addQrcode"
-                    app:layout_constraintTop_toBottomOf="@id/txt_addQrcode" />
-</androidx.constraintlayout.widget.ConstraintLayout>
-          <!--  <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/tv_upload_barcode"
-                style="@style/style_sec"
-                android:layout_width="wrap_content"
-                android:layout_height="35dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/white_corner_radius_btn"
-                android:drawableStart="@drawable/ic_qr_code"
-                android:drawablePadding="5dp"
-                android:drawableTint="@color/black"
-                android:gravity="center"
-                android:paddingLeft="5dp"
-                android:paddingRight="5dp"
-                android:textAllCaps="false"
-                android:textColor="@color/black"
-                tools:ignore="UnusedAttribute" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tv_barcode_note"
+            <TextView
+                android:id="@+id/equipment_name"
                 style="@style/style_thrid"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginBottom="10dp"
-                android:padding="5dp" />-->
+                android:layout_marginStart="12dp"
+                android:maxLines="2"
+                android:padding="0.25dp"
+                android:textColor="@color/date_colore"
+                android:text=""
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/profile_img"
+                app:layout_constraintEnd_toEndOf="parent"
+                tools:ignore="RtlSymmetry" />
+                <TextView
+                    android:id="@+id/model_no"
+                    style="@style/new_equipment_detail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:layout_marginStart="12dp"
+                    android:layout_marginTop="5dp"
+                    android:padding="0.25dp"
+                    app:layout_constraintStart_toEndOf="@+id/profile_img"
+                    app:layout_constraintTop_toBottomOf="@+id/equipment_name"
+                    tools:ignore="RtlSymmetry" />
 
+                <TextView
+                    android:id="@+id/model_no_detail"
+                    style="@style/new_equipment_detail"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginTop="5dp"
+                    android:text=""
+                    android:padding="0.25dp"
+                    app:layout_constraintStart_toEndOf="@+id/model_no"
+                    app:layout_constraintTop_toBottomOf="@+id/equipment_name"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    tools:ignore="RtlSymmetry" />
+                <TextView
+                    android:id="@+id/serial_no"
+                    style="@style/new_equipment_detail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:padding="0.25dp"
+                    android:layout_marginTop="4dp"
+                    app:layout_constraintStart_toEndOf="@+id/profile_img"
+                    app:layout_constraintTop_toBottomOf="@+id/model_no_detail"
+                    app:layout_constraintStart_toStartOf="@+id/model_no"
+
+                    tools:ignore="RtlSymmetry" />
+
+                <TextView
+                    android:id="@+id/serial_no_detail"
+                    style="@style/new_equipment_detail"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text=""
+                    android:padding="0.25dp"
+                    app:layout_constraintTop_toBottomOf="@+id/model_no_detail"
+                    app:layout_constraintStart_toStartOf="@+id/model_no_detail"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    tools:ignore="RtlSymmetry" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                >
+                <TextView
+                    android:id="@+id/barnd_name"
+                    style="@style/new_equipment_detail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:padding="0.25dp"
+                   app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="RtlSymmetry" />
+
+                <TextView
+                    android:id="@+id/barnd_name_detail"
+                    style="@style/new_equipment_detail"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="5dp"
+                    android:text=""
+                    android:padding="0.25dp"
+                    android:textColor="@color/date_colore"
+                    app:layout_constraintStart_toEndOf="@+id/barnd_name"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    tools:ignore="RtlSymmetry" />
+                <TextView
+                    android:id="@+id/equipment_location"
+                    style="@style/new_equipment_detail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text=""
+                    android:layout_marginTop="5dp"
+                    android:padding="0.25dp"
+                    app:layout_constraintStart_toStartOf="@+id/barnd_name"
+                    app:layout_constraintTop_toBottomOf="@+id/barnd_name_detail"
+                    tools:ignore="RtlSymmetry" />
+
+                <TextView
+                    android:id="@+id/location_detail"
+                    style="@style/new_equipment_detail"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginStart="5dp"
+                    android:padding="0.25dp"
+                    android:textColor="@color/date_colore"
+                    android:text=""
+                    app:layout_constraintTop_toBottomOf="@+id/barnd_name_detail"
+                    app:layout_constraintStart_toEndOf="@+id/equipment_location"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    />
+                <LinearLayout
+                    android:id="@+id/ll_provider"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:visibility="gone"
+                    android:layout_marginTop="5dp"
+                    android:padding="0.25dp"
+                    app:layout_constraintStart_toStartOf="@+id/equipment_location"
+                    app:layout_constraintTop_toBottomOf="@+id/location_detail">
+                <TextView
+                    android:id="@+id/traiff_rate"
+                    style="@style/new_equipment_detail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    tools:ignore="RtlSymmetry" />
+
+                <TextView
+                    android:id="@+id/traiff_rate_detail"
+                    style="@style/new_equipment_detail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                   android:text=""
+                    android:textColor="@color/date_colore"
+                    tools:ignore="RtlSymmetry" />
+                </LinearLayout>
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/all_date_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@+id/ll_provider"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:layout_marginTop="5dp">
+                    <TextView
+                        android:id="@+id/warrenty_expiry_date"
+                        style="@style/new_equipment_detail"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:padding="0.25dp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        android:text=""
+                        tools:ignore="RtlSymmetry" />
+
+                    <TextView
+                        android:id="@+id/warrenty_expiry_date_detail"
+                        style="@style/new_equipment_detail"
+                        android:layout_width="0dp"
+                        android:padding="0.25dp"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintStart_toStartOf="@+id/warrenty_expiry_date"
+                        app:layout_constraintTop_toBottomOf="@+id/warrenty_expiry_date"
+                        android:text=""
+                        android:paddingTop="2dp"
+                        android:textColor="@color/date_colore"
+                        tools:ignore="RtlSymmetry" />
+                    <TextView
+                        android:id="@+id/purchase_date"
+                        style="@style/new_equipment_detail"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=""
+                        android:padding="0.25dp"
+                        android:layout_marginTop="8dp"
+                        app:layout_constraintStart_toStartOf="@+id/warrenty_expiry_date_detail"
+                        app:layout_constraintTop_toBottomOf="@+id/warrenty_expiry_date_detail"
+                        tools:ignore="RtlSymmetry" />
+
+                    <TextView
+                        android:id="@+id/purchase_date_detail"
+                        style="@style/new_equipment_detail"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="0.25dp"
+                        android:paddingTop="2dp"
+                        android:textColor="@color/date_colore"
+                        app:layout_constraintStart_toStartOf="@+id/purchase_date"
+                        app:layout_constraintTop_toBottomOf="@+id/purchase_date"
+                        android:text=""
+                        tools:ignore="RtlSymmetry" />
+
+                    <TextView
+                        android:id="@+id/type"
+                        style="@style/new_equipment_detail"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=""
+                        android:padding="0.25dp"
+                        android:layout_marginTop="8dp"
+                        app:layout_constraintStart_toStartOf="@+id/purchase_date_detail"
+                        app:layout_constraintTop_toBottomOf="@+id/purchase_date_detail"
+                        tools:ignore="RtlSymmetry" />
+
+                    <TextView
+                        android:id="@+id/type_detail"
+                        style="@style/new_equipment_detail"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="0.25dp"
+                        android:paddingTop="2dp"
+                        app:layout_constraintStart_toStartOf="@+id/type"
+                        app:layout_constraintTop_toBottomOf="@+id/type"
+                        android:text=""
+                        android:textColor="@color/date_colore"
+                        tools:ignore="RtlSymmetry" />
+                    <TextView
+                        android:id="@+id/serv_due_date_label"
+                        style="@style/new_equipment_detail"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=""
+                        android:padding="0.25dp"
+                        android:layout_marginTop="8dp"
+                        app:layout_constraintStart_toStartOf="@+id/type_detail"
+                        app:layout_constraintTop_toBottomOf="@+id/type_detail"
+                        tools:ignore="RtlSymmetry" />
+
+                    <TextView
+                        android:id="@+id/serv_due_date"
+                        style="@style/new_equipment_detail"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="0.25dp"
+                        android:paddingTop="2dp"
+                        android:textColor="@color/date_colore"
+                        app:layout_constraintStart_toStartOf="@+id/serv_due_date_label"
+                        app:layout_constraintTop_toBottomOf="@+id/serv_due_date_label"
+                        android:text=""
+                        tools:ignore="RtlSymmetry" />
+                    <androidx.constraintlayout.widget.Guideline
+                        android:id="@+id/guideline"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        app:layout_constraintGuide_percent=".5"
+                        />
+                    <TextView
+                        android:id="@+id/manufacture_date"
+                        style="@style/new_equipment_detail"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintStart_toEndOf="@id/guideline"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        android:text=""
+                        tools:ignore="RtlSymmetry" />
+
+                    <TextView
+                        android:id="@+id/manufacture_date_detail"
+                        style="@style/new_equipment_detail"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:padding="0.25dp"
+                        android:paddingTop="2dp"
+                        android:textColor="@color/date_colore"
+                        app:layout_constraintStart_toStartOf="@+id/manufacture_date"
+                        app:layout_constraintTop_toBottomOf="@+id/manufacture_date"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        android:text=""
+                        tools:ignore="RtlSymmetry" />
+
+                    <TextView
+                        android:id="@+id/installed_date"
+                        style="@style/new_equipment_detail"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:text=""
+                        android:padding="0.25dp"
+                        android:layout_marginTop="8dp"
+                        app:layout_constraintStart_toStartOf="@+id/manufacture_date_detail"
+                        app:layout_constraintTop_toBottomOf="@+id/manufacture_date_detail"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        tools:ignore="RtlSymmetry" />
+
+                    <TextView
+                        android:id="@+id/install_date_detail"
+                        style="@style/new_equipment_detail"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:padding="0.25dp"
+                        android:paddingTop="2dp"
+                        android:textColor="@color/date_colore"
+                        app:layout_constraintStart_toStartOf="@+id/installed_date"
+                        app:layout_constraintTop_toBottomOf="@+id/installed_date"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        android:text=""
+                        tools:ignore="RtlSymmetry" />
+                    <TextView
+                        android:id="@+id/last_serv_date"
+                        style="@style/new_equipment_detail"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:text=""
+                        android:padding="0.25dp"
+                        android:layout_marginTop="8dp"
+                        app:layout_constraintStart_toStartOf="@+id/install_date_detail"
+                        app:layout_constraintTop_toBottomOf="@+id/install_date_detail"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        tools:ignore="RtlSymmetry" />
+
+                    <TextView
+                        android:id="@+id/last_serv_date_lable"
+                        style="@style/new_equipment_detail"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:padding="0.25dp"
+                        android:paddingTop="2dp"
+                        android:textColor="@color/date_colore"
+                        app:layout_constraintStart_toStartOf="@+id/last_serv_date"
+                        app:layout_constraintTop_toBottomOf="@+id/last_serv_date"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        android:text=""
+                        tools:ignore="RtlSymmetry" />
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+                <TextView
+                    android:id="@+id/equipment_group"
+                    style="@style/new_equipment_detail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:padding="0.25dp"
+                    app:layout_constraintTop_toBottomOf="@+id/all_date_layout"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:text=""
+                    tools:ignore="RtlSymmetry" />
+
+                <TextView
+                    android:id="@+id/equipment_group_detail"
+                    style="@style/new_equipment_detail"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginTop="5dp"
+                    android:padding="0.25dp"
+                    android:textColor="@color/date_colore"
+                    app:layout_constraintStart_toEndOf="@+id/equipment_group"
+                    app:layout_constraintTop_toBottomOf="@+id/all_date_layout"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:text=""
+                    tools:ignore="RtlSymmetry" />
+                <TextView
+                    android:id="@+id/custom_filed_1"
+                    style="@style/new_equipment_detail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:padding="0.25dp"
+                    app:layout_constraintTop_toBottomOf="@+id/equipment_group_detail"
+                    app:layout_constraintStart_toStartOf="@+id/equipment_group"
+                    android:text=""
+                    tools:ignore="RtlSymmetry" />
+
+                <TextView
+                    android:id="@+id/custom_filed_txt_1"
+                    style="@style/new_equipment_detail"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginTop="5dp"
+                    android:padding="0.25dp"
+                    android:textColor="@color/date_colore"
+                    app:layout_constraintStart_toEndOf="@+id/custom_filed_1"
+                    app:layout_constraintTop_toBottomOf="@+id/equipment_group_detail"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:text=""
+                    tools:ignore="RtlSymmetry" />
+                <TextView
+                    android:id="@+id/custom_filed_2"
+                    style="@style/new_equipment_detail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:padding="0.25dp"
+                    app:layout_constraintTop_toBottomOf="@+id/custom_filed_txt_1"
+                    app:layout_constraintStart_toStartOf="@+id/custom_filed_1"
+                    android:text=""
+                    tools:ignore="RtlSymmetry" />
+
+                <TextView
+                    android:id="@+id/custom_filed_txt_2"
+                    style="@style/new_equipment_detail"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginTop="5dp"
+                    android:padding="0.25dp"
+                    android:textColor="@color/date_colore"
+                    app:layout_constraintStart_toEndOf="@+id/custom_filed_2"
+                    app:layout_constraintTop_toBottomOf="@+id/custom_filed_txt_1"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:text=""
+                    tools:ignore="RtlSymmetry" />
+                <TextView
+                    android:id="@+id/supplier_txt"
+                    style="@style/new_equipment_detail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:padding="0.25dp"
+                    app:layout_constraintTop_toBottomOf="@+id/custom_filed_txt_2"
+                    app:layout_constraintStart_toStartOf="@+id/custom_filed_2"
+                    android:text=""
+                    tools:ignore="RtlSymmetry" />
+
+                <TextView
+                    android:id="@+id/supplier"
+                    style="@style/new_equipment_detail"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginTop="5dp"
+                    android:padding="0.25dp"
+                    android:textColor="@color/date_colore"
+                    app:layout_constraintStart_toEndOf="@+id/supplier_txt"
+                    app:layout_constraintTop_toBottomOf="@+id/custom_filed_txt_2"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:text=""
+                    tools:ignore="RtlSymmetry" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="0.25dp"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintTop_toBottomOf="@+id/supplier"
+                    app:layout_constraintStart_toStartOf="@+id/supplier_txt"
+                    >
+
+                    <TextView
+                        android:id="@+id/txt_addBarcode"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:drawableStart="@drawable/plus"
+                        android:gravity="start|center"
+                        android:text=""
+                        android:padding="2dp"
+                        android:paddingStart="1dp"
+                        android:textColor="@color/colorPrimary"
+                        android:textStyle="bold"
+                        android:drawablePadding="5dp"
+                        style="@style/style_thrid"
+                        app:layout_constraintEnd_toStartOf="@+id/guideline1"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:ignore="RtlSymmetry" />
+
+                    <ImageView
+                        android:id="@+id/img_barcode"
+                        android:layout_width="0dp"
+                        android:layout_height="55dp"
+                        android:minHeight="50dp"
+                        android:layout_marginHorizontal="13dp"
+                        android:layout_marginTop="5dp"
+                        android:src="@drawable/barcode"
+                        android:scaleType="fitXY"
+                        android:visibility="gone"
+                        app:layout_constraintEnd_toStartOf="@+id/guideline1"
+                        app:layout_constraintStart_toStartOf="@id/txt_addBarcode"
+                        app:layout_constraintTop_toBottomOf="@id/txt_addBarcode" />
+
+                    <androidx.constraintlayout.widget.Guideline
+                        android:id="@+id/guideline1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        app:layout_constraintGuide_begin="185dp" />
+
+                    <TextView
+                        android:id="@+id/txt_addQrcode"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:drawableStart="@drawable/plus"
+                        android:text=""
+                        android:padding="2dp"
+                        android:gravity="start|center"
+                        android:textColor="@color/colorPrimary"
+                        android:textStyle="bold"
+                        style="@style/style_thrid"
+                        android:drawablePadding="5dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/guideline1"
+                        app:layout_constraintTop_toTopOf="parent"
+                        />
+
+                    <ImageView
+                        android:id="@+id/img_Qrcode"
+                        android:layout_width="55dp"
+                        android:layout_height="55dp"
+                        android:layout_marginHorizontal="13dp"
+                        android:layout_marginTop="5dp"
+                        android:scaleType="fitStart"
+                        android:src="@drawable/qrcode"
+                        android:visibility="gone"
+                        app:layout_constraintStart_toStartOf="@id/txt_addQrcode"
+                        app:layout_constraintTop_toBottomOf="@id/txt_addQrcode" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="10dp"
+                android:visibility="visible"
+                android:background="@color/bg_job"
+                >
+                <!--Equipment's services-->
+                <LinearLayout
+                    android:id="@+id/job_ll"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:background="@color/white"
+                    android:orientation="vertical">
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:id="@+id/show_hide_service_history"
+                        android:paddingStart="5dp"
+                        android:paddingTop="5dp"
+                        >
+                    <TextView
+                        android:id="@+id/service_history_txt"
+                        style="@style/style_thrid"
+                        android:textColor="@color/about_equipment"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        android:text="Services History (0)"
+                        tools:ignore="RtlSymmetry" />
+                        <androidx.constraintlayout.widget.Guideline
+                            android:id="@+id/guideline_for_service"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            app:layout_constraintGuide_percent=".45"/>
+                    <TextView
+                        android:id="@+id/last_service_txt"
+                        style="@style/new_equipment_detail"
+                        android:textColor="@color/bule_service"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingHorizontal="5dp"
+                        android:gravity="end"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/guideline_for_service"
+                        app:layout_constraintEnd_toStartOf="@+id/last_service_date"
+                        android:text="Last Service:"
+                        tools:ignore="RtlSymmetry" />
+                        <TextView
+                            android:id="@+id/last_service_date"
+                            style="@style/new_equipment_detail"
+                            android:textColor="@color/bule_service"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:drawableRight="@drawable/ic_baseline_arrow_drop_up_24"
+                            android:paddingHorizontal="5dp"
+                            android:gravity="center_vertical"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            android:text="02-May-2023"
+                            tools:ignore="RtlSymmetry" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                     <TextView
+                         android:id="@+id/servic_histry_not_found"
+                         android:layout_width="match_parent"
+                         android:layout_height="wrap_content"
+                         android:text="No data Found"
+                         android:gravity="center"
+                         style="@style/style_thrid"
+                         android:padding="5dp"
+                         android:visibility="gone"/>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/job_list"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:visibility="gone"
+                        android:layout_marginTop="15dp" />
+
+                </LinearLayout>
+                <!--Equipment's Upcoming services-->
+                <LinearLayout
+                    android:id="@+id/job_upcoming_ll"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:background="@color/white"
+                    android:orientation="vertical">
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:id="@+id/show_hide_upcoming_service"
+                        android:paddingStart="5dp"
+                        android:paddingTop="5dp"
+                        >
+                    <TextView
+                        android:id="@+id/upcoming_service_txt"
+                        style="@style/style_thrid"
+                        android:textColor="@color/about_equipment"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:padding="1dp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        android:text="Upcoming Service"
+                        tools:ignore="RtlSymmetry" />
+                        <androidx.constraintlayout.widget.Guideline
+                            android:id="@+id/guideline_for_upcoming_service"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            app:layout_constraintGuide_percent=".45"/>
+                        <TextView
+                            android:id="@+id/deu_service_txt"
+                            style="@style/new_equipment_detail"
+                            android:textColor="@color/green_upcomingservice"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="5dp"
+                            android:paddingHorizontal="5dp"
+                            android:gravity="end"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintEnd_toStartOf="@+id/deu_service_date"
+                          app:layout_constraintStart_toEndOf="@+id/guideline_for_upcoming_service"
+                            android:text="Service Deu:"
+                            tools:ignore="RtlSymmetry" />
+                        <TextView
+                            android:id="@+id/deu_service_date"
+                            style="@style/new_equipment_detail"
+                            android:textColor="@color/green_upcomingservice"
+                            android:layout_width="0dp"
+                            android:paddingHorizontal="5dp"
+                            android:layout_height="wrap_content"
+                            android:drawableRight="@drawable/ic_baseline_arrow_drop_up_24"
+                            android:padding="3dp"
+                            android:gravity="center_vertical"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            android:text="02-May-2023"
+                            tools:ignore="RtlSymmetry" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                    <TextView
+                        android:id="@+id/upcoming_servic_not_found"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="No data Found"
+                        android:gravity="center"
+                        style="@style/style_thrid"
+                        android:padding="5dp"
+                        android:visibility="gone"/>
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/job_upcoming_service_list"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:visibility="gone"
+                        android:layout_marginTop="15dp" />
+
+                </LinearLayout>
             <!--part for Equipment-->
             <androidx.cardview.widget.CardView
-                android:visibility="gone"
+                android:visibility="visible"
                 android:id="@+id/part_cardview"
                 android:layout_width="match_parent"
-                app:cardBackgroundColor="@color/white"
-                android:layout_margin="10dp"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:cardElevation="0dp"
                 >
                 <LinearLayout
-                    android:layout_margin="10dp"
+                   android:padding="5dp"
                     android:orientation="vertical"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/tv_label_part"
-                        style="@style/style_sec"
-                        android:layout_width="wrap_content"
+                        style="@style/style_thrid"
+                        android:textColor="@color/about_equipment"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/attachment"
-                        android:textStyle="bold" />
-
+                        android:text=""
+                        android:drawableEnd="@drawable/ic_baseline_arrow_drop_up_24"
+                        />
+                    <TextView
+                        android:id="@+id/parts_not_found"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="No data Found"
+                        android:gravity="center"
+                        style="@style/style_thrid"
+                        android:padding="5dp"
+                        android:visibility="gone"/>
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/recyclerView_part"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
+                        android:paddingStart="2dp"
+                        android:visibility="gone"
                         android:nestedScrollingEnabled="false"
                         />
 
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
-
-
+            <!-- item of equipment-->
             <androidx.cardview.widget.CardView
-                android:visibility="gone"
+                android:visibility="visible"
                 android:id="@+id/item_cardview"
                 android:layout_width="match_parent"
-                app:cardBackgroundColor="@color/white"
-                android:layout_margin="10dp"
+                app:cardElevation="0dp"
+                 android:layout_marginTop="8dp"
                 android:layout_height="wrap_content"
+
                 >
                 <LinearLayout
-                    android:layout_margin="10dp"
                     android:orientation="vertical"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    tools:ignore="TooManyViews">
+                    tools:ignore="TooManyViews"
+                    android:layout_margin="2dp">
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/tv_label_item"
-                        style="@style/style_sec"
-                        android:layout_width="wrap_content"
+                        style="@style/style_thrid"
+                        android:textColor="@color/about_equipment"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/attachment"
-                        android:textStyle="bold" />
-
-
+                        android:text=""
+                        android:paddingStart="5dp"
+                        android:drawableEnd="@drawable/ic_baseline_arrow_drop_up_24"
+                         />
+                    <TextView
+                        android:id="@+id/items_not_found"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="No data Found"
+                        android:gravity="center"
+                        style="@style/style_thrid"
+                        android:padding="5dp"
+                        android:visibility="gone"/>
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/recyclerView_item"
                         android:layout_marginHorizontal="3dp"
-
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:visibility="gone"
                         android:layout_marginTop="10dp"
+                        android:paddingStart="2dp"
                         android:nestedScrollingEnabled="false"
                         />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
+                <!--audit Equipment-->
+                <LinearLayout
+                    android:id="@+id/audit_ll"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_margin="2dp"
+                    android:background="@color/white">
+
+                    <TextView
+                        android:id="@+id/aduit_history_txt"
+                        style="@style/style_thrid"
+                        android:textColor="@color/about_equipment"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:paddingStart="5dp"
+                        android:paddingTop="5dp"
+                        android:text=""
+                        tools:ignore="RtlSymmetry"
+                        android:drawableEnd="@drawable/ic_baseline_arrow_drop_up_24"/>
+                    <TextView
+                        android:id="@+id/audit_not_found"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="No data Found"
+                        android:gravity="center"
+                        style="@style/style_thrid"
+                        android:padding="5dp"
+                        android:visibility="gone"/>
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/audit_list"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:visibility="gone"
+                        android:layout_marginTop="10dp" />
 
 
+                </LinearLayout>
+            </LinearLayout>
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -990,69 +905,7 @@
                     android:text=""
                     android:visibility="gone" />
 
-                <LinearLayout
-                    android:id="@+id/ll_audit_job"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
 
-                    <LinearLayout
-                        android:id="@+id/audit_ll"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:id="@+id/aduit_history_txt"
-                            style="@style/header_text_style"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:gravity="center_vertical"
-                            android:paddingStart="10dp"
-                            android:paddingTop="5dp"
-                            android:text="@string/equipment_audit"
-                            android:textColor="@color/black"
-                            tools:ignore="RtlSymmetry" />
-
-                        <androidx.recyclerview.widget.RecyclerView
-                            android:id="@+id/audit_list"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="15dp"
-                            tools:listitem="@layout/adpter_aduit_history" />
-
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/job_ll"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="20dp"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:id="@+id/job_history_txt"
-                            style="@style/header_text_style"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:gravity="center_vertical"
-                            android:paddingStart="10dp"
-                            android:paddingTop="5dp"
-                            android:text="@string/equipment_s_service"
-                            android:textColor="@color/black"
-
-                            tools:ignore="RtlSymmetry" />
-
-                        <androidx.recyclerview.widget.RecyclerView
-                            android:id="@+id/job_list"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="15dp"
-                            tools:listitem="@layout/adpter_aduit_history" />
-
-                    </LinearLayout>
-                </LinearLayout>
 
             </FrameLayout>
 
@@ -1061,58 +914,79 @@
 
     </androidx.core.widget.NestedScrollView>
 
+    <RelativeLayout
+        android:id="@+id/not_found_btn_ll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_alignParentBottom="true"
+        android:visibility="visible"
+        android:padding="5dp">
+        <TextView
+            android:id="@+id/txt_for_link_or_not"
+            style="@style/style_thrid"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginVertical="8dp"
+            android:background="@color/white"
+            android:visibility="gone"
+            android:layout_marginHorizontal="21dp"
+            android:textColor="@color/date_colore"
+            android:text="Would you like to install or deploy this as a new item?" />
     <LinearLayout
         android:id="@+id/ll_bottom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        android:layout_below="@+id/txt_for_link_or_not"
         android:orientation="horizontal"
+        android:visibility="visible"
         android:padding="5dp">
 
         <Button
             android:id="@+id/button_job"
-            style="@style/style_sec"
+            style="@style/style_thrid"
             android:layout_width="0dp"
             android:layout_height="@dimen/button_field_height"
             android:layout_margin="5dp"
             android:layout_weight="1"
             android:background="@drawable/submit_btn"
             android:singleLine="true"
-            android:text="@string/go_to_job"
+            android:text=""
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:textStyle="bold" />
 
         <Button
             android:id="@+id/button_audit"
-            style="@style/style_sec"
+            style="@style/style_thrid"
             android:layout_width="0dp"
             android:layout_height="@dimen/button_field_height"
             android:layout_margin="5dp"
             android:layout_weight="1"
             android:background="@drawable/submit_btn"
             android:singleLine="true"
-            android:text="@string/go_to_audit"
+            android:text=""
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:textStyle="bold" />
 
         <Button
             android:id="@+id/go_to_addjob"
-            style="@style/style_sec"
+            style="@style/style_thrid"
             android:layout_width="0dp"
             android:layout_height="@dimen/button_field_height"
             android:layout_margin="5dp"
             android:layout_weight="1"
             android:background="@drawable/submit_btn"
             android:singleLine="true"
-            android:text="@string/add_job"
+            android:text=""
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:textStyle="bold"
             android:visibility="gone" />
     </LinearLayout>
-
+    </RelativeLayout>
 
 </RelativeLayout>
 </layout>

@@ -1032,8 +1032,6 @@ public class AppConstant {
     public static String do_you_have_a_Qrcode_please_insert_it_here_OR_Scan_the_QRcode = "do_you_have_a_Qrcode_please_insert_it_here_OR_Scan_the_QRcode";
     public static String please_enter_code = "please_enter_code";
     public static String codes_Confirmation = "codes_Confirmation";
-    public static String show_more_details = "show_more_details";
-    public static String show_less_details = "show_less_details";
     public static String about_equipment = "about_equipment";
     public static String last_service = "last_service";
     public static String service_due = "service_due";
@@ -1046,9 +1044,16 @@ public class AppConstant {
     public static String repair = "repair";
     public static String discard = "discard";
     public static String reallocate = "reallocate";
-    public static String equipment_requires_maintenance_will_need_taken_for_repair = "equipment_requires_maintenance_will_need_taken_for_repair";
-    public static String do_you_want_to_move_from_one_equipment_to_another= "do_you_want_to_move_from_one_equipment_to_another";
-    public static String do_you_want_to_completely_discard_this_equipment= "do_you_want_to_completely_discard_this_equipment";
+    public static String repair_action_msg = "repair_action_msg";
+    public static String discard_action_msg= "discard_action_msg";
+    public static String reallocate_action_msg= "reallocate_action_msg";
+    public static String new_location= "new_location";
+    public static String old_location= "old_location";
+    public static String service_not_found= "service_not_found";
+    public static String upcoming_service_not_found= "upcoming_service_not_found";
+    public static String equ_item_not_found= "equ_item_not_found";
+    public static String equ_parts_not_found= "equ_parts_not_found";
+    public static String equ_audit_not_found= "equ_audit_not_found";
     public static String server(String location) {
         switch (location) {
             case "America":

@@ -47,6 +47,7 @@ import com.eot_app.nav_menu.audit.audit_list.equipment.remark.RemarkCustomFormFr
 import com.eot_app.nav_menu.audit.audit_list.equipment.remark.RemarkQuestionListAdpter;
 import com.eot_app.nav_menu.audit.audit_list.equipment.remark.remark_mvp.RemarkRequest;
 import com.eot_app.nav_menu.audit.nav_scan.EquipmentDetailsActivity;
+import com.eot_app.nav_menu.audit.nav_scan.JobEquReallocateActivity;
 import com.eot_app.nav_menu.jobs.job_db.EquArrayModel;
 import com.eot_app.nav_menu.jobs.job_db.Job;
 import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.AddEditInvoiceItemActivity2;
@@ -169,7 +170,7 @@ public class JobEquPartRemarkRemarkActivity extends UploadDocumentActivity imple
     private RadioGroup rediogrp;
     private RadioButton radio_before, radio_after;
     private RelativeLayout image_with_tag,requested_itemList_show_hide_rl;
-    TextView image_txt, chip_txt,tv_text_for_replace,tv_replace,requested_item_txt,txt_no_item_found,btn_add_requested_item,txt_lbl_remark,txt_lbl_condition, txt_condition, txt_lbl_status, txt_status, txt_remark, btn_edit;
+    TextView image_txt, chip_txt,tv_text_for_replace,tv_replace,tv_text_for_repair,tv_repair,tv_text_for_reallocate,tv_reallocate,tv_text_for_discard,tv_discard,requested_item_txt,txt_no_item_found,btn_add_requested_item,txt_lbl_remark,txt_lbl_condition, txt_condition, txt_lbl_status, txt_status, txt_remark, btn_edit;
     ImageView deleteChip;
     private View chip_layout,ll_requested_item;
     Job mParam2;
@@ -532,6 +533,23 @@ public class JobEquPartRemarkRemarkActivity extends UploadDocumentActivity imple
 
         tv_text_for_replace = findViewById(R.id.tv_text_for_replace);
         tv_text_for_replace.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.do_you_want_to_discard));
+        tv_text_for_repair   = findViewById(R.id.tv_text_for_repair);
+        tv_repair = findViewById(R.id.tv_repair);
+        tv_text_for_reallocate = findViewById(R.id.tv_text_for_reallocate);
+        tv_reallocate = findViewById(R.id.tv_reallocate);
+        tv_text_for_discard = findViewById(R.id.tv_text_for_discard);
+        tv_discard = findViewById(R.id.tv_discard);
+
+        tv_text_for_repair.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.repair_action_msg));
+        tv_repair.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.repair));
+        tv_text_for_reallocate.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.reallocate_action_msg));
+        tv_reallocate.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.reallocate));
+        tv_text_for_discard.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.discard_action_msg));
+        tv_discard.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.discard));
+
+        tv_repair.setOnClickListener(this);
+        tv_reallocate.setOnClickListener(this);
+        tv_discard.setOnClickListener(this);
 
         tv_replace = findViewById(R.id.tv_replace);
         tv_replace.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.replace));
@@ -969,6 +987,11 @@ public class JobEquPartRemarkRemarkActivity extends UploadDocumentActivity imple
                 showRemarkSection();
                 isEdit = true;
                 setTitles();
+                break;
+            case R.id.tv_reallocate:
+                Intent intent = new Intent(this, JobEquReallocateActivity.class);
+                intent.putExtra("old_location",equipment.getLocation());
+                startActivity(intent);
                 break;
         }
     }

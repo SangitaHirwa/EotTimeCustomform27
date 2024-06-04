@@ -47,6 +47,7 @@ import com.eot_app.nav_menu.audit.audit_list.equipment.remark.RemarkCustomFormFr
 import com.eot_app.nav_menu.audit.audit_list.equipment.remark.RemarkQuestionListAdpter;
 import com.eot_app.nav_menu.audit.audit_list.equipment.remark.remark_mvp.RemarkRequest;
 import com.eot_app.nav_menu.audit.nav_scan.EquipmentDetailsActivity;
+import com.eot_app.nav_menu.audit.nav_scan.JobEquReallocateActivity;
 import com.eot_app.nav_menu.jobs.job_db.EquArrayModel;
 import com.eot_app.nav_menu.jobs.job_db.Job;
 import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.AddEditInvoiceItemActivity2;
@@ -145,7 +146,7 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
             recyclerView_customForm, recyclerView_part, recyclerView_item,recyclerView_requested_item, rv_showAttachment;
     LinearLayout formLayout;
     EquipmentPartRemarkAdapter equipmentPartAdapter;
-    TextView image_txt, chip_txt, tv_text_for_replace, tv_replace, txt_lbl_remark,txt_lbl_condition, txt_condition, txt_lbl_status, txt_status, txt_remark, btn_edit;
+    TextView image_txt, chip_txt, tv_text_for_replace,tv_text_for_repair,tv_repair,tv_text_for_reallocate,tv_reallocate,tv_text_for_discard,tv_discard, tv_replace, txt_lbl_remark,txt_lbl_condition, txt_condition, txt_lbl_status, txt_status, txt_remark, btn_edit;
     ImageView deleteChip,show_requested_list,hide_requested_list,requested_item_flag;
     Job mParam2;
     ArrayList<Attachments> allAttachmentsList = new ArrayList<>();
@@ -203,13 +204,6 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
         setLanguage();
         setData();
         getCustomFormSLists();
-        if(jobId != null && !jobId.isEmpty()) {
-            if(AppUtility.isInternetConnected()) {
-                isRefresh = true;
-                progressBar_itemRequest.setVisibility(View.VISIBLE);
-                jobEquimPi.getRequestedItemDataList(jobId);
-            }
-        }
     }
 
 
@@ -537,6 +531,23 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
 
         tv_text_for_replace = findViewById(R.id.tv_text_for_replace);
         tv_text_for_replace.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.do_you_want_to_discard));
+        tv_text_for_repair   = findViewById(R.id.tv_text_for_repair);
+        tv_repair = findViewById(R.id.tv_repair);
+         tv_text_for_reallocate = findViewById(R.id.tv_text_for_reallocate);
+         tv_reallocate = findViewById(R.id.tv_reallocate);
+         tv_text_for_discard = findViewById(R.id.tv_text_for_discard);
+         tv_discard = findViewById(R.id.tv_discard);
+
+        tv_text_for_repair.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.repair_action_msg));
+        tv_repair.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.repair));
+        tv_text_for_reallocate.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.reallocate_action_msg));
+        tv_reallocate.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.reallocate));
+        tv_text_for_discard.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.discard_action_msg));
+        tv_discard.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.discard));
+
+        tv_repair.setOnClickListener(this);
+        tv_reallocate.setOnClickListener(this);
+        tv_discard.setOnClickListener(this);
 
         tv_replace = findViewById(R.id.tv_replace);
         tv_replace.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.replace));
@@ -963,6 +974,11 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
                     isEdit = true;
                     setTitles();
                     break;
+            case R.id.tv_reallocate:
+                Intent intent = new Intent(this, JobEquReallocateActivity.class);
+                intent.putExtra("old_location",equipment.getLocation());
+                startActivity(intent);
+                break;
         }
     }
 
@@ -1546,6 +1562,15 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
             }else {
                 isEdit = true;
                 showRemarkSection();
+            }
+        }
+        if(mParam2!=null){
+            if(mParam2.getItemRequested() != null && mParam2.getItemRequested().equals("1")){
+                requested_item_flag.setVisibility(View.VISIBLE);
+                requested_itemList_show_hide_rl.setVisibility(View.VISIBLE);
+            }else {
+                requested_item_flag.setVisibility(View.GONE);
+                requested_itemList_show_hide_rl.setVisibility(View.GONE);
             }
         }
     }

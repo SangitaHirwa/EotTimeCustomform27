@@ -16,6 +16,12 @@
         android:usesCleartextTraffic="true"
         tools:replace="android:allowBackup">
         <activity
+            android:name=".nav_menu.audit.nav_scan.JobEquReallocateActivity"
+            android:exported="false" />
+        <activity
+            android:name=".nav_menu.audit.nav_scan.EquipmentNotFroundActivity"
+            android:exported="false" />
+        <activity
             android:name=".nav_menu.jobs.job_card_view.JobCardViewActivity"
             android:exported="false"
             />

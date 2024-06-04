@@ -91,7 +91,11 @@
         <item name="android:textStyle">normal</item>
         <item name="android:fontFamily">@font/arimo_regular</item>
     </style>
-
+<style name="new_equipment_detail" parent="@android:style/TextAppearance.Small">
+    <item name="android:textSize">@dimen/medium_text</item>
+    <item name="android:textColor">@color/about_equipment</item>
+    <item name="android:fontFamily">@font/arimo_regular</item>
+</style>
 
     //For List item
 

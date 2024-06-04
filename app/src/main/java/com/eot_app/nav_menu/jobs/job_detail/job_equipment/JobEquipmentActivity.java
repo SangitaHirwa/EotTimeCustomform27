@@ -13,6 +13,8 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -26,7 +28,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.eot_app.R;
 import com.eot_app.nav_menu.audit.audit_list.equipment.model.EquipmentStatus;
+import com.eot_app.nav_menu.audit.nav_scan.BarcodeScanActivity;
 import com.eot_app.nav_menu.audit.nav_scan.EquipmentDetailsActivity;
+import com.eot_app.nav_menu.equipment.link_own_client_equ_barc.JobEquipmentScanActivity;
 import com.eot_app.nav_menu.equipment.linkequip.ActivityLinkEquipment;
 import com.eot_app.nav_menu.equipment.popupSaveClient.AlertDialogClass;
 import com.eot_app.nav_menu.equipment.popupSaveClient.equipmentClinetsave.Equipment_Client_view;
@@ -379,12 +383,21 @@ public class JobEquipmentActivity extends AppCompatActivity
         if (swipeRefreshLayout != null) swipeRefreshLayout.setRefreshing(false);
         showDialog(message);
     }
-
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.equipment_barcode_menu, menu);
+        return true;
+    }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             onBackPressed();
             return true;
+        } else if (item.getItemId() == R.id.ic_qr_code) {
+            Intent intent = new Intent(JobEquipmentActivity.this, BarcodeScanActivity.class);
+            intent.putExtra("comeFrom","linkFromEquList");
+            startActivityForResult(intent, 360);
         }
         return true;
     }
