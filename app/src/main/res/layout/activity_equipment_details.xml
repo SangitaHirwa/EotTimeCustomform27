@@ -591,6 +591,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
+                android:padding="8dp"
                 android:layout_marginTop="10dp"
                 android:visibility="visible"
                 android:background="@color/bg_job"
@@ -605,8 +606,9 @@
                     android:orientation="vertical">
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="@dimen/_37sdp"
                         android:orientation="horizontal"
+                        android:layout_gravity="center_vertical"
                         android:id="@+id/show_hide_service_history"
                         android:paddingStart="5dp"
                         android:paddingTop="5dp"
@@ -620,7 +622,8 @@
                         android:gravity="center_vertical"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        android:text="Services History (0)"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:text=""
                         tools:ignore="RtlSymmetry" />
                         <androidx.constraintlayout.widget.Guideline
                             android:id="@+id/guideline_for_service"
@@ -639,7 +642,8 @@
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/guideline_for_service"
                         app:layout_constraintEnd_toStartOf="@+id/last_service_date"
-                        android:text="Last Service:"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:text=""
                         tools:ignore="RtlSymmetry" />
                         <TextView
                             android:id="@+id/last_service_date"
@@ -647,19 +651,20 @@
                             android:textColor="@color/bule_service"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:drawableRight="@drawable/ic_baseline_arrow_drop_up_24"
+                            android:drawableRight="@drawable/ic_arrow_drop_down_black_24dp"
                             android:paddingHorizontal="5dp"
                             android:gravity="center_vertical"
                             app:layout_constraintTop_toTopOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
-                            android:text="02-May-2023"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            android:text=""
                             tools:ignore="RtlSymmetry" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
                      <TextView
                          android:id="@+id/servic_histry_not_found"
                          android:layout_width="match_parent"
                          android:layout_height="wrap_content"
-                         android:text="No data Found"
+                         android:text=""
                          android:gravity="center"
                          style="@style/style_thrid"
                          android:padding="5dp"
@@ -684,7 +689,7 @@
                     android:orientation="vertical">
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="@dimen/_37sdp"
                         android:orientation="horizontal"
                         android:id="@+id/show_hide_upcoming_service"
                         android:paddingStart="5dp"
@@ -696,11 +701,11 @@
                         android:textColor="@color/about_equipment"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
                         android:padding="1dp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        android:text="Upcoming Service"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:text=""
                         tools:ignore="RtlSymmetry" />
                         <androidx.constraintlayout.widget.Guideline
                             android:id="@+id/guideline_for_upcoming_service"
@@ -715,33 +720,33 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:padding="5dp"
-                            android:paddingHorizontal="5dp"
                             android:gravity="end"
                             app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toStartOf="@+id/deu_service_date"
                           app:layout_constraintStart_toEndOf="@+id/guideline_for_upcoming_service"
-                            android:text="Service Deu:"
+                            android:text=""
                             tools:ignore="RtlSymmetry" />
                         <TextView
                             android:id="@+id/deu_service_date"
                             style="@style/new_equipment_detail"
                             android:textColor="@color/green_upcomingservice"
                             android:layout_width="0dp"
-                            android:paddingHorizontal="5dp"
                             android:layout_height="wrap_content"
-                            android:drawableRight="@drawable/ic_baseline_arrow_drop_up_24"
+                            android:drawableRight="@drawable/ic_arrow_drop_down_black_24dp"
                             android:padding="3dp"
                             android:gravity="center_vertical"
+                            app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
-                            android:text="02-May-2023"
+                            android:text=""
                             tools:ignore="RtlSymmetry" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
                     <TextView
                         android:id="@+id/upcoming_servic_not_found"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="No data Found"
+                        android:text=""
                         android:gravity="center"
                         style="@style/style_thrid"
                         android:padding="5dp"
@@ -765,25 +770,27 @@
                 app:cardElevation="0dp"
                 >
                 <LinearLayout
-                   android:padding="5dp"
+                   android:paddingStart="5dp"
                     android:orientation="vertical"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:gravity="center">
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/tv_label_part"
                         style="@style/style_thrid"
-                        android:textColor="@color/about_equipment"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="@dimen/_37sdp"
+                        android:drawableEnd="@drawable/ic_arrow_drop_down_black_24dp"
+                        android:gravity="center_vertical"
                         android:text=""
-                        android:drawableEnd="@drawable/ic_baseline_arrow_drop_up_24"
-                        />
+                        android:textColor="@color/about_equipment" />
+
                     <TextView
                         android:id="@+id/parts_not_found"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="No data Found"
+                        android:text=""
                         android:gravity="center"
                         style="@style/style_thrid"
                         android:padding="5dp"
@@ -815,23 +822,25 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     tools:ignore="TooManyViews"
-                    android:layout_margin="2dp">
+                    android:paddingStart="5dp"
+                    >
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/tv_label_item"
                         style="@style/style_thrid"
                         android:textColor="@color/about_equipment"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="@dimen/_37sdp"
                         android:text=""
                         android:paddingStart="5dp"
-                        android:drawableEnd="@drawable/ic_baseline_arrow_drop_up_24"
+                        android:gravity="center_vertical"
+                        android:drawableEnd="@drawable/ic_arrow_drop_down_black_24dp"
                          />
                     <TextView
                         android:id="@+id/items_not_found"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="No data Found"
+                        android:text=""
                         android:gravity="center"
                         style="@style/style_thrid"
                         android:padding="5dp"
@@ -854,7 +863,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:layout_margin="2dp"
+                    android:paddingStart="5dp"
+                  android:layout_marginTop="8dp"
                     android:background="@color/white">
 
                     <TextView
@@ -862,18 +872,18 @@
                         style="@style/style_thrid"
                         android:textColor="@color/about_equipment"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="@dimen/_37sdp"
                         android:gravity="center_vertical"
                         android:paddingStart="5dp"
                         android:paddingTop="5dp"
                         android:text=""
                         tools:ignore="RtlSymmetry"
-                        android:drawableEnd="@drawable/ic_baseline_arrow_drop_up_24"/>
+                        android:drawableEnd="@drawable/ic_arrow_drop_down_black_24dp"/>
                     <TextView
                         android:id="@+id/audit_not_found"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="No data Found"
+                        android:text=""
                         android:gravity="center"
                         style="@style/style_thrid"
                         android:padding="5dp"
@@ -933,7 +943,7 @@
             android:visibility="gone"
             android:layout_marginHorizontal="21dp"
             android:textColor="@color/date_colore"
-            android:text="Would you like to install or deploy this as a new item?" />
+            android:text="" />
     <LinearLayout
         android:id="@+id/ll_bottom"
         android:layout_width="match_parent"

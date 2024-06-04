@@ -111,7 +111,11 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
     private String cltId;
     private Job_equim_PI jobEquimPi;
     public  AddEdit_QRCode_BarCode_Dialog addEditQrCodeBarCodeDialog;
-    boolean clicked_service_history,clicked_upcoming_service,click_part,click_item,click_audit = false;
+    boolean clicked_service_history = false;
+      boolean clicked_upcoming_service = false;
+      boolean click_part = false;
+      boolean click_item = false;
+      boolean click_audit = false;
     String equ_found_or_not = "";
 
     public  String barCode = "", qrcode = "", equpId ="",jobId ="";
@@ -1070,7 +1074,7 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
                     addEditQrCodeBarCodeDialog.show(getSupportFragmentManager(), "2");
                 }
                 break;
-            case R.id.last_service_txt:
+            case R.id.last_service_date:
                 if(!clicked_service_history) {
                     clicked_service_history = true;
                     jobList.setVisibility(View.VISIBLE);
@@ -1109,7 +1113,7 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
                     tv_label_item.setCompoundDrawablesWithIntrinsicBounds(null,null,getDrawable(R.drawable.ic_baseline_arrow_drop_up_24),null);
                     click_item = true;
                 }else{
-                    recyclerView_part.setVisibility(View.GONE);
+                    recyclerView_item.setVisibility(View.GONE);
                     tv_label_item.setCompoundDrawablesWithIntrinsicBounds(null,null,getDrawable(R.drawable.ic_arrow_drop_down_black_24dp),null);
                     click_item = false;
                 }
