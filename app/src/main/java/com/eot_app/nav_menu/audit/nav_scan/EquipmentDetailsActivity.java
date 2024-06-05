@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,12 +17,15 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumptech.glide.Glide;
 import com.eot_app.R;
 import com.eot_app.UploadDocumentActivity;
@@ -50,6 +54,7 @@ import com.eot_app.nav_menu.jobs.job_detail.job_equipment.job_equ_mvp.Job_equim_
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.job_equ_mvp.Job_equim_PI;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.job_equ_mvp.Job_equim_View;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.job_equ_remrk.EquipmentPartRemarkAdapter;
+import com.eot_app.nav_menu.jobs.job_detail.job_equipment.job_equ_remrk.JobEquPartRemarkRemarkActivity;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.job_equ_remrk.JobEquRemarkRemarkActivity;
 import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.AppUtility;
@@ -69,23 +74,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class EquipmentDetailsActivity extends UploadDocumentActivity implements View.OnClickListener,
-        Audit_Job_History_View, AdpterAuditHistory.OnAuditSelection, AdpterJobHistory.OnJobSelection, Job_equim_View, AddEdit_QRCode_BarCode_Dialog.QR_Bar_DataPass {
-    TextView equipment_name, barnd_name, model_no, serial_no,
-            traiff_rate, warrenty_expiry_date, manufacture_date,
-            purchase_date, installed_date, type, equipment_group, equipment_location;
-    TextView barnd_name_detail, model_no_detail, serial_no_detail,
-            traiff_rate_detail,
-            warrenty_expiry_date_detail, manufacture_date_detail, purchase_date_detail, install_date_detail,
-            type_detail, equipment_group_detail,client_name_detail,location_detail,site_detail;
+public class EquipmentDetailsActivity extends UploadDocumentActivity implements View.OnClickListener, Audit_Job_History_View, AdpterAuditHistory.OnAuditSelection, AdpterJobHistory.OnJobSelection, Job_equim_View, AddEdit_QRCode_BarCode_Dialog.QR_Bar_DataPass {
+    TextView equipment_name, barnd_name, model_no, serial_no, traiff_rate, warrenty_expiry_date, manufacture_date, purchase_date, installed_date, type, equipment_group, equipment_location;
+    TextView barnd_name_detail, model_no_detail, serial_no_detail, traiff_rate_detail, warrenty_expiry_date_detail, manufacture_date_detail, purchase_date_detail, install_date_detail, type_detail, equipment_group_detail, client_name_detail, location_detail, site_detail;
     RoundedImageView profile_img;
     InvoiceItemList2Adpter invoice_list_adpter;
     Button button_job, button_audit, go_to_addjob;
     LinearLayoutManager layoutManager, layoutManager1, layoutManager2;
-    RelativeLayout not_found_btn_ll;
+    ConstraintLayout cl_parent_bottom_btn;
     private LinearLayout ll_provider;
-    TextView  last_serv_date, serv_due_date_label,serv_due_date,last_serv_date_lable,txt_about_equipment,
-    last_service_txt,last_service_date,upcoming_service_txt,deu_service_txt,deu_service_date,txt_for_link_or_not;
+    TextView last_serv_date, serv_due_date_label, serv_due_date, last_serv_date_lable, txt_about_equipment, last_service_txt, last_service_date, upcoming_service_txt, deu_service_txt, deu_service_date, txt_link_equStatus;
     private String equipmentID, path;
     private Audit_Job_History_pi equ_details_pc;
     private AdpterAuditHistory adapterAuditList;
@@ -102,23 +100,22 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
     EquipmentPartRemarkAdapter equipmentPartAdapter;
     AppCompatTextView tv_network_error, tv_label_part, tv_label_item;
     private LinearLayout ll_audit_job;
-    private LinearLayout job_ll, audit_ll,job_upcoming_ll, equipment_location_detail;
-    TextView custom_filed_1, custom_filed_2,
-            custom_filed_txt_1, custom_filed_txt_2,supplier_txt,supplier,txt_addBarcode,txt_addQrcode,
-            servic_histry_not_found,upcoming_servic_not_found,parts_not_found,items_not_found,audit_not_found;
-    ImageView img_barcode,img_Qrcode;
+    private LinearLayout job_ll, audit_ll, job_upcoming_ll, equipment_location_detail;
+    TextView custom_filed_1, custom_filed_2, custom_filed_txt_1, custom_filed_txt_2, supplier_txt, supplier, txt_addBarcode, txt_addQrcode, servic_histry_not_found, upcoming_servic_not_found, parts_not_found, items_not_found, audit_not_found;
+    ImageView img_barcode, img_Qrcode;
     private boolean REFRESH = false;
     private String cltId;
     private Job_equim_PI jobEquimPi;
-    public  AddEdit_QRCode_BarCode_Dialog addEditQrCodeBarCodeDialog;
+    public AddEdit_QRCode_BarCode_Dialog addEditQrCodeBarCodeDialog;
     boolean clicked_service_history = false;
-      boolean clicked_upcoming_service = false;
-      boolean click_part = false;
-      boolean click_item = false;
-      boolean click_audit = false;
-    String equ_found_or_not = "";
-
-    public  String barCode = "", qrcode = "", equpId ="",jobId ="";
+    boolean clicked_upcoming_service = false;
+    boolean click_part = false;
+    boolean click_item = false;
+    boolean click_audit = false;
+    public String barCode = "", qrcode = "", equpId = "", jobId = "";
+    public boolean isComeFromJobScan = false, isLinked = false;
+    EquArrayModel equipment;
+    ConstraintLayout cl_loader1,cl_loader2,cl_loader3,cl_loader4,cl_loader5;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -159,17 +156,27 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
 //                equ_details_pc.getEqItemFromServer(equipment.getEquId(),jobId);
 //                equ_details_pc.getEqPartsFromServer(equipment.getEquId());
 
+            } else if (getIntent().hasExtra("job_equip_scan")) {
+                String str = getIntent().getExtras().getString("job_equip_str");
+                equipment = new Gson().fromJson(str, EquArrayModel.class);
+                setJobEquipment(equipment);
+                equpId = equipment.getEquId();
+                cltId = equipment.getCltId();
+                jobId = getIntent().getStringExtra("jobId");
+                isLinked = getIntent().getBooleanExtra("isLinked", false);
+                isComeFromJobScan = true;
+//                equ_details_pc.getEquipmentAduitHistory(equipment.getEquId());
+//                equ_details_pc.getEquipmentJobHistory(equipment.getEquId());
+//                equ_details_pc.getEqItemFromServer(equipment.getEquId(),jobId);
+//                equ_details_pc.getEqPartsFromServer(equipment.getEquId());
+
             }
-            if(getIntent().hasExtra("found_or_not")) {
-                equ_found_or_not = getIntent().getStringExtra("found_or_not");
-                if (equ_found_or_not.equalsIgnoreCase("equipmentFound")) {
-                    setViewEquFound();
-                }
-            }else {
+            if (!getIntent().hasExtra("job_equip_scan")) {
+                cl_parent_bottom_btn.setVisibility(View.GONE);
                 button_audit.setVisibility(View.GONE);
                 button_job.setVisibility(View.GONE);
             }
-        }else {
+        } else {
             setData();
         }
 
@@ -186,22 +193,24 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
         showDilaog(msg);
     }
 
-    private void init(){
+    private void init() {
         jobEquimPi = new Job_equim_PC(this);
         jobEquimPi.getEquipmentStatus();
         AppUtility.progressBarDissMiss();
         if (getIntent().hasExtra("equipment")) {
             if (equpId != null && !equpId.isEmpty()) {
-                equ_details_pc.getEquipmentAduitHistory(equpId);
-                equ_details_pc.getEquipmentJobHistory(equpId);
-                equ_details_pc.getEqItemFromServer(equpId, jobId);
-                equ_details_pc.getEqPartsFromServer(equpId);
+//                equ_details_pc.getEquipmentAduitHistory(equpId);
+//                equ_details_pc.getEquipmentJobHistory(equpId);
+//                equ_details_pc.getEqItemFromServer(equpId, jobId);
+//                equ_details_pc.getEqPartsFromServer(equpId);
             }
-        }
-        else {
+        } else {
             setData();
         }
 
+        if (getIntent().hasExtra("job_equip_scan")) {
+            setViewEquFound();
+        }
     }
 
     private void initializelables() {
@@ -221,9 +230,9 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
             custom_filed_2.setText(App_preference.getSharedprefInstance().getCompanySettingsDetails().getEqupExtraField2Label());
 
         job_history_txt = findViewById(R.id.service_history_txt);
+        job_history_txt.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.equipment_service) );
         upcoming_service_txt = findViewById(R.id.upcoming_service_txt);
-        audit_ll = findViewById(R.id.audit_ll);
-        job_ll = findViewById(R.id.job_ll);
+        upcoming_service_txt.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.upcoming_service));
         audit_ll = findViewById(R.id.audit_ll);
         job_ll = findViewById(R.id.job_ll);
         job_upcoming_ll = findViewById(R.id.job_upcoming_ll);
@@ -233,6 +242,7 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
         tv_network_error = findViewById(R.id.tv_network_error);
 
         aduit_history_txt = findViewById(R.id.aduit_history_txt);
+        aduit_history_txt.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.equipment_audit) );
 
         auditList = findViewById(R.id.audit_list);
         jobList = findViewById(R.id.job_list);
@@ -290,7 +300,7 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
         barnd_name.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.brand_name));
 
 
-        serv_due_date= findViewById(R.id.serv_due_date);
+        serv_due_date = findViewById(R.id.serv_due_date);
         serv_due_date_label = findViewById(R.id.serv_due_date_label);
         serv_due_date_label.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.service_due_date));
 
@@ -373,7 +383,7 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
         txt_addQrcode = findViewById(R.id.txt_addQrcode);
         img_Qrcode = findViewById(R.id.img_Qrcode);
         img_barcode = findViewById(R.id.img_barcode);
-        equipment_location.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.equipment)+" "+LanguageController.getInstance().getMobileMsgByKey(AppConstant.location));
+        equipment_location.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.equipment) + " " + LanguageController.getInstance().getMobileMsgByKey(AppConstant.location));
         txt_addBarcode.setOnClickListener(this);
         txt_addQrcode.setOnClickListener(this);
 
@@ -382,13 +392,18 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
         last_service_date = findViewById(R.id.last_service_date);
         deu_service_txt = findViewById(R.id.deu_service_txt);
         deu_service_date = findViewById(R.id.deu_service_date);
-        not_found_btn_ll = findViewById(R.id.not_found_btn_ll);
-        txt_for_link_or_not = findViewById(R.id.txt_for_link_or_not);
+        cl_parent_bottom_btn = findViewById(R.id.cl_parent_bottom_btn);
+        txt_link_equStatus = findViewById(R.id.txt_link_equStatus);
         servic_histry_not_found = findViewById(R.id.servic_histry_not_found);
         upcoming_servic_not_found = findViewById(R.id.upcoming_servic_not_found);
         parts_not_found = findViewById(R.id.parts_not_found);
         items_not_found = findViewById(R.id.items_not_found);
         audit_not_found = findViewById(R.id.audit_not_found);
+        cl_loader1 = findViewById(R.id.cl_loader1);
+        cl_loader2 = findViewById(R.id.cl_loader2);
+        cl_loader3 = findViewById(R.id.cl_loader3);
+        cl_loader4 = findViewById(R.id.cl_loader4);
+        cl_loader5 = findViewById(R.id.cl_loader5);
         servic_histry_not_found.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.service_not_found));
         upcoming_servic_not_found.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.upcoming_service_not_found));
         parts_not_found.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.equ_parts_not_found));
@@ -435,22 +450,21 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
     public boolean onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
 
-        if (path != null && !path.equals("")) {
-            menu.findItem(R.id.menu_add_user_manual).setVisible(false);
-            try {
-                File file1 = new File(path);
-                String setTextInItemmenu = LanguageController.getInstance().getMobileMsgByKey(AppConstant.view_user_mannual)
-                        + " (" + file1.getName() + ")";
-                menu.findItem(R.id.menu_view_user_manual).setTitle(setTextInItemmenu);
-            } catch (Exception ex) {
-                menu.findItem(R.id.menu_view_user_manual).setTitle(LanguageController.
-                        getInstance().getMobileMsgByKey(AppConstant.view_user_mannual));
+        if (!isComeFromJobScan) {
+            if (path != null && !path.equals("")) {
+                menu.findItem(R.id.menu_add_user_manual).setVisible(false);
+                try {
+                    File file1 = new File(path);
+                    String setTextInItemmenu = LanguageController.getInstance().getMobileMsgByKey(AppConstant.view_user_mannual) + " (" + file1.getName() + ")";
+                    menu.findItem(R.id.menu_view_user_manual).setTitle(setTextInItemmenu);
+                } catch (Exception ex) {
+                    menu.findItem(R.id.menu_view_user_manual).setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.view_user_mannual));
+                }
+            } else {
+                menu.findItem(R.id.menu_add_user_manual).setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_user_mannual));
+                menu.findItem(R.id.menu_view_user_manual).setVisible(false);
             }
-        } else {
-            menu.findItem(R.id.menu_add_user_manual).setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_user_mannual));
-            menu.findItem(R.id.menu_view_user_manual).setVisible(false);
         }
-
         return true;
 
     }
@@ -471,7 +485,9 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.equi_details_menu, menu);
+        if (!isComeFromJobScan) {
+            getMenuInflater().inflate(R.menu.equi_details_menu, menu);
+        }
         return true;
     }
 
@@ -486,16 +502,16 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
             } catch (Exception exception) {
                 exception.printStackTrace();
             }
-        }else if (getIntent().hasExtra("jobids")){
+        } else if (getIntent().hasExtra("jobids")) {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     try {
                         Type listType = new TypeToken<List<String>>() {
                         }.getType();
-                        List<String> jobids=  new Gson().fromJson(getIntent().getStringExtra("jobids"), listType);
+                        List<String> jobids = new Gson().fromJson(getIntent().getStringExtra("jobids"), listType);
                         joblist = AppDataBase.getInMemoryDatabase(getApplication()).jobModel().getjobsbyjobids(jobids);
-                    }catch (Exception e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
@@ -517,14 +533,12 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
             List<Equipment_Res> equArray = auditlist.get(0).getEquArray();
             if (equArray != null) {
                 for (Equipment_Res equipment : equArray) {
-                    if (equipment.getSno() != null && equipment.getSno().equals(codeText) ||
-                            equipment.getBarcode() != null && equipment.getBarcode().equals(codeText) ||
-                            equipment.getQrcode() != null && equipment.getQrcode().equals(codeText)) {
+                    if (equipment.getSno() != null && equipment.getSno().equals(codeText) || equipment.getBarcode() != null && equipment.getBarcode().equals(codeText) || equipment.getQrcode() != null && equipment.getQrcode().equals(codeText)) {
                         setAuditEquipment(equipment);
                         equpId = equipment.getEquId();
                         equ_details_pc.getEquipmentAduitHistory(equipment.getEquId());
                         equ_details_pc.getEquipmentJobHistory(equipment.getEquId());
-                        equ_details_pc.getEqItemFromServer(equipment.getEquId(),null);
+                        equ_details_pc.getEqItemFromServer(equipment.getEquId(), null);
                         equ_details_pc.getEqPartsFromServer(equipment.getEquId());
                         break;
                     }
@@ -534,41 +548,32 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
             List<EquArrayModel> equArrayModelList = joblist.get(0).getEquArray();
             if (equArrayModelList != null) {
                 for (EquArrayModel equipment : equArrayModelList) {
-                    if (equipment.getSno() != null && equipment.getSno().equals(codeText) ||
-                            equipment.getBarcode() != null && equipment.getBarcode().equals(codeText)||
-                            equipment.getQrcode() != null && equipment.getQrcode().equals(codeText)) {
+                    if (equipment.getSno() != null && equipment.getSno().equals(codeText) || equipment.getBarcode() != null && equipment.getBarcode().equals(codeText) || equipment.getQrcode() != null && equipment.getQrcode().equals(codeText)) {
                         setJobEquipment(equipment);
                         equpId = equipment.getEquId();
                         equ_details_pc.getEquipmentAduitHistory(equipment.getEquId());
                         equ_details_pc.getEquipmentJobHistory(equipment.getEquId());
-                        equ_details_pc.getEqItemFromServer(equipment.getEquId(),joblist.get(0).getJobId());
+                        equ_details_pc.getEqItemFromServer(equipment.getEquId(), joblist.get(0).getJobId());
                         equ_details_pc.getEqPartsFromServer(equipment.getEquId());
                         break;
                     }
                 }
             }
         }
-        if(getIntent().hasExtra("found_or_not")){
-            button_job.setVisibility(View.VISIBLE);
-            button_audit.setVisibility(View.VISIBLE);
+
+        if (joblist == null || joblist.size() == 0) button_job.setVisibility(View.GONE);
+
+        if (auditlist == null || auditlist.size() == 0) button_audit.setVisibility(View.GONE);
+
+        if (App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsJobAddOrNot() != 0) {//0
             go_to_addjob.setVisibility(View.GONE);
-        }else {
-            if (joblist == null || joblist.size() == 0)
-                button_job.setVisibility(View.GONE);
-
-            if (auditlist == null || auditlist.size() == 0)
-                button_audit.setVisibility(View.GONE);
-
-            if (App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsJobAddOrNot() != 0) {//0
-                go_to_addjob.setVisibility(View.GONE);
-            }else {
-                go_to_addjob.setVisibility(View.VISIBLE);
-            }
+        } else {
+            go_to_addjob.setVisibility(View.VISIBLE);
         }
     }
 
     private void setJobEquipment(EquArrayModel equipment) {
-        String clientArd ="";
+        String clientArd = "";
         equipmentID = equipment.getEquId();
         equipment_name.setText(equipment.getEqunm());
 
@@ -591,22 +596,25 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
         }else {
 //            site_detail.setVisibility(View.GONE);
         }*/
-        if( equipment.getAdr()  != null && !equipment.getAdr().equals("") ){
+        if (equipment.getAdr() != null && !equipment.getAdr().equals("")) {
             clientArd = clientArd.concat(equipment.getAdr());
-        }if(equipment.getCity()  != null && !equipment.getCity().equals("")){
-            clientArd =   clientArd.concat(","+equipment.getCity());
-        }if(equipment.getState()  != null && !equipment.getState().equals("") ){
-            clientArd =  clientArd.concat(","+ SpinnerCountrySite.getStatenameById(equipment.getCtry(),equipment.getState()));
-        }if(equipment.getCtry()  != null && !equipment.getCtry().equals("") ){
-            clientArd = clientArd.concat(","+SpinnerCountrySite.getCountryNameById(equipment.getCtry()));
-        }if(equipment.getZip()  != null && !equipment.getZip().equals("")){
-            clientArd = clientArd.concat(","+equipment.getZip());
+        }
+        if (equipment.getCity() != null && !equipment.getCity().equals("")) {
+            clientArd = clientArd.concat("," + equipment.getCity());
+        }
+        if (equipment.getState() != null && !equipment.getState().equals("")) {
+            clientArd = clientArd.concat("," + SpinnerCountrySite.getStatenameById(equipment.getCtry(), equipment.getState()));
+        }
+        if (equipment.getCtry() != null && !equipment.getCtry().equals("")) {
+            clientArd = clientArd.concat("," + SpinnerCountrySite.getCountryNameById(equipment.getCtry()));
+        }
+        if (equipment.getZip() != null && !equipment.getZip().equals("")) {
+            clientArd = clientArd.concat("," + equipment.getZip());
         }
         location_detail.setText(clientArd);
 
         try {
-            if (TextUtils.isEmpty(equipment.getRate()))
-                traiff_rate_detail.setText("");
+            if (TextUtils.isEmpty(equipment.getRate())) traiff_rate_detail.setText("");
             else
                 traiff_rate_detail.setText(AppUtility.getRoundoff_amount(String.valueOf(equipment.getRate())));
         } catch (Exception e) {
@@ -623,8 +631,7 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
         setDateInView(install_date_detail, equipment.getInstalledDate());
 
         if (!TextUtils.isEmpty(equipment.getType())) {
-            if (equipment.getType().equals("2"))
-                ll_provider.setVisibility(View.GONE);
+            if (equipment.getType().equals("2")) ll_provider.setVisibility(View.GONE);
             else ll_provider.setVisibility(View.VISIBLE);
             type_detail.setText(getEquipmentType(equipment.getType()));
         }
@@ -637,16 +644,15 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
             // days=0
             //month=1
             //year=2
-            if(equipment.getServIntvalType()!=null&&equipment.getServIntvalValue()!=null)
-                serv_due_date.setText(AppUtility.getServiceDueDate(equipment.getServIntvalType(),equipment.getServIntvalValue(), Long.parseLong(equipment.getLastJobDate())));
+            if (equipment.getServIntvalType() != null && equipment.getServIntvalValue() != null)
+                serv_due_date.setText(AppUtility.getServiceDueDate(equipment.getServIntvalType(), equipment.getServIntvalValue(), Long.parseLong(equipment.getLastJobDate())));
 
         } catch (Exception exception) {
             exception.printStackTrace();
         }
 
         if (!TextUtils.isEmpty(equipment.getImage()))
-            Glide.with(this).load(App_preference.getSharedprefInstance().getBaseURL() + equipment.getImage())
-                    .thumbnail(Glide.with(this).load(R.raw.loader_eot)).placeholder(R.drawable.app_logo2).into(profile_img);
+            Glide.with(this).load(App_preference.getSharedprefInstance().getBaseURL() + equipment.getImage()).thumbnail(Glide.with(this).load(R.raw.loader_eot)).placeholder(R.drawable.app_logo2).into(profile_img);
 
 
         if (!TextUtils.isEmpty(equipment.getUsrManualDoc())) {
@@ -654,29 +660,29 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
         }
 
         try {
-            if (equipment != null && equipment.getBarcode() != null && !equipment.getBarcode().isBlank()&& equipment.getBarcodeImg() != null && !equipment.getBarcodeImg().isBlank()){
+            if (equipment != null && equipment.getBarcode() != null && !equipment.getBarcode().isBlank() && equipment.getBarcodeImg() != null && !equipment.getBarcodeImg().isBlank()) {
                 txt_addBarcode.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit_Barcode));
-                txt_addBarcode.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.edit),null,null,null);
+                txt_addBarcode.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.edit), null, null, null);
                 img_barcode.setVisibility(View.VISIBLE);
                 Picasso.get().load(App_preference.getSharedprefInstance().getBaseURL() + equipment.getBarcodeImg()).placeholder(R.drawable.ic_profile).error(R.drawable.ic_profile).into(img_barcode);
-            /*    equ_bar_code_num_txt.setText(equipment.getBarcode());*/
+                /*    equ_bar_code_num_txt.setText(equipment.getBarcode());*/
                 barCode = equipment.getBarcode();
-            }else {
+            } else {
                 txt_addBarcode.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_barcode));
-                txt_addBarcode.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.plus),null,null,null);
+                txt_addBarcode.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.plus), null, null, null);
                 img_barcode.setVisibility(View.GONE);
 //                equ_bar_code_num_txt.setText(equipment.getBarcode());
             }
-            if (equipment != null && equipment.getQrcode() != null && !equipment.getQrcode().isBlank() && !equipment.getQrcode().isBlank()&& equipment.getQrcodeImg() != null && !equipment.getQrcodeImg().isBlank()){
+            if (equipment != null && equipment.getQrcode() != null && !equipment.getQrcode().isBlank() && !equipment.getQrcode().isBlank() && equipment.getQrcodeImg() != null && !equipment.getQrcodeImg().isBlank()) {
                 txt_addQrcode.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit_QR_Code));
-                txt_addQrcode.setCompoundDrawablesWithIntrinsicBounds(getDrawable(R.drawable.edit),null,null,null);
+                txt_addQrcode.setCompoundDrawablesWithIntrinsicBounds(getDrawable(R.drawable.edit), null, null, null);
                 img_Qrcode.setVisibility(View.VISIBLE);
                 Picasso.get().load(App_preference.getSharedprefInstance().getBaseURL() + equipment.getQrcodeImg()).placeholder(R.drawable.ic_profile).error(R.drawable.ic_profile).into(img_Qrcode);
 //                equ_bar_code_num_txt.setText(equipment.getQrcode());
                 qrcode = equipment.getQrcode();
-            }else {
+            } else {
                 txt_addQrcode.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_QR_Code));
-                txt_addQrcode.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.plus),null,null,null);
+                txt_addQrcode.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.plus), null, null, null);
                 img_Qrcode.setVisibility(View.GONE);
 //                equ_bar_code_num_txt.setText(equipment.getQrcode());
             }
@@ -688,7 +694,7 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
     }
 
     private void setAuditEquipment(Equipment_Res equipment) {
-        String clientArd="";
+        String clientArd = "";
         equipmentID = equipment.getEquId();
         equipment_name.setText(equipment.getEqunm());
         barnd_name_detail.setText(equipment.getBrand());
@@ -698,7 +704,7 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
         custom_filed_txt_2.setText(equipment.getExtraField2());
         supplier.setText(equipment.getSupplier());
 
-        if(equipment.getEquId() !=null) {
+        if (equipment.getEquId() != null) {
             Equipment equipmentById = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).equipmentDao().getEquipmentById(equipment.getEquId());
 
             /*if (equipmentById.getCltId() != null && !equipmentById.getCltId().equals("0")) {
@@ -733,8 +739,7 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
         }
 
         try {
-            if (TextUtils.isEmpty(equipment.getRate()))
-                traiff_rate_detail.setText("");
+            if (TextUtils.isEmpty(equipment.getRate())) traiff_rate_detail.setText("");
             else
                 traiff_rate_detail.setText(AppUtility.getRoundoff_amount(String.valueOf(equipment.getRate())));
         } catch (Exception e) {
@@ -751,15 +756,13 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
 
 
         if (!TextUtils.isEmpty(equipment.getType())) {
-            if (equipment.getType().equals("2"))
-                ll_provider.setVisibility(View.GONE);
+            if (equipment.getType().equals("2")) ll_provider.setVisibility(View.GONE);
             else ll_provider.setVisibility(View.VISIBLE);
             type_detail.setText(getEquipmentType(equipment.getType()));
         }
 
         if (!TextUtils.isEmpty(equipment.getImage()))
-            Glide.with(this).load(App_preference.getSharedprefInstance().getBaseURL() + equipment.getImage())
-                    .thumbnail(Glide.with(this).load(R.raw.loader_eot)).placeholder(R.drawable.app_logo2).into(profile_img);
+            Glide.with(this).load(App_preference.getSharedprefInstance().getBaseURL() + equipment.getImage()).thumbnail(Glide.with(this).load(R.raw.loader_eot)).placeholder(R.drawable.app_logo2).into(profile_img);
 
         if (!TextUtils.isEmpty(equipment.getUsrManualDoc())) {
             path = equipment.getUsrManualDoc();
@@ -773,8 +776,8 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
                 // days=0
                 //month=1
                 //year=2
-                if(equipment.getServIntvalType()!=null&&equipment.getServIntvalValue()!=null)
-                    serv_due_date.setText(AppUtility.getServiceDueDate(equipment.getServIntvalType(),equipment.getServIntvalValue(), Long.parseLong(equipment.getLastJobDate())));
+                if (equipment.getServIntvalType() != null && equipment.getServIntvalValue() != null)
+                    serv_due_date.setText(AppUtility.getServiceDueDate(equipment.getServIntvalType(), equipment.getServIntvalValue(), Long.parseLong(equipment.getLastJobDate())));
 
             }
         } catch (Exception exception) {
@@ -782,29 +785,29 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
         }
 
         try {
-            if (equipment != null && equipment.getBarcode() != null && !equipment.getBarcode().isBlank() && !equipment.getBarcode().isBlank()&& equipment.getBarcodeImg() != null && !equipment.getBarcodeImg().isBlank()){
+            if (equipment != null && equipment.getBarcode() != null && !equipment.getBarcode().isBlank() && !equipment.getBarcode().isBlank() && equipment.getBarcodeImg() != null && !equipment.getBarcodeImg().isBlank()) {
                 txt_addBarcode.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit_Barcode));
-                txt_addBarcode.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.edit),null,null,null);
+                txt_addBarcode.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.edit), null, null, null);
                 img_barcode.setVisibility(View.VISIBLE);
                 Picasso.get().load(App_preference.getSharedprefInstance().getBaseURL() + equipment.getBarcodeImg()).placeholder(R.drawable.ic_profile).error(R.drawable.ic_profile).into(img_barcode);
 //                equ_bar_code_num_txt.setText(equipment.getBarcode());
                 barCode = equipment.getBarcode();
-            }else {
+            } else {
                 txt_addBarcode.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_barcode));
-                txt_addBarcode.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.plus),null,null,null);
+                txt_addBarcode.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.plus), null, null, null);
                 img_barcode.setVisibility(View.GONE);
 //                equ_bar_code_num_txt.setText(equipment.getBarcode());
             }
-            if (equipment != null && equipment.getQrcode() != null && !equipment.getQrcode().isBlank() && !equipment.getQrcode().isBlank()&& equipment.getQrcodeImg() != null && !equipment.getQrcodeImg().isBlank()){
+            if (equipment != null && equipment.getQrcode() != null && !equipment.getQrcode().isBlank() && !equipment.getQrcode().isBlank() && equipment.getQrcodeImg() != null && !equipment.getQrcodeImg().isBlank()) {
                 txt_addQrcode.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit_QR_Code));
-                txt_addQrcode.setCompoundDrawablesWithIntrinsicBounds(getDrawable(R.drawable.edit),null,null,null);
+                txt_addQrcode.setCompoundDrawablesWithIntrinsicBounds(getDrawable(R.drawable.edit), null, null, null);
                 img_Qrcode.setVisibility(View.VISIBLE);
                 Picasso.get().load(App_preference.getSharedprefInstance().getBaseURL() + equipment.getQrcodeImg()).placeholder(R.drawable.ic_profile).error(R.drawable.ic_profile).into(img_Qrcode);
 //                equ_bar_code_num_txt.setText(equipment.getQrcode());
                 qrcode = equipment.getQrcode();
-            }else {
+            } else {
                 txt_addQrcode.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_QR_Code));
-                txt_addQrcode.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.plus),null,null,null);
+                txt_addQrcode.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.plus), null, null, null);
                 img_Qrcode.setVisibility(View.GONE);
 //                equ_bar_code_num_txt.setText(equipment.getQrcode());
             }
@@ -820,7 +823,7 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
      * equipment details which is not linked with any job or audit
      */
     private void setEquipmentDetails(Equipment equipment) {
-        if(equipment != null) {
+        if (equipment != null) {
             String clientArd = "";
             equipmentID = equipment.getEquId();
             equipment_name.setText(equipment.getEqunm());
@@ -856,8 +859,7 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
 
             supplier.setText(equipment.getSupplier());
             try {
-                if (TextUtils.isEmpty(equipment.getRate()))
-                    traiff_rate_detail.setText("");
+                if (TextUtils.isEmpty(equipment.getRate())) traiff_rate_detail.setText("");
                 else
                     traiff_rate_detail.setText(AppUtility.getRoundoff_amount(String.valueOf(equipment.getRate())));
             } catch (Exception e) {
@@ -874,15 +876,13 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
 
 
             if (!TextUtils.isEmpty(equipment.getType())) {
-                if (equipment.getType().equals("2"))
-                    ll_provider.setVisibility(View.GONE);
+                if (equipment.getType().equals("2")) ll_provider.setVisibility(View.GONE);
                 else ll_provider.setVisibility(View.VISIBLE);
                 type_detail.setText(getEquipmentType(equipment.getType()));
             }
 
             if (!TextUtils.isEmpty(equipment.getImage()))
-                Glide.with(this).load(App_preference.getSharedprefInstance().getBaseURL() + equipment.getImage())
-                        .thumbnail(Glide.with(this).load(R.raw.loader_eot)).placeholder(R.drawable.app_logo2).into(profile_img);
+                Glide.with(this).load(App_preference.getSharedprefInstance().getBaseURL() + equipment.getImage()).thumbnail(Glide.with(this).load(R.raw.loader_eot)).placeholder(R.drawable.app_logo2).into(profile_img);
 
 
             if (!TextUtils.isEmpty(equipment.getUsrManualDoc())) {
@@ -892,37 +892,37 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
             if (equipment.getCltId() != null && !TextUtils.isEmpty(equipment.getCltId())) {
                 cltId = equipment.getCltId();
                 if (App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsJobAddOrNot() != 0) {//0
+                    cl_parent_bottom_btn.setVisibility(View.GONE);
                     go_to_addjob.setVisibility(View.GONE);
-                } else if(getIntent().hasExtra("found_or_not")){
-                    go_to_addjob.setVisibility(View.GONE);
-                }else {
+                } else {
+                    cl_parent_bottom_btn.setVisibility(View.VISIBLE);
                     go_to_addjob.setVisibility(View.VISIBLE);
                 }
             }
             try {
-                if (equipment != null && equipment.getBarcode() != null && !equipment.getBarcode().isBlank() && !equipment.getBarcode().isBlank()&& equipment.getBarcodeImg() != null && !equipment.getBarcodeImg().isBlank()){
+                if (equipment != null && equipment.getBarcode() != null && !equipment.getBarcode().isBlank() && !equipment.getBarcode().isBlank() && equipment.getBarcodeImg() != null && !equipment.getBarcodeImg().isBlank()) {
                     txt_addBarcode.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit_Barcode));
-                    txt_addBarcode.setCompoundDrawablesWithIntrinsicBounds(getDrawable(R.drawable.edit),null,null,null);
+                    txt_addBarcode.setCompoundDrawablesWithIntrinsicBounds(getDrawable(R.drawable.edit), null, null, null);
                     img_barcode.setVisibility(View.VISIBLE);
                     Picasso.get().load(App_preference.getSharedprefInstance().getBaseURL() + equipment.getBarcodeImg()).placeholder(R.drawable.ic_profile).error(R.drawable.ic_profile).into(img_barcode);
 //                    equ_bar_code_num_txt.setText(equipment.getBarcode());
                     barCode = equipment.getBarcode();
-                }else {
+                } else {
                     txt_addBarcode.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_barcode));
-                    txt_addBarcode.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.plus),null,null,null);
+                    txt_addBarcode.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.plus), null, null, null);
                     img_barcode.setVisibility(View.GONE);
 //                    equ_bar_code_num_txt.setText(equipment.getBarcode());
                 }
-                if (equipment != null && equipment.getQrcode() != null && !equipment.getQrcode().isBlank() && !equipment.getQrcode().isBlank()&& equipment.getQrcodeImg() != null && !equipment.getQrcodeImg().isBlank()){
+                if (equipment != null && equipment.getQrcode() != null && !equipment.getQrcode().isBlank() && !equipment.getQrcode().isBlank() && equipment.getQrcodeImg() != null && !equipment.getQrcodeImg().isBlank()) {
                     txt_addQrcode.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit_QR_Code));
-                    txt_addQrcode.setCompoundDrawablesWithIntrinsicBounds(getDrawable(R.drawable.edit),null,null,null);
+                    txt_addQrcode.setCompoundDrawablesWithIntrinsicBounds(getDrawable(R.drawable.edit), null, null, null);
                     img_Qrcode.setVisibility(View.VISIBLE);
                     Picasso.get().load(App_preference.getSharedprefInstance().getBaseURL() + equipment.getQrcodeImg()).placeholder(R.drawable.ic_profile).error(R.drawable.ic_profile).into(img_Qrcode);
 //                    equ_bar_code_num_txt.setText(equipment.getQrcode());
                     qrcode = equipment.getQrcode();
-                }else {
+                } else {
                     txt_addQrcode.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_QR_Code));
-                    txt_addQrcode.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.plus),null,null,null);
+                    txt_addQrcode.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.plus), null, null, null);
                     img_Qrcode.setVisibility(View.GONE);
 //                    equ_bar_code_num_txt.setText(equipment.getQrcode());
                 }
@@ -951,13 +951,13 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
 
     private void setDateInView(TextView tv, String dateString) {
         try {
-            if(dateString != null && !dateString.isEmpty()){
-            long longStartTime = Long.parseLong(dateString);
-            String dateWithFormate = AppUtility.getDateWithFormate(longStartTime, "dd-MMM-yyyy");
-            tv.setText(dateWithFormate);
+            if (dateString != null && !dateString.isEmpty()) {
+                long longStartTime = Long.parseLong(dateString);
+                String dateWithFormate = AppUtility.getDateWithFormate(longStartTime, "dd-MMM-yyyy");
+                tv.setText(dateWithFormate);
             }
         } catch (Exception ex) {
-                ex.printStackTrace();
+            ex.printStackTrace();
         }
     }
 
@@ -972,31 +972,69 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
                 startActivity(open_add_job.putExtra("addJobByEquipment", cltId));
                 break;
             case R.id.button_job:
-                String jobData = "";
-                if (getIntent().hasExtra("JOBDATA")) {
-                    try {
-                        jobData = (getIntent().getExtras().getString("JOBDATA"));//new Gson().toJson
-                    } catch (Exception exception) {
-                        exception.printStackTrace();
+                if (getIntent().hasExtra("job_equip_scan")) {
+                    if (isLinked) {
+                        if (jobId != null && !jobId.isEmpty()) {
+                            Log.e("getAllEquipments", "JobEqRemark JobEquipmentActivity");
+                            if (equipment != null && equipment.getIsPart() != null) {
+                                if (equipment.getIsPart().equalsIgnoreCase("1")) {
+                                    Intent intent = new Intent(this, JobEquPartRemarkRemarkActivity.class);
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                                    String strEqu = new Gson().toJson(equipment);
+                                    intent.putExtra("equipment", strEqu);
+                                    intent.putExtra("jobId", jobId);
+                                    intent.putExtra("cltId", cltId);
+                                    intent.putExtra("positions", 0);
+                                    intent.putExtra("isGetData", "");
+                                    intent.putExtra("isAction", true);
+                                    startActivityForResult(intent, JobEquipmentActivity.EQUIPMENT_UPDATE_CODE);
+                                } else {
+                                    Intent intent = new Intent(this, JobEquRemarkRemarkActivity.class);
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                                    String strEqu = new Gson().toJson(equipment);
+                                    intent.putExtra("equipment", strEqu);
+                                    intent.putExtra("jobId", jobId);
+                                    intent.putExtra("cltId", cltId);
+                                    intent.putExtra("positions", 0);
+                                    intent.putExtra("isGetData", "");
+                                    intent.putExtra("isAction", true);
+                                    startActivityForResult(intent, JobEquipmentActivity.EQUIPMENT_UPDATE_CODE);
+                                }
+                            } else {
+                                Intent intent = new Intent(this, JobEquRemarkRemarkActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                                String strEqu = new Gson().toJson(equipment);
+                                intent.putExtra("equipment", strEqu);
+                                intent.putExtra("jobId", jobId);
+                                intent.putExtra("cltId", cltId);
+                                intent.putExtra("positions", 0);
+                                intent.putExtra("isGetData", "");
+                                intent.putExtra("isAction", true);
+                                startActivityForResult(intent, JobEquipmentActivity.EQUIPMENT_UPDATE_CODE);
+                            }
+
+                        }
+                    } else {
+                        List<String> equipList = new ArrayList<>();
+                        equipList.add(equipment.getEquId());
+                        equ_details_pc.addAuditEquipment(equipList, jobId, "");
+                        Toast.makeText(this, "Not Linked", Toast.LENGTH_LONG).show();
                     }
-                }else if (getIntent().hasExtra("jobids")){
-                    try {
-                        jobData=getIntent().getStringExtra("jobids");
-                    }catch (Exception e){
-                        e.printStackTrace();
+                } else {
+                    String jobData = "";
+                    if (getIntent().hasExtra("JOBDATA")) {
+                        try {
+                            jobData = (getIntent().getExtras().getString("JOBDATA"));//new Gson().toJson
+                        } catch (Exception exception) {
+                            exception.printStackTrace();
+                        }
+                    } else if (getIntent().hasExtra("jobids")) {
+                        try {
+                            jobData = getIntent().getStringExtra("jobids");
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
-                }else if(getIntent().hasExtra("equipment")){
-                    try {
-                        jobData=getIntent().getStringExtra("equipment_id");
-                    }catch (Exception e){
-                        e.printStackTrace();
-                    }
-                }
-                if(getIntent().hasExtra("found_or_not")){
-                    Intent intent = new Intent(this, JobEquRemarkRemarkActivity.class);
-                    intent.putExtra("JOBDATA", jobData);
-                    startActivity(intent);
-                }else {
                     Intent jobintent = new Intent();
                     jobintent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                     jobintent.putExtra("JOBDATA", jobData);
@@ -1005,18 +1043,16 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
                 }
                 break;
             case R.id.button_audit:
-                String auditData = "";
-                try {
-                    auditData = (getIntent().getExtras().getString("AUDITDATA"));// new Gson().toJson
-                } catch (Exception exception) {
-                    exception.printStackTrace();
-                }
-                if(getIntent().hasExtra("found_or_not")){
-                    Intent intent = new Intent(this, JobEquipmentActivity.class);
-                    intent.putExtra("AUDITDATA", auditData);
-                    startActivity(intent);
+
+                if (getIntent().hasExtra("job_equip_scan")) {
                     finish();
-                }else {
+                } else {
+                    String auditData = "";
+                    try {
+                        auditData = (getIntent().getExtras().getString("AUDITDATA"));// new Gson().toJson
+                    } catch (Exception exception) {
+                        exception.printStackTrace();
+                    }
                     Intent intent = new Intent();
                     intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                     intent.putExtra("AUDITDATA", auditData);
@@ -1030,102 +1066,114 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
                 clipboard.setPrimaryClip(clip);
                 EotApp.getAppinstance().showToastmsg("Copied");
 
-                break;case R.id.serial_no_detail:
+                break;
+            case R.id.serial_no_detail:
                 ClipboardManager clipboard1 = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
                 ClipData clip1 = ClipData.newPlainText("Copied", serial_no_detail.getText().toString());
                 clipboard1.setPrimaryClip(clip1);
                 EotApp.getAppinstance().showToastmsg("Copied");
                 break;
-            case  R.id.txt_addBarcode:
-                if(barCode != null && !barCode.isBlank()) {
+            case R.id.txt_addBarcode:
+                if (barCode != null && !barCode.isBlank()) {
                     addEditQrCodeBarCodeDialog = new AddEdit_QRCode_BarCode_Dialog(this);
                     Bundle bundle = new Bundle();
-                    bundle.putString("barCode",barCode);
-                    bundle.putString("equipmentId",equipmentID);
-                    bundle.putBoolean("isComeFromDetail",true);
+                    bundle.putString("barCode", barCode);
+                    bundle.putString("equipmentId", equipmentID);
+                    bundle.putBoolean("isComeFromDetail", true);
                     addEditQrCodeBarCodeDialog.setArguments(bundle);
-                    addEditQrCodeBarCodeDialog.show(getSupportFragmentManager(),"1");
-                }else{
+                    addEditQrCodeBarCodeDialog.show(getSupportFragmentManager(), "1");
+                } else {
                     addEditQrCodeBarCodeDialog = new AddEdit_QRCode_BarCode_Dialog(this);
                     Bundle bundle = new Bundle();
-                    bundle.putString("barCode",barCode);
-                    bundle.putString("equipmentId",equipmentID);
-                    bundle.putBoolean("isComeFromDetail",true);
+                    bundle.putString("barCode", barCode);
+                    bundle.putString("equipmentId", equipmentID);
+                    bundle.putBoolean("isComeFromDetail", true);
                     addEditQrCodeBarCodeDialog.setArguments(bundle);
                     addEditQrCodeBarCodeDialog.show(getSupportFragmentManager(), "2");
                 }
                 break;
-            case  R.id.txt_addQrcode:
-                if(barCode != null && !barCode.isBlank()) {
+            case R.id.txt_addQrcode:
+                if (barCode != null && !barCode.isBlank()) {
                     addEditQrCodeBarCodeDialog = new AddEdit_QRCode_BarCode_Dialog(this);
                     Bundle bundle = new Bundle();
-                    bundle.putString("qrcode",qrcode);
-                    bundle.putString("equipmentId",equipmentID);
-                    bundle.putBoolean("isComeFromDetail",true);
+                    bundle.putString("qrcode", qrcode);
+                    bundle.putString("equipmentId", equipmentID);
+                    bundle.putBoolean("isComeFromDetail", true);
                     addEditQrCodeBarCodeDialog.setArguments(bundle);
-                    addEditQrCodeBarCodeDialog.show(getSupportFragmentManager(),"1");
-                }else{
+                    addEditQrCodeBarCodeDialog.show(getSupportFragmentManager(), "1");
+                } else {
                     addEditQrCodeBarCodeDialog = new AddEdit_QRCode_BarCode_Dialog(this);
                     Bundle bundle = new Bundle();
-                    bundle.putString("qrcode",qrcode);
-                    bundle.putString("equipmentId",equipmentID);
-                    bundle.putBoolean("isComeFromDetail",true);
+                    bundle.putString("qrcode", qrcode);
+                    bundle.putString("equipmentId", equipmentID);
+                    bundle.putBoolean("isComeFromDetail", true);
                     addEditQrCodeBarCodeDialog.setArguments(bundle);
                     addEditQrCodeBarCodeDialog.show(getSupportFragmentManager(), "2");
                 }
                 break;
             case R.id.last_service_date:
-                if(!clicked_service_history) {
+                if (!clicked_service_history) {
                     clicked_service_history = true;
-                    jobList.setVisibility(View.VISIBLE);
+                    cl_loader1.setVisibility(View.VISIBLE);
+                    equ_details_pc.getEquipmentJobHistory(equpId);
                     last_service_date.setCompoundDrawablesWithIntrinsicBounds(null, null, getDrawable(R.drawable.ic_baseline_arrow_drop_up_24), null);
-                }else {
+                } else {
                     clicked_service_history = false;
                     jobList.setVisibility(View.GONE);
+                    servic_histry_not_found.setVisibility(View.GONE);
                     last_service_date.setCompoundDrawablesWithIntrinsicBounds(null, null, getDrawable(R.drawable.ic_arrow_drop_down_black_24dp), null);
                 }
                 break;
             case R.id.deu_service_date:
-                if(!clicked_upcoming_service) {
+                if (!clicked_upcoming_service) {
                     clicked_upcoming_service = true;
+//                    cl_loader2.setVisibility(View.VISIBLE);
+//                    equ_details_pc.getEquipmentJobHistory(equpId);
                     job_upcoming_service_list.setVisibility(View.VISIBLE);
                     deu_service_date.setCompoundDrawablesWithIntrinsicBounds(null, null, getDrawable(R.drawable.ic_baseline_arrow_drop_up_24), null);
-                }else {
+                } else {
                     clicked_upcoming_service = false;
                     job_upcoming_service_list.setVisibility(View.GONE);
+                    upcoming_servic_not_found.setVisibility(View.GONE);
                     deu_service_date.setCompoundDrawablesWithIntrinsicBounds(null, null, getDrawable(R.drawable.ic_arrow_drop_down_black_24dp), null);
                 }
                 break;
             case R.id.tv_label_part:
-                if(!click_part) {
-                    recyclerView_part.setVisibility(View.VISIBLE);
-                    tv_label_part.setCompoundDrawablesWithIntrinsicBounds(null,null,getDrawable(R.drawable.ic_baseline_arrow_drop_up_24),null);
+                if (!click_part) {
+                    cl_loader3.setVisibility(View.VISIBLE);
+                    equ_details_pc.getEqPartsFromServer(equpId);
+                    tv_label_part.setCompoundDrawablesWithIntrinsicBounds(null, null, getDrawable(R.drawable.ic_baseline_arrow_drop_up_24), null);
                     click_part = true;
-                }else{
+                } else {
                     recyclerView_part.setVisibility(View.GONE);
-                    tv_label_part.setCompoundDrawablesWithIntrinsicBounds(null,null,getDrawable(R.drawable.ic_arrow_drop_down_black_24dp),null);
+                    parts_not_found.setVisibility(View.GONE);
+                    tv_label_part.setCompoundDrawablesWithIntrinsicBounds(null, null, getDrawable(R.drawable.ic_arrow_drop_down_black_24dp), null);
                     click_part = false;
                 }
-            break;
-            case  R.id.tv_label_item:
-                if(!click_item){
-                    recyclerView_item.setVisibility(View.VISIBLE);
-                    tv_label_item.setCompoundDrawablesWithIntrinsicBounds(null,null,getDrawable(R.drawable.ic_baseline_arrow_drop_up_24),null);
+                break;
+            case R.id.tv_label_item:
+                if (!click_item) {
+                    cl_loader4.setVisibility(View.VISIBLE);
+                    equ_details_pc.getEqItemFromServer(equpId, jobId);
+                    tv_label_item.setCompoundDrawablesWithIntrinsicBounds(null, null, getDrawable(R.drawable.ic_baseline_arrow_drop_up_24), null);
                     click_item = true;
-                }else{
+                } else {
                     recyclerView_item.setVisibility(View.GONE);
-                    tv_label_item.setCompoundDrawablesWithIntrinsicBounds(null,null,getDrawable(R.drawable.ic_arrow_drop_down_black_24dp),null);
+                    items_not_found.setVisibility(View.GONE);
+                    tv_label_item.setCompoundDrawablesWithIntrinsicBounds(null, null, getDrawable(R.drawable.ic_arrow_drop_down_black_24dp), null);
                     click_item = false;
                 }
-            break;
+                break;
             case R.id.aduit_history_txt:
-                if(!click_audit){
-                    auditList.setVisibility(View.VISIBLE);
-                    aduit_history_txt.setCompoundDrawablesWithIntrinsicBounds(null,null,getDrawable(R.drawable.ic_baseline_arrow_drop_up_24),null);
+                if (!click_audit) {
+                    cl_loader5.setVisibility(View.VISIBLE);
+                    equ_details_pc.getEquipmentAduitHistory(equpId);
+                    aduit_history_txt.setCompoundDrawablesWithIntrinsicBounds(null, null, getDrawable(R.drawable.ic_baseline_arrow_drop_up_24), null);
                     click_audit = true;
-                }else{
+                } else {
                     auditList.setVisibility(View.GONE);
-                    aduit_history_txt.setCompoundDrawablesWithIntrinsicBounds(null,null,getDrawable(R.drawable.ic_arrow_drop_down_black_24dp),null);
+                    audit_not_found.setVisibility(View.GONE);
+                    aduit_history_txt.setCompoundDrawablesWithIntrinsicBounds(null, null, getDrawable(R.drawable.ic_arrow_drop_down_black_24dp), null);
                     click_audit = false;
                 }
                 break;
@@ -1134,8 +1182,7 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
     }
 
     private void openAttchmentOnBrowser() {
-        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(App_preference.getSharedprefInstance().getBaseURL() +
-                "" + path)));
+        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(App_preference.getSharedprefInstance().getBaseURL() + "" + path)));
     }
 
 
@@ -1145,6 +1192,12 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
         REFRESH = true;
         invalidateOptionsMenu();
 
+    }
+
+    @Override
+    public void linkEquipment() {
+        isLinked = true;
+        button_job.performClick();
     }
 
     @Override
@@ -1169,86 +1222,89 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
 
     @Override
     public void setEquipmentAduitList(List<Aduit_Job_History_Res> aduit_res) {
+        cl_loader5.setVisibility(View.GONE);
         if (aduit_res != null && aduit_res.size() > 0) {
+            audit_not_found.setVisibility(View.GONE);
+            auditList.setVisibility(View.VISIBLE);
             adapterAuditList.setList(aduit_res);
             audit_ll.setVisibility(View.VISIBLE);
-            job_ll.setVisibility(View.VISIBLE);
             tv_network_error.setVisibility(View.GONE);
+        }else {
+            audit_not_found.setVisibility(View.VISIBLE);
         }
     }
 
     @Override
     public void setEquipmentJobList(List<Aduit_Job_History_Res> aduit_res) {
-        List<Aduit_Job_History_Res> aduitJobHistoryRes= new ArrayList<>();
+        List<Aduit_Job_History_Res> aduitJobHistoryRes = new ArrayList<>();
+        cl_loader1.setVisibility(View.GONE);
         if (aduit_res != null && aduit_res.size() > 0) {
-            for(Aduit_Job_History_Res jobHistoryRes : aduit_res){
-                 if(jobHistoryRes.getStatus().equals("13")){
-                     aduitJobHistoryRes.add(jobHistoryRes);
-                 }
+            servic_histry_not_found.setVisibility(View.GONE);
+            for (Aduit_Job_History_Res jobHistoryRes : aduit_res) {
+                if (jobHistoryRes.getStatus().equals("13")) {
+                    aduitJobHistoryRes.add(jobHistoryRes);
+                }
             }
             aduit_res.removeAll(aduitJobHistoryRes);
             adpterJobList.setList(aduit_res);
-            audit_ll.setVisibility(View.VISIBLE);
             job_ll.setVisibility(View.VISIBLE);
+            jobList.setVisibility(View.VISIBLE);
             tv_network_error.setVisibility(View.GONE);
+        }else {
+            servic_histry_not_found.setVisibility(View.VISIBLE);
         }
     }
 
     @Override
-    public void setEquipmentItemList(List<InvoiceItemDataModel> data,String jobId) {
-        if (data != null) {
-            if (data.size() > 0) {
-                item_cardview.setVisibility(View.VISIBLE);
+    public void setEquipmentItemList(List<InvoiceItemDataModel> data, String jobId) {
+        cl_loader4.setVisibility(View.GONE);
+        if (data != null && data.size() > 0) {
+            items_not_found.setVisibility(View.GONE);
+                recyclerView_item.setVisibility(View.VISIBLE);
+
+                String getDisCalculationType;
+                if (jobId != null && !jobId.isEmpty()) {
+                    getDisCalculationType = AppDataBase.getInMemoryDatabase(this).jobModel().disCalculationType(jobId);
+                } else {
+                    getDisCalculationType = App_preference.getSharedprefInstance().getLoginRes().getDisCalculationType();
+                }
+                recyclerView_item.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+                invoice_list_adpter = new InvoiceItemList2Adpter(this, data, true, true, getDisCalculationType);//, this, this
+                recyclerView_item.setAdapter(invoice_list_adpter);
+                recyclerView_item.setNestedScrollingEnabled(false);
             } else {
-                item_cardview.setVisibility(View.GONE);
+                items_not_found.setVisibility(View.VISIBLE);
             }
-            String getDisCalculationType;
-            if (jobId!=null&&!jobId.isEmpty())
-            {
-                getDisCalculationType=AppDataBase.getInMemoryDatabase(this).jobModel().disCalculationType(jobId);
-            }else{
-                getDisCalculationType= App_preference.getSharedprefInstance().getLoginRes().getDisCalculationType();
-            }
-            recyclerView_item.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL
-                    , false));
-            invoice_list_adpter = new InvoiceItemList2Adpter(this,data, true, true,getDisCalculationType);//, this, this
-            recyclerView_item.setAdapter(invoice_list_adpter);
-            recyclerView_item.setNestedScrollingEnabled(false);
-        }
-        else {
-            item_cardview.setVisibility(View.GONE);
-        }
     }
 
     @Override
     public void setEquipmentPartList(List<EquArrayModel> data) {
-        if (data != null) {
-            if (data.size() > 0) {
-                part_cardview.setVisibility(View.VISIBLE);
+        cl_loader3.setVisibility(View.GONE);
+        if (data != null && data.size() > 0) {
+                recyclerView_part.setVisibility(View.VISIBLE);
+                parts_not_found.setVisibility(View.GONE);
+                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+                recyclerView_part.setLayoutManager(linearLayoutManager);
+                equipmentPartAdapter = new EquipmentPartRemarkAdapter(this, data);
+                recyclerView_part.setAdapter(equipmentPartAdapter);
+                recyclerView_part.setNestedScrollingEnabled(false);
             } else {
-                part_cardview.setVisibility(View.GONE);
+                parts_not_found.setVisibility(View.VISIBLE);
             }
-            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-            recyclerView_part.setLayoutManager(linearLayoutManager);
-            equipmentPartAdapter = new EquipmentPartRemarkAdapter(this, data);
-            recyclerView_part.setAdapter(equipmentPartAdapter);
-            recyclerView_part.setNestedScrollingEnabled(false);
-
-        }
     }
 
     @SuppressLint("SetTextI18n")
     @Override
     public void getAduitSize(int size) {
-        aduit_history_txt.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.equipment_audit) + " (" + size + ")");
+//        aduit_history_txt.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.equipment_audit) + " (" + size + ")");
 
     }
 
     @SuppressLint("SetTextI18n")
     @Override
     public void getJobSize(int size) {
-        job_history_txt.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.equipment_service) + " (" + size + ")");
-        upcoming_service_txt.setText(LanguageController.getInstance().getMobileMsgByKey("Upcoming Service") + " (" + size + ")");
+//        job_history_txt.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.equipment_service) + " (" + size + ")");
+//        upcoming_service_txt.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.upcoming_service) + " (" + size + ")");
     }
 
 
@@ -1267,20 +1323,19 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
         //After discuss with Jit sir, Move on Job detail Screen if Job in local db (29-aug-23)
         List<Job> jobList = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJoblist();
         boolean isContainJob = false;
-        for (Job jobData : jobList
-             ) {
-            if(jobData.getJobId().equals(job.getJobId())){
+        for (Job jobData : jobList) {
+            if (jobData.getJobId().equals(job.getJobId())) {
                 isContainJob = true;
                 break;
             }
         }
-        if(isContainJob) {
+        if (isContainJob) {
             Intent intentJobDeatis = new Intent(this, JobDetailActivity.class);
             String strjob = new Gson().toJson(job);
             intentJobDeatis.putExtra("JOBS", strjob);
             intentJobDeatis.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
             startActivity(intentJobDeatis);
-        }else {
+        } else {
             Intent intent = new Intent(this, JobdetailsEquActivity.class);
             intent.putExtra("Job_data", new Gson().toJson(job));
             intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
@@ -1299,19 +1354,15 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
     }
 
     private void showDilaog(String msg) {
-        AppUtility.alertDialog(this, LanguageController.getInstance().getMobileMsgByKey(AppConstant.dialog_alert),
-                msg,
-                LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), "", () -> true);
+        AppUtility.alertDialog(this, LanguageController.getInstance().getMobileMsgByKey(AppConstant.dialog_alert), msg, LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), "", () -> true);
     }
 
     @Override
     public void sessionExpire(String msg) {
-        AppUtility.alertDialog(this, LanguageController.getInstance().
-                        getMobileMsgByKey(AppConstant.dialog_error_title),
-                msg, LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), "", () -> {
-                    EotApp.getAppinstance().sessionExpired();
-                    return null;
-                });
+        AppUtility.alertDialog(this, LanguageController.getInstance().getMobileMsgByKey(AppConstant.dialog_error_title), msg, LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), "", () -> {
+            EotApp.getAppinstance().sessionExpired();
+            return null;
+        });
     }
 
 
@@ -1338,15 +1389,15 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
     @Override
     public void onDataPass(QRCOde_Barcode_Res_Model data) {
         try {
-            if (data != null && data.getBarCode() != null && !data.getBarCode().isBlank() && data.getBarcodeImg() != null && !data.getBarcodeImg().isBlank()){
+            if (data != null && data.getBarCode() != null && !data.getBarCode().isBlank() && data.getBarcodeImg() != null && !data.getBarcodeImg().isBlank()) {
                 txt_addBarcode.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit_Barcode));
-                txt_addBarcode.setCompoundDrawablesWithIntrinsicBounds(getDrawable(R.drawable.edit),null,null,null);
+                txt_addBarcode.setCompoundDrawablesWithIntrinsicBounds(getDrawable(R.drawable.edit), null, null, null);
                 img_barcode.setVisibility(View.VISIBLE);
                 Picasso.get().load(App_preference.getSharedprefInstance().getBaseURL() + data.getBarcodeImg()).placeholder(R.drawable.ic_profile).error(R.drawable.ic_profile).into(img_barcode);
                 barCode = data.getBarCode();
-            }else if (data != null && data.getQrcode() != null && !data.getQrcode().isBlank() && !data.getQrcode().isBlank()&& data.getQrcodeImg() != null && !data.getQrcodeImg().isBlank()){
+            } else if (data != null && data.getQrcode() != null && !data.getQrcode().isBlank() && !data.getQrcode().isBlank() && data.getQrcodeImg() != null && !data.getQrcodeImg().isBlank()) {
                 txt_addQrcode.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit_QR_Code));
-                txt_addQrcode.setCompoundDrawablesWithIntrinsicBounds(getDrawable(R.drawable.edit),null,null,null);
+                txt_addQrcode.setCompoundDrawablesWithIntrinsicBounds(getDrawable(R.drawable.edit), null, null, null);
                 img_Qrcode.setVisibility(View.VISIBLE);
                 Picasso.get().load(App_preference.getSharedprefInstance().getBaseURL() + data.getQrcodeImg()).placeholder(R.drawable.ic_profile).error(R.drawable.ic_profile).into(img_Qrcode);
                 qrcode = data.getQrcode();
@@ -1356,13 +1407,24 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
             exception.printStackTrace();
         }
     }
+
     private void setViewEquFound() {
-        txt_for_link_or_not.setVisibility(View.VISIBLE);
-        not_found_btn_ll.setVisibility(View.VISIBLE);
-        txt_for_link_or_not.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.item_not_currently_linked_with_job_want_to_link));
-        button_job.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.yes));
-        button_audit.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.no));
-        button_audit.setBackgroundResource(R.drawable.scan_button_shap);
-        button_audit. setTextColor(getResources().getColor(R.color.colorPrimary));
+        if (isLinked) {
+            cl_parent_bottom_btn.setVisibility(View.VISIBLE);
+            txt_link_equStatus.setVisibility(View.GONE);
+            button_job.setVisibility(View.VISIBLE);
+            button_audit.setVisibility(View.GONE);
+            button_job.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.action));
+        } else {
+            cl_parent_bottom_btn.setVisibility(View.VISIBLE);
+            txt_link_equStatus.setVisibility(View.VISIBLE);
+            txt_link_equStatus.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.item_not_currently_linked_with_job_want_to_link));
+            button_job.setVisibility(View.VISIBLE);
+            button_audit.setVisibility(View.VISIBLE);
+            button_job.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.yes));
+            button_audit.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.no));
+            button_audit.setBackgroundResource(R.drawable.scan_button_shap);
+            button_audit.setTextColor(getResources().getColor(R.color.colorPrimary));
+        }
     }
 }

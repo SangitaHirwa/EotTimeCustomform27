@@ -1424,6 +1424,17 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
         try {
             if (getIntent().hasExtra("jobId")) {
                 jobId = intent.getExtras().getString("jobId");
+                Job job = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(jobId);
+                if (job != null && job.getEquArray() != null) {
+                    Log.e("job Eq ::", new Gson().toJson(job.getEquArray()));
+                    for (EquArrayModel item:
+                            job.getEquArray()) {
+                        if(equipment.getEquId().equalsIgnoreCase(item.getEquId())){
+                            equipment = item;
+                            break;
+                        }
+                    }
+                }
             }else if (getIntent().hasExtra("jobid"))
             {
                 if (intent.getExtras().getString("jobid")!=null) {

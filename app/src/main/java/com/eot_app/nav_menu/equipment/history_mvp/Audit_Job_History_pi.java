@@ -1,5 +1,7 @@
 package com.eot_app.nav_menu.equipment.history_mvp;
 
+import java.util.List;
+
 public interface Audit_Job_History_pi {
 
     void getEquipmentAduitHistory(String equId);
@@ -13,4 +15,6 @@ public interface Audit_Job_History_pi {
     void getEquipmentJobDetails(String audId);
 
     void getApiForUploadAttchment(String equId, String usrManualDoc);
+    void addAuditEquipment(List<String> equId, String jobId, String contrId);
+    void getAttachedEquipmentList();
 }

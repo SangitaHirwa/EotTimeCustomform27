@@ -17,11 +17,13 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -51,8 +53,12 @@ import com.eot_app.utility.CustomFilterButton;
 import com.eot_app.utility.EotApp;
 import com.eot_app.utility.db.AppDataBase;
 import com.eot_app.utility.language_support.LanguageController;
+import com.eot_app.utility.settings.equipmentdb.Equipment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
+
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -67,8 +73,8 @@ public class JobEquipmentActivity extends AppCompatActivity
 
     public static final int ADDEQUIPMENT = 1000;
     final int EQUIPMENT_REMARK_CODE = 142;
-    private final int EQUIPMENT_UPDATE_CODE = 141,
-            DETAILSUPDATEFORUSERMANUAL = 142;
+    public static final int EQUIPMENT_UPDATE_CODE = 141,
+            DETAILSUPDATEFORUSERMANUAL = 142, SCANNER_DETAIL_CODE = 143;
     LinearLayout linearFabAdd;
     LinearLayout linearFabclient;
     LinearLayout linearFabown;
@@ -93,8 +99,13 @@ public class JobEquipmentActivity extends AppCompatActivity
     private String cltId;
     private String comeFrom="";
     CoordinatorLayout relative_layout;
+    ConstraintLayout cl_parent_add_new_equipment;
+    TextView txt_eqp_que,txt_equ_not_found;
+    Button button_no,button_yes;
     private View backgroundView;
     private String appId;
+    MenuItem menuItem;
+    boolean isScanResult = false;
 
 
     @Override
@@ -141,6 +152,7 @@ public class JobEquipmentActivity extends AppCompatActivity
 
 
         relative_layout = findViewById(R.id.relative_layout);
+        cl_parent_add_new_equipment = findViewById(R.id.cl_parent_add_new_equipment);
         AppUtility.setupUI(relative_layout, JobEquipmentActivity.this);
 
         fab = findViewById(R.id.fab);
@@ -169,6 +181,15 @@ public class JobEquipmentActivity extends AppCompatActivity
         nolist_txt = findViewById(R.id.nolist_txt);
         nolist_linear = findViewById(R.id.nolist_linear);
         swipeRefreshLayout = findViewById(R.id.swiperefresh);
+
+        txt_equ_not_found = findViewById(R.id.txt_equ_not_found);
+        txt_equ_not_found.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.system_can_not_find_item_you_scanned));
+        txt_eqp_que = findViewById(R.id.txt_eqp_que);
+        txt_eqp_que.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.item_not_currently_linked_with_job_want_to_link));
+        button_yes = findViewById(R.id.button_yes);
+        button_yes.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.yes));
+        button_no = findViewById(R.id.button_no);
+        button_no.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.no));
         swipeRefreshLayout.setRefreshing(false);
 
         nolist_txt.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.equipment_not_found));
@@ -182,6 +203,8 @@ public class JobEquipmentActivity extends AppCompatActivity
         linearFabown.setOnClickListener(this);
         fl_add_Remark.setOnClickListener(this);
         fl_no_remark.setOnClickListener(this);
+        button_yes.setOnClickListener(this);
+        button_no.setOnClickListener(this);
 
 
         edtSearch = findViewById(R.id.edtSearch);
@@ -346,6 +369,9 @@ public class JobEquipmentActivity extends AppCompatActivity
     @Override
     public void onResume() {
         super.onResume();
+        if(!isScanResult) {
+            showListUI();
+        }
         if(jobEquimPi!=null) {
             jobEquimPi.getEquipmentList(jobId);
         }
@@ -390,6 +416,7 @@ public class JobEquipmentActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.equipment_barcode_menu, menu);
+        menuItem = menu.findItem(R.id.ic_qr_code);
         return true;
     }
     @Override
@@ -399,8 +426,8 @@ public class JobEquipmentActivity extends AppCompatActivity
             return true;
         } else if (item.getItemId() == R.id.ic_qr_code) {
             Intent intent = new Intent(JobEquipmentActivity.this, BarcodeScanActivity.class);
-            intent.putExtra("comeFrom","linkFromEquList");
-            startActivityForResult(intent, 360);
+            intent.putExtra("comeFrom","jobEquList");
+            startActivityForResult(intent, SCANNER_DETAIL_CODE);
         }
         return true;
     }
@@ -438,11 +465,45 @@ public class JobEquipmentActivity extends AppCompatActivity
             if (adapter != null && jobEquimPi != null) {
                 jobEquimPi.getEquipmentList(jobId);
             }
-        }
+        }else
         if (requestCode == EQUIPMENT_UPDATE_CODE) {
             if (adapter != null && jobEquimPi != null) {
                 jobEquimPi.getEquipmentList(jobId);
             }
+        }else
+        if (requestCode == SCANNER_DETAIL_CODE) {
+            if(data != null && data.getExtras() != null && !data.getExtras().isEmpty()){
+                String equipmentData = data.getStringExtra("equipment");
+                String scanCode = data.getStringExtra("codetext");
+                isScanResult = true;
+                if(equipmentData != null && equipmentData.isEmpty()){
+                    showNotEquipUI();
+                }else if (equipmentData != null && !equipmentData.isEmpty()) {
+                    Equipment equipment = new Gson().fromJson(equipmentData,Equipment.class);
+                    boolean isLinked = false;
+                    Job  equList = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(jobId);
+                    for (EquArrayModel item : equList.getEquArray()) {
+                        if(item.getEquId().equals(equipment.getEquId())){
+                            isLinked = true;
+                            break;
+                        }
+
+                    }
+                    Log.e("SearchEquipment", ""+isLinked );
+                    Intent intent = new Intent(JobEquipmentActivity.this, EquipmentDetailsActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                    intent.putExtra("job_equip_scan", equipmentData);
+                    String str = new Gson().toJson(equipmentData);
+                    intent.putExtra("job_equip_str", equipmentData);
+                    intent.putExtra("equipment", true);
+                    intent.putExtra("jobId", jobId);
+                    intent.putExtra("isLinked", isLinked);
+                    startActivityForResult(intent, DETAILSUPDATEFORUSERMANUAL);
+                }
+
+                Log.e ("Scan Result", "Data = "+ equipmentData+" \n Scan code = "+scanCode);
+            }
+
         }
     }
 
@@ -493,8 +554,13 @@ public class JobEquipmentActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        setResult(RESULT_OK, new Intent());
-        finish();
+        if (!isScanResult) {
+            setResult(RESULT_OK, new Intent());
+            finish();
+        } else {
+            showListUI();
+            isScanResult = false;
+        }
     }
 
 
@@ -664,6 +730,14 @@ public class JobEquipmentActivity extends AppCompatActivity
                 closeFABMenu();
                 break;
 
+            case R.id.button_yes:
+                isScanResult = false;
+                break;
+            case R.id.button_no:
+                isScanResult = false;
+                showListUI();
+                break;
+
         }
     }
 
@@ -705,5 +779,22 @@ public class JobEquipmentActivity extends AppCompatActivity
     @Override
     public void updateStatusEquipment() {
         setEuqipmentList(job.getEquArray());
+    }
+
+    public void showNotEquipUI(){
+        relative_layout.setVisibility(View.GONE);
+        cl_parent_add_new_equipment.setVisibility(View.VISIBLE);
+        setTitle("");
+        if(menuItem != null){
+            menuItem.setVisible(false);
+        }
+    }
+    public void showListUI(){
+        relative_layout.setVisibility(View.VISIBLE);
+        cl_parent_add_new_equipment.setVisibility(View.GONE);
+        setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.detail_equipment));
+        if(menuItem != null){
+            menuItem.setVisible(true);
+        }
     }
 }

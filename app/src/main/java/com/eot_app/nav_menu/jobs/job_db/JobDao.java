@@ -6,6 +6,7 @@ import androidx.room.Query;
 import androidx.room.Update;
 
 import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.model.InvoiceItemDataModel;
+import com.eot_app.utility.settings.equipmentdb.Equipment;
 import com.eot_app.utility.settings.setting_db.TagData;
 
 import java.util.ArrayList;

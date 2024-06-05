@@ -3,17 +3,23 @@ package com.eot_app.nav_menu.equipment.history_mvp;
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
+
+import com.eot_app.activitylog.ActivityLogController;
+import com.eot_app.activitylog.LogModel;
 import com.eot_app.nav_menu.audit.audit_list.audit_mvp.model.AuditList_Res;
 import com.eot_app.nav_menu.equipment.model.aduit_job_history.Aduit_Job_History_Req;
 import com.eot_app.nav_menu.equipment.model.aduit_job_history.Aduit_Job_History_Res;
 import com.eot_app.nav_menu.jobs.job_db.EquArrayModel;
 import com.eot_app.nav_menu.jobs.job_db.Job;
+import com.eot_app.nav_menu.jobs.job_db.JobListRequestModel;
 import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.model.InvoiceItemDataModel;
 import com.eot_app.services.ApiClient;
 import com.eot_app.services.Service_apis;
 import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.AppUtility;
+import com.eot_app.utility.App_preference;
 import com.eot_app.utility.EotApp;
+import com.eot_app.utility.db.AppDataBase;
 import com.eot_app.utility.language_support.LanguageController;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -128,7 +134,6 @@ public class Audit_Job_History_pc implements Audit_Job_History_pi {
         }
 
     }
-
     @Override
     public void getEquipmentAduitHistory(String equId) {
         if (AppUtility.isInternetConnected()) {
@@ -334,7 +339,7 @@ public class Audit_Job_History_pc implements Audit_Job_History_pi {
     public void getEqPartsFromServer(final String equId) {
         if (AppUtility.isInternetConnected()) {
 
-            AppUtility.progressBarShow((Context) audit_history_view);
+//            AppUtility.progressBarShow((Context) audit_history_view);
             JsonObject equipmentListReq = new JsonObject();
             equipmentListReq.addProperty("equId",equId);
             equipmentListReq.addProperty("limit",updatelimit);
@@ -373,12 +378,12 @@ public class Audit_Job_History_pc implements Audit_Job_History_pi {
 
                         @Override
                         public void onError(@NonNull Throwable e) {
-                            AppUtility.progressBarDissMiss();
+//                            AppUtility.progressBarDissMiss();
                         }
 
                         @Override
                         public void onComplete() {
-                            AppUtility.progressBarDissMiss();
+//                            AppUtility.progressBarDissMiss();
                             if ((updateindexEquipment + updatelimit) <= count) {
                                 updateindexEquipment += updatelimit;
                                 getEqPartsFromServer(equId);
@@ -447,8 +452,139 @@ public class Audit_Job_History_pc implements Audit_Job_History_pi {
             netWork_erroR();
         }
     }
+    @Override
+    public void addAuditEquipment(List<String> equId, String jobId, String contrId) {
+        if (AppUtility.isInternetConnected()) {
+
+            HashMap hashMap = new HashMap();
+            hashMap.put("equId", equId);
+            hashMap.put("audId", jobId);
+            hashMap.put("contrId", contrId);
+
+            String data = new Gson().toJson(hashMap);
+            AppUtility.progressBarShow((Context) audit_history_view);
+            ApiClient.getservices().eotServiceCall(
+                            Service_apis.addAuditEquipment,
+                            AppUtility.getApiHeaders(),
+                            AppUtility.getJsonObject(data)
+                    ).subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<JsonObject>() {
+                        @Override
+                        public void onSubscribe(@NonNull Disposable d) {
+
+                        }
+
+                        @Override
+                        public void onNext(@NonNull JsonObject jsonObject) {
+                            if (jsonObject.get("success").getAsBoolean()) {
+                                getAttachedEquipmentList();
+                            } else if (jsonObject.get("statusCode") != null && jsonObject.get("statusCode").getAsString().equals(AppConstant.SESSION_EXPIRE)) {
+                                audit_history_view.sessionExpire(LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
+                            }
+                        }
+
+                        @Override
+                        public void onError(@NonNull Throwable e) {
+                            AppUtility.progressBarDissMiss();
+                        }
+
+                        @Override
+                        public void onComplete() {
+
+                        }
+                    });
+
+        } else netWork_erroR();
+    }
 
 
+    @Override
+    public void getAttachedEquipmentList() {
+
+        if (AppUtility.isInternetConnected()) {
+
+            LogModel logModel = ActivityLogController
+                    .getObj(ActivityLogController.JOB_MODULE, ActivityLogController.JOB_LIST, ActivityLogController.JOB_MODULE);
+            ActivityLogController.saveOfflineTable(logModel);
+
+            JobListRequestModel jobListRequestModel = new JobListRequestModel(Integer.parseInt(App_preference.getSharedprefInstance().getLoginRes().getUsrId()),
+                    updatelimit, updateindexEquipment, App_preference.getSharedprefInstance().getJobSyncTime());
 
 
+            // for storing the date time when the api call started
+            String startJobSyncTime = AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT);
+
+            String data = new Gson().toJson(jobListRequestModel);
+            ApiClient.getservices().eotServiceCall(Service_apis.getUserJobList, AppUtility.getApiHeaders(), AppUtility.getJsonObject(data))
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<JsonObject>() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
+                        }
+
+                        @Override
+                        public void onNext(JsonObject jsonObject) {
+                            if (jsonObject.get("success").getAsBoolean()) {
+                                count = jsonObject.get("count").getAsInt();
+                                String convert = new Gson().toJson(jsonObject.get("data").getAsJsonArray());
+                                Type listType = new TypeToken<List<Job>>() {
+                                }.getType();
+                                List<Job> jobData = new Gson().fromJson(convert, listType);
+                                addRecordsToDB(jobData);
+                            } else if (jsonObject.get("statusCode") != null && jsonObject.get("statusCode").getAsString().equals(AppConstant.SESSION_EXPIRE)) {
+                                audit_history_view.sessionExpire(LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
+                            }
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            AppUtility.progressBarDissMiss();
+
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            if ((updateindexEquipment + updatelimit) <= count) {
+                                updateindexEquipment += updatelimit;
+
+                                getAttachedEquipmentList();
+
+                            } else {
+                                if (count != 0) {
+                                    if(App_preference.getSharedprefInstance().getJobStartSyncTime().isEmpty()
+                                            &&startJobSyncTime!=null && !startJobSyncTime.isEmpty()){
+//                                        App_preference.getSharedprefInstance().setJobSyncTime(AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT));
+                                        App_preference.getSharedprefInstance().setJobSyncTime(startJobSyncTime);
+                                        Log.v("MainSync","startJobSyncTime JobList"+" --" +App_preference.getSharedprefInstance().getJobSyncTime());
+                                    }
+                                    else if(App_preference.getSharedprefInstance().getJobStartSyncTime().isEmpty()){
+//                                        App_preference.getSharedprefInstance().setJobSyncTime(AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT));
+                                        App_preference.getSharedprefInstance().setJobSyncTime(startJobSyncTime);
+                                        Log.v("MainSync","startJobSyncTime JobList"+" --" +App_preference.getSharedprefInstance().getJobSyncTime());
+                                    }
+                                    else {
+                                        App_preference.getSharedprefInstance().setJobSyncTime(App_preference.getSharedprefInstance().getJobStartSyncTime());
+                                    }
+//                                    App_preference.getSharedprefInstance().setJobSyncTime(AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT));
+                                }
+                                AppUtility.progressBarDissMiss();
+                                updateindexEquipment = 0;
+                                count = 0;
+                                AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().deleteJobByIsDelete();
+                                audit_history_view.linkEquipment();
+                            }
+
+
+                        }
+                    });
+        } else {
+            netWork_erroR();
+        }
+
+    }
+    private void addRecordsToDB(List<Job> data) {
+        AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().inserJob(data);
+    }
 }

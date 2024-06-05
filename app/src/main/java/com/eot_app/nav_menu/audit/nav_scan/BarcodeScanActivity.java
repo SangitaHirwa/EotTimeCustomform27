@@ -34,6 +34,7 @@ import com.eot_app.nav_menu.audit.audit_list.scanbarcode.scan_mvp.ScanBarcode_PC
 import com.eot_app.nav_menu.audit.audit_list.scanbarcode.scan_mvp.ScanBarcode_View;
 import com.eot_app.nav_menu.jobs.job_db.EquArrayModel;
 import com.eot_app.nav_menu.jobs.job_db.Job;
+import com.eot_app.nav_menu.jobs.job_detail.job_equipment.JobEquipmentActivity;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.job_equ_remrk.JobEquRemarkRemarkActivity;
 import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.AppUtility;
@@ -76,6 +77,7 @@ public class BarcodeScanActivity extends AppCompatActivity implements ScanBarcod
     GmsBarcodeScannerOptions options;
     GmsBarcodeScanner scanner;
     TextView txt_status;
+    boolean isJobEquList = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -83,55 +85,27 @@ public class BarcodeScanActivity extends AppCompatActivity implements ScanBarcod
         setContentView(R.layout.activity_barcode_scanner);
         layout_search = findViewById(R.id.layout_search);
         txt_status = findViewById(R.id.txt_status);
-        if(getIntent()!=null)
-        {
-            comeFrom=getIntent().getStringExtra("comeFrom");
+        if (getIntent() != null) {
+            comeFrom = getIntent().getStringExtra("comeFrom");
 
-            if(comeFrom!=null&&comeFrom.equalsIgnoreCase("AddEquipment")){
+            if (comeFrom != null && comeFrom.equalsIgnoreCase("AddEquipment") || comeFrom != null && comeFrom.equalsIgnoreCase("jobEquList")) {
                 layout_search.setVisibility(View.GONE);
-                options = new GmsBarcodeScannerOptions.Builder()
-                        .setBarcodeFormats(
-                                Barcode.FORMAT_ALL_FORMATS)
-                        .enableAutoZoom()
-                        .build();
-            }else if(comeFrom!=null&&comeFrom.equalsIgnoreCase("linkFromEquList")){
-                layout_search.setVisibility(View.GONE);
-                options = new GmsBarcodeScannerOptions.Builder()
-                        .setBarcodeFormats(
-                                Barcode.FORMAT_ALL_FORMATS)
-                        .enableAutoZoom()
-                        .build();
-            }
-            else {
-                if(Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
-                    options = new GmsBarcodeScannerOptions.Builder()
-                            .setBarcodeFormats(
-                                    Barcode.FORMAT_ALL_FORMATS)
-                            .enableAutoZoom()
-                            .allowManualInput()
-                            .build();
-                }else {
-                    options = new GmsBarcodeScannerOptions.Builder()
-                            .setBarcodeFormats(
-                                    Barcode.FORMAT_ALL_FORMATS)
-                            .enableAutoZoom()
-                            .build();
+                options = new GmsBarcodeScannerOptions.Builder().setBarcodeFormats(Barcode.FORMAT_ALL_FORMATS).enableAutoZoom().build();
+                if(comeFrom.equalsIgnoreCase("jobEquList")){
+                    isJobEquList = true;
+                }
+            } else {
+                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
+                    options = new GmsBarcodeScannerOptions.Builder().setBarcodeFormats(Barcode.FORMAT_ALL_FORMATS).enableAutoZoom().allowManualInput().build();
+                } else {
+                    options = new GmsBarcodeScannerOptions.Builder().setBarcodeFormats(Barcode.FORMAT_ALL_FORMATS).enableAutoZoom().build();
                 }
             }
-        }else {
-            if(Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
-                options = new GmsBarcodeScannerOptions.Builder()
-                        .setBarcodeFormats(
-                                Barcode.FORMAT_ALL_FORMATS)
-                        .enableAutoZoom()
-                        .allowManualInput()
-                        .build();
-            }else {
-                options = new GmsBarcodeScannerOptions.Builder()
-                        .setBarcodeFormats(
-                                Barcode.FORMAT_ALL_FORMATS)
-                        .enableAutoZoom()
-                        .build();
+        } else {
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
+                options = new GmsBarcodeScannerOptions.Builder().setBarcodeFormats(Barcode.FORMAT_ALL_FORMATS).enableAutoZoom().allowManualInput().build();
+            } else {
+                options = new GmsBarcodeScannerOptions.Builder().setBarcodeFormats(Barcode.FORMAT_ALL_FORMATS).enableAutoZoom().build();
             }
         }
         scanner = GmsBarcodeScanning.getClient(this, options);
@@ -144,63 +118,62 @@ public class BarcodeScanActivity extends AppCompatActivity implements ScanBarcod
         img_search = findViewById(R.id.img_search);
         edit_barcode = findViewById(R.id.edit_barcode);
         tv_scan_label = findViewById(R.id.tv_scan_label);
-        jobList=new ArrayList<>();
+        jobList = new ArrayList<>();
         tv_scan_label.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.scan_barcode_manually));
 
-        mCodeScanner = new CodeScanner(this, scannerView);
-        List<BarcodeFormat> list = new ArrayList<>();
-        list.add(BarcodeFormat.CODE_128);
-        list.add(BarcodeFormat.UPC_A);
-        list.add(BarcodeFormat.UPC_E);
-        list.add(BarcodeFormat.EAN_13);
-        list.add(BarcodeFormat.CODE_39);
-        list.add(BarcodeFormat.CODABAR);
-        mCodeScanner.setFormats(list);
-        mCodeScanner.setAutoFocusEnabled(true);
-        mCodeScanner.setDecodeCallback(result -> runOnUiThread(() -> {
-            codeText = result.getText();
-            Log.d("codeee",codeText);
-            if(comeFrom!=null&&comeFrom.equalsIgnoreCase("AddEquipment")){
-                Intent intent = new Intent();
-                intent.putExtra("code", codeText);
-                setResult(RESULT_OK, intent);
-                finish();
-            }
-            else {
-                isScannerValue = true;
-                searchEquipment(result.getText(),isScannerValue);
-            }
-        }));
+//        mCodeScanner = new CodeScanner(this, scannerView);
+//        List<BarcodeFormat> list = new ArrayList<>();
+//        list.add(BarcodeFormat.CODE_128);
+//        list.add(BarcodeFormat.UPC_A);
+//        list.add(BarcodeFormat.UPC_E);
+//        list.add(BarcodeFormat.EAN_13);
+//        list.add(BarcodeFormat.CODE_39);
+//        list.add(BarcodeFormat.CODABAR);
+//        mCodeScanner.setFormats(list);
+//        mCodeScanner.setAutoFocusEnabled(true);
+//        mCodeScanner.setDecodeCallback(result -> runOnUiThread(() -> {
+//            codeText = result.getText();
+//            Log.d("codeee", codeText);
+//            if (comeFrom != null && comeFrom.equalsIgnoreCase("AddEquipment")) {
+//                Intent intent = new Intent();
+//                intent.putExtra("code", codeText);
+//                setResult(RESULT_OK, intent);
+//                finish();
+//            } else {
+//                isScannerValue = true;
+//                searchEquipment(result.getText(), isScannerValue);
+//            }
+//        }));
 
-        scannerView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startScanner();
-            }
-        });
+//        scannerView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                startScanner();
+//            }
+//        });
 
-        img_search.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!TextUtils.isEmpty(edit_barcode.getText().toString())) {
-                    AppUtility.hideSoftKeyboard(BarcodeScanActivity.this);
-                    codeText = edit_barcode.getText().toString();
-                    isScannerValue = false;
-                    searchEquipment(edit_barcode.getText().toString(), isScannerValue);
-                    edit_barcode.getText().clear();
-                }
-            }
-        });
+//        img_search.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (!TextUtils.isEmpty(edit_barcode.getText().toString())) {
+//                    AppUtility.hideSoftKeyboard(BarcodeScanActivity.this);
+//                    codeText = edit_barcode.getText().toString();
+//                    isScannerValue = false;
+//                    searchEquipment(edit_barcode.getText().toString(), isScannerValue);
+//                    edit_barcode.getText().clear();
+//                }
+//            }
+//        });
     }
 
     @Override
     public void onResume() {
         super.onResume();
 //        startScanner();
-        if(isSearching){
-            txt_status.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.searching)+"...");
-        }else {
-            txt_status.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.loading)+"...");
+        if (isSearching) {
+            txt_status.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.searching) + "...");
+        } else {
+            txt_status.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.loading) + "...");
             startGoogleScan();
         }
 
@@ -235,45 +208,41 @@ public class BarcodeScanActivity extends AppCompatActivity implements ScanBarcod
 
     @Override
     public void onPause() {
-        mCodeScanner.releaseResources();
+//        mCodeScanner.releaseResources();
         super.onPause();
     }
 
     private void startScanner() {
         if (AppUtility.askCameraTakePicture(this)) {
             mCodeScanner.startPreview();
-        }
-        else {
+        } else {
             // Sdk version 33
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU ) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 askTedPermission(0, AppConstant.cameraPermissions33);
-            }else {
+            } else {
                 askTedPermission(0, AppConstant.cameraPermissions);
             }
         }
     }
-    private void askTedPermission(int type,String[] permissions) {
-        String permissionMsg ="";
-        if(type == 0){
+
+    private void askTedPermission(int type, String[] permissions) {
+        String permissionMsg = "";
+        if (type == 0) {
             permissionMsg = "<b>Need Camera and Storage Permission</b><br><br>If you reject permission,you can not use this service<br><br>Please turn on permissions at [SettingActivity] > [Permission]";
         }
-        TedPermission.with(EotApp.getAppinstance())
-                .setPermissionListener(new PermissionListener() {
-                    @Override
-                    public void onPermissionGranted() {
-                        if (type == 0)
-                            mCodeScanner.startPreview();
-                    }
+        TedPermission.with(EotApp.getAppinstance()).setPermissionListener(new PermissionListener() {
+            @Override
+            public void onPermissionGranted() {
+                if (type == 0) mCodeScanner.startPreview();
+            }
 
-                    @Override
-                    public void onPermissionDenied(ArrayList<String> deniedPermissions) {
-                        startActivity(new Intent(BarcodeScanActivity.this, MainActivity.class));
-                    }
-                })
-                .setDeniedMessage(Html.fromHtml(permissionMsg))
-                .setPermissions(permissions)
-                .check();
+            @Override
+            public void onPermissionDenied(ArrayList<String> deniedPermissions) {
+                startActivity(new Intent(BarcodeScanActivity.this, MainActivity.class));
+            }
+        }).setDeniedMessage(Html.fromHtml(permissionMsg)).setPermissions(permissions).check();
     }
+
     /*hide show actionbar*/
     private void hideActionBar(boolean hide) {
         Window window = getWindow();
@@ -290,8 +259,7 @@ public class BarcodeScanActivity extends AppCompatActivity implements ScanBarcod
     public void onEquipmentFound(Equipment_Res equipmentRes) {
         if (equipmentRes != null) {
             String strEqu = new Gson().toJson(equipmentRes);
-            startActivity(new Intent(this, RemarkActivity.class)
-                    .putExtra("equipment", strEqu));
+            startActivity(new Intent(this, RemarkActivity.class).putExtra("equipment", strEqu));
         }
     }
 
@@ -351,49 +319,62 @@ public class BarcodeScanActivity extends AppCompatActivity implements ScanBarcod
     @Override
     public void onRecordFound(List<AuditList_Res> list) {
         isSearching = false;
-        if (jobList!=null&&!jobList.isEmpty()) {
+        if (jobList != null && !jobList.isEmpty()) {
             List<String> jobEquipmentByEquipmentId = null;
-            if(!jobList.get(0).getBarcode().equals("")) {
-                 jobEquipmentByEquipmentId = AppDataBase.getInMemoryDatabase(this).jobModel().getjobidsbyequid("%" + jobList.get(0).getBarcode() + "%");
-            }else if(!jobList.get(0).getQrcode().equals("")) {
+            if (!jobList.get(0).getBarcode().equals("")) {
+                jobEquipmentByEquipmentId = AppDataBase.getInMemoryDatabase(this).jobModel().getjobidsbyequid("%" + jobList.get(0).getBarcode() + "%");
+            } else if (!jobList.get(0).getQrcode().equals("")) {
                 jobEquipmentByEquipmentId = AppDataBase.getInMemoryDatabase(this).jobModel().getjobidsbyequid("%" + jobList.get(0).getQrcode() + "%");
-            }else{
+            } else {
                 jobEquipmentByEquipmentId = AppDataBase.getInMemoryDatabase(this).jobModel().getjobidsbyequid("%" + jobList.get(0).getSno() + "%");
             }
             String s = new Gson().toJson(jobEquipmentByEquipmentId);
             if (jobEquipmentByEquipmentId.size() == 0 && list.size() == 0) {
                 Equipment equipment = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).equipmentDao().getEquipmentById(jobList.get(0).getEquId());
-                if(equipment != null) {
-                    Intent intent = new Intent(this, EquipmentDetailsActivity.class);
-                    intent.putExtra("equipment", true);
-                    intent.putExtra("equipment_id", jobList.get(0).getEquId());
-                    if(comeFrom!=null&&comeFrom.equalsIgnoreCase("linkFromEquList")){
-                        intent.putExtra("found_or_not","equipmentFound");
+                if (equipment != null) {
+                    if(!isJobEquList) {
+                        Intent intent = new Intent(this, EquipmentDetailsActivity.class);
+                        intent.putExtra("equipment", true);
+                        intent.putExtra("equipment_id", jobList.get(0).getEquId());
+                        if (comeFrom != null && comeFrom.equalsIgnoreCase("linkFromEquList")) {
+                            intent.putExtra("found_or_not", "equipmentFound");
+                        }
+                        startActivity(intent);
+                    }else {
+                        String equip = new Gson().toJson(jobList.get(0));
+                        findEquipment(equip,codeText);
                     }
-                    startActivity(intent);
-                }else {
-                    Toast.makeText(this, LanguageController.getInstance().getMobileMsgByKey(AppConstant.eqi_not_foun_txt), Toast.LENGTH_SHORT).show();
-                    onResume();
+                } else {
+                    if(!isJobEquList) {
+                        Toast.makeText(this, LanguageController.getInstance().getMobileMsgByKey(AppConstant.eqi_not_foun_txt), Toast.LENGTH_SHORT).show();
+                        onResume();
+                    }else {
+                        String equip = new Gson().toJson(jobList.get(0));
+                        findEquipment(equip,codeText);
+                    }
                 }
             } else {
-                /** If Equipment link with Job */
-                Intent intent = new Intent(this, EquipmentDetailsActivity.class);
-                String jobData = new Gson().toJson(jobList);
-                String auditData = new Gson().toJson(list);
-                intent.putExtra("jobids", s);
-                intent.putExtra("AUDITDATA", auditData);
-                intent.putExtra("codetext", codeText);
-                if(comeFrom!=null&&comeFrom.equalsIgnoreCase("linkFromEquList")){
-                    intent.putExtra("found_or_not","equipmentFound");
+                if(!isJobEquList) {
+                    /** If Equipment link with Job */
+                    Intent intent = new Intent(this, EquipmentDetailsActivity.class);
+                    String jobData = new Gson().toJson(jobList);
+                    String auditData = new Gson().toJson(list);
+                    intent.putExtra("jobids", s);
+                    intent.putExtra("AUDITDATA", auditData);
+                    intent.putExtra("codetext", codeText);
+                    if (comeFrom != null && comeFrom.equalsIgnoreCase("linkFromEquList")) {
+                        intent.putExtra("found_or_not", "equipmentFound");
+                    }
+                    startActivityForResult(intent, 100);
+                }else {
+                    String equip = new Gson().toJson(jobList.get(0));
+                    findEquipment(equip,codeText);
                 }
-                startActivityForResult(intent, 100);
             }
-        }else if(comeFrom!=null&&comeFrom.equalsIgnoreCase("linkFromEquList")){
-            Intent intent = new Intent(this, EquipmentNotFroundActivity.class);
-            intent.putExtra("codetext", codeText);
-            startActivityForResult(intent, 100);
-        }
-        else {
+        } else if (isJobEquList) {
+            String equip = "";
+            findEquipment(equip,codeText);
+        } else {
             Toast.makeText(this, LanguageController.getInstance().getMobileMsgByKey(AppConstant.eqi_not_foun_txt), Toast.LENGTH_SHORT).show();
             onResume();
         }
@@ -402,21 +383,20 @@ public class BarcodeScanActivity extends AppCompatActivity implements ScanBarcod
 
     @Override
     public void Setjobequipment(List<EquArrayModel> equilist) {
-        this.jobList=equilist;
+        this.jobList = equilist;
     }
 
     /*create search request*/
-    private void searchEquipment(String barcode,boolean isScannerValue) {
+    private void searchEquipment(String barcode, boolean isScannerValue) {
 
-        if(AppUtility.isInternetConnected()) {
+        if (AppUtility.isInternetConnected()) {
             scanBarcode_pc.equipmentbarcode(barcode, isScannerValue);
-        }else{
+        } else {
             jobList.clear();
-            List<Job> jobList1 = AppDataBase.getInMemoryDatabase(this).jobModel().getEqupByBarcode("%"+barcode+"%");
-            if(jobList1.size()>0) {
+            List<Job> jobList1 = AppDataBase.getInMemoryDatabase(this).jobModel().getEqupByBarcode("%" + barcode + "%");
+            if (jobList1.size() > 0) {
                 outerloop:
-                for (Job item : jobList1
-                ) {
+                for (Job item : jobList1) {
                     for (EquArrayModel item1 : item.getEquArray()) {
                         if (item1.getBarcode().equals(barcode) || item1.getSno().equals(barcode) || item1.getQrcode().equals(barcode)) {
                             jobList.add(item1);
@@ -424,9 +404,9 @@ public class BarcodeScanActivity extends AppCompatActivity implements ScanBarcod
                         }
                     }
                 }
-                Log.e("List Size", ""+jobList.size());
+                Log.e("List Size", "" + jobList.size());
                 onAudiListCall(barcode);
-            }else {
+            } else {
                 onAudiListCall(barcode);
             }
         }
@@ -439,11 +419,9 @@ public class BarcodeScanActivity extends AppCompatActivity implements ScanBarcod
         if (requestCode == 100 && resultCode == RESULT_OK) {
             if (data != null)
                 //  if (data.hasExtra("data"))
-                if (data.hasExtra("AUDITDATA"))
-                    handleAuditIntent(data);
+                if (data.hasExtra("AUDITDATA")) handleAuditIntent(data);
                     //   else if (data.hasExtra("jobdata"))
-                else if (data.hasExtra("JOBDATA"))
-                    handleJobIntent(data);
+                else if (data.hasExtra("JOBDATA")) handleJobIntent(data);
         }
     }
 
@@ -455,19 +433,17 @@ public class BarcodeScanActivity extends AppCompatActivity implements ScanBarcod
             try {
                 Type listType = new TypeToken<List<String>>() {
                 }.getType();
-                list=  new Gson().fromJson(data.getExtras().getString("JOBDATA"), listType);
+                list = new Gson().fromJson(data.getExtras().getString("JOBDATA"), listType);
             } catch (Exception exception) {
                 exception.printStackTrace();
             }
             if (list != null && list.size() == 1) {
                 Job jobsById = AppDataBase.getInMemoryDatabase(this).jobModel().getJobsById(list.get(0));
-                str=new Gson().toJson(jobsById);
+                str = new Gson().toJson(jobsById);
                 List<EquArrayModel> equArray = jobsById.getEquArray();
                 if (equArray != null) {
                     for (EquArrayModel equipment : equArray) {
-                        if (equipment.getSno() != null && equipment.getSno().equals(codeText) ||
-                                equipment.getBarcode() != null && equipment.getBarcode().equals(codeText) ||
-                                equipment.getQrcode() != null && equipment.getQrcode().equals(codeText)) {
+                        if (equipment.getSno() != null && equipment.getSno().equals(codeText) || equipment.getBarcode() != null && equipment.getBarcode().equals(codeText) || equipment.getQrcode() != null && equipment.getQrcode().equals(codeText)) {
 
                             Intent intent = new Intent(this, JobEquRemarkRemarkActivity.class);
                             String strEqu = new Gson().toJson(equipment);
@@ -507,14 +483,9 @@ public class BarcodeScanActivity extends AppCompatActivity implements ScanBarcod
                 List<Equipment_Res> equArray = list.get(0).getEquArray();
                 if (equArray != null) {
                     for (Equipment_Res equipment : equArray) {
-                        if (equipment.getSno() != null && equipment.getSno().equals(codeText) ||
-                                equipment.getBarcode() != null && equipment.getBarcode().equals(codeText)||
-                                equipment.getQrcode() != null && equipment.getQrcode().equals(codeText)) {
+                        if (equipment.getSno() != null && equipment.getSno().equals(codeText) || equipment.getBarcode() != null && equipment.getBarcode().equals(codeText) || equipment.getQrcode() != null && equipment.getQrcode().equals(codeText)) {
                             String strEqu = new Gson().toJson(equipment);
-                            startActivity(new Intent(this, RemarkActivity.class)
-                                    .putExtra("equipment", strEqu)
-                                    .putExtra("AUDITDATA", str
-                                    ));
+                            startActivity(new Intent(this, RemarkActivity.class).putExtra("equipment", strEqu).putExtra("AUDITDATA", str));
                             finish();
                         }
                     }
@@ -529,48 +500,50 @@ public class BarcodeScanActivity extends AppCompatActivity implements ScanBarcod
             }
 
 
-
         }
     }
- public  void startGoogleScan()  {
 
-     scanner
-                        .startScan()
-                        .addOnSuccessListener(
-                                barcode -> {
-                                    Log.e("ScanResult", barcode.getRawValue());
+    public void startGoogleScan() {
+
+        scanner.startScan().addOnSuccessListener(barcode -> {
+            Log.e("ScanResult", barcode.getRawValue());
 //                                    Toast.makeText(BarcodeScanActivity.this, "Searching...", Toast.LENGTH_SHORT).show();
-                                    if(comeFrom!=null&&comeFrom.equalsIgnoreCase("AddEquipment")){
-                                        Intent intent = new Intent();
-                                        intent.putExtra("code", barcode.getRawValue());
-                                        setResult(RESULT_OK, intent);
-                                        finish();
-                                    }else
-                                    {
-                                        codeText = barcode.getRawValue();
-                                        isSearching = true;
-                                        isScannerValue = true;
-                                        searchEquipment(barcode.getRawValue(), isScannerValue);
-                                    }
-                                })
-                        .addOnCanceledListener(
-                                () -> {
-                                    Log.e("ScanResult", "Cancle");
-                                    finish();
-                                })
-                        .addOnFailureListener(
-                                e -> {
-                                    isSearching = true;
-                                    Log.e("ScanResult", "error = "+e.getMessage());
-                                    AppUtility.alertDialog(this, "", LanguageController.getInstance().getMobileMsgByKey(AppConstant.scanner_error), LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), "", new Callable<Boolean>() {
-                                        @Override
-                                        public Boolean call() throws Exception {
-                                            isSearching = false;
-                                            finish();
-                                            return null;
-                                        }
-                                    });
+            if (comeFrom != null && comeFrom.equalsIgnoreCase("AddEquipment")) {
+                Intent intent = new Intent();
+                intent.putExtra("code", barcode.getRawValue());
+                setResult(RESULT_OK, intent);
+                finish();
+            } else {
+                codeText = barcode.getRawValue();
+                isSearching = true;
+                isScannerValue = true;
+                searchEquipment(barcode.getRawValue(), isScannerValue);
+            }
+        }).addOnCanceledListener(() -> {
+            Log.e("ScanResult", "Cancle");
+            finish();
+        }).addOnFailureListener(e -> {
+            isSearching = true;
+            Log.e("ScanResult", "error = " + e.getMessage());
+            AppUtility.alertDialog(this, "", LanguageController.getInstance().getMobileMsgByKey(AppConstant.scanner_error), LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), "", new Callable<Boolean>() {
+                @Override
+                public Boolean call() throws Exception {
+                    isSearching = false;
+                    finish();
+                    return null;
+                }
+            });
 
-                                });
- }
+        });
+    }
+
+    public void findEquipment(String Equipment, String scanCode){
+
+        Intent intent = new Intent();
+        intent.putExtra("equipment", Equipment);
+        intent.putExtra("codetext", scanCode);
+        setResult(JobEquipmentActivity.SCANNER_DETAIL_CODE,intent);
+        finish();
+    }
+
 }
