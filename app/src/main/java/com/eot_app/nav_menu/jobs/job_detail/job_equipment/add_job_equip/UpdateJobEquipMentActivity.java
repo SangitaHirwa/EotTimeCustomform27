@@ -111,7 +111,7 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
     String servIntvalType = "";
     int onClicked = 0;
     List<EquArrayModel> equipment_list = new ArrayList<>();
-    TextView manuf_date_lable, warnty_date_lable, warnty_date_lable_start, purchase_date_lable, status_type, txt_date, txt_date_warnty, txt_date_warnty_start, txt_date_purchase, tv_label_attachment, upload_lable, click_here_txt, hint_status_txt, status_txt;
+    TextView manuf_date_lable, warnty_date_lable, warnty_date_lable_start, purchase_date_lable, status_type, txt_date, txt_date_warnty, txt_date_warnty_start, txt_date_purchase, tv_label_attachment, upload_lable, click_here_txt/*, hint_status_txt, status_txt*/;
     TextView tvService_inv_label, tvLabelStep2;
     RadioButton radio_owner, radio_serv_prov;
     List<ClientEquRes> clientEquResList;
@@ -122,18 +122,18 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
     private String brandId = "", siteId = "", status = "", invId,supplierId="";
     private CheckBox ch_equ_as_part;
     private View eq_view;
-    private TextInputLayout auto_barnd_layout, equ_layout, equ_model_layout, equ_supplier_layout, equ_serial_layout, job_country_layout, job_state_layout, equ_city_layout, equ_zip_layout, quote_notes_layout, catery_layout, equipment_layout, grp_layout, equ_adrs_layout, client_site_layout, custom_filed_header_1, custom_filed_header_2,supplier_layout;//equ_brand_layout
+    private TextInputLayout auto_barnd_layout, equ_layout, equ_model_layout, equ_supplier_layout, equ_serial_layout/*, job_country_layout, job_state_layout*/ /*equ_city_layout*//* equ_zip_layout*/, quote_notes_layout, catery_layout, equipment_layout, grp_layout, equ_adrs_layout, client_site_layout, custom_filed_header_1, custom_filed_header_2,supplier_layout;//equ_brand_layout
     private Button add_edit_item_Btn;
     private RelativeLayout image_with_tag;
     private boolean isTagSet = false;
     private RadioGroup rediogrpForTag, rediogrp;
     private RadioButton radio_before, radio_after;
-    View client_row, site_row;
+//    View /*client_row,*/ site_row;
     private Spinner status_Dp;
-    private EditText edt_equ, edt_equ_model, edt_equ_service_interval, edt_equ_supplier, edt_equ_serial, edt_equ_adrs, edt_equ_city, edt_equ_zip, quote_notes_edt;//edt_equ_brand
-    private AutoCompleteTextView auto_country,supplier_txt, auto_states, auto_equipment, auto_catery, auto_grp, auto_brand, auto_client_site;
+    private EditText edt_equ, edt_equ_model, edt_equ_service_interval, edt_equ_supplier, edt_equ_serial, edt_equ_adrs/*, edt_equ_city, edt_equ_zip*/, quote_notes_edt;//edt_equ_brand
+    private AutoCompleteTextView /*auto_country*//*,supplier_txt*//*, auto_states*/ auto_equipment, auto_catery, auto_grp, auto_brand ,auto_client_site;
     private String ctry, state;
-    private EditText auto_client;
+//    private EditText auto_client;
     private AppCompatImageView img_attachment;
     private TextView image_txt, remove_txt;
     private AddJobEqu_Pi addJobEqu_pi;
@@ -142,14 +142,14 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
     private String egId = "";
     private String ecId = "";
     private String jobId = "";
-    private LinearLayout manuf_date_layout, date_purchase_layout, date_warnty_layout, date_warnty_layout_start, linearLayout_status;
-    private LinearLayout lay;
+    private LinearLayout manuf_date_layout, date_purchase_layout, date_warnty_layout, date_warnty_layout_start/*, linearLayout_status*/;
+    private LinearLayout lay,ll_show_more_less;
     private Job job;
     private InvoiceItemDataModel updateItemDataModel;
     private List<GetSupplierData> supplierDataList;
     String barcodeString ="";
     String qrCodeString ="";
-    TextView txt_addBarcode,txt_addQrcode;
+    TextView txt_addBarcode,txt_addQrcode,show_less,show_more,txt_specific_name,txt_basic_detail,txt_location_installed_date,txt_warranty,txt_more_details;
     ImageView barcode_image,qrcode_image,img_barcode,img_Qrcode;
     AddEdit_QRCode_BarCode_Dialog addEditQrCodeBarCodeDialog;
     Calendar manufCalendar = Calendar.getInstance();
@@ -274,7 +274,7 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
         setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.step_2)+" ("+
                 LanguageController.getInstance().getMobileMsgByKey(AppConstant.title_add_equipment)+")");
         initializeViewS();
-        supplier_txt.addTextChangedListener(new TextWatcher() {
+      /*  supplier_txt.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
@@ -296,7 +296,7 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
             public void afterTextChanged(Editable s) {
 
             }
-        });
+        });*/
     }
 
 
@@ -313,11 +313,11 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
             custom_filed_txt_2.setHint(App_preference.getSharedprefInstance().getCompanySettingsDetails().getEqupExtraField2Label());
 
 
-        site_row = findViewById(R.id.site_row);
-        client_row = findViewById(R.id.client_row);
-        client_layout = findViewById(R.id.client_layout);
-        auto_client = findViewById(R.id.auto_client);
-        auto_client.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.client_mand) + " *");
+//        site_row = findViewById(R.id.site_row);
+//        client_row = findViewById(R.id.client_row);
+//        client_layout = findViewById(R.id.client_layout);
+        /*auto_client = findViewById(R.id.auto_client);
+        auto_client.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.client_mand) + " *");*/
 
         add_quote_item_layout = findViewById(R.id.add_quote_item_layout);
         AppUtility.setupUI(add_quote_item_layout, UpdateJobEquipMentActivity.this);
@@ -327,20 +327,20 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
         equ_model_layout = findViewById(R.id.equ_model_layout);
         equ_supplier_layout = findViewById(R.id.equ_supplier_layout);
         equ_serial_layout = findViewById(R.id.equ_serial_layout);
-        job_country_layout = findViewById(R.id.job_country_layout);
+      /*  job_country_layout = findViewById(R.id.job_country_layout);
         job_state_layout = findViewById(R.id.job_state_layout);
 
         auto_country = findViewById(R.id.auto_country);
         auto_country.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.country));
 
         auto_states = findViewById(R.id.auto_states);
-        auto_states.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.state));
+        auto_states.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.state));*/
 
-        equ_city_layout = findViewById(R.id.equ_city_layout);
-        equ_zip_layout = findViewById(R.id.equ_zip_layout);
+//        equ_city_layout = findViewById(R.id.equ_city_layout);
+//        equ_zip_layout = findViewById(R.id.equ_zip_layout);
         quote_notes_layout = findViewById(R.id.quote_notes_layout);
         equ_adrs_layout = findViewById(R.id.equ_adrs_layout);
-        supplier_layout=findViewById(R.id.Supllier_layout);
+//        supplier_layout=findViewById(R.id.Supllier_layout);
 
         edt_equ = findViewById(R.id.edt_equ);
         edt_equ.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.equipment) + " *");
@@ -362,11 +362,11 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
         edt_equ_adrs = findViewById(R.id.edt_equ_adrs);
         edt_equ_adrs.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.address));
 
-        edt_equ_city = findViewById(R.id.edt_equ_city);
+      /*  edt_equ_city = findViewById(R.id.edt_equ_city);
         edt_equ_city.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.city));
 
         edt_equ_zip = findViewById(R.id.edt_equ_zip);
-        edt_equ_zip.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.zip));
+        edt_equ_zip.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.zip));*/
 
         quote_notes_edt = findViewById(R.id.quote_notes_edt);
         quote_notes_edt.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.notes));
@@ -462,17 +462,17 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
         auto_client_site = findViewById(R.id.auto_client_site);
         auto_client_site.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.site_name));
 
-        status_Dp = findViewById(R.id.status_Dp);
-        hint_status_txt = findViewById(R.id.hint_status_txt);
-        hint_status_txt.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.status_radio_btn));
+//        status_Dp = findViewById(R.id.status_Dp);
+//        hint_status_txt = findViewById(R.id.hint_status_txt);
+//        hint_status_txt.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.status_radio_btn));
 
-        status_txt = findViewById(R.id.status_txt);
-        status_txt.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.status_radio_btn));
+//        status_txt = findViewById(R.id.status_txt);
+//        status_txt.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.status_radio_btn));
 
-        supplier_txt = findViewById(R.id.supplier_txt);
-        supplier_txt.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.supplier));
+//        supplier_txt = findViewById(R.id.supplier_txt);
+//        supplier_txt.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.supplier));
 
-        linearLayout_status = findViewById(R.id.linearLayout_status);
+//        linearLayout_status = findViewById(R.id.linearLayout_status);
         image_with_tag = findViewById(R.id.image_with_tag);
         image_txt = findViewById(R.id.image_txt);
 
@@ -486,6 +486,26 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
 
         txt_addBarcode.setOnClickListener(this);
         txt_addQrcode.setOnClickListener(this);
+/**Add new text filed for new ui changes**/
+        show_less = findViewById(R.id.show_less);
+        show_more = findViewById(R.id.show_more);
+        txt_specific_name = findViewById(R.id.txt_specific_name);
+        txt_basic_detail = findViewById(R.id.txt_basic_detail);
+        txt_location_installed_date  = findViewById(R.id.txt_location_installed_date);
+        txt_warranty = findViewById(R.id.txt_warranty);
+        txt_more_details = findViewById(R.id.txt_more_details);
+        ll_show_more_less = findViewById(R.id.ll_show_more_less);
+
+        show_less.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.show_less_details));
+        show_more.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.show_more_details));
+        txt_specific_name.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.equipment_assign_specific_name));
+        txt_basic_detail.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.basic_equ_details));
+        txt_location_installed_date.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.loc_and_instal_date));
+        txt_warranty.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.warranty));
+        txt_more_details.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.more_details));
+        show_less.setOnClickListener(this);
+        show_more.setOnClickListener(this);
+
 
         remove_txt = findViewById(R.id.remove_txt);
         remove_txt.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.remove_the_image_tag));
@@ -664,22 +684,22 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
     private void setJobData(Job job) {
         try {
             if (job != null) {
-                auto_client.setText(job.getNm());
-                auto_country.setText(SpinnerCountrySite.getCountryNameById(job.getCtry()));
-                auto_states.setText(SpinnerCountrySite.getStatenameById(job.getCtry(), job.getState()));
-                edt_equ_city.setText(job.getCity());
+//                auto_client.setText(job.getNm());
+//                auto_country.setText(SpinnerCountrySite.getCountryNameById(job.getCtry()));
+//                auto_states.setText(SpinnerCountrySite.getStatenameById(job.getCtry(), job.getState()));
+//                edt_equ_city.setText(job.getCity());
                 edt_equ_adrs.setText(job.getAdr());
-                edt_equ_zip.setText(job.getZip());
+//                edt_equ_zip.setText(job.getZip());
                 auto_client_site.setText(job.getSnm());
 
                 client_site_layout.setHintEnabled(true);
                 client_layout.setHintEnabled(true);
-                job_country_layout.setHintEnabled(true);
+//                job_country_layout.setHintEnabled(true);
                 client_layout.setHintEnabled(true);
-                job_state_layout.setHintEnabled(true);
+//                job_state_layout.setHintEnabled(true);
                 equ_adrs_layout.setHintEnabled(true);
-                equ_city_layout.setHintEnabled(true);
-                equ_zip_layout.setHintEnabled(true);
+//                equ_city_layout.setHintEnabled(true);
+//                equ_zip_layout.setHintEnabled(true);
             }
         } catch (Exception exception) {
             exception.printStackTrace();
@@ -870,8 +890,8 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
         Objects.requireNonNull(equ_supplier_layout.getEditText()).addTextChangedListener(this);
         //  equ_brand_layout.getEditText().addTextChangedListener(this);
         Objects.requireNonNull(equ_serial_layout.getEditText()).addTextChangedListener(this);
-        Objects.requireNonNull(equ_city_layout.getEditText()).addTextChangedListener(this);
-        Objects.requireNonNull(equ_zip_layout.getEditText()).addTextChangedListener(this);
+       /* Objects.requireNonNull(equ_city_layout.getEditText()).addTextChangedListener(this);
+        Objects.requireNonNull(equ_zip_layout.getEditText()).addTextChangedListener(this);*/
         Objects.requireNonNull(quote_notes_layout.getEditText()).addTextChangedListener(this);
         Objects.requireNonNull(equ_adrs_layout.getEditText()).addTextChangedListener(this);
         Objects.requireNonNull(custom_filed_header_1.getEditText()).addTextChangedListener(this);
@@ -905,15 +925,15 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
         auto_client_site.setOnClickListener(this);
         supplier_layout.setOnClickListener(this);
 
-        status_Dp.setOnItemSelectedListener(this);
-        linearLayout_status.setOnClickListener(this);
+//        status_Dp.setOnItemSelectedListener(this);
+//        linearLayout_status.setOnClickListener(this);
 
 
     }
 
     private void seteqstatuslists(List<EquipmentStatus> equipmentStatuses){
         if (equipmentStatuses != null && equipmentStatuses.size() > 0) {
-            AppUtility.spinnerPopUpWindow(status_Dp);
+//            AppUtility.spinnerPopUpWindow(status_Dp);
             String[] statusList = new String[equipmentStatuses.size()];
             int i = 0;
             for (EquipmentStatus status : equipmentStatuses) {
@@ -925,7 +945,7 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
                 }
             }
 
-            status_Dp.setAdapter(new MySpinnerAdapter(this, statusList));
+//            status_Dp.setAdapter(new MySpinnerAdapter(this, statusList));
         }
     }
 
@@ -946,17 +966,17 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
 
 
     private void setDefaultEquStatus(EquipmentStatus statusModel) {
-        hint_status_txt.setVisibility(View.VISIBLE);
+//        hint_status_txt.setVisibility(View.VISIBLE);
         status = statusModel.getEsId();
         String selectedValue = statusModel.getStatusText();
-        status_txt.setText(selectedValue);
+//        status_txt.setText(selectedValue);
     }
 
     private void setEquStatus(int pos) {
-        hint_status_txt.setVisibility(View.VISIBLE);
+//        hint_status_txt.setVisibility(View.VISIBLE);
         status = equipmentStatusList.get(pos).getEsId();
         String selectedValue = equipmentStatusList.get(pos).getStatusText();
-        status_txt.setText(selectedValue);
+//        status_txt.setText(selectedValue);
     }
 
     @Override
@@ -1041,9 +1061,9 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
     @SuppressLint("NonConstantResourceId")
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-        if (adapterView.getId() == R.id.status_Dp) {
+       /* if (adapterView.getId() == R.id.status_Dp) {
             setEquStatus(i);
-        }
+        }*/
     }
 
     @Override
@@ -1075,12 +1095,12 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
             case R.id.client_site_layout:
                 auto_client_site.showDropDown();
                 break;
-            case R.id.linearLayout_status:
-                status_Dp.performClick();
-                break;
-            case R.id.supplier_txt:
-                supplier_txt.performClick();
-                break;
+//            case R.id.linearLayout_status:
+//                status_Dp.performClick();
+//                break;
+//            case R.id.supplier_txt:
+//                supplier_txt.performClick();
+//                break;
             case R.id.lay:
                 selectFile(true);
                 break;
@@ -1156,6 +1176,14 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
                     addEditQrCodeBarCodeDialog.show(getSupportFragmentManager(), "");
                 }
                 break;
+            case R.id.show_less:
+                ll_show_more_less.setVisibility(View.GONE);
+                show_more.setVisibility(View.VISIBLE);
+                break;
+            case R.id.show_more:
+                ll_show_more_less.setVisibility(View.VISIBLE);
+                show_more.setVisibility(View.GONE);
+                break;
         }
     }
 
@@ -1168,8 +1196,8 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
     public void createEqquipmentRequest() {
 
         String countryname, statename;
-        countryname = auto_country.getText().toString();
-        statename = auto_states.getText().toString();
+        countryname = ""/*auto_country.getText().toString()*/;
+        statename ="" /*auto_states.getText().toString()*/;
         ctry = addJobEqu_pi.cntryId(countryname);
         state = addJobEqu_pi.statId(ctry, statename);
 
@@ -1181,14 +1209,14 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
                         parentId = equipment.getParentId();
                         isCnvtItemParts = "0";
                     }
-                    addJobEqu_pi.convertItemToequip(new AddEquReq(type, egId, ecId, edt_equ_zip.getText().toString().trim(),
-                                    edt_equ_city.getText().toString().trim(), edt_equ_adrs.getText().toString().trim(),
+                    addJobEqu_pi.convertItemToequip(new AddEquReq(type, egId, ecId, "",
+                                    "", edt_equ_adrs.getText().toString().trim(),
                                     ctry, state, /*isBarcodeGenerate,*/
                                     quote_notes_edt.getText().toString().trim(),
                                     purchase_date_lable.getText().toString().trim(),
                                     manuf_date_lable.getText().toString().trim(),
                                     warnty_date_lable.getText().toString().trim(),
-                                    supplier_txt.getText().toString().trim(),
+                                    "",
                                     edt_equ_serial.getText().toString().trim(),
                                     edt_equ_model.getText().toString().trim(),
                                     brandId, edt_equ.getText().toString().trim(),
@@ -1204,14 +1232,14 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
                             barcodeString,qrCodeString, parentId);
                 } else if (audit != null) {
                     addJobEqu_pi.addNewEquipment(
-                            new AddEquReq(type, egId, ecId, edt_equ_zip.getText().toString().trim(),
-                                    edt_equ_city.getText().toString().trim(), edt_equ_adrs.getText().toString().trim(),
+                            new AddEquReq(type, egId, ecId, "",
+                                    "", edt_equ_adrs.getText().toString().trim(),
                                     ctry, state, /*isBarcodeGenerate,*/
                                     quote_notes_edt.getText().toString().trim(),
                                     purchase_date_lable.getText().toString().trim(),
                                     manuf_date_lable.getText().toString().trim(),
                                     warnty_date_lable.getText().toString().trim(),
-                                    supplier_txt.getText().toString().trim(),
+                                    "",
                                     edt_equ_serial.getText().toString().trim(),
                                     edt_equ_model.getText().toString().trim(),
                                     brandId, edt_equ.getText().toString().trim(),
@@ -1224,13 +1252,13 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
                             binding.installedDateLable.getText().toString().trim(), equipmentId);
                 } else {
                     addJobEqu_pi.addNewEquipment(
-                            new AddEquReq(type, egId, ecId, edt_equ_zip.getText().toString().trim(),
-                                    edt_equ_city.getText().toString().trim(), edt_equ_adrs.getText().toString().trim(),
+                            new AddEquReq(type, egId, ecId, "",
+                                    "", edt_equ_adrs.getText().toString().trim(),
                                     ctry, state, /*isBarcodeGenerate,*/
                                     quote_notes_edt.getText().toString().trim(),
                                     purchase_date_lable.getText().toString().trim(),
                                     manuf_date_lable.getText().toString().trim(), warnty_date_lable.getText().toString().trim(),
-                                    supplier_txt.getText().toString().trim(), edt_equ_serial.getText().toString().trim(),
+                                   "", edt_equ_serial.getText().toString().trim(),
                                     edt_equ_model.getText().toString().trim(),
                                     brandId, edt_equ.getText().toString().trim(), jobId, job.getCltId(),
                                     job.getContrId(), siteId, isPart, status, custom_filed_txt_1.getText().toString().trim(),
@@ -1247,14 +1275,14 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
                     parentId = equipment.getParentId();
                     isCnvtItemParts = "0";
                 }
-                addJobEqu_pi.convertItemToequip(new AddEquReq(type, egId, ecId, edt_equ_zip.getText().toString().trim(),
-                                edt_equ_city.getText().toString().trim(), edt_equ_adrs.getText().toString().trim(),
+                addJobEqu_pi.convertItemToequip(new AddEquReq(type, egId, ecId, "",
+                                "", edt_equ_adrs.getText().toString().trim(),
                                 ctry, state, /*isBarcodeGenerate,*/
                                 quote_notes_edt.getText().toString().trim(),
                                 purchase_date_lable.getText().toString().trim(),
                                 manuf_date_lable.getText().toString().trim(),
                                 warnty_date_lable.getText().toString().trim(),
-                                supplier_txt.getText().toString().trim(),
+                               "",
                                 edt_equ_serial.getText().toString().trim(),
                                 edt_equ_model.getText().toString().trim(),
                                 brandId, edt_equ.getText().toString().trim(),
@@ -1634,7 +1662,7 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
     public void setCountryList(List<Country> countryList) {
 //        AppUtility.autocompletetextviewPopUpWindow(job_country_layout);
         final FilterCountry countryAdapter = new FilterCountry(this, R.layout.custom_adapter_item_layout, (ArrayList<Country>) countryList);
-        auto_country.setAdapter(countryAdapter);
+       /* auto_country.setAdapter(countryAdapter);
         auto_country.setThreshold(1);
         auto_country.setOnItemClickListener((adapterView, view, i, l) -> {
             ctry = ((Country) adapterView.getItemAtPosition(i)).getId();
@@ -1664,7 +1692,7 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
             public void afterTextChanged(Editable editable) {
 
             }
-        });
+        });*/
     }
 
 
@@ -1672,7 +1700,7 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
     public void setStateList(List<States> statesList) {
         //AppUtility.autocompletetextviewPopUpWindow(job_state_layout);
         FilterStates stateAdapter = new FilterStates(this, R.layout.custom_adapter_item_layout, (ArrayList<States>) statesList);
-        auto_states.setAdapter(stateAdapter);
+       /* auto_states.setAdapter(stateAdapter);
         auto_states.setThreshold(0);
         auto_states.setOnItemClickListener((adapterView, view, i, l) -> {
             state = ((States) adapterView.getItemAtPosition(i)).getId();
@@ -1699,7 +1727,7 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
             public void afterTextChanged(Editable editable) {
 
             }
-        });
+        });*/
     }
 
 
@@ -1722,10 +1750,10 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
 //                equ_brand_layout.setHintEnabled(true);
             if (charSequence.hashCode() == edt_equ_serial.getText().hashCode())
                 equ_serial_layout.setHintEnabled(true);
-            if (charSequence.hashCode() == edt_equ_city.getText().hashCode())
+          /*  if (charSequence.hashCode() == edt_equ_city.getText().hashCode())
                 equ_city_layout.setHintEnabled(true);
             if (charSequence.hashCode() == edt_equ_zip.getText().hashCode())
-                equ_zip_layout.setHintEnabled(true);
+                equ_zip_layout.setHintEnabled(true);*/
             if (charSequence.hashCode() == quote_notes_edt.getText().hashCode())
                 quote_notes_layout.setHintEnabled(true);
             if (charSequence.hashCode() == edt_equ_adrs.getText().hashCode())
@@ -1746,10 +1774,10 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
 //                equ_brand_layout.setHintEnabled(false);
             if (charSequence.hashCode() == edt_equ_serial.getText().hashCode())
                 equ_serial_layout.setHintEnabled(false);
-            if (charSequence.hashCode() == edt_equ_city.getText().hashCode())
+           /* if (charSequence.hashCode() == edt_equ_city.getText().hashCode())
                 equ_city_layout.setHintEnabled(false);
             if (charSequence.hashCode() == edt_equ_zip.getText().hashCode())
-                equ_zip_layout.setHintEnabled(false);
+                equ_zip_layout.setHintEnabled(false);*/
             if (charSequence.hashCode() == quote_notes_edt.getText().hashCode())
                 quote_notes_layout.setHintEnabled(false);
             if (charSequence.hashCode() == edt_equ_adrs.getText().hashCode())
@@ -1928,11 +1956,11 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
             if (this.supplierDataList!=null)this.supplierDataList.clear();
             this.supplierDataList = supplierDataList;
             SupplierAdapter stateAdapter = new SupplierAdapter(this, R.layout.custom_adapter_item_layout, (ArrayList<GetSupplierData>) supplierDataList);
-            supplier_txt.setAdapter(stateAdapter);
+           /* supplier_txt.setAdapter(stateAdapter);
             supplier_txt.setThreshold(3);
             supplier_txt.setOnItemClickListener((adapterView, view, i, l) -> {
                 supplierId=supplierDataList.get(i).getSupId();
-            });
+            });*/
             supplier_layout.setHintEnabled(true);
         }
     }

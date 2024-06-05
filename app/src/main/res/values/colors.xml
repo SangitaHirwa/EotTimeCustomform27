@@ -108,6 +108,7 @@
     <color name="discard_link_equ">#FFE7E9</color>
     <color name="reallocate_screen">#f5f0f2</color>
     <color name="disable_btn">#78bdc3</color>
+    <color name="new_msg_gray">#6D6D6D</color>
 
 
 </resources>

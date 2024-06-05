@@ -40,11 +40,26 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="@dimen/left_margin"
                     android:orientation="vertical">
-
+                     <TextView
+                         android:id="@+id/txt_basic_detail"
+                         android:layout_width="match_parent"
+                         android:layout_height="@dimen/_27sdp"
+                         android:gravity="center_vertical"
+                         android:layout_marginHorizontal="@dimen/left_margin"
+                         style="@style/text_style"
+                         android:text="Basic Equipment Details"
+                         />
+                    <View
+                        android:id="@+id/basic_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginHorizontal="@dimen/left_margin"
+                        android:background="@color/border_font_color" />
                     <RelativeLayout
                         android:layout_width="match_parent"
+                        android:layout_marginHorizontal="@dimen/left_margin"
                         android:layout_height="@dimen/input_field_height"><!--android:layout_marginTop="8dp"-->
                         <CheckBox
                             android:id="@+id/ch_equ_as_part"
@@ -85,14 +100,23 @@
                               -->
                         </com.google.android.material.textfield.TextInputLayout>
                     </RelativeLayout>
-
-                    <View
-                        android:id="@+id/part_no_view"
+                    <TextView
+                        android:id="@+id/txt_specific_name"
                         android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_marginTop="5dp"
-                        android:background="@color/border_font_color" />
-
+                        android:layout_height="wrap_content"
+                        android:minHeight="@dimen/_27sdp"
+                        style="@style/style_sec_sec"
+                        android:padding="10dp"
+                        android:layout_gravity="center"
+                        android:textColor="@color/new_msg_gray"
+                        android:background="@color/bg_link_item_note"
+                        android:text="To accurately identify the equipment, it is advisable to assign it a specific name."
+                        />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/left_margin"
+                    android:orientation="vertical">
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/equipment_layout"
                         android:layout_width="match_parent"
@@ -129,7 +153,37 @@
                         android:layout_marginTop="5dp"
                         android:background="@color/border_font_color"
                         android:visibility="gone" />
+                    <!--SN-->
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/equ_serial_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/input_field_height"
+                        android:layout_marginEnd="10dp"
+                        android:gravity="center"
+                        android:paddingTop="5dp"
+                        app:hintAnimationEnabled="true"
+                        app:hintEnabled="false"
+                        app:hintTextAppearance="@style/TextInputLayoutHintText">
 
+                        <EditText
+                            android:id="@+id/edt_equ_serial"
+                            style="@style/style_sec_sec"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:background="@android:color/transparent"
+                            android:inputType="text"
+                            android:singleLine="true"
+                            tools:ignore="Autofill,LabelFor" />
+                        <!--                      android:inputType="numberDecimal"-->
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="5dp"
+                        android:background="@color/border_font_color" />
+                      <!--model_no-->
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/equ_model_layout"
                         android:layout_width="match_parent"
@@ -153,109 +207,16 @@
                             tools:ignore="Autofill,LabelFor" />
                         <!--android:hint="@string/hsn_code"-->
                     </com.google.android.material.textfield.TextInputLayout>
-
-
-                    <!--   <View
-                           android:id="@+id/hsncode_view"
-                           android:layout_width="match_parent"
-                           android:layout_height="1dp"
-                           android:layout_marginTop="5dp"
-                           android:background="@color/border_font_color" />-->
-
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/equ_supplier_layout"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/input_field_height"
-                        android:layout_marginEnd="10dp"
-                        android:gravity="center"
-                        android:paddingTop="5dp"
-                        android:visibility="gone"
-                        app:hintAnimationEnabled="true"
-                        app:hintEnabled="false"
-                        app:hintTextAppearance="@style/TextInputLayoutHintText">
-
-                        <EditText
-                            android:id="@+id/edt_equ_supplier"
-                            style="@style/style_sec_sec"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:background="@android:color/transparent"
-                            android:inputType="text"
-                            android:singleLine="true"
-                            tools:ignore="Autofill,LabelFor" />
-                    </com.google.android.material.textfield.TextInputLayout>
-
                     <View
+                        android:id="@+id/qty_view"
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:layout_marginTop="5dp"
                         android:background="@color/border_font_color" />
 
-                    <TextView
-                        android:id="@+id/txt_date"
-                        style="@style/style_sec_sec"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:background="@android:color/transparent"
-                        android:hint="@string/date"
-                        android:singleLine="true"
-                        android:textSize="@dimen/medium_text_low"
-                        android:visibility="gone"
-                        tools:ignore="SpUsage" />
-
-                    <LinearLayout
-                        android:id="@+id/manuf_date_layout"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/input_field_height"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:id="@+id/manuf_date_lable"
-                            style="@style/style_sec_sec"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_weight="0.5"
-                            android:fontFamily="@font/arimo_regular"
-                            android:gravity="center|start" />
-
-                        <TextView
-                            android:id="@+id/manuf_date_txt"
-                            style="@style/style_sec_sec"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_marginStart="10dp"
-                            android:layout_marginEnd="10dp"
-                            android:layout_weight="1"
-                            android:background="@android:color/transparent"
-                            android:drawableEnd="@drawable/date_icon"
-                            android:drawablePadding="@dimen/tv_drawable_padding"
-                            android:gravity="end"
-                            android:textSize="@dimen/medium_text_low"
-                            tools:ignore="SpUsage" />
-
-                        <ImageButton
-                            android:id="@+id/manuf_date_cancel"
-                            android:layout_width="40dp"
-                            android:layout_height="50dp"
-                            android:layout_toRightOf="@+id/tax"
-                            android:background="@android:color/transparent"
-                            android:visibility="gone"
-                            android:src="@drawable/ic_baseline_cancel_24"
-                            />
-
-                    </LinearLayout>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_marginTop="5dp"
-                        android:background="@color/border_font_color" />
-
+                    <!--brand-->
                     <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/catery_layout"
+                        android:id="@+id/auto_barnd_layout"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/input_field_height"
                         android:gravity="center"
@@ -265,43 +226,8 @@
                         app:hintEnabled="false"
                         app:hintTextAppearance="@style/TextInputLayoutHintText">
 
-
                         <AutoCompleteTextView
-                            android:id="@+id/auto_catery"
-                            style="@style/style_sec_sec"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:background="@android:color/transparent"
-                            android:drawableEnd="@drawable/ic_arrow_drop_down_black_24dp"
-                            android:dropDownHeight="140dp"
-                            android:dropDownVerticalOffset="-5dp"
-                            android:inputType="text"
-                            android:popupBackground="@drawable/popupbg"
-                            android:singleLine="true"
-                            tools:ignore="LabelFor" />
-
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_marginTop="5dp"
-                        android:background="@color/border_font_color" />
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/grp_layout"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/input_field_height"
-                        android:gravity="center"
-                        android:paddingTop="5dp"
-                        android:visibility="visible"
-                        app:hintAnimationEnabled="true"
-                        app:hintEnabled="false"
-                        app:hintTextAppearance="@style/TextInputLayoutHintText"><!--android:paddingTop="8dp"-->
-
-                        <AutoCompleteTextView
-                            android:id="@+id/auto_grp"
+                            android:id="@+id/auto_brand"
                             style="@style/style_sec_sec"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -315,237 +241,12 @@
                             tools:ignore="LabelFor" />
 
                     </com.google.android.material.textfield.TextInputLayout>
-
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:layout_marginTop="5dp"
                         android:background="@color/border_font_color" />
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/client_layout"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/input_field_height"
-                        android:gravity="center"
-                        android:paddingTop="5dp"
-                        android:visibility="visible"
-                        app:hintAnimationEnabled="true"
-                        app:hintEnabled="false"
-                        app:hintTextAppearance="@style/TextInputLayoutHintText">
-
-                        <EditText
-                            android:id="@+id/auto_client"
-                            style="@style/style_sec_sec"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:background="@android:color/transparent"
-                            android:dropDownHeight="140dp"
-                            android:dropDownVerticalOffset="-5dp"
-                            android:focusable="false"
-                            android:focusableInTouchMode="false"
-                            android:inputType="text"
-                            android:popupBackground="@drawable/popupbg"
-                            android:singleLine="true"
-                            tools:ignore="Autofill,LabelFor" />
-
-                    </com.google.android.material.textfield.TextInputLayout>
-                    <!--Client Site View Start-->
-
-                    <View
-                        android:id="@+id/client_row"
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_marginTop="5dp"
-                        android:background="@color/border_font_color" />
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/client_site_layout"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/input_field_height"
-                        android:gravity="center"
-                        android:paddingTop="5dp"
-                        android:visibility="visible"
-                        app:hintAnimationEnabled="true"
-                        app:hintEnabled="false"
-                        app:hintTextAppearance="@style/TextInputLayoutHintText"><!--android:paddingTop="8dp"-->
-
-                        <AutoCompleteTextView
-                            android:id="@+id/auto_client_site"
-                            style="@style/style_sec_sec"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:background="@android:color/transparent"
-                            android:drawableEnd="@drawable/ic_arrow_drop_down_black_24dp"
-                            android:dropDownHeight="140dp"
-                            android:dropDownVerticalOffset="-5dp"
-                            android:inputType="text"
-                            android:popupBackground="@drawable/popupbg"
-                            android:singleLine="true"
-                            tools:ignore="LabelFor" />
-
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                    <!--Client Site View End-->
-
-                    <!--Start Status View-->
-
-                    <View
-                        android:id="@+id/site_row"
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_marginTop="5dp"
-                        android:background="@color/border_font_color" />
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="50dp">
-
-                        <TextView
-                            android:id="@+id/hint_status_txt"
-                            style="@style/text_hint"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="5dp"
-                            android:textStyle="normal"
-                            android:visibility="gone" />
-
-                        <LinearLayout
-                            android:id="@+id/linearLayout_status"
-                            android:layout_width="match_parent"
-                            android:layout_height="@dimen/input_field_height"
-                            android:layout_marginTop="5dp"
-                            android:gravity="center"
-                            android:orientation="horizontal"
-                            tools:ignore="UseCompoundDrawables">
-
-                            <TextView
-                                android:id="@+id/status_txt"
-                                style="@style/style_sec_sec"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="5dp"
-                                android:layout_weight="1"
-                                android:hint=""
-                                tools:ignore="InefficientWeight" />
-
-                            <ImageView
-                                android:id="@+id/img_status"
-                                style="@style/subtext_style"
-                                android:layout_width="25dp"
-                                android:layout_height="25dp"
-                                android:src="@drawable/ic_drop_down_black"
-                                android:tint="@color/colorPrimary"
-                                tools:ignore="ContentDescription" />
-
-                        </LinearLayout>
-
-                        <com.eot_app.utility.util_interfaces.NoDefaultSpinner
-                            android:id="@+id/status_Dp"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/linearLayout_status"
-                            android:background="@android:color/transparent"
-                            android:dropDownWidth="match_parent"
-                            android:minHeight="20dp"
-                            android:popupBackground="@drawable/popupbg"
-                            android:visibility="invisible" />
-                    </RelativeLayout>
-
-                    <!--End Status View-->
-
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_marginTop="5dp"
-                        android:background="@color/border_font_color" />
-                   <!-- <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="50dp">
-
-                        <TextView
-                            android:id="@+id/hint_supplier_txt"
-                            style="@style/text_hint"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="5dp"
-                            android:textStyle="normal"
-                            android:visibility="gone" />
-
-                        <LinearLayout
-                            android:id="@+id/linearLayout_supplier"
-                            android:layout_width="match_parent"
-                            android:layout_height="@dimen/input_field_height"
-                            android:layout_marginTop="5dp"
-                            android:gravity="center"
-                            android:orientation="horizontal"
-                            tools:ignore="UseCompoundDrawables">
-
-                            <TextView
-                                android:id="@+id/supplier_txt"
-                                style="@style/style_sec_sec"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="5dp"
-                                android:layout_weight="1"
-                                android:hint=""
-                                tools:ignore="InefficientWeight" />
-
-                            <ImageView
-                                android:id="@+id/img_supplier"
-                                style="@style/subtext_style"
-                                android:layout_width="25dp"
-                                android:layout_height="25dp"
-                                android:src="@drawable/ic_drop_down_black"
-                                android:tint="@color/colorPrimary"
-                                tools:ignore="ContentDescription" />
-
-                        </LinearLayout>
-
-                        <com.eot_app.utility.util_interfaces.NoDefaultSpinner
-                            android:id="@+id/supplier_Dp"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/linearLayout_supplier"
-                            android:background="@android:color/transparent"
-                            android:dropDownWidth="match_parent"
-                            android:minHeight="20dp"
-                            android:popupBackground="@drawable/popupbg"
-                            android:visibility="invisible" />
-                    </RelativeLayout>-->
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/Supllier_layout"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/input_field_height"
-                        android:gravity="center"
-                        android:paddingTop="5dp"
-                        android:visibility="visible"
-                        app:hintAnimationEnabled="true"
-                        app:hintEnabled="false"
-                        app:hintTextAppearance="@style/TextInputLayoutHintText"><!--android:paddingTop="8dp"-->
-
-                        <AutoCompleteTextView
-                            android:id="@+id/supplier_txt"
-                            style="@style/style_sec_sec"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:background="@android:color/transparent"
-                            android:dropDownHeight="140dp"
-                            android:dropDownVerticalOffset="-5dp"
-                            android:inputType="text"
-                            android:popupBackground="@drawable/popupbg"
-                            android:singleLine="true"
-                            android:focusableInTouchMode="true"
-                            tools:ignore="LabelFor" />
-
-                    </com.google.android.material.textfield.TextInputLayout>
-
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_marginTop="5dp"
-                        android:background="@color/border_font_color" />
+                    <!--type-->
                     <TextView
                         android:id="@+id/type"
                         style="@style/style_sec_sec"
@@ -597,7 +298,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:background="@color/border_font_color" />
-
+                    <!--barcode-->
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -672,74 +373,309 @@
                             app:layout_constraintStart_toStartOf="@id/txt_addQrcode"
                             app:layout_constraintTop_toBottomOf="@id/txt_addQrcode" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
-
-                     <!-- <CheckBox
-                          android:id="@+id/checkbox_barCode"
-                          style="@style/style_sec_sec"
-                          android:layout_width="wrap_content"
-                          android:layout_height="@dimen/input_field_height"
-                          android:layout_marginStart="-5dp"
-                          android:gravity="center|start"
-                          android:text="@string/auto_generate_barcode" />
-
-                      <CheckBox
-                          android:id="@+id/checkbox_scan_barCode"
-                          style="@style/style_sec_sec"
-                          android:layout_width="wrap_content"
-                          android:layout_height="@dimen/input_field_height"
-                          android:layout_marginStart="-5dp"
-                          android:gravity="center|start"
-                          android:text="@string/scan_insert_barcode" />
-
-                    <RelativeLayout
-                        android:id="@+id/scan_barcode_layout"
+                    <!--   <View
+                           android:id="@+id/hsncode_view"
+                           android:layout_width="match_parent"
+                           android:layout_height="1dp"
+                           android:layout_marginTop="5dp"
+                           android:background="@color/border_font_color" />-->
+                    <View
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/input_field_height"
-                        android:orientation="horizontal"
-                        android:visibility="gone">
+                        android:layout_height="1dp"
+                        android:layout_marginTop="5dp"
+                        android:background="@color/border_font_color" />
+                        <!--text_for_less_Detail-->
+                        <TextView
+                            android:id="@+id/show_more"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_27sdp"
+                            android:text="Show More Details"
+                            style="@style/header_text_style"
+                            android:visibility="visible"
+                            android:textColor="@color/colorPrimary"
+                            android:gravity="center"/>
 
-                        <EditText
-                            android:id="@+id/et_barcode"
+                    <!--ll_for_more_less_Detail-->
+                    <LinearLayout
+                        android:id="@+id/ll_show_more_less"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="gone"
+                        >
+                        <!--puechase_date-->
+                        <TextView
+                            android:id="@+id/txt_date_purchase"
                             style="@style/style_sec_sec"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_toStartOf="@+id/tv_scan_barcode"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
                             android:background="@android:color/transparent"
-                            android:fontFamily="@font/arimo_regular"
-                            android:gravity="center|start"
-                            android:hint="@string/insert_barcode"
-                            tools:ignore="Autofill" />
+                            android:hint="@string/date"
+                            android:singleLine="true"
+                            android:textSize="@dimen/medium_text_low"
+                            android:visibility="gone"
+                            tools:ignore="SpUsage" />
+
+                        <LinearLayout
+                            android:id="@+id/date_purchase_layout"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/input_field_height"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/purchase_date_lable"
+                                style="@style/style_sec_sec"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:fontFamily="@font/arimo_regular"
+                                android:gravity="center|start" />
+
+                            <TextView
+                                android:id="@+id/purchase_date_txt"
+                                style="@style/style_sec_sec"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_marginStart="10dp"
+                                android:layout_marginEnd="10dp"
+                                android:layout_weight="1"
+                                android:background="@android:color/transparent"
+                                android:drawableEnd="@drawable/date_icon"
+                                android:drawablePadding="@dimen/tv_drawable_padding"
+                                android:gravity="end"
+                                android:textSize="@dimen/medium_text_low"
+                                tools:ignore="SpUsage" />
+                            <ImageButton
+                                android:id="@+id/purchase_date_cancel"
+                                android:layout_width="40dp"
+                                android:layout_height="50dp"
+                                android:layout_toRightOf="@+id/tax"
+                                android:background="@android:color/transparent"
+                                android:visibility="gone"
+                                android:src="@drawable/ic_baseline_cancel_24"
+                                />
+
+                        </LinearLayout>
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginTop="5dp"
+                            android:background="@color/border_font_color" />
 
                         <TextView
-                            android:id="@+id/tv_scan_barcode"
+                            android:id="@+id/txt_date"
                             style="@style/style_sec_sec"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_alignParentEnd="true"
-                            android:layout_marginHorizontal="10dp"
-                            android:layout_weight="1"
-                            android:background="@drawable/submit_btn"
+                            android:layout_marginTop="5dp"
+                            android:background="@android:color/transparent"
+                            android:hint="@string/date"
+                            android:singleLine="true"
+                            android:textSize="@dimen/medium_text_low"
+                            android:visibility="gone"
+                            tools:ignore="SpUsage" />
+                        <!--manuf_date-->
+                        <LinearLayout
+                            android:id="@+id/manuf_date_layout"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/input_field_height"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/manuf_date_lable"
+                                style="@style/style_sec_sec"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_weight="0.5"
+                                android:fontFamily="@font/arimo_regular"
+                                android:gravity="center|start" />
+
+                            <TextView
+                                android:id="@+id/manuf_date_txt"
+                                style="@style/style_sec_sec"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_marginStart="10dp"
+                                android:layout_marginEnd="10dp"
+                                android:layout_weight="1"
+                                android:background="@android:color/transparent"
+                                android:drawableEnd="@drawable/date_icon"
+                                android:drawablePadding="@dimen/tv_drawable_padding"
+                                android:gravity="end"
+                                android:textSize="@dimen/medium_text_low"
+                                tools:ignore="SpUsage" />
+
+                            <ImageButton
+                                android:id="@+id/manuf_date_cancel"
+                                android:layout_width="40dp"
+                                android:layout_height="50dp"
+                                android:layout_toRightOf="@+id/tax"
+                                android:background="@android:color/transparent"
+                                android:visibility="gone"
+                                android:src="@drawable/ic_baseline_cancel_24"
+                                />
+
+                        </LinearLayout>
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginTop="5dp"
+                            android:background="@color/border_font_color" />
+                        <!--categry-->
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/catery_layout"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/input_field_height"
                             android:gravity="center"
-                            android:paddingHorizontal="10dp"
-                            android:paddingVertical="6dp"
-                            android:text="@string/scan"
-                            android:textColor="@color/white"
-                            android:textSize="@dimen/medium_text"
-                            android:textStyle="bold"
-                            tools:ignore="ObsoleteLayoutParam,SpUsage" />
+                            android:paddingTop="5dp"
+                            android:visibility="visible"
+                            app:hintAnimationEnabled="true"
+                            app:hintEnabled="false"
+                            app:hintTextAppearance="@style/TextInputLayoutHintText">
 
-                    </RelativeLayout>-->
 
+                            <AutoCompleteTextView
+                                android:id="@+id/auto_catery"
+                                style="@style/style_sec_sec"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:background="@android:color/transparent"
+                                android:drawableEnd="@drawable/ic_arrow_drop_down_black_24dp"
+                                android:dropDownHeight="140dp"
+                                android:dropDownVerticalOffset="-5dp"
+                                android:inputType="text"
+                                android:popupBackground="@drawable/popupbg"
+                                android:singleLine="true"
+                                tools:ignore="LabelFor" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginTop="5dp"
+                            android:background="@color/border_font_color" />
+                        <!--group-->
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/grp_layout"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/input_field_height"
+                            android:gravity="center"
+                            android:paddingTop="5dp"
+                            android:visibility="visible"
+                            app:hintAnimationEnabled="true"
+                            app:hintEnabled="false"
+                            app:hintTextAppearance="@style/TextInputLayoutHintText"><!--android:paddingTop="8dp"-->
+
+                            <AutoCompleteTextView
+                                android:id="@+id/auto_grp"
+                                style="@style/style_sec_sec"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@android:color/transparent"
+                                android:drawableEnd="@drawable/ic_arrow_drop_down_black_24dp"
+                                android:dropDownHeight="140dp"
+                                android:dropDownVerticalOffset="-5dp"
+                                android:inputType="text"
+                                android:popupBackground="@drawable/popupbg"
+                                android:singleLine="true"
+                                tools:ignore="LabelFor" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginTop="5dp"
+                            android:background="@color/border_font_color" />
+                        <!--suplire-->
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/equ_supplier_layout"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/input_field_height"
+                            android:layout_marginEnd="10dp"
+                            android:gravity="center"
+                            android:paddingTop="5dp"
+                            android:visibility="visible"
+                            app:hintAnimationEnabled="true"
+                            app:hintEnabled="false"
+                            app:hintTextAppearance="@style/TextInputLayoutHintText">
+
+                            <EditText
+                                android:id="@+id/edt_equ_supplier"
+                                style="@style/style_sec_sec"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:background="@android:color/transparent"
+                                android:inputType="text"
+                                android:singleLine="true"
+                                tools:ignore="Autofill,LabelFor" />
+                        </com.google.android.material.textfield.TextInputLayout>
+                        <!--text_for_less_Detail-->
+                        <TextView
+                            android:id="@+id/show_less"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_27sdp"
+                            android:text="Show Less Details"
+                            style="@style/header_text_style"
+                            android:visibility="visible"
+                            android:textColor="@color/colorPrimary"
+                            android:gravity="center"/>
+                    </LinearLayout>
+                    <!--txt_for_location_and_installed_date-->
+                    <TextView
+                        android:id="@+id/txt_location_installed_date"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_27sdp"
+                        android:gravity="center_vertical"
+                        style="@style/text_style"
+                        android:text="Location and Installation Date"
+                        />
                     <View
-                        android:id="@+id/qty_view"
+                        android:id="@+id/rate_view"
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:layout_marginTop="5dp"
                         android:background="@color/border_font_color" />
 
 
+
                     <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/auto_barnd_layout"
+                        android:id="@+id/equ_adrs_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/input_field_height"
+                        android:layout_marginEnd="10dp"
+                        android:gravity="center"
+                        android:paddingTop="5dp"
+                        app:hintAnimationEnabled="true"
+                        app:hintEnabled="false"
+                        app:hintTextAppearance="@style/TextInputLayoutHintText">
+
+                        <EditText
+                            android:id="@+id/edt_equ_adrs"
+                            style="@style/style_sec_sec"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:background="@android:color/transparent"
+                            android:inputType="text"
+                            android:singleLine="true"
+                            tools:ignore="Autofill,LabelFor" />
+                        <!--                    android:inputType="numberDecimal"-->
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <View
+                        android:id="@+id/lng_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="5dp"
+                        android:background="@color/border_font_color" />
+
+                    <!--site-->
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/client_site_layout"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/input_field_height"
                         android:gravity="center"
@@ -750,7 +686,7 @@
                         app:hintTextAppearance="@style/TextInputLayoutHintText">
 
                         <AutoCompleteTextView
-                            android:id="@+id/auto_brand"
+                            android:id="@+id/auto_client_site"
                             style="@style/style_sec_sec"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -764,104 +700,87 @@
                             tools:ignore="LabelFor" />
 
                     </com.google.android.material.textfield.TextInputLayout>
-
+                    <!--installesd date-->
                     <View
+                        android:id="@+id/installed_date_view"
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:layout_marginTop="5dp"
                         android:background="@color/border_font_color" />
-
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/equ_serial_layout"
+                    <TextView
+                        android:id="@+id/txt_date_installed"
+                        style="@style/style_sec_sec"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:background="@android:color/transparent"
+                        android:hint="@string/date"
+                        android:singleLine="true"
+                        android:textSize="@dimen/medium_text_low"
+                        android:visibility="gone"
+                        tools:ignore="SpUsage" />
+                    <LinearLayout
+                        android:id="@+id/date_installed_layout"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/input_field_height"
-                        android:layout_marginEnd="10dp"
-                        android:gravity="center"
-                        android:paddingTop="5dp"
-                        app:hintAnimationEnabled="true"
-                        app:hintEnabled="false"
-                        app:hintTextAppearance="@style/TextInputLayoutHintText">
-
-                        <EditText
-                            android:id="@+id/edt_equ_serial"
-                            style="@style/style_sec_sec"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:background="@android:color/transparent"
-                            android:inputType="text"
-                            android:singleLine="true"
-                            tools:ignore="Autofill,LabelFor" />
-                        <!--                      android:inputType="numberDecimal"-->
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_marginTop="5dp"
-                        android:background="@color/border_font_color" />
-
-                    <TextView
-                        android:id="@+id/tvService_inv_label"
-                        style="@style/style_sec_sec"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginVertical="5dp"
-                        android:singleLine="true"
-                        android:text="@string/type" />
-
-                    <RadioGroup
-                        android:id="@+id/rediogrp_interval"
-                        style="@style/style_sec"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginVertical="10dp"
-                        android:divider="?android:attr/dividerHorizontal"
                         android:orientation="horizontal">
 
-                        <RadioButton
-                            android:id="@+id/radio_day"
-                            style="@style/style_thrid"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/days" />
+                        <TextView
+                            android:id="@+id/installed_date_lable"
+                            style="@style/style_sec_sec"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:fontFamily="@font/arimo_regular"
+                            android:gravity="center|start" />
 
-                        <RadioButton
-                            android:id="@+id/radio_month"
-                            style="@style/style_thrid"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/month" />
+                        <TextView
+                            android:id="@+id/installed_date_txt"
+                            style="@style/style_sec_sec"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginEnd="10dp"
+                            android:layout_weight="1"
+                            android:background="@android:color/transparent"
+                            android:drawableEnd="@drawable/date_icon"
+                            android:drawablePadding="@dimen/tv_drawable_padding"
+                            android:gravity="end"
+                            android:textSize="@dimen/medium_text_low"
+                            tools:ignore="SpUsage" />
 
-                        <RadioButton
-                            android:id="@+id/radio_year"
-                            style="@style/style_thrid"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/year" />
+                        <ImageButton
+                            android:id="@+id/installed_date_cancel"
+                            android:layout_width="40dp"
+                            android:layout_height="50dp"
+                            android:layout_toRightOf="@+id/tax"
+                            android:background="@android:color/transparent"
+                            android:visibility="gone"
+                            android:src="@drawable/ic_baseline_cancel_24"
+                            />
 
-                    </RadioGroup>
-
-                    <EditText
-                        android:id="@+id/edt_equ_service_interval"
-                        style="@style/style_sec_sec"
+                    </LinearLayout>
+                    <View
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:background="@android:color/transparent"
-                        android:inputType="number"
-                        android:singleLine="true"
-                        tools:ignore="Autofill,LabelFor" />
-
-
+                        android:layout_height="1dp"
+                        android:layout_marginTop="5dp"
+                        android:background="@color/border_font_color" />
+                    <!--txt_for_warranty-->
+                    <TextView
+                        android:id="@+id/txt_warranty"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_27sdp"
+                        android:gravity="center_vertical"
+                        style="@style/text_style"
+                        android:text="Warranty"
+                        />
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:layout_marginTop="5dp"
                         android:background="@color/border_font_color" />
 
-
+                    <!--start waranty-->
                     <TextView
                         android:id="@+id/txt_date_warnty_start"
                         style="@style/style_sec_sec"
@@ -922,7 +841,7 @@
                         android:layout_height="1dp"
                         android:layout_marginTop="5dp"
                         android:background="@color/border_font_color" />
-
+                    <!--last waranty-->
                     <TextView
                         android:id="@+id/txt_date_warnty"
                         style="@style/style_sec_sec"
@@ -977,140 +896,86 @@
                             />
 
                     </LinearLayout>
-
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:layout_marginTop="5dp"
                         android:background="@color/border_font_color" />
-
+                    <!--service_interval-->
                     <TextView
-                        android:id="@+id/txt_date_purchase"
+                        android:id="@+id/tvService_inv_label"
+                        style="@style/style_sec_sec"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="5dp"
+                        android:singleLine="true"
+                        android:text="@string/type" />
+
+                    <RadioGroup
+                        android:id="@+id/rediogrp_interval"
+                        style="@style/style_sec"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="10dp"
+                        android:divider="?android:attr/dividerHorizontal"
+                        android:orientation="horizontal">
+
+                        <RadioButton
+                            android:id="@+id/radio_day"
+                            style="@style/style_thrid"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/days" />
+
+                        <RadioButton
+                            android:id="@+id/radio_month"
+                            style="@style/style_thrid"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/month" />
+
+                        <RadioButton
+                            android:id="@+id/radio_year"
+                            style="@style/style_thrid"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/year" />
+
+                    </RadioGroup>
+
+                    <EditText
+                        android:id="@+id/edt_equ_service_interval"
                         style="@style/style_sec_sec"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
+                        android:layout_gravity="center"
                         android:background="@android:color/transparent"
-                        android:hint="@string/date"
+                        android:inputType="number"
                         android:singleLine="true"
-                        android:textSize="@dimen/medium_text_low"
-                        android:visibility="gone"
-                        tools:ignore="SpUsage" />
-
-                    <LinearLayout
-                        android:id="@+id/date_purchase_layout"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/input_field_height"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:id="@+id/purchase_date_lable"
-                            style="@style/style_sec_sec"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:fontFamily="@font/arimo_regular"
-                            android:gravity="center|start" />
-
-                        <TextView
-                            android:id="@+id/purchase_date_txt"
-                            style="@style/style_sec_sec"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_marginStart="10dp"
-                            android:layout_marginEnd="10dp"
-                            android:layout_weight="1"
-                            android:background="@android:color/transparent"
-                            android:drawableEnd="@drawable/date_icon"
-                            android:drawablePadding="@dimen/tv_drawable_padding"
-                            android:gravity="end"
-                            android:textSize="@dimen/medium_text_low"
-                            tools:ignore="SpUsage" />
-                        <ImageButton
-                            android:id="@+id/purchase_date_cancel"
-                            android:layout_width="40dp"
-                            android:layout_height="50dp"
-                            android:layout_toRightOf="@+id/tax"
-                            android:background="@android:color/transparent"
-                            android:visibility="gone"
-                            android:src="@drawable/ic_baseline_cancel_24"
-                            />
-
-                    </LinearLayout>
+                        tools:ignore="Autofill,LabelFor" />
 
                     <View
-                        android:id="@+id/rate_view"
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:layout_marginTop="5dp"
                         android:background="@color/border_font_color" />
-
+                    <!--txt_more_details-->
                     <TextView
-                        android:id="@+id/txt_date_installed"
-                        style="@style/style_sec_sec"
+                        android:id="@+id/txt_more_details"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:background="@android:color/transparent"
-                        android:hint="@string/date"
-                        android:singleLine="true"
-                        android:textSize="@dimen/medium_text_low"
-                        android:visibility="gone"
-                        tools:ignore="SpUsage" />
-
-
-                    <LinearLayout
-                        android:id="@+id/date_installed_layout"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/input_field_height"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:id="@+id/installed_date_lable"
-                            style="@style/style_sec_sec"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:fontFamily="@font/arimo_regular"
-                            android:gravity="center|start" />
-
-                        <TextView
-                            android:id="@+id/installed_date_txt"
-                            style="@style/style_sec_sec"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_marginStart="10dp"
-                            android:layout_marginEnd="10dp"
-                            android:layout_weight="1"
-                            android:background="@android:color/transparent"
-                            android:drawableEnd="@drawable/date_icon"
-                            android:drawablePadding="@dimen/tv_drawable_padding"
-                            android:gravity="end"
-                            android:textSize="@dimen/medium_text_low"
-                            tools:ignore="SpUsage" />
-
-                        <ImageButton
-                            android:id="@+id/installed_date_cancel"
-                            android:layout_width="40dp"
-                            android:layout_height="50dp"
-                            android:layout_toRightOf="@+id/tax"
-                            android:background="@android:color/transparent"
-                            android:visibility="gone"
-                            android:src="@drawable/ic_baseline_cancel_24"
-                            />
-
-                    </LinearLayout>
-
+                        android:layout_height="@dimen/_27sdp"
+                        android:gravity="center_vertical"
+                        style="@style/text_style"
+                        android:text="More Details"
+                        />
                     <View
-                        android:id="@+id/installed_date_view"
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:layout_marginTop="5dp"
                         android:background="@color/border_font_color" />
-
-
+                    <!--notes-->
                     <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/equ_adrs_layout"
+                        android:id="@+id/quote_notes_layout"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/input_field_height"
                         android:layout_marginEnd="10dp"
@@ -1121,7 +986,7 @@
                         app:hintTextAppearance="@style/TextInputLayoutHintText">
 
                         <EditText
-                            android:id="@+id/edt_equ_adrs"
+                            android:id="@+id/quote_notes_edt"
                             style="@style/style_sec_sec"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -1130,18 +995,87 @@
                             android:inputType="text"
                             android:singleLine="true"
                             tools:ignore="Autofill,LabelFor" />
-                        <!--                    android:inputType="numberDecimal"-->
                     </com.google.android.material.textfield.TextInputLayout>
-
-
                     <View
-                        android:id="@+id/lng_view"
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:layout_marginTop="5dp"
                         android:background="@color/border_font_color" />
-
+                    <!--filed 1 -->
                     <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/custom_filed_header_1"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/input_field_height"
+                        android:gravity="center"
+                        android:paddingTop="5dp"
+                        android:visibility="visible"
+                        app:hintAnimationEnabled="true"
+                        app:hintEnabled="false"
+                        app:hintTextAppearance="@style/TextInputLayoutHintText"><!--android:paddingTop="8dp"-->
+
+                        <EditText
+                            android:id="@+id/custom_filed_txt_1"
+                            style="@style/style_sec_sec"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@android:color/transparent"
+                            android:dropDownHeight="140dp"
+                            android:dropDownVerticalOffset="-5dp"
+                            android:inputType="text"
+                            android:popupBackground="@drawable/popupbg"
+                            android:singleLine="true"
+                            tools:ignore="Autofill,LabelFor" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="5dp"
+                        android:background="@color/border_font_color" />
+                    <!--filed 2-->
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/custom_filed_header_2"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/input_field_height"
+                        android:gravity="center"
+                        android:paddingTop="5dp"
+                        android:visibility="visible"
+                        app:hintAnimationEnabled="true"
+                        app:hintEnabled="false"
+                        app:hintTextAppearance="@style/TextInputLayoutHintText"><!--android:paddingTop="8dp"-->
+
+                        <EditText
+                            android:id="@+id/custom_filed_txt_2"
+                            style="@style/style_sec_sec"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@android:color/transparent"
+                            android:dropDownHeight="140dp"
+                            android:dropDownVerticalOffset="-5dp"
+                            android:inputType="text"
+                            android:popupBackground="@drawable/popupbg"
+                            android:singleLine="true"
+                            tools:ignore="Autofill,LabelFor" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="5dp"
+                        android:background="@color/border_font_color" />
+                    <!--attachment_lable-->
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/tv_label_attachment"
+                        style="@style/style_sec"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
+                        android:text="@string/attachment"
+                        android:textStyle="bold" />
+<!--
+
+
+<com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/job_country_layout"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/input_field_height"
@@ -1254,48 +1188,172 @@
                             android:background="@android:color/transparent"
                             android:singleLine="true"
                             tools:ignore="Autofill,LabelFor" />
-                        <!--   android:inputType="numberDecimal"-->
-                    </com.google.android.material.textfield.TextInputLayout>
-
-
+                        <!-   android:inputType="numberDecimal"-->
+                <!--</com.google.android.material.textfield.TextInputLayout>
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:layout_marginTop="5dp"
                         android:background="@color/border_font_color" />
-
+                    &lt;!&ndash;client&ndash;&gt;
                     <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/quote_notes_layout"
+                        android:id="@+id/client_layout"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/input_field_height"
-                        android:layout_marginEnd="10dp"
                         android:gravity="center"
                         android:paddingTop="5dp"
+                        android:visibility="visible"
                         app:hintAnimationEnabled="true"
                         app:hintEnabled="false"
                         app:hintTextAppearance="@style/TextInputLayoutHintText">
 
                         <EditText
-                            android:id="@+id/quote_notes_edt"
+                            android:id="@+id/auto_client"
                             style="@style/style_sec_sec"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="center"
                             android:background="@android:color/transparent"
+                            android:dropDownHeight="140dp"
+                            android:dropDownVerticalOffset="-5dp"
+                            android:focusable="false"
+                            android:focusableInTouchMode="false"
                             android:inputType="text"
+                            android:popupBackground="@drawable/popupbg"
                             android:singleLine="true"
                             tools:ignore="Autofill,LabelFor" />
+
                     </com.google.android.material.textfield.TextInputLayout>
+                    &lt;!&ndash;Client Site View Start&ndash;&gt;
+
+                    <View
+                        android:id="@+id/client_row"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="5dp"
+                        android:background="@color/border_font_color" />
+                    &lt;!&ndash;site&ndash;&gt;
+
+                        &lt;!&ndash;status&ndash;&gt;
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp">
+
+                        <TextView
+                            android:id="@+id/hint_status_txt"
+                            style="@style/text_hint"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:textStyle="normal"
+                            android:visibility="gone" />
+
+                        <LinearLayout
+                            android:id="@+id/linearLayout_status"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/input_field_height"
+                            android:layout_marginTop="5dp"
+                            android:gravity="center"
+                            android:orientation="horizontal"
+                            tools:ignore="UseCompoundDrawables">
+
+                            <TextView
+                                android:id="@+id/status_txt"
+                                style="@style/style_sec_sec"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:layout_weight="1"
+                                android:hint=""
+                                tools:ignore="InefficientWeight" />
+
+                            <ImageView
+                                android:id="@+id/img_status"
+                                style="@style/subtext_style"
+                                android:layout_width="25dp"
+                                android:layout_height="25dp"
+                                android:src="@drawable/ic_drop_down_black"
+                                android:tint="@color/colorPrimary"
+                                tools:ignore="ContentDescription" />
+
+                        </LinearLayout>
+
+                        <com.eot_app.utility.util_interfaces.NoDefaultSpinner
+                            android:id="@+id/status_Dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/linearLayout_status"
+                            android:background="@android:color/transparent"
+                            android:dropDownWidth="match_parent"
+                            android:minHeight="20dp"
+                            android:popupBackground="@drawable/popupbg"
+                            android:visibility="invisible" />
+                    </RelativeLayout>
+
+                    &lt;!&ndash;End Status View&ndash;&gt;
+
 
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:layout_marginTop="5dp"
                         android:background="@color/border_font_color" />
+                   &lt;!&ndash; <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp">
 
+                        <TextView
+                            android:id="@+id/hint_supplier_txt"
+                            style="@style/text_hint"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:textStyle="normal"
+                            android:visibility="gone" />
 
+                        <LinearLayout
+                            android:id="@+id/linearLayout_supplier"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/input_field_height"
+                            android:layout_marginTop="5dp"
+                            android:gravity="center"
+                            android:orientation="horizontal"
+                            tools:ignore="UseCompoundDrawables">
+
+                            <TextView
+                                android:id="@+id/supplier_txt"
+                                style="@style/style_sec_sec"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:layout_weight="1"
+                                android:hint=""
+                                tools:ignore="InefficientWeight" />
+
+                            <ImageView
+                                android:id="@+id/img_supplier"
+                                style="@style/subtext_style"
+                                android:layout_width="25dp"
+                                android:layout_height="25dp"
+                                android:src="@drawable/ic_drop_down_black"
+                                android:tint="@color/colorPrimary"
+                                tools:ignore="ContentDescription" />
+
+                        </LinearLayout>
+
+                        <com.eot_app.utility.util_interfaces.NoDefaultSpinner
+                            android:id="@+id/supplier_Dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/linearLayout_supplier"
+                            android:background="@android:color/transparent"
+                            android:dropDownWidth="match_parent"
+                            android:minHeight="20dp"
+                            android:popupBackground="@drawable/popupbg"
+                            android:visibility="invisible" />
+                    </RelativeLayout>&ndash;&gt;
+                    &lt;!&ndash;suplire&ndash;&gt;
                     <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/custom_filed_header_1"
+                        android:id="@+id/Supllier_layout"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/input_field_height"
                         android:gravity="center"
@@ -1303,10 +1361,10 @@
                         android:visibility="visible"
                         app:hintAnimationEnabled="true"
                         app:hintEnabled="false"
-                        app:hintTextAppearance="@style/TextInputLayoutHintText"><!--android:paddingTop="8dp"-->
+                        app:hintTextAppearance="@style/TextInputLayoutHintText">&lt;!&ndash;android:paddingTop="8dp"&ndash;&gt;
 
-                        <EditText
-                            android:id="@+id/custom_filed_txt_1"
+                        <AutoCompleteTextView
+                            android:id="@+id/supplier_txt"
                             style="@style/style_sec_sec"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -1316,59 +1374,83 @@
                             android:inputType="text"
                             android:popupBackground="@drawable/popupbg"
                             android:singleLine="true"
-                            tools:ignore="Autofill,LabelFor" />
+                            android:focusableInTouchMode="true"
+                            tools:ignore="LabelFor" />
 
                     </com.google.android.material.textfield.TextInputLayout>
 
+&ndash;&gt;-->
 
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_marginTop="5dp"
-                        android:background="@color/border_font_color" />
 
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/custom_filed_header_2"
+
+
+                     <!-- <CheckBox
+                          android:id="@+id/checkbox_barCode"
+                          style="@style/style_sec_sec"
+                          android:layout_width="wrap_content"
+                          android:layout_height="@dimen/input_field_height"
+                          android:layout_marginStart="-5dp"
+                          android:gravity="center|start"
+                          android:text="@string/auto_generate_barcode" />
+
+                      <CheckBox
+                          android:id="@+id/checkbox_scan_barCode"
+                          style="@style/style_sec_sec"
+                          android:layout_width="wrap_content"
+                          android:layout_height="@dimen/input_field_height"
+                          android:layout_marginStart="-5dp"
+                          android:gravity="center|start"
+                          android:text="@string/scan_insert_barcode" />
+
+                    <RelativeLayout
+                        android:id="@+id/scan_barcode_layout"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/input_field_height"
-                        android:gravity="center"
-                        android:paddingTop="5dp"
-                        android:visibility="visible"
-                        app:hintAnimationEnabled="true"
-                        app:hintEnabled="false"
-                        app:hintTextAppearance="@style/TextInputLayoutHintText"><!--android:paddingTop="8dp"-->
+                        android:orientation="horizontal"
+                        android:visibility="gone">
 
                         <EditText
-                            android:id="@+id/custom_filed_txt_2"
+                            android:id="@+id/et_barcode"
                             style="@style/style_sec_sec"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_toStartOf="@+id/tv_scan_barcode"
                             android:background="@android:color/transparent"
-                            android:dropDownHeight="140dp"
-                            android:dropDownVerticalOffset="-5dp"
-                            android:inputType="text"
-                            android:popupBackground="@drawable/popupbg"
-                            android:singleLine="true"
-                            tools:ignore="Autofill,LabelFor" />
+                            android:fontFamily="@font/arimo_regular"
+                            android:gravity="center|start"
+                            android:hint="@string/insert_barcode"
+                            tools:ignore="Autofill" />
 
-                    </com.google.android.material.textfield.TextInputLayout>
+                        <TextView
+                            android:id="@+id/tv_scan_barcode"
+                            style="@style/style_sec_sec"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_marginHorizontal="10dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/submit_btn"
+                            android:gravity="center"
+                            android:paddingHorizontal="10dp"
+                            android:paddingVertical="6dp"
+                            android:text="@string/scan"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/medium_text"
+                            android:textStyle="bold"
+                            tools:ignore="ObsoleteLayoutParam,SpUsage" />
+
+                    </RelativeLayout>-->
 
 
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_marginTop="5dp"
-                        android:background="@color/border_font_color" />
 
 
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/tv_label_attachment"
-                        style="@style/style_sec"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="15dp"
-                        android:text="@string/attachment"
-                        android:textStyle="bold" />
+
+
+
+
+
+
+
 
 
                     <!--            <androidx.appcompat.widget.AppCompatImageView-->
@@ -1379,7 +1461,7 @@
                     <!--                android:adjustViewBounds="true"-->
                     <!--                android:scaleType="centerInside"-->
                     <!--                android:visibility="gone" />-->
-
+                        <!--Attachment-->
                     <RelativeLayout
                         android:id="@+id/image_with_tag"
                         android:layout_width="match_parent"
@@ -1486,7 +1568,7 @@
                             android:text="@string/your_document_here"
                             android:textStyle="bold" />
                     </LinearLayout>
-
+                </LinearLayout>
 
                 </LinearLayout>
 

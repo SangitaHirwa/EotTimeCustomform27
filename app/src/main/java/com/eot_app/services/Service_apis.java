@@ -250,6 +250,10 @@ public interface Service_apis {
     String updateQRCode = "AssetsController/generateQRcode";
     String updateBarcode = "AssetsController/generateBarcodeUsingGivenCode";
 
+    /**New Api for equipment status change from Action screen**/
+    String updateEquStatus = "AssetsController/updateEquStatusFromMob";
+
+
     //no token required & header
     @POST
     Observable<JsonObject> service_Call_Without_Token(@Url String url,

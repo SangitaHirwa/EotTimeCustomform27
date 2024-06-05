@@ -1055,6 +1055,13 @@ public class AppConstant {
     public static String equ_parts_not_found= "equ_parts_not_found";
     public static String equ_audit_not_found= "equ_audit_not_found";
     public static String discard_equipments_not_discarded_again= "discard_equipments_not_discarded_again";
+    public static String basic_equ_details= "basic_equ_details";
+    public static String equipment_assign_specific_name= "equipment_assign_specific_name";
+    public static String show_more_details= "show_more_details";
+    public static String show_less_details= "show_less_details";
+    public static String loc_and_instal_date= "loc_and_instal_date";
+    public static String more_details= "more_details";
+    public static String warranty= "warranty";
     public static String server(String location) {
         switch (location) {
             case "America":

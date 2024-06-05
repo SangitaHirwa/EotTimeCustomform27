@@ -1954,7 +1954,13 @@
     "equ_item_not_found": "No Equipment Item Found",
     "equ_parts_not_found": "No Equipment Part Found",
     "equ_audit_not_found": "No Equipment Audit Found",
-    "discard_equipments_not_discarded_again": "Discard equipments cannot be discarded again."
+    "discard_equipments_not_discarded_again": "Discard equipments cannot be discarded again.",
+    "basic_equ_details": "Basic Equipment Details",
+    "equipment_assign_specific_name": "To accurately identify the equipment, it is advisable to assign it a specific name.",
+    "show_more_details": "Show More Details",
+    "show_less_details":  "Show Less Details",
+    "loc_and_instal_date": "Location & Installation Date",
+    "more_details": "More Details"
   }
 }
 
