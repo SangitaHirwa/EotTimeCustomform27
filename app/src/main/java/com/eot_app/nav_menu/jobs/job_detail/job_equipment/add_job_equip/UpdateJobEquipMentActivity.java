@@ -1202,7 +1202,7 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
         state = addJobEqu_pi.statId(ctry, statename);
 
         if (updateItemDataModel == null) {
-            if (addJobEqu_pi.RequiredFields(ctry, state, edt_equ.getText().toString().trim())) {
+            if (addJobEqu_pi.RequiredFields(edt_equ.getText().toString().trim())) {
                 if (comeFrom != null && comeFrom.equalsIgnoreCase("AddPartWithoutItem")) {
                     String parentId = "";
                     if (isPart.equalsIgnoreCase("1")) {
@@ -1269,7 +1269,7 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
             }
         } else {
             /*Convert item to EQUIPMENT*****/
-            if (addJobEqu_pi.RequiredFields(ctry, state, edt_equ.getText().toString().trim())) {
+            if (addJobEqu_pi.RequiredFields(edt_equ.getText().toString().trim())) {
                 String parentId = "";
                 if (isPart.equalsIgnoreCase("1")) {
                     parentId = equipment.getParentId();

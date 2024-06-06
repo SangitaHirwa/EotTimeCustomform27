@@ -526,10 +526,10 @@ public class JobEquPartRemarkRemarkActivity extends UploadDocumentActivity imple
                             break;
                         } else {
                             // for updating equipment component
-                            for (EquArrayModel equipmentComp : job.getEquArray()){
-                                if (equipmentComp.getEquId().equals(equipment.getEquId())) {
-                                    for (EquArrayModel equipmentPart : equipmentComp.getEquComponent()) {
-                                        if (equipmentPart.getEquId().equals(equipment.getParentId())) {
+                            for (EquArrayModel equipmentArr : job.getEquArray()){
+                                if (equipmentArr.getEquId().equals(equipment.getParentId())) {
+                                    for (EquArrayModel equipmentPart : equipmentArr.getEquComponent()) {
+                                        if (equipmentPart.getEquId().equals(equipment.getEquId())) {
                                             equipmentPart.setStatus(equStatusId);
                                             equipmentPart.setRemark(edit_remarks.getText().toString());
                                             AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().updateJob(job);

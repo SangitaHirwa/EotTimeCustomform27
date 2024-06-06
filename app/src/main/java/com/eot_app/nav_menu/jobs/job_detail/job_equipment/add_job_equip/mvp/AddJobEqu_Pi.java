@@ -36,7 +36,7 @@ public interface AddJobEqu_Pi {
 
     boolean isValidState(String state);
 
-    boolean RequiredFields( String countryname, String statename,String equNm);
+    boolean RequiredFields(String equNm);
 
     void getClientSiteListServer(String clientId);
 }

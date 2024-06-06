@@ -76,7 +76,7 @@ public class AddJobEqu_Pc implements AddJobEqu_Pi {
 
 
     @Override
-    public boolean RequiredFields(String countryId, String stateId, String equNm) {
+    public boolean RequiredFields(String equNm) {
         if (equNm.equals("")) {
             addJobEquView.setEquReqError(LanguageController.getInstance().getMobileMsgByKey(AppConstant.equp_nm_req));
             return false;
@@ -84,14 +84,6 @@ public class AddJobEqu_Pc implements AddJobEqu_Pi {
             addJobEquView.setEquReqError(LanguageController.getInstance().getMobileMsgByKey(AppConstant.equp_nm_minimun));
             return false;
         }
-        if (!isValidCountry(countryId)) {
-            addJobEquView.setCountryError(LanguageController.getInstance().getMobileMsgByKey(AppConstant.please_select_country_first));
-            return false;
-        } else if (!isValidState(stateId)) {
-            addJobEquView.setStateError(LanguageController.getInstance().getMobileMsgByKey(AppConstant.state_error));
-            return false;
-        }
-
         return true;
     }
 

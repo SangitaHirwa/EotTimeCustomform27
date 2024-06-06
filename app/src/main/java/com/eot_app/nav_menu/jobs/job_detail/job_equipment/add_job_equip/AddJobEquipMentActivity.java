@@ -1307,7 +1307,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
                 isCnvtItemParts = "0";
             }
 
-            if (addJobEqu_pi.RequiredFields(ctry, state, edt_equ.getText().toString().trim())) {
+            if (addJobEqu_pi.RequiredFields(edt_equ.getText().toString().trim())) {
                 if (comeFrom != null && comeFrom.equalsIgnoreCase("AddPartWithoutItem")) {
                     addJobEqu_pi.convertItemToequip(new AddEquReq(type, egId, ecId, "",
                                     "", edt_equ_adrs.getText().toString().trim(),
@@ -1369,7 +1369,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
             if (isPart.equalsIgnoreCase("1")) {
                 isCnvtItemParts = "0";
             }
-            if (addJobEqu_pi.RequiredFields(ctry, state, edt_equ.getText().toString().trim())) {
+            if (addJobEqu_pi.RequiredFields(edt_equ.getText().toString().trim())) {
                 addJobEqu_pi.convertItemToequip(new AddEquReq(type, egId, ecId,"",
                                 "", edt_equ_adrs.getText().toString().trim(),
                                 ctry, state, /*isBarcodeGenerate,*/
