@@ -253,6 +253,8 @@ public interface Service_apis {
     /**New Api for equipment status change from Action screen**/
     String updateEquStatus = "AssetsController/updateEquStatusFromMob";
 
+    /**update site location on Reallocate screen**/
+    String updateAddressInEquipments = "AssetsController/updateAddressInEquipments";
 
     //no token required & header
     @POST

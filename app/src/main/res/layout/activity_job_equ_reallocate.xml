@@ -7,45 +7,47 @@
     android:layout_height="match_parent"
     android:background="@color/reallocate_screen"
     tools:context=".nav_menu.audit.nav_scan.JobEquReallocateActivity">
-<androidx.constraintlayout.widget.ConstraintLayout
-    android:id="@+id/old_location_cl"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    app:layout_constraintTop_toTopOf="parent"
-    android:background="@color/white"
-    android:padding="12dp"
-    app:layout_constraintStart_toStartOf="parent">
-<TextView
-    android:id="@+id/txt_old_location"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    style="@style/calculation_text_style"
-    android:text="Old Location"
-    android:textColor="@color/date_colore"
-    app:layout_constraintTop_toTopOf="parent"
-    app:layout_constraintStart_toStartOf="parent"/>
-    <TextView
-        android:id="@+id/old_location_detail"
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/old_location_cl"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@style/text_style"
-        android:layout_marginTop="6dp"
-        app:layout_constraintStart_toStartOf="@+id/txt_old_location"
-        app:layout_constraintTop_toBottomOf="@+id/txt_old_location"
-        android:text="4517 Washington Ave. Manchester, Kentucky 39495"/>
-</androidx.constraintlayout.widget.ConstraintLayout>
-<ImageView
-    android:id="@+id/arrow_down_icon"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:src="@drawable/arrow_down"
-    android:padding="5dp"
-    android:layout_marginVertical="12dp"
-    android:layout_marginHorizontal="13dp"
-    app:layout_constraintTop_toBottomOf="@+id/old_location_cl"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintEnd_toEndOf="parent"
-    />
+        android:background="@color/white"
+        android:padding="12dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/txt_old_location"
+            style="@style/calculation_text_style"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Old Location"
+            android:textColor="@color/date_colore"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/old_location_detail"
+            style="@style/text_style"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="4517 Washington Ave. Manchester, Kentucky 39495"
+            app:layout_constraintStart_toStartOf="@+id/txt_old_location"
+            app:layout_constraintTop_toBottomOf="@+id/txt_old_location" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ImageView
+        android:id="@+id/arrow_down_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="12dp"
+        android:src="@drawable/arrow_down"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/old_location_cl" />
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/new_location_cl"
         android:layout_width="match_parent"
@@ -53,239 +55,138 @@
         android:background="@color/white"
         android:padding="12dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/arrow_down_icon"
-        >
+        app:layout_constraintTop_toBottomOf="@+id/arrow_down_icon">
+
         <TextView
             android:id="@+id/txt_new_location"
+            style="@style/calculation_text_style"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/calculation_text_style"
             android:text="New Location"
             android:textColor="@color/date_colore"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <!--new Site name field-->
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/site_layout"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/input_field_height"
-            android:gravity="center"
-            android:paddingTop="5dp"
-            app:hintAnimationEnabled="true"
-            app:hintEnabled="false"
-            app:hintTextAppearance="@style/TextInputLayoutHintText"
+            android:layout_height="wrap_content"
+            android:id="@+id/new_location_Detail_l"
             app:layout_constraintTop_toBottomOf="@+id/txt_new_location"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
-
-            <EditText
-                android:id="@+id/site_name"
-                style="@style/style_sec_sec"
+            android:visibility="visible"
+            >
+            <!--new Site name field-->
+            <RelativeLayout
+                android:id="@+id/rl_site"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:background="@android:color/transparent"
-                android:hint="@string/site_name"
-                android:singleLine="true"
-                tools:ignore="Autofill" />
-        </com.google.android.material.textfield.TextInputLayout>
+                android:layout_height="@dimen/input_field_height">
 
+                <LinearLayout
+                    android:id="@+id/site_dp_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
 
-        <View
-            android:id="@+id/view_site_layout"
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/input_layout_site"
+                        style="@style/style_forth_frth"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:paddingTop="8dp"
+                        app:hintEnabled="false"
+                        app:hintTextAppearance="@style/TextInputLayoutHintText"
+                        tools:ignore="InefficientWeight">
+
+                        <AutoCompleteTextView
+                            android:id="@+id/auto_sites"
+                            style="@style/style_sec_sec"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:background="@android:color/transparent"
+                            android:paddingTop="8dp"
+                            android:popupBackground="@drawable/popupbg"
+                            android:singleLine="true"
+                            tools:ignore="LabelFor" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <ImageView
+                        android:id="@+id/site_dp_img"
+                        style="@style/subtext_style"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:layout_gravity="center|end"
+                        android:layout_marginTop="12dp"
+                        android:src="@drawable/ic_drop_down_black"
+                        tools:ignore="ContentDescription" />
+
+                </LinearLayout>
+            </RelativeLayout>
+
+            <View
+                android:id="@+id/view_site_layout"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="5dp"
+                android:background="@color/border_font_color"
+                app:layout_constraintTop_toBottomOf="@+id/rl_site" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/adr_layout"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/input_field_height"
+                android:gravity="center"
+                android:paddingTop="5dp"
+                app:hintAnimationEnabled="true"
+                app:hintEnabled="false"
+                app:hintTextAppearance="@style/TextInputLayoutHintText"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/view_site_layout">
+
+                <AutoCompleteTextView
+                    android:id="@+id/adr"
+                    style="@style/style_sec_sec"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:background="@android:color/transparent"
+                    android:hint="@string/add"
+                    android:singleLine="true"
+                    tools:ignore="Autofill" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+            android:id="@+id/no_site"
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="5dp"
-            android:background="@color/border_font_color"
-            app:layout_constraintTop_toBottomOf="@+id/site_layout"
+            android:layout_height="@dimen/_27sdp"
+            android:text="No Address Found"
+            android:visibility="gone"
+            style="@style/text_style"
+            android:gravity="center"
+            app:layout_constraintTop_toBottomOf="@+id/new_location_Detail_l"
+
             />
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/adr_layout"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/input_field_height"
-            android:gravity="center"
-            android:paddingTop="5dp"
-            app:hintAnimationEnabled="true"
-            app:hintEnabled="false"
-            app:hintTextAppearance="@style/TextInputLayoutHintText"
-            app:layout_constraintTop_toBottomOf="@+id/view_site_layout"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
-
-            <EditText
-                android:id="@+id/adr"
-                style="@style/style_sec_sec"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:background="@android:color/transparent"
-                android:hint="@string/add"
-                android:singleLine="true"
-                tools:ignore="Autofill" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-
-        <View
-            android:id="@+id/view_adr"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="5dp"
-            android:background="@color/border_font_color"
-            app:layout_constraintTop_toBottomOf="@+id/adr_layout"/>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/city_layout"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/input_field_height"
-            android:gravity="center"
-            android:paddingTop="5dp"
-            app:hintAnimationEnabled="true"
-            app:hintEnabled="false"
-            app:hintTextAppearance="@style/TextInputLayoutHintText"
-            app:layout_constraintTop_toBottomOf="@+id/view_adr"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
-
-            <EditText
-                android:id="@+id/city"
-                style="@style/style_sec_sec"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:background="@android:color/transparent"
-                android:hint="@string/city"
-                android:maxLines="1"
-                android:minLines="1"
-                android:singleLine="true"
-                tools:ignore="Autofill" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <View
-            android:id="@+id/view_city"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="5dp"
-            android:background="@color/border_font_color"
-            app:layout_constraintTop_toBottomOf="@+id/city_layout"/>
-
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/state_layout"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/input_field_height"
-            android:gravity="center"
-            android:paddingTop="5dp"
-            app:hintAnimationEnabled="true"
-            app:hintEnabled="false"
-            app:hintTextAppearance="@style/TextInputLayoutHintText"
-            app:layout_constraintTop_toBottomOf="@+id/view_city"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
-
-            <AutoCompleteTextView
-                android:id="@+id/state"
-                style="@style/style_sec_sec"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:background="@android:color/transparent"
-                android:popupBackground="@drawable/popupbg"
-                android:singleLine="true"
-                android:text="State"
-                tools:ignore="LabelFor" />
-
-
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <View
-            android:id="@+id/view_state"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="5dp"
-            android:background="@color/border_font_color"
-            app:layout_constraintTop_toBottomOf="@+id/state_layout"/>
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/country_layout"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/input_field_height"
-            android:gravity="center"
-            android:paddingTop="5dp"
-            app:hintAnimationEnabled="true"
-            app:hintEnabled="false"
-            app:hintTextAppearance="@style/TextInputLayoutHintText"
-            app:layout_constraintTop_toBottomOf="@+id/view_state"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
-
-            <AutoCompleteTextView
-                android:id="@+id/cntry"
-                style="@style/style_sec_sec"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:background="@android:color/transparent"
-                android:popupBackground="@drawable/popupbg"
-                android:singleLine="true"
-                android:text="Country"
-                tools:ignore="LabelFor" />
-
-
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <View
-            android:id="@+id/view_cntry"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="5dp"
-            android:background="@color/border_font_color"
-            app:layout_constraintTop_toBottomOf="@+id/country_layout"/>
-
-
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/zip_layout"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/input_field_height"
-            android:gravity="center"
-            android:paddingTop="5dp"
-            app:hintAnimationEnabled="true"
-            app:hintEnabled="false"
-            app:hintTextAppearance="@style/TextInputLayoutHintText"
-            app:layout_constraintTop_toBottomOf="@+id/view_cntry"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
-
-
-            <EditText
-                android:id="@+id/zip"
-                style="@style/edit_postal_code"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:background="@android:color/transparent"
-                android:hint="@string/postal"
-                android:singleLine="true"
-                tools:ignore="Autofill" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-
-        <View
-            android:id="@+id/zip_view"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="5dp"
-            android:background="@color/border_font_color"
-            app:layout_constraintTop_toBottomOf="@+id/zip_layout"/>
-
-
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <View
+        android:id="@+id/view_adr"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:visibility="visible"
+        android:background="@color/border_font_color"
+        app:layout_constraintTop_toBottomOf="@+id/new_location_cl" />
+
+
 
     <Button
         android:id="@+id/location_save_btn"
         style="@style/text_style"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/_30sdp"
+        android:layout_height="wrap_content"
         android:layout_marginHorizontal="12dp"
+        android:layout_marginBottom="5dp"
         android:background="@drawable/submit_btn"
         android:gravity="center"
         android:padding="12dp"
@@ -294,7 +195,6 @@
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/new_location_cl" />
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
