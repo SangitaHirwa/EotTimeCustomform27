@@ -17,6 +17,8 @@ import com.eot_app.nav_menu.jobs.job_detail.chat.fire_Base_Model.Chat_Send_Msg_M
 import com.eot_app.nav_menu.jobs.job_detail.customform.cstm_form_model.CustomFormList_Res;
 import com.eot_app.nav_menu.jobs.job_detail.customform.cstm_form_model.FormList_Model_Req;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_db.model_pkg.ItembyJobModel;
+import com.eot_app.nav_menu.jobs.job_detail.job_equipment.model.UpdateEquStatusReqModel;
+import com.eot_app.nav_menu.jobs.job_detail.job_equipment.model.UpdateEquStatusResModel;
 import com.eot_app.nav_menu.jobs.job_detail.requested_item.requested_itemModel.AddUpdateRequestedModel;
 import com.eot_app.nav_menu.jobs.job_detail.requested_item.requested_itemModel.RequestedItemModel;
 import com.eot_app.services.ApiClient;
@@ -704,10 +706,11 @@ public class JobEquRemark_PC implements JobEquRemark_PI {
     }
 
     @Override
-    public void getRepairStatus(String data) {
+    public void updateEquStatus(UpdateEquStatusReqModel reqModel) {
         if (AppUtility.isInternetConnected()) {
-            ApiClient.getservices().eotServiceCall(Service_apis.linkItemToEqup, AppUtility.getApiHeaders(),
-                            AppUtility.getJsonObject(new Gson().toJson(data)))
+            AppUtility.progressBarShow((Context) jobEquimView);
+            ApiClient.getservices().eotServiceCall(Service_apis.updateEquStatus, AppUtility.getApiHeaders(),
+                            AppUtility.getJsonObject(new Gson().toJson(reqModel)))
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Observer<JsonObject>() {
@@ -718,12 +721,14 @@ public class JobEquRemark_PC implements JobEquRemark_PI {
 
                         @Override
                         public void onNext(@NotNull JsonObject jsonObject) {
-                            AppUtility.progressBarDissMiss();
                             if (jsonObject.get("success").getAsBoolean()) {
-                              jobEquimView.setRepairStatus();
+                                String convert = jsonObject.get("data").getAsJsonArray().toString();
+                                Type listType = new TypeToken<List<UpdateEquStatusResModel>>() {
+                                }.getType();
+                                List<UpdateEquStatusResModel> data = new Gson().fromJson(convert, listType);
+                              jobEquimView.setEquStatus(data);
                             } else {
-                                AppUtility.progressBarDissMiss();
-                                jobEquimView.setRepairStatus();
+                                jobEquimView.setEquStatus(new ArrayList<UpdateEquStatusResModel>());
                             }
                         }
 
@@ -736,48 +741,7 @@ public class JobEquRemark_PC implements JobEquRemark_PI {
 
                         @Override
                         public void onComplete() {
-                            AppUtility.progressBarDissMiss();
-                        }
-                    });
-        } else {
-            networkError();
-        }
-    }
 
-    @Override
-    public void getDiscardStatus(String data) {
-        if (AppUtility.isInternetConnected()) {
-            ApiClient.getservices().eotServiceCall(Service_apis.linkItemToEqup, AppUtility.getApiHeaders(),
-                            AppUtility.getJsonObject(new Gson().toJson(data)))
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Observer<JsonObject>() {
-                        @Override
-                        public void onSubscribe(@NotNull Disposable d) {
-
-                        }
-
-                        @Override
-                        public void onNext(@NotNull JsonObject jsonObject) {
-                            AppUtility.progressBarDissMiss();
-                            if (jsonObject.get("success").getAsBoolean()) {
-                                jobEquimView.setDiscardStatus();
-                            } else {
-                                AppUtility.progressBarDissMiss();
-                                jobEquimView.setDiscardStatus();
-                            }
-                        }
-
-
-                        @Override
-                        public void onError(@NotNull Throwable e) {
-                            AppUtility.progressBarDissMiss();
-                            Log.e("TAG", e.getMessage());
-                        }
-
-                        @Override
-                        public void onComplete() {
-                            AppUtility.progressBarDissMiss();
                         }
                     });
         } else {

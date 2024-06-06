@@ -3,6 +3,7 @@ package com.eot_app.nav_menu.jobs.job_detail.job_equipment.job_equ_remrk.job_equ
 import com.eot_app.nav_menu.jobs.job_db.EquArrayModel;
 import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.model.InvoiceItemDataModel;
 import com.eot_app.nav_menu.jobs.job_detail.customform.cstm_form_model.CustomFormList_Res;
+import com.eot_app.nav_menu.jobs.job_detail.job_equipment.model.UpdateEquStatusResModel;
 import com.eot_app.nav_menu.jobs.job_detail.requested_item.requested_itemModel.AddUpdateRequestedModel;
 import com.eot_app.nav_menu.jobs.job_detail.requested_item.requested_itemModel.RequestedItemModel;
 
@@ -29,7 +30,7 @@ public interface JobEquRemark_View {
     void setRequestItemData(List<RequestedItemModel> requestItemData);
     void notDtateFoundInRequestedItemList(String msg);
     void deletedRequestData(String msg, AddUpdateRequestedModel requestedModel);
-    void setRepairStatus();
-    void setDiscardStatus();
+    void setEquStatus(List<UpdateEquStatusResModel> resModel);
+
 
 }

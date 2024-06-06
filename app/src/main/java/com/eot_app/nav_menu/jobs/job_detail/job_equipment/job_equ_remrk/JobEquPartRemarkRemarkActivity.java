@@ -84,6 +84,8 @@ import com.eot_app.nav_menu.jobs.job_detail.job_equipment.EquipmentAttchmentList
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.job_equ_remrk.job_equ_mvp.JobEquRemark_PC;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.job_equ_remrk.job_equ_mvp.JobEquRemark_PI;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.job_equ_remrk.job_equ_mvp.JobEquRemark_View;
+import com.eot_app.nav_menu.jobs.job_detail.job_equipment.model.UpdateEquStatusReqModel;
+import com.eot_app.nav_menu.jobs.job_detail.job_equipment.model.UpdateEquStatusResModel;
 import com.eot_app.nav_menu.jobs.job_detail.requested_item.AddUpdateRquestedItemActivity;
 import com.eot_app.nav_menu.jobs.job_detail.requested_item.RequestedItemListAdapter;
 import com.eot_app.nav_menu.jobs.job_detail.requested_item.requested_itemModel.AddUpdateRequestedModel;
@@ -150,6 +152,7 @@ public class JobEquPartRemarkRemarkActivity extends UploadDocumentActivity imple
     LinearLayout audit_status_relative,audit_status_relative_status;
     private TextView tv_equipment_name, tv_location;
     private JobEquRemark_PI jobEquimPi;
+    private JobEquRemark_PC jobEquimPc;
     private int selectedCondition = -1;
     CardView attachment_card, part_cardview, item_cardview, cv_showRemark,cv_editRemark;
     private boolean REMARK_SUBMIT = false;
@@ -185,6 +188,7 @@ public class JobEquPartRemarkRemarkActivity extends UploadDocumentActivity imple
     String brandName = "";
     CompletionAdpterJobDteails jobCompletionAdpter;
     boolean isAction = false, isEdit=false;
+    String[] statusList;
     public static JobEquPartRemarkRemarkActivity jobEquPartRemarkRemarkActivity;
     public JobEquPartRemarkRemarkActivity getInstance (){
         return jobEquPartRemarkRemarkActivity;
@@ -475,15 +479,77 @@ public class JobEquPartRemarkRemarkActivity extends UploadDocumentActivity imple
     }
 
     @Override
-    public void setRepairStatus() {
-
+    public void setEquStatus(List<UpdateEquStatusResModel> resModel) {
+        if(resModel != null) {
+            String equStatusId="";
+            showRemarkSection();
+            isEdit = true;
+            setTitles();
+            if(!resModel.isEmpty()){
+                equStatusId = resModel.get(0).getEquStatus();
+                for(EquipmentStatus status: equipmentStatusList2){
+                    if(status.getEsId().equalsIgnoreCase(equStatusId)){
+                        status_label1.setText(status.getStatusText());
+                        txt_status.setText(status.getStatusText());
+                        equ_status_spinner.setSelection(-1);
+                        for (int i = 0; i < statusList.length; i++) {
+                            if (statusList[i].equals(status.getStatusText())) {
+                                equ_status_spinner.setSelection(i);
+                            }
+                        }
+                        if (status.getStatusText().equalsIgnoreCase("Discarded")) {
+                            txt_status.setBackgroundColor(ContextCompat.getColor(this, R.color.light_red));
+                        } else {
+                            txt_status.setBackgroundColor(ContextCompat.getColor(this, R.color.dark_yellow));
+                        }
+                        break;
+                    }
+                }
+                updateEquStatus(equStatusId);
+            }
+        }
+        AppUtility.progressBarDissMiss();
     }
-
-    @Override
-    public void setDiscardStatus() {
-
+    private void updateEquStatus(String equStatusId) {
+        {
+            Job job = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(jobId);
+            if (job != null) {
+                try {
+                    for (EquArrayModel equipment1 : job.getEquArray()) {
+                        if (equipment1.getEquId().equals(equipment.getEquId())) {
+                            equipment1.setRemark(edit_remarks.getText().toString());
+                            equipment1.setStatus(equStatusId);
+                            AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().updateJob(job);
+                            // for notifying job overview page
+                            EotApp.getAppinstance().getJobFlagOverView();
+                            EotApp.getAppinstance().getNotifyForEquipmentStatusList();
+                            break;
+                        } else {
+                            // for updating equipment component
+                            for (EquArrayModel equipmentComp : job.getEquArray()){
+                                if (equipmentComp.getEquId().equals(equipment.getEquId())) {
+                                    for (EquArrayModel equipmentPart : equipmentComp.getEquComponent()) {
+                                        if (equipmentPart.getEquId().equals(equipment.getParentId())) {
+                                            equipmentPart.setStatus(equStatusId);
+                                            equipmentPart.setRemark(edit_remarks.getText().toString());
+                                            AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().updateJob(job);
+                                            // for notifying job overview page
+                                            EotApp.getAppinstance().getJobFlagOverView();
+                                            EotApp.getAppinstance().getNotifyForEquipmentStatusList();
+                                            break;
+                                        }
+                                    }
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
-
     private String getCurrentEquipmentStatus(String statusId) {
         String statusName = "";
         if (App_preference.getSharedprefInstance().getEquipmentStatusList() != null) {
@@ -596,7 +662,7 @@ public class JobEquPartRemarkRemarkActivity extends UploadDocumentActivity imple
         }
         equipmentStatusList2 = App_preference.getSharedprefInstance().getEquipmentStatusList();
         if (equipmentStatusList2 != null) {
-            String[] statusList = new String[equipmentStatusList2.size()];
+           statusList = new String[equipmentStatusList2.size()];
             int i = 0;
             for (EquipmentStatus status : equipmentStatusList2) {
                 statusList[i] = status.getStatusText();
@@ -619,6 +685,7 @@ public class JobEquPartRemarkRemarkActivity extends UploadDocumentActivity imple
         add_item_layout.setOnClickListener(this);
 
         jobEquimPi = new JobEquRemark_PC(this);
+        jobEquimPc = new JobEquRemark_PC(this);
         jobAuditPi = new JobAudit_Pc(this);
         image_with_tag = findViewById(R.id.image_with_tag);
         image_txt = findViewById(R.id.image_txt);
@@ -1005,16 +1072,28 @@ public class JobEquPartRemarkRemarkActivity extends UploadDocumentActivity imple
                 startActivity(intent);
                 break;
             case R.id.tv_repair:
-                showRemarkSection();
-                isEdit = true;
-                setTitles();
-//                jobEquimPi.getRepairStatus("shjdgfhjsd");
+                if (jobId != null && !jobId.isEmpty() && equipment != null && !equipment.getEquId().isEmpty()) {
+                    for(EquipmentStatus status: equipmentStatusList2){
+                        if(status.getStatusText().equalsIgnoreCase("In Repair")){
+                            String equStatus =  status.getEsId();
+                            UpdateEquStatusReqModel reqModel = new UpdateEquStatusReqModel(jobId,equipment.getEquId(),equStatus);
+                            jobEquimPi.updateEquStatus(reqModel);
+                            break;
+                        }
+                    }
+                }
                 break;
             case R.id.tv_discard:
-                showRemarkSection();
-                isEdit = true;
-                setTitles();
-//                jobEquimPi.getDiscardStatus("shjdgfhjsd");
+                if (jobId != null && !jobId.isEmpty() && equipment != null && !equipment.getEquId().isEmpty()) {
+                    for(EquipmentStatus status: equipmentStatusList2){
+                        if(status.getStatusText().equalsIgnoreCase("Discarded")){
+                            String equStatus =  status.getEsId();
+                            UpdateEquStatusReqModel reqModel = new UpdateEquStatusReqModel(jobId,equipment.getEquId(),equStatus);
+                            jobEquimPi.updateEquStatus(reqModel);
+                            break;
+                        }
+                    }
+                }
                 break;
         }
     }
@@ -1505,8 +1584,8 @@ public class JobEquPartRemarkRemarkActivity extends UploadDocumentActivity imple
                     ll_discard.setVisibility(View.VISIBLE);
                     tv_replace.setEnabled(true);
                     tv_discard.setEnabled(true);
-                    tv_discard.setBackgroundResource(R.drawable.disable_submit_btn);
-                    tv_replace.setBackgroundResource(R.drawable.disable_submit_btn);
+                    tv_discard.setBackgroundResource(R.drawable.submit_btn);
+                    tv_replace.setBackgroundResource(R.drawable.submit_btn);
                     tv_text_for_replace.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.do_you_want_to_discard));
                     tv_text_for_discard.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.discard_action_msg));
                 }
@@ -2033,8 +2112,8 @@ public class JobEquPartRemarkRemarkActivity extends UploadDocumentActivity imple
             ll_discard.setVisibility(View.VISIBLE);
             tv_replace.setEnabled(true);
             tv_discard.setEnabled(true);
-            tv_discard.setBackgroundResource(R.drawable.disable_submit_btn);
-            tv_replace.setBackgroundResource(R.drawable.disable_submit_btn);
+            tv_discard.setBackgroundResource(R.drawable.submit_btn);
+            tv_replace.setBackgroundResource(R.drawable.submit_btn);
             tv_text_for_replace.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.do_you_want_to_discard));
             tv_text_for_discard.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.discard_action_msg));
         }

@@ -22,6 +22,7 @@ import com.eot_app.nav_menu.jobs.job_detail.job_equipment.add_job_equip.UpdateJo
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.job_equ_remrk.adapter.LinkItemAdapter;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.job_equ_remrk.job_equ_mvp.JobEquRemark_PC;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.job_equ_remrk.job_equ_mvp.JobEquRemark_View;
+import com.eot_app.nav_menu.jobs.job_detail.job_equipment.model.UpdateEquStatusResModel;
 import com.eot_app.nav_menu.jobs.job_detail.requested_item.requested_itemModel.AddUpdateRequestedModel;
 import com.eot_app.nav_menu.jobs.job_detail.requested_item.requested_itemModel.RequestedItemModel;
 import com.eot_app.utility.AppConstant;
@@ -227,12 +228,7 @@ public class JobEquLinkItemActivity extends AppCompatActivity implements JobEquR
     }
 
     @Override
-    public void setRepairStatus() {
-
-    }
-
-    @Override
-    public void setDiscardStatus() {
+    public void setEquStatus(List<UpdateEquStatusResModel> resModel) {
 
     }
 }

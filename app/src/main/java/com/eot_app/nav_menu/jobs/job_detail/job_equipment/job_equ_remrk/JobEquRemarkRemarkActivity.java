@@ -85,6 +85,8 @@ import com.eot_app.nav_menu.jobs.job_detail.job_equipment.JobEquipmentActivity;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.job_equ_remrk.job_equ_mvp.JobEquRemark_PC;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.job_equ_remrk.job_equ_mvp.JobEquRemark_PI;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.job_equ_remrk.job_equ_mvp.JobEquRemark_View;
+import com.eot_app.nav_menu.jobs.job_detail.job_equipment.model.UpdateEquStatusReqModel;
+import com.eot_app.nav_menu.jobs.job_detail.job_equipment.model.UpdateEquStatusResModel;
 import com.eot_app.nav_menu.jobs.job_detail.requested_item.AddUpdateRquestedItemActivity;
 import com.eot_app.nav_menu.jobs.job_detail.requested_item.RequestedItemListAdapter;
 import com.eot_app.nav_menu.jobs.job_detail.requested_item.requested_itemModel.AddUpdateRequestedModel;
@@ -163,6 +165,7 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
     private TextView status_label, status_label1;
     private TextView tv_equipment_name, tv_location,requested_item_txt,txt_no_item_found,btn_add_requested_item;
     private JobEquRemark_PI jobEquimPi;
+    private JobEquRemark_PC jobEquimPc;
     int selectedCondition = -1;
     private boolean REMARK_SUBMIT = false;
     private List<EquipmentStatus> equipmentStatusList = new ArrayList<>();
@@ -187,6 +190,7 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
     CompletionAdpterJobDteails jobCompletionAdpter;
     boolean isAction = false, isEdit=false, isRefresh=false;
     public static JobEquRemarkRemarkActivity jobEquRemarkRemarkActivity;
+    String[] statusList;
 
     public JobEquRemarkRemarkActivity getInstance (){
         return jobEquRemarkRemarkActivity;
@@ -484,17 +488,77 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
     }
 
     @Override
-    public void setRepairStatus() {
-        showRemarkSection();
-        isEdit = true;
-        setTitles();
+    public void setEquStatus(List<UpdateEquStatusResModel> resModel) {
+        if(resModel != null) {
+            String equStatusId="";
+            showRemarkSection();
+            isEdit = true;
+            setTitles();
+            if(!resModel.isEmpty()){
+                 equStatusId = resModel.get(0).getEquStatus();
+                for(EquipmentStatus status: equipmentStatusList2){
+                    if(status.getEsId().equalsIgnoreCase(equStatusId)){
+                        status_label1.setText(status.getStatusText());
+                        txt_status.setText(status.getStatusText());
+                        equ_status_spinner.setSelection(-1);
+                        for (int i = 0; i < statusList.length; i++) {
+                            if (statusList[i].equals(status.getStatusText())) {
+                               equ_status_spinner.setSelection(i);
+                            }
+                        }
+                        if (status.getStatusText().equalsIgnoreCase("Discarded")) {
+                            txt_status.setBackgroundColor(ContextCompat.getColor(this, R.color.light_red));
+                        } else {
+                            txt_status.setBackgroundColor(ContextCompat.getColor(this, R.color.dark_yellow));
+                        }
+                        break;
+                    }
+                }
+                updateEquStatus(equStatusId);
+            }
+        }
+        AppUtility.progressBarDissMiss();
     }
 
-    @Override
-    public void setDiscardStatus() {
-        showRemarkSection();
-        isEdit = true;
-        setTitles();
+    private void updateEquStatus(String equStatusId) {
+        {
+            Job job = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(jobId);
+            if (job != null) {
+                try {
+                    for (EquArrayModel equipment1 : job.getEquArray()) {
+                        if (equipment1.getEquId().equals(equipment.getEquId())) {
+                            equipment1.setRemark(edit_remarks.getText().toString());
+                            equipment1.setStatus(equStatusId);
+                            AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().updateJob(job);
+                            // for notifying job overview page
+                            EotApp.getAppinstance().getJobFlagOverView();
+                            EotApp.getAppinstance().getNotifyForEquipmentStatusList();
+                            break;
+                        } else {
+                            // for updating equipment component
+                            for (EquArrayModel equipmentComp : job.getEquArray()){
+                                if (equipmentComp.getEquId().equals(equipment.getEquId())) {
+                                    for (EquArrayModel equipmentPart : equipmentComp.getEquComponent()) {
+                                        if (equipmentPart.getEquId().equals(equipment.getParentId())) {
+                                            equipmentPart.setStatus(equStatusId);
+                                            equipmentPart.setRemark(edit_remarks.getText().toString());
+                                            AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().updateJob(job);
+                                            // for notifying job overview page
+                                            EotApp.getAppinstance().getJobFlagOverView();
+                                            EotApp.getAppinstance().getNotifyForEquipmentStatusList();
+                                            break;
+                                        }
+                                    }
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     private void initViews() {
@@ -597,7 +661,7 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
         }
         equipmentStatusList2 = App_preference.getSharedprefInstance().getEquipmentStatusList();
         if (equipmentStatusList2 != null) {
-            String[] statusList = new String[equipmentStatusList2.size()];
+             statusList = new String[equipmentStatusList2.size()];
             int i = 0;
             for (EquipmentStatus status : equipmentStatusList2) {
                 statusList[i] = status.getStatusText();
@@ -620,6 +684,7 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
         add_item_layout.setOnClickListener(this);
 
         jobEquimPi = new JobEquRemark_PC(this);
+        jobEquimPc = new JobEquRemark_PC(this);
         jobAuditPi = new JobAudit_Pc(this);
 
         image_with_tag = findViewById(R.id.image_with_tag);
@@ -914,7 +979,6 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
                 break;
             case R.id.tv_replace:
                 submitChangesOnReplace();
-
                 break;
             case R.id.button_submit:
                 if (selectedCondition == -1) {
@@ -994,16 +1058,28 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
                 startActivity(intent);
                 break;
             case R.id.tv_repair:
-                showRemarkSection();
-                isEdit = true;
-                setTitles();
-//                jobEquimPi.getRepairStatus("shjdgfhjsd");
+                if (jobId != null && !jobId.isEmpty() && equipment != null && !equipment.getEquId().isEmpty()) {
+                    for(EquipmentStatus status: equipmentStatusList2){
+                        if(status.getStatusText().equalsIgnoreCase("In Repair")){
+                            String equStatus =  status.getEsId();
+                            UpdateEquStatusReqModel reqModel = new UpdateEquStatusReqModel(jobId,equipment.getEquId(),equStatus);
+                                    jobEquimPi.updateEquStatus(reqModel);
+                                    break;
+                        }
+                    }
+                }
                 break;
             case R.id.tv_discard:
-                showRemarkSection();
-                isEdit = true;
-                setTitles();
-//                jobEquimPi.getDiscardStatus("shjdgfhjsd");
+                if (jobId != null && !jobId.isEmpty() && equipment != null && !equipment.getEquId().isEmpty()) {
+                    for(EquipmentStatus status: equipmentStatusList2){
+                        if(status.getStatusText().equalsIgnoreCase("Discarded")){
+                            String equStatus =  status.getEsId();
+                            UpdateEquStatusReqModel reqModel = new UpdateEquStatusReqModel(jobId,equipment.getEquId(),equStatus);
+                            jobEquimPi.updateEquStatus(reqModel);
+                            break;
+                        }
+                    }
+                }
                 break;
         }
     }
@@ -1511,8 +1587,8 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
                     ll_discard.setVisibility(View.VISIBLE);
                     tv_replace.setEnabled(true);
                     tv_discard.setEnabled(true);
-                    tv_discard.setBackgroundResource(R.drawable.disable_submit_btn);
-                    tv_replace.setBackgroundResource(R.drawable.disable_submit_btn);
+                    tv_discard.setBackgroundResource(R.drawable.submit_btn);
+                    tv_replace.setBackgroundResource(R.drawable.submit_btn);
                     tv_text_for_replace.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.do_you_want_to_discard));
                     tv_text_for_discard.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.discard_action_msg));
                 }
