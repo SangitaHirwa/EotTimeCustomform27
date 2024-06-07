@@ -26,6 +26,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
@@ -84,11 +85,13 @@ import com.eot_app.utility.util_interfaces.Callback_AlertDialog;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.google.rpc.context.AttributeContext;
 import com.hypertrack.hyperlog.HyperLog;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -97,6 +100,7 @@ import java.util.concurrent.Callable;
 import static com.eot_app.nav_menu.jobs.job_detail.invoice2list.JoBInvoiceItemList2Activity.ADD_ITEM_DATA;
 import static com.eot_app.utility.AppConstant.add;
 import static com.eot_app.utility.AppConstant.qty;
+import static com.eot_app.utility.AppConstant.serial_no;
 
 
 public class AddEditInvoiceItemActivity2 extends
@@ -109,7 +113,7 @@ public class AddEditInvoiceItemActivity2 extends
     public static final int EQUIPMENTLINK = 202;
     RelativeLayout ll_note, ll_link_note;
     View nm_view, desc_view, qty_view, rate_view, supplier_view, disc_view, tax_view, amount_view, part_no_view, hsncode_view, unit_view, taxrateAmount_view, seroal_no_view, tax_rate_view;
-    TextView tax_value_txt, tax_txt_hint, amount_value_txt, taxamount_txt_hint, taxamount_value_txt, amount_txt_hint;
+    TextView tax_value_txt, tax_txt_hint, amount_value_txt, taxamount_txt_hint, taxamount_value_txt, amount_txt_hint, txt_lbl_not_matchSerialNo, btn_not_matchSerialNo;
     List<ItemParts> partsList = new ArrayList<>();
     String comeFrom = "";
     String equipment = "";
@@ -156,7 +160,7 @@ public class AddEditInvoiceItemActivity2 extends
     private Job jobModel;
     private  Appointment appointmentModel;
     private Boolean appointmentItemCountForFlag = false;
-    private TextView convert_item_to_equi;
+    private TextView convert_item_to_equi, txt_serialNo_hint;
     private Boolean jobItemCountForFlag = false;
     private boolean updateItem = false;
     private boolean ITEMSYNC = false;
@@ -186,10 +190,14 @@ public class AddEditInvoiceItemActivity2 extends
     private AppointmentUpdateItem_Req_Model itemAddRequestModel;
     private  AppointmentAddItem_Res updateItem_res;
     CheckBox add_stock_checkBox;
-   String isRemoveStock ="1";
+   String isRemoveStock ="1", scanCode="";
    boolean show_stock_checkbox = false;
-   boolean isTaxUpdated = false;
+   boolean isTaxUpdated = false, isSerialNoSelected = false;
    public static AddEditInvoiceItemActivity2 addEditInvoiceItemActivity2;
+   LinearLayout ll_serialNo, ll_below_rd_serialNo;
+   RadioGroup rd_group_serialNo;
+   String itemId1, ijmmId, serialNo;
+    List<InvoiceItemDataModel> serialNoList = new ArrayList<>();
 
    public  AddEditInvoiceItemActivity2 getInstance(){
 
@@ -213,21 +221,36 @@ public class AddEditInvoiceItemActivity2 extends
                 // for adding item from equipment or adding equipment part with item
                 if (getIntent().hasExtra("comeFrom")) {
                     comeFrom = bundle.getString("comeFrom");
-                    cltId = bundle.getString("cltId");
-                    show_stock_checkbox = true;
-                    equipment = bundle.getString("equipment");
-                    equipmentId = bundle.getString("equipmentId");
-                    equipmentIdName = bundle.getString("equipmentIdName");
-                    equipmentType = bundle.getString("equipmentType");
-                    initializelables();
-                    if (comeFrom != null && comeFrom.equalsIgnoreCase("AddRemark")) {
+                    if(comeFrom != null && comeFrom.equalsIgnoreCase("JobListScan")){
+                        initializelables();
                         edt_item_qty.setEnabled(false);
+                        comeFrom = bundle.getString("comeFrom");
+                        cltId = bundle.getString("cltId");
+                        scanCode = bundle.getString("scanCode");
+
                         ll_note.setVisibility(View.VISIBLE);
-                        ll_link_note.setVisibility(View.VISIBLE);
-                    }else  if (comeFrom != null && comeFrom.equalsIgnoreCase("AddRemarkItem")) {
-                        ll_link_note.setVisibility(View.VISIBLE);
+                        ll_link_note.setVisibility(View.GONE);
+                        layout_fw_item.setVisibility(View.GONE);
+                        ll_serialNo.setVisibility(View.GONE);
+                        ll_below_rd_serialNo.setVisibility(View.GONE);
                     }
-                    layout_fw_item.setVisibility(View.GONE);
+                    else{
+                        cltId = bundle.getString("cltId");
+                        show_stock_checkbox = true;
+                        equipment = bundle.getString("equipment");
+                        equipmentId = bundle.getString("equipmentId");
+                        equipmentIdName = bundle.getString("equipmentIdName");
+                        equipmentType = bundle.getString("equipmentType");
+                        initializelables();
+                        if (comeFrom != null && comeFrom.equalsIgnoreCase("AddRemark")) {
+                            edt_item_qty.setEnabled(false);
+                            ll_note.setVisibility(View.VISIBLE);
+                            ll_link_note.setVisibility(View.VISIBLE);
+                        } else if (comeFrom != null && comeFrom.equalsIgnoreCase("AddRemarkItem")) {
+                            ll_link_note.setVisibility(View.VISIBLE);
+                        }
+                        layout_fw_item.setVisibility(View.GONE);
+                    }
                 }
                 if (getIntent().hasExtra("locId")) {
                     locId = bundle.getString("locId");
@@ -341,6 +364,9 @@ public class AddEditInvoiceItemActivity2 extends
                             Log.e("", "");
                             if (editable.length() >= 1) {
 
+                                if(ll_serialNo.getVisibility() == View.VISIBLE){
+                                    ll_serialNo.setVisibility(View.GONE);
+                                }
                                 itemlayout.setHintEnabled(true);
                                 IS_ITEM_MANDATRY = true;
                                 if (itemsList != null &&
@@ -809,13 +835,18 @@ public class AddEditInvoiceItemActivity2 extends
                 add_edit_item_Btn.setVisibility(View.GONE);
             }
         }else if (updateItemDataModel == null) {
-            if (comeFrom != null && comeFrom.equalsIgnoreCase("AddRemark"))
-                Objects.requireNonNull(getSupportActionBar()).setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.step_1)+" ("+
-                        LanguageController.getInstance().getMobileMsgByKey(AppConstant.title_add_equipment)+")");
-            else
-                Objects.requireNonNull(getSupportActionBar()).setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.addItem_screen_title));
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            add_edit_item_Btn.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.save_btn));
+                if (comeFrom != null && comeFrom.equalsIgnoreCase("AddRemark") || comeFrom != null && comeFrom.equalsIgnoreCase("JobListScan"))
+                    Objects.requireNonNull(getSupportActionBar()).setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.step_1) + " (" +
+                            LanguageController.getInstance().getMobileMsgByKey(AppConstant.title_add_equipment) + ")");
+                else
+                    Objects.requireNonNull(getSupportActionBar()).setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.addItem_screen_title));
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                if (comeFrom != null && comeFrom.equalsIgnoreCase("JobListScan")){
+
+                    add_edit_item_Btn.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.next_btn));
+                }else {
+                    add_edit_item_Btn.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.save_btn));
+                }
         } else {
             /*Convert Item to Equipment Only for Inventory Item's*****/
             if (App_preference.getSharedprefInstance().getLoginRes().getIsEquipmentEnable().equals("1")
@@ -987,6 +1018,16 @@ public class AddEditInvoiceItemActivity2 extends
         btn_link_item = findViewById(R.id.btn_link_item);
         btn_link_item.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.yes));
         btn_link_item.setOnClickListener(this);
+        ll_serialNo = findViewById(R.id.ll_serialNo);
+        ll_below_rd_serialNo = findViewById(R.id.ll_below_rd_serialNo);
+        txt_serialNo_hint = findViewById(R.id.txt_serialNo_hint);
+        txt_serialNo_hint.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.serial_no));
+        rd_group_serialNo = findViewById(R.id.rd_group_serialNo);
+        txt_lbl_not_matchSerialNo = findViewById(R.id.txt_lbl_not_matchSerialNo);
+        txt_lbl_not_matchSerialNo.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.serial_no_not_matched));
+        btn_not_matchSerialNo = findViewById(R.id.btn_not_matchSerialNo);
+        btn_not_matchSerialNo.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.appointment_add_new_attach));
+        btn_not_matchSerialNo.setOnClickListener(this);
 
         intializeViews();
     }
@@ -1148,6 +1189,8 @@ public class AddEditInvoiceItemActivity2 extends
         } catch (Exception exception) {
             exception.printStackTrace();
         }
+        intent.putExtra("isSerialNoSelected", isSerialNoSelected);
+
         startActivityForResult(intent, EQUIPMENTCONVERT);
     }
 
@@ -1161,6 +1204,7 @@ public class AddEditInvoiceItemActivity2 extends
         intent.putExtra("equipmentId", equipmentId);
         intent.putExtra("equipmentIdName", equipmentIdName);
         intent.putExtra("equipmentType", equipmentType);
+        intent.putExtra("isSerialNoSelected", isSerialNoSelected);
         startActivityForResult(intent, EQUIPMENTCONVERT);
     }
     /** Move Link Item Screen */
@@ -1211,7 +1255,40 @@ public class AddEditInvoiceItemActivity2 extends
         autocomplete_item.setOnItemClickListener((adapterView, view, position, l) -> {
             try {
                 Log.v("ItemList::", new Gson().toJson(adapterView.getItemAtPosition(position)));
-                setSelectedItemData(((Inventry_ReS_Model) adapterView.getItemAtPosition(position)));
+//                For getting serial no of Items
+                if(comeFrom != null && comeFrom.equalsIgnoreCase("JobListScan")) {
+                    serialNoList.clear();
+                    Inventry_ReS_Model invItem = (Inventry_ReS_Model) adapterView.getItemAtPosition(position);
+                    Job job = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(jobId);
+                    for (InvoiceItemDataModel item:
+                         job.getItemData()) {
+                        if(item.getItemId().equalsIgnoreCase(invItem.getItemId()) && !item.getSerialNo().isEmpty()){
+                            InvoiceItemDataModel jobItem = new InvoiceItemDataModel();
+                            jobItem.setItemId(item.getItemId());
+                            jobItem.setSerialNo(item.getSerialNo());
+                            jobItem.setIjmmId(item.getIjmmId());
+                            serialNoList.add(jobItem);
+                        }
+                    }
+                    setSelectedItemData(invItem);
+                    if(serialNoList.size()>1){
+                        ll_serialNo.setVisibility(View.VISIBLE);
+                        ll_below_rd_serialNo.setVisibility(View.GONE);
+                        setRadioButton(serialNoList);
+                    }else if(serialNoList.size() == 1){
+                        isSerialNoSelected = true;
+                        itemId1 = serialNoList.get(0).getItemId();
+                        ijmmId = serialNoList.get(0).getIjmmId();
+                        serialNo = serialNoList.get(0).getSerialNo();
+                        ll_serialNo.setVisibility(View.GONE);
+                        ll_below_rd_serialNo.setVisibility(View.GONE);
+                    }else {
+                        ll_serialNo.setVisibility(View.GONE);
+                        ll_below_rd_serialNo.setVisibility(View.VISIBLE);
+                    }
+                }else {
+                    setSelectedItemData(((Inventry_ReS_Model) adapterView.getItemAtPosition(position)));
+                }
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -1651,6 +1728,23 @@ public class AddEditInvoiceItemActivity2 extends
             case R.id.btn_link_item:
                 linkItem();
                 break;
+            case R.id.btn_not_matchSerialNo:
+                isSerialNoSelected = false;
+                ll_serialNo.setVisibility(View.GONE);
+                ll_below_rd_serialNo.setVisibility(View.VISIBLE);
+                break;
+                default :
+                    if(comeFrom != null && comeFrom.equalsIgnoreCase("JobListScan")){
+                        isSerialNoSelected = true;
+                        for (InvoiceItemDataModel item: serialNoList
+                             ) {
+                            if(item.getSerialNo().equals(((RadioButton)view).getText())){
+                                itemId1 = item.getItemId();
+                                ijmmId = item.getIjmmId();
+                                serialNo = item.getSerialNo();
+                            }
+                        }
+                    }
         }
     }
     /**After discussion with Rani change validation of canInvoiceCreated by isJobInvoiced 12/04/2024**/
@@ -1664,6 +1758,8 @@ public class AddEditInvoiceItemActivity2 extends
             AppUtility.alertDialog(this, "", LanguageController.getInstance().getMobileMsgByKey(AppConstant.fw_valid), LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), "", () -> null);
         } else if (!IS_SERVICES_MANDATRY && TAB_SELECT == 3) {
             AppUtility.alertDialog(this, "", LanguageController.getInstance().getMobileMsgByKey(AppConstant.service_error), AppConstant.ok, "", () -> null);
+        }else if (!isSerialNoSelected && serialNoList.size() > 1 && itemId1 == null && ijmmId == null) {
+            AppUtility.alertDialog(this, "", LanguageController.getInstance().getMobileMsgByKey(AppConstant.select_serial_no), AppConstant.ok, "", () -> null);
         } else {
 
                 List<Tax> taxListFilter = new ArrayList<>();
@@ -2102,6 +2198,11 @@ public class AddEditInvoiceItemActivity2 extends
                 if (addItemOnInvoice) {
                     addItemDataModel.setIsBillable("1");
                 }
+                if (isSerialNoSelected){
+                    addItemDataModel.setItemId(itemId1);
+                    addItemDataModel.setIjmmId(ijmmId);
+                    addItemDataModel.setSerialNo(serialNo);
+                }
             } catch (Exception exception) {
                 exception.printStackTrace();
             }
@@ -2136,33 +2237,35 @@ public class AddEditInvoiceItemActivity2 extends
                         partsList.get(i).getIsBillable(), partTempId, 0, 1,isRemoveStock
                 ));
             }
+            if(!isSerialNoSelected) {
 //            Add  item's in job**
-            if (jobModel.getJobId().equals(jobModel.getTempId())) {
-                // for updating the local database
-                if (jobModel != null && jobModel.getItemData() != null) {
-                    itemDataList.addAll(jobModel.getItemData());
+                if (jobModel.getJobId().equals(jobModel.getTempId())) {
+                    // for updating the local database
+                    if (jobModel != null && jobModel.getItemData() != null) {
+                        itemDataList.addAll(jobModel.getItemData());
+                    }
+                    AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().updateJobitems(jobId, itemDataList);
+                    HyperLog.i("TAG  1", new Gson().toJson(itemDataList));
+                    // changed by shivani on 27 june
+                    addItemWitoutJobSync(itemDataList);
+                } else {
+                    // for updating the local database with all the items
+                    List<InvoiceItemDataModel> itemDataListall = new ArrayList<>(itemDataList);
+
+                    if (jobModel != null && jobModel.getItemData() != null) {
+                        HyperLog.i("TAG  23", new Gson().toJson(jobModel.getItemData()));
+                        itemDataListall.addAll(jobModel.getItemData());
+                    }
+                    AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().updateJobitems(jobModel.getJobId(), itemDataListall);
+
+                    // set item list in job model as well
+                    jobModel.setItemData(itemDataListall);
+
+                    HyperLog.i("TAG  2", new Gson().toJson(itemDataListall));
+                    HyperLog.i("TAG  2", new Gson().toJson(itemDataList));
+                    // changed by shivani on 27 june previously only addItemDataModel was sending
+                    addItemWithJobSync(itemDataList);
                 }
-                AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().updateJobitems(jobId, itemDataList);
-                HyperLog.i("TAG  1", new Gson().toJson(itemDataList));
-                // changed by shivani on 27 june
-                addItemWitoutJobSync(itemDataList);
-            } else {
-                // for updating the local database with all the items
-                List<InvoiceItemDataModel> itemDataListall = new ArrayList<>(itemDataList);
-
-                if (jobModel != null && jobModel.getItemData() != null) {
-                    HyperLog.i("TAG  23", new Gson().toJson(jobModel.getItemData()));
-                    itemDataListall.addAll(jobModel.getItemData());
-                }
-                AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().updateJobitems(jobModel.getJobId(), itemDataListall);
-
-                // set item list in job model as well
-                jobModel.setItemData(itemDataListall);
-
-                HyperLog.i("TAG  2", new Gson().toJson(itemDataListall));
-                HyperLog.i("TAG  2", new Gson().toJson(itemDataList));
-                // changed by shivani on 27 june previously only addItemDataModel was sending
-                addItemWithJobSync(itemDataList);
             }
             HyperLog.i("TAG", "addItemsOnJob(M) finished");
 
@@ -2170,7 +2273,7 @@ public class AddEditInvoiceItemActivity2 extends
             EotApp.getAppinstance().getJobFlagOverView();
 //            EotApp.getAppinstance().getNotifyForItemCount();
 
-            if (comeFrom != null && comeFrom.equalsIgnoreCase("AddRemark")) {
+            if (comeFrom != null && comeFrom.equalsIgnoreCase("AddRemark") || comeFrom != null && comeFrom.equalsIgnoreCase("JobListScan")) {
                 Log.e("checkEmpty:;", warrantyValue + " " + warrantyType);
                 addItemDataModel.setWarrantyType(warrantyType);
                 addItemDataModel.setWarrantyValue(warrantyValue);
@@ -3240,6 +3343,19 @@ if(!firstTimeOnPage) {
          }
      }
  }
-
+ /** Dynamically create Radio button for Serial number When user Add new equipment by scanner*/
+ private  void setRadioButton (List<InvoiceItemDataModel> serialNoList){
+        rd_group_serialNo.removeAllViews();
+     for (int i = 0; i <= serialNoList.size(); i++) {
+         RadioButton rdbtn = new RadioButton(this);
+         rdbtn.setId(View.generateViewId());
+         rdbtn.setText(serialNoList.get(i).getSerialNo());
+         rdbtn.setTextSize(12);
+         rdbtn.setTextAppearance(this,R.style.style_thrid);
+         rdbtn.setTextColor(getResources().getColor(R.color.txt_sub_color));
+         rdbtn.setOnClickListener(this);
+         rd_group_serialNo.addView(rdbtn);
+     }
+ }
 }
 

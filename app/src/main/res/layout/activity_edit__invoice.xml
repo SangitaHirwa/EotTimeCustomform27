@@ -207,7 +207,74 @@ Choose an item from the inventory Choose an item from the inventory yy"
                         android:layout_height="1dp"
                         android:layout_marginTop="5dp"
                         android:background="@color/border_font_color" />
+                    <LinearLayout
+                        android:id="@+id/ll_serialNo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="gone"
+                        >
 
+                    <TextView
+                        android:id="@+id/txt_serialNo_hint"
+                        style="@style/text_hint"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
+                        android:paddingTop="5dp"
+                        android:textStyle="normal"
+                        android:text=""
+                        />
+
+                    <RadioGroup
+                        android:id="@+id/rd_group_serialNo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:orientation="vertical"
+                        />
+                        <RelativeLayout
+                            android:id="@+id/ll_not_matchSerialNo"
+                            android:visibility="visible"
+                            android:background="@color/bg_link_item_note"
+                            android:padding="@dimen/_10sdp"
+                            android:layout_marginEnd="10dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            >
+                        <TextView
+                            android:id="@+id/txt_lbl_not_matchSerialNo"
+                            style="@style/style_sec"
+                            android:layout_width="match_parent"
+                            android:layout_toStartOf="@+id/btn_not_matchSerialNo"
+                            android:layout_height="wrap_content"
+                            android:gravity="start"
+                            tools:text="Note : Serial number is not matched"
+                            android:paddingEnd="3dp"
+                            android:textSize="16dp"
+                            android:textStyle="bold"
+                            tools:ignore="SpUsage" />
+                        <TextView
+                            android:layout_alignParentEnd="true"
+                            android:id="@+id/btn_not_matchSerialNo"
+                            android:paddingHorizontal="25dp"
+                            style="@style/style_sec"
+                            android:background="@drawable/submit_btn"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/white"
+                            android:paddingVertical="6dp"
+                            android:gravity="center"
+                            android:text="Add New"
+                            tools:ignore="HardcodedText" />
+                        </RelativeLayout>
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/ll_below_rd_serialNo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/item_partNo_layout"
                         android:layout_width="match_parent"
@@ -752,7 +819,7 @@ Choose an item from the inventory Choose an item from the inventory yy"
 
                         </LinearLayout>
                     </androidx.cardview.widget.CardView>
-
+                </LinearLayout>
                 </LinearLayout>
 
 

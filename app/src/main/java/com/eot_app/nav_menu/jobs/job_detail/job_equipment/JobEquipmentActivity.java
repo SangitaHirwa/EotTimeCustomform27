@@ -38,6 +38,7 @@ import com.eot_app.nav_menu.equipment.popupSaveClient.AlertDialogClass;
 import com.eot_app.nav_menu.equipment.popupSaveClient.equipmentClinetsave.Equipment_Client_view;
 import com.eot_app.nav_menu.jobs.job_db.EquArrayModel;
 import com.eot_app.nav_menu.jobs.job_db.Job;
+import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.AddEditInvoiceItemActivity2;
 import com.eot_app.nav_menu.jobs.job_detail.detail.NotifyForEquipmentCountList;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.add_job_equip.AddJobEquipMentActivity;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.job_equ_mvp.Job_equim_PC;
@@ -103,7 +104,7 @@ public class JobEquipmentActivity extends AppCompatActivity
     TextView txt_eqp_que,txt_equ_not_found;
     Button button_no,button_yes;
     private View backgroundView;
-    private String appId;
+    private String appId, scanCode;
     MenuItem menuItem;
     boolean isScanResult = false;
 
@@ -474,7 +475,7 @@ public class JobEquipmentActivity extends AppCompatActivity
         if (requestCode == SCANNER_DETAIL_CODE) {
             if(data != null && data.getExtras() != null && !data.getExtras().isEmpty()){
                 String equipmentData = data.getStringExtra("equipment");
-                String scanCode = data.getStringExtra("codetext");
+                scanCode = data.getStringExtra("codetext");
                 isScanResult = true;
                 if(equipmentData != null && equipmentData.isEmpty()){
                     showNotEquipUI();
@@ -732,6 +733,7 @@ public class JobEquipmentActivity extends AppCompatActivity
 
             case R.id.button_yes:
                 isScanResult = false;
+                addEquipmentItem();
                 break;
             case R.id.button_no:
                 isScanResult = false;
@@ -796,5 +798,32 @@ public class JobEquipmentActivity extends AppCompatActivity
         if(menuItem != null){
             menuItem.setVisible(true);
         }
+    }
+
+    /****Add Item  as a equipment**/
+    private void addEquipmentItem() {
+        String locId = "";
+        try {
+            if (jobId != null && !jobId.equals("")) {
+                Job job = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(jobId);
+                if (job.getLocId() == null)
+                    job.setLocId("0");
+                else locId = job.getLocId();
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        Intent intent = new Intent(this, AddEditInvoiceItemActivity2.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+        intent.putExtra("invId", "");
+        intent.putExtra("jobId", jobId);
+        intent.putExtra("locId", locId);
+        intent.putExtra("comeFrom", "JobListScan");
+        intent.putExtra("scanCode", scanCode);
+        intent.putExtra("NONBILLABLE", false);
+        intent.putExtra("getTaxMethodType", "0");
+        intent.putExtra("getSingleTaxId", "0");
+        startActivityForResult(intent, SCANNER_DETAIL_CODE);
     }
 }

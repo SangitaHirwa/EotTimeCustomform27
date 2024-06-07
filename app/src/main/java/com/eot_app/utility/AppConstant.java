@@ -1062,6 +1062,9 @@ public class AppConstant {
     public static String loc_and_instal_date= "loc_and_instal_date";
     public static String more_details= "more_details";
     public static String warranty= "warranty";
+    public static String next_btn= "next_btn";
+    public static String serial_no_not_matched= "serial_no_not_matched";
+    public static String select_serial_no= "select_serial_no";
     public static String server(String location) {
         switch (location) {
             case "America":

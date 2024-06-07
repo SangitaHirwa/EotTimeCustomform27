@@ -951,7 +951,7 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
         client_site_layout.setOnClickListener(this);
 
         auto_client_site.setOnClickListener(this);
-        supplier_layout.setOnClickListener(this);
+//        supplier_layout.setOnClickListener(this);
 
 //        status_Dp.setOnItemSelectedListener(this);
 //        linearLayout_status.setOnClickListener(this);

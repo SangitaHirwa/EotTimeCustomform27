@@ -819,7 +819,8 @@ public interface Service_apis {
                                                   @Part("isEquReplaced") RequestBody isEquReplaced,
                                                   @Part("isCnvtItemParts") RequestBody isCnvtItemParts,
                                                   @Part("installedDate") RequestBody installedDate,
-                                                  @Part("supId") RequestBody supId
+                                                  @Part("supId") RequestBody supId,
+                                                  @Part("ijmmId") RequestBody ijmmId
     );
 
     @Multipart

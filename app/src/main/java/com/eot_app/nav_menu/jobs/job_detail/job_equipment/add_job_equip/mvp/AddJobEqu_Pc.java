@@ -172,157 +172,160 @@ public class AddJobEqu_Pc implements AddJobEqu_Pi {
     @Override
     public void convertItemToequip(final AddEquReq addEquReq, String path, String barcode, String qrcode, String equipmentId) {
         if (AppUtility.isInternetConnected()) {
-            RequestBody equnm = null;
-            RequestBody brand = null;
-            RequestBody mno = null;
-            RequestBody sno = null;
-            RequestBody expiryDate = null;
-            RequestBody manufactureDate = null;
-            RequestBody purchaseDate = null;
-            RequestBody status = null;
-            RequestBody notes = null;
-//            RequestBody isBarcodeGenerate = null;
-            RequestBody state = null;
-            RequestBody ctry = null;
-            RequestBody adr = null;
-            RequestBody city = null;
-            RequestBody zip = null;
-            RequestBody ecId = null;
-            RequestBody type = null;
-            RequestBody egId = null;
-            RequestBody jobId = null;
-            RequestBody cltId = null;
-            RequestBody contrId = null;
-            RequestBody itemId = null;
-            RequestBody supplier = null;
-            RequestBody rate = null;
-            RequestBody isPart = null;
-            RequestBody siteId = null;
-            RequestBody invId = null;
-            RequestBody extraField1 = null;
-            RequestBody extraField2 = null;
-            RequestBody barcodeBody = null;
-            RequestBody qrcodeBody = null;
-            RequestBody equipmentIdBody = null;
-
-            RequestBody servIntvalTypeBody = null;
-            RequestBody servIntvalValueBody = null;
-            RequestBody isEquReplaced = null;
-            RequestBody rplacedEquId = null;
-            RequestBody installedDateBody = null;
-            RequestBody isCnvtItemPartsBody = null;
-            RequestBody supplierIdBody = null;
-            try {
-                equnm = RequestBody.create(addEquReq.getEqunm(), MultipartBody.FORM);
-                brand = RequestBody.create(addEquReq.getBrand(), MultipartBody.FORM);
-                mno = RequestBody.create(addEquReq.getMno(), MultipartBody.FORM);
-                sno = RequestBody.create(addEquReq.getSno(), MultipartBody.FORM);
-                supplier = RequestBody.create(addEquReq.getSupplier(), MultipartBody.FORM);
-                expiryDate = RequestBody.create(addEquReq.getExpiryDate(), MultipartBody.FORM);
-                manufactureDate = RequestBody.create(addEquReq.getManufactureDate(), MultipartBody.FORM);
-                purchaseDate = RequestBody.create(addEquReq.getPurchaseDate(), MultipartBody.FORM);
-                status = RequestBody.create(addEquReq.getStatus(), MultipartBody.FORM);
-                notes = RequestBody.create(addEquReq.getNotes(), MultipartBody.FORM);
-//                isBarcodeGenerate = RequestBody.create(addEquReq.getIsBarcodeGenerate(), MultipartBody.FORM);
-                state = RequestBody.create(addEquReq.getState(), MultipartBody.FORM);
-                ctry = RequestBody.create(addEquReq.getCtry(), MultipartBody.FORM);
-                adr = RequestBody.create(addEquReq.getAdr(), MultipartBody.FORM);
-                city = RequestBody.create(addEquReq.getCity(), MultipartBody.FORM);
-                zip = RequestBody.create(addEquReq.getZip(), MultipartBody.FORM);
-                ecId = RequestBody.create(addEquReq.getEcId(), MultipartBody.FORM);
-                type = RequestBody.create(addEquReq.getType(), MultipartBody.FORM);
-                egId = RequestBody.create(addEquReq.getEgId(), MultipartBody.FORM);
-                jobId = RequestBody.create(addEquReq.getJobId(), MultipartBody.FORM);
-                cltId = RequestBody.create(addEquReq.getCltId(), MultipartBody.FORM);
-                contrId = RequestBody.create(addEquReq.getContrId(), MultipartBody.FORM);
-                itemId = RequestBody.create(addEquReq.getItemId(), MultipartBody.FORM);
-                supplier = RequestBody.create(addEquReq.getSupplier(), MultipartBody.FORM);
-                rate = RequestBody.create(addEquReq.getRate(), MultipartBody.FORM);
-                isPart = RequestBody.create(addEquReq.getIsPart(), MultipartBody.FORM);
-                siteId = RequestBody.create(addEquReq.getSiteId(), MultipartBody.FORM);
-                invId = RequestBody.create(addEquReq.getInvId(), MultipartBody.FORM);
-                extraField1 = RequestBody.create(addEquReq.getExtraField1(), MultipartBody.FORM);
-                extraField2 = RequestBody.create(addEquReq.getExtraField2(), MultipartBody.FORM);
-                barcodeBody = RequestBody.create(barcode, MultipartBody.FORM);
-                qrcodeBody = RequestBody.create(qrcode, MultipartBody.FORM);
-                equipmentIdBody = RequestBody.create(equipmentId, MultipartBody.FORM);
-                servIntvalTypeBody = RequestBody.create(addEquReq.getServIntvalType(), MultipartBody.FORM);
-                servIntvalValueBody = RequestBody.create(addEquReq.getServIntvalValue(), MultipartBody.FORM);
-                isEquReplaced = RequestBody.create(addEquReq.getIsEquReplaced(), MultipartBody.FORM);
-                rplacedEquId = RequestBody.create(addEquReq.getRplacedEquId(), MultipartBody.FORM);
-                installedDateBody = RequestBody.create(addEquReq.getInstalledDate(), MultipartBody.FORM);
-                isCnvtItemPartsBody = RequestBody.create(addEquReq.getIsCnvtItemParts(), MultipartBody.FORM);
-                supplierIdBody = RequestBody.create(addEquReq.getSupId(), MultipartBody.FORM);
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-
-            String mimeType = "";
-            MultipartBody.Part body = null;
-            List<MultipartBody.Part> filesList = new ArrayList<>();
-            if (!TextUtils.isEmpty(path)) {
-                File file1 = new File(path);
-                if (file1 != null) {
-                    mimeType = URLConnection.guessContentTypeFromName(file1.getName());
-                    if (mimeType == null) {
-                        mimeType = file1.getName();
-                    }
-                    RequestBody requestFile = RequestBody.create(file1, MediaType.parse(mimeType));
-                    // MultipartBody.Part is used to send also the actual file name
-                    body = MultipartBody.Part.createFormData("image[]", file1.getName() + path.substring(path.lastIndexOf(".")), requestFile);
-                    filesList.add(body);
-                }
-            }
-
-
-            AppUtility.progressBarShow(((Context) addJobEquView));
-            final RequestBody finalJobId = jobId;
-            ApiClient.getservices().convertItemToEquipment(AppUtility.getApiHeaders(),
-                    filesList, equnm, brand, mno, sno,
-                    expiryDate, manufactureDate, purchaseDate,
-                    status, notes, /*isBarcodeGenerate,*/ state
-                    , ctry, adr, city, zip, ecId, type,
-                    egId, jobId, cltId, contrId,
-                    itemId, supplier, rate, isPart, siteId, invId, extraField1,
-                    extraField2, barcodeBody, qrcodeBody, equipmentIdBody,servIntvalTypeBody,
-                    servIntvalValueBody,rplacedEquId,isEquReplaced,isCnvtItemPartsBody,installedDateBody,supplierIdBody)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Observer<JsonObject>() {
-                        @Override
-                        public void onSubscribe(Disposable d) {
-
-                        }
-
-                        @Override
-                        public void onNext(JsonObject jsonObject) {
-                            if (jsonObject.get("success").getAsBoolean()) {
-                                updateJobItemData(addEquReq.getJobId(), LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
-
-                            } else if (jsonObject.get("statusCode") != null && jsonObject.get("statusCode").getAsString().equals(AppConstant.SESSION_EXPIRE)) {
-                                addJobEquView.sessionExpire(LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
-                            } else {
-                                addJobEquView.setEquReqError(LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
-                                //addJobEquView.finishActivity();
-                            }
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-                            Log.e("TAG : error----", e.getMessage());
-                            AppUtility.progressBarDissMiss();
-//                            addJobEquView.finishActivity();
-                        }
-
-                        @Override
-                        public void onComplete() {
-                            updateEquipmentCount(addEquReq.getJobId());
-                            AppUtility.progressBarDissMiss();
-                            Log.e("TAG onComplete------", "onComplete");
-                        }
-                    });
+            Log.e("","Request Param Add Equipment"+new Gson().toJson(addEquReq)+" path: "+path+" barcode: "+barcode+" qrcode: "+qrcode+" equipmentId: "+equipmentId);
+//            RequestBody equnm = null;
+//            RequestBody brand = null;
+//            RequestBody mno = null;
+//            RequestBody sno = null;
+//            RequestBody expiryDate = null;
+//            RequestBody manufactureDate = null;
+//            RequestBody purchaseDate = null;
+//            RequestBody status = null;
+//            RequestBody notes = null;
+////            RequestBody isBarcodeGenerate = null;
+//            RequestBody state = null;
+//            RequestBody ctry = null;
+//            RequestBody adr = null;
+//            RequestBody city = null;
+//            RequestBody zip = null;
+//            RequestBody ecId = null;
+//            RequestBody type = null;
+//            RequestBody egId = null;
+//            RequestBody jobId = null;
+//            RequestBody cltId = null;
+//            RequestBody contrId = null;
+//            RequestBody itemId = null;
+//            RequestBody supplier = null;
+//            RequestBody rate = null;
+//            RequestBody isPart = null;
+//            RequestBody siteId = null;
+//            RequestBody invId = null;
+//            RequestBody extraField1 = null;
+//            RequestBody extraField2 = null;
+//            RequestBody barcodeBody = null;
+//            RequestBody qrcodeBody = null;
+//            RequestBody equipmentIdBody = null;
+//
+//            RequestBody servIntvalTypeBody = null;
+//            RequestBody servIntvalValueBody = null;
+//            RequestBody isEquReplaced = null;
+//            RequestBody rplacedEquId = null;
+//            RequestBody installedDateBody = null;
+//            RequestBody isCnvtItemPartsBody = null;
+//            RequestBody supplierIdBody = null;
+//            RequestBody ijmmIdBody = null;
+//            try {
+//                equnm = RequestBody.create(addEquReq.getEqunm(), MultipartBody.FORM);
+//                brand = RequestBody.create(addEquReq.getBrand(), MultipartBody.FORM);
+//                mno = RequestBody.create(addEquReq.getMno(), MultipartBody.FORM);
+//                sno = RequestBody.create(addEquReq.getSno(), MultipartBody.FORM);
+//                supplier = RequestBody.create(addEquReq.getSupplier(), MultipartBody.FORM);
+//                expiryDate = RequestBody.create(addEquReq.getExpiryDate(), MultipartBody.FORM);
+//                manufactureDate = RequestBody.create(addEquReq.getManufactureDate(), MultipartBody.FORM);
+//                purchaseDate = RequestBody.create(addEquReq.getPurchaseDate(), MultipartBody.FORM);
+//                status = RequestBody.create(addEquReq.getStatus(), MultipartBody.FORM);
+//                notes = RequestBody.create(addEquReq.getNotes(), MultipartBody.FORM);
+////                isBarcodeGenerate = RequestBody.create(addEquReq.getIsBarcodeGenerate(), MultipartBody.FORM);
+//                state = RequestBody.create(addEquReq.getState(), MultipartBody.FORM);
+//                ctry = RequestBody.create(addEquReq.getCtry(), MultipartBody.FORM);
+//                adr = RequestBody.create(addEquReq.getAdr(), MultipartBody.FORM);
+//                city = RequestBody.create(addEquReq.getCity(), MultipartBody.FORM);
+//                zip = RequestBody.create(addEquReq.getZip(), MultipartBody.FORM);
+//                ecId = RequestBody.create(addEquReq.getEcId(), MultipartBody.FORM);
+//                type = RequestBody.create(addEquReq.getType(), MultipartBody.FORM);
+//                egId = RequestBody.create(addEquReq.getEgId(), MultipartBody.FORM);
+//                jobId = RequestBody.create(addEquReq.getJobId(), MultipartBody.FORM);
+//                cltId = RequestBody.create(addEquReq.getCltId(), MultipartBody.FORM);
+//                contrId = RequestBody.create(addEquReq.getContrId(), MultipartBody.FORM);
+//                itemId = RequestBody.create(addEquReq.getItemId(), MultipartBody.FORM);
+//                supplier = RequestBody.create(addEquReq.getSupplier(), MultipartBody.FORM);
+//                rate = RequestBody.create(addEquReq.getRate(), MultipartBody.FORM);
+//                isPart = RequestBody.create(addEquReq.getIsPart(), MultipartBody.FORM);
+//                siteId = RequestBody.create(addEquReq.getSiteId(), MultipartBody.FORM);
+//                invId = RequestBody.create(addEquReq.getInvId(), MultipartBody.FORM);
+//                extraField1 = RequestBody.create(addEquReq.getExtraField1(), MultipartBody.FORM);
+//                extraField2 = RequestBody.create(addEquReq.getExtraField2(), MultipartBody.FORM);
+//                barcodeBody = RequestBody.create(barcode, MultipartBody.FORM);
+//                qrcodeBody = RequestBody.create(qrcode, MultipartBody.FORM);
+//                equipmentIdBody = RequestBody.create(equipmentId, MultipartBody.FORM);
+//                servIntvalTypeBody = RequestBody.create(addEquReq.getServIntvalType(), MultipartBody.FORM);
+//                servIntvalValueBody = RequestBody.create(addEquReq.getServIntvalValue(), MultipartBody.FORM);
+//                isEquReplaced = RequestBody.create(addEquReq.getIsEquReplaced(), MultipartBody.FORM);
+//                rplacedEquId = RequestBody.create(addEquReq.getRplacedEquId(), MultipartBody.FORM);
+//                installedDateBody = RequestBody.create(addEquReq.getInstalledDate(), MultipartBody.FORM);
+//                isCnvtItemPartsBody = RequestBody.create(addEquReq.getIsCnvtItemParts(), MultipartBody.FORM);
+//                supplierIdBody = RequestBody.create(addEquReq.getSupId(), MultipartBody.FORM);
+//               ijmmIdBody = RequestBody.create(addEquReq.getIjmmId(), MultipartBody.FORM);
+//
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//
+//
+//            String mimeType = "";
+//            MultipartBody.Part body = null;
+//            List<MultipartBody.Part> filesList = new ArrayList<>();
+//            if (!TextUtils.isEmpty(path)) {
+//                File file1 = new File(path);
+//                if (file1 != null) {
+//                    mimeType = URLConnection.guessContentTypeFromName(file1.getName());
+//                    if (mimeType == null) {
+//                        mimeType = file1.getName();
+//                    }
+//                    RequestBody requestFile = RequestBody.create(file1, MediaType.parse(mimeType));
+//                    // MultipartBody.Part is used to send also the actual file name
+//                    body = MultipartBody.Part.createFormData("image[]", file1.getName() + path.substring(path.lastIndexOf(".")), requestFile);
+//                    filesList.add(body);
+//                }
+//            }
+//
+//
+//            AppUtility.progressBarShow(((Context) addJobEquView));
+//            final RequestBody finalJobId = jobId;
+//            ApiClient.getservices().convertItemToEquipment(AppUtility.getApiHeaders(),
+//                    filesList, equnm, brand, mno, sno,
+//                    expiryDate, manufactureDate, purchaseDate,
+//                    status, notes, /*isBarcodeGenerate,*/ state
+//                    , ctry, adr, city, zip, ecId, type,
+//                    egId, jobId, cltId, contrId,
+//                    itemId, supplier, rate, isPart, siteId, invId, extraField1,
+//                    extraField2, barcodeBody, qrcodeBody, equipmentIdBody,servIntvalTypeBody,
+//                    servIntvalValueBody,rplacedEquId,isEquReplaced,isCnvtItemPartsBody,installedDateBody,supplierIdBody,ijmmIdBody)
+//                    .subscribeOn(Schedulers.io())
+//                    .observeOn(AndroidSchedulers.mainThread())
+//                    .subscribe(new Observer<JsonObject>() {
+//                        @Override
+//                        public void onSubscribe(Disposable d) {
+//
+//                        }
+//
+//                        @Override
+//                        public void onNext(JsonObject jsonObject) {
+//                            if (jsonObject.get("success").getAsBoolean()) {
+//                                updateJobItemData(addEquReq.getJobId(), LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
+//
+//                            } else if (jsonObject.get("statusCode") != null && jsonObject.get("statusCode").getAsString().equals(AppConstant.SESSION_EXPIRE)) {
+//                                addJobEquView.sessionExpire(LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
+//                            } else {
+//                                addJobEquView.setEquReqError(LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
+//                                //addJobEquView.finishActivity();
+//                            }
+//                        }
+//
+//                        @Override
+//                        public void onError(Throwable e) {
+//                            Log.e("TAG : error----", e.getMessage());
+//                            AppUtility.progressBarDissMiss();
+////                            addJobEquView.finishActivity();
+//                        }
+//
+//                        @Override
+//                        public void onComplete() {
+//                            updateEquipmentCount(addEquReq.getJobId());
+//                            AppUtility.progressBarDissMiss();
+//                            Log.e("TAG onComplete------", "onComplete");
+//                        }
+//                    });
         } else {
             netWork_erroR();
         }
@@ -488,6 +491,7 @@ public class AddJobEqu_Pc implements AddJobEqu_Pi {
     @Override
     public void addNewEquipment(AddEquReq addEquReq, String path, String barcode, String qrcode,String installedDate, String equipmentId) {
         if (AppUtility.isInternetConnected()) {
+            Log.e("","Request Param Add Equipment"+new Gson().toJson(addEquReq)+" path: "+path+" barcode: "+barcode+" qrcode: "+qrcode+" equipmentId: "+equipmentId);
             RequestBody equnm = null;
             RequestBody brand = null;
             RequestBody mno = null;

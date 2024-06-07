@@ -87,7 +87,7 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
     private String equipmentID, path;
     private Audit_Job_History_pi equ_details_pc;
     private AdpterAuditHistory adapterAuditList;
-    private AdpterJobHistory adpterJobList;
+    private AdpterJobHistory adpterJobList, adpterUpcomingJobList;
     RecyclerView auditList;
     RecyclerView jobList;
     RecyclerView job_upcoming_service_list;
@@ -267,9 +267,11 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
 
 
         adpterJobList = new AdpterJobHistory(this);
+        adpterUpcomingJobList = new AdpterJobHistory(this);
+        adpterUpcomingJobList.setOnJobSelection(this);
         adpterJobList.setOnJobSelection(this);
         jobList.setAdapter(adpterJobList);
-        job_upcoming_service_list.setAdapter(adpterJobList);
+        job_upcoming_service_list.setAdapter(adpterUpcomingJobList);
 
 
         /*tvUploadBarcode = findViewById(R.id.tv_upload_barcode);
@@ -392,6 +394,8 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
         last_service_date = findViewById(R.id.last_service_date);
         deu_service_txt = findViewById(R.id.deu_service_txt);
         deu_service_date = findViewById(R.id.deu_service_date);
+        //It will be hide till 3.04 after that we show in offline flow
+//        deu_service_txt.setVisibility(View.GONE);
         cl_parent_bottom_btn = findViewById(R.id.cl_parent_bottom_btn);
         txt_link_equStatus = findViewById(R.id.txt_link_equStatus);
         servic_histry_not_found = findViewById(R.id.servic_histry_not_found);
@@ -536,10 +540,10 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
                     if (equipment.getSno() != null && equipment.getSno().equals(codeText) || equipment.getBarcode() != null && equipment.getBarcode().equals(codeText) || equipment.getQrcode() != null && equipment.getQrcode().equals(codeText)) {
                         setAuditEquipment(equipment);
                         equpId = equipment.getEquId();
-                        equ_details_pc.getEquipmentAduitHistory(equipment.getEquId());
-                        equ_details_pc.getEquipmentJobHistory(equipment.getEquId());
-                        equ_details_pc.getEqItemFromServer(equipment.getEquId(), null);
-                        equ_details_pc.getEqPartsFromServer(equipment.getEquId());
+//                        equ_details_pc.getEquipmentAduitHistory(equipment.getEquId());
+//                        equ_details_pc.getEquipmentJobHistory(equipment.getEquId());
+//                        equ_details_pc.getEqItemFromServer(equipment.getEquId(), null);
+//                        equ_details_pc.getEqPartsFromServer(equipment.getEquId());
                         break;
                     }
                 }
@@ -551,10 +555,10 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
                     if (equipment.getSno() != null && equipment.getSno().equals(codeText) || equipment.getBarcode() != null && equipment.getBarcode().equals(codeText) || equipment.getQrcode() != null && equipment.getQrcode().equals(codeText)) {
                         setJobEquipment(equipment);
                         equpId = equipment.getEquId();
-                        equ_details_pc.getEquipmentAduitHistory(equipment.getEquId());
-                        equ_details_pc.getEquipmentJobHistory(equipment.getEquId());
-                        equ_details_pc.getEqItemFromServer(equipment.getEquId(), joblist.get(0).getJobId());
-                        equ_details_pc.getEqPartsFromServer(equipment.getEquId());
+//                        equ_details_pc.getEquipmentAduitHistory(equipment.getEquId());
+//                        equ_details_pc.getEquipmentJobHistory(equipment.getEquId());
+//                        equ_details_pc.getEqItemFromServer(equipment.getEquId(), joblist.get(0).getJobId());
+//                        equ_details_pc.getEqPartsFromServer(equipment.getEquId());
                         break;
                     }
                 }
@@ -639,6 +643,8 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
         try {
             if (equipment.getLastJobDate() != null && !TextUtils.isEmpty(equipment.getLastJobDate())) {
                 last_serv_date_lable.setText(AppUtility.getDateWithFormate(Long.parseLong(equipment.getLastJobDate()), "dd-MMM-yyyy hh:mm"));
+                last_service_date.setText(AppUtility.getDateWithFormate(Long.parseLong(equipment.getLastJobDate()), "dd-MMM-yyyy"));
+
             }
             // calculate service due date with the help of service interval value and type
             // days=0
@@ -646,6 +652,7 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
             //year=2
             if (equipment.getServIntvalType() != null && equipment.getServIntvalValue() != null)
                 serv_due_date.setText(AppUtility.getServiceDueDate(equipment.getServIntvalType(), equipment.getServIntvalValue(), Long.parseLong(equipment.getLastJobDate())));
+                deu_service_date.setText(AppUtility.getServiceDueDate(equipment.getServIntvalType(), equipment.getServIntvalValue(), Long.parseLong(equipment.getLastJobDate())));
 
         } catch (Exception exception) {
             exception.printStackTrace();
@@ -1115,7 +1122,7 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
                 if (!clicked_service_history) {
                     clicked_service_history = true;
                     cl_loader1.setVisibility(View.VISIBLE);
-                    equ_details_pc.getEquipmentJobHistory(equpId);
+                    equ_details_pc.getEquipmentJobHistory(equpId,"4");
                     last_service_date.setCompoundDrawablesWithIntrinsicBounds(null, null, getDrawable(R.drawable.ic_baseline_arrow_drop_up_24), null);
                 } else {
                     clicked_service_history = false;
@@ -1127,8 +1134,8 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
             case R.id.deu_service_date:
                 if (!clicked_upcoming_service) {
                     clicked_upcoming_service = true;
-//                    cl_loader2.setVisibility(View.VISIBLE);
-//                    equ_details_pc.getEquipmentJobHistory(equpId);
+                    cl_loader2.setVisibility(View.VISIBLE);
+                    equ_details_pc.getEquipmentUpcomingJobHistory(equpId,"2");
                     job_upcoming_service_list.setVisibility(View.VISIBLE);
                     deu_service_date.setCompoundDrawablesWithIntrinsicBounds(null, null, getDrawable(R.drawable.ic_baseline_arrow_drop_up_24), null);
                 } else {
@@ -1252,6 +1259,27 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
             tv_network_error.setVisibility(View.GONE);
         }else {
             servic_histry_not_found.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    public void setEquipmentUpcomingJobList(List<Aduit_Job_History_Res> aduit_res) {
+        List<Aduit_Job_History_Res> aduitJobHistoryRes = new ArrayList<>();
+        cl_loader2.setVisibility(View.GONE);
+        if (aduit_res != null && aduit_res.size() > 0) {
+            upcoming_servic_not_found.setVisibility(View.GONE);
+            for (Aduit_Job_History_Res jobHistoryRes : aduit_res) {
+                if (jobHistoryRes.getStatus().equals("13")) {
+                    aduitJobHistoryRes.add(jobHistoryRes);
+                }
+            }
+            aduit_res.removeAll(aduitJobHistoryRes);
+            adpterUpcomingJobList.setList(aduit_res);
+            job_ll.setVisibility(View.VISIBLE);
+            job_upcoming_service_list.setVisibility(View.VISIBLE);
+            tv_network_error.setVisibility(View.GONE);
+        }else {
+            upcoming_servic_not_found.setVisibility(View.VISIBLE);
         }
     }
 

@@ -13,6 +13,7 @@ public interface Audit_Job_History_View {
     void setEquipmentAduitList(List<Aduit_Job_History_Res> aduit_res);
 
     void setEquipmentJobList(List<Aduit_Job_History_Res> aduit_res);
+    void setEquipmentUpcomingJobList(List<Aduit_Job_History_Res> aduit_res);
     void setEquipmentItemList(List<InvoiceItemDataModel> data,String jobId);
     void setEquipmentPartList(List<EquArrayModel> data);
 

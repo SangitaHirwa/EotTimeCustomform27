@@ -182,9 +182,9 @@ public class Audit_Job_History_pc implements Audit_Job_History_pi {
     }
 
     @Override
-    public void getEquipmentJobHistory(String equId) {
+    public void getEquipmentJobHistory(String equId,String filterType) {
         if (AppUtility.isInternetConnected()) {
-            Aduit_Job_History_Req model = new Aduit_Job_History_Req(equId, "0");
+            Aduit_Job_History_Req model = new Aduit_Job_History_Req(equId, "0",filterType);
             String data = new Gson().toJson(model);
             ApiClient.getservices().eotServiceCall(Service_apis.getEquAuditSchedule,
                     AppUtility.getApiHeaders(), AppUtility.getJsonObject(data))
@@ -204,6 +204,51 @@ public class Audit_Job_History_pc implements Audit_Job_History_pi {
                                 }.getType();
                                 List<Aduit_Job_History_Res> list = new Gson().fromJson(convert, listType);
                                 audit_history_view.setEquipmentJobList(list);
+                                if (list != null)
+                                    audit_history_view.getJobSize(list.size());
+
+                            }
+                        }
+
+                        @Override
+                        public void onError(@NotNull Throwable e) {
+
+                        }
+
+                        @Override
+                        public void onComplete() {
+
+
+                        }
+                    });
+        } else {
+            if (audit_history_view != null)
+                audit_history_view.setNetworkError(LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_check_network));
+        }
+    }
+    @Override
+    public void getEquipmentUpcomingJobHistory(String equId,String filterType) {
+        if (AppUtility.isInternetConnected()) {
+            Aduit_Job_History_Req model = new Aduit_Job_History_Req(equId, "0",filterType);
+            String data = new Gson().toJson(model);
+            ApiClient.getservices().eotServiceCall(Service_apis.getEquAuditSchedule,
+                    AppUtility.getApiHeaders(), AppUtility.getJsonObject(data))
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<JsonObject>() {
+                        @Override
+                        public void onSubscribe(@NotNull Disposable d) {
+
+                        }
+
+                        @Override
+                        public void onNext(@NotNull JsonObject jsonObject) {
+                            if (jsonObject.get("success").getAsBoolean()) {
+                                String convert = new Gson().toJson(jsonObject.get("data").getAsJsonArray());
+                                Type listType = new TypeToken<List<Aduit_Job_History_Res>>() {
+                                }.getType();
+                                List<Aduit_Job_History_Res> list = new Gson().fromJson(convert, listType);
+                                audit_history_view.setEquipmentUpcomingJobList(list);
                                 if (list != null)
                                     audit_history_view.getJobSize(list.size());
 

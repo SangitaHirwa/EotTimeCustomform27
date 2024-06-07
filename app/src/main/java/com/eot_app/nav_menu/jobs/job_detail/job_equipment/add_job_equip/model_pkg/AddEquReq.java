@@ -48,6 +48,15 @@ public class AddEquReq {
     private String isCnvtItemParts;
     private String installedDate;
     private String supId;
+    private String ijmmId ="";
+
+    public String getIjmmId() {
+        return ijmmId;
+    }
+
+    public void setIjmmId(String ijmmId) {
+        this.ijmmId = ijmmId;
+    }
 
     public String getSupId() {
         return supId;
@@ -115,7 +124,7 @@ public class AddEquReq {
             , String itemId, String rate, String siteId, String isPart,
                      String status, String invId,String extraField1,
                      String extraField2,String servIntvalType,String servIntvalValue,
-                     String isCnvtItemParts,String installedDate,String supplierId) {
+                     String isCnvtItemParts,String installedDate,String supplierId,String ijmmId) {
         this.type = type;
         this.egId = egId;
         this.ecId = ecId;
@@ -150,6 +159,7 @@ public class AddEquReq {
         this.isCnvtItemParts=isCnvtItemParts;
         this.installedDate=installedDate;
         this.supId=supplierId;
+        this.ijmmId=ijmmId;
     }
 
     /**

@@ -1960,7 +1960,9 @@
     "show_more_details": "Show More Details",
     "show_less_details":  "Show Less Details",
     "loc_and_instal_date": "Location & Installation Date",
-    "more_details": "More Details"
+    "more_details": "More Details",
+    "serial_no_not_matched": "Serial number is not matched.",
+    "select_serial_no": "Please select Serial number"
   }
 }
 

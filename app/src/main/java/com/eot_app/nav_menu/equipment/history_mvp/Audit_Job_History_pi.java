@@ -6,7 +6,8 @@ public interface Audit_Job_History_pi {
 
     void getEquipmentAduitHistory(String equId);
 
-    void getEquipmentJobHistory(String equId);
+    void getEquipmentJobHistory(String equId,String filterType);
+    void getEquipmentUpcomingJobHistory(String equId,String filterType);
 
     void getEquipmentAduitDetails(String audId);
     void getEqItemFromServer(String equId,String jobId);

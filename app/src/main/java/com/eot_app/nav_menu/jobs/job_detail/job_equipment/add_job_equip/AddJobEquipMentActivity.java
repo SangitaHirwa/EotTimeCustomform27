@@ -168,6 +168,8 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
     String statenameById="";
     String city="";
     String zip="";
+    boolean isSerialNoSelected = false;
+
     /**
      * select date from picker & concanate current time
      */
@@ -581,6 +583,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
 
                 // for adding parts with item set data in the views
                 equipmentIdName = bundle.getString("equipmentIdName");
+                isSerialNoSelected = bundle.getBoolean("isSerialNoSelected",false);
                 updateItemDataModel = new Gson().fromJson(string, InvoiceItemDataModel.class);
                 setItemDefaultData();
                 if (equipmentId != null && !equipmentId.isEmpty()) {
@@ -589,16 +592,22 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
                     equipment_layout.setHintEnabled(true);
                 }
                 // for adding parts with item set data in the views
-                if (comeFrom != null && comeFrom.equalsIgnoreCase("AddRemark")) {
+                if (comeFrom != null && comeFrom.equalsIgnoreCase("AddRemark") || comeFrom != null && comeFrom.equalsIgnoreCase("JobListScan")) {
                     setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.step_2)+" ("+
                             LanguageController.getInstance().getMobileMsgByKey(AppConstant.title_add_equipment)+")");
                     tvLabelStep2.setVisibility(View.VISIBLE);
                     add_edit_item_Btn.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.title_add_equipment_part));
                     ch_equ_as_part.setEnabled(false);
-                    ch_equ_as_part.setChecked(true);
+                    if(isSerialNoSelected) {
+                        ch_equ_as_part.setChecked(false);
+                        isPart = "0";
+                    }else {
+                        ch_equ_as_part.setChecked(true);
+                        isPart = "1";
+                    }
                     equipment_layout.setVisibility(View.VISIBLE);
                     eq_view.setVisibility(View.VISIBLE);
-                    isPart = "1";
+
                 }
 
                 // for checking if the item is
@@ -614,6 +623,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
             // for adding parts without item set data in the views
             if (getIntent().hasExtra("comeFrom") && bundle.getString("comeFrom").equalsIgnoreCase("AddPartWithoutItem")) {
                 setDataIntoViews(bundle);
+                isSerialNoSelected = bundle.getBoolean("isSerialNoSelected",false);
                 cltId = bundle.getString("cltId");
                 equipmentIdName = bundle.getString("equipmentIdName");
                 job = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(jobId);
@@ -625,10 +635,16 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
                 tvLabelStep2.setVisibility(View.GONE);
                 add_edit_item_Btn.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.title_add_equipment_part));
                 ch_equ_as_part.setEnabled(false);
-                ch_equ_as_part.setChecked(true);
+                if(isSerialNoSelected) {
+                    ch_equ_as_part.setChecked(false);
+                    isPart = "0";
+                }else {
+                    ch_equ_as_part.setChecked(true);
+                    isPart = "1";
+                }
                 equipment_layout.setVisibility(View.VISIBLE);
                 eq_view.setVisibility(View.VISIBLE);
-                isPart = "1";
+
                 if (equipmentId != null && !equipmentId.isEmpty()) {
                     auto_equipment.setEnabled(false);
                     auto_equipment.setText(equipmentIdName);
@@ -1440,7 +1456,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
                                     custom_filed_txt_2.getText().toString().trim(),
                                     servIntvalType,
                                     edt_equ_service_interval.getText().toString(),
-                                    isCnvtItemParts, binding.installedDateLable.getText().toString().trim()+" "+formatetime,supplierId),
+                                    isCnvtItemParts, binding.installedDateLable.getText().toString().trim()+" "+formatetime,supplierId,""),
                             path,
                             barcodeString,qrCodeString, equipmentId);
                 } else if (audit != null) {
@@ -1498,7 +1514,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
                                 custom_filed_txt_2.getText().toString().trim(),
                                 servIntvalType,
                                 edt_equ_service_interval.getText().toString(),
-                                isCnvtItemParts, binding.installedDateLable.getText().toString().trim()+" "+formatetime,supplierId), path,
+                                isCnvtItemParts, binding.installedDateLable.getText().toString().trim()+" "+formatetime,supplierId,updateItemDataModel.getIjmmId()), path,
                         barcodeString,qrCodeString, equipmentId);
             }
         }
