@@ -86,6 +86,7 @@ import com.eot_app.nav_menu.jobs.job_detail.job_equipment.job_equ_remrk.job_equ_
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.job_equ_remrk.job_equ_mvp.JobEquRemark_View;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.model.UpdateEquStatusReqModel;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.model.UpdateEquStatusResModel;
+import com.eot_app.nav_menu.jobs.job_detail.job_equipment.model.UpdateSiteLocationReqModel;
 import com.eot_app.nav_menu.jobs.job_detail.requested_item.AddUpdateRquestedItemActivity;
 import com.eot_app.nav_menu.jobs.job_detail.requested_item.RequestedItemListAdapter;
 import com.eot_app.nav_menu.jobs.job_detail.requested_item.requested_itemModel.AddUpdateRequestedModel;
@@ -124,6 +125,7 @@ public class JobEquPartRemarkRemarkActivity extends UploadDocumentActivity imple
     public static final int ADDPART = 333;
     final int EQUIPMENT_UPDATE_CODE = 141,
             DETAILSUPDATEFORUSERMANUAL = 142;
+    public final static int REALLOCATE_LC = 152;
     private final ArrayList<Answer> answerArrayList = new ArrayList<>();
     private final List<MultipartBody.Part> docAns = new ArrayList<>();
     private final List<MultipartBody.Part> signAns = new ArrayList<>();
@@ -519,6 +521,13 @@ public class JobEquPartRemarkRemarkActivity extends UploadDocumentActivity imple
                         if (equipment1.getEquId().equals(equipment.getEquId())) {
                             equipment1.setRemark(edit_remarks.getText().toString());
                             equipment1.setStatus(equStatusId);
+                            equipment1.setAdr(equipment.getAdr());
+                            equipment1.setCity(equipment.getCity());
+                            equipment1.setCtry(equipment.getCtry());
+                            equipment1.setSiteId(equipment.getSiteId());
+                            equipment1.setState(equipment.getState());
+                            equipment1.setZip(equipment.getZip());
+                            equipment1.setLocation(equipment.getLocation());
                             AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().updateJob(job);
                             // for notifying job overview page
                             EotApp.getAppinstance().getJobFlagOverView();
@@ -531,6 +540,14 @@ public class JobEquPartRemarkRemarkActivity extends UploadDocumentActivity imple
                                     for (EquArrayModel equipmentPart : equipmentArr.getEquComponent()) {
                                         if (equipmentPart.getEquId().equals(equipment.getEquId())) {
                                             equipmentPart.setStatus(equStatusId);
+                                            equipmentPart.setRemark(edit_remarks.getText().toString());
+                                            equipmentPart.setAdr(equipment.getAdr());
+                                            equipmentPart.setCity(equipment.getCity());
+                                            equipmentPart.setCtry(equipment.getCtry());
+                                            equipmentPart.setSiteId(equipment.getSiteId());
+                                            equipmentPart.setState(equipment.getState());
+                                            equipmentPart.setZip(equipment.getZip());
+                                            equipmentPart.setLocation(equipment.getLocation());
                                             equipmentPart.setRemark(edit_remarks.getText().toString());
                                             AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().updateJob(job);
                                             // for notifying job overview page
@@ -1069,7 +1086,9 @@ public class JobEquPartRemarkRemarkActivity extends UploadDocumentActivity imple
             case R.id.tv_reallocate:
                 Intent intent = new Intent(this, JobEquReallocateActivity.class);
                 intent.putExtra("old_location",equipment.getLocation());
-                startActivity(intent);
+                intent.putExtra("equId",equipment.getEquId());
+                intent.putExtra("clientId",equipment.getCltId());
+                startActivityForResult(intent,REALLOCATE_LC);
                 break;
             case R.id.tv_repair:
                 if (jobId != null && !jobId.isEmpty() && equipment != null && !equipment.getEquId().isEmpty()) {
@@ -1818,6 +1837,23 @@ public class JobEquPartRemarkRemarkActivity extends UploadDocumentActivity imple
         if (requestCode == EQUIPMENT_UPDATE_CODE && resultCode == Activity.RESULT_OK) {
             if (adapter != null && jobEquimPi != null) {
                 jobEquimPi.getEquipmentList(equipment.getType(), cltId, jobId, equipment.getEquId());
+            }
+        }if(requestCode == REALLOCATE_LC){
+            if(data != null){
+                String adrModel = data.getStringExtra("adr_model");
+                String location = data.getStringExtra("loc");
+                Type listType = new TypeToken<UpdateSiteLocationReqModel>() {
+                }.getType();
+                UpdateSiteLocationReqModel updateData = new Gson().fromJson(adrModel, listType);
+                equipment.setAdr(updateData.getAdr());
+                equipment.setCity(updateData.getCity());
+                equipment.setCtry(updateData.getCtry());
+                equipment.setSiteId(updateData.getSiteId());
+                equipment.setState(updateData.getState());
+                equipment.setZip(updateData.getZip());
+                equipment.setLocation(location);
+                tv_location.setText(location);
+                updateEquStatus(txt_status.getText().toString());
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
