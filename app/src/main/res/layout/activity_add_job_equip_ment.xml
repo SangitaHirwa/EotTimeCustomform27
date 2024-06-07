@@ -644,7 +644,8 @@
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/client_site_layout"
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/input_field_height"
+                        android:layout_height="wrap_content"
+                        android:minHeight="@dimen/input_field_height"
                         android:gravity="center"
                         android:paddingTop="5dp"
                         android:visibility="visible"
@@ -663,16 +664,11 @@
                             android:dropDownVerticalOffset="-5dp"
                             android:inputType="text"
                             android:popupBackground="@drawable/popupbg"
-                            android:singleLine="true"
+                            android:singleLine="false"
                             tools:ignore="LabelFor" />
 
                     </com.google.android.material.textfield.TextInputLayout>
-                    <View
-                        android:id="@+id/lng_view"
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_marginTop="5dp"
-                        android:background="@color/border_font_color" />
+
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/equ_adrs_layout"
                         android:layout_width="match_parent"
@@ -683,6 +679,7 @@
                         app:hintAnimationEnabled="true"
                         android:clickable="false"
                         app:hintEnabled="false"
+                        android:visibility="gone"
                         app:hintTextAppearance="@style/TextInputLayoutHintText">
 
                         <AutoCompleteTextView
@@ -694,11 +691,11 @@
                             android:background="@android:color/transparent"
                             android:inputType="text"
                             android:clickable="false"
+                            android:visibility="gone"
                             android:singleLine="true"
                             tools:ignore="Autofill,LabelFor" />
                         <!--                    android:inputType="numberDecimal"-->
                     </com.google.android.material.textfield.TextInputLayout>
-
 
 
                     <!--installesd date-->

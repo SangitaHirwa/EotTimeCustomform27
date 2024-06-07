@@ -13,6 +13,8 @@ import android.widget.TextView;
 
 import com.eot_app.R;
 import com.eot_app.nav_menu.client.clientlist.client_detail.site.sitelist.Site_model;
+import com.eot_app.nav_menu.client.clientlist.client_detail.site.sitelist.editsite.editsitedb.SpinnerCountrySite;
+import com.google.type.Color;
 
 import java.util.ArrayList;
 
@@ -23,6 +25,9 @@ public class FilterAdapterSites extends ArrayAdapter<Site_model> {
     ArrayList<Site_model> array;
     ArrayList<Site_model> itemsAll;
     ArrayList<Site_model> suggestions;
+    boolean isShowAdr = false;
+    String adr,city,state,cntry,zip;
+    String location = "";
     Filter nameFilter = new Filter() {
         @Override
         public String convertResultToString(Object resultValue) {
@@ -74,6 +79,15 @@ public class FilterAdapterSites extends ArrayAdapter<Site_model> {
         this.itemsAll = (ArrayList<Site_model>) arrayOfLocationPickUpDelivery.clone();
         this.suggestions = new ArrayList<Site_model>();
     }
+    public FilterAdapterSites(Context contextMylocationAdapter, int layoutResourceId, ArrayList<Site_model> arrayOfLocationPickUpDelivery, boolean isShowAdr) {
+        super(contextMylocationAdapter, layoutResourceId, arrayOfLocationPickUpDelivery);
+        this.layoutResourceId = layoutResourceId;
+        this.context = contextMylocationAdapter;
+        this.array = arrayOfLocationPickUpDelivery;
+        this.itemsAll = (ArrayList<Site_model>) arrayOfLocationPickUpDelivery.clone();
+        this.suggestions = new ArrayList<Site_model>();
+        this.isShowAdr = isShowAdr;
+    }
 
     @NonNull
     public View getView(int position, View convertView, @NonNull ViewGroup parent) {
@@ -86,9 +100,33 @@ public class FilterAdapterSites extends ArrayAdapter<Site_model> {
         Site_model pickOrDropModel = array.get(position);
         if (pickOrDropModel != null) {
             TextView customerNameLabel = (TextView) v.findViewById(R.id.item_title_name);
+            TextView address = v.findViewById(R.id.item_subTitle_name);
             if (customerNameLabel != null) {
                 Log.i("", "getView Customer Name:" + pickOrDropModel.getSnm());
                 customerNameLabel.setText(pickOrDropModel.getSnm());
+            }
+            if(isShowAdr && address != null){
+                location = "";
+                address.setVisibility(View.VISIBLE);
+                assert customerNameLabel != null;
+                customerNameLabel.setTextColor(context.getResources().getColor(R.color.black));
+                if(pickOrDropModel.getAdr() != null && !pickOrDropModel.getAdr().isEmpty()){
+                    adr = pickOrDropModel.getAdr();
+                    location = location+""+adr;
+                }if(pickOrDropModel.getCity() != null && !pickOrDropModel.getCity().isEmpty()){
+                    city = pickOrDropModel.getCity();
+                    location = location+", "+city;
+                }if(pickOrDropModel.getCtry() != null && !pickOrDropModel.getCtry().isEmpty()){
+                    cntry = SpinnerCountrySite.getCountryNameById(pickOrDropModel.getCtry());
+                    location = location+" "+cntry;
+                }if(pickOrDropModel.getState() != null && !pickOrDropModel.getState().isEmpty()){
+                    state = pickOrDropModel.getState();
+                    location = location+" "+state;
+                }if(pickOrDropModel.getZip() != null && !pickOrDropModel.getZip().isEmpty()){
+                    zip = pickOrDropModel.getZip();
+                    location = location+" "+zip;
+                }
+                address.setText(location);
             }
         }
         return v;

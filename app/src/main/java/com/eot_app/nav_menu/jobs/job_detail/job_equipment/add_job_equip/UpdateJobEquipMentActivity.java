@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.text.Editable;
+import android.text.Html;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -690,17 +691,34 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
     private void setJobData(Job job) {
         try {
             if (job != null) {
+                String newLocation ="";
 //                auto_client.setText(job.getNm());
 //                auto_country.setText(SpinnerCountrySite.getCountryNameById(job.getCtry()));
 //                auto_states.setText(SpinnerCountrySite.getStatenameById(job.getCtry(), job.getState()));
 //                edt_equ_city.setText(job.getCity());
-                countryNameById = SpinnerCountrySite.getCountryNameById(job.getCtry());
-                statenameById = SpinnerCountrySite.getStatenameById(job.getCtry(), job.getState());
-                city = job.getCity();
-                zip = job.getZip();
-                edt_equ_adrs.setText(job.getAdr()+", "+city+" "+countryNameById+" "+statenameById+" "+zip);
+                if (job.getAdr() != null && !job.getAdr().isEmpty()) {
+                    newLocation = newLocation + "" + job.getAdr();
+                }
+                if (job.getCity() != null && !job.getCity().isEmpty()) {
+                    city = job.getCity();
+                    newLocation = newLocation + ", " + city;
+                }
+                if (job.getCtry() != null && !job.getCtry().isEmpty()) {
+                    countryNameById = SpinnerCountrySite.getCountryNameById(job.getCtry());
+                    newLocation = newLocation + " " + countryNameById;
+                }
+                if (job.getState() != null && !job.getState().isEmpty()) {
+                    statenameById = SpinnerCountrySite.getStatenameById((job.getCtry()), job.getState());
+                    newLocation = newLocation + " " + statenameById;
+                }
+                if (job.getCity() != null && !job.getCity().isEmpty()) {
+                    zip = job.getZip();
+                    newLocation = newLocation + " " + zip;
+                }
+                edt_equ_adrs.setText(newLocation);
 //                edt_equ_zip.setText(job.getZip());
-                auto_client_site.setText(job.getSnm());
+                auto_client_site.setText(Html.fromHtml("<font color='#4C000000'>"+job.getSnm()+"</font>"+"<br>"+
+                        newLocation));
 
                 client_site_layout.setHintEnabled(true);
 //                client_layout.setHintEnabled(true);
@@ -994,7 +1012,7 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
         if (siteModelList != null && siteModelList.size() > 0) {
             AppUtility.autocompletetextviewPopUpWindow(auto_client_site);
             this.clientSiteList = siteModelList;
-            auto_client_site.setText(siteModelList.get(0).getSnm());
+//            auto_client_site.setText(siteModelList.get(0).getSnm());
             siteId = siteModelList.get(0).getSiteId();
             client_site_layout.setHintEnabled(true);
 
@@ -1006,17 +1024,32 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
                 siteId = ((Site_model) adapterView.getItemAtPosition(i)).getSiteId();
                 client_site_layout.setHintEnabled(true);
                 Site_model sitetData = (Site_model) (adapterView.getAdapter().getItem(i));
-                if (sitetData.getCtry() != null) {
-                    countryNameById = SpinnerCountrySite.getCountryNameById(sitetData.getCtry());
+                if(sitetData != null) {
+                    String newLocation = "";
+                    if (sitetData.getAdr() != null && !sitetData.getAdr().isEmpty()) {
+                        newLocation = newLocation + "" + sitetData.getAdr();
+                    }
+                    if (sitetData.getCity() != null && !sitetData.getCity().isEmpty()) {
+                        city = sitetData.getCity();
+                        newLocation = newLocation + ", " + city;
+                    }
+                    if (sitetData.getCtry() != null && !sitetData.getCtry().isEmpty()) {
+                        countryNameById = SpinnerCountrySite.getCountryNameById(sitetData.getCtry());
+                        newLocation = newLocation + " " + countryNameById;
+                    }
+                    if (sitetData.getState() != null && !sitetData.getState().isEmpty()) {
+                        statenameById = SpinnerCountrySite.getStatenameById((sitetData.getCtry()), sitetData.getState());
+                        newLocation = newLocation + " " + statenameById;
+                    }
+                    if (sitetData.getZip() != null && !sitetData.getZip().isEmpty()) {
+                        zip = sitetData.getZip();
+                        newLocation = newLocation + " " + zip;
+                    }
+                    auto_client_site.setText(Html.fromHtml("<font color='#4C000000'>"+siteModelList.get(0).getSnm()+"</font>"+"<br>"+
+                            newLocation));
+                    edt_equ_adrs.setText(newLocation);
+                    equ_adrs_layout.setHintEnabled(true);
                 }
-                if (sitetData.getCtry() != null && sitetData.getState() != null) {
-                    statenameById = SpinnerCountrySite.getStatenameById((sitetData.getCtry()), sitetData.getState());
-                }
-                city = sitetData.getCity();
-                zip = sitetData.getZip();
-                String newLocation = sitetData.getAdr() + ", " +city+ " " +countryNameById+ " " +statenameById+ " " +zip;
-                edt_equ_adrs.setText(newLocation);
-                equ_adrs_layout.setHintEnabled(true);
             });
 
             auto_client_site.addTextChangedListener(new TextWatcher() {
@@ -1055,19 +1088,34 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
             siteId = ((ClientEquRes) adapterView.getItemAtPosition(i)).getSiteId();
             client_site_layout.setHintEnabled(true);
             ClientEquRes sitetData = (ClientEquRes) (adapterView.getAdapter().getItem(i));
-            if (sitetData.getCtry() != null) {
-                countryNameById = SpinnerCountrySite.getCountryNameById(sitetData.getCtry());
+            if(sitetData != null) {
+                String newLocation ="";
+                if (sitetData.getAdr() != null && !sitetData.getAdr().isEmpty()) {
+                    newLocation = newLocation+""+sitetData.getAdr();
+                }
+                if(sitetData.getCity() != null && !sitetData.getCity().isEmpty()){
+                    city = sitetData.getCity();
+                    newLocation = newLocation+", "+city;
+                }
+                if (sitetData.getCtry() != null && !sitetData.getCtry().isEmpty()) {
+                    countryNameById = SpinnerCountrySite.getCountryNameById(sitetData.getCtry());
+                    newLocation = newLocation+" "+countryNameById;
+                }
+                if (sitetData.getState() != null && !sitetData.getState().isEmpty()) {
+                    statenameById = SpinnerCountrySite.getStatenameById((sitetData.getCtry()), sitetData.getState());
+                    newLocation = newLocation+" "+statenameById;
+                }
+                if(sitetData.getZip() != null && !sitetData.getZip().isEmpty()){
+                    zip = sitetData.getZip();
+                    newLocation = newLocation+" "+zip;
+                }
+                auto_client_site.setText(Html.fromHtml("<font color='#4C000000'>"+sitetData.getSnm()+"</font>"+"<br>"+
+                        newLocation));
+                edt_equ_adrs.setText(newLocation);
+                equ_adrs_layout.setHintEnabled(true);
+                equ_adrs_layout.setClickable(false);
+                edt_equ_adrs.setClickable(false);
             }
-            if (sitetData.getCtry() != null && sitetData.getState() != null) {
-                statenameById = SpinnerCountrySite.getStatenameById((sitetData.getCtry()), sitetData.getState());
-            }
-            city = sitetData.getCity();
-            zip = sitetData.getZip();
-            String newLocation = sitetData.getAdr() + ", " +city+ " " +countryNameById+ " " +statenameById+ " " +zip;
-            edt_equ_adrs.setText(newLocation);
-            equ_adrs_layout.setHintEnabled(true);
-            equ_adrs_layout.setClickable(false);
-            edt_equ_adrs.setClickable(false);
         });
 
         auto_client_site.addTextChangedListener(new TextWatcher() {

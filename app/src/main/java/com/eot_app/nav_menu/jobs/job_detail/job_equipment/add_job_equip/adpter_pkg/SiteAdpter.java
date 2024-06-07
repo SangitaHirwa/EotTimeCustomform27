@@ -11,6 +11,7 @@ import android.widget.Filter;
 import android.widget.TextView;
 
 import com.eot_app.R;
+import com.eot_app.nav_menu.client.clientlist.client_detail.site.sitelist.editsite.editsitedb.SpinnerCountrySite;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.add_job_equip.clientEqu.ClientEquRes;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.add_job_equip.model_pkg.BrandData;
 
@@ -23,6 +24,9 @@ public class SiteAdpter extends ArrayAdapter<ClientEquRes> {
     ArrayList<ClientEquRes> arrayOfLocationPickUpDelivery;
     ArrayList<ClientEquRes> itemsAll;
     ArrayList<ClientEquRes> suggestions;
+    boolean isShowAdr = false;
+    String adr,city,state,cntry,zip;
+    String location = "";
     Filter nameFilter = new Filter() {
         @Override
         public String convertResultToString(Object resultValue) {
@@ -73,6 +77,15 @@ public class SiteAdpter extends ArrayAdapter<ClientEquRes> {
         this.itemsAll = (ArrayList<ClientEquRes>) arrayOfLocationPickUpDelivery.clone();
         this.suggestions = new ArrayList<ClientEquRes>();
     }
+    public SiteAdpter(Context contextMylocationAdapter, int layoutResourceId, ArrayList<ClientEquRes> arrayOfLocationPickUpDelivery,boolean isShowAdr) {
+        super(contextMylocationAdapter, layoutResourceId, arrayOfLocationPickUpDelivery);
+        this.layoutResourceId = layoutResourceId;
+        this.contextMylocationAdapter = contextMylocationAdapter;
+        this.arrayOfLocationPickUpDelivery = arrayOfLocationPickUpDelivery;
+        this.itemsAll = (ArrayList<ClientEquRes>) arrayOfLocationPickUpDelivery.clone();
+        this.suggestions = new ArrayList<ClientEquRes>();
+        this.isShowAdr = isShowAdr;
+    }
 
     public View getView(int position, View convertView, ViewGroup parent) {
         View v = convertView;
@@ -84,9 +97,33 @@ public class SiteAdpter extends ArrayAdapter<ClientEquRes> {
         ClientEquRes pickOrDropModel = arrayOfLocationPickUpDelivery.get(position);
         if (pickOrDropModel != null) {
             TextView customerNameLabel = v.findViewById(R.id.item_title_name);
+            TextView address = v.findViewById(R.id.item_subTitle_name);
             if (customerNameLabel != null) {
                 Log.i("", "getView Customer Name:" + pickOrDropModel.getSnm());
                 customerNameLabel.setText(pickOrDropModel.getSnm());
+            }
+            if(isShowAdr && address != null){
+                location = "";
+                address.setVisibility(View.VISIBLE);
+                assert customerNameLabel != null;
+                customerNameLabel.setTextColor(contextMylocationAdapter.getResources().getColor(R.color.black));
+                if(pickOrDropModel.getAdr() != null && !pickOrDropModel.getAdr().isEmpty()){
+                    adr = pickOrDropModel.getAdr();
+                    location = location+""+adr;
+                }if(pickOrDropModel.getCity() != null && !pickOrDropModel.getCity().isEmpty()){
+                    city = pickOrDropModel.getCity();
+                    location = location+", "+city;
+                }if(pickOrDropModel.getCtry() != null && !pickOrDropModel.getCtry().isEmpty()){
+                    cntry = SpinnerCountrySite.getCountryNameById(pickOrDropModel.getCtry());
+                    location = location+" "+cntry;
+                }if(pickOrDropModel.getState() != null && !pickOrDropModel.getState().isEmpty()){
+                    state = pickOrDropModel.getState();
+                    location = location+" "+state;
+                }if(pickOrDropModel.getZip() != null && !pickOrDropModel.getZip().isEmpty()){
+                    zip = pickOrDropModel.getZip();
+                    location = location+" "+zip;
+                }
+                address.setText(location);
             }
         }
         return v;

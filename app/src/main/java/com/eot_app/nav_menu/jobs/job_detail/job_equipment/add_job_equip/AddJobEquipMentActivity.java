@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.text.Editable;
+import android.text.Html;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -485,11 +486,13 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
         client_site_layout = findViewById(R.id.client_site_layout);
 
         auto_client_site = findViewById(R.id.auto_client_site);
-        auto_client_site.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.site_name));
+        auto_client_site.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.address));
 
-         equ_adrs_layout.setClickable(false);
+//         equ_adrs_layout.setClickable(false);
          edt_equ_adrs.setClickable(false);
          edt_equ_adrs.setFocusable(false);
+        auto_client_site.setFocusable(false);
+        auto_client_site.setClickable(false);
 //        supplier_layout=findViewById(R.id.Supllier_layout);
 
 //        status_Dp = findViewById(R.id.status_Dp);
@@ -723,24 +726,40 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
     private void setJobData(Job job) {
         try {
             if (job != null) {
+                String newLocation ="";
 //                auto_client.setText(job.getNm());
               /*  auto_country.setText(SpinnerCountrySite.getCountryNameById(job.getCtry()));
                 auto_states.setText(SpinnerCountrySite.getStatenameById(job.getCtry(), job.getState()));*/
 //                edt_equ_city.setText(job.getCity());
-                countryNameById = SpinnerCountrySite.getCountryNameById(job.getCtry());
-                statenameById = SpinnerCountrySite.getStatenameById(job.getCtry(), job.getState());
-                city = job.getCity();
-                zip = job.getZip();
-                edt_equ_adrs.setText(job.getAdr()+", "+city+" "+countryNameById+" "+statenameById+" "+zip);
-
+                if (job.getAdr() != null && !job.getAdr().isEmpty()) {
+                    newLocation = newLocation + "" + job.getAdr();
+                }
+                if (job.getCity() != null && !job.getCity().isEmpty()) {
+                    city = job.getCity();
+                    newLocation = newLocation + ", " + city;
+                }
+                if (job.getCtry() != null && !job.getCtry().isEmpty()) {
+                    countryNameById = SpinnerCountrySite.getCountryNameById(job.getCtry());
+                    newLocation = newLocation + " " + countryNameById;
+                }
+                if (job.getState() != null && !job.getState().isEmpty()) {
+                    statenameById = SpinnerCountrySite.getStatenameById((job.getCtry()), job.getState());
+                    newLocation = newLocation + " " + statenameById;
+                }
+                if (job.getCity() != null && !job.getCity().isEmpty()) {
+                    zip = job.getZip();
+                    newLocation = newLocation + " " + zip;
+                }
+                edt_equ_adrs.setText(newLocation);
 //                edt_equ_zip.setText(job.getZip());
-                auto_client_site.setText(job.getSnm());
+                auto_client_site.setText(Html.fromHtml("<font color='#4C000000'>"+job.getSnm()+"</font>"+"<br>"+
+                        newLocation));
                 client_site_layout.setHintEnabled(true);
 //                client_layout.setHintEnabled(true);
 //                job_country_layout.setHintEnabled(true);
 //                client_layout.setHintEnabled(true);
 //                job_state_layout.setHintEnabled(true);
-                equ_adrs_layout.setHintEnabled(true);
+//                equ_adrs_layout.setHintEnabled(true);
 //                equ_city_layout.setHintEnabled(true);
 //                equ_zip_layout.setHintEnabled(true);
             }
@@ -751,23 +770,41 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
 
     private void setAuditdata(AuditList_Res audit) {
         if (audit != null) {
+            String newLocation = "";
+
 //            auto_client.setText(audit.getNm());
          /*   auto_country.setText(SpinnerCountrySite.getCountryNameById(audit.getCtry()));
             auto_states.setText(SpinnerCountrySite.getStatenameById(audit.getCtry(), audit.getState()));*/
 //            edt_equ_city.setText(audit.getCity());
-            countryNameById = SpinnerCountrySite.getCountryNameById(audit.getCtry());
-            statenameById = SpinnerCountrySite.getStatenameById(audit.getCtry(), audit.getState());
-            city = audit.getCity();
-            zip = audit.getZip();
-            edt_equ_adrs.setText(audit.getAdr()+", "+city+" "+countryNameById+" "+statenameById+" "+zip);
+            if (audit.getAdr() != null && !audit.getAdr().isEmpty()) {
+                newLocation = newLocation + "" + audit.getAdr();
+            }
+            if (audit.getCity() != null && !audit.getCity().isEmpty()) {
+                city = audit.getCity();
+                newLocation = newLocation + ", " + city;
+            }
+            if (audit.getCtry() != null && !audit.getCtry().isEmpty()) {
+                countryNameById = SpinnerCountrySite.getCountryNameById(audit.getCtry());
+                newLocation = newLocation + " " + countryNameById;
+            }
+            if (audit.getState() != null && !audit.getState().isEmpty()) {
+                statenameById = SpinnerCountrySite.getStatenameById((audit.getCtry()), audit.getState());
+                newLocation = newLocation + " " + statenameById;
+            }
+            if (audit.getCity() != null && !audit.getCity().isEmpty()) {
+                zip = audit.getZip();
+                newLocation = newLocation + " " + zip;
+            }
+            edt_equ_adrs.setText(newLocation);
 //            edt_equ_zip.setText(audit.getZip());
-            auto_client_site.setText(audit.getSnm());
+            auto_client_site.setText(Html.fromHtml("<font color='#4C000000'>"+job.getSnm()+"</font>"+"<br>"+
+                    newLocation));
             client_site_layout.setHintEnabled(true);
 //            client_layout.setHintEnabled(true);
 //            job_country_layout.setHintEnabled(true);
 //            client_layout.setHintEnabled(true);
 //            job_state_layout.setHintEnabled(true);
-            equ_adrs_layout.setHintEnabled(true);
+//            equ_adrs_layout.setHintEnabled(true);
 //            equ_city_layout.setHintEnabled(true);
 //            equ_zip_layout.setHintEnabled(true);
         }
@@ -939,7 +976,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
       /*  Objects.requireNonNull(equ_city_layout.getEditText()).addTextChangedListener(this);
         Objects.requireNonNull(equ_zip_layout.getEditText()).addTextChangedListener(this);*/
         Objects.requireNonNull(quote_notes_layout.getEditText()).addTextChangedListener(this);
-        Objects.requireNonNull(equ_adrs_layout.getEditText()).addTextChangedListener(this);
+//        Objects.requireNonNull(equ_adrs_layout.getEditText()).addTextChangedListener(this);
         Objects.requireNonNull(custom_filed_header_1.getEditText()).addTextChangedListener(this);
         Objects.requireNonNull(custom_filed_header_2.getEditText()).addTextChangedListener(this);
 
@@ -1029,29 +1066,45 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
         if (siteModelList != null && siteModelList.size() > 0) {
             AppUtility.autocompletetextviewPopUpWindow(auto_client_site);
             this.clientSiteList = siteModelList;
-            auto_client_site.setText(siteModelList.get(0).getSnm());
+//            auto_client_site.setText(siteModelList.get(0).getSnm());
             siteId = siteModelList.get(0).getSiteId();
             client_site_layout.setHintEnabled(true);
 
             FilterAdapterSites filterSites = new FilterAdapterSites(this,
-                    R.layout.custom_adpter_item_layout_new, (ArrayList<Site_model>) siteModelList);
+                    R.layout.custom_adpter_item_layout_new, (ArrayList<Site_model>) siteModelList,true);
             auto_client_site.setAdapter(filterSites);
             auto_client_site.setThreshold(1);
             auto_client_site.setOnItemClickListener((adapterView, view, i, l) -> {
                 siteId = ((Site_model) adapterView.getItemAtPosition(i)).getSiteId();
                 client_site_layout.setHintEnabled(true);
                 Site_model sitetData = (Site_model) (adapterView.getAdapter().getItem(i));
-                if (sitetData.getCtry() != null) {
-                    countryNameById = SpinnerCountrySite.getCountryNameById(sitetData.getCtry());
+                if(sitetData != null) {
+                    String newLocation = "";
+                    if (sitetData.getAdr() != null && !sitetData.getAdr().isEmpty()) {
+                        newLocation = newLocation + "" + sitetData.getAdr();
+                    }
+                    if (sitetData.getCity() != null && !sitetData.getCity().isEmpty()) {
+                        city = sitetData.getCity();
+                        newLocation = newLocation + ", " + city;
+                    }
+                    if (sitetData.getCtry() != null && !sitetData.getCtry().isEmpty()) {
+                        countryNameById = SpinnerCountrySite.getCountryNameById(sitetData.getCtry());
+                        newLocation = newLocation + " " + countryNameById;
+                    }
+                    if (sitetData.getState() != null && !sitetData.getState().isEmpty()) {
+                        statenameById = SpinnerCountrySite.getStatenameById((sitetData.getCtry()), sitetData.getState());
+                        newLocation = newLocation + " " + statenameById;
+                    }
+                    if (sitetData.getZip() != null && !sitetData.getZip().isEmpty()) {
+                        zip = sitetData.getZip();
+                        newLocation = newLocation + " " + zip;
+                    }
+//                    auto_client_site.setText(Html.fromHtml("<font color='#4C000000'>"+siteModelList.get(0).getSnm()+"</font>"+"<br>"+
+//                            newLocation));
+                    auto_client_site.setText("sdhsuify\njskdyhkjshf");
+                    edt_equ_adrs.setText(newLocation);
+//                    equ_adrs_layout.setHintEnabled(true);
                 }
-                if (sitetData.getCtry() != null && sitetData.getState() != null) {
-                    statenameById = SpinnerCountrySite.getStatenameById((sitetData.getCtry()), sitetData.getState());
-                }
-                city = sitetData.getCity();
-                zip = sitetData.getZip();
-                String newLocation = sitetData.getAdr() + ", " +city+ " " +countryNameById+ " " +statenameById+ " " +zip;
-                edt_equ_adrs.setText(newLocation);
-                equ_adrs_layout.setHintEnabled(true);
             });
 
             auto_client_site.addTextChangedListener(new TextWatcher() {
@@ -1082,7 +1135,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
         this.clientEquResList = clientEquRes;
 
         final SiteAdpter siteAdpter = new SiteAdpter(this, R.layout.custom_adpter_item_layout_new,
-                (ArrayList<ClientEquRes>) clientEquRes);
+                (ArrayList<ClientEquRes>) clientEquRes,true);
         auto_client_site.setAdapter(siteAdpter);
         auto_client_site.setThreshold(1);
         auto_client_site.setOnItemClickListener((adapterView, view, i, l) -> {
@@ -1090,19 +1143,34 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
             siteId = ((ClientEquRes) adapterView.getItemAtPosition(i)).getSiteId();
             client_site_layout.setHintEnabled(true);
             ClientEquRes sitetData = (ClientEquRes) (adapterView.getAdapter().getItem(i));
-            if (sitetData.getCtry() != null) {
-                countryNameById = SpinnerCountrySite.getCountryNameById(sitetData.getCtry());
+            if(sitetData != null) {
+                String newLocation ="";
+                if (sitetData.getAdr() != null && !sitetData.getAdr().isEmpty()) {
+                    newLocation = newLocation+""+sitetData.getAdr();
+                }
+                if(sitetData.getCity() != null && !sitetData.getCity().isEmpty()){
+                    city = sitetData.getCity();
+                    newLocation = newLocation+", "+city;
+                }
+                if (sitetData.getCtry() != null && !sitetData.getCtry().isEmpty()) {
+                    countryNameById = SpinnerCountrySite.getCountryNameById(sitetData.getCtry());
+                    newLocation = newLocation+" "+countryNameById;
+                }
+                if (sitetData.getState() != null && !sitetData.getState().isEmpty()) {
+                    statenameById = SpinnerCountrySite.getStatenameById((sitetData.getCtry()), sitetData.getState());
+                    newLocation = newLocation+" "+statenameById;
+                }
+                if(sitetData.getZip() != null && !sitetData.getZip().isEmpty()){
+                    zip = sitetData.getZip();
+                    newLocation = newLocation+" "+zip;
+                }
+//                auto_client_site.setText(Html.fromHtml("<font color='#4C000000'>"+sitetData.getSnm()+"</font>"+"<br>"+
+//                        newLocation));
+                auto_client_site.setText("sdhsuify\njskdyhkjshf");
+//                equ_adrs_layout.setHintEnabled(true);
+//                equ_adrs_layout.setClickable(false);
+                edt_equ_adrs.setClickable(false);
             }
-            if (sitetData.getCtry() != null && sitetData.getState() != null) {
-                statenameById = SpinnerCountrySite.getStatenameById((sitetData.getCtry()), sitetData.getState());
-            }
-            city = sitetData.getCity();
-            zip = sitetData.getZip();
-            String newLocation = sitetData.getAdr() + ", " +city+ " " +countryNameById+ " " +statenameById+ " " +zip;
-            edt_equ_adrs.setText(newLocation);
-            equ_adrs_layout.setHintEnabled(true);
-            equ_adrs_layout.setClickable(false);
-            edt_equ_adrs.setClickable(false);
         });
 
         auto_client_site.addTextChangedListener(new TextWatcher() {
@@ -1550,7 +1618,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
 
 //        job_country_layout.setHintEnabled(true);
 //        job_state_layout.setHintEnabled(true);
-        equ_adrs_layout.setHintEnabled(true);
+//        equ_adrs_layout.setHintEnabled(true);
 //        equ_city_layout.setHintEnabled(true);
 //        equ_zip_layout.setHintEnabled(true);
     }
@@ -1927,8 +1995,8 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
                 equ_zip_layout.setHintEnabled(true);*/
             if (charSequence.hashCode() == quote_notes_edt.getText().hashCode())
                 quote_notes_layout.setHintEnabled(true);
-            if (charSequence.hashCode() == edt_equ_adrs.getText().hashCode())
-                equ_adrs_layout.setHintEnabled(true);
+//            if (charSequence.hashCode() == edt_equ_adrs.getText().hashCode())
+//                equ_adrs_layout.setHintEnabled(true);
             if (charSequence.hashCode() == custom_filed_txt_1.getText().hashCode())
                 custom_filed_header_1.setHintEnabled(true);
             if (charSequence.hashCode() == custom_filed_txt_2.getText().hashCode())
@@ -1953,8 +2021,8 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
                 equ_zip_layout.setHintEnabled(false);*/
             if (charSequence.hashCode() == quote_notes_edt.getText().hashCode())
                 quote_notes_layout.setHintEnabled(false);
-            if (charSequence.hashCode() == edt_equ_adrs.getText().hashCode())
-                equ_adrs_layout.setHintEnabled(false);
+//            if (charSequence.hashCode() == edt_equ_adrs.getText().hashCode())
+//                equ_adrs_layout.setHintEnabled(false);
             if (charSequence.hashCode() == custom_filed_txt_1.getText().hashCode())
                 custom_filed_header_1.setHintEnabled(true);
             if (charSequence.hashCode() == custom_filed_txt_2.getText().hashCode())

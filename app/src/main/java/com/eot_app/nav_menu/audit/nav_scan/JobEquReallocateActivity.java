@@ -1,8 +1,10 @@
 package com.eot_app.nav_menu.audit.nav_scan;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.Html;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.MenuItem;
@@ -51,7 +53,7 @@ import java.util.Objects;
 public class JobEquReallocateActivity extends AppCompatActivity implements View.OnClickListener, JobEquReallocate_View {
     TextView old_location_detail, txt_old_location, txt_new_location, no_site;
     Button location_save_btn;
-    TextInputLayout adr_layout, input_layout_site;
+    TextInputLayout input_layout_site;
     List<Country> countrylist = new ArrayList<>();
     List<States> stateslist = new ArrayList<>();
     LinearLayout site_dp_layout;
@@ -59,16 +61,20 @@ public class JobEquReallocateActivity extends AppCompatActivity implements View.
     String newLocation = "";
     String clientId = "";
     String equId = "";
-    AutoCompleteTextView auto_sites, adr;
+    AutoCompleteTextView auto_sites;
     ImageView site_dp_img;
     List<Site_model> site_data;
     private String siteId = "";
     private Site_model selectedSiteData;
     FilterAdapterSites filterSites;
-    View view_adr;
+
     ConstraintLayout new_location_Detail_l;
     JobEquReallocate_Pi reallocate_pi;
     UpdateSiteLocationReqModel reqModel;
+    String countryNameById = "";
+    String statenameById = "";
+    String city = "";
+    String zip = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,16 +115,12 @@ public class JobEquReallocateActivity extends AppCompatActivity implements View.
         location_save_btn = findViewById(R.id.location_save_btn);
         new_location_Detail_l = findViewById(R.id.new_location_Detail_l);
         no_site = findViewById(R.id.no_site);
-        adr = findViewById(R.id.adr);
-        adr_layout = findViewById(R.id.adr_layout);
         site_dp_layout = findViewById(R.id.site_dp_layout);
         input_layout_site = findViewById(R.id.input_layout_site);
         auto_sites = findViewById(R.id.auto_sites);
         site_dp_img = findViewById(R.id.site_dp_img);
-        view_adr = findViewById(R.id.view_adr);
 
-        adr.setHint((LanguageController.getInstance().getMobileMsgByKey(AppConstant.address)));
-        auto_sites.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.project_site_name));
+        auto_sites.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.address));
         txt_new_location.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.new_location));
         txt_old_location.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.old_location));
         location_save_btn.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.save_btn));
@@ -127,9 +129,6 @@ public class JobEquReallocateActivity extends AppCompatActivity implements View.
         auto_sites.setOnClickListener(this);
         site_dp_img.setOnClickListener(this);
         auto_sites.setFocusable(false);
-        adr.setFocusable(false);
-        adr_layout.setClickable(false);
-        adr.setClickable(false);
 
         reallocate_pi = new JobEquReallocate_Pc(this);
 
@@ -141,8 +140,6 @@ public class JobEquReallocateActivity extends AppCompatActivity implements View.
                         for (Site_model siteData : site_data) {
                             if (site_txt.equals(siteData.getSnm())) {
                                 siteId = siteData.getSiteId();
-                            } else {
-                                auto_sites.setText(AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).sitemodel().getSiteFromSiteId(siteId).getSnm());
                             }
                         }
                     }
@@ -189,21 +186,38 @@ public class JobEquReallocateActivity extends AppCompatActivity implements View.
 
     private void setSitetDefaultData(Site_model sitetData) {
         if (sitetData != null) {
-            String countryNameById = "";
-            String statenameById = "";
+
             siteId = sitetData.getSiteId();
             auto_sites.setFocusableInTouchMode(false);
             auto_sites.setFocusable(false);
             site_dp_img.setClickable(true);
-            if (sitetData.getCtry() != null) {
-                countryNameById = SpinnerCountrySite.getCountryNameById(sitetData.getCtry());
+            if(sitetData != null) {
+                newLocation = "";
+                auto_sites.setText("");
+                if (sitetData.getAdr() != null && !sitetData.getAdr().isEmpty()) {
+                    newLocation = newLocation+""+sitetData.getAdr();
+                }
+                if(sitetData.getCity() != null && !sitetData.getCity().isEmpty()){
+                    city = sitetData.getCity();
+                    newLocation = newLocation+", "+city;
+                }
+                if (sitetData.getCtry() != null && !sitetData.getCtry().isEmpty()) {
+                    countryNameById = SpinnerCountrySite.getCountryNameById(sitetData.getCtry());
+                    newLocation = newLocation+" "+countryNameById;
+                }
+                if (sitetData.getState() != null && !sitetData.getState().isEmpty()) {
+                    statenameById = SpinnerCountrySite.getStatenameById((sitetData.getCtry()), sitetData.getState());
+                    newLocation = newLocation+" "+statenameById;
+                }
+                if(sitetData.getZip() != null && !sitetData.getZip().isEmpty()){
+                    zip = sitetData.getZip();
+                    newLocation = newLocation+" "+zip;
+                }
             }
-            if (sitetData.getCtry() != null && sitetData.getState() != null) {
-                statenameById = SpinnerCountrySite.getStatenameById((sitetData.getCtry()), sitetData.getState());
-            }
-            newLocation = sitetData.getAdr() + ", " + sitetData.getCity() + " " + countryNameById + " " + statenameById + " " + sitetData.getZip();
-            adr.setText(newLocation);
-            adr_layout.setHintEnabled(true);
+            auto_sites.setText(Html.fromHtml("<font color='#4C000000'>"+AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).sitemodel().getSiteFromSiteId(siteId).getSnm()+"</font>"+"<br>"+
+                    newLocation));
+
+
         }
     }
 
@@ -228,7 +242,7 @@ public class JobEquReallocateActivity extends AppCompatActivity implements View.
                         }
                     }
                 }*/
-            filterSites = new FilterAdapterSites(this, R.layout.custom_adapter_item_layout, (ArrayList<Site_model>) data);
+            filterSites = new FilterAdapterSites(this, R.layout.custom_adapter_item_layout, (ArrayList<Site_model>) data,true);
             auto_sites.setAdapter(filterSites);
             auto_sites.setThreshold(0);
             auto_sites.setOnItemClickListener((adapterView, view, i, l) -> {
@@ -247,13 +261,9 @@ public class JobEquReallocateActivity extends AppCompatActivity implements View.
                     //new_site_nm = charSequence.toString();
                     if (charSequence.length() >= 1) {
                         input_layout_site.setHintEnabled(true);
-                        adr_layout.setHintEnabled(true);
                     } else if (charSequence.length() <= 0) {
                         input_layout_site.setHintEnabled(false);
-                        adr_layout.setHintEnabled(false);
                     }
-
-
                 }
 
                 @Override
@@ -263,7 +273,6 @@ public class JobEquReallocateActivity extends AppCompatActivity implements View.
         } else {
             new_location_Detail_l.setVisibility(View.GONE);
             no_site.setVisibility(View.VISIBLE);
-            view_adr.setVisibility(View.GONE);
             location_save_btn.setClickable(false);
             location_save_btn.setBackgroundResource(R.drawable.disable_submit_btn);
         }
