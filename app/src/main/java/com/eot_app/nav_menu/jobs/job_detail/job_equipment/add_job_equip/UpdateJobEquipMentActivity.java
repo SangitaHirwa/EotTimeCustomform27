@@ -130,8 +130,8 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
     private RadioButton radio_before, radio_after;
 //    View /*client_row,*/ site_row;
     private Spinner status_Dp;
-    private EditText edt_equ, edt_equ_model, edt_equ_service_interval, edt_equ_supplier, edt_equ_serial, edt_equ_adrs/*, edt_equ_city, edt_equ_zip*/, quote_notes_edt;//edt_equ_brand
-    private AutoCompleteTextView /*auto_country*//*,supplier_txt*//*, auto_states*/ auto_equipment, auto_catery, auto_grp, auto_brand ,auto_client_site;
+    private EditText edt_equ, edt_equ_model, edt_equ_service_interval, edt_equ_supplier, edt_equ_serial/*, edt_equ_city, edt_equ_zip*/, quote_notes_edt;//edt_equ_brand
+    private AutoCompleteTextView /*auto_country*//*,supplier_txt*//*, auto_states*/ auto_equipment, edt_equ_adrs, auto_catery, auto_grp, auto_brand ,auto_client_site;
     private String ctry, state;
 //    private EditText auto_client;
     private AppCompatImageView img_attachment;
@@ -157,6 +157,10 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
     Calendar warntyCalendar = Calendar.getInstance();
     Calendar startWarntyCalendar = Calendar.getInstance();
     Calendar installCalendar = Calendar.getInstance();
+    String countryNameById="";
+    String statenameById="";
+    String city="";
+    String zip="";
     /**
      * select date from picker & concanate current time
      */
@@ -526,7 +530,9 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
         rediogrpForTag = findViewById(R.id.rediogrpForTag);
         rediogrpForTag.setOnCheckedChangeListener(this);
          apicalling();
-
+        equ_adrs_layout.setClickable(false);
+        edt_equ_adrs.setClickable(false);
+        edt_equ_adrs.setFocusable(false);
 
         /*get Item Data For Item to equipment convert*****/
         Bundle bundle = getIntent().getExtras();
@@ -688,14 +694,18 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
 //                auto_country.setText(SpinnerCountrySite.getCountryNameById(job.getCtry()));
 //                auto_states.setText(SpinnerCountrySite.getStatenameById(job.getCtry(), job.getState()));
 //                edt_equ_city.setText(job.getCity());
-                edt_equ_adrs.setText(job.getAdr());
+                countryNameById = SpinnerCountrySite.getCountryNameById(job.getCtry());
+                statenameById = SpinnerCountrySite.getStatenameById(job.getCtry(), job.getState());
+                city = job.getCity();
+                zip = job.getZip();
+                edt_equ_adrs.setText(job.getAdr()+", "+city+" "+countryNameById+" "+statenameById+" "+zip);
 //                edt_equ_zip.setText(job.getZip());
                 auto_client_site.setText(job.getSnm());
 
                 client_site_layout.setHintEnabled(true);
-                client_layout.setHintEnabled(true);
+//                client_layout.setHintEnabled(true);
 //                job_country_layout.setHintEnabled(true);
-                client_layout.setHintEnabled(true);
+//                client_layout.setHintEnabled(true);
 //                job_state_layout.setHintEnabled(true);
                 equ_adrs_layout.setHintEnabled(true);
 //                equ_city_layout.setHintEnabled(true);
@@ -995,6 +1005,18 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
             auto_client_site.setOnItemClickListener((adapterView, view, i, l) -> {
                 siteId = ((Site_model) adapterView.getItemAtPosition(i)).getSiteId();
                 client_site_layout.setHintEnabled(true);
+                Site_model sitetData = (Site_model) (adapterView.getAdapter().getItem(i));
+                if (sitetData.getCtry() != null) {
+                    countryNameById = SpinnerCountrySite.getCountryNameById(sitetData.getCtry());
+                }
+                if (sitetData.getCtry() != null && sitetData.getState() != null) {
+                    statenameById = SpinnerCountrySite.getStatenameById((sitetData.getCtry()), sitetData.getState());
+                }
+                city = sitetData.getCity();
+                zip = sitetData.getZip();
+                String newLocation = sitetData.getAdr() + ", " +city+ " " +countryNameById+ " " +statenameById+ " " +zip;
+                edt_equ_adrs.setText(newLocation);
+                equ_adrs_layout.setHintEnabled(true);
             });
 
             auto_client_site.addTextChangedListener(new TextWatcher() {
@@ -1032,6 +1054,20 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
 
             siteId = ((ClientEquRes) adapterView.getItemAtPosition(i)).getSiteId();
             client_site_layout.setHintEnabled(true);
+            ClientEquRes sitetData = (ClientEquRes) (adapterView.getAdapter().getItem(i));
+            if (sitetData.getCtry() != null) {
+                countryNameById = SpinnerCountrySite.getCountryNameById(sitetData.getCtry());
+            }
+            if (sitetData.getCtry() != null && sitetData.getState() != null) {
+                statenameById = SpinnerCountrySite.getStatenameById((sitetData.getCtry()), sitetData.getState());
+            }
+            city = sitetData.getCity();
+            zip = sitetData.getZip();
+            String newLocation = sitetData.getAdr() + ", " +city+ " " +countryNameById+ " " +statenameById+ " " +zip;
+            edt_equ_adrs.setText(newLocation);
+            equ_adrs_layout.setHintEnabled(true);
+            equ_adrs_layout.setClickable(false);
+            edt_equ_adrs.setClickable(false);
         });
 
         auto_client_site.addTextChangedListener(new TextWatcher() {
@@ -1120,7 +1156,7 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
                     auto_equipment.showDropDown();
                 break;
             case R.id.auto_client_site:
-                if (clientSiteList != null && clientSiteList.size() > 0)
+//                if (clientSiteList != null && clientSiteList.size() > 0)
                     auto_client_site.showDropDown();
                 break;
             case R.id.auto_grp:
@@ -1196,10 +1232,10 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
     public void createEqquipmentRequest() {
 
         String countryname, statename;
-        countryname = ""/*auto_country.getText().toString()*/;
-        statename ="" /*auto_states.getText().toString()*/;
-        ctry = addJobEqu_pi.cntryId(countryname);
-        state = addJobEqu_pi.statId(ctry, statename);
+     /*   countryname = auto_country.getText().toString();
+        statename =auto_states.getText().toString();*/
+        ctry = addJobEqu_pi.cntryId(countryNameById);
+        state = addJobEqu_pi.statId(ctry, statenameById);
 
         if (updateItemDataModel == null) {
             if (addJobEqu_pi.RequiredFields(edt_equ.getText().toString().trim())) {
@@ -1209,8 +1245,8 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
                         parentId = equipment.getParentId();
                         isCnvtItemParts = "0";
                     }
-                    addJobEqu_pi.convertItemToequip(new AddEquReq(type, egId, ecId, "",
-                                    "", edt_equ_adrs.getText().toString().trim(),
+                    addJobEqu_pi.convertItemToequip(new AddEquReq(type, egId, ecId, zip,
+                                    city, edt_equ_adrs.getText().toString().trim(),
                                     ctry, state, /*isBarcodeGenerate,*/
                                     quote_notes_edt.getText().toString().trim(),
                                     purchase_date_lable.getText().toString().trim(),
@@ -1232,8 +1268,8 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
                             barcodeString,qrCodeString, parentId);
                 } else if (audit != null) {
                     addJobEqu_pi.addNewEquipment(
-                            new AddEquReq(type, egId, ecId, "",
-                                    "", edt_equ_adrs.getText().toString().trim(),
+                            new AddEquReq(type, egId, ecId, zip,
+                                    city, edt_equ_adrs.getText().toString().trim(),
                                     ctry, state, /*isBarcodeGenerate,*/
                                     quote_notes_edt.getText().toString().trim(),
                                     purchase_date_lable.getText().toString().trim(),
@@ -1252,8 +1288,8 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
                             binding.installedDateLable.getText().toString().trim(), equipmentId);
                 } else {
                     addJobEqu_pi.addNewEquipment(
-                            new AddEquReq(type, egId, ecId, "",
-                                    "", edt_equ_adrs.getText().toString().trim(),
+                            new AddEquReq(type, egId, ecId, zip,
+                                    city, edt_equ_adrs.getText().toString().trim(),
                                     ctry, state, /*isBarcodeGenerate,*/
                                     quote_notes_edt.getText().toString().trim(),
                                     purchase_date_lable.getText().toString().trim(),
@@ -1275,8 +1311,8 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
                     parentId = equipment.getParentId();
                     isCnvtItemParts = "0";
                 }
-                addJobEqu_pi.convertItemToequip(new AddEquReq(type, egId, ecId, "",
-                                "", edt_equ_adrs.getText().toString().trim(),
+                addJobEqu_pi.convertItemToequip(new AddEquReq(type, egId, ecId, zip,
+                                city, edt_equ_adrs.getText().toString().trim(),
                                 ctry, state, /*isBarcodeGenerate,*/
                                 quote_notes_edt.getText().toString().trim(),
                                 purchase_date_lable.getText().toString().trim(),

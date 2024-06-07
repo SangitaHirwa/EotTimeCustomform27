@@ -640,39 +640,6 @@
                         android:layout_marginTop="5dp"
                         android:background="@color/border_font_color" />
 
-
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/equ_adrs_layout"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/input_field_height"
-                        android:layout_marginEnd="10dp"
-                        android:gravity="center"
-                        android:paddingTop="5dp"
-                        app:hintAnimationEnabled="true"
-                        app:hintEnabled="false"
-                        app:hintTextAppearance="@style/TextInputLayoutHintText">
-
-                        <EditText
-                            android:id="@+id/edt_equ_adrs"
-                            style="@style/style_sec_sec"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:background="@android:color/transparent"
-                            android:inputType="text"
-                            android:singleLine="true"
-                            tools:ignore="Autofill,LabelFor" />
-                        <!--                    android:inputType="numberDecimal"-->
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                    <View
-                        android:id="@+id/lng_view"
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_marginTop="5dp"
-                        android:background="@color/border_font_color" />
-
                     <!--site-->
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/client_site_layout"
@@ -700,6 +667,40 @@
                             tools:ignore="LabelFor" />
 
                     </com.google.android.material.textfield.TextInputLayout>
+                    <View
+                        android:id="@+id/lng_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="5dp"
+                        android:background="@color/border_font_color" />
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/equ_adrs_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/input_field_height"
+                        android:layout_marginEnd="10dp"
+                        android:gravity="center"
+                        android:paddingTop="5dp"
+                        app:hintAnimationEnabled="true"
+                        android:clickable="false"
+                        app:hintEnabled="false"
+                        app:hintTextAppearance="@style/TextInputLayoutHintText">
+
+                        <AutoCompleteTextView
+                            android:id="@+id/edt_equ_adrs"
+                            style="@style/style_sec_sec"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:background="@android:color/transparent"
+                            android:inputType="text"
+                            android:clickable="false"
+                            android:singleLine="true"
+                            tools:ignore="Autofill,LabelFor" />
+                        <!--                    android:inputType="numberDecimal"-->
+                    </com.google.android.material.textfield.TextInputLayout>
+
+
+
                     <!--installesd date-->
                     <View
                         android:id="@+id/installed_date_view"
