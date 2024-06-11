@@ -924,6 +924,17 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/days" />
+                        <EditText
+                            android:id="@+id/edt_day"
+                            style="@style/style_sec_sec"
+                            android:layout_width="wrap_content"
+                            android:minWidth="@dimen/_30sdp"
+                            android:maxWidth="@dimen/_30sdp"
+                            android:layout_height="wrap_content"
+                            android:lines="1"
+                            android:inputType="number"
+                            android:visibility="gone"
+                            />
 
                         <RadioButton
                             android:id="@+id/radio_month"
@@ -931,6 +942,17 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/month" />
+                        <EditText
+                            android:id="@+id/edt_month"
+                            style="@style/style_sec_sec"
+                            android:layout_width="wrap_content"
+                            android:minWidth="@dimen/_30sdp"
+                            android:maxWidth="@dimen/_30sdp"
+                            android:layout_height="wrap_content"
+                            android:lines="1"
+                            android:inputType="number"
+                            android:visibility="gone"
+                            />
 
                         <RadioButton
                             android:id="@+id/radio_year"
@@ -938,19 +960,30 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/year" />
+                        <EditText
+                            android:id="@+id/edt_year"
+                            style="@style/style_sec_sec"
+                            android:layout_width="wrap_content"
+                            android:minWidth="@dimen/_30sdp"
+                            android:maxWidth="@dimen/_30sdp"
+                            android:layout_height="wrap_content"
+                            android:lines="1"
+                            android:inputType="number"
+                            android:visibility="gone"
+                            />
 
                     </RadioGroup>
 
-                    <EditText
-                        android:id="@+id/edt_equ_service_interval"
-                        style="@style/style_sec_sec"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:background="@android:color/transparent"
-                        android:inputType="number"
-                        android:singleLine="true"
-                        tools:ignore="Autofill,LabelFor" />
+<!--                    <EditText-->
+<!--                        android:id="@+id/edt_equ_service_interval"-->
+<!--                        style="@style/style_sec_sec"-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_gravity="center"-->
+<!--                        android:background="@android:color/transparent"-->
+<!--                        android:inputType="number"-->
+<!--                        android:singleLine="true"-->
+<!--                        tools:ignore="Autofill,LabelFor" />-->
 
                     <View
                         android:layout_width="match_parent"

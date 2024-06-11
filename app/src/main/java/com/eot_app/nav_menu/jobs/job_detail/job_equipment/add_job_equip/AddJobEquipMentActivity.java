@@ -15,6 +15,7 @@ import android.os.Handler;
 import android.text.Editable;
 import android.text.Html;
 import android.text.InputType;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MenuItem;
@@ -36,11 +37,13 @@ import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.eot_app.R;
 import com.eot_app.UploadDocumentActivity;
@@ -48,6 +51,7 @@ import com.eot_app.databinding.ActivityAddJobEquipMentBinding;
 import com.eot_app.nav_menu.audit.audit_list.audit_mvp.model.AuditList_Res;
 import com.eot_app.nav_menu.audit.audit_list.equipment.model.EquipmentStatus;
 import com.eot_app.nav_menu.audit.nav_scan.BarcodeScanActivity;
+import com.eot_app.nav_menu.audit.nav_scan.UploadBarcodeViewModel;
 import com.eot_app.nav_menu.client.clientlist.client_detail.site.sitelist.Site_model;
 import com.eot_app.nav_menu.client.clientlist.client_detail.site.sitelist.editsite.editsitedb.SpinnerCountrySite;
 import com.eot_app.nav_menu.jobs.add_job.adapters.FilterAdapterSites;
@@ -75,6 +79,9 @@ import com.eot_app.nav_menu.jobs.job_detail.job_equipment.add_job_equip.mvp.AddJ
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.add_job_equip.mvp.AddJobEqu_Pi;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.add_job_equip.mvp.AddJobEqu_View;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.add_job_equip.mvp.QRCOde_Barcode_Res_Model;
+import com.eot_app.nav_menu.jobs.job_detail.job_equipment.add_job_equip.mvp.QR_Bar_Pc;
+import com.eot_app.nav_menu.jobs.job_detail.job_equipment.add_job_equip.mvp.QR_Bar_Pi;
+import com.eot_app.nav_menu.jobs.job_detail.job_equipment.add_job_equip.mvp.QR_Bar_View;
 import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.AppUtility;
 import com.eot_app.utility.App_preference;
@@ -108,7 +115,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
         AddJobEqu_View, View.OnClickListener
         , RadioGroup.OnCheckedChangeListener,
         CheckBox.OnCheckedChangeListener, ImageCropFragment.MyDialogInterface
-        , Spinner.OnItemSelectedListener, AddEdit_QRCode_BarCode_Dialog.QR_Bar_DataPass {
+        , Spinner.OnItemSelectedListener, AddEdit_QRCode_BarCode_Dialog.QR_Bar_DataPass, QR_Bar_View {
 
     private static final int BAR_CODE_REQUEST = 122;
     String path = "";
@@ -127,23 +134,26 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
     String isCnvtItemParts = "0";
     TextView tvService_inv_label;
     RadioGroup rediogrpForTag, rediogrp, rediogrp_interval;
-    TextView tvLabelStep2,txt_addBarcode,txt_addQrcode,show_less,show_more,txt_specific_name,txt_basic_detail,txt_location_installed_date,txt_warranty,txt_more_details;
-    ImageView barcode_image,qrcode_image,img_barcode,img_Qrcode;
+    TextView tvLabelStep2, txt_addBarcode, txt_addQrcode, show_less, show_more, txt_specific_name, txt_basic_detail, txt_location_installed_date, txt_warranty, txt_more_details;
+    ImageView barcode_image, qrcode_image, img_barcode, img_Qrcode;
     String equipmentIdName;
-    private String brandId = "", siteId = "", status = "", invId, supplierId="";
+    private String brandId = "", siteId = "", status = "", invId, supplierId = "";
     private CheckBox ch_equ_as_part;
     private View eq_view;
-    private TextInputLayout auto_barnd_layout, equ_layout, equ_model_layout, equ_supplier_layout, equ_serial_layout, /*job_country_layout, job_state_layout,*/ /*equ_city_layout, equ_zip_layout,*/ quote_notes_layout, catery_layout, equipment_layout, grp_layout, equ_adrs_layout, client_site_layout, custom_filed_header_1, custom_filed_header_2/*,supplier_layout*/;//equ_brand_layout
+    private TextInputLayout auto_barnd_layout, equ_layout, equ_model_layout, equ_supplier_layout, equ_serial_layout, /*job_country_layout, job_state_layout,*/ /*equ_city_layout, equ_zip_layout,*/
+            quote_notes_layout, catery_layout, equipment_layout, grp_layout, equ_adrs_layout, client_site_layout, custom_filed_header_1, custom_filed_header_2/*,supplier_layout*/;//equ_brand_layout
     private Button add_edit_item_Btn;
     private RelativeLayout image_with_tag;
     private boolean isTagSet = false;
     private RadioButton radio_before, radio_after;
-//    private View /*client_row,*/ site_row;
+    //    private View /*client_row,*/ site_row;
 //    private Spinner status_Dp;
-    private EditText edt_equ, edt_equ_model, edt_equ_supplier, edt_equ_service_interval, edt_equ_serial,/* edt_equ_city, edt_equ_zip,*/ quote_notes_edt;//edt_equ_brand
+    private EditText edt_equ, edt_equ_model, edt_equ_supplier, /*edt_equ_service_interval,*/
+            edt_equ_serial,/* edt_equ_city, edt_equ_zip,*/
+            quote_notes_edt;//edt_equ_brand
     private AutoCompleteTextView /*auto_country*//*,supplier_txt*//*, auto_states,*/ edt_equ_adrs, auto_equipment, auto_catery, auto_grp, auto_brand, auto_client_site;
     private String ctry, state;
-//    private EditText auto_client;
+    //    private EditText auto_client;
     private AppCompatImageView img_attachment;
     private TextView image_txt, remove_txt;
     private AddJobEqu_Pi addJobEqu_pi;
@@ -153,22 +163,26 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
     private String ecId = "";
     private String jobId = "";
     private LinearLayout manuf_date_layout, date_purchase_layout, date_warnty_layout, date_warnty_layout_start/*, linearLayout_status*/;
-    private LinearLayout lay,ll_show_more_less;
+    private LinearLayout lay, ll_show_more_less;
     private Job job;
     private InvoiceItemDataModel updateItemDataModel;
     AddEdit_QRCode_BarCode_Dialog addEditQrCodeBarCodeDialog;
-    String barcodeString ="";
-    String qrCodeString ="";
+    String barcodeString = "";
+    String qrCodeString = "";
     Calendar manufCalendar = Calendar.getInstance();
     Calendar purchesCalendar = Calendar.getInstance();
     Calendar warntyCalendar = Calendar.getInstance();
     Calendar startWarntyCalendar = Calendar.getInstance();
     Calendar installCalendar = Calendar.getInstance();
-    String countryNameById="";
-    String statenameById="";
-    String city="";
-    String zip="";
+    String countryNameById = "";
+    String statenameById = "";
+    String city = "";
+    String zip = "";
     boolean isSerialNoSelected = false;
+    EditText edt_day, edt_month, edt_year;
+    RadioButton rdBtn_day, rdBtn_month, rdBtn_year;
+    String interval = "", generateOption = "", scanCode = "";
+    QR_Bar_Pi qrBarPi;
 
     /**
      * select date from picker & concanate current time
@@ -189,33 +203,33 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
 
             if (view.getTag().equals("Manufacture")) {
                 Log.e("", "");
-                manufCalendar.set(Calendar.YEAR,selectedYear);
-                manufCalendar.set(Calendar.MONTH,selectedMonth);
-                manufCalendar.set(Calendar.DAY_OF_MONTH,selectedDay);
+                manufCalendar.set(Calendar.YEAR, selectedYear);
+                manufCalendar.set(Calendar.MONTH, selectedMonth);
+                manufCalendar.set(Calendar.DAY_OF_MONTH, selectedDay);
                 setManufactureViews(dateselect, params);
             } else if (view.getTag().equals("Warranty")) {
                 Log.e("", "");
-                warntyCalendar.set(Calendar.YEAR,selectedYear);
-                warntyCalendar.set(Calendar.MONTH,selectedMonth);
-                warntyCalendar.set(Calendar.DAY_OF_MONTH,selectedDay);
+                warntyCalendar.set(Calendar.YEAR, selectedYear);
+                warntyCalendar.set(Calendar.MONTH, selectedMonth);
+                warntyCalendar.set(Calendar.DAY_OF_MONTH, selectedDay);
                 setWarrntyViews(dateselect, params);
             } else if (view.getTag().equals("Warranty_start")) {
                 Log.e("", "");
-                startWarntyCalendar.set(Calendar.YEAR,selectedYear);
-                startWarntyCalendar.set(Calendar.MONTH,selectedMonth);
-                startWarntyCalendar.set(Calendar.DAY_OF_MONTH,selectedDay);
+                startWarntyCalendar.set(Calendar.YEAR, selectedYear);
+                startWarntyCalendar.set(Calendar.MONTH, selectedMonth);
+                startWarntyCalendar.set(Calendar.DAY_OF_MONTH, selectedDay);
                 setWarrntyStartViews(dateselect);
             } else if (view.getTag().equals("Purchase")) {
                 Log.e("", "");
-                purchesCalendar.set(Calendar.YEAR,selectedYear);
-                purchesCalendar.set(Calendar.MONTH,selectedMonth);
-                purchesCalendar.set(Calendar.DAY_OF_MONTH,selectedDay);
+                purchesCalendar.set(Calendar.YEAR, selectedYear);
+                purchesCalendar.set(Calendar.MONTH, selectedMonth);
+                purchesCalendar.set(Calendar.DAY_OF_MONTH, selectedDay);
                 setPurchaseViews(dateselect, params);
             } else if (view.getTag().equals("installed")) {
                 Log.e("", "");
-                installCalendar.set(Calendar.YEAR,selectedYear);
-                installCalendar.set(Calendar.MONTH,selectedMonth);
-                installCalendar.set(Calendar.DAY_OF_MONTH,selectedDay);
+                installCalendar.set(Calendar.YEAR, selectedYear);
+                installCalendar.set(Calendar.MONTH, selectedMonth);
+                installCalendar.set(Calendar.DAY_OF_MONTH, selectedDay);
                 setInstalledViews(dateselect, params);
             }
         } catch (Exception e) {
@@ -228,7 +242,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
     private List<Site_model> clientSiteList = new ArrayList<>();
     private List<EquipmentStatus> equipmentStatusList;
     private List<GetSupplierData> supplierDataList;
-//    private TextInputLayout client_layout;
+    //    private TextInputLayout client_layout;
     private EditText custom_filed_txt_1, custom_filed_txt_2;
     /**
      * add equipment from audit list
@@ -379,7 +393,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
         edt_equ_supplier = findViewById(R.id.edt_equ_supplier);
         edt_equ_supplier.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.supplier));
 
-        edt_equ_service_interval = findViewById(R.id.edt_equ_service_interval);
+//        edt_equ_service_interval = findViewById(R.id.edt_equ_service_interval);
 
         //  edt_equ_brand = findViewById(R.id.edt_equ_brand);
         edt_equ_serial = findViewById(R.id.edt_equ_serial);
@@ -491,8 +505,8 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
         auto_client_site.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.address));
 
 //         equ_adrs_layout.setClickable(false);
-         edt_equ_adrs.setClickable(false);
-         edt_equ_adrs.setFocusable(false);
+        edt_equ_adrs.setClickable(false);
+        edt_equ_adrs.setFocusable(false);
         auto_client_site.setFocusable(false);
         auto_client_site.setClickable(false);
 //        supplier_layout=findViewById(R.id.Supllier_layout);
@@ -546,7 +560,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
         show_more = findViewById(R.id.show_more);
         txt_specific_name = findViewById(R.id.txt_specific_name);
         txt_basic_detail = findViewById(R.id.txt_basic_detail);
-        txt_location_installed_date  = findViewById(R.id.txt_location_installed_date);
+        txt_location_installed_date = findViewById(R.id.txt_location_installed_date);
         txt_warranty = findViewById(R.id.txt_warranty);
         txt_more_details = findViewById(R.id.txt_more_details);
         ll_show_more_less = findViewById(R.id.ll_show_more_less);
@@ -571,6 +585,14 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
 
         rediogrpForTag = findViewById(R.id.rediogrpForTag);
         rediogrpForTag.setOnCheckedChangeListener(this);
+
+        edt_day = findViewById(R.id.edt_day);
+        edt_month = findViewById(R.id.edt_month);
+        edt_year = findViewById(R.id.edt_year);
+
+        rdBtn_day = findViewById(R.id.radio_day);
+        rdBtn_month = findViewById(R.id.radio_month);
+        rdBtn_year = findViewById(R.id.radio_year);
         apicalling();
 
         /*get Item Data For Item to equipment convert*****/
@@ -583,7 +605,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
 
                 // for adding parts with item set data in the views
                 equipmentIdName = bundle.getString("equipmentIdName");
-                isSerialNoSelected = bundle.getBoolean("isSerialNoSelected",false);
+                isSerialNoSelected = bundle.getBoolean("isSerialNoSelected", false);
                 updateItemDataModel = new Gson().fromJson(string, InvoiceItemDataModel.class);
                 setItemDefaultData();
                 if (equipmentId != null && !equipmentId.isEmpty()) {
@@ -593,15 +615,20 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
                 }
                 // for adding parts with item set data in the views
                 if (comeFrom != null && comeFrom.equalsIgnoreCase("AddRemark") || comeFrom != null && comeFrom.equalsIgnoreCase("JobListScan")) {
-                    setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.step_2)+" ("+
-                            LanguageController.getInstance().getMobileMsgByKey(AppConstant.title_add_equipment)+")");
+                    setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.step_2) + " (" +
+                            LanguageController.getInstance().getMobileMsgByKey(AppConstant.title_add_equipment) + ")");
                     tvLabelStep2.setVisibility(View.VISIBLE);
-                    add_edit_item_Btn.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.title_add_equipment_part));
-                    ch_equ_as_part.setEnabled(false);
-                    if(isSerialNoSelected) {
+
+                    if (isSerialNoSelected) {
+                        ch_equ_as_part.setEnabled(true);
+                        add_edit_item_Btn.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.title_add_equipment));
+                        generateOption = bundle.getString("generateOption");
+                        scanCode = bundle.getString("scanCode");
                         ch_equ_as_part.setChecked(false);
                         isPart = "0";
-                    }else {
+                    } else {
+                        ch_equ_as_part.setEnabled(false);
+                        add_edit_item_Btn.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.title_add_equipment_part));
                         ch_equ_as_part.setChecked(true);
                         isPart = "1";
                     }
@@ -611,7 +638,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
                 }
 
                 // for checking if the item is
-                if (updateItemDataModel.getIsGrouped()!=null&&updateItemDataModel.getIsGrouped().equalsIgnoreCase("1") && isPart.equalsIgnoreCase("0")) {
+                if (updateItemDataModel.getIsGrouped() != null && updateItemDataModel.getIsGrouped().equalsIgnoreCase("1") && isPart.equalsIgnoreCase("0")) {
                     AppUtility.alertDialog(AddJobEquipMentActivity.this, LanguageController.getInstance().getMobileMsgByKey(AppConstant.are_you_sure), LanguageController.getInstance().getMobileMsgByKey(AppConstant.do_you_want_t), LanguageController.getInstance().getMobileMsgByKey(AppConstant.yes), LanguageController.getInstance().getMobileMsgByKey(AppConstant.no), () -> {
                         isCnvtItemParts = "1";
                         return true;
@@ -623,22 +650,22 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
             // for adding parts without item set data in the views
             if (getIntent().hasExtra("comeFrom") && bundle.getString("comeFrom").equalsIgnoreCase("AddPartWithoutItem")) {
                 setDataIntoViews(bundle);
-                isSerialNoSelected = bundle.getBoolean("isSerialNoSelected",false);
+                isSerialNoSelected = bundle.getBoolean("isSerialNoSelected", false);
                 cltId = bundle.getString("cltId");
                 equipmentIdName = bundle.getString("equipmentIdName");
                 job = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(jobId);
                 addJobEqu_pi.getClientSiteListServer(cltId);
                 siteId = job.getSiteId();
                 setJobData(job);
-                setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.step_2)+" ("+
-                        LanguageController.getInstance().getMobileMsgByKey(AppConstant.title_add_equipment)+")");
+                setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.step_2) + " (" +
+                        LanguageController.getInstance().getMobileMsgByKey(AppConstant.title_add_equipment) + ")");
                 tvLabelStep2.setVisibility(View.GONE);
                 add_edit_item_Btn.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.title_add_equipment_part));
                 ch_equ_as_part.setEnabled(false);
-                if(isSerialNoSelected) {
+                if (isSerialNoSelected) {
                     ch_equ_as_part.setChecked(false);
                     isPart = "0";
-                }else {
+                } else {
                     ch_equ_as_part.setChecked(true);
                     isPart = "1";
                 }
@@ -680,42 +707,52 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
         // To set the current date as warranty start date
         setWarrntyStartViews(AppUtility.getCurrentDateByFormat(AppConstant.DATE_FORMAT));
 
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //For Generating Scan Code
+        if (isSerialNoSelected) {
+            qrBarPi = new QR_Bar_Pc(this);
+            if (generateOption.equalsIgnoreCase(LanguageController.getInstance().getMobileMsgByKey(AppConstant.barcode))) {
+                qrBarPi.getBarCode(scanCode);
+            } else if (generateOption.equalsIgnoreCase(LanguageController.getInstance().getMobileMsgByKey(AppConstant.qrcode))) {
+                qrBarPi.getQRCode(scanCode);
+            }
+        }
         //get equipment list
         addJobEqu_pi.getEquipmentList(jobId);
 
         setTextViews();
     }
 
-    private void apicalling()
-    {
+    private void apicalling() {
         addJobEqu_pi = new AddJobEqu_Pc(this);
         addJobEqu_pi.getCountryList();
         List<BrandData> brandLists = App_preference.getSharedprefInstance().getBrandList();
-        if (brandLists!=null)
-        {
+        if (brandLists != null) {
             setBrandList(brandLists);
-        }else{
+        } else {
             addJobEqu_pi.getBrandList();
         }
         List<GetgrpData> getgrplists = App_preference.getSharedprefInstance().getgrplist();
-        if (getgrplists!=null)
-        {
+        if (getgrplists != null) {
             setGrpList(getgrplists);
-        }else{
+        } else {
             addJobEqu_pi.getGrpList();
         }
         List<GetCatgData> getcatglists = App_preference.getSharedprefInstance().getcatglist();
-        if (getcatglists!=null)
-        {
+        if (getcatglists != null) {
             setCategList(getcatglists);
-        }else{
+        } else {
             addJobEqu_pi.getCageryList();
         }
         List<EquipmentStatus> geteqstatuslists = App_preference.getSharedprefInstance().geteqstatuslist();
-        if (geteqstatuslists!=null)
-        {
+        if (geteqstatuslists != null) {
             setEquStatusList(geteqstatuslists);
-        }else{
+        } else {
             addJobEqu_pi.getEquStatusList();
         }
         //  addJobEqu_pi.getSupplierList("");
@@ -742,7 +779,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
     private void setJobData(Job job) {
         try {
             if (job != null) {
-                String newLocation ="";
+                String newLocation = "";
 //                auto_client.setText(job.getNm());
               /*  auto_country.setText(SpinnerCountrySite.getCountryNameById(job.getCtry()));
                 auto_states.setText(SpinnerCountrySite.getStatenameById(job.getCtry(), job.getState()));*/
@@ -768,7 +805,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
                 }
                 edt_equ_adrs.setText(newLocation);
 //                edt_equ_zip.setText(job.getZip());
-                auto_client_site.setText(Html.fromHtml("<font color='#4C000000'>"+job.getSnm()+"</font>"+"<br>"+
+                auto_client_site.setText(Html.fromHtml("<font color='#4C000000'>" + job.getSnm() + "</font>" + "<br>" +
                         newLocation));
                 client_site_layout.setHintEnabled(true);
 //                client_layout.setHintEnabled(true);
@@ -813,7 +850,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
             }
             edt_equ_adrs.setText(newLocation);
 //            edt_equ_zip.setText(audit.getZip());
-            auto_client_site.setText(Html.fromHtml("<font color='#4C000000'>"+job.getSnm()+"</font>"+"<br>"+
+            auto_client_site.setText(Html.fromHtml("<font color='#4C000000'>" + job.getSnm() + "</font>" + "<br>" +
                     newLocation));
             client_site_layout.setHintEnabled(true);
 //            client_layout.setHintEnabled(true);
@@ -858,9 +895,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
     private void setTextViews() {
 
         // edt_equ_brand.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.brand));
-
         textChangeListner();
-
         emptyBrandCheck();
         emptyGroupCheck();
         emptyCatryCheck();
@@ -1011,8 +1046,8 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
         date_warnty_layout_start.setOnClickListener(this);
 
         add_edit_item_Btn.setOnClickListener(this);
-       /* binding.tvScanBarcode.setOnClickListener(this);
-*/
+        /* binding.tvScanBarcode.setOnClickListener(this);
+         */
         rediogrp.setOnCheckedChangeListener(this);
 //        checkbox_barCode.setOnCheckedChangeListener(this);
 //        checkbox_scan_insert.setOnCheckedChangeListener(this);
@@ -1028,7 +1063,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
 //        linearLayout_status.setOnClickListener(this);
     }
 
-    private void seteqstatuslists(List<EquipmentStatus> equipmentStatuses){
+    private void seteqstatuslists(List<EquipmentStatus> equipmentStatuses) {
         if (equipmentStatuses != null && equipmentStatuses.size() > 0) {
 //            AppUtility.spinnerPopUpWindow(status_Dp);
             String[] statusList = new String[equipmentStatuses.size()];
@@ -1049,8 +1084,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
 
     @Override
     public void setEquStatusList(final List<EquipmentStatus> equipmentStatusLists) {
-        if (equipmentStatusList==null)
-        {
+        if (equipmentStatusList == null) {
             this.equipmentStatusList = equipmentStatusLists;
             seteqstatuslists(equipmentStatusLists);
         }
@@ -1087,14 +1121,14 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
             client_site_layout.setHintEnabled(true);
 
             FilterAdapterSites filterSites = new FilterAdapterSites(this,
-                    R.layout.custom_adpter_item_layout_new, (ArrayList<Site_model>) siteModelList,true);
+                    R.layout.custom_adpter_item_layout_new, (ArrayList<Site_model>) siteModelList, true);
             auto_client_site.setAdapter(filterSites);
             auto_client_site.setThreshold(1);
             auto_client_site.setOnItemClickListener((adapterView, view, i, l) -> {
                 siteId = ((Site_model) adapterView.getItemAtPosition(i)).getSiteId();
                 client_site_layout.setHintEnabled(true);
                 Site_model sitetData = (Site_model) (adapterView.getAdapter().getItem(i));
-                if(sitetData != null) {
+                if (sitetData != null) {
                     String newLocation = "";
                     if (sitetData.getAdr() != null && !sitetData.getAdr().isEmpty()) {
                         newLocation = newLocation + "" + sitetData.getAdr();
@@ -1151,7 +1185,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
         this.clientEquResList = clientEquRes;
 
         final SiteAdpter siteAdpter = new SiteAdpter(this, R.layout.custom_adpter_item_layout_new,
-                (ArrayList<ClientEquRes>) clientEquRes,true);
+                (ArrayList<ClientEquRes>) clientEquRes, true);
         auto_client_site.setAdapter(siteAdpter);
         auto_client_site.setThreshold(1);
         auto_client_site.setOnItemClickListener((adapterView, view, i, l) -> {
@@ -1159,26 +1193,26 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
             siteId = ((ClientEquRes) adapterView.getItemAtPosition(i)).getSiteId();
             client_site_layout.setHintEnabled(true);
             ClientEquRes sitetData = (ClientEquRes) (adapterView.getAdapter().getItem(i));
-            if(sitetData != null) {
-                String newLocation ="";
+            if (sitetData != null) {
+                String newLocation = "";
                 if (sitetData.getAdr() != null && !sitetData.getAdr().isEmpty()) {
-                    newLocation = newLocation+""+sitetData.getAdr();
+                    newLocation = newLocation + "" + sitetData.getAdr();
                 }
-                if(sitetData.getCity() != null && !sitetData.getCity().isEmpty()){
+                if (sitetData.getCity() != null && !sitetData.getCity().isEmpty()) {
                     city = sitetData.getCity();
-                    newLocation = newLocation+", "+city;
+                    newLocation = newLocation + ", " + city;
                 }
                 if (sitetData.getCtry() != null && !sitetData.getCtry().isEmpty()) {
                     countryNameById = SpinnerCountrySite.getCountryNameById(sitetData.getCtry());
-                    newLocation = newLocation+" "+countryNameById;
+                    newLocation = newLocation + " " + countryNameById;
                 }
                 if (sitetData.getState() != null && !sitetData.getState().isEmpty()) {
                     statenameById = SpinnerCountrySite.getStatenameById((sitetData.getCtry()), sitetData.getState());
-                    newLocation = newLocation+" "+statenameById;
+                    newLocation = newLocation + " " + statenameById;
                 }
-                if(sitetData.getZip() != null && !sitetData.getZip().isEmpty()){
+                if (sitetData.getZip() != null && !sitetData.getZip().isEmpty()) {
                     zip = sitetData.getZip();
-                    newLocation = newLocation+" "+zip;
+                    newLocation = newLocation + " " + zip;
                 }
 //                auto_client_site.setText(Html.fromHtml("<font color='#4C000000'>"+sitetData.getSnm()+"</font>"+"<br>"+
 //                        newLocation));
@@ -1276,7 +1310,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
                 break;
             case R.id.auto_client_site:
 //                if (clientSiteList != null && clientSiteList.size() > 0)
-                    auto_client_site.showDropDown();
+                auto_client_site.showDropDown();
                 break;
             case R.id.auto_grp:
                 if (GetgrpDataList != null && GetgrpDataList.size() > 0)
@@ -1327,31 +1361,31 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
                 binding.warntyStartDateCancel.setVisibility(View.GONE);
                 break;
             case R.id.txt_addBarcode:
-                if(barcode_image== null) {
+                if (barcode_image == null) {
                     addEditQrCodeBarCodeDialog = new AddEdit_QRCode_BarCode_Dialog(this);
                     Bundle bundle = new Bundle();
-                    bundle.putString("barCode",barcodeString);
+                    bundle.putString("barCode", barcodeString);
                     addEditQrCodeBarCodeDialog.setArguments(bundle);
                     addEditQrCodeBarCodeDialog.show(getSupportFragmentManager(), "");
-                }else{
-                     addEditQrCodeBarCodeDialog = new AddEdit_QRCode_BarCode_Dialog(this);
+                } else {
+                    addEditQrCodeBarCodeDialog = new AddEdit_QRCode_BarCode_Dialog(this);
                     Bundle bundle = new Bundle();
-                    bundle.putString("barCode",barcodeString);
+                    bundle.putString("barCode", barcodeString);
                     addEditQrCodeBarCodeDialog.setArguments(bundle);
                     addEditQrCodeBarCodeDialog.show(getSupportFragmentManager(), "");
                 }
                 break;
             case R.id.txt_addQrcode:
-                if(qrcode_image == null) {
+                if (qrcode_image == null) {
                     addEditQrCodeBarCodeDialog = new AddEdit_QRCode_BarCode_Dialog(this);
                     Bundle bundle = new Bundle();
-                    bundle.putString("qrcode",qrCodeString);
+                    bundle.putString("qrcode", qrCodeString);
                     addEditQrCodeBarCodeDialog.setArguments(bundle);
                     addEditQrCodeBarCodeDialog.show(getSupportFragmentManager(), "");
-                }else{
+                } else {
                     addEditQrCodeBarCodeDialog = new AddEdit_QRCode_BarCode_Dialog(this);
                     Bundle bundle = new Bundle();
-                    bundle.putString("qrcode",qrCodeString);
+                    bundle.putString("qrcode", qrCodeString);
                     addEditQrCodeBarCodeDialog.setArguments(bundle);
                     addEditQrCodeBarCodeDialog.show(getSupportFragmentManager(), "");
                 }
@@ -1414,6 +1448,15 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
 
     private void createEquipmentForJobAudit() {
         add_edit_item_Btn.setEnabled(false);
+        if (rdBtn_day.isChecked()) {
+            interval = edt_day.getText().toString();
+        } else if (rdBtn_month.isChecked()) {
+            interval = edt_month.getText().toString();
+        } else if (rdBtn_year.isChecked()) {
+            interval = edt_year.getText().toString();
+        } else {
+            interval = "";
+        }
         createEqquipmentRequest();
         new Handler().postDelayed(() -> add_edit_item_Btn.setEnabled(true), 500);
     }
@@ -1441,10 +1484,10 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
                                     city, edt_equ_adrs.getText().toString().trim(),
                                     ctry, state, /*isBarcodeGenerate,*/
                                     quote_notes_edt.getText().toString().trim(),
-                                    purchase_date_lable.getText().toString().trim()+" "+formatetime,
-                                    manuf_date_lable.getText().toString().trim()+" "+formatetime,
-                                    warnty_date_lable.getText().toString().trim()+" "+formatetime,
-                                   "",
+                                    purchase_date_lable.getText().toString().trim() + " " + formatetime,
+                                    manuf_date_lable.getText().toString().trim() + " " + formatetime,
+                                    warnty_date_lable.getText().toString().trim() + " " + formatetime,
+                                    "",
                                     edt_equ_serial.getText().toString().trim(),
                                     edt_equ_model.getText().toString().trim(),
                                     brandId, edt_equ.getText().toString().trim(),
@@ -1455,40 +1498,40 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
                                     custom_filed_txt_1.getText().toString().trim(),
                                     custom_filed_txt_2.getText().toString().trim(),
                                     servIntvalType,
-                                    edt_equ_service_interval.getText().toString(),
-                                    isCnvtItemParts, binding.installedDateLable.getText().toString().trim()+" "+formatetime,supplierId,""),
+                                    interval,
+                                    isCnvtItemParts, binding.installedDateLable.getText().toString().trim() + " " + formatetime, supplierId, ""),
                             path,
-                            barcodeString,qrCodeString, equipmentId);
+                            barcodeString, qrCodeString, equipmentId);
                 } else if (audit != null) {
                     addJobEqu_pi.addNewEquipment(
                             new AddEquReq(type, egId, ecId, zip,
                                     city, edt_equ_adrs.getText().toString().trim(),
                                     ctry, state, /*isBarcodeGenerate,*/
                                     quote_notes_edt.getText().toString().trim(),
-                                    purchase_date_lable.getText().toString().trim()+" "+formatetime,
-                                    manuf_date_lable.getText().toString().trim()+" "+formatetime, warnty_date_lable.getText().toString().trim()+" "+formatetime,
-                                   "", edt_equ_serial.getText().toString().trim(),
+                                    purchase_date_lable.getText().toString().trim() + " " + formatetime,
+                                    manuf_date_lable.getText().toString().trim() + " " + formatetime, warnty_date_lable.getText().toString().trim() + " " + formatetime,
+                                    "", edt_equ_serial.getText().toString().trim(),
                                     edt_equ_model.getText().toString().trim(),
                                     brandId, edt_equ.getText().toString().trim(), audit.getAudId(), audit.getCltId(),
                                     audit.getContrId(), siteId, isPart, status, custom_filed_txt_1.getText().toString().trim(),
-                                    custom_filed_txt_2.getText().toString().trim(), servIntvalType, edt_equ_service_interval.getText().toString(),supplierId)
-                            , path, barcodeString,qrCodeString,
-                            binding.installedDateLable.getText().toString().trim()+" "+formatetime, equipmentId);
+                                    custom_filed_txt_2.getText().toString().trim(), servIntvalType, interval, supplierId)
+                            , path, barcodeString, qrCodeString,
+                            binding.installedDateLable.getText().toString().trim() + " " + formatetime, equipmentId);
                 } else {
                     addJobEqu_pi.addNewEquipment(
                             new AddEquReq(type, egId, ecId, zip,
                                     city, edt_equ_adrs.getText().toString().trim(),
                                     ctry, state, /*isBarcodeGenerate,*/
                                     quote_notes_edt.getText().toString().trim(),
-                                    purchase_date_lable.getText().toString().trim()+" "+formatetime,
-                                    manuf_date_lable.getText().toString().trim()+" "+formatetime, warnty_date_lable.getText().toString().trim()+" "+formatetime,
-                                   "", edt_equ_serial.getText().toString().trim(),
+                                    purchase_date_lable.getText().toString().trim() + " " + formatetime,
+                                    manuf_date_lable.getText().toString().trim() + " " + formatetime, warnty_date_lable.getText().toString().trim() + " " + formatetime,
+                                    "", edt_equ_serial.getText().toString().trim(),
                                     edt_equ_model.getText().toString().trim(),
                                     brandId, edt_equ.getText().toString().trim(), jobId, job.getCltId(),
                                     job.getContrId(), siteId, isPart, status, custom_filed_txt_1.getText().toString().trim(),
-                                    custom_filed_txt_2.getText().toString().trim(), servIntvalType, edt_equ_service_interval.getText().toString(),supplierId)
-                            , path, barcodeString,qrCodeString,
-                            binding.installedDateLable.getText().toString().trim()+" "+formatetime, equipmentId)
+                                    custom_filed_txt_2.getText().toString().trim(), servIntvalType, interval, supplierId)
+                            , path, barcodeString, qrCodeString,
+                            binding.installedDateLable.getText().toString().trim() + " " + formatetime, equipmentId)
                     ;
                 }
             }
@@ -1498,13 +1541,13 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
                 isCnvtItemParts = "0";
             }
             if (addJobEqu_pi.RequiredFields(edt_equ.getText().toString().trim())) {
-                addJobEqu_pi.convertItemToequip(new AddEquReq(type, egId, ecId,zip,
+                addJobEqu_pi.convertItemToequip(new AddEquReq(type, egId, ecId, zip,
                                 city, edt_equ_adrs.getText().toString().trim(),
                                 ctry, state, /*isBarcodeGenerate,*/
                                 quote_notes_edt.getText().toString().trim(),
-                                purchase_date_lable.getText().toString().trim()+" "+formatetime,
-                                manuf_date_lable.getText().toString().trim()+" "+formatetime, warnty_date_lable.getText().toString().trim()+" "+formatetime,
-                               "", edt_equ_serial.getText().toString().trim(),
+                                purchase_date_lable.getText().toString().trim() + " " + formatetime,
+                                manuf_date_lable.getText().toString().trim() + " " + formatetime, warnty_date_lable.getText().toString().trim() + " " + formatetime,
+                                "", edt_equ_serial.getText().toString().trim(),
                                 edt_equ_model.getText().toString().trim(),
                                 brandId, edt_equ.getText().toString().trim(), jobId, job.getCltId(),
                                 job.getContrId(), updateItemDataModel.getItemId(),
@@ -1513,9 +1556,9 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
                                 custom_filed_txt_1.getText().toString().trim(),
                                 custom_filed_txt_2.getText().toString().trim(),
                                 servIntvalType,
-                                edt_equ_service_interval.getText().toString(),
-                                isCnvtItemParts, binding.installedDateLable.getText().toString().trim()+" "+formatetime,supplierId,updateItemDataModel.getIjmmId()), path,
-                        barcodeString,qrCodeString, equipmentId);
+                                interval,
+                                isCnvtItemParts, binding.installedDateLable.getText().toString().trim() + " " + formatetime, supplierId, updateItemDataModel.getIjmmId()), path,
+                        barcodeString, qrCodeString, equipmentId);
             }
         }
     }
@@ -1683,21 +1726,21 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
         }
     }
 
-  /*  @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (data != null) {
-            if (requestCode == BAR_CODE_REQUEST) {
-                if (data.getStringExtra("code") != null) {
-                    String barcode = data.getStringExtra("code");
-                    binding.etBarcode.setText(barcode);
-                }
-            }
-        }
+    /*  @Override
+      protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+          super.onActivityResult(requestCode, resultCode, data);
+          if (data != null) {
+              if (requestCode == BAR_CODE_REQUEST) {
+                  if (data.getStringExtra("code") != null) {
+                      String barcode = data.getStringExtra("code");
+                      binding.etBarcode.setText(barcode);
+                  }
+              }
+          }
 
 
-    }
-*/
+      }
+  */
     @SuppressLint("NonConstantResourceId")
     @Override
     public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -1723,12 +1766,33 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
             //year=2
             case R.id.radio_day:
                 servIntvalType = "0";
+                edt_day.setVisibility(View.VISIBLE);
+                edt_day.setText("");
+                edt_month.setText("");
+                edt_year.setText("");
+                edt_day.requestFocus();
+                edt_month.setVisibility(View.GONE);
+                edt_year.setVisibility(View.GONE);
                 break;
             case R.id.radio_month:
                 servIntvalType = "1";
+                edt_day.setVisibility(View.GONE);
+                edt_month.setVisibility(View.VISIBLE);
+                edt_day.setText("");
+                edt_month.setText("");
+                edt_year.setText("");
+                edt_month.requestFocus();
+                edt_year.setVisibility(View.GONE);
                 break;
             case R.id.radio_year:
                 servIntvalType = "2";
+                edt_day.setVisibility(View.GONE);
+                edt_month.setVisibility(View.GONE);
+                edt_year.setVisibility(View.VISIBLE);
+                edt_day.setText("");
+                edt_month.setText("");
+                edt_year.setText("");
+                edt_year.requestFocus();
                 break;
         }
     }
@@ -1742,8 +1806,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
         return true;
     }
 
-    private void setCatergs(List<GetCatgData> cateList)
-    {
+    private void setCatergs(List<GetCatgData> cateList) {
         final CateAdpter countryAdapter = new CateAdpter(this, R.layout.custom_adpter_item_layout_new,
                 (ArrayList<GetCatgData>) cateList);
         auto_catery.setAdapter(countryAdapter);
@@ -1778,8 +1841,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
 
     @Override
     public void setCategList(List<GetCatgData> cateList) {
-        if (GetCatgDataList==null)
-        {
+        if (GetCatgDataList == null) {
             this.GetCatgDataList = cateList;
             setCatergs(cateList);
         }
@@ -1792,8 +1854,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
     }
 
 
-    private void setbrands(List<BrandData> brandList)
-    {
+    private void setbrands(List<BrandData> brandList) {
         final BrandAdapter countryAdapter = new BrandAdapter(this, R.layout.custom_adpter_item_layout_new,
                 (ArrayList<BrandData>) brandList);
         auto_brand.setAdapter(countryAdapter);
@@ -1831,11 +1892,10 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
     @SuppressLint("CommitPrefEdits")
     @Override
     public void setBrandList(List<BrandData> brandList) {
-      if (BrandDataList==null)
-      {
-          this.BrandDataList = brandList;
-          setbrands(brandList);
-      }
+        if (BrandDataList == null) {
+            this.BrandDataList = brandList;
+            setbrands(brandList);
+        }
         try {
             String s = new Gson().toJson(brandList);
             App_preference.getSharedprefInstance().setBrandLists(s);
@@ -1844,8 +1904,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
         }
     }
 
-    private void setgrplists(List<GetgrpData> cateList)
-    {
+    private void setgrplists(List<GetgrpData> cateList) {
         final GrpAdpter countryAdapter = new GrpAdpter(this, R.layout.custom_adpter_item_layout_new,
                 (ArrayList<GetgrpData>) cateList);
         auto_grp.setAdapter(countryAdapter);
@@ -1881,8 +1940,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
 
     @Override
     public void setGrpList(List<GetgrpData> cateList) {
-        if (GetgrpDataList==null)
-        {
+        if (GetgrpDataList == null) {
             this.GetgrpDataList = cateList;
             setgrplists(cateList);
         }
@@ -1970,13 +2028,13 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
     @Override
     public void setsupplierList(List<GetSupplierData> supplierDataList) {
         if (supplierDataList != null && supplierDataList.size() > 0) {
-            if (this.supplierDataList!=null)this.supplierDataList.clear();
+            if (this.supplierDataList != null) this.supplierDataList.clear();
             this.supplierDataList = supplierDataList;
             final SupplierAdapter stateAdapter = new SupplierAdapter(this, R.layout.custom_adapter_item_layout, (ArrayList<GetSupplierData>) supplierDataList);
-            if (stateAdapter!=null){
+            if (stateAdapter != null) {
            /* supplier_txt.setAdapter(stateAdapter);
             supplier_txt.setThreshold(1);*/
-            }else{
+            } else {
                 stateAdapter.setnewlist(supplierDataList);
             }
            /* supplier_txt.setOnItemClickListener((adapterView, view, i, l) -> {
@@ -2174,15 +2232,15 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
     @Override
     public void onDataPass(QRCOde_Barcode_Res_Model data) {
         try {
-            if (data != null && data.getBarCode() != null && !data.getBarCode().isBlank() && data.getBarcodeImg() != null && !data.getBarcodeImg().isBlank()){
+            if (data != null && data.getBarCode() != null && !data.getBarCode().isBlank() && data.getBarcodeImg() != null && !data.getBarcodeImg().isBlank()) {
                 txt_addBarcode.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit_Barcode));
-                txt_addBarcode.setCompoundDrawablesWithIntrinsicBounds(getDrawable(R.drawable.edit),null,null,null);
+                txt_addBarcode.setCompoundDrawablesWithIntrinsicBounds(getDrawable(R.drawable.edit), null, null, null);
                 img_barcode.setVisibility(View.VISIBLE);
                 Picasso.get().load(App_preference.getSharedprefInstance().getBaseURL() + data.getBarcodeImg()).placeholder(R.drawable.ic_profile).error(R.drawable.ic_profile).into(img_barcode);
                 barcodeString = data.getBarCode();
-            }else if (data != null && data.getQrcode() != null && !data.getQrcode().isBlank() && !data.getQrcode().isBlank()&& data.getQrcodeImg() != null && !data.getQrcodeImg().isBlank()){
+            } else if (data != null && data.getQrcode() != null && !data.getQrcode().isBlank() && !data.getQrcode().isBlank() && data.getQrcodeImg() != null && !data.getQrcodeImg().isBlank()) {
                 txt_addQrcode.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit_QR_Code));
-                txt_addQrcode.setCompoundDrawablesWithIntrinsicBounds(getDrawable(R.drawable.edit),null,null,null);
+                txt_addQrcode.setCompoundDrawablesWithIntrinsicBounds(getDrawable(R.drawable.edit), null, null, null);
                 img_Qrcode.setVisibility(View.VISIBLE);
                 Picasso.get().load(App_preference.getSharedprefInstance().getBaseURL() + data.getQrcodeImg()).placeholder(R.drawable.ic_profile).error(R.drawable.ic_profile).into(img_Qrcode);
                 qrCodeString = data.getQrcode();
@@ -2191,5 +2249,25 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
         } catch (Exception exception) {
             exception.printStackTrace();
         }
+    }
+
+    @Override
+    public void setBarCodeData(QRCOde_Barcode_Res_Model res_Model) {
+        onDataPass(res_Model);
+    }
+
+    @Override
+    public void setQRCodeData(QRCOde_Barcode_Res_Model res_Model) {
+        onDataPass(res_Model);
+    }
+
+    @Override
+    public void alertShow(String msg) {
+
+    }
+
+    @Override
+    public void toastShow(String msg) {
+
     }
 }

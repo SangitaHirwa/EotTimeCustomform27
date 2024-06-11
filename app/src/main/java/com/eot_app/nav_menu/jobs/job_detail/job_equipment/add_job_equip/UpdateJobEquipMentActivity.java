@@ -131,7 +131,7 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
     private RadioButton radio_before, radio_after;
 //    View /*client_row,*/ site_row;
     private Spinner status_Dp;
-    private EditText edt_equ, edt_equ_model, edt_equ_service_interval, edt_equ_supplier, edt_equ_serial/*, edt_equ_city, edt_equ_zip*/, quote_notes_edt;//edt_equ_brand
+    private EditText edt_equ, edt_equ_model, /*edt_equ_service_interval,*/ edt_equ_supplier, edt_equ_serial/*, edt_equ_city, edt_equ_zip*/, quote_notes_edt;//edt_equ_brand
     private AutoCompleteTextView /*auto_country*//*,supplier_txt*//*, auto_states*/ auto_equipment, edt_equ_adrs, auto_catery, auto_grp, auto_brand ,auto_client_site;
     private String ctry, state;
 //    private EditText auto_client;
@@ -162,6 +162,10 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
     String statenameById="";
     String city="";
     String zip="";
+    boolean isSerialNoSelected = false;
+    EditText edt_day, edt_month, edt_year;
+    RadioButton rdBtn_day, rdBtn_month, rdBtn_year;
+    String interval = "";
     /**
      * select date from picker & concanate current time
      */
@@ -350,8 +354,8 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
         edt_equ = findViewById(R.id.edt_equ);
         edt_equ.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.equipment) + " *");
 
-        edt_equ_service_interval = findViewById(R.id.edt_equ_service_interval);
-        edt_equ_service_interval.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.service_interval));
+//        edt_equ_service_interval = findViewById(R.id.edt_equ_service_interval);
+//        edt_equ_service_interval.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.service_interval));
 
         tvService_inv_label = findViewById(R.id.tvService_inv_label);
         tvService_inv_label.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.service_interval_type));
@@ -535,6 +539,13 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
         edt_equ_adrs.setClickable(false);
         edt_equ_adrs.setFocusable(false);
 
+        edt_day = findViewById(R.id.edt_day);
+        edt_month = findViewById(R.id.edt_month);
+        edt_year = findViewById(R.id.edt_year);
+
+        rdBtn_day = findViewById(R.id.radio_day);
+        rdBtn_month = findViewById(R.id.radio_month);
+        rdBtn_year = findViewById(R.id.radio_year);
         /*get Item Data For Item to equipment convert*****/
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
@@ -1274,6 +1285,15 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
     private void createEquipmentForJobAudit() {
         add_edit_item_Btn.setEnabled(false);
         createEqquipmentRequest();
+        if(rdBtn_day.isChecked()){
+            interval = edt_day.getText().toString();
+        }else if(rdBtn_month.isChecked()){
+            interval = edt_month.getText().toString();
+        }else if(rdBtn_year.isChecked()){
+            interval = edt_year.getText().toString();
+        }else {
+            interval = "";
+        }
         new Handler().postDelayed(() -> add_edit_item_Btn.setEnabled(true), 500);
     }
 
@@ -1310,7 +1330,7 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
                                     isPart, status, invId,
                                     custom_filed_txt_1.getText().toString().trim(),
                                     custom_filed_txt_2.getText().toString().trim(), servIntvalType,
-                                    edt_equ_service_interval.getText().toString(), "1",
+                                    interval, "1",
                                     equipmentId,
                                     isCnvtItemParts, binding.installedDateLable.getText().toString().trim(),supplierId), path,
                             barcodeString,qrCodeString, parentId);
@@ -1331,7 +1351,7 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
                                     audit.getContrId(), siteId, isPart, status,
                                     custom_filed_txt_1.getText().toString().trim(),
                                     custom_filed_txt_2.getText().toString().trim(),
-                                    servIntvalType, edt_equ_service_interval.getText().toString(),supplierId)
+                                    servIntvalType, interval,supplierId)
                             , path, barcodeString,barcodeString,
                             binding.installedDateLable.getText().toString().trim(), equipmentId);
                 } else {
@@ -1346,7 +1366,7 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
                                     edt_equ_model.getText().toString().trim(),
                                     brandId, edt_equ.getText().toString().trim(), jobId, job.getCltId(),
                                     job.getContrId(), siteId, isPart, status, custom_filed_txt_1.getText().toString().trim(),
-                                    custom_filed_txt_2.getText().toString().trim(), servIntvalType, edt_equ_service_interval.getText().toString(),supplierId)
+                                    custom_filed_txt_2.getText().toString().trim(), servIntvalType, interval,supplierId)
                             , path, barcodeString,barcodeString,
                             binding.installedDateLable.getText().toString().trim(), equipmentId);
                 }
@@ -1376,7 +1396,7 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
                                 isPart, status, invId,
                                 custom_filed_txt_1.getText().toString().trim(),
                                 custom_filed_txt_2.getText().toString().trim(), servIntvalType,
-                                edt_equ_service_interval.getText().toString(), "1",
+                                interval, "1",
                                 equipmentId,
                                 isCnvtItemParts, binding.installedDateLable.getText().toString().trim(),supplierId), path,
                         barcodeString,qrCodeString, parentId);
@@ -1569,12 +1589,33 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
                 break;
             case R.id.radio_day:
                 servIntvalType = "1";
+                edt_day.setVisibility(View.VISIBLE);
+                edt_day.setText("");
+                edt_month.setText("");
+                edt_year.setText("");
+                edt_day.requestFocus();
+                edt_month.setVisibility(View.GONE);
+                edt_year.setVisibility(View.GONE);
                 break;
             case R.id.radio_month:
                 servIntvalType = "2";
+                edt_day.setVisibility(View.GONE);
+                edt_month.setVisibility(View.VISIBLE);
+                edt_day.setText("");
+                edt_month.setText("");
+                edt_year.setText("");
+                edt_month.requestFocus();
+                edt_year.setVisibility(View.GONE);
                 break;
             case R.id.radio_year:
                 servIntvalType = "3";
+                edt_day.setVisibility(View.GONE);
+                edt_month.setVisibility(View.GONE);
+                edt_year.setVisibility(View.VISIBLE);
+                edt_day.setText("");
+                edt_month.setText("");
+                edt_year.setText("");
+                edt_year.requestFocus();
                 break;
         }
 

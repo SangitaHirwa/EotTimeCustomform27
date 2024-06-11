@@ -1065,6 +1065,7 @@ public class AppConstant {
     public static String next_btn= "next_btn";
     public static String serial_no_not_matched= "serial_no_not_matched";
     public static String select_serial_no= "select_serial_no";
+    public static String generate_code_msg= "what_you_want_to_generate_of_scan_code";
     public static String server(String location) {
         switch (location) {
             case "America":
