@@ -306,7 +306,7 @@ public class MainActivity extends UploadDocumentActivity implements MainActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        AppUtility.progressBarShow(MainActivity.this);
+//        AppUtility.progressBarShow(MainActivity.this);
         executorService = Executors.newSingleThreadExecutor();
         executorService.execute(new Runnable() {
             @Override
@@ -535,7 +535,7 @@ public class MainActivity extends UploadDocumentActivity implements MainActivity
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                AppUtility.progressBarDissMiss();
+//                                AppUtility.progressBarDissMiss();
                             }
                         });
 

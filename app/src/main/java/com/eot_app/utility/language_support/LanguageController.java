@@ -88,6 +88,7 @@ public class LanguageController implements Language_pi {
                         @Override
                         public void onComplete() {
                             Log.e("", "");
+                            AppUtility.progressBarDissMiss();
                         }
                     });
         }
