@@ -48,6 +48,8 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
+import com.eot_app.BuildConfig;
 import com.eot_app.R;
 import com.eot_app.UploadDocumentActivity;
 import com.eot_app.firebases.RealTimeDBController;
@@ -118,7 +120,6 @@ import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
-import com.google.firebase.BuildConfig;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
@@ -305,7 +306,7 @@ public class MainActivity extends UploadDocumentActivity implements MainActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        AppUtility.progressBarShow(MainActivity.this);
+//        AppUtility.progressBarShow(MainActivity.this);
         executorService = Executors.newSingleThreadExecutor();
         executorService.execute(new Runnable() {
             @Override
@@ -534,7 +535,7 @@ public class MainActivity extends UploadDocumentActivity implements MainActivity
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                AppUtility.progressBarDissMiss();
+//                                AppUtility.progressBarDissMiss();
                             }
                         });
 
