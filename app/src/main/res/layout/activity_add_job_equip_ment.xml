@@ -662,7 +662,6 @@
                             android:drawableEnd="@drawable/ic_arrow_drop_down_black_24dp"
                             android:dropDownHeight="140dp"
                             android:dropDownVerticalOffset="-5dp"
-                            android:inputType="text"
                             android:popupBackground="@drawable/popupbg"
                             android:singleLine="false"
                             tools:ignore="LabelFor" />

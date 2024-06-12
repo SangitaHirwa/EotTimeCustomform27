@@ -1,10 +1,9 @@
 package com.eot_app.nav_menu.jobs.job_detail.job_equipment.model;
 
 public class UpdateSiteLocationReqModel {
-    private String[] equIds;
-    private String type;
+    private String equId;
+    private String jobId;
     private String cltId;
-    private String brId;
     private String adr;
     private String ctry;
     private String state;
@@ -13,21 +12,14 @@ public class UpdateSiteLocationReqModel {
     private String status;
     private String siteId;
 
-    public String[] getEquIds() {
-        return equIds;
+    public String getEquId() {
+        return equId;
     }
 
-    public void setEquIds(String[] equIds) {
-        this.equIds = equIds;
+    public void setEquId(String equId) {
+        this.equId = equId;
     }
 
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
 
     public String getCltId() {
         return cltId;
@@ -35,14 +27,6 @@ public class UpdateSiteLocationReqModel {
 
     public void setCltId(String cltId) {
         this.cltId = cltId;
-    }
-
-    public String getBrId() {
-        return brId;
-    }
-
-    public void setBrId(String brId) {
-        this.brId = brId;
     }
 
     public String getAdr() {
@@ -101,13 +85,19 @@ public class UpdateSiteLocationReqModel {
         this.siteId = siteId;
     }
 
-    public UpdateSiteLocationReqModel(String[] equIds, String type, String cltId, String brId,
+    public String getJobId() {
+        return jobId;
+    }
+
+    public void setJobId(String jobId) {
+        this.jobId = jobId;
+    }
+
+    public UpdateSiteLocationReqModel(String equId, String cltId,
                                       String adr, String ctry, String state, String city,
-                                      String zip, String status, String siteId) {
-        this.equIds = equIds;
-        this.type = type;
+                                      String zip, String status, String siteId, String jobId) {
+        this.equId = equId;
         this.cltId = cltId;
-        this.brId = brId;
         this.adr = adr;
         this.ctry = ctry;
         this.state = state;
@@ -115,5 +105,6 @@ public class UpdateSiteLocationReqModel {
         this.zip = zip;
         this.status = status;
         this.siteId = siteId;
+        this.jobId = jobId;
     }
 }

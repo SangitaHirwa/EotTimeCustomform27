@@ -254,7 +254,7 @@ public interface Service_apis {
     String updateEquStatus = "AssetsController/updateEquStatusFromMob";
 
     /**update site location on Reallocate screen**/
-    String updateAddressInEquipments = "AssetsController/updateAddressInEquipments";
+    String equipmentRelocate = "AssetsController/equipmentRelocate";
 
     //no token required & header
     @POST

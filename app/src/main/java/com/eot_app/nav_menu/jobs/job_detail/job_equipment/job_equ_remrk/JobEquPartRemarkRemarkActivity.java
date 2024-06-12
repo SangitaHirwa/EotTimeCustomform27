@@ -1088,6 +1088,7 @@ public class JobEquPartRemarkRemarkActivity extends UploadDocumentActivity imple
                 intent.putExtra("old_location",equipment.getLocation());
                 intent.putExtra("equId",equipment.getEquId());
                 intent.putExtra("clientId",equipment.getCltId());
+                intent.putExtra("jobId",jobId);
                 startActivityForResult(intent,REALLOCATE_LC);
                 break;
             case R.id.tv_repair:

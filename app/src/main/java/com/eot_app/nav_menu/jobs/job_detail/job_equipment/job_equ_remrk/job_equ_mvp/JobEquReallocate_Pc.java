@@ -36,7 +36,7 @@ public class JobEquReallocate_Pc implements JobEquReallocate_Pi{
     public void updateLocation(UpdateSiteLocationReqModel reqModel) {
         if (AppUtility.isInternetConnected()) {
             AppUtility.progressBarShow((Context) view);
-            ApiClient.getservices().eotServiceCall(Service_apis.updateAddressInEquipments, AppUtility.getApiHeaders(),
+            ApiClient.getservices().eotServiceCall(Service_apis.equipmentRelocate, AppUtility.getApiHeaders(),
                             AppUtility.getJsonObject(new Gson().toJson(reqModel)))
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())

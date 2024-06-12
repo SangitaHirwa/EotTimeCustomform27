@@ -1149,9 +1149,8 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
                         zip = sitetData.getZip();
                         newLocation = newLocation + " " + zip;
                     }
-//                    auto_client_site.setText(Html.fromHtml("<font color='#4C000000'>"+siteModelList.get(0).getSnm()+"</font>"+"<br>"+
-//                            newLocation));
-                    auto_client_site.setText("sdhsuify\njskdyhkjshf");
+                    auto_client_site.setText(Html.fromHtml("<font color='#4C000000'>"+siteModelList.get(0).getSnm()+"</font>"+"<br>"+
+                            newLocation));
                     edt_equ_adrs.setText(newLocation);
 //                    equ_adrs_layout.setHintEnabled(true);
                 }
@@ -1214,9 +1213,9 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
                     zip = sitetData.getZip();
                     newLocation = newLocation + " " + zip;
                 }
-//                auto_client_site.setText(Html.fromHtml("<font color='#4C000000'>"+sitetData.getSnm()+"</font>"+"<br>"+
-//                        newLocation));
-                auto_client_site.setText("sdhsuify\njskdyhkjshf");
+                auto_client_site.setText(Html.fromHtml("<font color='#4C000000'>"+sitetData.getSnm()+"</font>"+"<br>"+
+                        newLocation));
+                edt_equ_adrs.setText(newLocation);
 //                equ_adrs_layout.setHintEnabled(true);
 //                equ_adrs_layout.setClickable(false);
                 edt_equ_adrs.setClickable(false);

@@ -6,17 +6,25 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:drawable/screen_background_light_transparent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="5dp">
 
     <TextView
         android:id="@+id/item_title_name"
         style="@style/subtext_style"
         android:layout_width="match_parent"
-        android:layout_height="45dp"
+        android:layout_height="wrap_content"
         android:gravity="center|start"
-        android:padding="10dp"
         android:textColor="@color/txt_color" />
-
+        <TextView
+            android:id="@+id/item_subTitle_name"
+            style="@style/subtext_style"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center|start"
+            android:layout_marginTop="5dp"
+            android:visibility="visible"
+            android:textColor="@color/txt_color" />
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"

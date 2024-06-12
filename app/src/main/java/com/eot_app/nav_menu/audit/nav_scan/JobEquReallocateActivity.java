@@ -61,6 +61,7 @@ public class JobEquReallocateActivity extends AppCompatActivity implements View.
     String newLocation = "";
     String clientId = "";
     String equId = "";
+    String  jobId = "";
     AutoCompleteTextView auto_sites;
     ImageView site_dp_img;
     List<Site_model> site_data;
@@ -86,6 +87,7 @@ public class JobEquReallocateActivity extends AppCompatActivity implements View.
             oldLocation = getIntent().getStringExtra("old_location");
             clientId = getIntent().getStringExtra("clientId");
             equId = getIntent().getStringExtra("equId");
+            jobId = getIntent().getStringExtra("jobId");
         }
     }
 
@@ -162,11 +164,9 @@ public class JobEquReallocateActivity extends AppCompatActivity implements View.
 
     private void updateLocation() {
         if(selectedSiteData != null){
-            String[] equIdArrr = new String[1];
-            equIdArrr[0] = equId;
-             reqModel =  new UpdateSiteLocationReqModel(equIdArrr,"1",clientId,"",
+             reqModel =  new UpdateSiteLocationReqModel(equId,clientId,
                     selectedSiteData.getAdr(),selectedSiteData.getCtry(),selectedSiteData.getState(),
-                    selectedSiteData.getCity(),selectedSiteData.getZip(),"",selectedSiteData.getSiteId());
+                    selectedSiteData.getCity(),selectedSiteData.getZip(),"",selectedSiteData.getSiteId(), jobId);
               reallocate_pi.updateLocation(reqModel);
         }
     }
