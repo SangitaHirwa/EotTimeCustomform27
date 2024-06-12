@@ -142,7 +142,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
     private View eq_view;
     private TextInputLayout auto_barnd_layout, equ_layout, equ_model_layout, equ_supplier_layout, equ_serial_layout, /*job_country_layout, job_state_layout,*/ /*equ_city_layout, equ_zip_layout,*/
             quote_notes_layout, catery_layout, equipment_layout, grp_layout, equ_adrs_layout, client_site_layout, custom_filed_header_1, custom_filed_header_2/*,supplier_layout*/;//equ_brand_layout
-    private Button add_edit_item_Btn;
+    private Button add_edit_item_Btn,clear_btn;
     private RelativeLayout image_with_tag;
     private boolean isTagSet = false;
     private RadioButton radio_before, radio_after;
@@ -593,6 +593,9 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
         rdBtn_day = findViewById(R.id.radio_day);
         rdBtn_month = findViewById(R.id.radio_month);
         rdBtn_year = findViewById(R.id.radio_year);
+        clear_btn = findViewById(R.id.clear_btn);
+        clear_btn.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.clear));
+        clear_btn.setOnClickListener(this);
         apicalling();
 
         /*get Item Data For Item to equipment convert*****/
@@ -1392,6 +1395,19 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
             case R.id.show_more:
                 ll_show_more_less.setVisibility(View.VISIBLE);
                 show_more.setVisibility(View.GONE);
+                break;
+
+            case R.id.clear_btn:
+                edt_day.setText("");
+                edt_month.setText("");
+                edt_year.setText("");
+                rdBtn_day.setChecked(false);
+                rdBtn_month.setChecked(false);
+                rdBtn_year.setChecked(false);
+                edt_day.setVisibility(View.GONE);
+                edt_month.setVisibility(View.GONE);
+                edt_year.setVisibility(View.GONE);
+                rediogrp.clearCheck();
                 break;
         }
     }

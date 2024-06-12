@@ -1963,7 +1963,8 @@
     "more_details": "More Details",
     "serial_no_not_matched": "Serial number is not matched.",
     "select_serial_no": "Please select Serial number",
-    "what_you_want_to_generate_of_scan_code": "What you want to generate of scan code?"
+    "what_you_want_to_generate_of_scan_code": "What you want to generate of scan code?",
+    "interval_notes": "When configuring automated reminders for clients, it's important to take into account the service interval."
   }
 }
 
