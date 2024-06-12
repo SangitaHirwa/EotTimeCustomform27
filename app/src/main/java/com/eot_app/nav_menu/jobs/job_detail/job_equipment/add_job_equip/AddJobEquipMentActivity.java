@@ -791,19 +791,18 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
                     city = job.getCity();
                     newLocation = newLocation + ", " + city;
                 }
-                if (job.getCtry() != null && !job.getCtry().isEmpty()) {
-                    countryNameById = SpinnerCountrySite.getCountryNameById(job.getCtry());
-                    newLocation = newLocation + " " + countryNameById;
-                }
-                if (job.getState() != null && !job.getState().isEmpty()) {
+                if (job.getState() != null && !job.getState().isEmpty() && !job.getCtry().isEmpty() && !job.getState().equals("0")) {
                     statenameById = SpinnerCountrySite.getStatenameById((job.getCtry()), job.getState());
-                    newLocation = newLocation + " " + statenameById;
+                    newLocation = newLocation + ", " + statenameById;
+                } if (job.getCtry() != null && !job.getCtry().isEmpty() && !job.getCtry().equals("0")) {
+                    countryNameById = SpinnerCountrySite.getCountryNameById(job.getCtry());
+                    newLocation = newLocation + ", " + countryNameById;
                 }
                 if (job.getCity() != null && !job.getCity().isEmpty()) {
                     zip = job.getZip();
-                    newLocation = newLocation + " " + zip;
+                    newLocation = newLocation + ", " + zip;
                 }
-                edt_equ_adrs.setText(newLocation);
+                edt_equ_adrs.setText(job.getAdr());
 //                edt_equ_zip.setText(job.getZip());
                 auto_client_site.setText(Html.fromHtml("<font color='#4C000000'>" + job.getSnm() + "</font>" + "<br>" +
                         newLocation));
@@ -836,19 +835,18 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
                 city = audit.getCity();
                 newLocation = newLocation + ", " + city;
             }
-            if (audit.getCtry() != null && !audit.getCtry().isEmpty()) {
-                countryNameById = SpinnerCountrySite.getCountryNameById(audit.getCtry());
-                newLocation = newLocation + " " + countryNameById;
-            }
-            if (audit.getState() != null && !audit.getState().isEmpty()) {
+            if (audit.getState() != null && !audit.getState().isEmpty()&& !audit.getCtry().isEmpty() && !audit.getState().equals("0")) {
                 statenameById = SpinnerCountrySite.getStatenameById((audit.getCtry()), audit.getState());
-                newLocation = newLocation + " " + statenameById;
+                newLocation = newLocation + ", " + statenameById;
+            } if (audit.getCtry() != null && !audit.getCtry().isEmpty() && !audit.getCtry().equals("0")) {
+                countryNameById = SpinnerCountrySite.getCountryNameById(audit.getCtry());
+                newLocation = newLocation + ", " + countryNameById;
             }
             if (audit.getCity() != null && !audit.getCity().isEmpty()) {
                 zip = audit.getZip();
-                newLocation = newLocation + " " + zip;
+                newLocation = newLocation + ", " + zip;
             }
-            edt_equ_adrs.setText(newLocation);
+            edt_equ_adrs.setText(audit.getAdr());
 //            edt_equ_zip.setText(audit.getZip());
             auto_client_site.setText(Html.fromHtml("<font color='#4C000000'>" + job.getSnm() + "</font>" + "<br>" +
                     newLocation));
@@ -1137,21 +1135,20 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
                         city = sitetData.getCity();
                         newLocation = newLocation + ", " + city;
                     }
-                    if (sitetData.getCtry() != null && !sitetData.getCtry().isEmpty()) {
-                        countryNameById = SpinnerCountrySite.getCountryNameById(sitetData.getCtry());
-                        newLocation = newLocation + " " + countryNameById;
-                    }
-                    if (sitetData.getState() != null && !sitetData.getState().isEmpty()) {
+                    if (sitetData.getState() != null && !sitetData.getState().isEmpty()&& !sitetData.getCtry().isEmpty() && !sitetData.getState().equals("0")) {
                         statenameById = SpinnerCountrySite.getStatenameById((sitetData.getCtry()), sitetData.getState());
-                        newLocation = newLocation + " " + statenameById;
+                        newLocation = newLocation + ", " + statenameById;
+                    }if (sitetData.getCtry() != null && !sitetData.getCtry().isEmpty() && !sitetData.getCtry().equals("0")) {
+                        countryNameById = SpinnerCountrySite.getCountryNameById(sitetData.getCtry());
+                        newLocation = newLocation + ", " + countryNameById;
                     }
                     if (sitetData.getZip() != null && !sitetData.getZip().isEmpty()) {
                         zip = sitetData.getZip();
-                        newLocation = newLocation + " " + zip;
+                        newLocation = newLocation + ", " + zip;
                     }
                     auto_client_site.setText(Html.fromHtml("<font color='#4C000000'>"+siteModelList.get(0).getSnm()+"</font>"+"<br>"+
                             newLocation));
-                    edt_equ_adrs.setText(newLocation);
+                    edt_equ_adrs.setText(sitetData.getAdr());
 //                    equ_adrs_layout.setHintEnabled(true);
                 }
             });
@@ -1201,21 +1198,20 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
                     city = sitetData.getCity();
                     newLocation = newLocation + ", " + city;
                 }
-                if (sitetData.getCtry() != null && !sitetData.getCtry().isEmpty()) {
-                    countryNameById = SpinnerCountrySite.getCountryNameById(sitetData.getCtry());
-                    newLocation = newLocation + " " + countryNameById;
-                }
-                if (sitetData.getState() != null && !sitetData.getState().isEmpty()) {
+                if (sitetData.getState() != null && !sitetData.getState().isEmpty()&& !sitetData.getCtry().isEmpty() && !sitetData.getState().equals("0")) {
                     statenameById = SpinnerCountrySite.getStatenameById((sitetData.getCtry()), sitetData.getState());
-                    newLocation = newLocation + " " + statenameById;
+                    newLocation = newLocation + ", " + statenameById;
+                } if (sitetData.getCtry() != null && !sitetData.getCtry().isEmpty() && !sitetData.getCtry().equals("0")) {
+                    countryNameById = SpinnerCountrySite.getCountryNameById(sitetData.getCtry());
+                    newLocation = newLocation + ", " + countryNameById;
                 }
                 if (sitetData.getZip() != null && !sitetData.getZip().isEmpty()) {
                     zip = sitetData.getZip();
-                    newLocation = newLocation + " " + zip;
+                    newLocation = newLocation + ", " + zip;
                 }
                 auto_client_site.setText(Html.fromHtml("<font color='#4C000000'>"+sitetData.getSnm()+"</font>"+"<br>"+
                         newLocation));
-                edt_equ_adrs.setText(newLocation);
+                edt_equ_adrs.setText(sitetData.getAdr());
 //                equ_adrs_layout.setHintEnabled(true);
 //                equ_adrs_layout.setClickable(false);
                 edt_equ_adrs.setClickable(false);

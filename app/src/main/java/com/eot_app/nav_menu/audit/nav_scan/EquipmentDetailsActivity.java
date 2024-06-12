@@ -606,10 +606,10 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
         if (equipment.getCity() != null && !equipment.getCity().equals("")) {
             clientArd = clientArd.concat("," + equipment.getCity());
         }
-        if (equipment.getState() != null && !equipment.getState().equals("")) {
+        if (equipment.getState() != null && !equipment.getState().equals("")&& equipment.getCtry() != null && !equipment.getState().equals("0")) {
             clientArd = clientArd.concat("," + SpinnerCountrySite.getStatenameById(equipment.getCtry(), equipment.getState()));
         }
-        if (equipment.getCtry() != null && !equipment.getCtry().equals("")) {
+        if (equipment.getCtry() != null && !equipment.getCtry().equals("") && !equipment.getCtry().equals("0")) {
             clientArd = clientArd.concat("," + SpinnerCountrySite.getCountryNameById(equipment.getCtry()));
         }
         if (equipment.getZip() != null && !equipment.getZip().equals("")) {
@@ -733,10 +733,10 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
             if (equipmentById.getCity() != null && !equipmentById.getCity().equals("")) {
                 clientArd = clientArd.concat("," + equipmentById.getCity());
             }
-            if (equipmentById.getState() != null && !equipmentById.getState().equals("")) {
+            if (equipmentById.getState() != null && !equipmentById.getState().equals("") && equipmentById.getCtry() != null && !equipmentById.getState().equals("0")) {
                 clientArd = clientArd.concat("," + SpinnerCountrySite.getStatenameById(equipmentById.getCtry(), equipmentById.getState()));
             }
-            if (equipmentById.getCtry() != null && !equipmentById.getCtry().equals("")) {
+            if (equipmentById.getCtry() != null && !equipmentById.getCtry().equals("") && !equipmentById.getCtry().equals("0")) {
                 clientArd = clientArd.concat("," + SpinnerCountrySite.getCountryNameById(equipmentById.getCtry()));
             }
             if (equipmentById.getZip() != null && !equipmentById.getZip().equals("")) {
@@ -853,10 +853,10 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
             if (equipment.getCity() != null && !equipment.getCity().equals("")) {
                 clientArd = clientArd.concat("," + equipment.getCity());
             }
-            if (equipment.getState() != null && !equipment.getState().equals("")) {
+            if (equipment.getState() != null && !equipment.getState().equals("")&& equipment.getCtry() != null && !equipment.getState().equals("0")) {
                 clientArd = clientArd.concat("," + SpinnerCountrySite.getStatenameById(equipment.getCtry(), equipment.getState()));
             }
-            if (equipment.getCtry() != null && !equipment.getCtry().equals("")) {
+            if (equipment.getCtry() != null && !equipment.getCtry().equals("") && !equipment.getCtry().equals("0")) {
                 clientArd = clientArd.concat("," + SpinnerCountrySite.getCountryNameById(equipment.getCtry()));
             }
             if (equipment.getZip() != null && !equipment.getZip().equals("")) {

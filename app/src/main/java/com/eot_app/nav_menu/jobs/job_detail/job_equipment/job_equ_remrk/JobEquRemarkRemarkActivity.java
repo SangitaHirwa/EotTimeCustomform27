@@ -48,6 +48,7 @@ import com.eot_app.nav_menu.audit.audit_list.equipment.remark.RemarkQuestionList
 import com.eot_app.nav_menu.audit.audit_list.equipment.remark.remark_mvp.RemarkRequest;
 import com.eot_app.nav_menu.audit.nav_scan.EquipmentDetailsActivity;
 import com.eot_app.nav_menu.audit.nav_scan.JobEquReallocateActivity;
+import com.eot_app.nav_menu.client.clientlist.client_detail.site.sitelist.editsite.editsitedb.SpinnerCountrySite;
 import com.eot_app.nav_menu.jobs.job_db.EquArrayModel;
 import com.eot_app.nav_menu.jobs.job_db.Job;
 import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.AddEditInvoiceItemActivity2;
@@ -537,7 +538,6 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
                             equipment1.setSiteId(equipment.getSiteId());
                             equipment1.setState(equipment.getState());
                             equipment1.setZip(equipment.getZip());
-                            equipment1.setLocation(equipment.getLocation());
                             AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().updateJob(job);
                             // for notifying job overview page
                             EotApp.getAppinstance().getJobFlagOverView();
@@ -557,7 +557,6 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
                                             equipmentPart.setSiteId(equipment.getSiteId());
                                             equipmentPart.setState(equipment.getState());
                                             equipmentPart.setZip(equipment.getZip());
-                                            equipmentPart.setLocation(equipment.getLocation());
                                             AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().updateJob(job);
                                             // for notifying job overview page
                                             EotApp.getAppinstance().getJobFlagOverView();
@@ -1070,7 +1069,26 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
                     break;
             case R.id.tv_reallocate:
                 Intent intent = new Intent(this, JobEquReallocateActivity.class);
-                intent.putExtra("old_location",equipment.getLocation());
+                String newLocation = "";
+                if(equipment != null) {
+                    newLocation = "";
+                    if (equipment.getAdr() != null && !equipment.getAdr().isEmpty()) {
+                        newLocation = newLocation + "" + equipment.getAdr();
+                    }
+                    if (equipment.getCity() != null && !equipment.getCity().isEmpty()) {
+                        newLocation = newLocation + ", " + equipment.getCity();
+                    }
+                    if (equipment.getState() != null && !equipment.getState().isEmpty() && equipment.getCtry() != null && !equipment.getState().equals("0")) {
+                        newLocation = newLocation + ", " + SpinnerCountrySite.getStatenameById((equipment.getCtry()), equipment.getState());
+                    }
+                    if (equipment.getCtry() != null && !equipment.getCtry().isEmpty() && !equipment.getCtry().equals("0")) {
+                        newLocation = newLocation + ", " + SpinnerCountrySite.getCountryNameById(equipment.getCtry());
+                    }
+                    if (equipment.getZip() != null && !equipment.getZip().isEmpty()) {
+                        newLocation = newLocation + ", " + equipment.getZip();
+                    }
+                }
+                intent.putExtra("old_location",newLocation);
                 intent.putExtra("clientId", equipment.getCltId());
                 intent.putExtra("equId",equipment.getEquId());
                 intent.putExtra("jobId",jobId);
@@ -1846,7 +1864,6 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
         if(requestCode == REALLOCATE_LC){
             if(data != null){
                 String adrModel = data.getStringExtra("adr_model");
-                String location = data.getStringExtra("loc");
                 Type listType = new TypeToken<UpdateSiteLocationReqModel>() {
                 }.getType();
                 UpdateSiteLocationReqModel updateData = new Gson().fromJson(adrModel, listType);
@@ -1856,8 +1873,6 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
                 equipment.setSiteId(updateData.getSiteId());
                 equipment.setState(updateData.getState());
                 equipment.setZip(updateData.getZip());
-                equipment.setLocation(location);
-                tv_location.setText(location);
                 updateEquStatus(txt_status.getText().toString());
             }
         }

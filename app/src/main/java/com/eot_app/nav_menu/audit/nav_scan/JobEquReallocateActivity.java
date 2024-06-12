@@ -104,7 +104,11 @@ public class JobEquReallocateActivity extends AppCompatActivity implements View.
     }
 
     private void setData() {
-        old_location_detail.setText(oldLocation);
+        if(!oldLocation.isEmpty()) {
+            old_location_detail.setText(oldLocation);
+        }else {
+            old_location_detail.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.no_location));
+        }
         if (clientId != null && !clientId.isEmpty()) {
             getSiteList(clientId);
         }
@@ -201,17 +205,16 @@ public class JobEquReallocateActivity extends AppCompatActivity implements View.
                     city = sitetData.getCity();
                     newLocation = newLocation+", "+city;
                 }
-                if (sitetData.getCtry() != null && !sitetData.getCtry().isEmpty()) {
-                    countryNameById = SpinnerCountrySite.getCountryNameById(sitetData.getCtry());
-                    newLocation = newLocation+" "+countryNameById;
-                }
-                if (sitetData.getState() != null && !sitetData.getState().isEmpty()) {
+                if (sitetData.getState() != null && !sitetData.getState().isEmpty()&& !sitetData.getCtry().isEmpty() && !sitetData.getState().equals("0")) {
                     statenameById = SpinnerCountrySite.getStatenameById((sitetData.getCtry()), sitetData.getState());
-                    newLocation = newLocation+" "+statenameById;
+                    newLocation = newLocation+", "+statenameById;
+                }if (sitetData.getCtry() != null && !sitetData.getCtry().isEmpty() && !sitetData.getCtry().equals("0")) {
+                    countryNameById = SpinnerCountrySite.getCountryNameById(sitetData.getCtry());
+                    newLocation = newLocation+", "+countryNameById;
                 }
                 if(sitetData.getZip() != null && !sitetData.getZip().isEmpty()){
                     zip = sitetData.getZip();
-                    newLocation = newLocation+" "+zip;
+                    newLocation = newLocation+", "+zip;
                 }
             }
             auto_sites.setText(Html.fromHtml("<font color='#4C000000'>"+AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).sitemodel().getSiteFromSiteId(siteId).getSnm()+"</font>"+"<br>"+
@@ -283,7 +286,6 @@ public class JobEquReallocateActivity extends AppCompatActivity implements View.
         Intent intent = new Intent();
         String json = new Gson().toJson(reqModel);
         intent.putExtra("adr_model",json);
-        intent.putExtra("loc",newLocation);
         setResult(RESULT_OK,intent);
         finish();
     }

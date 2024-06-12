@@ -116,15 +116,15 @@ public class FilterAdapterSites extends ArrayAdapter<Site_model> {
                 }if(pickOrDropModel.getCity() != null && !pickOrDropModel.getCity().isEmpty()){
                     city = pickOrDropModel.getCity();
                     location = location+", "+city;
-                }if(pickOrDropModel.getCtry() != null && !pickOrDropModel.getCtry().isEmpty()){
-                    cntry = SpinnerCountrySite.getCountryNameById(pickOrDropModel.getCtry());
-                    location = location+" "+cntry;
-                }if(pickOrDropModel.getState() != null && !pickOrDropModel.getState().isEmpty()){
+                }if(pickOrDropModel.getState() != null && !pickOrDropModel.getState().isEmpty()&& !pickOrDropModel.getCtry().isEmpty() && !pickOrDropModel.getState().equals("0")){
                     state = pickOrDropModel.getState();
-                    location = location+" "+state;
+                    location = location+", "+state;
+                }if(pickOrDropModel.getCtry() != null && !pickOrDropModel.getCtry().isEmpty() && !pickOrDropModel.getCtry().equals("0")){
+                    cntry = SpinnerCountrySite.getCountryNameById(pickOrDropModel.getCtry());
+                    location = location+", "+cntry;
                 }if(pickOrDropModel.getZip() != null && !pickOrDropModel.getZip().isEmpty()){
                     zip = pickOrDropModel.getZip();
-                    location = location+" "+zip;
+                    location = location+", "+zip;
                 }
                 address.setText(location);
             }
