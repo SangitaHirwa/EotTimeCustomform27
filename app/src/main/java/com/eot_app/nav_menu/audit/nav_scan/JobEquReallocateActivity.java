@@ -168,7 +168,7 @@ public class JobEquReallocateActivity extends AppCompatActivity implements View.
 
     private void updateLocation() {
         if(selectedSiteData != null){
-             reqModel =  new UpdateSiteLocationReqModel("equId",clientId,
+             reqModel =  new UpdateSiteLocationReqModel(equId,clientId,
                     selectedSiteData.getAdr(),selectedSiteData.getCtry(),selectedSiteData.getState(),
                     selectedSiteData.getCity(),selectedSiteData.getZip(),selectedSiteData.getSiteId(), jobId);
               reallocate_pi.updateLocation(reqModel);
