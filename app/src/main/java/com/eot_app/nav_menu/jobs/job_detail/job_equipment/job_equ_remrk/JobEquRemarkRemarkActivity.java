@@ -1653,7 +1653,7 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
                 item_cardview.setVisibility(View.GONE);
             }
 
-            setTitles();
+
             // set name
             if (equipment.getParentName() != null && !equipment.getParentName().isEmpty())
                 tv_equipment_name.setText(equipment.getParentName() + " > " + equipment.getEqunm());
@@ -1737,6 +1737,7 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
                 showRemarkSection();
             }
         }
+        setTitles();
         if(mParam2!=null){
             if(mParam2.getItemRequested() != null && mParam2.getItemRequested().equals("1")){
                 requested_item_flag.setVisibility(View.VISIBLE);

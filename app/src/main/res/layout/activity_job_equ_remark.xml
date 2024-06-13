@@ -62,6 +62,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
                     android:gravity="start"
+                    android:visibility="gone"
                     android:text="" />
             </LinearLayout>
             <!--Stop Linerar layout 2-->

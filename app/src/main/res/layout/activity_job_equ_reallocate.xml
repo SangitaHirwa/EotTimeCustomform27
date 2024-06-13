@@ -75,15 +75,14 @@
             android:visibility="visible"
             >
             <!--new Site name field-->
-            <RelativeLayout
-                android:id="@+id/rl_site"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
 
                 <LinearLayout
                     android:id="@+id/site_dp_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
                     android:orientation="horizontal">
 
                     <com.google.android.material.textfield.TextInputLayout
@@ -121,7 +120,6 @@
                         tools:ignore="ContentDescription" />
 
                 </LinearLayout>
-            </RelativeLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
         <TextView

@@ -1644,7 +1644,7 @@ public class JobEquPartRemarkRemarkActivity extends UploadDocumentActivity imple
                 item_cardview.setVisibility(View.VISIBLE);
             }
 
-            setTitles();
+
             // set name
             if (equipment.getParentName() != null && !equipment.getParentName().isEmpty())
                 tv_equipment_name.setText(equipment.getParentName()+" > "+equipment.getEqunm());
@@ -1727,6 +1727,7 @@ public class JobEquPartRemarkRemarkActivity extends UploadDocumentActivity imple
                 showRemarkSection();
             }
         }
+        setTitles();
 
     }
 

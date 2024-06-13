@@ -163,7 +163,7 @@ public class EquipmentPartAdapter extends RecyclerView.Adapter<EquipmentPartAdap
 
         if (!TextUtils.isEmpty(equArrayModel.getLocation())) {
             holder.tv_address.setText(equArrayModel.getLocation());
-            holder.tv_address.setVisibility(View.VISIBLE);
+            holder.tv_address.setVisibility(View.GONE);
         } else holder.tv_address.setVisibility(View.GONE);
 
 
