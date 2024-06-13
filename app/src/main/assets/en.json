@@ -1961,10 +1961,14 @@
     "show_less_details":  "Show Less Details",
     "loc_and_instal_date": "Location & Installation Date",
     "more_details": "More Details",
-    "serial_no_not_matched": "Serial number is not matched.",
-    "select_serial_no": "Please select Serial number",
     "what_you_want_to_generate_of_scan_code": "What you want to generate of scan code?",
-    "interval_notes": "When configuring automated reminders for clients, it's important to take into account the service interval."
+    "interval_notes": "When configuring automated reminders for clients, it's important to take into account the service interval.",
+    "serial_no_not_matched": "Your equipment is missing in the listed serial number? Tap here to add a new piece of equipment.",
+    "select_serial_no": "Please select Serial Number.",
+    "choose_scan_code": "Could you please confirm whether you are scanning a barcode or a QR code?",
+    "navigate_to" : "Navigate to",
+    "equipment_list_page" : "Equipment List Page",
+    "equipment_action_page" : "Equipment Action Page"
   }
 }
 

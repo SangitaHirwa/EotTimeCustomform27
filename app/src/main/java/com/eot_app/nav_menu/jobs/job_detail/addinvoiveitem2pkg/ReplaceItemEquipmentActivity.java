@@ -98,7 +98,7 @@ public class ReplaceItemEquipmentActivity extends
     private TextView item_select, fw_select, service_select;
     private LinearLayout layout_fw_item, taxamount_layout, amount_layout;
     View nm_view, desc_view, qty_view, rate_view, supplier_view, disc_view, tax_view, amount_view, part_no_view, hsncode_view, unit_view, taxrateAmount_view, seroal_no_view, tax_rate_view;
-    TextView tax_value_txt, tax_txt_hint, amount_value_txt, taxamount_txt_hint, taxamount_value_txt, amount_txt_hint;
+    TextView tax_value_txt, tax_txt_hint, amount_value_txt, taxamount_txt_hint, taxamount_value_txt, amount_txt_hint,txt_lbl_not_matchSerialNo, btn_not_matchSerialNo;
     private RelativeLayout tax_layout;
     private boolean DP_OPEN = false;
     private List<JobTitle> servicesItemList = new ArrayList<>();
@@ -129,13 +129,18 @@ public class ReplaceItemEquipmentActivity extends
     String warrantyType ="";
     String warrantyValue="";
     String isGrouped="";
-    TextView tvLabelStep1,tv_skip,txt_lbl_link,btn_link_item;
+    TextView tvLabelStep1,tv_skip,txt_lbl_link,btn_link_item,txt_serialNo_hint;
     RelativeLayout ll_note, ll_link_note;
     private ImageButton tax_cancel;
     CheckBox add_stock_checkBox;
     String isRemoveStock ="1";
-    boolean show_stock_checkbox = false;
+    boolean show_stock_checkbox = false,isSerialNoSelected = false;
     public  static  ReplaceItemEquipmentActivity replaceItemEquipmentActivity;
+    LinearLayout ll_serialNo, ll_below_rd_serialNo;
+    RadioGroup rd_group_serialNo;
+    String itemId1, ijmmId, serialNo;
+    List<InvoiceItemDataModel> serialNoList = new ArrayList<>();
+    Inventry_ReS_Model invetoryItemData = new Inventry_ReS_Model();
     public ReplaceItemEquipmentActivity getInstance (){
         return replaceItemEquipmentActivity;
     }

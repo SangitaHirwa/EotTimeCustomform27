@@ -1231,15 +1231,19 @@ public class JobEquPartRemarkRemarkActivity extends UploadDocumentActivity imple
         }
 
         String strEqu = new Gson().toJson(equipment);
-        Intent intent = new Intent(this, ReplaceItemEquipmentActivity.class);
+//        Intent intent = new Intent(this, ReplaceItemEquipmentActivity.class);
+        Intent intent = new Intent(this, AddEditInvoiceItemActivity2.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         intent.putExtra("jobId", jobId);
         intent.putExtra("locId", locId);
         intent.putExtra("invId", "");
         intent.putExtra("equipment", strEqu);
-        intent.putExtra("InvoiceItemDataModel", invoiceItemDataModel);
-        intent.putExtra("comeFrom", "AddRemark");
+//        intent.putExtra("InvoiceItemDataModel", invoiceItemDataModel);
+//        intent.putExtra("comeFrom", "AddRemark");
+        intent.putExtra("comeFrom", "AddRemarkReplace");
         intent.putExtra("NONBILLABLE", false);
+        intent.putExtra("getTaxMethodType", "0");
+        intent.putExtra("getSingleTaxId", "0");
         startActivity(intent);
 
     }

@@ -51,12 +51,14 @@ import com.eot_app.nav_menu.appointment.appointment_model.AppointmentUpdateItem_
 import com.eot_app.nav_menu.appointment.dbappointment.Appointment;
 import com.eot_app.nav_menu.appointment.details.RequirementGetheringListAdapter;
 import com.eot_app.nav_menu.appointment.details.documents.AppointmentTax;
+import com.eot_app.nav_menu.jobs.job_db.EquArrayModel;
 import com.eot_app.nav_menu.jobs.job_db.Job;
 import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.model.AddInvoiceItemReqModel;
 import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.model.InvoiceItemDataModel;
 import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.mvp.AddEditInvoiceItem_PC;
 import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.mvp.AddEditInvoiceItem_PI;
 import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.mvp.AddEditInvoiceItem_View;
+import com.eot_app.nav_menu.jobs.job_detail.generate_invoice.invoice_adpter_pkg.EquipItemObserver;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.Auto_Inventry_Adpter;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.add_edit_invoice_pkg.dropdown_item_pkg.Auto_Fieldworker_Adpter;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.add_edit_invoice_pkg.dropdown_item_pkg.Services_item_Adapter;
@@ -108,7 +110,7 @@ public class AddEditInvoiceItemActivity2 extends
         AddEditInvoiceItem_View, TextWatcher,
         View.OnFocusChangeListener,
         View.OnClickListener,
-        RadioGroup.OnCheckedChangeListener {
+        RadioGroup.OnCheckedChangeListener,EquipItemObserver {
     public static final int EQUIPMENTCONVERT = 201;
     public static final int EQUIPMENTLINK = 202;
     RelativeLayout ll_note, ll_link_note;
@@ -116,7 +118,7 @@ public class AddEditInvoiceItemActivity2 extends
     TextView tax_value_txt, tax_txt_hint, amount_value_txt, taxamount_txt_hint, taxamount_value_txt, amount_txt_hint, txt_lbl_not_matchSerialNo, btn_not_matchSerialNo;
     List<ItemParts> partsList = new ArrayList<>();
     String comeFrom = "";
-    String equipment = "";
+    EquArrayModel equipment ;
     String equipmentId = "";
     String equipmentIdName = "";
     String equipmentType = "";
@@ -198,6 +200,8 @@ public class AddEditInvoiceItemActivity2 extends
     RadioGroup rd_group_serialNo;
     String itemId1, ijmmId, serialNo, generateOption;
     List<InvoiceItemDataModel> serialNoList = new ArrayList<>();
+    Inventry_ReS_Model invetoryItemData = new Inventry_ReS_Model();
+    InvoiceItemDataModel invoiceItemDataModelWithIjmmId = new InvoiceItemDataModel();
 
     public AddEditInvoiceItemActivity2 getInstance() {
 
@@ -222,6 +226,7 @@ public class AddEditInvoiceItemActivity2 extends
                 // for adding item from equipment or adding equipment part with item
                 if (getIntent().hasExtra("comeFrom")) {
                     comeFrom = bundle.getString("comeFrom");
+                    EotApp.getAppinstance().setEquipItemObserver(this);
                     if (comeFrom != null && comeFrom.equalsIgnoreCase("JobListScan")) {
                         initializelables();
                         edt_item_qty.setEnabled(false);
@@ -237,15 +242,23 @@ public class AddEditInvoiceItemActivity2 extends
                     } else {
                         cltId = bundle.getString("cltId");
                         show_stock_checkbox = true;
-                        equipment = bundle.getString("equipment");
+                        if (getIntent().hasExtra("equipment")) {
+                            String strEquipment = getIntent().getExtras().getString("equipment");
+                            equipment = new Gson().fromJson(strEquipment, EquArrayModel.class);
+                        }
+//                        equipment = bundle.getString("equipment");
                         equipmentId = bundle.getString("equipmentId");
                         equipmentIdName = bundle.getString("equipmentIdName");
                         equipmentType = bundle.getString("equipmentType");
                         initializelables();
-                        if (comeFrom != null && comeFrom.equalsIgnoreCase("AddRemark")) {
+                        if (comeFrom != null && comeFrom.equalsIgnoreCase("AddRemark")
+                                || comeFrom != null && comeFrom.equalsIgnoreCase("AddRemarkReplace")) {
                             edt_item_qty.setEnabled(false);
                             ll_note.setVisibility(View.VISIBLE);
-                            ll_link_note.setVisibility(View.VISIBLE);
+                            ll_link_note.setVisibility(View.GONE);
+                            layout_fw_item.setVisibility(View.GONE);
+                            ll_serialNo.setVisibility(View.GONE);
+                            ll_below_rd_serialNo.setVisibility(View.GONE);
                         } else if (comeFrom != null && comeFrom.equalsIgnoreCase("AddRemarkItem")) {
                             ll_link_note.setVisibility(View.VISIBLE);
                         }
@@ -362,8 +375,9 @@ public class AddEditInvoiceItemActivity2 extends
                         case "Item":
                             Log.e("", "");
                             if (editable.length() >= 1) {
-
-                                if (comeFrom != null && comeFrom.equalsIgnoreCase("JobListScan")) {
+                                if (comeFrom != null && comeFrom.equalsIgnoreCase("AddRemark")
+                                        ||comeFrom != null && comeFrom.equalsIgnoreCase("JobListScan")
+                                        ||comeFrom != null && comeFrom.equalsIgnoreCase("AddRemarkReplace")) {
                                     if (ll_serialNo.getVisibility() == View.VISIBLE) {
                                         ll_serialNo.setVisibility(View.GONE);
                                     } else if (ll_below_rd_serialNo.getVisibility() == View.VISIBLE) {
@@ -396,6 +410,15 @@ public class AddEditInvoiceItemActivity2 extends
                             if (!itemsList.contains(editable)) {
                                 inm = editable.toString();
                                 setEmptyFieldsNonInventry();
+                                if (comeFrom != null && comeFrom.equalsIgnoreCase("AddRemark")
+                                        ||comeFrom != null && comeFrom.equalsIgnoreCase("JobListScan")
+                                        ||comeFrom != null && comeFrom.equalsIgnoreCase("AddRemarkReplace")) {
+                                if(editable.length() > 3){
+                                    ll_below_rd_serialNo.setVisibility(View.VISIBLE);
+                                }else {
+                                    ll_below_rd_serialNo.setVisibility(View.GONE);
+                                }
+                                }
                             }
                             break;
                         case "Fw":
@@ -433,28 +456,28 @@ public class AddEditInvoiceItemActivity2 extends
     protected void onStart() {
         super.onStart();
 
-        if (jobModel != null && jobModel.getItemData().size() > 0) {
-            for (InvoiceItemDataModel item : jobModel.getItemData()
-            ) {
-
-                if (item.getDataType() != null && item.getDataType().equalsIgnoreCase("1") && item.getEquId() != null && item.getEquId().equalsIgnoreCase("0")) {
-                    if (comeFrom != null && comeFrom.equalsIgnoreCase("AddRemark")) {
-                        ll_link_note.setVisibility(View.VISIBLE);
-                        break;
-                    } else if (comeFrom != null && comeFrom.equalsIgnoreCase("AddRemarkItem")) {
-                        ll_link_note.setVisibility(View.VISIBLE);
-                        break;
-                    } else {
-                        ll_link_note.setVisibility(View.GONE);
-                    }
-
-                } else {
-                    ll_link_note.setVisibility(View.GONE);
-                }
-            }
-        } else {
-            ll_link_note.setVisibility(View.GONE);
-        }
+//        if (jobModel != null && jobModel.getItemData().size() > 0) {
+//            for (InvoiceItemDataModel item : jobModel.getItemData()
+//            ) {
+//
+//                if (item.getDataType() != null && item.getDataType().equalsIgnoreCase("1") && item.getEquId() != null && item.getEquId().equalsIgnoreCase("0")) {
+//                    if (comeFrom != null && comeFrom.equalsIgnoreCase("AddRemark")) {
+//                        ll_link_note.setVisibility(View.VISIBLE);
+//                        break;
+//                    } else if (comeFrom != null && comeFrom.equalsIgnoreCase("AddRemarkItem")) {
+//                        ll_link_note.setVisibility(View.VISIBLE);
+//                        break;
+//                    } else {
+//                        ll_link_note.setVisibility(View.GONE);
+//                    }
+//
+//                } else {
+//                    ll_link_note.setVisibility(View.GONE);
+//                }
+//            }
+//        } else {
+//            ll_link_note.setVisibility(View.GONE);
+//        }
     }
 
     /**
@@ -843,13 +866,17 @@ public class AddEditInvoiceItemActivity2 extends
                 add_edit_item_Btn.setVisibility(View.GONE);
             }
         } else if (updateItemDataModel == null) {
-            if (comeFrom != null && comeFrom.equalsIgnoreCase("AddRemark") || comeFrom != null && comeFrom.equalsIgnoreCase("JobListScan"))
+            if (comeFrom != null && comeFrom.equalsIgnoreCase("AddRemark")
+                    || comeFrom != null && comeFrom.equalsIgnoreCase("JobListScan")
+            || comeFrom != null && comeFrom.equalsIgnoreCase("AddRemarkReplace"))
                 Objects.requireNonNull(getSupportActionBar()).setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.step_1) + " (" +
                         LanguageController.getInstance().getMobileMsgByKey(AppConstant.title_add_equipment) + ")");
             else
                 Objects.requireNonNull(getSupportActionBar()).setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.addItem_screen_title));
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            if (comeFrom != null && comeFrom.equalsIgnoreCase("JobListScan")) {
+            if (comeFrom != null && comeFrom.equalsIgnoreCase("AddRemark")
+                    ||comeFrom != null && comeFrom.equalsIgnoreCase("JobListScan")
+            ||comeFrom != null && comeFrom.equalsIgnoreCase("AddRemarkReplace")) {
 
                 add_edit_item_Btn.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.next_btn));
             } else {
@@ -1162,6 +1189,7 @@ public class AddEditInvoiceItemActivity2 extends
      * Convert Item to Equipment
      *****/
     private void convertInEquip(InvoiceItemDataModel updateItemDataModel) {
+        AppUtility.progressBarDissMiss();
         if (Integer.parseInt(updateItemDataModel.getItemConvertCount()) >= Integer.parseInt(updateItemDataModel.getQty())) {
             AppUtility.alertDialog2(this, LanguageController.getInstance().getMobileMsgByKey(AppConstant.are_you_sure)
                     , LanguageController.getInstance().getMobileMsgByKey(AppConstant.item_convrt_count), LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok)
@@ -1196,6 +1224,14 @@ public class AddEditInvoiceItemActivity2 extends
         } catch (Exception exception) {
             exception.printStackTrace();
         }
+        if(comeFrom != null && comeFrom.equalsIgnoreCase("AddRemarkReplace")){
+            String strEqu = new Gson().toJson(equipment);
+            if(equipment.getIsPart().equalsIgnoreCase("1")) {
+                intent.putExtra("isPart", "1");
+            }
+            intent.putExtra("equipment", strEqu);
+        }
+
         intent.putExtra("isSerialNoSelected", isSerialNoSelected);
         intent.putExtra("generateOption", generateOption);
         intent.putExtra("scanCode", scanCode);
@@ -1252,6 +1288,13 @@ public class AddEditInvoiceItemActivity2 extends
 
     }
 
+    /**
+     * When we convert item as a new equipment, add as a part or replace as a equipment.
+        1.Item have multiple serial number then serial number list will be show.
+        2.Item have only one serial number user will be move to next scree.
+        3.Item have no serial number showing all detail and it will be add as a new item for converting.
+     * When we will add new item showing all detail.
+     */
     @Override
     public void setItemdata(List<Inventry_ReS_Model> list) {
         Log.e("", "");
@@ -1267,26 +1310,21 @@ public class AddEditInvoiceItemActivity2 extends
             try {
                 Log.v("ItemList::", new Gson().toJson(adapterView.getItemAtPosition(position)));
 //                For getting serial no of Items
-                if (comeFrom != null && comeFrom.equalsIgnoreCase("JobListScan")) {
+                if (comeFrom != null && comeFrom.equalsIgnoreCase("AddRemark")
+                        ||comeFrom != null && comeFrom.equalsIgnoreCase("JobListScan")
+                ||comeFrom != null && comeFrom.equalsIgnoreCase("AddRemarkReplace")) {
                     serialNoList.clear();
                     Inventry_ReS_Model invItem = (Inventry_ReS_Model) adapterView.getItemAtPosition(position);
                     Job job = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(jobId);
                     for (InvoiceItemDataModel item :
                             job.getItemData()) {
                         if (item.getItemId().equalsIgnoreCase(invItem.getItemId()) && !item.getSerialNo().isEmpty() && item.getItemConvertCount().equals("0")) {
-//                            InvoiceItemDataModel jobItem = new InvoiceItemDataModel();
-//                            jobItem.setItemId(item.getItemId());
-//                            jobItem.setSerialNo(item.getSerialNo());
-//                            jobItem.setIjmmId(item.getIjmmId());
                             serialNoList.add(item);
                         }
                     }
+                    invetoryItemData = invItem;
                     setSelectedItemData(invItem);
-                    if (serialNoList.size() > 1) {
-                        ll_serialNo.setVisibility(View.VISIBLE);
-                        ll_below_rd_serialNo.setVisibility(View.GONE);
-                        setRadioButton(serialNoList);
-                    } else if (serialNoList.size() == 1) {
+                    if (serialNoList.size() == 1) {
                         isSerialNoSelected = true;
                         itemId1 = serialNoList.get(0).getItemId();
                         ijmmId = serialNoList.get(0).getIjmmId();
@@ -1295,6 +1333,11 @@ public class AddEditInvoiceItemActivity2 extends
                         setSelectedItemData(CastToInv_Res_Model(data));
                         ll_serialNo.setVisibility(View.GONE);
                         ll_below_rd_serialNo.setVisibility(View.GONE);
+                        add_edit_item_Btn.performClick();
+                    } else if (serialNoList.size() > 1) {
+                        ll_serialNo.setVisibility(View.VISIBLE);
+                        ll_below_rd_serialNo.setVisibility(View.GONE);
+                        setRadioButton(serialNoList);
                     } else {
                         ll_serialNo.setVisibility(View.GONE);
                         ll_below_rd_serialNo.setVisibility(View.VISIBLE);
@@ -1314,7 +1357,8 @@ public class AddEditInvoiceItemActivity2 extends
         if (requestCode == EQUIPMENTCONVERT) {
             try {
                 Log.e("AddEquipment", comeFrom);
-                if (comeFrom != null && comeFrom.equalsIgnoreCase("AddRemark")) {
+                if (comeFrom != null && comeFrom.equalsIgnoreCase("AddRemark")
+                        || comeFrom != null && comeFrom.equalsIgnoreCase("AddRemarkReplace")) {
                     Intent intent = new Intent();
                     setResult(333, intent);
                     finish();
@@ -1740,11 +1784,18 @@ public class AddEditInvoiceItemActivity2 extends
                 break;
             case R.id.btn_not_matchSerialNo:
                 isSerialNoSelected = false;
+                if(invetoryItemData != null && !invetoryItemData.getItemId().isEmpty()) {
+                    setSelectedItemData(invetoryItemData);
+                }else {
+                    setEmptyFieldsNonInventry();
+                }
                 ll_serialNo.setVisibility(View.GONE);
                 ll_below_rd_serialNo.setVisibility(View.VISIBLE);
                 break;
             default:
-                if (comeFrom != null && comeFrom.equalsIgnoreCase("JobListScan")) {
+                if (comeFrom != null && comeFrom.equalsIgnoreCase("AddRemark")
+                        ||comeFrom != null && comeFrom.equalsIgnoreCase("JobListScan")
+                ||comeFrom != null && comeFrom.equalsIgnoreCase("AddRemarkReplace")) {
                     isSerialNoSelected = true;
                     for (InvoiceItemDataModel item : serialNoList
                     ) {
@@ -2288,13 +2339,20 @@ public class AddEditInvoiceItemActivity2 extends
             EotApp.getAppinstance().getJobFlagOverView();
 //            EotApp.getAppinstance().getNotifyForItemCount();
 
-            if (comeFrom != null && comeFrom.equalsIgnoreCase("AddRemark") || comeFrom != null && comeFrom.equalsIgnoreCase("JobListScan")) {
+            if (comeFrom != null && comeFrom.equalsIgnoreCase("AddRemark")
+                    || comeFrom != null && comeFrom.equalsIgnoreCase("JobListScan")
+                    || comeFrom != null && comeFrom.equalsIgnoreCase("AddRemarkReplace") ) {
                 Log.e("checkEmpty:;", warrantyValue + " " + warrantyType);
                 addItemDataModel.setWarrantyType(warrantyType);
                 addItemDataModel.setWarrantyValue(warrantyValue);
                 addItemDataModel.setIsGrouped(isGrouped);
                 addItemDataModel.setInm(autocomplete_item.getText().toString().trim());
-                convertInEquip(addItemDataModel);
+                if(isSerialNoSelected){
+                    convertInEquip(addItemDataModel);
+                }else {
+                    AppUtility.progressBarShow(this);
+                    invoiceItemDataModelWithIjmmId = addItemDataModel;
+                }
             } else {
                 finish_Activity();
             }
@@ -3360,7 +3418,7 @@ public class AddEditInvoiceItemActivity2 extends
      */
     private void setRadioButton(List<InvoiceItemDataModel> serialNoList) {
         rd_group_serialNo.removeAllViews();
-        for (int i = 0; i <= serialNoList.size(); i++) {
+        for (int i = 0; i < serialNoList.size(); i++) {
             RadioButton rdbtn = new RadioButton(this);
             rdbtn.setId(View.generateViewId());
             rdbtn.setText(serialNoList.get(i).getSerialNo());
@@ -3374,6 +3432,25 @@ public class AddEditInvoiceItemActivity2 extends
 
     private Inventry_ReS_Model CastToInv_Res_Model(String data) {
         return new Gson().fromJson(data, Inventry_ReS_Model.class);
+    }
+
+    @Override
+    public void onObserveCallBack(String jobData) {
+        if(jobData != null && !jobData.isEmpty()) {
+            Job job = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(jobId);
+            for (InvoiceItemDataModel item : job.getItemData()
+            ) {
+                if (item.getIjmmId().equalsIgnoreCase(jobData)) {
+                    invoiceItemDataModelWithIjmmId.setItemId(item.getItemId());
+                    invoiceItemDataModelWithIjmmId.setIjmmId(item.getIjmmId());
+                    break;
+                }
+            }
+            convertInEquip(invoiceItemDataModelWithIjmmId);
+        }else {
+            Toast.makeText(this,"Something went wrong",Toast.LENGTH_SHORT).show();
+            AppUtility.progressBarDissMiss();
+        }
     }
 }
 

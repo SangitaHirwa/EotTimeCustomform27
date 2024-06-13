@@ -28,6 +28,7 @@ import com.eot_app.nav_menu.jobs.job_detail.detail.NotifyForRequestedItemList;
 import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.NotifyForMultiDocAdd;
 import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.NotifyForMultiDocAddForAttach;
 import com.eot_app.nav_menu.jobs.job_detail.generate_invoice.InvoiceItemObserver;
+import com.eot_app.nav_menu.jobs.job_detail.generate_invoice.invoice_adpter_pkg.EquipItemObserver;
 import com.eot_app.nav_menu.jobs.job_detail.requested_item.requested_itemModel.AddUpdateRequestedModel;
 import com.eot_app.nav_menu.jobs.joboffline_db.JobItem_Observer;
 import com.eot_app.nav_menu.jobs.joboffline_db.JobOverViewNotify;
@@ -76,6 +77,9 @@ public class EotApp extends Application implements Application.ActivityLifecycle
     private NotifyForcompletionInDetail notifyForcompletionInDetail;
     private NotifyForMultiDocAddForAttach notifyForMultiDocAddForAttach;
     private NotifyForRequestedItemList notifyForRequestedItemList;
+    private EquipItemObserver equipItemObserver;
+
+
     public static synchronized EotApp getAppinstance() {
         return INSTANCE;
     }
@@ -329,6 +333,15 @@ public class EotApp extends Application implements Application.ActivityLifecycle
         }
     }
 
+    public void notifyEquipItemObserver(String jobData) {
+        if(this.equipItemObserver != null){
+            equipItemObserver.onObserveCallBack(jobData);
+        }
+    }
+
+    public void setEquipItemObserver(EquipItemObserver equipItemObserver) {
+        this.equipItemObserver = equipItemObserver;
+    }
     @Override
     public void onTerminate() {
         super.onTerminate();

@@ -59,9 +59,12 @@ import com.eot_app.nav_menu.jobs.add_job.adapters.FilterCountry;
 import com.eot_app.nav_menu.jobs.add_job.adapters.FilterStates;
 import com.eot_app.nav_menu.jobs.job_db.EquArrayModel;
 import com.eot_app.nav_menu.jobs.job_db.Job;
+import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.AddEditInvoiceItemActivity2;
 import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.model.InvoiceItemDataModel;
 import com.eot_app.nav_menu.jobs.job_detail.chat.img_crop_pkg.ImageCropFragment;
 import com.eot_app.nav_menu.jobs.job_detail.documents.PathUtils;
+import com.eot_app.nav_menu.jobs.job_detail.job_equipment.GenerateCodeDialog;
+import com.eot_app.nav_menu.jobs.job_detail.job_equipment.JobEquipmentActivity;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.add_job_equip.adpter_pkg.BrandAdapter;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.add_job_equip.adpter_pkg.CateAdpter;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.add_job_equip.adpter_pkg.EquipmentAdapter;
@@ -82,6 +85,8 @@ import com.eot_app.nav_menu.jobs.job_detail.job_equipment.add_job_equip.mvp.QRCO
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.add_job_equip.mvp.QR_Bar_Pc;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.add_job_equip.mvp.QR_Bar_Pi;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.add_job_equip.mvp.QR_Bar_View;
+import com.eot_app.nav_menu.jobs.job_detail.job_equipment.job_equ_remrk.JobEquPartRemarkRemarkActivity;
+import com.eot_app.nav_menu.jobs.job_detail.job_equipment.job_equ_remrk.JobEquRemarkRemarkActivity;
 import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.AppUtility;
 import com.eot_app.utility.App_preference;
@@ -115,9 +120,10 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
         AddJobEqu_View, View.OnClickListener
         , RadioGroup.OnCheckedChangeListener,
         CheckBox.OnCheckedChangeListener, ImageCropFragment.MyDialogInterface
-        , Spinner.OnItemSelectedListener, AddEdit_QRCode_BarCode_Dialog.QR_Bar_DataPass, QR_Bar_View {
+        , Spinner.OnItemSelectedListener, AddEdit_QRCode_BarCode_Dialog.QR_Bar_DataPass, QR_Bar_View, AddEquipNavigationDialog.NavigateToPage {
 
     private static final int BAR_CODE_REQUEST = 122;
+    private final int EQUIPMENT_UPDATE_CODE = 141;
     String path = "";
     String type = "1";
     String servIntvalType = "";
@@ -183,6 +189,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
     RadioButton rdBtn_day, rdBtn_month, rdBtn_year;
     String interval = "", generateOption = "", scanCode = "";
     QR_Bar_Pi qrBarPi;
+    EquArrayModel equipmentRes,equipment;;
 
     /**
      * select date from picker & concanate current time
@@ -619,24 +626,53 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
                     equipment_layout.setHintEnabled(true);
                 }
                 // for adding parts with item set data in the views
-                if (comeFrom != null && comeFrom.equalsIgnoreCase("AddRemark") || comeFrom != null && comeFrom.equalsIgnoreCase("JobListScan")) {
+                if (comeFrom != null && comeFrom.equalsIgnoreCase("AddRemark")
+                        || comeFrom != null && comeFrom.equalsIgnoreCase("JobListScan")
+                ||comeFrom != null && comeFrom.equalsIgnoreCase("AddRemarkReplace")) {
                     setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.step_2) + " (" +
                             LanguageController.getInstance().getMobileMsgByKey(AppConstant.title_add_equipment) + ")");
                     tvLabelStep2.setVisibility(View.VISIBLE);
 
-                    if (isSerialNoSelected) {
-                        ch_equ_as_part.setEnabled(true);
-                        add_edit_item_Btn.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.title_add_equipment));
-                        generateOption = bundle.getString("generateOption");
-                        scanCode = bundle.getString("scanCode");
-                        ch_equ_as_part.setChecked(false);
-                        isPart = "0";
-                    } else {
-                        ch_equ_as_part.setEnabled(false);
-                        add_edit_item_Btn.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.title_add_equipment_part));
-                        ch_equ_as_part.setChecked(true);
-                        isPart = "1";
+                    if (getIntent().hasExtra("equipment")) {
+                        String strEquipment = getIntent().getExtras().getString("equipment");
+                        equipment = new Gson().fromJson(strEquipment, EquArrayModel.class);
                     }
+//                    if (isSerialNoSelected) {
+//                        ch_equ_as_part.setEnabled(true);
+//                        add_edit_item_Btn.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.title_add_equipment));
+//                        generateOption = bundle.getString("generateOption");
+//                        scanCode = bundle.getString("scanCode");
+//                        ch_equ_as_part.setChecked(false);
+//                        isPart = "0";
+//                    } else {
+                        //Add Equipment by new item added.
+                        if(comeFrom != null && comeFrom.equalsIgnoreCase("JobListScan")){
+                            add_edit_item_Btn.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.title_add_equipment));
+                            ch_equ_as_part.setEnabled(true);
+                            ch_equ_as_part.setChecked(false);
+                            generateOption = bundle.getString("generateOption");
+                            scanCode = bundle.getString("scanCode");
+                            isPart = "0";
+                        }else if(comeFrom != null && comeFrom.equalsIgnoreCase("AddRemarkReplace") && equipment != null ){
+                            add_edit_item_Btn.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.title_replace_equipment));
+                               if(equipment.getIsPart() != null && equipment.getIsPart().equalsIgnoreCase("1")){
+                                   ch_equ_as_part.setEnabled(false);
+                                   ch_equ_as_part.setChecked(true);
+                                   equipment_layout.setVisibility(View.VISIBLE);
+                                   eq_view.setVisibility(View.VISIBLE);
+                                   isPart = "1";
+                               }else {
+                                   ch_equ_as_part.setVisibility(View.GONE);
+                                   isPart = "0";
+                               }
+                            }
+                            else{
+                                ch_equ_as_part.setEnabled(false);
+                                add_edit_item_Btn.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.title_add_equipment_part));
+                                ch_equ_as_part.setChecked(true);
+                                isPart = "1";
+                            }
+//                    }
                     equipment_layout.setVisibility(View.VISIBLE);
                     eq_view.setVisibility(View.VISIBLE);
 
@@ -719,7 +755,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
     protected void onResume() {
         super.onResume();
         //For Generating Scan Code
-        if (isSerialNoSelected) {
+        if (comeFrom != null && comeFrom.equalsIgnoreCase("JobListScan") && isSerialNoSelected) {
             qrBarPi = new QR_Bar_Pc(this);
             if (generateOption.equalsIgnoreCase(LanguageController.getInstance().getMobileMsgByKey(AppConstant.barcode))) {
                 qrBarPi.getBarCode(scanCode);
@@ -768,17 +804,44 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
         invId = bundle.getString("invId");
         comeFrom = bundle.getString("comeFrom");
         equipmentId = bundle.getString("equipmentId");
-        // for setting the equipment type as the main equipment type and non editable
-        if (bundle.getString("equipmentType") != null && !bundle.getString("equipmentType").isEmpty()) {
-            type = bundle.getString("equipmentType");
-            if (type.equalsIgnoreCase("1"))
-                radio_owner.setChecked(true);
-            else if (type.equalsIgnoreCase("2"))
-                radio_serv_prov.setChecked(true);
+       if(comeFrom != null && comeFrom.equalsIgnoreCase("AddRemarkReplace")) {
+           if (getIntent().hasExtra("equipment")) {
+               String strEquipment = getIntent().getExtras().getString("equipment");
+               equipment = new Gson().fromJson(strEquipment, EquArrayModel.class);
+           }
+           equipmentId = equipment.getEquId();
+           if (equipment.getType() != null && !equipment.getType().isEmpty()) {
+               type = equipment.getType();
+               try {
+                   if (type.equalsIgnoreCase("1")) {
+                       radio_owner.setChecked(true);
+                       radio_serv_prov.setChecked(false);
+                   } else {
+                       radio_serv_prov.setChecked(true);
+                       radio_owner.setChecked(false);
+                   }
+                   radio_owner.setEnabled(false);
+                   radio_serv_prov.setEnabled(false);
+               } catch (Exception e) {
+                   e.printStackTrace();
+               }
+           }
 
-            radio_owner.setEnabled(false);
-            radio_serv_prov.setEnabled(false);
-        }
+       }else {
+
+           // for setting the equipment type as the main equipment type and non editable
+           if (bundle.getString("equipmentType") != null && !bundle.getString("equipmentType").isEmpty()) {
+               type = bundle.getString("equipmentType");
+               if (type.equalsIgnoreCase("1"))
+                   radio_owner.setChecked(true);
+               else if (type.equalsIgnoreCase("2"))
+                   radio_serv_prov.setChecked(true);
+
+               radio_owner.setEnabled(false);
+               radio_serv_prov.setEnabled(false);
+           }
+       }
+
     }
 
     private void setJobData(Job job) {
@@ -1470,7 +1533,11 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
         } else {
             interval = "";
         }
-        createEqquipmentRequest();
+        if(comeFrom != null && comeFrom.equalsIgnoreCase("AddRemarkReplace")){
+            createEqquipmentRequestForReplace();
+        }else {
+            createEqquipmentRequest();
+        }
         new Handler().postDelayed(() -> add_edit_item_Btn.setEnabled(true), 500);
     }
 
@@ -1576,11 +1643,121 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
         }
     }
 
+    public void createEqquipmentRequestForReplace() {
 
+        String countryname, statename;
+     /*   countryname = auto_country.getText().toString();
+        statename =auto_states.getText().toString();*/
+        ctry = addJobEqu_pi.cntryId(countryNameById);
+        state = addJobEqu_pi.statId(ctry, statenameById);
+
+        if (updateItemDataModel == null) {
+            if (addJobEqu_pi.RequiredFields(edt_equ.getText().toString().trim())) {
+                if (comeFrom != null && comeFrom.equalsIgnoreCase("AddPartWithoutItem")) {
+                    String parentId = "";
+                    if (isPart.equalsIgnoreCase("1")) {
+                        parentId = equipment.getParentId();
+                        isCnvtItemParts = "0";
+                    }
+                    addJobEqu_pi.convertItemToequip(new AddEquReq(type, egId, ecId, zip,
+                                    city, edt_equ_adrs.getText().toString().trim(),
+                                    ctry, state, /*isBarcodeGenerate,*/
+                                    quote_notes_edt.getText().toString().trim(),
+                                    purchase_date_lable.getText().toString().trim(),
+                                    manuf_date_lable.getText().toString().trim(),
+                                    warnty_date_lable.getText().toString().trim(),
+                                    "",
+                                    edt_equ_serial.getText().toString().trim(),
+                                    edt_equ_model.getText().toString().trim(),
+                                    brandId, edt_equ.getText().toString().trim(),
+                                    jobId, job.getCltId(),
+                                    job.getContrId(), "",
+                                    "", siteId,
+                                    isPart, status, invId,
+                                    custom_filed_txt_1.getText().toString().trim(),
+                                    custom_filed_txt_2.getText().toString().trim(), servIntvalType,
+                                    interval, "1",
+                                    equipmentId,
+                                    isCnvtItemParts, binding.installedDateLable.getText().toString().trim(),supplierId,""), path,
+                            barcodeString,qrCodeString, parentId);
+                } else if (audit != null) {
+                    addJobEqu_pi.addNewEquipment(
+                            new AddEquReq(type, egId, ecId, zip,
+                                    city, edt_equ_adrs.getText().toString().trim(),
+                                    ctry, state, /*isBarcodeGenerate,*/
+                                    quote_notes_edt.getText().toString().trim(),
+                                    purchase_date_lable.getText().toString().trim(),
+                                    manuf_date_lable.getText().toString().trim(),
+                                    warnty_date_lable.getText().toString().trim(),
+                                    "",
+                                    edt_equ_serial.getText().toString().trim(),
+                                    edt_equ_model.getText().toString().trim(),
+                                    brandId, edt_equ.getText().toString().trim(),
+                                    audit.getAudId(), audit.getCltId(),
+                                    audit.getContrId(), siteId, isPart, status,
+                                    custom_filed_txt_1.getText().toString().trim(),
+                                    custom_filed_txt_2.getText().toString().trim(),
+                                    servIntvalType, interval,supplierId)
+                            , path, barcodeString,barcodeString,
+                            binding.installedDateLable.getText().toString().trim(), equipmentId);
+                } else {
+                    addJobEqu_pi.addNewEquipment(
+                            new AddEquReq(type, egId, ecId, zip,
+                                    city, edt_equ_adrs.getText().toString().trim(),
+                                    ctry, state, /*isBarcodeGenerate,*/
+                                    quote_notes_edt.getText().toString().trim(),
+                                    purchase_date_lable.getText().toString().trim(),
+                                    manuf_date_lable.getText().toString().trim(), warnty_date_lable.getText().toString().trim(),
+                                    "", edt_equ_serial.getText().toString().trim(),
+                                    edt_equ_model.getText().toString().trim(),
+                                    brandId, edt_equ.getText().toString().trim(), jobId, job.getCltId(),
+                                    job.getContrId(), siteId, isPart, status, custom_filed_txt_1.getText().toString().trim(),
+                                    custom_filed_txt_2.getText().toString().trim(), servIntvalType, interval,supplierId)
+                            , path, barcodeString,barcodeString,
+                            binding.installedDateLable.getText().toString().trim(), equipmentId);
+                }
+            }
+        } else {
+            /*Convert item to EQUIPMENT*****/
+            if (addJobEqu_pi.RequiredFields(edt_equ.getText().toString().trim())) {
+                String parentId = "";
+                if (isPart.equalsIgnoreCase("1")) {
+                    parentId = equipment.getParentId();
+                    isCnvtItemParts = "0";
+                }
+                addJobEqu_pi.convertItemToequip(new AddEquReq(type, egId, ecId, zip,
+                                city, edt_equ_adrs.getText().toString().trim(),
+                                ctry, state, /*isBarcodeGenerate,*/
+                                quote_notes_edt.getText().toString().trim(),
+                                purchase_date_lable.getText().toString().trim(),
+                                manuf_date_lable.getText().toString().trim(),
+                                warnty_date_lable.getText().toString().trim(),
+                                "",
+                                edt_equ_serial.getText().toString().trim(),
+                                edt_equ_model.getText().toString().trim(),
+                                brandId, edt_equ.getText().toString().trim(),
+                                jobId, job.getCltId(),
+                                job.getContrId(), updateItemDataModel.getItemId(),
+                                updateItemDataModel.getRate(), siteId,
+                                isPart, status, invId,
+                                custom_filed_txt_1.getText().toString().trim(),
+                                custom_filed_txt_2.getText().toString().trim(), servIntvalType,
+                                interval, "1",
+                                equipmentId,
+                                isCnvtItemParts, binding.installedDateLable.getText().toString().trim(),supplierId,updateItemDataModel.getIjmmId()), path,
+                        barcodeString,qrCodeString, parentId);
+            }
+        }
+    }
     @Override
     public void finishActivity() {
         Log.e("AddEquipment", "FinishAffinity");
-        this.finish();
+        if(comeFrom != null && comeFrom.equalsIgnoreCase("JobListScan")){
+            AddEquipNavigationDialog addEquipNavigationDialog = new AddEquipNavigationDialog(this);
+            addEquipNavigationDialog.show(getSupportFragmentManager(), "");
+        }else {
+            this.finish();
+        }
     }
 
     @Override
@@ -1599,12 +1776,32 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
         EotApp.getAppinstance().getNotifyForEquipmentCountRemark();
         Log.e("AddEquipment", "AddExpense");
         EotApp.getAppinstance().showToastmsg(msg);
-        new Handler().postDelayed(() -> {
-            Intent intent = new Intent();
-            setResult(RESULT_OK, intent);
-            /*Refresh list for Appoinment*****/
-            finish();
-        }, 500);
+        if(comeFrom != null && !comeFrom.equalsIgnoreCase("JobListScan")) {
+            new Handler().postDelayed(() -> {
+                if(comeFrom != null && !comeFrom.equalsIgnoreCase("AddRemarkReplace")) {
+                    if (new JobEquRemarkRemarkActivity().getInstance() != null) {
+                        new JobEquRemarkRemarkActivity().getInstance().finish();
+                    }
+                    if (new JobEquPartRemarkRemarkActivity().getInstance() != null) {
+                        new JobEquPartRemarkRemarkActivity().getInstance().finish();
+                    }
+                    /*navigate to the job equipment screen *****/
+                    Intent intent = new Intent();
+                    setResult(EQUIPMENT_UPDATE_CODE, intent);
+                    finish();
+
+                }else {
+
+                    Intent intent = new Intent();
+                    setResult(RESULT_OK, intent);
+                    /*Refresh list for Appoinment*****/
+                    finish();
+                }
+                },500);
+
+
+
+        }
     }
 
     @Override
@@ -1813,7 +2010,13 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            onBackPressed();
+            if(comeFrom != null && comeFrom.equalsIgnoreCase("AddRemarkReplace")) {
+                Intent intent = new Intent();
+                setResult(RESULT_OK, intent);
+                finish();
+            }else {
+                onBackPressed();
+            }
             return true;
         }
         return true;
@@ -2282,5 +2485,54 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
     @Override
     public void toastShow(String msg) {
 
+    }
+
+    @Override
+    public void setEuqipment(EquArrayModel equArray) {
+        equipmentRes = equArray;
+    }
+
+    @Override
+    public void setNavigation(boolean isActionPage) {
+        if(isActionPage){
+            if (equipmentRes.getIsPart() != null) {
+                if (equipmentRes.getIsPart().equalsIgnoreCase("1")) {
+                    Intent intent = new Intent(this, JobEquPartRemarkRemarkActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                    String strEqu = new Gson().toJson(equipmentRes);
+                    intent.putExtra("equipment", strEqu);
+                    intent.putExtra("jobId", jobId);
+                    intent.putExtra("cltId", cltId);
+                    intent.putExtra("positions", "");
+                    intent.putExtra("isGetData", "");
+                    intent.putExtra("isAction", isActionPage);
+                    startActivityForResult(intent, new JobEquipmentActivity().EQUIPMENT_UPDATE_CODE);
+                } else {
+                    Intent intent = new Intent(this, JobEquRemarkRemarkActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                    String strEqu = new Gson().toJson(equipmentRes);
+                    intent.putExtra("equipment", strEqu);
+                    intent.putExtra("jobId", jobId);
+                    intent.putExtra("cltId", cltId);
+                    intent.putExtra("positions", "");
+                    intent.putExtra("isGetData", "");
+                    intent.putExtra("isAction", isActionPage);
+                    startActivityForResult(intent,new JobEquipmentActivity().EQUIPMENT_UPDATE_CODE);
+                }
+            } else {
+                Intent intent = new Intent(this, JobEquRemarkRemarkActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                String strEqu = new Gson().toJson(equipmentRes);
+                intent.putExtra("equipment", strEqu);
+                intent.putExtra("jobId", jobId);
+                intent.putExtra("cltId", cltId);
+                intent.putExtra("positions", "");
+                intent.putExtra("isGetData", "");
+                intent.putExtra("isAction", isActionPage);
+                startActivityForResult(intent, new JobEquipmentActivity().EQUIPMENT_UPDATE_CODE);
+            }
+        }
+        new AddEditInvoiceItemActivity2().getInstance().finish();
+        this.finish();
     }
 }

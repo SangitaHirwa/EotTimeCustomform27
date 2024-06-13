@@ -47,6 +47,7 @@ public interface AddJobEqu_View {
 
     void setStateError(String msg);
     void setEuqipmentList(List<EquArrayModel> equArray);
+    void setEuqipment(EquArrayModel equArray);
 
     void setClientSiteListServer(List<ClientEquRes> clientEquRes);
 }

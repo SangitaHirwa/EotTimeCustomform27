@@ -168,7 +168,7 @@ public class AddJobEqu_Pc implements AddJobEqu_Pi {
         return false;
     }
 
-
+    boolean success = false;
     @Override
     public void convertItemToequip(final AddEquReq addEquReq, String path, String barcode, String qrcode, String equipmentId) {
         if (AppUtility.isInternetConnected()) {
@@ -302,8 +302,9 @@ public class AddJobEqu_Pc implements AddJobEqu_Pi {
                         @Override
                         public void onNext(JsonObject jsonObject) {
                             if (jsonObject.get("success").getAsBoolean()) {
+                                addJobEquView.setEuqipment(new Gson().fromJson(jsonObject.get("data"),EquArrayModel.class));
                                 updateJobItemData(addEquReq.getJobId(), LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
-
+                                updateEquipmentCount(addEquReq.getJobId());
                             } else if (jsonObject.get("statusCode") != null && jsonObject.get("statusCode").getAsString().equals(AppConstant.SESSION_EXPIRE)) {
                                 addJobEquView.sessionExpire(LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
                             } else {
@@ -321,7 +322,7 @@ public class AddJobEqu_Pc implements AddJobEqu_Pi {
 
                         @Override
                         public void onComplete() {
-                            updateEquipmentCount(addEquReq.getJobId());
+
                             AppUtility.progressBarDissMiss();
                             Log.e("TAG onComplete------", "onComplete");
                         }

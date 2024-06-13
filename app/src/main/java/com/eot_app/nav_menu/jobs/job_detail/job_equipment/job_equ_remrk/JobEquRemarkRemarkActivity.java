@@ -213,35 +213,7 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
     }
 
 
-    /****Add Item and equipment as a part**/
-    private void addEquipmentItem() {
-        String locId = "";
-        try {
-            if (jobId != null && !jobId.equals("")) {
-                Job job = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(jobId);
-                if (job.getLocId() == null)
-                    job.setLocId("0");
-                else locId = job.getLocId();
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        String strEqu = new Gson().toJson(equipment);
-        Intent intent = new Intent(this, AddEditInvoiceItemActivity2.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-        intent.putExtra("invId", "");
-        intent.putExtra("jobId", jobId);
-        intent.putExtra("equipmentId", equipment.getEquId());
-        intent.putExtra("equipmentIdName", equipment.getEqunm());
-        intent.putExtra("equipmentType", equipment.getType());
-        intent.putExtra("equipment", strEqu);
-        intent.putExtra("locId", locId);
-        intent.putExtra("comeFrom", "AddRemark");
-        intent.putExtra("NONBILLABLE", false);
-        intent.putExtra("getTaxMethodType", "0");
-        intent.putExtra("getSingleTaxId", "0");
-        startActivityForResult(intent, ADDPART);
-    }
+
 
     @SuppressLint("NonConstantResourceId")
     @Override
@@ -1220,17 +1192,51 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
         }
 
         String strEqu = new Gson().toJson(equipment);
-        Intent intent = new Intent(this, ReplaceItemEquipmentActivity.class);
+//        Intent intent = new Intent(this, ReplaceItemEquipmentActivity.class);
+        Intent intent = new Intent(this, AddEditInvoiceItemActivity2.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         intent.putExtra("jobId", jobId);
         intent.putExtra("locId", locId);
         intent.putExtra("invId", "");
         intent.putExtra("equipment", strEqu);
-        intent.putExtra("InvoiceItemDataModel", invoiceItemDataModel);
-        intent.putExtra("comeFrom", "AddRemarkPart");
+//        intent.putExtra("InvoiceItemDataModel", invoiceItemDataModel);
+//        intent.putExtra("comeFrom", "AddRemarkPart");
+        intent.putExtra("comeFrom", "AddRemarkReplace");
         intent.putExtra("NONBILLABLE", false);
+        intent.putExtra("getTaxMethodType", "0");
+        intent.putExtra("getSingleTaxId", "0");
         startActivityForResult(intent,ADD_ITEM_DATA);
 
+    }
+
+    /****Add Item and equipment as a part**/
+    private void addEquipmentItem() {
+        String locId = "";
+        try {
+            if (jobId != null && !jobId.equals("")) {
+                Job job = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(jobId);
+                if (job.getLocId() == null)
+                    job.setLocId("0");
+                else locId = job.getLocId();
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        String strEqu = new Gson().toJson(equipment);
+        Intent intent = new Intent(this, AddEditInvoiceItemActivity2.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+        intent.putExtra("invId", "");
+        intent.putExtra("jobId", jobId);
+        intent.putExtra("equipmentId", equipment.getEquId());
+        intent.putExtra("equipmentIdName", equipment.getEqunm());
+        intent.putExtra("equipmentType", equipment.getType());
+        intent.putExtra("equipment", strEqu);
+        intent.putExtra("locId", locId);
+        intent.putExtra("comeFrom", "AddRemark");
+        intent.putExtra("NONBILLABLE", false);
+        intent.putExtra("getTaxMethodType", "0");
+        intent.putExtra("getSingleTaxId", "0");
+        startActivityForResult(intent, ADDPART);
     }
 
     /**

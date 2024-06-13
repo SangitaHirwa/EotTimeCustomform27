@@ -1284,7 +1284,6 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
 
     private void createEquipmentForJobAudit() {
         add_edit_item_Btn.setEnabled(false);
-        createEqquipmentRequest();
         if(rdBtn_day.isChecked()){
             interval = edt_day.getText().toString();
         }else if(rdBtn_month.isChecked()){
@@ -1294,6 +1293,7 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
         }else {
             interval = "";
         }
+        createEqquipmentRequest();
         new Handler().postDelayed(() -> add_edit_item_Btn.setEnabled(true), 500);
     }
 
@@ -1332,7 +1332,7 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
                                     custom_filed_txt_2.getText().toString().trim(), servIntvalType,
                                     interval, "1",
                                     equipmentId,
-                                    isCnvtItemParts, binding.installedDateLable.getText().toString().trim(),supplierId), path,
+                                    isCnvtItemParts, binding.installedDateLable.getText().toString().trim(),supplierId,""), path,
                             barcodeString,qrCodeString, parentId);
                 } else if (audit != null) {
                     addJobEqu_pi.addNewEquipment(
@@ -1398,7 +1398,7 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
                                 custom_filed_txt_2.getText().toString().trim(), servIntvalType,
                                 interval, "1",
                                 equipmentId,
-                                isCnvtItemParts, binding.installedDateLable.getText().toString().trim(),supplierId), path,
+                                isCnvtItemParts, binding.installedDateLable.getText().toString().trim(),supplierId,updateItemDataModel.getIjmmId()), path,
                         barcodeString,qrCodeString, parentId);
             }
         }
@@ -1512,6 +1512,11 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
 
             }
         });
+    }
+
+    @Override
+    public void setEuqipment(EquArrayModel equArray) {
+
     }
 
 
