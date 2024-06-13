@@ -114,7 +114,7 @@ public class SiteAdpter extends ArrayAdapter<ClientEquRes> {
                     city = pickOrDropModel.getCity();
                     location = location+", "+city;
                 }if(pickOrDropModel.getState() != null && !pickOrDropModel.getState().isEmpty()&& !pickOrDropModel.getCtry().isEmpty() && !pickOrDropModel.getState().equals("0")){
-                    state = pickOrDropModel.getState();
+                    state = SpinnerCountrySite.getStatenameById((pickOrDropModel.getCtry()), pickOrDropModel.getState());
                     location = location+", "+state;
                 }if(pickOrDropModel.getCtry() != null && !pickOrDropModel.getCtry().isEmpty() && !pickOrDropModel.getCtry().equals("0")){
                     cntry = SpinnerCountrySite.getCountryNameById(pickOrDropModel.getCtry());

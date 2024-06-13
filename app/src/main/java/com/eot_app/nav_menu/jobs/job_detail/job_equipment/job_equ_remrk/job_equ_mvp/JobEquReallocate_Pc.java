@@ -49,9 +49,9 @@ public class JobEquReallocate_Pc implements JobEquReallocate_Pi{
                         @Override
                         public void onNext(@NotNull JsonObject jsonObject) {
                             if (jsonObject.get("success").getAsBoolean()) {
-                                view.setNewLocation();
+                                view.setNewLocation(LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
                             } else {
-                                view.setNewLocation();
+                                view.errorMsg(LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
                             }
                         }
 

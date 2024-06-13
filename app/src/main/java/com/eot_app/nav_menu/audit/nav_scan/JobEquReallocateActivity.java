@@ -168,9 +168,9 @@ public class JobEquReallocateActivity extends AppCompatActivity implements View.
 
     private void updateLocation() {
         if(selectedSiteData != null){
-             reqModel =  new UpdateSiteLocationReqModel(equId,clientId,
+             reqModel =  new UpdateSiteLocationReqModel("equId",clientId,
                     selectedSiteData.getAdr(),selectedSiteData.getCtry(),selectedSiteData.getState(),
-                    selectedSiteData.getCity(),selectedSiteData.getZip(),"",selectedSiteData.getSiteId(), jobId);
+                    selectedSiteData.getCity(),selectedSiteData.getZip(),selectedSiteData.getSiteId(), jobId);
               reallocate_pi.updateLocation(reqModel);
         }
     }
@@ -282,11 +282,17 @@ public class JobEquReallocateActivity extends AppCompatActivity implements View.
     }
 
     @Override
-    public void setNewLocation() {
+    public void setNewLocation(String msg) {
+        EotApp.getAppinstance().showToastmsg(msg);
         Intent intent = new Intent();
         String json = new Gson().toJson(reqModel);
         intent.putExtra("adr_model",json);
         setResult(RESULT_OK,intent);
         finish();
+    }
+
+    @Override
+    public void errorMsg(String msg) {
+        EotApp.getAppinstance().showToastmsg(msg);
     }
 }

@@ -9,7 +9,6 @@ public class UpdateSiteLocationReqModel {
     private String state;
     private String city;
     private String zip;
-    private String status;
     private String siteId;
 
     public String getEquId() {
@@ -69,14 +68,6 @@ public class UpdateSiteLocationReqModel {
         this.zip = zip;
     }
 
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
     public String getSiteId() {
         return siteId;
     }
@@ -95,7 +86,7 @@ public class UpdateSiteLocationReqModel {
 
     public UpdateSiteLocationReqModel(String equId, String cltId,
                                       String adr, String ctry, String state, String city,
-                                      String zip, String status, String siteId, String jobId) {
+                                      String zip, String siteId, String jobId) {
         this.equId = equId;
         this.cltId = cltId;
         this.adr = adr;
@@ -103,7 +94,6 @@ public class UpdateSiteLocationReqModel {
         this.state = state;
         this.city = city;
         this.zip = zip;
-        this.status = status;
         this.siteId = siteId;
         this.jobId = jobId;
     }
