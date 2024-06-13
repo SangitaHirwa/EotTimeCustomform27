@@ -134,7 +134,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
     String isCnvtItemParts = "0";
     TextView tvService_inv_label;
     RadioGroup rediogrpForTag, rediogrp, rediogrp_interval;
-    TextView tvLabelStep2, txt_addBarcode, txt_addQrcode, show_less, show_more, txt_specific_name, txt_basic_detail, txt_location_installed_date, txt_warranty, txt_more_details;
+    TextView tvLabelStep2, txt_addBarcode, txt_addQrcode, show_less, show_more, txt_specific_name, txt_basic_detail, txt_location_installed_date, txt_warranty, txt_more_details,txt_interval_notes;
     ImageView barcode_image, qrcode_image, img_barcode, img_Qrcode;
     String equipmentIdName;
     private String brandId = "", siteId = "", status = "", invId, supplierId = "";
@@ -594,6 +594,8 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
         rdBtn_month = findViewById(R.id.radio_month);
         rdBtn_year = findViewById(R.id.radio_year);
         clear_btn = findViewById(R.id.clear_btn);
+        txt_interval_notes = findViewById(R.id.txt_interval_notes);
+        txt_interval_notes.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.interval_notes));
         clear_btn.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.clear));
         clear_btn.setOnClickListener(this);
         apicalling();

@@ -9,7 +9,7 @@
 
         <TextView
             android:id="@+id/tvLabelStep2"
-            style="@style/style_sec"
+            style="@style/style_thrid"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
@@ -44,7 +44,7 @@
 
                     <TextView
                         android:id="@+id/txt_basic_detail"
-                        style="@style/text_style"
+                        style="@style/style_add_equ"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/_27sdp"
                         android:layout_marginHorizontal="@dimen/left_margin"
@@ -65,7 +65,7 @@
                         android:layout_marginHorizontal="@dimen/left_margin"><!--android:layout_marginTop="8dp"-->
                         <CheckBox
                             android:id="@+id/ch_equ_as_part"
-                            style="@style/style_sec_sec"
+                            style="@style/style_thrid"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentEnd="true"
@@ -88,7 +88,7 @@
 
                             <EditText
                                 android:id="@+id/edt_equ"
-                                style="@style/style_sec_sec"
+                                style="@style/style_thrid"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
@@ -105,14 +105,14 @@
 
                     <TextView
                         android:id="@+id/txt_specific_name"
-                        style="@style/style_sec_sec"
+                        style="@style/style_thrid"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:background="@color/bg_link_item_note"
                         android:minHeight="@dimen/_27sdp"
                         android:padding="10dp"
-                        android:text="To accurately identify the equipment, it is advisable to assign it a specific name."
+                        android:text=""
                         android:textColor="@color/new_msg_gray" />
 
                     <LinearLayout
@@ -135,7 +135,7 @@
 
                             <AutoCompleteTextView
                                 android:id="@+id/auto_equipment"
-                                style="@style/style_sec_sec"
+                                style="@style/style_thrid"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
@@ -171,7 +171,7 @@
 
                             <EditText
                                 android:id="@+id/edt_equ_serial"
-                                style="@style/style_sec_sec"
+                                style="@style/style_thrid"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
@@ -201,7 +201,7 @@
 
                             <EditText
                                 android:id="@+id/edt_equ_model"
-                                style="@style/style_sec_sec"
+                                style="@style/style_thrid"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
@@ -233,7 +233,7 @@
 
                             <AutoCompleteTextView
                                 android:id="@+id/auto_brand"
-                                style="@style/style_sec_sec"
+                                style="@style/style_thrid"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:background="@android:color/transparent"
@@ -255,7 +255,7 @@
                         <!--type-->
                         <TextView
                             android:id="@+id/type"
-                            style="@style/style_sec_sec"
+                            style="@style/style_thrid"
                             android:layout_width="wrap_content"
                             android:layout_height="@dimen/input_field_height"
                             android:layout_gravity="center|start"
@@ -268,7 +268,7 @@
 
                         <RadioGroup
                             android:id="@+id/rediogrp"
-                            style="@style/style_sec"
+                            style="@style/style_thrid"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_centerVertical="true"
@@ -392,9 +392,9 @@
                         <!--text_for_less_Detail-->
                         <TextView
                             android:id="@+id/show_more"
-                            style="@style/header_text_style"
+                            style="@style/style_add_equ"
                             android:layout_width="match_parent"
-                            android:layout_height="@dimen/_27sdp"
+                            android:layout_height="wrap_content"
                             android:gravity="center"
                             android:text="Show More Details"
                             android:textColor="@color/colorPrimary"
@@ -410,7 +410,7 @@
                             <!--puechase_date-->
                             <TextView
                                 android:id="@+id/txt_date_purchase"
-                                style="@style/style_sec_sec"
+                                style="@style/style_thrid"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="5dp"
@@ -429,7 +429,7 @@
 
                                 <TextView
                                     android:id="@+id/purchase_date_lable"
-                                    style="@style/style_sec_sec"
+                                    style="@style/style_thrid"
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
                                     android:layout_weight="1"
@@ -438,7 +438,7 @@
 
                                 <TextView
                                     android:id="@+id/purchase_date_txt"
-                                    style="@style/style_sec_sec"
+                                    style="@style/style_thrid"
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
                                     android:layout_marginStart="10dp"
@@ -470,7 +470,7 @@
 
                             <TextView
                                 android:id="@+id/txt_date"
-                                style="@style/style_sec_sec"
+                                style="@style/style_thrid"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="5dp"
@@ -489,7 +489,7 @@
 
                                 <TextView
                                     android:id="@+id/manuf_date_lable"
-                                    style="@style/style_sec_sec"
+                                    style="@style/style_thrid"
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
                                     android:layout_weight="0.5"
@@ -498,7 +498,7 @@
 
                                 <TextView
                                     android:id="@+id/manuf_date_txt"
-                                    style="@style/style_sec_sec"
+                                    style="@style/style_thrid"
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
                                     android:layout_marginStart="10dp"
@@ -542,7 +542,7 @@
 
                                 <AutoCompleteTextView
                                     android:id="@+id/auto_catery"
-                                    style="@style/style_sec_sec"
+                                    style="@style/style_thrid"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"
@@ -576,7 +576,7 @@
 
                                 <AutoCompleteTextView
                                     android:id="@+id/auto_grp"
-                                    style="@style/style_sec_sec"
+                                    style="@style/style_thrid"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:background="@android:color/transparent"
@@ -610,7 +610,7 @@
 
                                 <EditText
                                     android:id="@+id/edt_equ_supplier"
-                                    style="@style/style_sec_sec"
+                                    style="@style/style_thrid"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center"
@@ -622,7 +622,7 @@
                             <!--text_for_less_Detail-->
                             <TextView
                                 android:id="@+id/show_less"
-                                style="@style/header_text_style"
+                                style="@style/style_add_equ"
                                 android:layout_width="match_parent"
                                 android:layout_height="@dimen/_27sdp"
                                 android:gravity="center"
@@ -633,7 +633,7 @@
                         <!--txt_for_location_and_installed_date-->
                         <TextView
                             android:id="@+id/txt_location_installed_date"
-                            style="@style/text_style"
+                            style="@style/style_add_equ"
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/_27sdp"
                             android:gravity="center_vertical"
@@ -661,7 +661,7 @@
 
                             <AutoCompleteTextView
                                 android:id="@+id/auto_client_site"
-                                style="@style/style_sec_sec"
+                                style="@style/style_thrid"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:background="@android:color/transparent"
@@ -689,7 +689,7 @@
 
                             <AutoCompleteTextView
                                 android:id="@+id/edt_equ_adrs"
-                                style="@style/style_sec_sec"
+                                style="@style/style_thrid"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
@@ -713,7 +713,7 @@
 
                         <TextView
                             android:id="@+id/txt_date_installed"
-                            style="@style/style_sec_sec"
+                            style="@style/style_thrid"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
@@ -732,7 +732,7 @@
 
                             <TextView
                                 android:id="@+id/installed_date_lable"
-                                style="@style/style_sec_sec"
+                                style="@style/style_thrid"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:layout_weight="1"
@@ -741,7 +741,7 @@
 
                             <TextView
                                 android:id="@+id/installed_date_txt"
-                                style="@style/style_sec_sec"
+                                style="@style/style_thrid"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:layout_marginStart="10dp"
@@ -773,7 +773,7 @@
                         <!--txt_for_warranty-->
                         <TextView
                             android:id="@+id/txt_warranty"
-                            style="@style/text_style"
+                            style="@style/style_add_equ"
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/_27sdp"
                             android:gravity="center_vertical"
@@ -788,7 +788,7 @@
                         <!--start waranty-->
                         <TextView
                             android:id="@+id/txt_date_warnty_start"
-                            style="@style/style_sec_sec"
+                            style="@style/style_thrid"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
@@ -807,7 +807,7 @@
 
                             <TextView
                                 android:id="@+id/warnty_date_lable_start"
-                                style="@style/style_sec_sec"
+                                style="@style/style_thrid"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:layout_weight="0.5"
@@ -816,7 +816,7 @@
 
                             <TextView
                                 android:id="@+id/warnty_date_txt_start"
-                                style="@style/style_sec_sec"
+                                style="@style/style_thrid"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:layout_marginStart="10dp"
@@ -848,7 +848,7 @@
                         <!--last waranty-->
                         <TextView
                             android:id="@+id/txt_date_warnty"
-                            style="@style/style_sec_sec"
+                            style="@style/style_thrid"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
@@ -867,7 +867,7 @@
 
                             <TextView
                                 android:id="@+id/warnty_date_lable"
-                                style="@style/style_sec_sec"
+                                style="@style/style_thrid"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:layout_weight="0.5"
@@ -876,7 +876,7 @@
 
                             <TextView
                                 android:id="@+id/warnty_date_txt"
-                                style="@style/style_sec_sec"
+                                style="@style/style_thrid"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:layout_marginStart="10dp"
@@ -913,7 +913,7 @@
                             android:weightSum="1">
                         <TextView
                             android:id="@+id/tvService_inv_label"
-                            style="@style/style_sec_sec"
+                            style="@style/style_thrid"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginVertical="5dp"
@@ -923,7 +923,7 @@
 
                         <Button
                             android:id="@+id/clear_btn"
-                            style="@style/style_sec_sec"
+                            style="@style/style_thrid"
                             android:layout_width="32dp"
                             android:layout_height="18dp"
                             android:layout_gravity="center"
@@ -938,7 +938,7 @@
 
                         <RadioGroup
                             android:id="@+id/rediogrp_interval"
-                            style="@style/style_sec"
+                            style="@style/style_thrid"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginVertical="10dp"
@@ -954,7 +954,7 @@
 
                             <EditText
                                 android:id="@+id/edt_day"
-                                style="@style/style_sec_sec"
+                                style="@style/style_thrid"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:inputType="number"
@@ -972,7 +972,7 @@
 
                             <EditText
                                 android:id="@+id/edt_month"
-                                style="@style/style_sec_sec"
+                                style="@style/style_thrid"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:inputType="number"
@@ -990,7 +990,7 @@
 
                             <EditText
                                 android:id="@+id/edt_year"
-                                style="@style/style_sec_sec"
+                                style="@style/style_thrid"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:inputType="number"
@@ -1004,14 +1004,14 @@
 
                     <TextView
                         android:id="@+id/txt_interval_notes"
-                        style="@style/style_sec_sec"
+                        style="@style/style_thrid"
                         android:layout_width="match_parent"
                         android:layout_height="57dp"
                         android:layout_gravity="center"
                         android:background="@color/bg_link_item_note"
                         android:minHeight="@dimen/_27sdp"
                         android:padding="10dp"
-                        android:text="To accurately identify the equipment, it is advisable to assign it a specific name."
+                        android:text=""
                         android:textColor="@color/new_msg_gray" />
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -1021,7 +1021,7 @@
 
                         <!--                    <EditText-->
                         <!--                        android:id="@+id/edt_equ_service_interval"-->
-                        <!--                        style="@style/style_sec_sec"-->
+                        <!--                        style="@style/style_thrid"-->
                         <!--                        android:layout_width="match_parent"-->
                         <!--                        android:layout_height="wrap_content"-->
                         <!--                        android:layout_gravity="center"-->
@@ -1038,7 +1038,7 @@
                         <!--txt_more_details-->
                         <TextView
                             android:id="@+id/txt_more_details"
-                            style="@style/text_style"
+                            style="@style/style_add_equ"
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/_27sdp"
                             android:gravity="center_vertical"
@@ -1063,7 +1063,7 @@
 
                             <EditText
                                 android:id="@+id/quote_notes_edt"
-                                style="@style/style_sec_sec"
+                                style="@style/style_thrid"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
@@ -1092,7 +1092,7 @@
 
                             <EditText
                                 android:id="@+id/custom_filed_txt_1"
-                                style="@style/style_sec_sec"
+                                style="@style/style_thrid"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:background="@android:color/transparent"
@@ -1124,7 +1124,7 @@
 
                             <EditText
                                 android:id="@+id/custom_filed_txt_2"
-                                style="@style/style_sec_sec"
+                                style="@style/style_thrid"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:background="@android:color/transparent"
@@ -1145,7 +1145,7 @@
                         <!--attachment_lable-->
                         <androidx.appcompat.widget.AppCompatTextView
                             android:id="@+id/tv_label_attachment"
-                            style="@style/style_sec"
+                            style="@style/style_add_equ"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="15dp"
@@ -1168,7 +1168,7 @@
 
                                                 <AutoCompleteTextView
                                                     android:id="@+id/auto_country"
-                                                    style="@style/style_sec_sec"
+                                                    style="@style/style_thrid"
                                                     android:layout_width="match_parent"
                                                     android:layout_height="wrap_content"
                                                     android:background="@android:color/transparent"
@@ -1198,7 +1198,7 @@
 
                                                 <AutoCompleteTextView
                                                     android:id="@+id/auto_states"
-                                                    style="@style/style_sec_sec"
+                                                    style="@style/style_thrid"
                                                     android:layout_width="match_parent"
                                                     android:layout_height="wrap_content"
                                                     android:background="@android:color/transparent"
@@ -1228,7 +1228,7 @@
 
                                                 <EditText
                                                     android:id="@+id/edt_equ_city"
-                                                    style="@style/style_sec_sec"
+                                                    style="@style/style_thrid"
                                                     android:layout_width="match_parent"
                                                     android:layout_height="wrap_content"
                                                     android:layout_gravity="center"
@@ -1288,7 +1288,7 @@
 
                                 <EditText
                                     android:id="@+id/auto_client"
-                                    style="@style/style_sec_sec"
+                                    style="@style/style_thrid"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:background="@android:color/transparent"
@@ -1337,7 +1337,7 @@
 
                                     <TextView
                                         android:id="@+id/status_txt"
-                                        style="@style/style_sec_sec"
+                                        style="@style/style_thrid"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
                                         android:layout_marginTop="5dp"
@@ -1400,7 +1400,7 @@
 
                                     <TextView
                                         android:id="@+id/supplier_txt"
-                                        style="@style/style_sec_sec"
+                                        style="@style/style_thrid"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
                                         android:layout_marginTop="5dp"
@@ -1444,7 +1444,7 @@
 
                                 <AutoCompleteTextView
                                     android:id="@+id/supplier_txt"
-                                    style="@style/style_sec_sec"
+                                    style="@style/style_thrid"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:background="@android:color/transparent"
@@ -1463,7 +1463,7 @@
 
                         <!-- <CheckBox
                              android:id="@+id/checkbox_barCode"
-                             style="@style/style_sec_sec"
+                             style="@style/style_thrid"
                              android:layout_width="wrap_content"
                              android:layout_height="@dimen/input_field_height"
                              android:layout_marginStart="-5dp"
@@ -1472,7 +1472,7 @@
 
                          <CheckBox
                              android:id="@+id/checkbox_scan_barCode"
-                             style="@style/style_sec_sec"
+                             style="@style/style_thrid"
                              android:layout_width="wrap_content"
                              android:layout_height="@dimen/input_field_height"
                              android:layout_marginStart="-5dp"
@@ -1488,7 +1488,7 @@
 
                            <EditText
                                android:id="@+id/et_barcode"
-                               style="@style/style_sec_sec"
+                               style="@style/style_thrid"
                                android:layout_width="match_parent"
                                android:layout_height="match_parent"
                                android:layout_toStartOf="@+id/tv_scan_barcode"
@@ -1500,7 +1500,7 @@
 
                            <TextView
                                android:id="@+id/tv_scan_barcode"
-                               style="@style/style_sec_sec"
+                               style="@style/style_thrid"
                                android:layout_width="wrap_content"
                                android:layout_height="wrap_content"
                                android:layout_alignParentEnd="true"
@@ -1544,7 +1544,7 @@
 
                             <TextView
                                 android:id="@+id/image_txt"
-                                style="@style/style_sec_sec"
+                                style="@style/style_thrid"
                                 android:layout_width="match_parent"
                                 android:layout_height="40dp"
                                 android:layout_alignParentBottom="true"
@@ -1614,7 +1614,7 @@
 
                             <androidx.appcompat.widget.AppCompatTextView
                                 android:id="@+id/upload_lable"
-                                style="@style/style_thrid_thrd"
+                                style="@style/style_thrid"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
@@ -1625,7 +1625,7 @@
 
                             <androidx.appcompat.widget.AppCompatTextView
                                 android:id="@+id/click_here_txt"
-                                style="@style/style_thrid_thrd"
+                                style="@style/style_thrid"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
