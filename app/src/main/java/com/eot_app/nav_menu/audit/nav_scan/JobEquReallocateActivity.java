@@ -293,6 +293,7 @@ public class JobEquReallocateActivity extends AppCompatActivity implements View.
 
     @Override
     public void errorMsg(String msg) {
-        EotApp.getAppinstance().showToastmsg(msg);
+        AppUtility.alertDialog(this, "", msg, LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok),
+                "", () -> null);
     }
 }

@@ -529,10 +529,10 @@
                         android:id="@+id/ll_replace"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="20dp"
                         android:background="@color/bg_job"
                         android:orientation="horizontal"
-                        android:padding="25dp"
+                        android:paddingVertical="@dimen/_14sdp"
+                        android:paddingHorizontal="@dimen/_10sdp"
                         android:visibility="visible"
                         android:weightSum="1">
 
@@ -541,9 +541,9 @@
                             style="@style/style_sec"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="10dp"
                             android:layout_weight="0.7"
-                            android:text="Do you want to discard this part and \nreplace with a new one"
+                            android:padding="1dp"
+                            android:text="Do you want to discard this part and nreplace with a new one"
                             tools:ignore="HardcodedText" />
 
                         <TextView
@@ -551,7 +551,7 @@
                             style="@style/style_sec"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="10dp"
+                            android:layout_marginStart="8dp"
                             android:layout_marginTop="5dp"
                             android:layout_weight="0.3"
                             android:background="@drawable/submit_btn"
@@ -568,7 +568,8 @@
                         android:layout_marginTop="8dp"
                         android:background="@color/bg_link_item_note"
                         android:orientation="horizontal"
-                        android:padding="25dp"
+                        android:paddingVertical="@dimen/_14sdp"
+                        android:paddingHorizontal="@dimen/_10sdp"
                         android:visibility="visible"
                         android:weightSum="1">
 
@@ -587,7 +588,7 @@
                             style="@style/style_sec"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="10dp"
+                            android:layout_marginStart="8dp"
                             android:layout_marginTop="5dp"
                             android:layout_weight="0.3"
                             android:background="@drawable/submit_btn"
@@ -604,7 +605,8 @@
                         android:layout_marginTop="8dp"
                         android:background="@color/white"
                         android:orientation="horizontal"
-                        android:padding="25dp"
+                        android:paddingVertical="@dimen/_14sdp"
+                        android:paddingHorizontal="@dimen/_10sdp"
                         android:visibility="visible"
                         android:weightSum="1">
 
@@ -623,7 +625,7 @@
                             style="@style/style_sec"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="10dp"
+                            android:layout_marginStart="8dp"
                             android:layout_marginTop="5dp"
                             android:layout_weight="0.3"
                             android:background="@drawable/submit_btn"
@@ -641,7 +643,8 @@
                         android:layout_marginBottom="50dp"
                         android:background="@color/discard_link_equ"
                         android:orientation="horizontal"
-                        android:padding="25dp"
+                        android:paddingVertical="@dimen/_14sdp"
+                        android:paddingHorizontal="@dimen/_10sdp"
                         android:visibility="visible"
                         android:weightSum="1">
 
@@ -660,7 +663,7 @@
                             style="@style/style_sec"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="10dp"
+                            android:layout_marginStart="8dp"
                             android:layout_marginTop="5dp"
                             android:layout_weight="0.3"
                             android:background="@drawable/submit_btn"

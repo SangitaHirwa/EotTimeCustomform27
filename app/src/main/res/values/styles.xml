@@ -156,7 +156,7 @@
     <style name="style_add_equ" parent="@android:style/TextAppearance.Small">
         <item name="android:fontFamily">@font/arimo_bold</item>
         <item name="android:textSize">15sp</item>
-        <item name="android:color">@color/txt_color</item>
+        <item name="android:color">@color/font_header_color</item>
     </style>
 
     <style name="style_sec_sec" parent="@android:style/TextAppearance.Small">

@@ -35,6 +35,7 @@ public class JobEquReallocate_Pc implements JobEquReallocate_Pi{
     @Override
     public void updateLocation(UpdateSiteLocationReqModel reqModel) {
         if (AppUtility.isInternetConnected()) {
+            Log.e("equipmentRelocate_req",new Gson().toJson(reqModel));
             AppUtility.progressBarShow((Context) view);
             ApiClient.getservices().eotServiceCall(Service_apis.equipmentRelocate, AppUtility.getApiHeaders(),
                             AppUtility.getJsonObject(new Gson().toJson(reqModel)))
@@ -48,10 +49,12 @@ public class JobEquReallocate_Pc implements JobEquReallocate_Pi{
 
                         @Override
                         public void onNext(@NotNull JsonObject jsonObject) {
+                            AppUtility.progressBarDissMiss();
                             if (jsonObject.get("success").getAsBoolean()) {
                                 view.setNewLocation(LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
                             } else {
-                                view.errorMsg(LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
+                                Log.e("msg",jsonObject.get("message").getAsString());
+                                view.errorMsg(LanguageController.getInstance().getServerMsgByKey(AppConstant.went_wrong));
                             }
                         }
 

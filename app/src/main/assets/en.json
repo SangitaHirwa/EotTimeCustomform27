@@ -903,7 +903,8 @@
     "recur_updated": "Job recurrence updated successfully",
     "qrcode_already_exist": "This QR is already allocated to another equipment, please choose another one.",
     "qrcode_generate_success": "QR Code generated successfully.",
-    "qrcode_not_generated": "Unable to generate QR Code, please try again."
+    "qrcode_not_generated": "Unable to generate QR Code, please try again.",
+    "equ_relocated": "Equipment relocate successfully."
   },
   "mobileMsgsModel": {
     "accept": "Accept",
@@ -1783,8 +1784,8 @@
     "do_you_want_t": "Do you want to convert an item and its parts to an equipment?",
     "error_actual_start_end": "Actual start date time must be less than actual end date time",
     "error_travel_start_end": "Travel start date time must be less than travel end date time",
-    "please_select_end_date": "Please Select Actual End Date",
-    "please_select_start_date": "Please Select Actual Start Date",
+    "please_select_actual_end_date": "Please Select Actual End Date",
+    "please_select_actual_start_date": "Please Select Actual Start Date",
     "please_select_travel_end_date": "Please Select Travel End Date",
     "please_select_travel_start_date": "Please Select Travel Start Date",
     "please_select_start_end_date": "Please Select Actual Start End Date",
@@ -1943,7 +1944,7 @@
     "installed_date": "Installed Date",
      "repair": "Repair",
     "discard":"Discard",
-    "reallocate" : "Reallocate",
+    "reallocate" : "Relocate",
     "repair_action_msg": "The equipment requires maintenance and will need to be taken for repair.",
     "discard_action_msg": "Do you want to completely discard this equipment/part?",
     "reallocate_action_msg": "Do you want to relocate this equipment to a different location?",
@@ -1961,14 +1962,23 @@
     "show_less_details":  "Show Less Details",
     "loc_and_instal_date": "Location & Installation Date",
     "more_details": "More Details",
-    "what_you_want_to_generate_of_scan_code": "What you want to generate of scan code?",
     "interval_notes": "When configuring automated reminders for clients, it's important to take into account the service interval.",
     "serial_no_not_matched": "Your equipment is missing in the listed serial number? Tap here to add a new piece of equipment.",
     "select_serial_no": "Please select Serial Number.",
     "choose_scan_code": "Could you please confirm whether you are scanning a barcode or a QR code?",
     "navigate_to" : "Navigate to",
     "equipment_list_page" : "Equipment List Page",
-    "equipment_action_page" : "Equipment Action Page"
+    "equipment_action_page" : "Equipment Action Page",
+    "customRange": "Custom Range",
+    "last30Days": "Last 30 Days",
+    "last7Days": "Last 7 Days",
+    "lastMonth": "Last Month",
+    "no_address_found": "No Address Found",
+    "no_Project_site": "No Project/Site found.",
+    "thisMonth": "This Month",
+    "tomorrow": "Tomorrow",
+    "warranty_start_date": "Warranty start date",
+    "yesterday": "Yesterday"
   }
 }
 
