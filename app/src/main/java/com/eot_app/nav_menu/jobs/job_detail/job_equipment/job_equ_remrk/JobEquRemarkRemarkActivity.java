@@ -12,6 +12,8 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
@@ -152,7 +154,7 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
     LinearLayout formLayout;
     EquipmentPartRemarkAdapter equipmentPartAdapter;
     TextView image_txt, chip_txt, tv_text_for_replace,tv_text_for_repair,tv_repair,tv_text_for_reallocate,tv_reallocate,tv_text_for_discard,tv_discard, tv_replace, txt_lbl_remark,txt_lbl_condition, txt_condition, txt_lbl_status, txt_status, txt_remark, btn_edit;
-    ImageView deleteChip,show_requested_list,hide_requested_list,requested_item_flag;
+    ImageView deleteChip/*,show_requested_list,hide_requested_list*/,requested_item_flag;
     Job mParam2;
     ArrayList<Attachments> allAttachmentsList = new ArrayList<>();
     InvoiceItemList2Adpter invoice_list_adpter;
@@ -182,7 +184,7 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
     private boolean isTagSet = false;
     private RadioGroup rediogrp;
     private RadioButton radio_before, radio_after;
-    private RelativeLayout image_with_tag,requested_itemList_show_hide_rl;
+    private RelativeLayout image_with_tag/*,requested_itemList_show_hide_rl*/;
     private View chip_layout;
     private DocumentListAdapter adapter;
     View ll_requested_item;
@@ -194,7 +196,7 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
     boolean isAction = false, isEdit=false, isRefresh=false;
     public static JobEquRemarkRemarkActivity jobEquRemarkRemarkActivity;
     String[] statusList;
-
+    boolean isClickedReqItem = false;
     public JobEquRemarkRemarkActivity getInstance (){
         return jobEquRemarkRemarkActivity;
     }
@@ -406,16 +408,21 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
         if(requestItemData != null && requestItemData.size() > 0){
             if(isRefresh){
                 isRefresh = false;
+                requested_item_txt.setClickable(true);
                 requested_item_flag.setVisibility(View.VISIBLE);
-                requested_itemList_show_hide_rl.setVisibility(View.VISIBLE);
+//                requested_itemList_show_hide_rl .setVisibility(View.VISIBLE);
+                requested_item_txt.setCompoundDrawablesWithIntrinsicBounds(getDrawable(R.drawable.down), null, null, null);
 
             }else {
+                requested_item_txt.setClickable(true);
                 requested_item_flag.setVisibility(View.VISIBLE);
-                requested_itemList_show_hide_rl.setVisibility(View.VISIBLE);
+//                requested_itemList_show_hide_rl.setVisibility(View.VISIBLE);
+                requested_item_txt.setCompoundDrawablesWithIntrinsicBounds(getDrawable(R.drawable.up), null, null, null);
                 recyclerView_requested_item.setVisibility(View.VISIBLE);
                 txt_no_item_found.setVisibility(View.GONE);
                 requestedItemListAdapter.setReqItemList(requestItemData);
             }
+
         }else {
             if(isRefresh){
                 isRefresh = false;
@@ -423,10 +430,18 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
             }else {
                 txt_no_item_found.setVisibility(View.VISIBLE);
             }
-            requested_itemList_show_hide_rl.setVisibility(View.GONE);
+            requested_item_txt.setClickable(false);
+            requested_item_txt.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
+//            requested_itemList_show_hide_rl.setVisibility(View.GONE);
             requested_item_flag.setVisibility(View.GONE);
             requestedItemListAdapter.setReqItemList(new ArrayList<>());
             recyclerView_requested_item.setVisibility(View.GONE);
+            new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    txt_no_item_found.setVisibility(View.GONE);
+                }
+            },1000);
         }
     }
 
@@ -434,9 +449,10 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
     public void notDtateFoundInRequestedItemList(String msg) {
         EotApp.getAppinstance().showToastmsg(msg);
         progressBar_itemRequest.setVisibility(View.GONE);
-        show_requested_list.setVisibility(View.VISIBLE);
+//        show_requested_list.setVisibility(View.VISIBLE);
+        requested_item_txt.setCompoundDrawablesWithIntrinsicBounds(getDrawable(R.drawable.down), null, null, null);
         recyclerView_requested_item.setVisibility(View.GONE);
-        hide_requested_list.setVisibility(View.GONE);
+//        hide_requested_list.setVisibility(View.GONE);
     }
 
     @Override
@@ -560,12 +576,13 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
         progressBar_itemRequest = findViewById(R.id.progressBar_itemRequest);
         txt_no_item_found = findViewById(R.id.txt_no_item_found);
         txt_no_item_found.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.no_item_requested_found));
-        show_requested_list = findViewById(R.id.show_requested_list);
-        hide_requested_list = findViewById(R.id.hide_requested_list);
+//        show_requested_list = findViewById(R.id.show_requested_list);
+//        hide_requested_list = findViewById(R.id.hide_requested_list);
         requested_item_flag = findViewById(R.id.requested_item_flag);
-        requested_itemList_show_hide_rl = findViewById(R.id.requested_itemList_show_hide_rl);
-        show_requested_list.setOnClickListener(this);
-        hide_requested_list.setOnClickListener(this);
+//        requested_itemList_show_hide_rl = findViewById(R.id.requested_itemList_show_hide_rl);
+//        show_requested_list.setOnClickListener(this);
+//        hide_requested_list.setOnClickListener(this);
+        requested_item_txt.setOnClickListener(this);
         btn_add_requested_item = findViewById(R.id.btn_add_requested_item);
         btn_add_requested_item.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add));
         btn_add_requested_item.setTextSize(15);
@@ -1001,9 +1018,9 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
                 break;
 
             case R.id.btn_add_requested_item:
-                show_requested_list.setVisibility(View.VISIBLE);
+//                show_requested_list.setVisibility(View.VISIBLE);
                 recyclerView_requested_item.setVisibility(View.GONE);
-                hide_requested_list.setVisibility(View.GONE);
+//                hide_requested_list.setVisibility(View.GONE);
                 txt_no_item_found.setVisibility(View.GONE);
                 Intent intent2 = new Intent(this, AddUpdateRquestedItemActivity.class);
                 intent2.putExtra("addReqItemInEqu",true);
@@ -1013,27 +1030,34 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
                 startActivity(intent2);
                 break;
 
-            case R.id.show_requested_list:
-                if(AppUtility.isInternetConnected()){
-                    progressBar_itemRequest.setVisibility(View.VISIBLE);
-                    show_requested_list.setVisibility(View.GONE);
-                    hide_requested_list.setVisibility(View.VISIBLE);
-                    if (jobEquimPi != null) {
-                        jobEquimPi.getRequestedItemDataList(mParam2.getJobId());
-                        recyclerView_requested_item.setVisibility(View.VISIBLE);
-                    }
-                }else {
-                    onErrorMsg(LanguageController.getInstance().getMobileMsgByKey(AppConstant.offline_feature_alert));
-                }
+            case R.id.requested_item_txt:
 
+                    if(!isClickedReqItem) {
+                        if(AppUtility.isInternetConnected()){
+                        isClickedReqItem = true;
+                        progressBar_itemRequest.setVisibility(View.VISIBLE);
+                            if (jobEquimPi != null) {
+                                jobEquimPi.getRequestedItemDataList(mParam2.getJobId());
+                            }
+                        }else {
+                            onErrorMsg(LanguageController.getInstance().getMobileMsgByKey(AppConstant.offline_feature_alert));
+                        }
+                    }else {
+                        isClickedReqItem = false;
+                        recyclerView_requested_item.setVisibility(View.GONE);
+                        txt_no_item_found.setVisibility(View.GONE);
+                        requested_item_txt.setCompoundDrawablesWithIntrinsicBounds(getDrawable(R.drawable.down), null, null, null);
+                    }
+//                    show_requested_list.setVisibility(View.GONE);
+//                    hide_requested_list.setVisibility(View.VISIBLE);
 
                 break;
-            case R.id.hide_requested_list:
+           /* case R.id.hide_requested_list:
                 show_requested_list.setVisibility(View.VISIBLE);
                 recyclerView_requested_item.setVisibility(View.GONE);
                 hide_requested_list.setVisibility(View.GONE);
                 txt_no_item_found.setVisibility(View.GONE);
-                break;
+                break;*/
             case  R.id.btn_edit:
                     showRemarkSection();
                     isEdit = true;
@@ -1747,10 +1771,16 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
         if(mParam2!=null){
             if(mParam2.getItemRequested() != null && mParam2.getItemRequested().equals("1")){
                 requested_item_flag.setVisibility(View.VISIBLE);
-                requested_itemList_show_hide_rl.setVisibility(View.VISIBLE);
+                requested_item_txt.setClickable(true);
+//                requested_itemList_show_hide_rl.setVisibility(View.VISIBLE);
+                requested_item_txt.setCompoundDrawablesWithIntrinsicBounds(getDrawable(R.drawable.down), null, null, null);
+
             }else {
+                requested_item_txt.setClickable(false);
                 requested_item_flag.setVisibility(View.GONE);
-                requested_itemList_show_hide_rl.setVisibility(View.GONE);
+//                requested_itemList_show_hide_rl.setVisibility(View.GONE);
+                requested_item_txt.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
+
             }
         }
     }
@@ -1904,7 +1934,19 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
     protected void onResume() {
         super.onResume();
         updateCountItem();
-
+        if(jobId != null && !jobId.isEmpty()) {
+            String itemRequested = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getItemRequested(jobId);
+            if (itemRequested != null && itemRequested.equals("1")) {
+                requested_item_flag.setVisibility(View.VISIBLE);
+                requested_item_txt.setClickable(true);
+//                requested_itemList_show_hide_rl.setVisibility(View.VISIBLE);
+                requested_item_txt.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.down), null, null, null);
+            }else {
+                requested_item_txt.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
+                requested_item_flag.setVisibility(View.GONE);
+                requested_item_txt.setClickable(false);
+            }
+        }
     }
 
     @Override
@@ -2081,9 +2123,10 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
 
     @Override
     public void itemSelected(RequestedItemModel updateRequestedItemModel) {
-        show_requested_list.setVisibility(View.VISIBLE);
+//        show_requested_list.setVisibility(View.VISIBLE);
         recyclerView_requested_item.setVisibility(View.GONE);
-        hide_requested_list.setVisibility(View.GONE);
+        requested_item_txt.setCompoundDrawablesWithIntrinsicBounds(getDrawable(R.drawable.down), null, null, null);
+//        hide_requested_list.setVisibility(View.GONE);
         Intent intent = new Intent(this,AddUpdateRquestedItemActivity.class);
         intent.putExtra("updateSelectedReqItem",updateRequestedItemModel);
         intent.putExtra("UpdateReqItem",true);
@@ -2099,7 +2142,9 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
             case Service_apis.addItemRequest:
                 EotApp.getAppinstance().showToastmsg(LanguageController.getInstance().getServerMsgByKey(message.trim()));
                 requested_item_flag.setVisibility(View.VISIBLE);
-                requested_itemList_show_hide_rl.setVisibility(View.VISIBLE);
+                requested_item_txt.setClickable(true);
+//                requested_itemList_show_hide_rl.setVisibility(View.VISIBLE);
+                requested_item_txt.setCompoundDrawablesWithIntrinsicBounds(getDrawable(R.drawable.down), null, null, null);
                 if(requestedModel != null) {
                     String msg =
                             LanguageController.getInstance().getMobileMsgByKey(AppConstant.item_requested_by_the_field_user)+"\n"+LanguageController.getInstance().getMobileMsgByKey(AppConstant.item_name)+": "+requestedModel.getItemName()+"\n"+
@@ -2184,10 +2229,14 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
             ll_requested_item.setVisibility(View.VISIBLE);
             if(mParam2.getItemRequested() != null && mParam2.getItemRequested().equals("1")){
                 requested_item_flag.setVisibility(View.VISIBLE);
-                requested_itemList_show_hide_rl.setVisibility(View.VISIBLE);
+                requested_item_txt.setClickable(true);
+//                requested_itemList_show_hide_rl.setVisibility(View.VISIBLE);
+                requested_item_txt.setCompoundDrawablesWithIntrinsicBounds(getDrawable(R.drawable.down), null, null, null);
             }else {
+                requested_item_txt.setClickable(false);
                 requested_item_flag.setVisibility(View.GONE);
-                requested_itemList_show_hide_rl.setVisibility(View.GONE);
+//                requested_itemList_show_hide_rl.setVisibility(View.GONE);
+                requested_item_txt.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
             }
         }else {
             ll_requested_item.setVisibility(View.GONE);

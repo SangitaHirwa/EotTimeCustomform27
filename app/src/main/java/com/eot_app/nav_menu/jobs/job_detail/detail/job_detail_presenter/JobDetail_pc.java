@@ -843,6 +843,9 @@ public class JobDetail_pc implements JobDetail_pi {
                                     Type listType = new TypeToken<List<RequestedItemModel>>() {
                                     }.getType();
                                     List<RequestedItemModel> data = new Gson().fromJson(convert, listType);
+                                    if(data != null && data.isEmpty()){
+                                        AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().updateRequestedItem("0",jobId);
+                                    }
                                         view.setRequestItemData(data);
 
                                 } catch (Exception e) {

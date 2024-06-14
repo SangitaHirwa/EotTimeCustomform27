@@ -204,10 +204,10 @@ public class DetailFragment extends Fragment
     String actualStart = "", actualFinish = "";
     String travelStart = "", travelFinish = "";
     TextView tvTravelJobTime, tvActualJobTime, btnActualEdit, btnTravelEdit;
-    ImageView ivEditAc, show_requested_list,hide_requested_list;
+    ImageView ivEditAc/*, show_requested_list,hide_requested_list*/;
     RelativeLayout ll_actual_date_time, ll_travel_date_time;
     LinearLayout ll_completion_detail, liner_layout_for_recurmsg, recurMsgShow, recurMsgHide;
-    RelativeLayout rl_Collapse1, rl_Collapse2,requested_itemList_show_hide_rl;
+    RelativeLayout rl_Collapse1, rl_Collapse2/*,requested_itemList_show_hide_rl*/;
     ConstraintLayout progressBar_timing;
     String firstTrvlBrkTime, lastTrvlBrkTime;
     String firstBrkTime, lastBrkTime;
@@ -262,6 +262,7 @@ public class DetailFragment extends Fragment
     List<RequestedItemModel> requestedItemList = new ArrayList<>();
     String brandName = "";
     RecurReqResModel recurData;
+    boolean isClickedReqItem = false;
 
     public DetailFragment() {
         // Required empty public constructor
@@ -715,18 +716,19 @@ public class DetailFragment extends Fragment
 
         requested_item_txt = layout.findViewById(R.id.requested_item_txt);
         requested_item_txt.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.item_requested));
+        requested_item_txt.setOnClickListener(this);
 
         progressBar_itemRequest =layout.findViewById(R.id.progressBar_itemRequest);
         txt_no_item_found =layout.findViewById(R.id.txt_no_item_found);
         txt_no_item_found.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.no_item_requested_found));
 
         requested_item_cardView = layout.findViewById(R.id.requested_item_cardView);
-        show_requested_list = layout.findViewById(R.id.show_requested_list);
-        hide_requested_list = layout.findViewById(R.id.hide_requested_list);
+       /* show_requested_list = layout.findViewById(R.id.show_requested_list);
+        hide_requested_list = layout.findViewById(R.id.hide_requested_list);*/
         requested_item_flag = layout.findViewById(R.id.requested_item_flag);
-        requested_itemList_show_hide_rl = layout.findViewById(R.id.requested_itemList_show_hide_rl);
+      /*  requested_itemList_show_hide_rl = layout.findViewById(R.id.requested_itemList_show_hide_rl);
         show_requested_list.setOnClickListener(this);
-        hide_requested_list.setOnClickListener(this);
+        hide_requested_list.setOnClickListener(this);*/
         btn_add_requested_item = layout.findViewById(R.id.btn_add_requested_item);
         btn_add_requested_item.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add));
         btn_add_requested_item.setOnClickListener(this);
@@ -894,10 +896,16 @@ public class DetailFragment extends Fragment
             ll_requested_item.setVisibility(View.VISIBLE);
             if(mParam2 != null && mParam2.getItemRequested() != null && mParam2.getItemRequested().equals("1")){
                 requested_item_flag.setVisibility(View.VISIBLE);
-                requested_itemList_show_hide_rl.setVisibility(View.VISIBLE);
+//                requested_itemList_show_hide_rl.setVisibility(View.VISIBLE);
+                requested_item_txt.setClickable(true);
+                requested_item_txt.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.down), null, null, null);
+
             }else {
+                requested_item_txt.setClickable(false);
                 requested_item_flag.setVisibility(View.GONE);
-                requested_itemList_show_hide_rl.setVisibility(View.GONE);
+//                requested_itemList_show_hide_rl.setVisibility(View.GONE);
+                requested_item_txt.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
+
             }
         }else{
             ll_requested_item.setVisibility(View.GONE);
@@ -1348,20 +1356,24 @@ public class DetailFragment extends Fragment
     public void setRequestItemData(List<RequestedItemModel> requestItemData) {
         progressBar_itemRequest.setVisibility(View.GONE);
             if(requestItemData != null && requestItemData.size() > 0){
+                requested_item_txt.setClickable(true);
                 if(isRefreshReqItem){
                     isRefreshReqItem = false;
                     requested_item_flag.setVisibility(View.VISIBLE);
-                    requested_itemList_show_hide_rl.setVisibility(View.VISIBLE);
-
+//                    requested_itemList_show_hide_rl.setVisibility(View.VISIBLE);
+                    requested_item_txt.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.down), null, null, null);
                 }else {
                     requested_item_flag.setVisibility(View.VISIBLE);
-                    requested_itemList_show_hide_rl.setVisibility(View.VISIBLE);
+//                    requested_itemList_show_hide_rl.setVisibility(View.VISIBLE);
+                    requested_item_txt.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.up), null, null, null);
                     recyclerView_requested_item.setVisibility(View.VISIBLE);
                     txt_no_item_found.setVisibility(View.GONE);
                     requestedItemListAdapter.setReqItemList(requestItemData);
                 }
             }else {
-                requested_itemList_show_hide_rl.setVisibility(View.GONE);
+                requested_item_txt.setClickable(false);
+//                requested_itemList_show_hide_rl.setVisibility(View.GONE);
+                requested_item_txt.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
                 requested_item_flag.setVisibility(View.GONE);
                 requestedItemListAdapter.setReqItemList(new ArrayList<>());
                 recyclerView_requested_item.setVisibility(View.GONE);
@@ -1382,9 +1394,10 @@ public class DetailFragment extends Fragment
     public void notDtateFoundInRequestedItemList(String msg) {
         EotApp.getAppinstance().showToastmsg(msg);
         progressBar_itemRequest.setVisibility(View.GONE);
-        show_requested_list.setVisibility(View.VISIBLE);
+        requested_item_txt.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.down), null, null, null);
+//        show_requested_list.setVisibility(View.VISIBLE);
         recyclerView_requested_item.setVisibility(View.GONE);
-        hide_requested_list.setVisibility(View.GONE);
+//        hide_requested_list.setVisibility(View.GONE);
     }
 
     @Override
@@ -2546,6 +2559,7 @@ public void setCompletionDetail(){
         super.onPause();
         Log.e("", "");
         mMapView.onPause();
+        recyclerView_requested_item.setVisibility(View.GONE);
         AppUtility.progressBarDissMiss();
     }
 
@@ -2561,7 +2575,13 @@ public void setCompletionDetail(){
             String itemRequested = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getItemRequested(param3);
             if (itemRequested != null && itemRequested.equals("1")) {
                 requested_item_flag.setVisibility(View.VISIBLE);
-                requested_itemList_show_hide_rl.setVisibility(View.VISIBLE);
+                requested_item_txt.setClickable(true);
+//                requested_itemList_show_hide_rl.setVisibility(View.VISIBLE);
+                requested_item_txt.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.down), null, null, null);
+            }else {
+                requested_item_txt.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
+                requested_item_flag.setVisibility(View.GONE);
+                requested_item_txt.setClickable(false);
             }
         }
     }
@@ -2938,9 +2958,9 @@ public void setCompletionDetail(){
                 break;
 
             case R.id.btn_add_requested_item:
-                show_requested_list.setVisibility(View.VISIBLE);
+//                show_requested_list.setVisibility(View.VISIBLE);
                 recyclerView_requested_item.setVisibility(View.GONE);
-                hide_requested_list.setVisibility(View.GONE);
+//                hide_requested_list.setVisibility(View.GONE);
                 txt_no_item_found.setVisibility(View.GONE);
                 Intent intent2 = new Intent(getActivity(), AddUpdateRquestedItemActivity.class);
                 intent2.putExtra("addReqItem",true);
@@ -2949,27 +2969,43 @@ public void setCompletionDetail(){
                 startActivity(intent2);
                 break;
 
-            case R.id.show_requested_list:
-                if(AppUtility.isInternetConnected()){
+            case R.id.requested_item_txt:
+                if(!isClickedReqItem) {
+                    if(AppUtility.isInternetConnected()){
+                        isClickedReqItem = true;
+                        progressBar_itemRequest.setVisibility(View.VISIBLE);
+                        if (jobDetail_pi != null) {
+                            jobDetail_pi.getRequestedItemDataList(mParam2.getJobId());
+                        }
+                    }else {
+                        showErrorDialog(LanguageController.getInstance().getMobileMsgByKey(AppConstant.offline_feature_alert));
+                    }
+                }else {
+                    isClickedReqItem = false;
+                    recyclerView_requested_item.setVisibility(View.GONE);
+                    txt_no_item_found.setVisibility(View.GONE);
+                    requested_item_txt.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.down), null, null, null);
+                }
+               /* if(AppUtility.isInternetConnected()){
                     progressBar_itemRequest.setVisibility(View.VISIBLE);
-                    show_requested_list.setVisibility(View.GONE);
-                    hide_requested_list.setVisibility(View.VISIBLE);
+//                    show_requested_list.setVisibility(View.GONE);
+//                    hide_requested_list.setVisibility(View.VISIBLE);
                     if (jobDetail_pi != null) {
                         jobDetail_pi.getRequestedItemDataList(mParam2.getJobId());
                         recyclerView_requested_item.setVisibility(View.VISIBLE);
                     }
                 }else {
                     showErrorDialog(LanguageController.getInstance().getMobileMsgByKey(AppConstant.offline_feature_alert));
-                }
+                }*/
 
 
                 break;
-            case R.id.hide_requested_list:
-                show_requested_list.setVisibility(View.VISIBLE);
-                recyclerView_requested_item.setVisibility(View.GONE);
-                hide_requested_list.setVisibility(View.GONE);
+          /*  case R.id.hide_requested_list:
+//                show_requested_list.setVisibility(View.VISIBLE);
+//                recyclerView_requested_item.setVisibility(View.GONE);
+//                hide_requested_list.setVisibility(View.GONE);
                 txt_no_item_found.setVisibility(View.GONE);
-                break;
+                break;*/
         }
     }
 
@@ -3627,7 +3663,9 @@ public void setCompletionDetail(){
             case Service_apis.addItemRequest:
                 showAppInstallDialog(LanguageController.getInstance().getServerMsgByKey(message.trim()));
                 requested_item_flag.setVisibility(View.VISIBLE);
-                requested_itemList_show_hide_rl.setVisibility(View.VISIBLE);
+                requested_item_txt.setClickable(true);
+//                requested_itemList_show_hide_rl.setVisibility(View.VISIBLE);
+                requested_item_txt.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.down), null, null, null);
                 if(requestedModel != null) {
                     String msg =
                             LanguageController.getInstance().getMobileMsgByKey(AppConstant.item_requested_by_the_field_user)+"\n"+LanguageController.getInstance().getMobileMsgByKey(AppConstant.item_name)+": "+requestedModel.getItemName()+"\n"+
@@ -3676,9 +3714,10 @@ public void setCompletionDetail(){
 
     @Override
     public void itemSelected(RequestedItemModel updateRequestedItemModel) {
-        show_requested_list.setVisibility(View.VISIBLE);
+//        show_requested_list.setVisibility(View.VISIBLE);
+        requested_item_txt.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.down), null, null, null);
         recyclerView_requested_item.setVisibility(View.GONE);
-        hide_requested_list.setVisibility(View.GONE);
+//        hide_requested_list.setVisibility(View.GONE);
         Intent intent = new Intent(getActivity(),AddUpdateRquestedItemActivity.class);
         intent.putExtra("updateSelectedReqItem",updateRequestedItemModel);
         intent.putExtra("UpdateReqItem",true);

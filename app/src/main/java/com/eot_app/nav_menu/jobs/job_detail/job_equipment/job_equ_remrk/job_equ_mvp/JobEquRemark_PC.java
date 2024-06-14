@@ -480,6 +480,9 @@ public class JobEquRemark_PC implements JobEquRemark_PI {
                                     Type listType = new TypeToken<List<RequestedItemModel>>() {
                                     }.getType();
                                     List<RequestedItemModel> data = new Gson().fromJson(convert, listType);
+                                    if(data != null && data.isEmpty()){
+                                        AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().updateRequestedItem("0",jobId);
+                                    }
                                     jobEquimView.setRequestItemData(data);
 
                                 } catch (Exception e) {
