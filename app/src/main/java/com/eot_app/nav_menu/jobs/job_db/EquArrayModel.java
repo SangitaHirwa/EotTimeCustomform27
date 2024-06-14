@@ -31,18 +31,18 @@ public class EquArrayModel implements Parcelable {
     public String equnm;
     public String mno;
     public String sno;
-    public String audId;
-    public String remark;
-    public String changeBy;
+    public String audId = "";
+    public String remark = "";
+    public String changeBy = "";
     public String status;
-    public String updateData;
-    public String lat;
-    public String lng;
-    public String location;
-    public String contrid;
+    public String updateData = "";
+    public String lat = "";
+    public String lng = "";
+    public String location = "";
+    public String contrid = "";
     private int linkStatus = 0;
     private int isRemarkAdd = 0;
-    private ArrayList<Attachments> attachments;
+    private ArrayList<Attachments> attachments = new ArrayList<>();
     private String type;
     private String brand;
     private String rate;
@@ -50,8 +50,8 @@ public class EquArrayModel implements Parcelable {
     private String manufactureDate;
     private String purchaseDate;
     private String barcode;
-    private String equipment_group;
-    private String image;
+    private String equipment_group = "";
+    private String image = "";
     private String ecId;
     private String usrManualDoc;
     private String isPart = "0";
@@ -59,13 +59,13 @@ public class EquArrayModel implements Parcelable {
     private String adr;
     private String extraField1;
     private String extraField2;
-    private String datetime;
+    private String datetime = "";
     private String installedDate;
-    private String parentName;
+    private String parentName = "";
     private String notes;
     private String servIntvalType;
     private String servIntvalValue;
-    private String lastJobDate;
+    private String lastJobDate = "";
     private String equStatus;
     private String statusUpdateDate;
     private String itemId;
@@ -154,7 +154,7 @@ public class EquArrayModel implements Parcelable {
         this.notes = notes;
     }
 
-    private ArrayList<EquArrayModel> equComponent;
+    private ArrayList<EquArrayModel> equComponent = new ArrayList<>();
 
     public ArrayList<EquArrayModel> getEquComponent() {
         return equComponent;

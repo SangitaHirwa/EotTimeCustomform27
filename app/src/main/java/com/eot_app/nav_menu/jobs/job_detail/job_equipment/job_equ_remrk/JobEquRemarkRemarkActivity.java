@@ -28,6 +28,7 @@ import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatTextView;
@@ -39,6 +40,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.eot_app.R;
 import com.eot_app.UploadDocumentActivity;
 import com.eot_app.lat_lng_sync_pck.LatLngSycn_Controller;
@@ -107,6 +109,7 @@ import com.eot_app.utility.util_interfaces.Callback_AlertDialog;
 import com.eot_app.utility.util_interfaces.MySpinnerAdapter;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -116,6 +119,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -148,19 +152,19 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
     LinearLayout audit_status_relative, audit_status_relative_status;
     JobAudit_PI jobAuditPi;
     boolean isAutoUpdatedRemark = false;
-    CardView attachment_card, part_cardview, item_cardview, cv_showRemark,cv_editRemark;
+    CardView attachment_card, part_cardview, item_cardview, cv_showRemark, cv_editRemark;
     RecyclerView recyclerView_attachment,
-            recyclerView_customForm, recyclerView_part, recyclerView_item,recyclerView_requested_item, rv_showAttachment;
+            recyclerView_customForm, recyclerView_part, recyclerView_item, recyclerView_requested_item, rv_showAttachment;
     LinearLayout formLayout;
     EquipmentPartRemarkAdapter equipmentPartAdapter;
-    TextView image_txt, chip_txt, tv_text_for_replace,tv_text_for_repair,tv_repair,tv_text_for_reallocate,tv_reallocate,tv_text_for_discard,tv_discard, tv_replace, txt_lbl_remark,txt_lbl_condition, txt_condition, txt_lbl_status, txt_status, txt_remark, btn_edit;
-    ImageView deleteChip/*,show_requested_list,hide_requested_list*/,requested_item_flag;
+    TextView image_txt, chip_txt, tv_text_for_replace, tv_text_for_repair, tv_repair, tv_text_for_reallocate, tv_reallocate, tv_text_for_discard, tv_discard, tv_replace, txt_lbl_remark, txt_lbl_condition, txt_condition, txt_lbl_status, txt_status, txt_remark, btn_edit;
+    ImageView deleteChip/*,show_requested_list,hide_requested_list*/, requested_item_flag;
     Job mParam2;
     ArrayList<Attachments> allAttachmentsList = new ArrayList<>();
     InvoiceItemList2Adpter invoice_list_adpter;
     boolean isRemarkUpdated = false;
-    LinearLayout ll_replace,ll_repair,ll_reallocate,ll_discard;
-    String equStatusId="";
+    LinearLayout ll_replace, ll_repair, ll_reallocate, ll_discard;
+    String equStatusId = "";
     AppCompatTextView tv_label_status;
     private ArrayList<CustomFormList_Res> customFormLists = new ArrayList<>();
     private EquArrayModel equipment;
@@ -168,7 +172,7 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
     private EditText edit_remarks;
     private Spinner status_spinner, equ_status_spinner;
     private TextView status_label, status_label1;
-    private TextView tv_equipment_name, tv_location,requested_item_txt,txt_no_item_found,btn_add_requested_item;
+    private TextView tv_equipment_name, tv_location, requested_item_txt, txt_no_item_found, btn_add_requested_item;
     private JobEquRemark_PI jobEquimPi;
     private JobEquRemark_PC jobEquimPc;
     int selectedCondition = -1;
@@ -193,13 +197,24 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
     RequestedItemListAdapter requestedItemListAdapter;
     String brandName = "";
     CompletionAdpterJobDteails jobCompletionAdpter;
-    boolean isAction = false, isEdit=false, isRefresh=false;
+    boolean isAction = false, isEdit = false, isRefresh = false;
     public static JobEquRemarkRemarkActivity jobEquRemarkRemarkActivity;
     String[] statusList;
     boolean isClickedReqItem = false;
-    public JobEquRemarkRemarkActivity getInstance (){
-        return jobEquRemarkRemarkActivity;
+    /**
+     * Flag for notifying move to Action Screen by part adapter action button
+     */
+    public static boolean isGoFromPartAdapter = false;
+
+    public JobEquRemarkRemarkActivity getInstance() {
+        if (!isGoFromPartAdapter) {
+            return jobEquRemarkRemarkActivity;
+        } else {
+            isGoFromPartAdapter = false;
+            return null;
+        }
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -213,8 +228,6 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
         setData();
         getCustomFormSLists();
     }
-
-
 
 
     @SuppressLint("NonConstantResourceId")
@@ -308,7 +321,7 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
     }
 
     @Override
-    public void addfragmentDynamically(List<QuesRspncModel> quesRspncModelList,String optionid) {
+    public void addfragmentDynamically(List<QuesRspncModel> quesRspncModelList, String optionid) {
         Log.e("", "");
         if (!quesRspncModelList.isEmpty()) {
             String queList = new Gson().toJson(quesRspncModelList);
@@ -405,15 +418,15 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
     @Override
     public void setRequestItemData(List<RequestedItemModel> requestItemData) {
         progressBar_itemRequest.setVisibility(View.GONE);
-        if(requestItemData != null && requestItemData.size() > 0){
-            if(isRefresh){
+        if (requestItemData != null && requestItemData.size() > 0) {
+            if (isRefresh) {
                 isRefresh = false;
                 requested_item_txt.setClickable(true);
                 requested_item_flag.setVisibility(View.VISIBLE);
 //                requested_itemList_show_hide_rl .setVisibility(View.VISIBLE);
                 requested_item_txt.setCompoundDrawablesWithIntrinsicBounds(getDrawable(R.drawable.down), null, null, null);
 
-            }else {
+            } else {
                 requested_item_txt.setClickable(true);
                 requested_item_flag.setVisibility(View.VISIBLE);
 //                requested_itemList_show_hide_rl.setVisibility(View.VISIBLE);
@@ -423,11 +436,11 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
                 requestedItemListAdapter.setReqItemList(requestItemData);
             }
 
-        }else {
-            if(isRefresh){
+        } else {
+            if (isRefresh) {
                 isRefresh = false;
                 txt_no_item_found.setVisibility(View.GONE);
-            }else {
+            } else {
                 txt_no_item_found.setVisibility(View.VISIBLE);
             }
             requested_item_txt.setClickable(false);
@@ -441,7 +454,7 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
                 public void run() {
                     txt_no_item_found.setVisibility(View.GONE);
                 }
-            },1000);
+            }, 1000);
         }
     }
 
@@ -459,15 +472,15 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
     public void deletedRequestData(String message, AddUpdateRequestedModel requestedModel) {
         EotApp.getAppinstance().showToastmsg(LanguageController.getInstance().getServerMsgByKey(message.trim()));
         jobEquimPi.getRequestedItemDataList(mParam2.getJobId());
-        if(requestedModel != null) {
-            if(requestedModel.getEbId() != null && !requestedModel.getEbId().equals("0") && !requestedModel.getEbId().equals("")) {
+        if (requestedModel != null) {
+            if (requestedModel.getEbId() != null && !requestedModel.getEbId().equals("0") && !requestedModel.getEbId().equals("")) {
                 brandName = AppDataBase.getInMemoryDatabase(this).brandDao().getBrandNameById(requestedModel.getEbId());
             }
             String msg =
-                    LanguageController.getInstance().getMobileMsgByKey(AppConstant.field_user_made_some_changes_on_the_requested_item)+"\n"+LanguageController.getInstance().getMobileMsgByKey(AppConstant.item_name)+": "+requestedModel.getItemName()+"\n"+
-                            LanguageController.getInstance().getMobileMsgByKey(AppConstant.qty)+": "+requestedModel.getQty()+"\n"+
-                            LanguageController.getInstance().getMobileMsgByKey(AppConstant.part_no)+": "+requestedModel.getModelNo()+"\n"+
-                            LanguageController.getInstance().getMobileMsgByKey(AppConstant.brand)+": "+brandName;
+                    LanguageController.getInstance().getMobileMsgByKey(AppConstant.field_user_made_some_changes_on_the_requested_item) + "\n" + LanguageController.getInstance().getMobileMsgByKey(AppConstant.item_name) + ": " + requestedModel.getItemName() + "\n" +
+                            LanguageController.getInstance().getMobileMsgByKey(AppConstant.qty) + ": " + requestedModel.getQty() + "\n" +
+                            LanguageController.getInstance().getMobileMsgByKey(AppConstant.part_no) + ": " + requestedModel.getModelNo() + "\n" +
+                            LanguageController.getInstance().getMobileMsgByKey(AppConstant.brand) + ": " + brandName;
             Chat_Send_Msg_Model chat_send_Msg_model = new Chat_Send_Msg_Model(
                     msg, "", AppUtility.getDateByMiliseconds(),
                     mParam2.getLabel(),
@@ -480,21 +493,21 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
 
     @Override
     public void setEquStatus(List<UpdateEquStatusResModel> resModel) {
-        if(resModel != null) {
-            String equStatusId="";
+        if (resModel != null) {
+            String equStatusId = "";
             showRemarkSection();
             isEdit = true;
             setTitles();
-            if(!resModel.isEmpty()){
-                 equStatusId = resModel.get(0).getEquStatus();
-                for(EquipmentStatus status: equipmentStatusList2){
-                    if(status.getEsId().equalsIgnoreCase(equStatusId)){
+            if (!resModel.isEmpty()) {
+                equStatusId = resModel.get(0).getEquStatus();
+                for (EquipmentStatus status : equipmentStatusList2) {
+                    if (status.getEsId().equalsIgnoreCase(equStatusId)) {
                         status_label1.setText(status.getStatusText());
                         txt_status.setText(status.getStatusText());
                         equ_status_spinner.setSelection(-1);
                         for (int i = 0; i < statusList.length; i++) {
                             if (statusList[i].equals(status.getStatusText())) {
-                               equ_status_spinner.setSelection(i);
+                                equ_status_spinner.setSelection(i);
                             }
                         }
                         if (status.getStatusText().equalsIgnoreCase("Discarded")) {
@@ -533,7 +546,7 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
                             break;
                         } else {
                             // for updating equipment component
-                            for (EquArrayModel equipmentComp : job.getEquArray()){
+                            for (EquArrayModel equipmentComp : job.getEquArray()) {
                                 if (equipmentComp.getEquId().equals(equipment.getParentId())) {
                                     for (EquArrayModel equipmentPart : equipmentComp.getEquComponent()) {
                                         if (equipmentPart.getEquId().equals(equipment.getEquId())) {
@@ -610,15 +623,15 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
 
         tv_text_for_replace = findViewById(R.id.tv_text_for_replace);
         tv_text_for_replace.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.do_you_want_to_discard));
-        tv_text_for_repair   = findViewById(R.id.tv_text_for_repair);
+        tv_text_for_repair = findViewById(R.id.tv_text_for_repair);
         tv_repair = findViewById(R.id.tv_repair);
-         tv_text_for_reallocate = findViewById(R.id.tv_text_for_reallocate);
-         tv_reallocate = findViewById(R.id.tv_reallocate);
-         tv_text_for_discard = findViewById(R.id.tv_text_for_discard);
-         tv_discard = findViewById(R.id.tv_discard);
-         ll_repair = findViewById(R.id.ll_repair);
-         ll_discard = findViewById(R.id.ll_discard);
-         ll_reallocate = findViewById(R.id.ll_reallocate);
+        tv_text_for_reallocate = findViewById(R.id.tv_text_for_reallocate);
+        tv_reallocate = findViewById(R.id.tv_reallocate);
+        tv_text_for_discard = findViewById(R.id.tv_text_for_discard);
+        tv_discard = findViewById(R.id.tv_discard);
+        ll_repair = findViewById(R.id.ll_repair);
+        ll_discard = findViewById(R.id.ll_discard);
+        ll_reallocate = findViewById(R.id.ll_reallocate);
 
         tv_text_for_repair.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.repair_action_msg));
         tv_repair.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.repair));
@@ -665,7 +678,7 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
         }
         equipmentStatusList2 = App_preference.getSharedprefInstance().getEquipmentStatusList();
         if (equipmentStatusList2 != null) {
-             statusList = new String[equipmentStatusList2.size()];
+            statusList = new String[equipmentStatusList2.size()];
             int i = 0;
             for (EquipmentStatus status : equipmentStatusList2) {
                 statusList[i] = status.getStatusText();
@@ -715,7 +728,7 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
         txt_lbl_remark = findViewById(R.id.txt_lbl_remark);
         txt_lbl_remark.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.remark_form));
         txt_lbl_condition = findViewById(R.id.txt_lbl_condition);
-        txt_lbl_condition.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.condition)+": ");
+        txt_lbl_condition.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.condition) + ": ");
         txt_condition = findViewById(R.id.txt_condition);
         txt_status = findViewById(R.id.txt_status);
         txt_remark = findViewById(R.id.txt_remark);
@@ -732,21 +745,20 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
 
 
         String getDisCalculationType;
-        if (getIntent().getStringExtra("jobId")!=null&&!getIntent().getStringExtra("jobId").isEmpty())
-        {
-            getDisCalculationType=AppDataBase.getInMemoryDatabase(this).jobModel().disCalculationType(getIntent().getStringExtra("jobId"));
-        }else{
-            getDisCalculationType= App_preference.getSharedprefInstance().getLoginRes().getDisCalculationType();
+        if (getIntent().getStringExtra("jobId") != null && !getIntent().getStringExtra("jobId").isEmpty()) {
+            getDisCalculationType = AppDataBase.getInMemoryDatabase(this).jobModel().disCalculationType(getIntent().getStringExtra("jobId"));
+        } else {
+            getDisCalculationType = App_preference.getSharedprefInstance().getLoginRes().getDisCalculationType();
         }
         recyclerView_item.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL
                 , false));
-        invoice_list_adpter = new InvoiceItemList2Adpter(this, new ArrayList<>(), true, true,getDisCalculationType);//, this, this
+        invoice_list_adpter = new InvoiceItemList2Adpter(this, new ArrayList<>(), true, true, getDisCalculationType);//, this, this
         recyclerView_item.setAdapter(invoice_list_adpter);
         recyclerView_item.setNestedScrollingEnabled(false);
 
         recyclerView_requested_item.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL
                 , false));
-        requestedItemListAdapter = new RequestedItemListAdapter(requestedItemList,this,this,this);//, this, this
+        requestedItemListAdapter = new RequestedItemListAdapter(requestedItemList, this, this, this);//, this, this
         recyclerView_requested_item.setAdapter(requestedItemListAdapter);
         recyclerView_requested_item.setNestedScrollingEnabled(false);
 
@@ -777,13 +789,13 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
         });
         rv_showAttachment.setAdapter(jobCompletionAdpter);
 
-        if(App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsItemRequested() == 0){
-            if(isAction) {
+        if (App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsItemRequested() == 0) {
+            if (isAction) {
                 ll_requested_item.setVisibility(View.VISIBLE);
-            }else {
+            } else {
                 ll_requested_item.setVisibility(View.GONE);
             }
-        }else {
+        } else {
             ll_requested_item.setVisibility(View.GONE);
         }
 
@@ -857,11 +869,11 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
     @Override
     public void onClickContinuarEvent(Uri uri) {
         String path = "";
-        String image_name="";
+        String image_name = "";
         path = PathUtils.getRealPath(this, uri);
         if (!path.isEmpty()) {
             if (type == 1) {
-                uploadRemarkAttchment(path,image_name);
+                uploadRemarkAttchment(path, image_name);
             } else if (type == 2) {
                 questionListAdapter.showAttchmentView(position, path, attchmentView, deleteAttchment, addAttchment);
             }
@@ -903,7 +915,7 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
         equ_status_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                equStatusId=equipmentStatusList2.get(position).getEsId();
+                equStatusId = equipmentStatusList2.get(position).getEsId();
                 String selectedValue = equipmentStatusList2.get(position).getStatusText();
                 status_label1.setText(selectedValue);
             }
@@ -923,7 +935,7 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
             String str = new Gson().toJson(model);
             Intent intent = new Intent(this, SelectedImageActivity.class);
             intent.putExtra("attchment", str);
-            intent.putExtra("image_name",imageName);
+            intent.putExtra("image_name", imageName);
             startActivityForResult(intent, SINGLEATTCHMENT);
         }
     }
@@ -931,15 +943,15 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home)
-            if(isAction){
-                if(isEdit){
+            if (isAction) {
+                if (isEdit) {
                     hideRemarkSection();
                     isEdit = false;
                     setTitles();
-                }else {
+                } else {
                     onBackPressed();
                 }
-            }else {
+            } else {
                 onBackPressed();
             }
 
@@ -1023,31 +1035,31 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
 //                hide_requested_list.setVisibility(View.GONE);
                 txt_no_item_found.setVisibility(View.GONE);
                 Intent intent2 = new Intent(this, AddUpdateRquestedItemActivity.class);
-                intent2.putExtra("addReqItemInEqu",true);
-                intent2.putExtra("jobId",mParam2.getJobId());
-                intent2.putExtra("jobLabel",mParam2.getLabel());
-                intent2.putExtra("equId",equipment.getEquId());
+                intent2.putExtra("addReqItemInEqu", true);
+                intent2.putExtra("jobId", mParam2.getJobId());
+                intent2.putExtra("jobLabel", mParam2.getLabel());
+                intent2.putExtra("equId", equipment.getEquId());
                 startActivity(intent2);
                 break;
 
             case R.id.requested_item_txt:
 
-                    if(!isClickedReqItem) {
-                        if(AppUtility.isInternetConnected()){
+                if (!isClickedReqItem) {
+                    if (AppUtility.isInternetConnected()) {
                         isClickedReqItem = true;
                         progressBar_itemRequest.setVisibility(View.VISIBLE);
-                            if (jobEquimPi != null) {
-                                jobEquimPi.getRequestedItemDataList(mParam2.getJobId());
-                            }
-                        }else {
-                            onErrorMsg(LanguageController.getInstance().getMobileMsgByKey(AppConstant.offline_feature_alert));
+                        if (jobEquimPi != null) {
+                            jobEquimPi.getRequestedItemDataList(mParam2.getJobId());
                         }
-                    }else {
-                        isClickedReqItem = false;
-                        recyclerView_requested_item.setVisibility(View.GONE);
-                        txt_no_item_found.setVisibility(View.GONE);
-                        requested_item_txt.setCompoundDrawablesWithIntrinsicBounds(getDrawable(R.drawable.down), null, null, null);
+                    } else {
+                        onErrorMsg(LanguageController.getInstance().getMobileMsgByKey(AppConstant.offline_feature_alert));
                     }
+                } else {
+                    isClickedReqItem = false;
+                    recyclerView_requested_item.setVisibility(View.GONE);
+                    txt_no_item_found.setVisibility(View.GONE);
+                    requested_item_txt.setCompoundDrawablesWithIntrinsicBounds(getDrawable(R.drawable.down), null, null, null);
+                }
 //                    show_requested_list.setVisibility(View.GONE);
 //                    hide_requested_list.setVisibility(View.VISIBLE);
 
@@ -1058,15 +1070,15 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
                 hide_requested_list.setVisibility(View.GONE);
                 txt_no_item_found.setVisibility(View.GONE);
                 break;*/
-            case  R.id.btn_edit:
-                    showRemarkSection();
-                    isEdit = true;
-                    setTitles();
-                    break;
+            case R.id.btn_edit:
+                showRemarkSection();
+                isEdit = true;
+                setTitles();
+                break;
             case R.id.tv_reallocate:
                 Intent intent = new Intent(this, JobEquReallocateActivity.class);
                 String newLocation = "";
-                if(equipment != null) {
+                if (equipment != null) {
                     newLocation = "";
                     if (equipment.getAdr() != null && !equipment.getAdr().isEmpty()) {
                         newLocation = newLocation + "" + equipment.getAdr();
@@ -1084,30 +1096,30 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
                         newLocation = newLocation + ", " + equipment.getZip();
                     }
                 }
-                intent.putExtra("old_location",newLocation);
+                intent.putExtra("old_location", newLocation);
                 intent.putExtra("clientId", equipment.getCltId());
-                intent.putExtra("equId",equipment.getEquId());
-                intent.putExtra("jobId",jobId);
-                startActivityForResult(intent,REALLOCATE_LC);
+                intent.putExtra("equId", equipment.getEquId());
+                intent.putExtra("jobId", jobId);
+                startActivityForResult(intent, REALLOCATE_LC);
                 break;
             case R.id.tv_repair:
                 if (jobId != null && !jobId.isEmpty() && equipment != null && !equipment.getEquId().isEmpty()) {
-                    for(EquipmentStatus status: equipmentStatusList2){
-                        if(status.getStatusText().equalsIgnoreCase("In Repair")){
-                            String equStatus =  status.getEsId();
-                            UpdateEquStatusReqModel reqModel = new UpdateEquStatusReqModel(jobId,equipment.getEquId(),equStatus);
-                                    jobEquimPi.updateEquStatus(reqModel);
-                                    break;
+                    for (EquipmentStatus status : equipmentStatusList2) {
+                        if (status.getStatusText().equalsIgnoreCase("In Repair")) {
+                            String equStatus = status.getEsId();
+                            UpdateEquStatusReqModel reqModel = new UpdateEquStatusReqModel(jobId, equipment.getEquId(), equStatus);
+                            jobEquimPi.updateEquStatus(reqModel);
+                            break;
                         }
                     }
                 }
                 break;
             case R.id.tv_discard:
                 if (jobId != null && !jobId.isEmpty() && equipment != null && !equipment.getEquId().isEmpty()) {
-                    for(EquipmentStatus status: equipmentStatusList2){
-                        if(status.getStatusText().equalsIgnoreCase("Discarded")){
-                            String equStatus =  status.getEsId();
-                            UpdateEquStatusReqModel reqModel = new UpdateEquStatusReqModel(jobId,equipment.getEquId(),equStatus);
+                    for (EquipmentStatus status : equipmentStatusList2) {
+                        if (status.getStatusText().equalsIgnoreCase("Discarded")) {
+                            String equStatus = status.getEsId();
+                            UpdateEquStatusReqModel reqModel = new UpdateEquStatusReqModel(jobId, equipment.getEquId(), equStatus);
                             jobEquimPi.updateEquStatus(reqModel);
                             break;
                         }
@@ -1229,7 +1241,7 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
         intent.putExtra("NONBILLABLE", false);
         intent.putExtra("getTaxMethodType", "0");
         intent.putExtra("getSingleTaxId", "0");
-        startActivityForResult(intent,ADD_ITEM_DATA);
+        startActivityForResult(intent, ADD_ITEM_DATA);
 
     }
 
@@ -1526,6 +1538,7 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
         return position;
 
     }
+
     private int getEquipmentStatusPosition(String esID) {
         int position = -1;
         if (equipmentStatusList2 != null) {
@@ -1538,6 +1551,7 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
         return position;
 
     }
+
     private void setData() {
 
         getUpdatedLocation();
@@ -1550,14 +1564,14 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
             equipment = new Gson().fromJson(strEquipment, EquArrayModel.class);
         }
 
-        if(isRemarkUpdated){
+        if (isRemarkUpdated) {
             Job job = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(mParam2.getJobId());
             isRemarkUpdated = false;
             if (job != null && job.getEquArray() != null) {
                 Log.e("job Eq ::", new Gson().toJson(job.getEquArray()));
-                for (EquArrayModel item:
+                for (EquArrayModel item :
                         job.getEquArray()) {
-                    if(equipment.getEquId().equalsIgnoreCase(item.getEquId())){
+                    if (equipment.getEquId().equalsIgnoreCase(item.getEquId())) {
                         equipment = item;
                     }
                 }
@@ -1570,17 +1584,16 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
                 Job job = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(jobId);
                 if (job != null && job.getEquArray() != null) {
                     Log.e("job Eq ::", new Gson().toJson(job.getEquArray()));
-                    for (EquArrayModel item:
+                    for (EquArrayModel item :
                             job.getEquArray()) {
-                        if(equipment.getEquId().equalsIgnoreCase(item.getEquId())){
+                        if (equipment.getEquId().equalsIgnoreCase(item.getEquId())) {
                             equipment = item;
                             break;
                         }
                     }
                 }
-            }else if (getIntent().hasExtra("jobid"))
-            {
-                if (intent.getExtras().getString("jobid")!=null) {
+            } else if (getIntent().hasExtra("jobid")) {
+                if (intent.getExtras().getString("jobid") != null) {
                     jobId = intent.getExtras().getString("jobid");
                 }
             }
@@ -1601,9 +1614,9 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
                     if (App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsItemVisible() == 0
                             &&
                             App_preference.getSharedprefInstance().getLoginRes().getCompPermission().get(0).getIsItemEnable().equals("0")) {
-                        if(isAction) {
+                        if (isAction) {
                             item_cardview.setVisibility(View.VISIBLE);
-                        }else {
+                        } else {
                             item_cardview.setVisibility(View.GONE);
                         }
                     } else {
@@ -1617,18 +1630,17 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
 
             if (!TextUtils.isEmpty(equipment.getStatus()) || equipment.getAttachments() != null && equipment.getAttachments().size() > 0) {
                 btn_edit.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit));
-            }else {
+            } else {
                 btn_edit.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add));
             }
 
             equId = equipment.getEquId();
             mParam2 = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(jobId);
 
-            if (equipment.getType().equalsIgnoreCase("1")){
+            if (equipment.getType().equalsIgnoreCase("1")) {
                 tv_label_status.setVisibility(View.VISIBLE);
                 audit_status_relative_status.setVisibility(View.VISIBLE);
-            }
-            else{
+            } else {
                 /** After discussion with Jit Sir Visible for all 23/4/24*/
                 tv_label_status.setVisibility(View.VISIBLE);
                 audit_status_relative_status.setVisibility(View.VISIBLE);
@@ -1637,8 +1649,8 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
 
             //for checking the sttaus of the equipment and hide replace part if duiscarded already
 
-            if(isAction) {
-                if(txt_status.getText().toString().equalsIgnoreCase("Discarded")){
+            if (isAction) {
+                if (txt_status.getText().toString().equalsIgnoreCase("Discarded")) {
                     ll_replace.setVisibility(View.VISIBLE);
                     ll_discard.setVisibility(View.VISIBLE);
                     tv_replace.setEnabled(false);
@@ -1647,7 +1659,7 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
                     tv_replace.setBackgroundResource(R.drawable.disable_submit_btn);
                     tv_text_for_replace.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.discard_equipments_not_replaced));
                     tv_text_for_discard.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.discard_equipments_not_discarded_again));
-                }else{
+                } else {
                     ll_repair.setVisibility(View.VISIBLE);
                     ll_reallocate.setVisibility(View.VISIBLE);
                     ll_replace.setVisibility(View.VISIBLE);
@@ -1659,7 +1671,7 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
                     tv_text_for_replace.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.do_you_want_to_discard));
                     tv_text_for_discard.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.discard_action_msg));
                 }
-            }else {
+            } else {
                 ll_replace.setVisibility(View.GONE);
                 ll_repair.setVisibility(View.GONE);
                 ll_reallocate.setVisibility(View.GONE);
@@ -1669,12 +1681,12 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
             Log.e("mParam2", new Gson().toJson(mParam2));
             Log.e("jobId", jobId);
             // set item data
-            if (mParam2!=null)
-            setItemListByJob(mParam2.getItemData());
+            if (mParam2 != null)
+                setItemListByJob(mParam2.getItemData());
 
             // to get equipment part list
-            if (mParam2!=null)
-            setEquipmentList(mParam2.getEquArray());
+            if (mParam2 != null)
+                setEquipmentList(mParam2.getEquArray());
 //            jobEquimPi.getEquipmentList(equipment.getType(), cltId, jobId, equipment.getEquId());
 
             // not for part of equipment
@@ -1702,7 +1714,7 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
                 isRemarkUpdated = true;
                 edit_remarks.setText(equipment.getRemark());
                 txt_remark.setText(equipment.getRemark());
-            }else {
+            } else {
                 txt_remark.setVisibility(View.GONE);
             }
 
@@ -1715,7 +1727,7 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
                 }
             }
 
-            if(equipment.getStatus()!= null && !equipment.getStatus().equals("")) {
+            if (equipment.getStatus() != null && !equipment.getStatus().equals("")) {
                 txt_lbl_condition.setVisibility(View.VISIBLE);
                 txt_condition.setVisibility(View.VISIBLE);
                 for (EquipmentStatus status : equipmentStatusList) {
@@ -1723,7 +1735,7 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
                         txt_condition.setText(status.getStatusText());
                     }
                 }
-            }else {
+            } else {
                 txt_lbl_condition.setVisibility(View.GONE);
                 txt_condition.setVisibility(View.GONE);
             }
@@ -1733,7 +1745,7 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
                     equ_status_spinner.setSelection(selectedStatusPosition);
                 }
             }
-            if(equipmentStatusList2 != null && equipmentStatusList2.size() > 0) {
+            if (equipmentStatusList2 != null && equipmentStatusList2.size() > 0) {
                 for (EquipmentStatus status : equipmentStatusList2) {
                     if (status.getEsId().equalsIgnoreCase(equipment.getEquStatus())) {
                         if (status.getStatusText().equalsIgnoreCase("Discarded")) {
@@ -1750,32 +1762,32 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
                     setAttachments(equipment.getAttachments());
                     button_submit.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.update_btn));
                     REMARK_SUBMIT = true;
-                }else {
+                } else {
                     rv_showAttachment.setVisibility(View.GONE);
                 }
-            }else {
+            } else {
                 rv_showAttachment.setVisibility(View.GONE);
             }
         }
-        if(intent.hasExtra("isAction")){
-            isAction = intent.getBooleanExtra("isAction",false);
-            if(isAction){
+        if (intent.hasExtra("isAction")) {
+            isAction = intent.getBooleanExtra("isAction", false);
+            if (isAction) {
                 isEdit = false;
                 hideRemarkSection();
-            }else {
+            } else {
                 isEdit = true;
                 showRemarkSection();
             }
         }
         setTitles();
-        if(mParam2!=null){
-            if(mParam2.getItemRequested() != null && mParam2.getItemRequested().equals("1")){
+        if (mParam2 != null) {
+            if (mParam2.getItemRequested() != null && mParam2.getItemRequested().equals("1")) {
                 requested_item_flag.setVisibility(View.VISIBLE);
                 requested_item_txt.setClickable(true);
 //                requested_itemList_show_hide_rl.setVisibility(View.VISIBLE);
                 requested_item_txt.setCompoundDrawablesWithIntrinsicBounds(getDrawable(R.drawable.down), null, null, null);
 
-            }else {
+            } else {
                 requested_item_txt.setClickable(false);
                 requested_item_flag.setVisibility(View.GONE);
 //                requested_itemList_show_hide_rl.setVisibility(View.GONE);
@@ -1788,20 +1800,20 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
 
     private void setAttachments(ArrayList<Attachments> attachments) {
         allAttachmentsList = attachments;
-        if(attachments.size() >0){
+        if (attachments.size() > 0) {
             rv_showAttachment.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             rv_showAttachment.setVisibility(View.GONE);
         }
         if (equipment != null) {
             if (attachments != null) {
                 if (adapter == null) {
                     recyclerView_attachment.setLayoutManager(new GridLayoutManager(this, 3));
-                    adapter = new DocumentListAdapter(this, attachments, jobId,"1");
+                    adapter = new DocumentListAdapter(this, attachments, jobId, "1");
                     recyclerView_attachment.setAdapter(adapter);
                     jobCompletionAdpter.updateFileList(attachments);
                 } else {
-                    adapter.updateFileList(attachments,true);
+                    adapter.updateFileList(attachments, true);
                     jobCompletionAdpter.updateFileList(attachments);
                 }
             }
@@ -1811,33 +1823,33 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
 
     private void setTitles() {
         if (equipment.getRemark().equals("") && equipment.getStatus().equals("") && equipment.getAttachments() != null && equipment.getAttachments().size() == 0) {
-            if(isAction) {
-                if(isEdit){
+            if (isAction) {
+                if (isEdit) {
                     if (!TextUtils.isEmpty(equipment.getStatus()) || equipment.getAttachments() != null && equipment.getAttachments().size() > 0) {
-                    setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.update_remark));
-                    }else {
-                    setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_remark));
+                        setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.update_remark));
+                    } else {
+                        setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_remark));
                     }
-                }else {
+                } else {
                     setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.action));
                 }
-            }else {
+            } else {
                 setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_remark));
             }
             titleNm = (LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_remark));
         } else {
             if (equipment != null && equipment.getEqunm() != null) {
-                if(isAction) {
-                    if(isEdit){
+                if (isAction) {
+                    if (isEdit) {
                         if (!TextUtils.isEmpty(equipment.getStatus()) || equipment.getAttachments() != null && equipment.getAttachments().size() > 0) {
                             setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.update_remark));
-                        }else {
+                        } else {
                             setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_remark));
                         }
-                    }else {
+                    } else {
                         setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.action));
                     }
-                }else {
+                } else {
                     setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_remark));
                 }
                 titleNm = LanguageController.getInstance().getMobileMsgByKey(AppConstant.remark_on) + " " + equipment.getEqunm();
@@ -1850,7 +1862,7 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        String fileNameExt="";
+        String fileNameExt = "";
         if (requestCode == SINGLEATTCHMENT) {
             if (Objects.requireNonNull(data).getSerializableExtra("code") != null) {
                 JobAuditSingleAttchReqModel myObject = (JobAuditSingleAttchReqModel) data.getSerializableExtra("code");
@@ -1862,8 +1874,8 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
                             Bitmap bitmap = AppUtility.getBitmapFromPath(myObject.getPath());
                             bitmapString = AppUtility.BitMapToString(bitmap);
                         }
-                       /* String fileNameExt = AppUtility.getFileNameWithExtension(myObject.getPath());*/
-                        fileNameExt=data.getStringExtra("image_name");
+                        /* String fileNameExt = AppUtility.getFileNameWithExtension(myObject.getPath());*/
+                        fileNameExt = data.getStringExtra("image_name");
                         Attachments obj = new Attachments("0", fileNameExt, fileNameExt, bitmapString);
                         ArrayList<Attachments> updateList = new ArrayList<>();
                         updateList.add(obj);
@@ -1875,12 +1887,12 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
                     e.printStackTrace();
                 }
                 // api call for uploading attachments
-                jobAuditPi.uploadAttchmentOnserverForJobAudit(myObject,fileNameExt);
+                jobAuditPi.uploadAttchmentOnserverForJobAudit(myObject, fileNameExt);
             }
         } else if (requestCode == ADD_ITEM_DATA) {
 //            if (data != null && data.hasExtra("AddInvoiceItem")) {
-                mParam2 = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(jobId);
-                if (mParam2!=null)
+            mParam2 = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(jobId);
+            if (mParam2 != null)
                 setItemListByJob(mParam2.getItemData());
 //            }
         } else if (requestCode == ADDPART) {
@@ -1898,8 +1910,8 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
                 jobEquimPi.getEquipmentList(equipment.getType(), cltId, jobId, equipment.getEquId());
             }
         }
-        if(requestCode == REALLOCATE_LC){
-            if(data != null){
+        if (requestCode == REALLOCATE_LC) {
+            if (data != null) {
                 String adrModel = data.getStringExtra("adr_model");
                 Type listType = new TypeToken<UpdateSiteLocationReqModel>() {
                 }.getType();
@@ -1918,7 +1930,7 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
 
 
     @Override
-    public void onRemarkUpdate(String message,InvoiceItemDataModel updateItemDataModel) {
+    public void onRemarkUpdate(String message, InvoiceItemDataModel updateItemDataModel) {
         isRemarkUpdated = true;
         String remark_msg = !REMARK_SUBMIT ? LanguageController.getInstance().getMobileMsgByKey(AppConstant.euipment_remark_submit) : LanguageController.getInstance().getMobileMsgByKey(AppConstant.euipment_remark_update);
         EotApp.getAppinstance().getNotifyForEquipmentStatusList();
@@ -1934,14 +1946,14 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
     protected void onResume() {
         super.onResume();
         updateCountItem();
-        if(jobId != null && !jobId.isEmpty()) {
+        if (jobId != null && !jobId.isEmpty()) {
             String itemRequested = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getItemRequested(jobId);
             if (itemRequested != null && itemRequested.equals("1")) {
                 requested_item_flag.setVisibility(View.VISIBLE);
                 requested_item_txt.setClickable(true);
 //                requested_itemList_show_hide_rl.setVisibility(View.VISIBLE);
                 requested_item_txt.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.down), null, null, null);
-            }else {
+            } else {
                 requested_item_txt.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
                 requested_item_flag.setVisibility(View.GONE);
                 requested_item_txt.setClickable(false);
@@ -2060,7 +2072,7 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
     public void onDocumentSelected(String path, String name, boolean isImage) {
         super.onDocumentSelected(path, name, isImage);
         if (type == 1) {
-            uploadRemarkAttchment(path,name);
+            uploadRemarkAttchment(path, name);
         } else if (type == 2) {
             if (questionListAdapter != null)
                 questionListAdapter.showAttchmentView(position, path, attchmentView, deleteAttchment, addAttchment);
@@ -2073,11 +2085,11 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
         Log.e("OnCreateRemark", "Notify Item Called");
         mParam2 = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(jobId);
         // for updating item data
-        if (mParam2!=null&&mParam2.getItemData() != null && mParam2.getItemData().size() > 0) {
+        if (mParam2 != null && mParam2.getItemData() != null && mParam2.getItemData().size() > 0) {
             setItemListByJob(mParam2.getItemData());
         }
         // for updating eq data
-        if (mParam2!=null&&mParam2.getEquArray() != null && mParam2.getEquArray().size() > 0) {
+        if (mParam2 != null && mParam2.getEquArray() != null && mParam2.getEquArray().size() > 0) {
             setEquipmentList(mParam2.getEquArray());
         }
     }
@@ -2087,11 +2099,11 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
         Log.e("OnCreateRemark", "Equipment Notify Called");
         mParam2 = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(jobId);
         // for updating item data
-        if (mParam2!=null&&mParam2.getItemData() != null && mParam2.getItemData().size() > 0) {
+        if (mParam2 != null && mParam2.getItemData() != null && mParam2.getItemData().size() > 0) {
             setItemListByJob(mParam2.getItemData());
         }
         // for updating eq data
-        if (mParam2!=null&&mParam2.getEquArray() != null && mParam2.getEquArray().size() > 0) {
+        if (mParam2 != null && mParam2.getEquArray() != null && mParam2.getEquArray().size() > 0) {
             setEquipmentList(mParam2.getEquArray());
         }
     }
@@ -2099,6 +2111,7 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
     @Override
     public void onEquipmentSelected(int position, EquArrayModel equipmentRes, boolean isAction) {
         Log.e("getAllEquipments", "JobEqRemark JobEquipmentActivity");
+        isGoFromPartAdapter = true;
         Intent intent = new Intent(this, JobEquPartRemarkRemarkActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         String strEqu = new Gson().toJson(equipmentRes);
@@ -2113,11 +2126,11 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
 
     @Override
     public void itemDelete(String irId, RequestedItemModel requestedModel) {
-        if(AppUtility.isInternetConnected()){
+        if (AppUtility.isInternetConnected()) {
             progressBar_itemRequest.setVisibility(View.VISIBLE);
-            AddUpdateRequestedModel requestedModel1 = new AddUpdateRequestedModel(requestedModel.getInm(),requestedModel.getEbId(),requestedModel.getQty(),
-                    requestedModel.getModelNo(),"",requestedModel.getItemId(),mParam2.getJobId());
-            jobEquimPi.deleteRequestedItem(irId,mParam2.getJobId(),requestedModel1);
+            AddUpdateRequestedModel requestedModel1 = new AddUpdateRequestedModel(requestedModel.getInm(), requestedModel.getEbId(), requestedModel.getQty(),
+                    requestedModel.getModelNo(), "", requestedModel.getItemId(), mParam2.getJobId());
+            jobEquimPi.deleteRequestedItem(irId, mParam2.getJobId(), requestedModel1);
         }
     }
 
@@ -2127,35 +2140,35 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
         recyclerView_requested_item.setVisibility(View.GONE);
         requested_item_txt.setCompoundDrawablesWithIntrinsicBounds(getDrawable(R.drawable.down), null, null, null);
 //        hide_requested_list.setVisibility(View.GONE);
-        Intent intent = new Intent(this,AddUpdateRquestedItemActivity.class);
-        intent.putExtra("updateSelectedReqItem",updateRequestedItemModel);
-        intent.putExtra("UpdateReqItem",true);
-        intent.putExtra("jobId",mParam2.getJobId());
-        intent.putExtra("jobLabel",mParam2.getLabel());
-        intent.putExtra("equId",equipment.getEquId());
+        Intent intent = new Intent(this, AddUpdateRquestedItemActivity.class);
+        intent.putExtra("updateSelectedReqItem", updateRequestedItemModel);
+        intent.putExtra("UpdateReqItem", true);
+        intent.putExtra("jobId", mParam2.getJobId());
+        intent.putExtra("jobLabel", mParam2.getLabel());
+        intent.putExtra("equId", equipment.getEquId());
         startActivity(intent);
     }
 
     @Override
     public void updateReqItemList(String api_name, String message, AddUpdateRequestedModel requestedModel) {
-        switch (api_name){
+        switch (api_name) {
             case Service_apis.addItemRequest:
                 EotApp.getAppinstance().showToastmsg(LanguageController.getInstance().getServerMsgByKey(message.trim()));
                 requested_item_flag.setVisibility(View.VISIBLE);
                 requested_item_txt.setClickable(true);
 //                requested_itemList_show_hide_rl.setVisibility(View.VISIBLE);
                 requested_item_txt.setCompoundDrawablesWithIntrinsicBounds(getDrawable(R.drawable.down), null, null, null);
-                if(requestedModel != null) {
+                if (requestedModel != null) {
                     String msg =
-                            LanguageController.getInstance().getMobileMsgByKey(AppConstant.item_requested_by_the_field_user)+"\n"+LanguageController.getInstance().getMobileMsgByKey(AppConstant.item_name)+": "+requestedModel.getItemName()+"\n"+
-                                    LanguageController.getInstance().getMobileMsgByKey(AppConstant.qty)+": "+requestedModel.getQty()+"\n"+
-                                    LanguageController.getInstance().getMobileMsgByKey(AppConstant.part_no)+": "+requestedModel.getModelNo()+"\n"+
-                                    LanguageController.getInstance().getMobileMsgByKey(AppConstant.brand)+": "+requestedModel.getBrandName();
+                            LanguageController.getInstance().getMobileMsgByKey(AppConstant.item_requested_by_the_field_user) + "\n" + LanguageController.getInstance().getMobileMsgByKey(AppConstant.item_name) + ": " + requestedModel.getItemName() + "\n" +
+                                    LanguageController.getInstance().getMobileMsgByKey(AppConstant.qty) + ": " + requestedModel.getQty() + "\n" +
+                                    LanguageController.getInstance().getMobileMsgByKey(AppConstant.part_no) + ": " + requestedModel.getModelNo() + "\n" +
+                                    LanguageController.getInstance().getMobileMsgByKey(AppConstant.brand) + ": " + requestedModel.getBrandName();
                     Chat_Send_Msg_Model chat_send_Msg_model = new Chat_Send_Msg_Model(
                             msg, "", AppUtility.getDateByMiliseconds(),
                             requestedModel.getJobLabel(),
                             requestedModel.getJobId(), "1");
-                    AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().updateRequestedItem("1",requestedModel.getJobId());
+                    AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().updateRequestedItem("1", requestedModel.getJobId());
                     if (jobEquimPi != null) {
                         jobEquimPi.sendMsg(chat_send_Msg_model);
                     }
@@ -2163,12 +2176,12 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
                 break;
             case Service_apis.updateItemRequest:
                 EotApp.getAppinstance().showToastmsg(LanguageController.getInstance().getServerMsgByKey(message.trim()));
-                if(requestedModel != null) {
+                if (requestedModel != null) {
                     String msg =
-                            LanguageController.getInstance().getMobileMsgByKey(AppConstant.field_user_made_some_changes_on_the_requested_item)+"\n"+LanguageController.getInstance().getMobileMsgByKey(AppConstant.item_name)+": "+requestedModel.getItemName()+"\n"+
-                                    LanguageController.getInstance().getMobileMsgByKey(AppConstant.qty)+": "+requestedModel.getQty()+"\n"+
-                                    LanguageController.getInstance().getMobileMsgByKey(AppConstant.part_no)+": "+requestedModel.getModelNo()+"\n"+
-                                    LanguageController.getInstance().getMobileMsgByKey(AppConstant.brand)+": "+requestedModel.getBrandName();
+                            LanguageController.getInstance().getMobileMsgByKey(AppConstant.field_user_made_some_changes_on_the_requested_item) + "\n" + LanguageController.getInstance().getMobileMsgByKey(AppConstant.item_name) + ": " + requestedModel.getItemName() + "\n" +
+                                    LanguageController.getInstance().getMobileMsgByKey(AppConstant.qty) + ": " + requestedModel.getQty() + "\n" +
+                                    LanguageController.getInstance().getMobileMsgByKey(AppConstant.part_no) + ": " + requestedModel.getModelNo() + "\n" +
+                                    LanguageController.getInstance().getMobileMsgByKey(AppConstant.brand) + ": " + requestedModel.getBrandName();
                     Chat_Send_Msg_Model chat_send_Msg_model = new Chat_Send_Msg_Model(
                             msg, "", AppUtility.getDateByMiliseconds(),
                             requestedModel.getJobLabel(),
@@ -2181,10 +2194,12 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
         }
     }
 
-    /** Due to  separate edit remark section at 19 Mar 24, We intorduce new below method for hide and show View's
+    /**
+     * Due to  separate edit remark section at 19 Mar 24, We intorduce new below method for hide and show View's
      * showRemarkSection :- For showing Remark
-     * hideRemarkSection :- For editing Remark*/
-    public void showRemarkSection(){
+     * hideRemarkSection :- For editing Remark
+     */
+    public void showRemarkSection() {
         cv_showRemark.setVisibility(View.GONE);
         part_cardview.setVisibility(View.GONE);
         item_cardview.setVisibility(View.GONE);
@@ -2197,13 +2212,14 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
         attachment_card.setVisibility(View.VISIBLE);
         cv_editRemark.setVisibility(View.VISIBLE);
     }
-    public void hideRemarkSection(){
+
+    public void hideRemarkSection() {
         cv_showRemark.setVisibility(View.VISIBLE);
         part_cardview.setVisibility(View.VISIBLE);
         item_cardview.setVisibility(View.VISIBLE);
         ll_reallocate.setVisibility(View.VISIBLE);
         ll_repair.setVisibility(View.VISIBLE);
-        if(txt_status.getText().toString().equalsIgnoreCase("Discarded")){
+        if (txt_status.getText().toString().equalsIgnoreCase("Discarded")) {
             ll_replace.setVisibility(View.VISIBLE);
             ll_discard.setVisibility(View.VISIBLE);
             tv_replace.setEnabled(false);
@@ -2212,33 +2228,33 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
             tv_replace.setBackgroundResource(R.drawable.disable_submit_btn);
             tv_text_for_replace.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.discard_equipments_not_replaced));
             tv_text_for_discard.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.discard_equipments_not_discarded_again));
-        } else{
-                ll_repair.setVisibility(View.VISIBLE);
-                ll_reallocate.setVisibility(View.VISIBLE);
-                ll_replace.setVisibility(View.VISIBLE);
-                ll_discard.setVisibility(View.VISIBLE);
-                tv_replace.setEnabled(true);
-                tv_discard.setEnabled(true);
+        } else {
+            ll_repair.setVisibility(View.VISIBLE);
+            ll_reallocate.setVisibility(View.VISIBLE);
+            ll_replace.setVisibility(View.VISIBLE);
+            ll_discard.setVisibility(View.VISIBLE);
+            tv_replace.setEnabled(true);
+            tv_discard.setEnabled(true);
             tv_discard.setBackgroundResource(R.drawable.submit_btn);
             tv_replace.setBackgroundResource(R.drawable.submit_btn);
-                tv_text_for_replace.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.do_you_want_to_discard));
-                tv_text_for_discard.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.discard_action_msg));
-            }
+            tv_text_for_replace.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.do_you_want_to_discard));
+            tv_text_for_discard.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.discard_action_msg));
+        }
         txt_status.setVisibility(View.VISIBLE);
-        if(App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsItemRequested() == 0){
+        if (App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsItemRequested() == 0) {
             ll_requested_item.setVisibility(View.VISIBLE);
-            if(mParam2.getItemRequested() != null && mParam2.getItemRequested().equals("1")){
+            if (mParam2.getItemRequested() != null && mParam2.getItemRequested().equals("1")) {
                 requested_item_flag.setVisibility(View.VISIBLE);
                 requested_item_txt.setClickable(true);
 //                requested_itemList_show_hide_rl.setVisibility(View.VISIBLE);
                 requested_item_txt.setCompoundDrawablesWithIntrinsicBounds(getDrawable(R.drawable.down), null, null, null);
-            }else {
+            } else {
                 requested_item_txt.setClickable(false);
                 requested_item_flag.setVisibility(View.GONE);
 //                requested_itemList_show_hide_rl.setVisibility(View.GONE);
                 requested_item_txt.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
             }
-        }else {
+        } else {
             ll_requested_item.setVisibility(View.GONE);
         }
         attachment_card.setVisibility(View.GONE);

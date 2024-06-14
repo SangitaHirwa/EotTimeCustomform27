@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
 import com.bumptech.glide.Glide;
 import com.eot_app.R;
 import com.eot_app.nav_menu.audit.audit_list.equipment.model.EquipmentStatus;
@@ -20,8 +21,10 @@ import com.eot_app.utility.AppUtility;
 import com.eot_app.utility.App_preference;
 import com.eot_app.utility.language_support.LanguageController;
 import com.google.gson.Gson;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
@@ -39,7 +42,7 @@ public class EquipmentPartRemarkAdapter extends RecyclerView.Adapter<EquipmentPa
     List<EquipmentStatus> equipmentStatus;
     OnEquipmentSelectionForDetails selectionForDetails;
     OnEquipmentSelection onEquipmentSelection;
-    boolean llDetailHide=false;
+    boolean llDetailHide = false;
     List<EquipmentStatus> equipmentCurrentStatus;
 
     @SuppressLint("NotifyDataSetChanged")
@@ -47,6 +50,7 @@ public class EquipmentPartRemarkAdapter extends RecyclerView.Adapter<EquipmentPa
         this.equipmentCurrentStatus = equipmentCurrentStatus;
         notifyDataSetChanged();
     }
+
     public EquipmentPartRemarkAdapter(Context mContext, List<EquArrayModel> list) {
         this.mContext = mContext;
         this.llDetailHide = true;
@@ -62,6 +66,7 @@ public class EquipmentPartRemarkAdapter extends RecyclerView.Adapter<EquipmentPa
         this.suggestions = new ArrayList<>();
         this.selectionForDetails = selectionForDetails;
     }
+
     public void setOnEquipmentSelection(OnEquipmentSelection onEquipmentSelection) {
         this.onEquipmentSelection = onEquipmentSelection;
     }
@@ -81,6 +86,7 @@ public class EquipmentPartRemarkAdapter extends RecyclerView.Adapter<EquipmentPa
         this.list = list;
         notifyDataSetChanged();
     }
+
     public interface OnEquipmentSelectionForDetails {
         void onEquipmentSelectedForDetails(EquArrayModel equipmentRes);
     }
@@ -111,16 +117,14 @@ public class EquipmentPartRemarkAdapter extends RecyclerView.Adapter<EquipmentPa
 
         if (!TextUtils.isEmpty(equArrayModel.getStatus()) || equArrayModel.getAttachments() != null && equArrayModel.getAttachments().size() > 0) {
             holder.img_show_remark.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             holder.img_show_remark.setVisibility(View.GONE);
         }
 
 
-        if(llDetailHide)
-        {
+        if (llDetailHide) {
             holder.ll_views.setVisibility(View.GONE);
-        }
-        else {
+        } else {
             holder.ll_views.setVisibility(View.VISIBLE);
         }
         if (!TextUtils.isEmpty(equArrayModel.getStatus()) || equArrayModel.getAttachments() != null && equArrayModel.getAttachments().size() > 0) {
@@ -130,31 +134,27 @@ public class EquipmentPartRemarkAdapter extends RecyclerView.Adapter<EquipmentPa
         }
 
         holder.view_details.setOnClickListener(v -> selectionForDetails.onEquipmentSelectedForDetails(list.get(position)));
-        holder.add_action.setOnClickListener(v -> setRemarkActivity(holder.getBindingAdapterPosition(),true));
+        holder.add_action.setOnClickListener(v -> setRemarkActivity(holder.getBindingAdapterPosition(), true));
 
 
-        if(equArrayModel.getExpiryDate()!=null&&!equArrayModel.getExpiryDate().isEmpty()){
+        if (equArrayModel.getExpiryDate() != null && !equArrayModel.getExpiryDate().isEmpty()) {
             try {
-                String expiryDate = AppUtility.getDate(Long.parseLong(equArrayModel.getExpiryDate()),AppConstant.DATE_FORMAT);
-                Log.e("Equipment",expiryDate);
-                Log.e("Equipment",AppUtility.getCurrentDateByFormat(AppConstant.DATE_FORMAT));
-                if(!AppUtility.compareTwoDatesWarranty(AppUtility.getCurrentDateByFormat(AppConstant.DATE_FORMAT),expiryDate,AppConstant.DATE_FORMAT)){
-                    holder.tvWarranty.setTextColor(ContextCompat.getColor(mContext,R.color.red_color));
+                String expiryDate = AppUtility.getDate(Long.parseLong(equArrayModel.getExpiryDate()), AppConstant.DATE_FORMAT);
+                Log.e("Equipment", expiryDate);
+                Log.e("Equipment", AppUtility.getCurrentDateByFormat(AppConstant.DATE_FORMAT));
+                if (!AppUtility.compareTwoDatesWarranty(AppUtility.getCurrentDateByFormat(AppConstant.DATE_FORMAT), expiryDate, AppConstant.DATE_FORMAT)) {
+                    holder.tvWarranty.setTextColor(ContextCompat.getColor(mContext, R.color.red_color));
                     holder.ivAlert.setVisibility(View.VISIBLE);
-                }
-                else{
-                    holder.tvWarranty.setTextColor(ContextCompat.getColor(mContext,R.color.txt_sub_color));
+                } else {
+                    holder.tvWarranty.setTextColor(ContextCompat.getColor(mContext, R.color.txt_sub_color));
                     holder.ivAlert.setVisibility(View.GONE);
                 }
                 holder.tvWarranty.setVisibility(View.VISIBLE);
-                holder.tvWarranty.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.warranty_expiry_date) + ": "+expiryDate);
-            }
-            catch (Exception e)
-            {
+                holder.tvWarranty.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.warranty_expiry_date) + ": " + expiryDate);
+            } catch (Exception e) {
                 e.printStackTrace();
             }
-        }
-        else {
+        } else {
             holder.tvWarranty.setVisibility(View.GONE);
         }
         holder.tv_model_label.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.equipment_model) + ": ");
@@ -180,11 +180,10 @@ public class EquipmentPartRemarkAdapter extends RecyclerView.Adapter<EquipmentPa
                     holder.ll_status.setVisibility(View.VISIBLE);
                     holder.tv_status.setText(getCurrentStatusNameById(equArrayModel.getEquStatus()));
 
-                    if(equArrayModel.getStatusUpdateDate() != null&&!equArrayModel.getStatusUpdateDate().isEmpty()){
+                    if (equArrayModel.getStatusUpdateDate() != null && !equArrayModel.getStatusUpdateDate().isEmpty()) {
                         holder.tv_date.setText(AppUtility.getDate(Long.parseLong(equArrayModel.getStatusUpdateDate()), AppConstant.DATE_FORMAT));
                         holder.tv_date.setVisibility(View.VISIBLE);
-                    }
-                    else
+                    } else
                         holder.tv_date.setVisibility(View.GONE);
 
                     if (getCurrentStatusNameById(equArrayModel.getEquStatus()).trim().equalsIgnoreCase("Discarded")) {
@@ -221,6 +220,7 @@ public class EquipmentPartRemarkAdapter extends RecyclerView.Adapter<EquipmentPa
         }
         return statusName;
     }
+
     private String getStatusNameById(String statusId) {
         String statusName = "";
         if (equipmentStatus != null) {
@@ -234,13 +234,12 @@ public class EquipmentPartRemarkAdapter extends RecyclerView.Adapter<EquipmentPa
     }
 
 
-
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         CardView client_item_constraint;
         TextView tv_item_name, condition;
         AppCompatImageView img_equipment;
         TextView equ_img_view;
-        AppCompatTextView tv_model, tv_serial, tv_date,tv_model_label, tv_serial_label,tv_status;//, tv_des;// tv_status, , tv_details ,, tv_remark
+        AppCompatTextView tv_model, tv_serial, tv_date, tv_model_label, tv_serial_label, tv_status;//, tv_des;// tv_status, , tv_details ,, tv_remark
         LinearLayout ll_main;
         LinearLayout ll_views;
         TextView tvWarranty;

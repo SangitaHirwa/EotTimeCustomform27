@@ -68,16 +68,12 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.Callable;
 
-public class JobEquipmentActivity extends AppCompatActivity
-        implements Job_equim_View, NotifyForEquipmentCountList,
-        JobEquipmentAdapter.OnEquipmentSelection, EotApp.NotifyForEquipmentStatusList,
-        View.OnClickListener, Equipment_Client_view, GenerateCodeDialog.SelectOption {
+public class JobEquipmentActivity extends AppCompatActivity implements Job_equim_View, NotifyForEquipmentCountList, JobEquipmentAdapter.OnEquipmentSelection, EotApp.NotifyForEquipmentStatusList, View.OnClickListener, Equipment_Client_view, GenerateCodeDialog.SelectOption {
 
 
     public static final int ADDEQUIPMENT = 1000;
     final int EQUIPMENT_REMARK_CODE = 142;
-    public static final int EQUIPMENT_UPDATE_CODE = 141,
-            DETAILSUPDATEFORUSERMANUAL = 142, SCANNER_DETAIL_CODE = 143;
+    public static final int EQUIPMENT_UPDATE_CODE = 141, DETAILSUPDATEFORUSERMANUAL = 142, SCANNER_DETAIL_CODE = 143;
     LinearLayout linearFabAdd;
     LinearLayout linearFabclient;
     LinearLayout linearFabown;
@@ -106,7 +102,7 @@ public class JobEquipmentActivity extends AppCompatActivity
     TextView txt_eqp_que, txt_equ_not_found;
     Button button_no, button_yes;
     private View backgroundView;
-    private String appId, scanCode;
+    private String appId, scanCode = "";
     MenuItem menuItem;
     boolean isScanResult = false;
     String generateOption = "";
@@ -134,10 +130,8 @@ public class JobEquipmentActivity extends AppCompatActivity
             appId = getIntent().getStringExtra("appId");
             comeFrom = getIntent().getStringExtra("comeFrom");
             siteid = getIntent().getStringExtra("siteid");
-            if (TextUtils.isEmpty(contrId))
-                contrId = "";
-            else if (contrId.equals("0"))
-                contrId = "";
+            if (TextUtils.isEmpty(contrId)) contrId = "";
+            else if (contrId.equals("0")) contrId = "";
         }
         EotApp.getAppinstance().setNotifyForEquipmentCountList(this);
     }
@@ -149,8 +143,7 @@ public class JobEquipmentActivity extends AppCompatActivity
         }
         if (!TextUtils.isEmpty(appId))
             alertDialogClass = new AlertDialogClass(this, this, jobId, "", appId);
-        else
-            alertDialogClass = new AlertDialogClass(this, this, jobId, "", "");
+        else alertDialogClass = new AlertDialogClass(this, this, jobId, "", "");
         backgroundView = findViewById(R.id.backgroundView);
 
 
@@ -227,8 +220,7 @@ public class JobEquipmentActivity extends AppCompatActivity
             }, (attchpos, equPos) -> {
                 try {
                     if (attchpos == 0 || attchpos == 1) {
-                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(App_preference.getSharedprefInstance().getBaseURL()
-                                + "" + (myList.get(equPos).getAttachments().get(attchpos).getAttachFileName()))));
+                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(App_preference.getSharedprefInstance().getBaseURL() + "" + (myList.get(equPos).getAttachments().get(attchpos).getAttachFileName()))));
 
                     } else {
                         try {
@@ -328,12 +320,7 @@ public class JobEquipmentActivity extends AppCompatActivity
         //looping through existing elements
         for (EquArrayModel s : myList) {
             //if the existing elements contains the search input
-            if (s.getEqunm() != null && s.getEqunm().contains(text) && s.getEqunm().equalsIgnoreCase(text.toLowerCase()) || s.getSnm() != null &&
-                    s.getSnm().toLowerCase().contains(text.toLowerCase())
-                    || (s.getSno() != null && s.getSno().equalsIgnoreCase(text.toLowerCase())) ||
-                    (s.getMno() != null && s.getMno().equalsIgnoreCase(text.toLowerCase()))
-                    || (s.getBarcode() != null && s.getBarcode().equalsIgnoreCase(text.toLowerCase())
-            )) {
+            if (s.getEqunm() != null && s.getEqunm().contains(text) && s.getEqunm().equalsIgnoreCase(text.toLowerCase()) || s.getSnm() != null && s.getSnm().toLowerCase().contains(text.toLowerCase()) || (s.getSno() != null && s.getSno().equalsIgnoreCase(text.toLowerCase())) || (s.getMno() != null && s.getMno().equalsIgnoreCase(text.toLowerCase())) || (s.getBarcode() != null && s.getBarcode().equalsIgnoreCase(text.toLowerCase()))) {
                 //adding the element to filtered list
                 filterdNames.add(s);
             }
@@ -438,8 +425,7 @@ public class JobEquipmentActivity extends AppCompatActivity
 
     @Override
     public void swipeRefresh() {
-        if (swipeRefreshLayout.isRefreshing())
-            swipeRefreshLayout.setRefreshing(false);
+        if (swipeRefreshLayout.isRefreshing()) swipeRefreshLayout.setRefreshing(false);
     }
 
     private void showDialog(String message) {
@@ -662,11 +648,12 @@ public class JobEquipmentActivity extends AppCompatActivity
             case R.id.linearFabAdd:
                 if (AppUtility.isInternetConnected()) {
 
-                    Intent intent = new Intent(JobEquipmentActivity.this, AddJobEquipMentActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-                    intent.putExtra("JobId", jobId);
-                    intent.putExtra("cltId", cltId);
-                    startActivityForResult(intent, ADDEQUIPMENT);
+//                    Intent intent = new Intent(JobEquipmentActivity.this, AddJobEquipMentActivity.class);
+//                    intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+//                    intent.putExtra("JobId", jobId);
+//                    intent.putExtra("cltId", cltId);
+//                    startActivityForResult(intent, ADDEQUIPMENT);
+                    addEquipmentItem();
 
                 } else {
                     AppUtility.alertDialog(JobEquipmentActivity.this, LanguageController.getInstance().getMobileMsgByKey(AppConstant.dialog_alert), LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_check_network), LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), "", new Callable<Boolean>() {
@@ -739,8 +726,7 @@ public class JobEquipmentActivity extends AppCompatActivity
 
 
     private void checkLinkedEquipmentType() {
-        if (adapter != null && adapter.getList() != null &&
-                adapter.getList().size() > 0) {
+        if (adapter != null && adapter.getList() != null && adapter.getList().size() > 0) {
             // isOwn = adapter.getList().get(0).getType().equals("1");
             ISOWN = adapter.getList().get(0).getType().equals("1");
             ISCLIENT = adapter.getList().get(0).getType().equals("2");
@@ -759,8 +745,7 @@ public class JobEquipmentActivity extends AppCompatActivity
     @Override
     public void updateCountEquipment() {
         Log.e("OnCreate", "Item Equipment Called JobEquipment");
-        if (jobEquimPi != null)
-            jobEquimPi.getEquipmentList(jobId);
+        if (jobEquimPi != null) jobEquimPi.getEquipmentList(jobId);
     }
 
     @Override
@@ -801,8 +786,7 @@ public class JobEquipmentActivity extends AppCompatActivity
         try {
             if (jobId != null && !jobId.equals("")) {
                 Job job = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(jobId);
-                if (job.getLocId() == null)
-                    job.setLocId("0");
+                if (job.getLocId() == null) job.setLocId("0");
                 else locId = job.getLocId();
             }
         } catch (Exception ex) {
