@@ -193,7 +193,7 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
     public static AddEditInvoiceItemActivity2 addEditInvoiceItemActivity2;
     LinearLayout ll_serialNo, ll_below_rd_serialNo;
     RadioGroup rd_group_serialNo;
-    String itemId1, ijmmId, serialNo, generateOption;
+    String itemId1, ijmmId, serialNo, generateOption, equDefaultType;
     List<InvoiceItemDataModel> serialNoList = new ArrayList<>();
     Inventry_ReS_Model invetoryItemData = new Inventry_ReS_Model();
     InvoiceItemDataModel invoiceItemDataModelWithIjmmId = new InvoiceItemDataModel();
@@ -228,6 +228,7 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
                         cltId = bundle.getString("cltId");
                         scanCode = bundle.getString("scanCode");
                         generateOption = bundle.getString("generateOption");
+                        equDefaultType = bundle.getString("equDefaultType");
                         Log.e("Option", generateOption);
                         ll_note.setVisibility(View.VISIBLE);
                         ll_link_note.setVisibility(View.GONE);
@@ -1202,6 +1203,11 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
             intent.putExtra("equipment", strEqu);
         }
 
+        if(comeFrom != null && comeFrom.equalsIgnoreCase("JobListScan")){
+            if(equDefaultType != null && !equDefaultType.isEmpty()){
+                intent.putExtra("equDefaultType", equDefaultType);
+            }
+        }
         intent.putExtra("isSerialNoSelected", isSerialNoSelected);
         intent.putExtra("generateOption", generateOption);
         intent.putExtra("scanCode", scanCode);
@@ -1225,6 +1231,11 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
                 intent.putExtra("isPart", "1");
             }
             intent.putExtra("equipment", strEqu);
+        }
+        if(comeFrom != null && comeFrom.equalsIgnoreCase("JobListScan")){
+            if(equDefaultType != null && !equDefaultType.isEmpty()){
+                intent.putExtra("equDefaultType", equDefaultType);
+            }
         }
         intent.putExtra("equipmentId", equipmentId);
         intent.putExtra("equipmentIdName", equipmentIdName);

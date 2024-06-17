@@ -375,6 +375,8 @@ public class JobEquipmentActivity extends AppCompatActivity implements Job_equim
         if (swipeRefreshLayout != null) swipeRefreshLayout.setRefreshing(false);
         if (list != null) {
             if (list.size() == 0) {
+                ISCLIENT = false;
+                ISOWN = false;
                 nolist_linear.setVisibility(View.VISIBLE);
             } else {
                 nolist_linear.setVisibility(View.GONE);
@@ -793,6 +795,14 @@ public class JobEquipmentActivity extends AppCompatActivity implements Job_equim
             ex.printStackTrace();
         }
 
+        String equDefaultType = "1";
+        if(ISOWN){
+            equDefaultType = "1";
+        }else if(ISCLIENT){
+            equDefaultType = "2";
+        }else {
+            equDefaultType = "";
+        }
         Intent intent = new Intent(this, AddEditInvoiceItemActivity2.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         intent.putExtra("invId", "");
@@ -804,6 +814,7 @@ public class JobEquipmentActivity extends AppCompatActivity implements Job_equim
         intent.putExtra("NONBILLABLE", false);
         intent.putExtra("getTaxMethodType", "0");
         intent.putExtra("getSingleTaxId", "0");
+        intent.putExtra("equDefaultType", equDefaultType);
         startActivityForResult(intent, SCANNER_DETAIL_CODE);
     }
 
