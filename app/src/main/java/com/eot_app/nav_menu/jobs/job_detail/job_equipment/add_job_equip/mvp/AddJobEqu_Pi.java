@@ -3,15 +3,16 @@ package com.eot_app.nav_menu.jobs.job_detail.job_equipment.add_job_equip.mvp;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.add_job_equip.model_pkg.AddEquReq;
 
 
-
 /**
  * Created by Sonam-11 on 30/9/20.
  */
 public interface AddJobEqu_Pi {
     void getCountryList();
+
     void getEquipmentList(String auditId);
 
     void getStateList(String countyId);
+
     void getSupplierList(String search);
 
     void getCageryList();
@@ -20,9 +21,9 @@ public interface AddJobEqu_Pi {
 
     void getBrandList();
 
-    void addNewEquipment(AddEquReq addEquReq, String path,String barcode,String qrcode,String installedDate,String equipmentId);
+    void addNewEquipment(AddEquReq addEquReq, String path, String barcode, String qrcode, String installedDate, String equipmentId);
 
-    void convertItemToequip(AddEquReq addEquReq, String path,String barcode, String qrcode,String equipmentId);
+    void convertItemToequip(AddEquReq addEquReq, String path, String barcode, String qrcode, String equipmentId);
 
     void getClientSiteList(String clientId);
 

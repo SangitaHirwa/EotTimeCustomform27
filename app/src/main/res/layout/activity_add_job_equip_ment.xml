@@ -925,28 +925,29 @@
                             android:layout_height="wrap_content"
                             android:orientation="horizontal"
                             android:weightSum="1">
-                        <TextView
-                            android:id="@+id/tvService_inv_label"
-                            style="@style/style_thrid"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginVertical="5dp"
-                            android:layout_weight="1"
-                            android:singleLine="true"
-                            android:text="@string/type" />
 
-                        <Button
-                            android:id="@+id/clear_btn"
-                            style="@style/style_thrid"
-                            android:layout_width="32dp"
-                            android:layout_height="18dp"
-                            android:layout_gravity="center"
-                            android:layout_weight="1"
-                            android:background="@drawable/clear_btn_bck"
-                            android:textAllCaps="false"
-                            android:textColor="@color/white"
-                            android:textSize="8dp"
-                            tools:ignore="SpUsage" />
+                            <TextView
+                                android:id="@+id/tvService_inv_label"
+                                style="@style/style_thrid"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginVertical="5dp"
+                                android:layout_weight="1"
+                                android:singleLine="true"
+                                android:text="@string/type" />
+
+                            <Button
+                                android:id="@+id/clear_btn"
+                                style="@style/style_thrid"
+                                android:layout_width="32dp"
+                                android:layout_height="18dp"
+                                android:layout_gravity="center"
+                                android:layout_weight="1"
+                                android:background="@drawable/clear_btn_bck"
+                                android:textAllCaps="false"
+                                android:textColor="@color/white"
+                                android:textSize="8dp"
+                                tools:ignore="SpUsage" />
                             >
                         </LinearLayout>
 
@@ -974,6 +975,7 @@
                                 android:inputType="number"
                                 android:lines="1"
                                 android:maxWidth="@dimen/_30sdp"
+                                android:maxLength="4"
                                 android:minWidth="@dimen/_30sdp"
                                 android:visibility="gone" />
 
@@ -992,6 +994,7 @@
                                 android:inputType="number"
                                 android:lines="1"
                                 android:maxWidth="@dimen/_30sdp"
+                                android:maxLength="4"
                                 android:minWidth="@dimen/_30sdp"
                                 android:visibility="gone" />
 
@@ -1010,6 +1013,7 @@
                                 android:inputType="number"
                                 android:lines="1"
                                 android:maxWidth="@dimen/_30sdp"
+                                android:maxLength="4"
                                 android:minWidth="@dimen/_30sdp"
                                 android:visibility="gone" />
 
@@ -1027,11 +1031,12 @@
                         android:padding="10dp"
                         android:text=""
                         android:textColor="@color/new_msg_gray" />
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_marginHorizontal="@dimen/_10sdp">
+                        android:layout_marginHorizontal="@dimen/_10sdp"
+                        android:orientation="vertical">
 
                         <!--                    <EditText-->
                         <!--                        android:id="@+id/edt_equ_service_interval"-->
