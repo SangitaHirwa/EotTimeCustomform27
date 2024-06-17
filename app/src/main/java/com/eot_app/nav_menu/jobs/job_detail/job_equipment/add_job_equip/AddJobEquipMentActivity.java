@@ -1491,6 +1491,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
                 edt_month.setVisibility(View.GONE);
                 edt_year.setVisibility(View.GONE);
                 rediogrp.clearCheck();
+                clear_btn.setVisibility(View.GONE);
                 break;
         }
     }
@@ -1873,6 +1874,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
                 edt_day.requestFocus();
                 edt_month.setVisibility(View.GONE);
                 edt_year.setVisibility(View.GONE);
+                clear_btn.setVisibility(View.VISIBLE);
                 break;
             case R.id.radio_month:
                 servIntvalType = "1";
@@ -1883,6 +1885,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
                 edt_year.setText("");
                 edt_month.requestFocus();
                 edt_year.setVisibility(View.GONE);
+                clear_btn.setVisibility(View.VISIBLE);
                 break;
             case R.id.radio_year:
                 servIntvalType = "2";
@@ -1893,6 +1896,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
                 edt_month.setText("");
                 edt_year.setText("");
                 edt_year.requestFocus();
+                clear_btn.setVisibility(View.VISIBLE);
                 break;
         }
     }
