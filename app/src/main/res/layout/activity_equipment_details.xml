@@ -649,12 +649,14 @@
                         android:id="@+id/service_history_txt"
                         style="@style/style_thrid"
                         android:textColor="@color/about_equipment"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
+                        android:layout_marginEnd="@dimen/_5sdp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/guideline_for_service"
                         android:text=""
                         tools:ignore="RtlSymmetry" />
                         <androidx.constraintlayout.widget.Guideline
@@ -667,17 +669,18 @@
                         android:id="@+id/last_service_txt"
                         style="@style/new_equipment_detail"
                         android:textColor="@color/bule_service"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:paddingHorizontal="5dp"
-                        android:gravity="end"
+                        android:gravity="start"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/guideline_for_service"
-                        app:layout_constraintEnd_toStartOf="@+id/last_service_date"
+                        app:layout_constraintEnd_toStartOf="@+id/last_service_show_hide"
                         app:layout_constraintBottom_toBottomOf="parent"
                         android:text=""
                         tools:ignore="RtlSymmetry" />
-                        <TextView
+
+                       <!-- <TextView
                             android:id="@+id/last_service_date"
                             style="@style/new_equipment_detail"
                             android:textColor="@color/bule_service"
@@ -690,7 +693,17 @@
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintBottom_toBottomOf="parent"
                             android:text=""
-                            tools:ignore="RtlSymmetry" />
+                            tools:ignore="RtlSymmetry" />-->
+                        <ImageView
+                            android:id="@+id/last_service_show_hide"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="5dp"
+                            android:src="@drawable/ic_arrow_drop_down_black_24dp"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent" />
+
                     </androidx.constraintlayout.widget.ConstraintLayout>
                      <TextView
                          android:id="@+id/servic_histry_not_found"
@@ -747,12 +760,13 @@
                         android:id="@+id/upcoming_service_txt"
                         style="@style/style_thrid"
                         android:textColor="@color/about_equipment"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:padding="1dp"
+                        android:layout_marginEnd="5dp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/guideline_for_upcoming_service"
                         android:text=""
                         tools:ignore="RtlSymmetry" />
                         <androidx.constraintlayout.widget.Guideline
@@ -765,17 +779,16 @@
                             android:id="@+id/deu_service_txt"
                             style="@style/new_equipment_detail"
                             android:textColor="@color/green_upcomingservice"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:padding="5dp"
                             android:gravity="end"
                             app:layout_constraintTop_toTopOf="parent"
                             app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toStartOf="@+id/deu_service_date"
+                            app:layout_constraintEnd_toStartOf="@+id/upcoming_service_show_hide"
                           app:layout_constraintStart_toEndOf="@+id/guideline_for_upcoming_service"
                             android:text=""
                             tools:ignore="RtlSymmetry" />
-                        <TextView
+                      <!--  <TextView
                             android:id="@+id/deu_service_date"
                             style="@style/new_equipment_detail"
                             android:textColor="@color/green_upcomingservice"
@@ -788,7 +801,17 @@
                             app:layout_constraintTop_toTopOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             android:text=""
-                            tools:ignore="RtlSymmetry" />
+                            tools:ignore="RtlSymmetry" />-->
+                        <ImageView
+                            android:id="@+id/upcoming_service_show_hide"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="5dp"
+                            android:src="@drawable/ic_arrow_drop_down_black_24dp"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent" />
+
                     </androidx.constraintlayout.widget.ConstraintLayout>
                     <TextView
                         android:id="@+id/upcoming_servic_not_found"
@@ -839,20 +862,34 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     >
-
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_37sdp"
+                        android:weightSum="1"
+                        android:orientation="horizontal"
+                        android:paddingHorizontal="8dp"
+                        android:paddingVertical="11dp"
+                        android:gravity="center_vertical">
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/tv_label_part"
                         style="@style/style_thrid"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/_37sdp"
-                        android:drawableEnd="@drawable/ic_arrow_drop_down_black_24dp"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
                         android:gravity="center_vertical"
                         android:text=""
+                        android:layout_weight="1"
                         android:textColor="@color/about_equipment"
-                        android:paddingHorizontal="8dp"
-                        android:paddingVertical="11dp"
                         />
-
+                        <ImageView
+                            android:id="@+id/part_list_show_hide"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="5dp"
+                            android:src="@drawable/ic_arrow_drop_down_black_24dp"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent" />
+                    </LinearLayout>
                     <TextView
                         android:id="@+id/parts_not_found"
                         android:layout_width="match_parent"
@@ -905,19 +942,34 @@
                     android:layout_height="wrap_content"
                     tools:ignore="TooManyViews"
                     >
-
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_37sdp"
+                    android:weightSum="1"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="8dp"
+                    android:paddingVertical="11dp"
+                    android:gravity="center_vertical">
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/tv_label_item"
                         style="@style/style_thrid"
                         android:textColor="@color/about_equipment"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/_37sdp"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:text=""
-                        android:paddingHorizontal="8dp"
-                        android:paddingVertical="11dp"
                         android:gravity="center_vertical"
-                        android:drawableEnd="@drawable/ic_arrow_drop_down_black_24dp"
                          />
+                    <ImageView
+                        android:id="@+id/item_list_show_hide"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="5dp"
+                        android:src="@drawable/ic_arrow_drop_down_black_24dp"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent" />
+                </LinearLayout>
                     <TextView
                         android:id="@+id/items_not_found"
                         android:layout_width="match_parent"
@@ -971,19 +1023,35 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     >
-
-                    <TextView
-                        android:id="@+id/aduit_history_txt"
-                        style="@style/style_thrid"
-                        android:textColor="@color/about_equipment"
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/_37sdp"
-                        android:gravity="center_vertical"
+                        android:weightSum="1"
+                        android:orientation="horizontal"
                         android:paddingHorizontal="8dp"
                         android:paddingVertical="11dp"
-                        android:text=""
-                        tools:ignore="RtlSymmetry"
-                        android:drawableEnd="@drawable/ic_arrow_drop_down_black_24dp"/>
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:id="@+id/aduit_history_txt"
+                            style="@style/style_thrid"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:layout_weight="1"
+                            android:text=""
+                            android:textColor="@color/about_equipment"
+                            tools:ignore="RtlSymmetry" />
+                        <ImageView
+                            android:id="@+id/audit_list_show_hide"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="5dp"
+                            android:src="@drawable/ic_arrow_drop_down_black_24dp"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent" />
+                    </LinearLayout>
                     <TextView
                         android:id="@+id/audit_not_found"
                         android:layout_width="match_parent"

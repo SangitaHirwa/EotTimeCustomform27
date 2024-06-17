@@ -58,11 +58,11 @@ public class AddEquipNavigationDialog extends DialogFragment implements View.OnC
         btn_action.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.equipment_action_page));
         btn_action.setOnClickListener(this);
         btn_list = view.findViewById(R.id.btn_list);
-        if(isAddPart){
+        /*if(isAddPart){
             btn_list.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.go_to_back));
-        }else {
+        }else {*/
             btn_list.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.equipment_list_page));
-        }
+//        }
         btn_list.setOnClickListener(this);
 
     }

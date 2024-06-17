@@ -102,7 +102,7 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
     private LinearLayout ll_audit_job;
     private LinearLayout job_ll, audit_ll, job_upcoming_ll, equipment_location_detail;
     TextView custom_filed_1, custom_filed_2, custom_filed_txt_1, custom_filed_txt_2, supplier_txt, supplier, txt_addBarcode, txt_addQrcode, servic_histry_not_found, upcoming_servic_not_found, parts_not_found, items_not_found, audit_not_found;
-    ImageView img_barcode, img_Qrcode;
+    ImageView img_barcode, img_Qrcode, last_service_show_hide,upcoming_service_show_hide,part_list_show_hide,item_list_show_hide,audit_list_show_hide;
     private boolean REFRESH = false;
     private String cltId;
     private Job_equim_PI jobEquimPi;
@@ -391,9 +391,14 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
 
         txt_about_equipment = findViewById(R.id.txt_about_equipment);
         last_service_txt = findViewById(R.id.last_service_txt);
-        last_service_date = findViewById(R.id.last_service_date);
+//        last_service_date = findViewById(R.id.last_service_date);
+        last_service_show_hide = findViewById(R.id.last_service_show_hide);
         deu_service_txt = findViewById(R.id.deu_service_txt);
-        deu_service_date = findViewById(R.id.deu_service_date);
+        upcoming_service_show_hide = findViewById(R.id.upcoming_service_show_hide);
+        part_list_show_hide = findViewById(R.id.part_list_show_hide);
+        item_list_show_hide = findViewById(R.id.item_list_show_hide);
+        audit_list_show_hide = findViewById(R.id.audit_list_show_hide);
+//        deu_service_date = findViewById(R.id.deu_service_date);
         //It will be hide till 3.04 after that we show in offline flow
 //        deu_service_txt.setVisibility(View.GONE);
         cl_parent_bottom_btn = findViewById(R.id.cl_parent_bottom_btn);
@@ -413,16 +418,21 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
         parts_not_found.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.equ_parts_not_found));
         items_not_found.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.equ_item_not_found));
         audit_not_found.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.equ_audit_not_found));
-        deu_service_date.setOnClickListener(this);
-        last_service_date.setOnClickListener(this);
+        upcoming_service_show_hide.setOnClickListener(this);
+        part_list_show_hide.setOnClickListener(this);
+        item_list_show_hide.setOnClickListener(this);
+        audit_list_show_hide.setOnClickListener(this);
+//        deu_service_date.setOnClickListener(this);
+        last_service_show_hide.setOnClickListener(this);
+//        last_service_date.setOnClickListener(this);
         job_ll.setOnClickListener(this);
-        tv_label_part.setOnClickListener(this);
-        tv_label_item.setOnClickListener(this);
-        aduit_history_txt.setOnClickListener(this);
+//        tv_label_part.setOnClickListener(this);
+//        tv_label_item.setOnClickListener(this);
+//        aduit_history_txt.setOnClickListener(this);
 
         txt_about_equipment.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.about_equipment));
-        last_service_txt.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.last_service));
-        deu_service_txt.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.service_history));
+//        last_service_txt.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.last_service));
+//        deu_service_txt.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.service_history));
         ShowHideEqupHistory();
     }
 
@@ -576,6 +586,7 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
         }
     }
 
+    @SuppressLint("SuspiciousIndentation")
     private void setJobEquipment(EquArrayModel equipment) {
         String clientArd = "";
         equipmentID = equipment.getEquId();
@@ -643,17 +654,19 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
         try {
             if (equipment.getLastJobDate() != null && !TextUtils.isEmpty(equipment.getLastJobDate())) {
                 last_serv_date_lable.setText(AppUtility.getDateWithFormate(Long.parseLong(equipment.getLastJobDate()), "dd-MMM-yyyy hh:mm"));
-                last_service_date.setText(AppUtility.getDateWithFormate(Long.parseLong(equipment.getLastJobDate()), "dd-MMM-yyyy"));
+                last_service_txt.setText(new StringBuilder().append(LanguageController.getInstance().getMobileMsgByKey(AppConstant.last_service)).append(": ").append(AppUtility.getDateWithFormate(Long.parseLong(equipment.getLastJobDate()), "dd-MMM-yyyy")).toString());
+//                last_service_date.setText(AppUtility.getDateWithFormate(Long.parseLong(equipment.getLastJobDate()), "dd-MMM-yyyy"));
 
             }
             // calculate service due date with the help of service interval value and type
             // days=0
             //month=1
             //year=2
-            if (equipment.getServIntvalType() != null && equipment.getServIntvalValue() != null)
+            if (equipment.getServIntvalType() != null && equipment.getServIntvalValue() != null) {
                 serv_due_date.setText(AppUtility.getServiceDueDate(equipment.getServIntvalType(), equipment.getServIntvalValue(), Long.parseLong(equipment.getLastJobDate())));
-                deu_service_date.setText(AppUtility.getServiceDueDate(equipment.getServIntvalType(), equipment.getServIntvalValue(), Long.parseLong(equipment.getLastJobDate())));
-
+//                deu_service_date.setText(AppUtility.getServiceDueDate(equipment.getServIntvalType(), equipment.getServIntvalValue(), Long.parseLong(equipment.getLastJobDate())));
+                deu_service_txt.setText(new StringBuilder().append(LanguageController.getInstance().getMobileMsgByKey(AppConstant.service_history)).append(": ").append(AppUtility.getServiceDueDate(equipment.getServIntvalType(), equipment.getServIntvalValue(), Long.parseLong(equipment.getLastJobDate()))).toString());
+            }
         } catch (Exception exception) {
             exception.printStackTrace();
         }
@@ -1118,69 +1131,69 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
                     addEditQrCodeBarCodeDialog.show(getSupportFragmentManager(), "2");
                 }
                 break;
-            case R.id.last_service_date:
+            case R.id.last_service_show_hide:
                 if (!clicked_service_history) {
                     clicked_service_history = true;
                     cl_loader1.setVisibility(View.VISIBLE);
                     equ_details_pc.getEquipmentJobHistory(equpId,"4");
-                    last_service_date.setCompoundDrawablesWithIntrinsicBounds(null, null, getDrawable(R.drawable.ic_baseline_arrow_drop_up_24), null);
+                    last_service_show_hide.setImageDrawable(getDrawable(R.drawable.ic_baseline_arrow_drop_up_24));
                 } else {
                     clicked_service_history = false;
                     jobList.setVisibility(View.GONE);
                     servic_histry_not_found.setVisibility(View.GONE);
-                    last_service_date.setCompoundDrawablesWithIntrinsicBounds(null, null, getDrawable(R.drawable.ic_arrow_drop_down_black_24dp), null);
+                    last_service_show_hide.setImageDrawable(getDrawable(R.drawable.ic_arrow_drop_down_black_24dp));
                 }
                 break;
-            case R.id.deu_service_date:
+            case R.id.upcoming_service_show_hide:
                 if (!clicked_upcoming_service) {
                     clicked_upcoming_service = true;
                     cl_loader2.setVisibility(View.VISIBLE);
                     equ_details_pc.getEquipmentUpcomingJobHistory(equpId,"2");
                     job_upcoming_service_list.setVisibility(View.VISIBLE);
-                    deu_service_date.setCompoundDrawablesWithIntrinsicBounds(null, null, getDrawable(R.drawable.ic_baseline_arrow_drop_up_24), null);
+                    upcoming_service_show_hide.setImageDrawable(getDrawable(R.drawable.ic_baseline_arrow_drop_up_24));
                 } else {
                     clicked_upcoming_service = false;
                     job_upcoming_service_list.setVisibility(View.GONE);
                     upcoming_servic_not_found.setVisibility(View.GONE);
-                    deu_service_date.setCompoundDrawablesWithIntrinsicBounds(null, null, getDrawable(R.drawable.ic_arrow_drop_down_black_24dp), null);
+                    upcoming_service_show_hide.setImageDrawable(getDrawable(R.drawable.ic_arrow_drop_down_black_24dp));
                 }
                 break;
-            case R.id.tv_label_part:
+            case R.id.part_list_show_hide:
                 if (!click_part) {
                     cl_loader3.setVisibility(View.VISIBLE);
                     equ_details_pc.getEqPartsFromServer(equpId);
-                    tv_label_part.setCompoundDrawablesWithIntrinsicBounds(null, null, getDrawable(R.drawable.ic_baseline_arrow_drop_up_24), null);
+                    part_list_show_hide.setImageDrawable(getDrawable(R.drawable.ic_baseline_arrow_drop_up_24));
                     click_part = true;
                 } else {
                     recyclerView_part.setVisibility(View.GONE);
                     parts_not_found.setVisibility(View.GONE);
-                    tv_label_part.setCompoundDrawablesWithIntrinsicBounds(null, null, getDrawable(R.drawable.ic_arrow_drop_down_black_24dp), null);
+                    part_list_show_hide.setImageDrawable(getDrawable(R.drawable.ic_arrow_drop_down_black_24dp));
                     click_part = false;
                 }
                 break;
-            case R.id.tv_label_item:
+            case R.id.item_list_show_hide:
                 if (!click_item) {
                     cl_loader4.setVisibility(View.VISIBLE);
                     equ_details_pc.getEqItemFromServer(equpId, jobId);
-                    tv_label_item.setCompoundDrawablesWithIntrinsicBounds(null, null, getDrawable(R.drawable.ic_baseline_arrow_drop_up_24), null);
+                    item_list_show_hide.setImageDrawable(getDrawable(R.drawable.ic_baseline_arrow_drop_up_24));
                     click_item = true;
                 } else {
                     recyclerView_item.setVisibility(View.GONE);
                     items_not_found.setVisibility(View.GONE);
-                    tv_label_item.setCompoundDrawablesWithIntrinsicBounds(null, null, getDrawable(R.drawable.ic_arrow_drop_down_black_24dp), null);
+                    item_list_show_hide.setImageDrawable(getDrawable(R.drawable.ic_arrow_drop_down_black_24dp));
                     click_item = false;
                 }
                 break;
-            case R.id.aduit_history_txt:
+            case R.id.audit_list_show_hide:
                 if (!click_audit) {
                     cl_loader5.setVisibility(View.VISIBLE);
                     equ_details_pc.getEquipmentAduitHistory(equpId);
-                    aduit_history_txt.setCompoundDrawablesWithIntrinsicBounds(null, null, getDrawable(R.drawable.ic_baseline_arrow_drop_up_24), null);
+                    audit_list_show_hide.setImageDrawable(getDrawable(R.drawable.ic_baseline_arrow_drop_up_24));
                     click_audit = true;
                 } else {
                     auditList.setVisibility(View.GONE);
                     audit_not_found.setVisibility(View.GONE);
-                    aduit_history_txt.setCompoundDrawablesWithIntrinsicBounds(null, null, getDrawable(R.drawable.ic_arrow_drop_down_black_24dp), null);
+                    audit_list_show_hide.setImageDrawable(getDrawable(R.drawable.ic_arrow_drop_down_black_24dp));
                     click_audit = false;
                 }
                 break;
