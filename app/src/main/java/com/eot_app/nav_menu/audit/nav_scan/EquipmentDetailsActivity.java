@@ -229,15 +229,15 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
         custom_filed_txt_1 = findViewById(R.id.custom_filed_txt_1);
         custom_filed_txt_2 = findViewById(R.id.custom_filed_txt_2);
         supplier_txt = findViewById(R.id.supplier_txt);
-        supplier_txt.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.supplier));
+        supplier_txt.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.supplier)+""+": ");
 
         supplier = findViewById(R.id.supplier);
 
         if (App_preference.getSharedprefInstance().getCompanySettingsDetails().getEqupExtraField1Label() != null)
-            custom_filed_1.setText(App_preference.getSharedprefInstance().getCompanySettingsDetails().getEqupExtraField1Label());
+            custom_filed_1.setText(App_preference.getSharedprefInstance().getCompanySettingsDetails().getEqupExtraField1Label()+""+": ");
 
         if (App_preference.getSharedprefInstance().getCompanySettingsDetails().getEqupExtraField2Label() != null)
-            custom_filed_2.setText(App_preference.getSharedprefInstance().getCompanySettingsDetails().getEqupExtraField2Label());
+            custom_filed_2.setText(App_preference.getSharedprefInstance().getCompanySettingsDetails().getEqupExtraField2Label()+""+": ");
 
         job_history_txt = findViewById(R.id.service_history_txt);
         job_history_txt.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.equipment_service) );
@@ -309,40 +309,40 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
 
 
         barnd_name = findViewById(R.id.barnd_name);
-        barnd_name.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.brand_name));
+        barnd_name.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.brand_name)+""+": ");
 
 
         serv_due_date = findViewById(R.id.serv_due_date);
         serv_due_date_label = findViewById(R.id.serv_due_date_label);
-        serv_due_date_label.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.service_due_date));
+        serv_due_date_label.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.service_due_date)+""+": ");
 
         model_no = findViewById(R.id.model_no);
-        model_no.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.model_no));
+        model_no.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.model_no)+""+": ");
 
         serial_no = findViewById(R.id.serial_no);
-        serial_no.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.serial_no));
+        serial_no.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.serial_no)+""+": ");
 
         traiff_rate = findViewById(R.id.traiff_rate);
-        traiff_rate.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.tariff_rate));
+        traiff_rate.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.tariff_rate)+""+": ");
 
 
         warrenty_expiry_date = findViewById(R.id.warrenty_expiry_date);
-        warrenty_expiry_date.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.warranty_expiry_date));
+        warrenty_expiry_date.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.warranty_expiry_date)+""+": ");
 
         manufacture_date = findViewById(R.id.manufacture_date);
-        manufacture_date.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.manufacture_date));
+        manufacture_date.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.manufacture_date)+""+": ");
 
         purchase_date = findViewById(R.id.purchase_date);
-        purchase_date.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.purchase_date));
+        purchase_date.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.purchase_date)+""+": ");
 
         installed_date = findViewById(R.id.installed_date);
-        installed_date.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.installed_date));
+        installed_date.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.installed_date)+""+": ");
 
         type = findViewById(R.id.type);
-        type.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.type));
+        type.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.type)+""+": ");
 
         equipment_group = findViewById(R.id.equipment_group);
-        equipment_group.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.equipment_group));
+        equipment_group.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.equipment_group)+""+": ");
 
         barnd_name_detail = findViewById(R.id.barnd_name_detail);
         model_no_detail = findViewById(R.id.model_no_detail);
@@ -363,7 +363,7 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
 
         last_serv_date = findViewById(R.id.last_serv_date);
         last_serv_date_lable = findViewById(R.id.last_serv_date_lable);
-        last_serv_date.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.last_serv_date));
+        last_serv_date.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.last_serv_date)+""+": ");
 
 
       /*  equ_bar_code_num_lable = findViewById(R.id.equ_bar_code_num_lable);
@@ -395,7 +395,7 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
         txt_addQrcode = findViewById(R.id.txt_addQrcode);
         img_Qrcode = findViewById(R.id.img_Qrcode);
         img_barcode = findViewById(R.id.img_barcode);
-        equipment_location.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.equipment) + " " + LanguageController.getInstance().getMobileMsgByKey(AppConstant.location));
+        equipment_location.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.equipment) + " " + LanguageController.getInstance().getMobileMsgByKey(AppConstant.location)+""+": ");
         txt_addBarcode.setOnClickListener(this);
         txt_addQrcode.setOnClickListener(this);
 
