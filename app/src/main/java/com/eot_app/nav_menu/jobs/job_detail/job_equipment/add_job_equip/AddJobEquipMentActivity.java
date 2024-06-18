@@ -95,6 +95,7 @@ import com.eot_app.utility.EotApp;
 import com.eot_app.utility.States;
 import com.eot_app.utility.db.AppDataBase;
 import com.eot_app.utility.language_support.LanguageController;
+import com.eot_app.utility.util_interfaces.Callback_AlertDialog;
 import com.eot_app.utility.util_interfaces.MySpinnerAdapter;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.gson.Gson;
@@ -181,10 +182,10 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
     String statenameById = "";
     String city = "";
     String zip = "";
-    boolean isSerialNoSelected = false;
+    boolean isSerialNoSelected = false, isDefaultType = false;
     EditText edt_day, edt_month, edt_year;
     RadioButton rdBtn_day, rdBtn_month, rdBtn_year;
-    String interval = "", generateOption = "", scanCode = "";
+    String interval = "", generateOption = "", scanCode = "",equDefaultType;
     QR_Bar_Pi qrBarPi;
     EquArrayModel equipmentRes, equipment;
     ;
@@ -825,38 +826,49 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
         comeFrom1 = bundle.getString("comeFrom1");
         equipmentId = bundle.getString("equipmentId");
         equipmentIdName = bundle.getString("equipmentIdName");
-        if (comeFrom != null && comeFrom.equalsIgnoreCase("AddRemarkReplace") || comeFrom != null && comeFrom.equalsIgnoreCase("AddPartWithoutItem") || comeFrom != null && comeFrom.equalsIgnoreCase("AddRemark")) {
+        equDefaultType = bundle.getString("equDefaultType");
+        if (comeFrom != null && comeFrom.equalsIgnoreCase("AddRemarkReplace") || comeFrom1 != null && comeFrom1.equalsIgnoreCase("AddPartWithoutItem") || comeFrom != null && comeFrom.equalsIgnoreCase("AddRemark")) {
             if (getIntent().hasExtra("equipment")) {
                 String strEquipment = getIntent().getExtras().getString("equipment");
                 equipment = new Gson().fromJson(strEquipment, EquArrayModel.class);
             }
-            equipmentId = equipment.getEquId();
-            if (equipment.getIsPart() != null && equipment.getIsPart().equalsIgnoreCase("1") || comeFrom != null && comeFrom.equalsIgnoreCase("AddRemark")) {
-                if (comeFrom != null && comeFrom.equalsIgnoreCase("AddRemark")) {
-                    equipmentIdName = equipment.getEqunm();
-                } else {
-                    equipmentIdName = equipment.getParentName();
-                }
-                equipment_layout.setVisibility(View.VISIBLE);
-                eq_view.setVisibility(View.VISIBLE);
-            }
-            if (equipment.getType() != null && !equipment.getType().isEmpty()) {
-                type = equipment.getType();
-                try {
-                    if (type.equalsIgnoreCase("1")) {
-                        radio_owner.setChecked(true);
-                        radio_serv_prov.setChecked(false);
+            if(equipment != null) {
+                equipmentId = equipment.getEquId();
+                if (equipment.getIsPart() != null && equipment.getIsPart().equalsIgnoreCase("1") || comeFrom != null && comeFrom.equalsIgnoreCase("AddRemark")) {
+                    if (comeFrom != null && comeFrom.equalsIgnoreCase("AddRemark")) {
+                        equipmentIdName = equipment.getEqunm();
                     } else {
-                        radio_serv_prov.setChecked(true);
-                        radio_owner.setChecked(false);
+                        equipmentIdName = equipment.getParentName();
                     }
-                    radio_owner.setEnabled(false);
-                    radio_serv_prov.setEnabled(false);
-                } catch (Exception e) {
-                    e.printStackTrace();
+                    equipment_layout.setVisibility(View.VISIBLE);
+                    eq_view.setVisibility(View.VISIBLE);
+                }
+                if (equipment.getType() != null && !equipment.getType().isEmpty()) {
+                    type = equipment.getType();
+                    try {
+                        if (type.equalsIgnoreCase("1")) {
+                            radio_owner.setChecked(true);
+                            radio_serv_prov.setChecked(false);
+                        } else {
+                            radio_serv_prov.setChecked(true);
+                            radio_owner.setChecked(false);
+                        }
+                        radio_owner.setEnabled(false);
+                        radio_serv_prov.setEnabled(false);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             }
-
+        }
+        if (comeFrom != null && comeFrom.equalsIgnoreCase("JobListScan")){
+            if(equDefaultType != null && !equDefaultType.isEmpty()){
+                isDefaultType = true;
+                if (equDefaultType.equalsIgnoreCase("1")) radio_owner.setChecked(true);
+                else if (equDefaultType.equalsIgnoreCase("2")) radio_serv_prov.setChecked(true);
+            }else {
+                radio_owner.setChecked(true);
+            }
         }
         // for setting the equipment type as the main equipment type and non editable
         if (bundle.getString("equipmentType") != null && !bundle.getString("equipmentType").isEmpty()) {
@@ -1817,13 +1829,21 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
 
             case R.id.radio_owner:
                 if (isChecked) {
-                    type = "1";
-                }
-            case R.id.radio_serv_prov:
-                if (isChecked) {
-                    type = "2";
+                    if( equDefaultType != null && equDefaultType.equalsIgnoreCase("2") && isDefaultType){
+                        setEquipmentType("1");
+                    }else {
+                        type = "1";
+                    }
                 }
                 break;
+            case R.id.radio_serv_prov:
+                if (isChecked) {
+                    if( equDefaultType != null && equDefaultType.equalsIgnoreCase("1")&&isDefaultType){
+                        setEquipmentType("2");
+                    }else {
+                        type = "2";
+                    }
+                }break;
         }
     }
 
@@ -2438,5 +2458,27 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
         }
 
         this.finish();
+    }
+    private void setEquipmentType(String equType){
+
+        AppUtility.alertDialog2(this, "", LanguageController.getInstance().getMobileMsgByKey(AppConstant.change_equ_type_msg)
+                , LanguageController.getInstance().getMobileMsgByKey(AppConstant.continue_)
+                , LanguageController.getInstance().getMobileMsgByKey(AppConstant.cancel), new Callback_AlertDialog() {
+                    @Override
+                    public void onPossitiveCall() {
+                            type = equType;
+                    }
+
+                    @Override
+                    public void onNegativeCall() {
+                        if(equDefaultType != null && equDefaultType.equals("1")) {
+                            radio_serv_prov.setChecked(false);
+                            radio_owner.setChecked(true);
+                        }else if(equDefaultType != null && equDefaultType.equals("2")){
+                            radio_serv_prov.setChecked(true);
+                            radio_owner.setChecked(false);
+                        }
+                    }
+                });
     }
 }
