@@ -536,7 +536,8 @@ public class BarcodeScanActivity extends AppCompatActivity implements ScanBarcod
 
         });
     }
-
+/**
+ * Scan code from job equipment list and move back to equipment list screen   */
     public void findEquipment(String Equipment, String scanCode){
 
         Intent intent = new Intent();

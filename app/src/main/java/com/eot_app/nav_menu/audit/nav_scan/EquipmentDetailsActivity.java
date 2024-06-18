@@ -129,6 +129,11 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
             if (getIntent().hasExtra("job_equip")) {
                 String str = getIntent().getExtras().getString("job_equip_str");
                 EquArrayModel equipment = new Gson().fromJson(str, EquArrayModel.class);
+                /**Due to we are not getting date in lastJobDate param of equipment array of gerUserJobListForMobile api response, and we are getting same value in updateData param of equipment array of gerUserJobListForMobile api response*/
+                Equipment equipmentRes = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).equipmentDao().getEquipmentById(equipment.getEquId());
+                String equip = new Gson().toJson(equipmentRes);
+                equipment = new Gson().fromJson(equip, EquArrayModel.class);
+                equipment.setEquipment_group(equipmentRes.getGroupName());
                 setJobEquipment(equipment);
                 equpId = equipment.getEquId();
                 jobId = getIntent().getStringExtra("jobId");
@@ -159,6 +164,11 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
             } else if (getIntent().hasExtra("job_equip_scan")) {
                 String str = getIntent().getExtras().getString("job_equip_str");
                 equipment = new Gson().fromJson(str, EquArrayModel.class);
+                /**Due to we are not getting date in lastJobDate param of equipment array of gerUserJobListForMobile api response, and we are getting same value in updateData param of equipment array of gerUserJobListForMobile api response*/
+                Equipment equipmentRes = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).equipmentDao().getEquipmentById(equipment.getEquId());
+                String equip = new Gson().toJson(equipmentRes);
+                equipment = new Gson().fromJson(equip, EquArrayModel.class);
+                equipment.setEquipment_group(equipmentRes.getGroupName());
                 setJobEquipment(equipment);
                 equpId = equipment.getEquId();
                 cltId = equipment.getCltId();
@@ -563,8 +573,13 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
             if (equArrayModelList != null) {
                 for (EquArrayModel equipment : equArrayModelList) {
                     if (equipment.getSno() != null && equipment.getSno().equals(codeText) || equipment.getBarcode() != null && equipment.getBarcode().equals(codeText) || equipment.getQrcode() != null && equipment.getQrcode().equals(codeText)) {
-                        setJobEquipment(equipment);
                         equpId = equipment.getEquId();
+                        /**Due to we are not getting date in lastJobDate param of equipment array of gerUserJobListForMobile api response, and we are getting same value in updateData param of equipment array of gerUserJobListForMobile api response*/
+                        Equipment equipmentRes = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).equipmentDao().getEquipmentById(equipment.getEquId());
+                        String equip = new Gson().toJson(equipmentRes);
+                        equipment = new Gson().fromJson(equip, EquArrayModel.class);
+                        equipment.setEquipment_group(equipmentRes.getGroupName());
+                        setJobEquipment(equipment);
 //                        equ_details_pc.getEquipmentAduitHistory(equipment.getEquId());
 //                        equ_details_pc.getEquipmentJobHistory(equipment.getEquId());
 //                        equ_details_pc.getEqItemFromServer(equipment.getEquId(), joblist.get(0).getJobId());
@@ -662,7 +677,7 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
             // days=0
             //month=1
             //year=2
-            if (equipment.getServIntvalType() != null && equipment.getServIntvalValue() != null) {
+            if (equipment.getServIntvalType() != null && equipment.getServIntvalValue() != null && !equipment.getServIntvalType().equalsIgnoreCase("0") && !equipment.getServIntvalValue().equalsIgnoreCase("0")) {
                 serv_due_date.setText(AppUtility.getServiceDueDate(equipment.getServIntvalType(), equipment.getServIntvalValue(), Long.parseLong(equipment.getLastJobDate())));
 //                deu_service_date.setText(AppUtility.getServiceDueDate(equipment.getServIntvalType(), equipment.getServIntvalValue(), Long.parseLong(equipment.getLastJobDate())));
                 deu_service_txt.setText(new StringBuilder().append(LanguageController.getInstance().getMobileMsgByKey(AppConstant.service_history)).append(": ").append(AppUtility.getServiceDueDate(equipment.getServIntvalType(), equipment.getServIntvalValue(), Long.parseLong(equipment.getLastJobDate()))).toString());
