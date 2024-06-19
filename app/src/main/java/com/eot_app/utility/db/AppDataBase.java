@@ -39,7 +39,9 @@ import com.eot_app.nav_menu.jobs.job_db.JobDao;
 import com.eot_app.nav_menu.jobs.job_db.OfflieCompleQueAns;
 import com.eot_app.nav_menu.jobs.job_db.OfflieCompleQueAns_Dao;
 import com.eot_app.nav_menu.jobs.job_db.SelecetedDaysConverter;
+import com.eot_app.nav_menu.jobs.job_db.StockDataDao;
 import com.eot_app.nav_menu.jobs.job_db.TagDataConverter;
+import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.model.StockData;
 import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.typeconver_pkg.InvoiceItemDataModelConverter;
 import com.eot_app.nav_menu.jobs.job_detail.customform.cstm_form_model.CustomFormListOffline;
 import com.eot_app.nav_menu.jobs.job_detail.customform.cstm_form_model.CustomFormListOfflineDao;
@@ -104,9 +106,9 @@ import com.eot_app.utility.settings.setting_db.TagData;
         , AuditList_Res.class, ContractRes.class, Equipment.class, JobStatusModelNew.class,
         TaxesLocation.class, ClientRefrenceModel.class, ShiftTimeReSModel.class, CustomForm.class, CustomFormQue.class,
         CustomFormSubmited.class, CustomFormListOffline.class, AuditStatusModel.class, AppointmentStatusModel.class, OfflieCompleQueAns.class,
-        Attachments.class, BrandData.class},
+        Attachments.class, BrandData.class, StockData.class},
 
-        version = 49, exportSchema = false)
+        version = 50, exportSchema = false)
 @TypeConverters({TaxDataConverter.class, TagDataConverter.class, InvoiceItemDataModelConverter.class, TaxConverter.class
         , EquipmentTypeConverter.class, EquArrayConvrtr.class, EquCategoryConvrtr.class
         , SiteCustomFieldConverter.class, JobRecurTypeConvert.class, SelecetedDaysConverter.class
@@ -755,6 +757,18 @@ public abstract class AppDataBase extends RoomDatabase {
             database.execSQL("ALTER TABLE Equipment ADD COLUMN qrcodeImg TEXT");
         }
     };
+    /**Add Table for Stock Balance**/
+    static final Migration MIGRATION_49_50 = new Migration(49, 50) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+
+            database.execSQL("CREATE TABLE IF NOT EXISTS `Stock_Balance` (`sat_usrid` TEXT NOT NULL UNIQUE," +
+                    "'sat_itemid' TEXT," +
+                    "'balance' TEXT," +
+                    " PRIMARY KEY(`sat_usrid`)) ");
+
+        }
+    };
     private static final String DB_NAME = "eot_db";
 
     private static AppDataBase INSTANCE;
@@ -818,6 +832,7 @@ public abstract class AppDataBase extends RoomDatabase {
                     .addMigrations(MIGRATION_46_47)
                     .addMigrations(MIGRATION_47_48)
                     .addMigrations(MIGRATION_48_49)
+                    .addMigrations(MIGRATION_49_50)
                     .fallbackToDestructiveMigration()
                     .build();
         }
@@ -883,4 +898,5 @@ public abstract class AppDataBase extends RoomDatabase {
     public abstract OfflieCompleQueAns_Dao offline_completion_ans_dao();
     public abstract Attachments_Dao attachments_dao();
     public abstract BrandDao brandDao();
+    public abstract StockDataDao stockDataDao();
 }

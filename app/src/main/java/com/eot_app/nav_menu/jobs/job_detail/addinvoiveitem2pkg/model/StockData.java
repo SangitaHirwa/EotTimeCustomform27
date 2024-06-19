@@ -4,7 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "Brand")
+@Entity(tableName = "Stock_Balance")
 public class StockData {
     @PrimaryKey
     @NonNull
