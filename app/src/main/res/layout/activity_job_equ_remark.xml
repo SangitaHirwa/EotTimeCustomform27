@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -9,7 +9,7 @@
         android:layout_height="match_parent"
         android:background="@color/window_background"
         android:orientation="vertical">
-    <!--start Relative parent layout-->
+        <!--start Relative parent layout-->
         <RelativeLayout
             android:id="@+id/relativeLayout2"
             android:layout_width="match_parent"
@@ -21,39 +21,44 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/bg_job"
+                android:gravity="center_horizontal"
                 android:orientation="vertical"
-                android:paddingHorizontal="@dimen/left_margin"
-                android:paddingTop="@dimen/left_margin">
-<androidx.constraintlayout.widget.ConstraintLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-                <TextView
-                    android:id="@+id/tv_equipment_name"
-                    style="@style/style_sec"
-                    android:layout_width="0dp"
-                    android:layout_marginEnd="5dp"
+                android:paddingHorizontal="@dimen/left_margin">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="start"
-                    android:text=""
-                    android:textStyle="bold"
-                    app:layout_constraintEnd_toStartOf="@id/txt_status"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    />
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/txt_status"
-        style="@style/style_sub_header"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:layout_gravity="center"
-        android:textColor="@color/white"
-        android:textSize="10sp"
-        android:paddingVertical="3dp"
-        android:paddingHorizontal="5dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+                    android:padding="5dp"
+                    android:layout_gravity="center_horizontal"
+                    >
+
+                    <TextView
+                        android:id="@+id/tv_equipment_name"
+                        style="@style/style_sec"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="5dp"
+                        android:gravity="start"
+                        android:text="cdsfsdgs"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toStartOf="@id/txt_status"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/txt_status"
+                        style="@style/style_sub_header"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:paddingHorizontal="5dp"
+                        android:paddingVertical="3dp"
+                        android:textColor="@color/white"
+                        android:textSize="10sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <TextView
                     android:id="@+id/tv_location"
@@ -62,8 +67,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
                     android:gravity="start"
-                    android:visibility="gone"
-                    android:text="" />
+                    android:text=""
+                    android:visibility="gone" />
             </LinearLayout>
             <!--Stop Linerar layout 2-->
             <!--start nested scrolling view-->
@@ -339,7 +344,6 @@
                                 app:layout_constraintTop_toTopOf="@id/txt_lbl_condition" />
 
 
-
                             <TextView
                                 android:id="@+id/txt_remark"
                                 style="@style/style_thrid_thrd"
@@ -506,33 +510,33 @@
                             </RelativeLayout>
 
 
-                        <androidx.recyclerview.widget.RecyclerView
-                            android:id="@+id/recyclerView_item"
-                            android:layout_marginHorizontal="3dp"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="10dp"
-                            android:nestedScrollingEnabled="false"
-                            />
-                    </LinearLayout>
-                </androidx.cardview.widget.CardView>
+                            <androidx.recyclerview.widget.RecyclerView
+                                android:id="@+id/recyclerView_item"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginHorizontal="3dp"
+                                android:layout_marginTop="10dp"
+                                android:nestedScrollingEnabled="false" />
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
 
                     <include
-                        android:visibility="gone"
                         android:id="@+id/ll_requested_item"
-                        app:cardBackgroundColor="@color/white"
-                        android:layout_margin="8dp"
                         layout="@layout/requested_item_job_equipment"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:layout_margin="8dp"
+                        android:visibility="gone"
+                        app:cardBackgroundColor="@color/white" />
+
                     <LinearLayout
                         android:id="@+id/ll_replace"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@color/bg_job"
                         android:orientation="horizontal"
-                        android:paddingVertical="@dimen/_14sdp"
                         android:paddingHorizontal="@dimen/_10sdp"
+                        android:paddingVertical="@dimen/_14sdp"
                         android:visibility="visible"
                         android:weightSum="1">
 
@@ -561,6 +565,7 @@
                             android:textColor="@color/white"
                             tools:ignore="HardcodedText" />
                     </LinearLayout>
+
                     <LinearLayout
                         android:id="@+id/ll_repair"
                         android:layout_width="match_parent"
@@ -568,8 +573,8 @@
                         android:layout_marginTop="8dp"
                         android:background="@color/bg_link_item_note"
                         android:orientation="horizontal"
-                        android:paddingVertical="@dimen/_14sdp"
                         android:paddingHorizontal="@dimen/_10sdp"
+                        android:paddingVertical="@dimen/_14sdp"
                         android:visibility="visible"
                         android:weightSum="1">
 
@@ -598,6 +603,7 @@
                             android:textColor="@color/white"
                             tools:ignore="HardcodedText" />
                     </LinearLayout>
+
                     <LinearLayout
                         android:id="@+id/ll_reallocate"
                         android:layout_width="match_parent"
@@ -605,8 +611,8 @@
                         android:layout_marginTop="8dp"
                         android:background="@color/white"
                         android:orientation="horizontal"
-                        android:paddingVertical="@dimen/_14sdp"
                         android:paddingHorizontal="@dimen/_10sdp"
+                        android:paddingVertical="@dimen/_14sdp"
                         android:visibility="visible"
                         android:weightSum="1">
 
@@ -635,6 +641,7 @@
                             android:textColor="@color/white"
                             tools:ignore="HardcodedText" />
                     </LinearLayout>
+
                     <LinearLayout
                         android:id="@+id/ll_discard"
                         android:layout_width="match_parent"
@@ -643,8 +650,8 @@
                         android:layout_marginBottom="50dp"
                         android:background="@color/discard_link_equ"
                         android:orientation="horizontal"
-                        android:paddingVertical="@dimen/_14sdp"
                         android:paddingHorizontal="@dimen/_10sdp"
+                        android:paddingVertical="@dimen/_14sdp"
                         android:visibility="visible"
                         android:weightSum="1">
 
@@ -700,11 +707,11 @@
 
         </RelativeLayout>
 
-    <!--start Relative parent layout-->
+        <!--start Relative parent layout-->
 
 
-    <!--open fram layout tag-->
+        <!--open fram layout tag-->
         <!--close fram layout tag-->
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>
