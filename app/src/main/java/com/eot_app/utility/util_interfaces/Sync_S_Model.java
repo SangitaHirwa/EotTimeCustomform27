@@ -37,6 +37,12 @@ public interface Sync_S_Model {
     void setAuditIndexValue(int auditindex);
 
     int getAuditIndexValue();
+    void setBrandIndexValue(int brandindex);
+
+    int getBrandIndexValue();
+    void setStockIndexValue(int stockindex);
+
+    int getStockIndexValue();
 
     void setContractIndexValue(int contractindex);
 

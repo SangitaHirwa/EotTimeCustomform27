@@ -21,6 +21,8 @@ public class FIrstSyncPreference implements Sync_S_Model{
     private final String InvoiceItemIndexValue = "invoiceItemIndexValue";
     private final String InvoiceTextIndexValue = "invoiceTextIndexValue";
     private final String AuditIndexValue = "auditIndexValue";
+    private final String BrandIndexValue = "brandIndexValue";
+    private final String StockIndexValue = "stockIndexValue";
     private final String ContractIndexValue = "contractIndexValue";
     private final String EquipmentIndexValue = "equipmentIndexValue";
     private final String CustomFormIndexValue = "customFormIndexValue";
@@ -131,6 +133,28 @@ public class FIrstSyncPreference implements Sync_S_Model{
     @Override
     public int getAuditIndexValue() {
         return sp.getInt(AuditIndexValue,0);
+    }
+
+    @Override
+    public void setBrandIndexValue(int brandindex) {
+        editor.putInt(BrandIndexValue,brandindex);
+        editor.commit();
+    }
+
+    @Override
+    public int getBrandIndexValue() {
+        return sp.getInt(BrandIndexValue,0);
+    }
+
+    @Override
+    public void setStockIndexValue(int stockindex) {
+        editor.putInt(StockIndexValue,stockindex);
+        editor.commit();
+    }
+
+    @Override
+    public int getStockIndexValue() {
+        return sp.getInt(StockIndexValue,0);
     }
 
     @Override

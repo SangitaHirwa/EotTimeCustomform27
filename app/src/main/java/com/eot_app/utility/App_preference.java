@@ -52,6 +52,8 @@ public class App_preference implements Sp_model {
     private final String JOBSTARTLIST_TIME = "job_startlist_time";
     private final String ATTACHSTARTLIST_TIME = "attach_startlist_time";
     private final String AUDITLIST_TIME = "auditlist_time";
+    private final String BRANDLIST_TIME = "brandlist_time";
+    private final String STOCKLIST_TIME = "stocklist_time";
     private final String EQUIPMENT_TIME = "equpmentlist_time";
     private final String APPOINTMENT_LIST_TIME = "appointmentlist_time";
     private final String CLIENTLIST_TIME = "clientlist_time";
@@ -476,8 +478,26 @@ public class App_preference implements Sp_model {
         editor.putString(AUDITLIST_TIME, dateTime);
         editor.commit();
     }
+    @Override
+    public String getBrandSyncTime() {
+        return sp.getString(BRANDLIST_TIME, "");
+    }
 
+    @Override
+    public void setBrandSyncTime(String dateTime) {
+        editor.putString(BRANDLIST_TIME, dateTime);
+        editor.commit();
+    }
+    @Override
+    public String getStockSyncTime() {
+        return sp.getString(STOCKLIST_TIME, "");
+    }
 
+    @Override
+    public void setStockSyncTime(String dateTime) {
+        editor.putString(STOCKLIST_TIME, dateTime);
+        editor.commit();
+    }
 
     @Override
     public String getContractSyncTime() {

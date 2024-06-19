@@ -23,6 +23,8 @@ import com.eot_app.nav_menu.client.clientlist.client_detail.contact.client_dao.C
 import com.eot_app.nav_menu.client.clientlist.client_detail.site.sitelist.Site_model;
 import com.eot_app.nav_menu.jobs.job_db.Job;
 import com.eot_app.nav_menu.jobs.job_db.JobListRequestModel;
+import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.model.GetStockListReqModel;
+import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.model.StockData;
 import com.eot_app.nav_menu.jobs.job_detail.customform.cstm_form_model.CustomFormListOffline;
 import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.Attachments;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.inventry_pkg.Inventry_ReQ_Model;
@@ -176,6 +178,9 @@ public class SyncDataJobService extends JobService {
                 getCustomForm();
                 break;
             case 16:
+                getUserStockBalance();
+                break;
+            case 17:
                 goHomePage();
                 App_preference.getSharedprefInstance().setFirstSyncState(0);
                 stopSelf();
@@ -1320,14 +1325,14 @@ public class SyncDataJobService extends JobService {
     }
    /**get Brand dataList**/
    private void getBrandList() {
-       if (FIrstSyncPreference.getSharedprefInstance().getAuditIndexValue()!=0)
+       if (FIrstSyncPreference.getSharedprefInstance().getBrandIndexValue()!=0)
        {
-           updateIndex=FIrstSyncPreference.getSharedprefInstance().getAuditIndexValue();
-           FIrstSyncPreference.getSharedprefInstance().setAuditIndexValue(0);
+           updateIndex=FIrstSyncPreference.getSharedprefInstance().getBrandIndexValue();
+           FIrstSyncPreference.getSharedprefInstance().setBrandIndexValue(0);
        }
        GetBrandListReqModel brandListReqModel = new GetBrandListReqModel(updateLimit,updateIndex,"");
        String data = new Gson().toJson(brandListReqModel);
-       Log.d("Apitimetracking","getContractList:-"+data);
+       Log.d("Apitimetracking","getBrandList:-"+data);
        Log.d("Apitimetracking","time"+AppUtility.getCurrentDateByFormat("yyyy-MM-dd HH:mm:ss"));
        ApiClient.getservices().eotServiceCall(Service_apis.getBrandList, AppUtility.getApiHeaders(), AppUtility.getJsonObject(data))
                .subscribeOn(Schedulers.io())
@@ -1358,6 +1363,7 @@ public class SyncDataJobService extends JobService {
                    public void onError(@NotNull Throwable e) {
                        Log.e("Network Error :", e.toString());
                        /* *****/
+                       FIrstSyncPreference.getSharedprefInstance().setBrandIndexValue(0);
                        errorMsg(e.toString());
                    }
 
@@ -1368,16 +1374,82 @@ public class SyncDataJobService extends JobService {
                            getBrandList();
                        } else {
                            if (count != 0) {
-                               App_preference.getSharedprefInstance().setContractSyncTime(AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT));
+                               App_preference.getSharedprefInstance().setBrandSyncTime(AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT));
                            }
                            updateIndex = 0;
                            count = 0;
                            App_preference.getSharedprefInstance().setFirstSyncState(1);
                            startSyncFromStatus();
-                           Log.v("MainSync","Sync completed "+" --" +"contract Sync Done");
+                           Log.v("MainSync","Sync completed "+" --" +"brand Sync Done");
 
                        }
                    }
                });
    }
+
+    /**get Stock data**/
+    private void getUserStockBalance() {
+        if (FIrstSyncPreference.getSharedprefInstance().getStockIndexValue()!=0)
+        {
+            updateIndex=FIrstSyncPreference.getSharedprefInstance().getStockIndexValue();
+            FIrstSyncPreference.getSharedprefInstance().setStockIndexValue(0);
+        }
+        GetStockListReqModel stockListReqModel = new GetStockListReqModel(updateLimit,updateIndex,App_preference.getSharedprefInstance().getStockSyncTime()
+                ,Integer.parseInt(App_preference.getSharedprefInstance().getLoginRes().getUsrId()),"");
+        String data = new Gson().toJson(stockListReqModel);
+        Log.d("Apitimetracking","getUserStockBalance:-"+data);
+        Log.d("Apitimetracking","time"+AppUtility.getCurrentDateByFormat("yyyy-MM-dd HH:mm:ss"));
+        ApiClient.getservices().eotServiceCall(Service_apis.getUserStockBalance, AppUtility.getApiHeaders(), AppUtility.getJsonObject(data))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<JsonObject>() {
+                    @Override
+                    public void onSubscribe(@NotNull Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(@NotNull JsonObject jsonObject) {
+                        AppCenterLogs.addLogToAppCenterOnAPIFail("Api","getUserStockBalance","","SyncDataJobService",String.valueOf(jsonObject.get("success").getAsBoolean()));
+                        Log.d("getUserStockBalance", jsonObject.toString());
+                        if (jsonObject.get("success").getAsBoolean()) {
+                            count = jsonObject.get("count").getAsInt();
+                            String convert = new Gson().toJson(jsonObject.get("data").getAsJsonArray());
+                            Type listType = new TypeToken<List<StockData>>() {
+                            }.getType();
+                            List<StockData> stockList = new Gson().fromJson(convert, listType);
+                            if (stockList != null) {
+//                                AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).brandDao().insertBrandDate(brandList);
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onError(@NotNull Throwable e) {
+                        Log.e("Network Error :", e.toString());
+                        /* *****/
+                        FIrstSyncPreference.getSharedprefInstance().setStockIndexValue(0);
+                        errorMsg(e.toString());
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        if ((updateIndex + updateLimit) <= count) {
+                            updateIndex += updateLimit;
+                            getUserStockBalance();
+                        } else {
+                            if (count != 0) {
+                                App_preference.getSharedprefInstance().setStockSyncTime(AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT));
+                            }
+                            updateIndex = 0;
+                            count = 0;
+                            App_preference.getSharedprefInstance().setFirstSyncState(17);
+                            startSyncFromStatus();
+                            Log.v("MainSync","Sync completed "+" --" +"UserStockBalance Sync Done");
+
+                        }
+                    }
+                });
+    }
+
 }

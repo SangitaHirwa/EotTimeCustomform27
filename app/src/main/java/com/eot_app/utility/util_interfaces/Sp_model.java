@@ -123,6 +123,10 @@ public interface Sp_model {
     String getAuditSyncTime();
 
     void setAuditSyncTime(String dateTime);
+    void setBrandSyncTime(String dateTime);
+    String getBrandSyncTime();
+    void setStockSyncTime(String dateTime);
+    String getStockSyncTime();
 
     String getContractSyncTime();
 
