@@ -178,7 +178,9 @@ public class SyncDataJobService extends JobService {
                 getCustomForm();
                 break;
             case 16:
-                getUserStockBalance();
+//                getUserStockBalance();
+                App_preference.getSharedprefInstance().setFirstSyncState(17);
+                startSyncFromStatus();
                 break;
             case 17:
                 goHomePage();
@@ -1419,7 +1421,7 @@ public class SyncDataJobService extends JobService {
                             }.getType();
                             List<StockData> stockList = new Gson().fromJson(convert, listType);
                             if (stockList != null) {
-//                                AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).brandDao().insertBrandDate(brandList);
+                                AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).stockDataDao().insertStockData(stockList);
                             }
                         }
                     }
