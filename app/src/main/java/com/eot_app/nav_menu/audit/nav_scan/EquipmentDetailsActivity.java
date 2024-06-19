@@ -131,9 +131,11 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
                 EquArrayModel equipment = new Gson().fromJson(str, EquArrayModel.class);
                 /**Due to we are not getting date in lastJobDate param of equipment array of gerUserJobListForMobile api response, and we are getting same value in updateData param of equipment array of gerUserJobListForMobile api response*/
                 Equipment equipmentRes = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).equipmentDao().getEquipmentById(equipment.getEquId());
-                String equip = new Gson().toJson(equipmentRes);
-                equipment = new Gson().fromJson(equip, EquArrayModel.class);
-                equipment.setEquipment_group(equipmentRes.getGroupName());
+                if(equipmentRes != null) {
+                    String equip = new Gson().toJson(equipmentRes);
+                    equipment = new Gson().fromJson(equip, EquArrayModel.class);
+                    equipment.setEquipment_group(equipmentRes.getGroupName());
+                }
                 setJobEquipment(equipment);
                 equpId = equipment.getEquId();
                 jobId = getIntent().getStringExtra("jobId");
@@ -166,9 +168,11 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
                 equipment = new Gson().fromJson(str, EquArrayModel.class);
                 /**Due to we are not getting date in lastJobDate param of equipment array of gerUserJobListForMobile api response, and we are getting same value in updateData param of equipment array of gerUserJobListForMobile api response*/
                 Equipment equipmentRes = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).equipmentDao().getEquipmentById(equipment.getEquId());
-                String equip = new Gson().toJson(equipmentRes);
-                equipment = new Gson().fromJson(equip, EquArrayModel.class);
-                equipment.setEquipment_group(equipmentRes.getGroupName());
+                if(equipmentRes != null) {
+                    String equip = new Gson().toJson(equipmentRes);
+                    equipment = new Gson().fromJson(equip, EquArrayModel.class);
+                    equipment.setEquipment_group(equipmentRes.getGroupName());
+                }
                 setJobEquipment(equipment);
                 equpId = equipment.getEquId();
                 cltId = equipment.getCltId();
@@ -576,9 +580,11 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
                         equpId = equipment.getEquId();
                         /**Due to we are not getting date in lastJobDate param of equipment array of gerUserJobListForMobile api response, and we are getting same value in updateData param of equipment array of gerUserJobListForMobile api response*/
                         Equipment equipmentRes = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).equipmentDao().getEquipmentById(equipment.getEquId());
-                        String equip = new Gson().toJson(equipmentRes);
-                        equipment = new Gson().fromJson(equip, EquArrayModel.class);
-                        equipment.setEquipment_group(equipmentRes.getGroupName());
+                        if(equipmentRes != null) {
+                            String equip = new Gson().toJson(equipmentRes);
+                            equipment = new Gson().fromJson(equip, EquArrayModel.class);
+                            equipment.setEquipment_group(equipmentRes.getGroupName());
+                        }
                         setJobEquipment(equipment);
 //                        equ_details_pc.getEquipmentAduitHistory(equipment.getEquId());
 //                        equ_details_pc.getEquipmentJobHistory(equipment.getEquId());
@@ -668,7 +674,10 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
 
         try {
             if (equipment.getLastJobDate() != null && !TextUtils.isEmpty(equipment.getLastJobDate())) {
-                last_serv_date_lable.setText(AppUtility.getDateWithFormate(Long.parseLong(equipment.getLastJobDate()), "dd-MMM-yyyy hh:mm"));
+                String lastJobDate = AppUtility.getDateWithFormate(Long.parseLong(equipment.getLastJobDate()), AppUtility.dateTimeByAmPmFormate(AppConstant.DATE_FORMAT+" "+"hh:mm aa", AppConstant.DATE_FORMAT+" "+"HH:MM"));
+                lastJobDate = lastJobDate.replace("am","AM");
+                lastJobDate = lastJobDate.replace("pm","PM");
+                last_serv_date_lable.setText(lastJobDate);
                 last_service_txt.setText(new StringBuilder().append(LanguageController.getInstance().getMobileMsgByKey(AppConstant.last_service)).append(": ").append(AppUtility.getDateWithFormate(Long.parseLong(equipment.getLastJobDate()), "dd-MMM-yyyy")).toString());
 //                last_service_date.setText(AppUtility.getDateWithFormate(Long.parseLong(equipment.getLastJobDate()), "dd-MMM-yyyy"));
 
@@ -677,10 +686,10 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
             // days=0
             //month=1
             //year=2
-            if (equipment.getServIntvalType() != null && equipment.getServIntvalValue() != null && !equipment.getServIntvalType().equalsIgnoreCase("0") && !equipment.getServIntvalValue().equalsIgnoreCase("0")) {
+            if (equipment.getServIntvalType() != null && equipment.getServIntvalValue() != null && !equipment.getServIntvalType().isEmpty() && !equipment.getServIntvalValue().equalsIgnoreCase("0")) {
                 serv_due_date.setText(AppUtility.getServiceDueDate(equipment.getServIntvalType(), equipment.getServIntvalValue(), Long.parseLong(equipment.getLastJobDate())));
 //                deu_service_date.setText(AppUtility.getServiceDueDate(equipment.getServIntvalType(), equipment.getServIntvalValue(), Long.parseLong(equipment.getLastJobDate())));
-                deu_service_txt.setText(new StringBuilder().append(LanguageController.getInstance().getMobileMsgByKey(AppConstant.service_history)).append(": ").append(AppUtility.getServiceDueDate(equipment.getServIntvalType(), equipment.getServIntvalValue(), Long.parseLong(equipment.getLastJobDate()))).toString());
+                deu_service_txt.setText(new StringBuilder().append(LanguageController.getInstance().getMobileMsgByKey(AppConstant.upcoming_service)).append(": ").append(AppUtility.getServiceDueDate(equipment.getServIntvalType(), equipment.getServIntvalValue(), Long.parseLong(equipment.getLastJobDate()))).toString());
             }
         } catch (Exception exception) {
             exception.printStackTrace();

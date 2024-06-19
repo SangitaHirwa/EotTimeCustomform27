@@ -21,6 +21,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -197,6 +198,7 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
     List<InvoiceItemDataModel> serialNoList = new ArrayList<>();
     Inventry_ReS_Model invetoryItemData = new Inventry_ReS_Model();
     InvoiceItemDataModel invoiceItemDataModelWithIjmmId = new InvoiceItemDataModel();
+    ImageView ivCross;
 
     public AddEditInvoiceItemActivity2 getInstance() {
 
@@ -206,6 +208,7 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EotApp.getAppinstance().setEquipItemObserver(null);
         addEditInvoiceItemActivity2 = this;
         setContentView(R.layout.activity_edit__invoice);
 //        initializelables();
@@ -361,6 +364,15 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
 
             @Override
             public void afterTextChanged(Editable editable) {
+                if (comeFrom != null && comeFrom.equalsIgnoreCase("AddRemark") || comeFrom != null && comeFrom.equalsIgnoreCase("JobListScan") || comeFrom != null && comeFrom.equalsIgnoreCase("AddRemarkReplace")) {
+                    if(!autocomplete_item.getText().toString().isEmpty()){
+                        ivCross.setVisibility(View.VISIBLE);
+                    }
+                    else {
+                        ivCross.setVisibility(View.GONE);
+                    }
+                }
+
                 if (autocomplete_item.getTag() == null) {
                     Log.e("EmptyTag", "");
                 } else {
@@ -1037,6 +1049,8 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
         btn_not_matchSerialNo = findViewById(R.id.btn_not_matchSerialNo);
         btn_not_matchSerialNo.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.appointment_add_new_attach));
         btn_not_matchSerialNo.setOnClickListener(this);
+        ivCross = findViewById(R.id.ivCross);
+        ivCross.setOnClickListener(this);
 
         intializeViews();
     }
@@ -1773,6 +1787,9 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
                 ll_serialNo.setVisibility(View.GONE);
                 ll_below_rd_serialNo.setVisibility(View.VISIBLE);
                 break;
+            case R.id.ivCross:
+                autocomplete_item.setText("");
+                break;
             default:
                 if (comeFrom != null && comeFrom.equalsIgnoreCase("AddRemark") || comeFrom != null && comeFrom.equalsIgnoreCase("JobListScan") || comeFrom != null && comeFrom.equalsIgnoreCase("AddRemarkReplace")) {
                     isSerialNoSelected = true;
@@ -1786,6 +1803,7 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
                         }
                     }
                 }
+                break;
         }
     }
 

@@ -1332,7 +1332,7 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
                                     custom_filed_txt_2.getText().toString().trim(), servIntvalType,
                                     interval, "1",
                                     equipmentId,
-                                    isCnvtItemParts, binding.installedDateLable.getText().toString().trim(),supplierId,""), path,
+                                    isCnvtItemParts, binding.installedDateLable.getText().toString().trim(),supplierId,"",""), path,
                             barcodeString,qrCodeString, parentId);
                 } else if (audit != null) {
                     addJobEqu_pi.addNewEquipment(
@@ -1398,7 +1398,7 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
                                 custom_filed_txt_2.getText().toString().trim(), servIntvalType,
                                 interval, "1",
                                 equipmentId,
-                                isCnvtItemParts, binding.installedDateLable.getText().toString().trim(),supplierId,updateItemDataModel.getIjmmId()), path,
+                                isCnvtItemParts, binding.installedDateLable.getText().toString().trim(),supplierId,updateItemDataModel.getIjmmId(),""), path,
                         barcodeString,qrCodeString, parentId);
             }
         }

@@ -1073,7 +1073,6 @@ public class AppConstant {
     public static String equipment_list_page = "equipment_list_page";
     public static String equipment_action_page = "equipment_action_page";
     public static String went_wrong = "went_wrong";
-    public static String change_equ_type_msg = "change_equ_type_msg";
 
     public static String server(String location) {
         switch (location) {

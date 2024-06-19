@@ -766,9 +766,13 @@ public abstract class AppDataBase extends RoomDatabase {
                     "'sat_itemid' TEXT," +
                     "'balance' TEXT," +
                     " PRIMARY KEY(`sat_usrid`)) ");
+            /* **Alter  Equipment Table  **/
+            database.execSQL("ALTER TABLE Equipment ADD COLUMN servIntvalType TEXT");
+            database.execSQL("ALTER TABLE Equipment ADD COLUMN servIntvalValue TEXT");
 
         }
     };
+
     private static final String DB_NAME = "eot_db";
 
     private static AppDataBase INSTANCE;
@@ -812,7 +816,6 @@ public abstract class AppDataBase extends RoomDatabase {
                     .addMigrations(MIGRATION_27_28)
                     .addMigrations(MIGRATION_28_29)
                     .addMigrations(MIGRATION_29_30)
-                    .addMigrations(MIGRATION_30_31)
                     .addMigrations(MIGRATION_30_31)
                     .addMigrations(MIGRATION_31_32)
                     .addMigrations(MIGRATION_32_33)

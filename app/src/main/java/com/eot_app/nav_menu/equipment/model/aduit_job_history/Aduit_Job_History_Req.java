@@ -11,7 +11,7 @@ public class Aduit_Job_History_Req {
     int limit = 50;
     int index = 0;
     String moduleType;
-    //   filterType = 1-> service done, 2-> upcoming service, 3-> service overdue
+    //   filterType = 1-> service done, 2-> upcoming service, 3-> service overdue, 4-> insted of upcoming service
     String filterType;
 
     public Aduit_Job_History_Req(String equId, String moduleType) {

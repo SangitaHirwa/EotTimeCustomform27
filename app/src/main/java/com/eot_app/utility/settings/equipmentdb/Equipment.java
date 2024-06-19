@@ -54,6 +54,25 @@ public class Equipment {
     private String installedDate;
     private String qrcode;
     private String qrcodeImg;
+    private String servIntvalType;
+    private String servIntvalValue;
+
+    public String getServIntvalType() {
+        return servIntvalType;
+    }
+
+    public void setServIntvalType(String servIntvalType) {
+        this.servIntvalType = servIntvalType;
+    }
+
+    public String getServIntvalValue() {
+        return servIntvalValue;
+    }
+
+    public void setServIntvalValue(String servIntvalValue) {
+        this.servIntvalValue = servIntvalValue;
+    }
+
     public String getInstalledDate() {
         return installedDate;
     }

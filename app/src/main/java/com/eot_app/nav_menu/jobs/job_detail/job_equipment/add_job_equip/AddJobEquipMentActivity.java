@@ -864,8 +864,17 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
         if (comeFrom != null && comeFrom.equalsIgnoreCase("JobListScan")){
             if(equDefaultType != null && !equDefaultType.isEmpty()){
                 isDefaultType = true;
-                if (equDefaultType.equalsIgnoreCase("1")) radio_owner.setChecked(true);
-                else if (equDefaultType.equalsIgnoreCase("2")) radio_serv_prov.setChecked(true);
+                if (equDefaultType.equalsIgnoreCase("1")) {
+                    radio_owner.setChecked(true);
+                    radio_serv_prov.setChecked(false);
+                }
+                else if (equDefaultType.equalsIgnoreCase("2")) {
+                    radio_serv_prov.setChecked(true);
+                    radio_owner.setChecked(false);
+
+                }
+                radio_owner.setEnabled(false);
+                radio_serv_prov.setEnabled(false);
             }else {
                 radio_owner.setChecked(true);
             }
@@ -955,7 +964,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
             }
             edt_equ_adrs.setText(audit.getAdr());
 //            edt_equ_zip.setText(audit.getZip());
-            auto_client_site.setText(Html.fromHtml("<font color='#4C000000'>" + job.getSnm() + "</font>" + "<br>" + newLocation));
+                auto_client_site.setText(Html.fromHtml("<font color='#4C000000'>" + audit.getSnm() + "</font>" + "<br>" + newLocation));
             client_site_layout.setHintEnabled(true);
 //            client_layout.setHintEnabled(true);
 //            job_country_layout.setHintEnabled(true);
@@ -1553,6 +1562,9 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
         datePickerDialog.show();
     }
 
+    SimpleDateFormat stf = new SimpleDateFormat("hh:mm:ss", Locale.US);
+    String formatetime = stf.format(Calendar.getInstance().getTime());
+    String puchaseDate = "", manufactureDate = "", warantyStartDate = "",warantyDate = "", installDate ="";
     private void createEquipmentForJobAudit() {
         add_edit_item_Btn.setEnabled(false);
         if (rdBtn_day.isChecked()) {
@@ -1563,6 +1575,18 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
             interval = edt_year.getText().toString();
         } else {
             interval = "";
+        }
+
+        if(!TextUtils.isEmpty(purchase_date_lable.getText().toString().trim())){
+            puchaseDate = purchase_date_lable.getText().toString().trim()+" "+formatetime;
+        }if(!TextUtils.isEmpty(manuf_date_lable.getText().toString().trim())){
+            manufactureDate = manuf_date_lable.getText().toString().trim()+" "+formatetime;
+        }if(!TextUtils.isEmpty(warnty_date_lable.getText().toString().trim())){
+            warantyDate = warnty_date_lable.getText().toString().trim()+" "+formatetime;
+        }if(!TextUtils.isEmpty(binding.installedDateLable.getText().toString().trim())){
+            installDate = binding.installedDateLable.getText().toString().trim()+" "+formatetime;
+        }if(!TextUtils.isEmpty(warnty_date_lable_start.getText().toString().trim())){
+            warantyStartDate = warnty_date_lable_start.getText().toString().trim()+" "+formatetime;
         }
         if (comeFrom != null && comeFrom.equalsIgnoreCase("AddRemarkReplace")) {
             createEqquipmentRequestForReplace();
@@ -1579,8 +1603,6 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
         statename = auto_states.getText().toString();*/
         ctry = addJobEqu_pi.cntryId(countryNameById);
         state = addJobEqu_pi.statId(ctry, statenameById);
-        SimpleDateFormat stf = new SimpleDateFormat("hh:mm:ss", Locale.US);
-        String formatetime = stf.format(Calendar.getInstance().getTime());
 
         if (updateItemDataModel == null) {
 
@@ -1592,13 +1614,13 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
             if (addJobEqu_pi.RequiredFields(edt_equ.getText().toString().trim())) {
                 if (comeFrom1 != null && comeFrom1.equalsIgnoreCase("AddPartWithoutItem")) {
                     addJobEqu_pi.convertItemToequip(new AddEquReq(type, egId, ecId, zip, city, edt_equ_adrs.getText().toString().trim(), ctry, state, /*isBarcodeGenerate,*/
-                            quote_notes_edt.getText().toString().trim(), purchase_date_lable.getText().toString().trim() + " " + formatetime, manuf_date_lable.getText().toString().trim() + " " + formatetime, warnty_date_lable.getText().toString().trim() + " " + formatetime, "", edt_equ_serial.getText().toString().trim(), edt_equ_model.getText().toString().trim(), brandId, edt_equ.getText().toString().trim(), jobId, job.getCltId(), job.getContrId(), "", "", siteId, isPart, status, invId, custom_filed_txt_1.getText().toString().trim(), custom_filed_txt_2.getText().toString().trim(), servIntvalType, interval, isCnvtItemParts, binding.installedDateLable.getText().toString().trim() + " " + formatetime, supplierId, ""), path, barcodeString, qrCodeString, equipmentId);
+                            quote_notes_edt.getText().toString().trim(), puchaseDate, manufactureDate , warantyDate, "", edt_equ_serial.getText().toString().trim(), edt_equ_model.getText().toString().trim(), brandId, edt_equ.getText().toString().trim(), jobId, job.getCltId(), job.getContrId(), "", "", siteId, isPart, status, invId, custom_filed_txt_1.getText().toString().trim(), custom_filed_txt_2.getText().toString().trim(), servIntvalType, interval, isCnvtItemParts, installDate, supplierId, "",warantyStartDate), path, barcodeString, qrCodeString, equipmentId);
                 } else if (audit != null) {
                     addJobEqu_pi.addNewEquipment(new AddEquReq(type, egId, ecId, zip, city, edt_equ_adrs.getText().toString().trim(), ctry, state, /*isBarcodeGenerate,*/
-                            quote_notes_edt.getText().toString().trim(), purchase_date_lable.getText().toString().trim() + " " + formatetime, manuf_date_lable.getText().toString().trim() + " " + formatetime, warnty_date_lable.getText().toString().trim() + " " + formatetime, "", edt_equ_serial.getText().toString().trim(), edt_equ_model.getText().toString().trim(), brandId, edt_equ.getText().toString().trim(), audit.getAudId(), audit.getCltId(), audit.getContrId(), siteId, isPart, status, custom_filed_txt_1.getText().toString().trim(), custom_filed_txt_2.getText().toString().trim(), servIntvalType, interval, supplierId), path, barcodeString, qrCodeString, binding.installedDateLable.getText().toString().trim() + " " + formatetime, equipmentId);
+                            quote_notes_edt.getText().toString().trim(), puchaseDate, manufactureDate, warantyDate, "", edt_equ_serial.getText().toString().trim(), edt_equ_model.getText().toString().trim(), brandId, edt_equ.getText().toString().trim(), audit.getAudId(), audit.getCltId(), audit.getContrId(), siteId, isPart, status, custom_filed_txt_1.getText().toString().trim(), custom_filed_txt_2.getText().toString().trim(), servIntvalType, interval, supplierId), path, barcodeString, qrCodeString, installDate, equipmentId);
                 } else {
                     addJobEqu_pi.addNewEquipment(new AddEquReq(type, egId, ecId, zip, city, edt_equ_adrs.getText().toString().trim(), ctry, state, /*isBarcodeGenerate,*/
-                            quote_notes_edt.getText().toString().trim(), purchase_date_lable.getText().toString().trim() + " " + formatetime, manuf_date_lable.getText().toString().trim() + " " + formatetime, warnty_date_lable.getText().toString().trim() + " " + formatetime, "", edt_equ_serial.getText().toString().trim(), edt_equ_model.getText().toString().trim(), brandId, edt_equ.getText().toString().trim(), jobId, job.getCltId(), job.getContrId(), siteId, isPart, status, custom_filed_txt_1.getText().toString().trim(), custom_filed_txt_2.getText().toString().trim(), servIntvalType, interval, supplierId), path, barcodeString, qrCodeString, binding.installedDateLable.getText().toString().trim() + " " + formatetime, equipmentId);
+                            quote_notes_edt.getText().toString().trim(), puchaseDate, manufactureDate, warantyDate, "", edt_equ_serial.getText().toString().trim(), edt_equ_model.getText().toString().trim(), brandId, edt_equ.getText().toString().trim(), jobId, job.getCltId(), job.getContrId(), siteId, isPart, status, custom_filed_txt_1.getText().toString().trim(), custom_filed_txt_2.getText().toString().trim(), servIntvalType, interval, supplierId), path, barcodeString, qrCodeString, installDate, equipmentId);
                 }
             }
         } else {
@@ -1608,7 +1630,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
             }
             if (addJobEqu_pi.RequiredFields(edt_equ.getText().toString().trim())) {
                 addJobEqu_pi.convertItemToequip(new AddEquReq(type, egId, ecId, zip, city, edt_equ_adrs.getText().toString().trim(), ctry, state, /*isBarcodeGenerate,*/
-                        quote_notes_edt.getText().toString().trim(), purchase_date_lable.getText().toString().trim() + " " + formatetime, manuf_date_lable.getText().toString().trim() + " " + formatetime, warnty_date_lable.getText().toString().trim() + " " + formatetime, "", edt_equ_serial.getText().toString().trim(), edt_equ_model.getText().toString().trim(), brandId, edt_equ.getText().toString().trim(), jobId, job.getCltId(), job.getContrId(), updateItemDataModel.getItemId(), updateItemDataModel.getRate(), siteId, isPart, status, invId, custom_filed_txt_1.getText().toString().trim(), custom_filed_txt_2.getText().toString().trim(), servIntvalType, interval, isCnvtItemParts, binding.installedDateLable.getText().toString().trim() + " " + formatetime, supplierId, updateItemDataModel.getIjmmId()), path, barcodeString, qrCodeString, equipmentId);
+                        quote_notes_edt.getText().toString().trim(), puchaseDate, manufactureDate, warantyDate, "", edt_equ_serial.getText().toString().trim(), edt_equ_model.getText().toString().trim(), brandId, edt_equ.getText().toString().trim(), jobId, job.getCltId(), job.getContrId(), updateItemDataModel.getItemId(), updateItemDataModel.getRate(), siteId, isPart, status, invId, custom_filed_txt_1.getText().toString().trim(), custom_filed_txt_2.getText().toString().trim(), servIntvalType, interval, isCnvtItemParts, installDate, supplierId, updateItemDataModel.getIjmmId(),warantyStartDate), path, barcodeString, qrCodeString, equipmentId);
             }
         }
     }
@@ -1630,13 +1652,13 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
                         isCnvtItemParts = "0";
                     }
                     addJobEqu_pi.convertItemToequip(new AddEquReq(type, egId, ecId, zip, city, edt_equ_adrs.getText().toString().trim(), ctry, state, /*isBarcodeGenerate,*/
-                            quote_notes_edt.getText().toString().trim(), purchase_date_lable.getText().toString().trim(), manuf_date_lable.getText().toString().trim(), warnty_date_lable.getText().toString().trim(), "", edt_equ_serial.getText().toString().trim(), edt_equ_model.getText().toString().trim(), brandId, edt_equ.getText().toString().trim(), jobId, job.getCltId(), job.getContrId(), "", "", siteId, isPart, status, invId, custom_filed_txt_1.getText().toString().trim(), custom_filed_txt_2.getText().toString().trim(), servIntvalType, interval, "1", equipmentId, isCnvtItemParts, binding.installedDateLable.getText().toString().trim(), supplierId, ""), path, barcodeString, qrCodeString, parentId);
+                            quote_notes_edt.getText().toString().trim(), puchaseDate, manufactureDate, warantyDate, "", edt_equ_serial.getText().toString().trim(), edt_equ_model.getText().toString().trim(), brandId, edt_equ.getText().toString().trim(), jobId, job.getCltId(), job.getContrId(), "", "", siteId, isPart, status, invId, custom_filed_txt_1.getText().toString().trim(), custom_filed_txt_2.getText().toString().trim(), servIntvalType, interval, "1", equipmentId, isCnvtItemParts, installDate, supplierId, "",warantyStartDate), path, barcodeString, qrCodeString, parentId);
                 } else if (audit != null) {
                     addJobEqu_pi.addNewEquipment(new AddEquReq(type, egId, ecId, zip, city, edt_equ_adrs.getText().toString().trim(), ctry, state, /*isBarcodeGenerate,*/
-                            quote_notes_edt.getText().toString().trim(), purchase_date_lable.getText().toString().trim(), manuf_date_lable.getText().toString().trim(), warnty_date_lable.getText().toString().trim(), "", edt_equ_serial.getText().toString().trim(), edt_equ_model.getText().toString().trim(), brandId, edt_equ.getText().toString().trim(), audit.getAudId(), audit.getCltId(), audit.getContrId(), siteId, isPart, status, custom_filed_txt_1.getText().toString().trim(), custom_filed_txt_2.getText().toString().trim(), servIntvalType, interval, supplierId), path, barcodeString, barcodeString, binding.installedDateLable.getText().toString().trim(), equipmentId);
+                            quote_notes_edt.getText().toString().trim(), puchaseDate, manufactureDate, warantyDate, "", edt_equ_serial.getText().toString().trim(), edt_equ_model.getText().toString().trim(), brandId, edt_equ.getText().toString().trim(), audit.getAudId(), audit.getCltId(), audit.getContrId(), siteId, isPart, status, custom_filed_txt_1.getText().toString().trim(), custom_filed_txt_2.getText().toString().trim(), servIntvalType, interval, supplierId), path, barcodeString, barcodeString, installDate, equipmentId);
                 } else {
                     addJobEqu_pi.addNewEquipment(new AddEquReq(type, egId, ecId, zip, city, edt_equ_adrs.getText().toString().trim(), ctry, state, /*isBarcodeGenerate,*/
-                            quote_notes_edt.getText().toString().trim(), purchase_date_lable.getText().toString().trim(), manuf_date_lable.getText().toString().trim(), warnty_date_lable.getText().toString().trim(), "", edt_equ_serial.getText().toString().trim(), edt_equ_model.getText().toString().trim(), brandId, edt_equ.getText().toString().trim(), jobId, job.getCltId(), job.getContrId(), siteId, isPart, status, custom_filed_txt_1.getText().toString().trim(), custom_filed_txt_2.getText().toString().trim(), servIntvalType, interval, supplierId), path, barcodeString, barcodeString, binding.installedDateLable.getText().toString().trim(), equipmentId);
+                            quote_notes_edt.getText().toString().trim(), puchaseDate, manufactureDate, warantyDate, "", edt_equ_serial.getText().toString().trim(), edt_equ_model.getText().toString().trim(), brandId, edt_equ.getText().toString().trim(), jobId, job.getCltId(), job.getContrId(), siteId, isPart, status, custom_filed_txt_1.getText().toString().trim(), custom_filed_txt_2.getText().toString().trim(), servIntvalType, interval, supplierId), path, barcodeString, barcodeString, installDate, equipmentId);
                 }
             }
         } else {
@@ -1648,7 +1670,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
                     isCnvtItemParts = "0";
                 }
                 addJobEqu_pi.convertItemToequip(new AddEquReq(type, egId, ecId, zip, city, edt_equ_adrs.getText().toString().trim(), ctry, state, /*isBarcodeGenerate,*/
-                        quote_notes_edt.getText().toString().trim(), purchase_date_lable.getText().toString().trim(), manuf_date_lable.getText().toString().trim(), warnty_date_lable.getText().toString().trim(), "", edt_equ_serial.getText().toString().trim(), edt_equ_model.getText().toString().trim(), brandId, edt_equ.getText().toString().trim(), jobId, job.getCltId(), job.getContrId(), updateItemDataModel.getItemId(), updateItemDataModel.getRate(), siteId, isPart, status, invId, custom_filed_txt_1.getText().toString().trim(), custom_filed_txt_2.getText().toString().trim(), servIntvalType, interval, "1", equipmentId, isCnvtItemParts, binding.installedDateLable.getText().toString().trim(), supplierId, updateItemDataModel.getIjmmId()), path, barcodeString, qrCodeString, parentId);
+                        quote_notes_edt.getText().toString().trim(), puchaseDate, manufactureDate, warantyDate, "", edt_equ_serial.getText().toString().trim(), edt_equ_model.getText().toString().trim(), brandId, edt_equ.getText().toString().trim(), jobId, job.getCltId(), job.getContrId(), updateItemDataModel.getItemId(), updateItemDataModel.getRate(), siteId, isPart, status, invId, custom_filed_txt_1.getText().toString().trim(), custom_filed_txt_2.getText().toString().trim(), servIntvalType, interval, "1", equipmentId, isCnvtItemParts, installDate, supplierId, updateItemDataModel.getIjmmId(),warantyStartDate), path, barcodeString, qrCodeString, parentId);
             }
         }
     }
@@ -1829,20 +1851,16 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
 
             case R.id.radio_owner:
                 if (isChecked) {
-                    if( equDefaultType != null && equDefaultType.equalsIgnoreCase("2") && isDefaultType){
-                        setEquipmentType("1");
-                    }else {
+
                         type = "1";
-                    }
+
                 }
                 break;
             case R.id.radio_serv_prov:
                 if (isChecked) {
-                    if( equDefaultType != null && equDefaultType.equalsIgnoreCase("1")&&isDefaultType){
-                        setEquipmentType("2");
-                    }else {
+
                         type = "2";
-                    }
+
                 }break;
         }
     }
@@ -2459,26 +2477,5 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
 
         this.finish();
     }
-    private void setEquipmentType(String equType){
 
-        AppUtility.alertDialog2(this, "", LanguageController.getInstance().getMobileMsgByKey(AppConstant.change_equ_type_msg)
-                , LanguageController.getInstance().getMobileMsgByKey(AppConstant.continue_)
-                , LanguageController.getInstance().getMobileMsgByKey(AppConstant.cancel), new Callback_AlertDialog() {
-                    @Override
-                    public void onPossitiveCall() {
-                            type = equType;
-                    }
-
-                    @Override
-                    public void onNegativeCall() {
-                        if(equDefaultType != null && equDefaultType.equals("1")) {
-                            radio_serv_prov.setChecked(false);
-                            radio_owner.setChecked(true);
-                        }else if(equDefaultType != null && equDefaultType.equals("2")){
-                            radio_serv_prov.setChecked(true);
-                            radio_owner.setChecked(false);
-                        }
-                    }
-                });
-    }
 }

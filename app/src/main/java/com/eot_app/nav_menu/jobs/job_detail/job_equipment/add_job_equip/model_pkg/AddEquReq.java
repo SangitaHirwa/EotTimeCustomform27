@@ -49,6 +49,15 @@ public class AddEquReq {
     private String installedDate;
     private String supId;
     private String ijmmId ="";
+    private String warrantyStartDate ="";
+
+    public String getWarrantyStartDate() {
+        return warrantyStartDate;
+    }
+
+    public void setWarrantyStartDate(String warrantyStartDate) {
+        this.warrantyStartDate = warrantyStartDate;
+    }
 
     public String getIjmmId() {
         return ijmmId;
@@ -124,7 +133,7 @@ public class AddEquReq {
             , String itemId, String rate, String siteId, String isPart,
                      String status, String invId,String extraField1,
                      String extraField2,String servIntvalType,String servIntvalValue,
-                     String isCnvtItemParts,String installedDate,String supplierId,String ijmmId) {
+                     String isCnvtItemParts,String installedDate,String supplierId,String ijmmId,String warrantyStartDate) {
         this.type = type;
         this.egId = egId;
         this.ecId = ecId;
@@ -160,6 +169,7 @@ public class AddEquReq {
         this.installedDate=installedDate;
         this.supId=supplierId;
         this.ijmmId=ijmmId;
+        this.warrantyStartDate = warrantyStartDate;
     }
 
     /**
@@ -172,7 +182,7 @@ public class AddEquReq {
             , String itemId, String rate, String siteId, String isPart,
                      String status, String invId,String extraField1,
                      String extraField2,String servIntvalType,String servIntvalValue,
-                     String isEquReplaced,String rplacedEquId,String isCnvtItemParts,String installedDate,String supplierId,String ijmmId) {
+                     String isEquReplaced,String rplacedEquId,String isCnvtItemParts,String installedDate,String supplierId,String ijmmId,String warrantyStartDate) {
         this.type = type;
         this.egId = egId;
         this.ecId = ecId;
@@ -210,6 +220,7 @@ public class AddEquReq {
         this.installedDate=installedDate;
         this.supId=supplierId;
         this.ijmmId=ijmmId;
+        this.warrantyStartDate=warrantyStartDate;
     }
 
     /**

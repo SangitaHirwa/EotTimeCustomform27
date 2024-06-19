@@ -214,6 +214,7 @@ public class AddJobEqu_Pc implements AddJobEqu_Pi {
             RequestBody isCnvtItemPartsBody = null;
             RequestBody supplierIdBody = null;
             RequestBody ijmmIdBody = null;
+            RequestBody warrantyStartDate = null;
             try {
                 equnm = RequestBody.create(addEquReq.getEqunm(), MultipartBody.FORM);
                 brand = RequestBody.create(addEquReq.getBrand(), MultipartBody.FORM);
@@ -256,6 +257,7 @@ public class AddJobEqu_Pc implements AddJobEqu_Pi {
                 isCnvtItemPartsBody = RequestBody.create(addEquReq.getIsCnvtItemParts(), MultipartBody.FORM);
                 supplierIdBody = RequestBody.create(addEquReq.getSupId(), MultipartBody.FORM);
                ijmmIdBody = RequestBody.create(addEquReq.getIjmmId(), MultipartBody.FORM);
+                warrantyStartDate = RequestBody.create(addEquReq.getIjmmId(), MultipartBody.FORM);
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -290,7 +292,7 @@ public class AddJobEqu_Pc implements AddJobEqu_Pi {
                     egId, jobId, cltId, contrId,
                     itemId, supplier, rate, isPart, siteId, invId, extraField1,
                     extraField2, barcodeBody, qrcodeBody, equipmentIdBody,servIntvalTypeBody,
-                    servIntvalValueBody,rplacedEquId,isEquReplaced,isCnvtItemPartsBody,installedDateBody,supplierIdBody,ijmmIdBody)
+                    servIntvalValueBody,rplacedEquId,isEquReplaced,isCnvtItemPartsBody,installedDateBody,supplierIdBody,ijmmIdBody,warrantyStartDate)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Observer<JsonObject>() {

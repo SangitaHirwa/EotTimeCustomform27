@@ -93,6 +93,11 @@ public class BarcodeScanActivity extends AppCompatActivity implements ScanBarcod
                 options = new GmsBarcodeScannerOptions.Builder().setBarcodeFormats(Barcode.FORMAT_ALL_FORMATS).enableAutoZoom().build();
                 if(comeFrom.equalsIgnoreCase("jobEquList")){
                     isJobEquList = true;
+                    if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
+                        options = new GmsBarcodeScannerOptions.Builder().setBarcodeFormats(Barcode.FORMAT_ALL_FORMATS).enableAutoZoom().allowManualInput().build();
+                    } else {
+                        options = new GmsBarcodeScannerOptions.Builder().setBarcodeFormats(Barcode.FORMAT_ALL_FORMATS).enableAutoZoom().build();
+                    }
                 }
             } else {
                 if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
