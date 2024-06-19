@@ -75,7 +75,7 @@
                 android:textStyle="bold"
                 android:textColor="@color/date_colore"
                 android:text=""
-                android:textSize="@dimen/_14sdp"
+                android:textSize="14sp"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/profile_img"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -625,7 +625,8 @@
                     android:orientation="vertical">
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/_37sdp"
+                        android:layout_height="wrap_content"
+                        android:minHeight="@dimen/_37sdp"
                         android:orientation="horizontal"
                         android:layout_gravity="center_vertical"
                         android:id="@+id/show_hide_service_history"
@@ -737,7 +738,8 @@
                     android:orientation="vertical">
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/_37sdp"
+                        android:layout_height="wrap_content"
+                        android:minHeight="@dimen/_37sdp"
                         android:orientation="horizontal"
                         android:id="@+id/show_hide_upcoming_service"
                         android:paddingHorizontal="8dp"
@@ -867,7 +869,8 @@
                     >
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/_37sdp"
+                        android:layout_height="wrap_content"
+                        android:minHeight="@dimen/_37sdp"
                         android:weightSum="1"
                         android:orientation="horizontal"
                         android:paddingHorizontal="8dp"
@@ -947,7 +950,8 @@
                     >
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/_37sdp"
+                    android:layout_height="wrap_content"
+                    android:minHeight="@dimen/_37sdp"
                     android:weightSum="1"
                     android:orientation="horizontal"
                     android:paddingHorizontal="8dp"
@@ -1028,7 +1032,8 @@
                     >
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/_37sdp"
+                        android:layout_height="wrap_content"
+                        android:minHeight="@dimen/_37sdp"
                         android:weightSum="1"
                         android:orientation="horizontal"
                         android:paddingHorizontal="8dp"
