@@ -23,13 +23,12 @@
                 android:background="@color/bg_job"
                 android:gravity="center_horizontal"
                 android:orientation="vertical"
+                android:padding="10dp"
                 android:paddingHorizontal="@dimen/left_margin">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="5dp"
-                    android:layout_gravity="center_horizontal"
                     >
 
                     <TextView
