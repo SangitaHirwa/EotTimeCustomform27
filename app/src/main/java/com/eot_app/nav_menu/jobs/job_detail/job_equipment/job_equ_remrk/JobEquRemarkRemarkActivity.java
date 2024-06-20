@@ -622,7 +622,7 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
         recyclerView_item = findViewById(R.id.recyclerView_item);
 
         tv_text_for_replace = findViewById(R.id.tv_text_for_replace);
-        tv_text_for_replace.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.do_you_want_to_discard));
+        tv_text_for_replace.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.replace_action_msg));
         tv_text_for_repair = findViewById(R.id.tv_text_for_repair);
         tv_repair = findViewById(R.id.tv_repair);
         tv_text_for_reallocate = findViewById(R.id.tv_text_for_reallocate);
@@ -1668,7 +1668,7 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
                     tv_discard.setEnabled(true);
                     tv_discard.setBackgroundResource(R.drawable.submit_btn);
                     tv_replace.setBackgroundResource(R.drawable.submit_btn);
-                    tv_text_for_replace.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.do_you_want_to_discard));
+                    tv_text_for_replace.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.replace_action_msg));
                     tv_text_for_discard.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.discard_action_msg));
                 }
             } else {
@@ -2237,7 +2237,7 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
             tv_discard.setEnabled(true);
             tv_discard.setBackgroundResource(R.drawable.submit_btn);
             tv_replace.setBackgroundResource(R.drawable.submit_btn);
-            tv_text_for_replace.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.do_you_want_to_discard));
+            tv_text_for_replace.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.replace_action_msg));
             tv_text_for_discard.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.discard_action_msg));
         }
         txt_status.setVisibility(View.VISIBLE);

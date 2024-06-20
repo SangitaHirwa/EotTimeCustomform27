@@ -1762,7 +1762,7 @@
     "item_part": "Item Part",
     "deployed": "Deployed",
     "replace": "Replace",
-    "do_you_want_to_discard": "Do you want to discard this equipment and replace with a new one?",
+    "do_you_want_to_discard": "Do you want to discard this part and replace with a new one?",
     "replace_equipment": "Replace Equipment",
     "items": "Items",
     "step_1": "Step 1",
@@ -1979,7 +1979,7 @@
     "tomorrow": "Tomorrow",
     "warranty_start_date": "Warranty start date",
     "yesterday": "Yesterday",
-    "replace_part_action_msg": "Do you want to discard this part and replace with a new one?"
+    "replace_action_msg": "Do you want to discard this equipment and replace with a new one?"
   }
 }
 
