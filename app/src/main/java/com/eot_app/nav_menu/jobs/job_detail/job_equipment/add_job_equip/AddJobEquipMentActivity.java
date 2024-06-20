@@ -1441,26 +1441,31 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
             case R.id.manuf_date_cancel:
                 if (!manuf_date_lable.getText().toString().equals("")) manuf_date_lable.setText("");
                 binding.manufDateCancel.setVisibility(View.GONE);
+                binding.txtDate.setVisibility(View.GONE);
                 break;
             case R.id.warnty_date_cancel:
                 if (!warnty_date_lable.getText().toString().equals(""))
                     warnty_date_lable.setText("");
                 binding.warntyDateCancel.setVisibility(View.GONE);
+                binding.txtDateWarnty.setVisibility(View.GONE);
                 break;
             case R.id.purchase_date_cancel:
                 if (!purchase_date_lable.getText().toString().equals(""))
                     purchase_date_lable.setText("");
                 binding.purchaseDateCancel.setVisibility(View.GONE);
+                binding.txtDatePurchase.setVisibility(View.GONE);
                 break;
             case R.id.installed_date_cancel:
                 if (!binding.installedDateLable.getText().toString().equals(""))
                     binding.installedDateLable.setText("");
                 binding.installedDateCancel.setVisibility(View.GONE);
+                binding.txtDateInstalled.setVisibility(View.GONE);
                 break;
             case R.id.warnty_start_date_cancel:
                 if (!warnty_date_lable_start.getText().toString().equals(""))
                     warnty_date_lable_start.setText("");
                 binding.warntyStartDateCancel.setVisibility(View.GONE);
+                binding.txtDateWarntyStart.setVisibility(View.GONE);
                 break;
             case R.id.txt_addBarcode:
                 if (barcode_image == null) {
