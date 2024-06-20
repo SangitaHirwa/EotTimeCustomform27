@@ -257,7 +257,7 @@ public class AddJobEqu_Pc implements AddJobEqu_Pi {
                 isCnvtItemPartsBody = RequestBody.create(addEquReq.getIsCnvtItemParts(), MultipartBody.FORM);
                 supplierIdBody = RequestBody.create(addEquReq.getSupId(), MultipartBody.FORM);
                ijmmIdBody = RequestBody.create(addEquReq.getIjmmId(), MultipartBody.FORM);
-                warrantyStartDate = RequestBody.create(addEquReq.getIjmmId(), MultipartBody.FORM);
+                warrantyStartDate = RequestBody.create(addEquReq.getWarrantyStartDate(), MultipartBody.FORM);
 
             } catch (Exception e) {
                 e.printStackTrace();

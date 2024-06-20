@@ -1365,6 +1365,10 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
                         setResult(333, intent);
                         finish();
                     }
+                }else if (comeFrom != null && comeFrom.equalsIgnoreCase("AddRemark") ){
+                    Intent intent = new Intent();
+                    setResult(333, intent);
+                    finish();
                 }
             } catch (Exception e) {
                 e.printStackTrace();

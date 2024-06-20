@@ -1061,7 +1061,7 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
                     } else {
                         List<String> equipList = new ArrayList<>();
                         equipList.add(equipment.getEquId());
-                        equ_details_pc.addAuditEquipment(equipList, jobId, "");
+                        equ_details_pc.addAuditEquipment(equipList, jobId, "","1");
                         Toast.makeText(this, "Not Linked", Toast.LENGTH_LONG).show();
                     }
                 } else {
