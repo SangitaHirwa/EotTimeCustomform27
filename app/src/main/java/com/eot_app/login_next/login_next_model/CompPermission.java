@@ -32,6 +32,7 @@ public class CompPermission {
     private String isEditJobAndTravelTime;
 
     private String isLeaderChgAllUsrStatusOnJb;
+    private int isItemRequested;
 
     public String getIsEditJobAndTravelTime() {
         return isEditJobAndTravelTime;
@@ -248,5 +249,13 @@ public class CompPermission {
 
     public void setIsLeaderChgAllUsrStatusOnJb(String isLeaderChgAllUsrStatusOnJb) {
         this.isLeaderChgAllUsrStatusOnJb = isLeaderChgAllUsrStatusOnJb;
+    }
+
+    public int getIsItemRequested() {
+        return isItemRequested;
+    }
+
+    public void setIsItemRequested(int isItemRequested) {
+        this.isItemRequested = isItemRequested;
     }
 }

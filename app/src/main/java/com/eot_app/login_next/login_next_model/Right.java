@@ -24,7 +24,8 @@ public class Right {
     private String isCheckInOutDownload;
     private String isLeaveAddEnable;
     private int isSchedular;
-    private int isItemRequested;
+    /** isItemRequested permission is get from compPermission**/
+//    private int isItemRequested;
 
     public int getIsSchedular() {
         return isSchedular;
@@ -129,7 +130,7 @@ public class Right {
         this.isCustomField = isCustomField;
     }
 
-    public int getIsItemRequested() {
+   /* public int getIsItemRequested() {
         return isItemRequested;
-    }
+    }*/
 }

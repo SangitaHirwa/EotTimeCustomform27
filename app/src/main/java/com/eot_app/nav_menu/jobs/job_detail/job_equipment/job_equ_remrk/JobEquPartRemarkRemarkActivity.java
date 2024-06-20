@@ -778,7 +778,7 @@ public class JobEquPartRemarkRemarkActivity extends UploadDocumentActivity imple
         recyclerView_requested_item.setAdapter(requestedItemListAdapter);
         recyclerView_requested_item.setNestedScrollingEnabled(false);
 
-        if (App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsItemRequested() == 0) {
+        if (App_preference.getSharedprefInstance().getLoginRes().getCompPermission().get(0).getIsItemRequested() == 0) {
             ll_requested_item.setVisibility(View.VISIBLE);
         } else {
             ll_requested_item.setVisibility(View.GONE);
@@ -810,7 +810,7 @@ public class JobEquPartRemarkRemarkActivity extends UploadDocumentActivity imple
         });
         rv_showAttachment.setAdapter(jobCompletionAdpter);
 
-        if (App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsItemRequested() == 0) {
+        if (App_preference.getSharedprefInstance().getLoginRes().getCompPermission().get(0).getIsItemRequested() == 0) {
             if (isAction) {
                 ll_requested_item.setVisibility(View.VISIBLE);
                 if (mParam2.getItemRequested() != null && mParam2.getItemRequested().equals("1")) {
@@ -2219,7 +2219,7 @@ public class JobEquPartRemarkRemarkActivity extends UploadDocumentActivity imple
             tv_text_for_discard.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.discard_action_msg));
         }
         txt_status.setVisibility(View.VISIBLE);
-        if (App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsItemRequested() == 0) {
+        if (App_preference.getSharedprefInstance().getLoginRes().getCompPermission().get(0).getIsItemRequested() == 0) {
             ll_requested_item.setVisibility(View.VISIBLE);
             if (mParam2.getItemRequested() != null && mParam2.getItemRequested().equals("1")) {
                 requested_item_flag.setVisibility(View.VISIBLE);
