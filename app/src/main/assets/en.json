@@ -1978,7 +1978,8 @@
     "thisMonth": "This Month",
     "tomorrow": "Tomorrow",
     "warranty_start_date": "Warranty start date",
-    "yesterday": "Yesterday"
+    "yesterday": "Yesterday",
+    "replace_part_action_msg": "Do you want to discard this part and replace with a new one?"
   }
 }
 
