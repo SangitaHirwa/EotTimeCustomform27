@@ -775,7 +775,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
     protected void onResume() {
         super.onResume();
         //For Generating Scan Code
-        if (comeFrom != null && comeFrom.equalsIgnoreCase("JobListScan") && isSerialNoSelected) {
+        if (comeFrom != null && comeFrom.equalsIgnoreCase("JobListScan")) {
             qrBarPi = new QR_Bar_Pc(this);
             if (generateOption.equalsIgnoreCase(LanguageController.getInstance().getMobileMsgByKey(AppConstant.barcode))) {
                 qrBarPi.getBarCode(scanCode);

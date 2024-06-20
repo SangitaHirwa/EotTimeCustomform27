@@ -1255,6 +1255,8 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
         intent.putExtra("equipmentIdName", equipmentIdName);
         intent.putExtra("equipmentType", equipmentType);
         intent.putExtra("isSerialNoSelected", isSerialNoSelected);
+        intent.putExtra("generateOption", generateOption);
+        intent.putExtra("scanCode", scanCode);
         startActivityForResult(intent, EQUIPMENTCONVERT);
     }
 
