@@ -1255,6 +1255,8 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
         intent.putExtra("equipmentIdName", equipmentIdName);
         intent.putExtra("equipmentType", equipmentType);
         intent.putExtra("isSerialNoSelected", isSerialNoSelected);
+        intent.putExtra("generateOption", generateOption);
+        intent.putExtra("scanCode", scanCode);
         startActivityForResult(intent, EQUIPMENTCONVERT);
     }
 
@@ -1365,6 +1367,10 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
                         setResult(333, intent);
                         finish();
                     }
+                }else if (comeFrom != null && comeFrom.equalsIgnoreCase("AddRemark") ){
+                    Intent intent = new Intent();
+                    setResult(333, intent);
+                    finish();
                 }
             } catch (Exception e) {
                 e.printStackTrace();

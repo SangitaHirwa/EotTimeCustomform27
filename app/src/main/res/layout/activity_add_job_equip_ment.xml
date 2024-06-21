@@ -605,7 +605,7 @@
                                 android:layout_marginEnd="10dp"
                                 android:gravity="center"
                                 android:paddingTop="5dp"
-                                android:visibility="visible"
+                                android:visibility="gone"
                                 app:hintAnimationEnabled="true"
                                 app:hintEnabled="false"
                                 app:hintTextAppearance="@style/TextInputLayoutHintText">
@@ -620,6 +620,33 @@
                                     android:inputType="text"
                                     android:singleLine="true"
                                     tools:ignore="Autofill,LabelFor" />
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                android:id="@+id/Supllier_layout"
+                                android:layout_width="match_parent"
+                                android:layout_height="@dimen/input_field_height"
+                                android:gravity="center"
+                                android:paddingTop="5dp"
+                                android:visibility="visible"
+                                app:hintAnimationEnabled="true"
+                                app:hintEnabled="false"
+                                app:hintTextAppearance="@style/TextInputLayoutHintText">
+
+                                <AutoCompleteTextView
+                                    android:id="@+id/supplier_txt"
+                                    style="@style/style_thrid"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="@android:color/transparent"
+                                    android:dropDownHeight="140dp"
+                                    android:dropDownVerticalOffset="-5dp"
+                                    android:inputType="text"
+                                    android:popupBackground="@drawable/popupbg"
+                                    android:singleLine="true"
+                                    android:focusableInTouchMode="true"
+                                    tools:ignore="LabelFor" />
+
                             </com.google.android.material.textfield.TextInputLayout>
                             <View
                                 android:layout_width="match_parent"

@@ -498,13 +498,14 @@ public class Audit_Job_History_pc implements Audit_Job_History_pi {
         }
     }
     @Override
-    public void addAuditEquipment(List<String> equId, String jobId, String contrId) {
+    public void addAuditEquipment(List<String> equId, String jobId, String contrId, String isScannedEqu) {
         if (AppUtility.isInternetConnected()) {
 
             HashMap hashMap = new HashMap();
             hashMap.put("equId", equId);
             hashMap.put("audId", jobId);
             hashMap.put("contrId", contrId);
+            hashMap.put("isScannedEqu", isScannedEqu);
 
             String data = new Gson().toJson(hashMap);
             AppUtility.progressBarShow((Context) audit_history_view);

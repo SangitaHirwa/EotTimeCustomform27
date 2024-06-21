@@ -145,7 +145,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
     private CheckBox ch_equ_as_part;
     private View eq_view;
     private TextInputLayout auto_barnd_layout, equ_layout, equ_model_layout, equ_supplier_layout, equ_serial_layout, /*job_country_layout, job_state_layout,*/ /*equ_city_layout, equ_zip_layout,*/
-            quote_notes_layout, catery_layout, equipment_layout, grp_layout, equ_adrs_layout, client_site_layout, custom_filed_header_1, custom_filed_header_2/*,supplier_layout*/;//equ_brand_layout
+            quote_notes_layout, catery_layout, equipment_layout, grp_layout, equ_adrs_layout, client_site_layout, custom_filed_header_1, custom_filed_header_2,supplier_layout;//equ_brand_layout
     private Button add_edit_item_Btn, clear_btn;
     private RelativeLayout image_with_tag;
     private boolean isTagSet = false;
@@ -155,7 +155,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
     private EditText edt_equ, edt_equ_model, edt_equ_supplier, /*edt_equ_service_interval,*/
             edt_equ_serial,/* edt_equ_city, edt_equ_zip,*/
             quote_notes_edt;//edt_equ_brand
-    private AutoCompleteTextView /*auto_country*//*,supplier_txt*//*, auto_states,*/ edt_equ_adrs, auto_equipment, auto_catery, auto_grp, auto_brand, auto_client_site;
+    private AutoCompleteTextView /*auto_country,*/supplier_txt, /*auto_states,*/ edt_equ_adrs, auto_equipment, auto_catery, auto_grp, auto_brand, auto_client_site;
     private String ctry, state;
     //    private EditText auto_client;
     private AppCompatImageView img_attachment;
@@ -313,7 +313,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
         initializeViewS();
 
 
-       /* supplier_txt.addTextChangedListener(new TextWatcher() {
+        supplier_txt.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
@@ -333,7 +333,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
                     supplier_layout.setHintEnabled(false);
                 }
             }
-        });*/
+        });
 
 
     }
@@ -512,7 +512,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
         edt_equ_adrs.setFocusable(false);
         auto_client_site.setFocusable(false);
         auto_client_site.setClickable(false);
-//        supplier_layout=findViewById(R.id.Supllier_layout);
+        supplier_layout=findViewById(R.id.Supllier_layout);
 
 //        status_Dp = findViewById(R.id.status_Dp);
 
@@ -523,8 +523,8 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
 //        status_txt = findViewById(R.id.status_txt);
 //        status_txt.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.status_radio_btn));
 
-//        supplier_txt = findViewById(R.id.supplier_txt);
-//        supplier_txt.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.supplier));
+        supplier_txt = findViewById(R.id.supplier_txt);
+        supplier_txt.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.supplier));
 
 //        linearLayout_status = findViewById(R.id.linearLayout_status);
 
@@ -775,7 +775,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
     protected void onResume() {
         super.onResume();
         //For Generating Scan Code
-        if (comeFrom != null && comeFrom.equalsIgnoreCase("JobListScan") && isSerialNoSelected) {
+        if (comeFrom != null && comeFrom.equalsIgnoreCase("JobListScan")) {
             qrBarPi = new QR_Bar_Pc(this);
             if (generateOption.equalsIgnoreCase(LanguageController.getInstance().getMobileMsgByKey(AppConstant.barcode))) {
                 qrBarPi.getBarCode(scanCode);
@@ -1162,7 +1162,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
 //        checkbox_barCode.setOnCheckedChangeListener(this);
 //        checkbox_scan_insert.setOnCheckedChangeListener(this);
         ch_equ_as_part.setOnCheckedChangeListener(this);
-//        supplier_layout.setOnClickListener(this);
+        supplier_layout.setOnClickListener(this);
 //        upload_lable.setOnClickListener(this);
         lay.setOnClickListener(this);
         client_site_layout.setOnClickListener(this);
@@ -1392,9 +1392,9 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
 //            case R.id.linearLayout_status:
 //                status_Dp.performClick();
 //                break;
-//            case R.id.supplier_txt:
-//                supplier_txt.performClick();
-//                break;
+            case R.id.supplier_txt:
+                supplier_txt.performClick();
+                break;
             case R.id.lay:
                 selectFile(true);
                 break;
@@ -1619,13 +1619,13 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
             if (addJobEqu_pi.RequiredFields(edt_equ.getText().toString().trim())) {
                 if (comeFrom1 != null && comeFrom1.equalsIgnoreCase("AddPartWithoutItem")) {
                     addJobEqu_pi.convertItemToequip(new AddEquReq(type, egId, ecId, zip, city, edt_equ_adrs.getText().toString().trim(), ctry, state, /*isBarcodeGenerate,*/
-                            quote_notes_edt.getText().toString().trim(), puchaseDate, manufactureDate , warantyDate, "", edt_equ_serial.getText().toString().trim(), edt_equ_model.getText().toString().trim(), brandId, edt_equ.getText().toString().trim(), jobId, job.getCltId(), job.getContrId(), "", "", siteId, isPart, status, invId, custom_filed_txt_1.getText().toString().trim(), custom_filed_txt_2.getText().toString().trim(), servIntvalType, interval, isCnvtItemParts, installDate, supplierId, "",warantyStartDate), path, barcodeString, qrCodeString, equipmentId);
+                            quote_notes_edt.getText().toString().trim(), puchaseDate, manufactureDate , warantyDate, supplier_txt.getText().toString().trim(), edt_equ_serial.getText().toString().trim(), edt_equ_model.getText().toString().trim(), brandId, edt_equ.getText().toString().trim(), jobId, job.getCltId(), job.getContrId(), "", "", siteId, isPart, status, invId, custom_filed_txt_1.getText().toString().trim(), custom_filed_txt_2.getText().toString().trim(), servIntvalType, interval, isCnvtItemParts, installDate, supplierId, "",warantyStartDate), path, barcodeString, qrCodeString, equipmentId);
                 } else if (audit != null) {
                     addJobEqu_pi.addNewEquipment(new AddEquReq(type, egId, ecId, zip, city, edt_equ_adrs.getText().toString().trim(), ctry, state, /*isBarcodeGenerate,*/
-                            quote_notes_edt.getText().toString().trim(), puchaseDate, manufactureDate, warantyDate, "", edt_equ_serial.getText().toString().trim(), edt_equ_model.getText().toString().trim(), brandId, edt_equ.getText().toString().trim(), audit.getAudId(), audit.getCltId(), audit.getContrId(), siteId, isPart, status, custom_filed_txt_1.getText().toString().trim(), custom_filed_txt_2.getText().toString().trim(), servIntvalType, interval, supplierId), path, barcodeString, qrCodeString, installDate, equipmentId);
+                            quote_notes_edt.getText().toString().trim(), puchaseDate, manufactureDate, warantyDate, supplier_txt.getText().toString().trim(), edt_equ_serial.getText().toString().trim(), edt_equ_model.getText().toString().trim(), brandId, edt_equ.getText().toString().trim(), audit.getAudId(), audit.getCltId(), audit.getContrId(), siteId, isPart, status, custom_filed_txt_1.getText().toString().trim(), custom_filed_txt_2.getText().toString().trim(), servIntvalType, interval, supplierId), path, barcodeString, qrCodeString, installDate, equipmentId);
                 } else {
                     addJobEqu_pi.addNewEquipment(new AddEquReq(type, egId, ecId, zip, city, edt_equ_adrs.getText().toString().trim(), ctry, state, /*isBarcodeGenerate,*/
-                            quote_notes_edt.getText().toString().trim(), puchaseDate, manufactureDate, warantyDate, "", edt_equ_serial.getText().toString().trim(), edt_equ_model.getText().toString().trim(), brandId, edt_equ.getText().toString().trim(), jobId, job.getCltId(), job.getContrId(), siteId, isPart, status, custom_filed_txt_1.getText().toString().trim(), custom_filed_txt_2.getText().toString().trim(), servIntvalType, interval, supplierId), path, barcodeString, qrCodeString, installDate, equipmentId);
+                            quote_notes_edt.getText().toString().trim(), puchaseDate, manufactureDate, warantyDate, supplier_txt.getText().toString().trim(), edt_equ_serial.getText().toString().trim(), edt_equ_model.getText().toString().trim(), brandId, edt_equ.getText().toString().trim(), jobId, job.getCltId(), job.getContrId(), siteId, isPart, status, custom_filed_txt_1.getText().toString().trim(), custom_filed_txt_2.getText().toString().trim(), servIntvalType, interval, supplierId), path, barcodeString, qrCodeString, installDate, equipmentId);
                 }
             }
         } else {
@@ -1635,7 +1635,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
             }
             if (addJobEqu_pi.RequiredFields(edt_equ.getText().toString().trim())) {
                 addJobEqu_pi.convertItemToequip(new AddEquReq(type, egId, ecId, zip, city, edt_equ_adrs.getText().toString().trim(), ctry, state, /*isBarcodeGenerate,*/
-                        quote_notes_edt.getText().toString().trim(), puchaseDate, manufactureDate, warantyDate, "", edt_equ_serial.getText().toString().trim(), edt_equ_model.getText().toString().trim(), brandId, edt_equ.getText().toString().trim(), jobId, job.getCltId(), job.getContrId(), updateItemDataModel.getItemId(), updateItemDataModel.getRate(), siteId, isPart, status, invId, custom_filed_txt_1.getText().toString().trim(), custom_filed_txt_2.getText().toString().trim(), servIntvalType, interval, isCnvtItemParts, installDate, supplierId, updateItemDataModel.getIjmmId(),warantyStartDate), path, barcodeString, qrCodeString, equipmentId);
+                        quote_notes_edt.getText().toString().trim(), puchaseDate, manufactureDate, warantyDate, supplier_txt.getText().toString().trim(), edt_equ_serial.getText().toString().trim(), edt_equ_model.getText().toString().trim(), brandId, edt_equ.getText().toString().trim(), jobId, job.getCltId(), job.getContrId(), updateItemDataModel.getItemId(), updateItemDataModel.getRate(), siteId, isPart, status, invId, custom_filed_txt_1.getText().toString().trim(), custom_filed_txt_2.getText().toString().trim(), servIntvalType, interval, isCnvtItemParts, installDate, supplierId, updateItemDataModel.getIjmmId(),warantyStartDate), path, barcodeString, qrCodeString, equipmentId);
             }
         }
     }
@@ -1657,13 +1657,13 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
                         isCnvtItemParts = "0";
                     }
                     addJobEqu_pi.convertItemToequip(new AddEquReq(type, egId, ecId, zip, city, edt_equ_adrs.getText().toString().trim(), ctry, state, /*isBarcodeGenerate,*/
-                            quote_notes_edt.getText().toString().trim(), puchaseDate, manufactureDate, warantyDate, "", edt_equ_serial.getText().toString().trim(), edt_equ_model.getText().toString().trim(), brandId, edt_equ.getText().toString().trim(), jobId, job.getCltId(), job.getContrId(), "", "", siteId, isPart, status, invId, custom_filed_txt_1.getText().toString().trim(), custom_filed_txt_2.getText().toString().trim(), servIntvalType, interval, "1", equipmentId, isCnvtItemParts, installDate, supplierId, "",warantyStartDate), path, barcodeString, qrCodeString, parentId);
+                            quote_notes_edt.getText().toString().trim(), puchaseDate, manufactureDate, warantyDate, supplier_txt.getText().toString().trim(), edt_equ_serial.getText().toString().trim(), edt_equ_model.getText().toString().trim(), brandId, edt_equ.getText().toString().trim(), jobId, job.getCltId(), job.getContrId(), "", "", siteId, isPart, status, invId, custom_filed_txt_1.getText().toString().trim(), custom_filed_txt_2.getText().toString().trim(), servIntvalType, interval, "1", equipmentId, isCnvtItemParts, installDate, supplierId, "",warantyStartDate), path, barcodeString, qrCodeString, parentId);
                 } else if (audit != null) {
                     addJobEqu_pi.addNewEquipment(new AddEquReq(type, egId, ecId, zip, city, edt_equ_adrs.getText().toString().trim(), ctry, state, /*isBarcodeGenerate,*/
-                            quote_notes_edt.getText().toString().trim(), puchaseDate, manufactureDate, warantyDate, "", edt_equ_serial.getText().toString().trim(), edt_equ_model.getText().toString().trim(), brandId, edt_equ.getText().toString().trim(), audit.getAudId(), audit.getCltId(), audit.getContrId(), siteId, isPart, status, custom_filed_txt_1.getText().toString().trim(), custom_filed_txt_2.getText().toString().trim(), servIntvalType, interval, supplierId), path, barcodeString, barcodeString, installDate, equipmentId);
+                            quote_notes_edt.getText().toString().trim(), puchaseDate, manufactureDate, warantyDate, supplier_txt.getText().toString().trim(), edt_equ_serial.getText().toString().trim(), edt_equ_model.getText().toString().trim(), brandId, edt_equ.getText().toString().trim(), audit.getAudId(), audit.getCltId(), audit.getContrId(), siteId, isPart, status, custom_filed_txt_1.getText().toString().trim(), custom_filed_txt_2.getText().toString().trim(), servIntvalType, interval, supplierId), path, barcodeString, barcodeString, installDate, equipmentId);
                 } else {
                     addJobEqu_pi.addNewEquipment(new AddEquReq(type, egId, ecId, zip, city, edt_equ_adrs.getText().toString().trim(), ctry, state, /*isBarcodeGenerate,*/
-                            quote_notes_edt.getText().toString().trim(), puchaseDate, manufactureDate, warantyDate, "", edt_equ_serial.getText().toString().trim(), edt_equ_model.getText().toString().trim(), brandId, edt_equ.getText().toString().trim(), jobId, job.getCltId(), job.getContrId(), siteId, isPart, status, custom_filed_txt_1.getText().toString().trim(), custom_filed_txt_2.getText().toString().trim(), servIntvalType, interval, supplierId), path, barcodeString, barcodeString, installDate, equipmentId);
+                            quote_notes_edt.getText().toString().trim(), puchaseDate, manufactureDate, warantyDate, supplier_txt.getText().toString().trim(), edt_equ_serial.getText().toString().trim(), edt_equ_model.getText().toString().trim(), brandId, edt_equ.getText().toString().trim(), jobId, job.getCltId(), job.getContrId(), siteId, isPart, status, custom_filed_txt_1.getText().toString().trim(), custom_filed_txt_2.getText().toString().trim(), servIntvalType, interval, supplierId), path, barcodeString, barcodeString, installDate, equipmentId);
                 }
             }
         } else {
@@ -1675,7 +1675,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
                     isCnvtItemParts = "0";
                 }
                 addJobEqu_pi.convertItemToequip(new AddEquReq(type, egId, ecId, zip, city, edt_equ_adrs.getText().toString().trim(), ctry, state, /*isBarcodeGenerate,*/
-                        quote_notes_edt.getText().toString().trim(), puchaseDate, manufactureDate, warantyDate, "", edt_equ_serial.getText().toString().trim(), edt_equ_model.getText().toString().trim(), brandId, edt_equ.getText().toString().trim(), jobId, job.getCltId(), job.getContrId(), updateItemDataModel.getItemId(), updateItemDataModel.getRate(), siteId, isPart, status, invId, custom_filed_txt_1.getText().toString().trim(), custom_filed_txt_2.getText().toString().trim(), servIntvalType, interval, "1", equipmentId, isCnvtItemParts, installDate, supplierId, updateItemDataModel.getIjmmId(),warantyStartDate), path, barcodeString, qrCodeString, parentId);
+                        quote_notes_edt.getText().toString().trim(), puchaseDate, manufactureDate, warantyDate, supplier_txt.getText().toString().trim(), edt_equ_serial.getText().toString().trim(), edt_equ_model.getText().toString().trim(), brandId, edt_equ.getText().toString().trim(), jobId, job.getCltId(), job.getContrId(), updateItemDataModel.getItemId(), updateItemDataModel.getRate(), siteId, isPart, status, invId, custom_filed_txt_1.getText().toString().trim(), custom_filed_txt_2.getText().toString().trim(), servIntvalType, interval, "1", equipmentId, isCnvtItemParts, installDate, supplierId, updateItemDataModel.getIjmmId(),warantyStartDate), path, barcodeString, qrCodeString, parentId);
             }
         }
     }
@@ -2182,15 +2182,15 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
             this.supplierDataList = supplierDataList;
             final SupplierAdapter stateAdapter = new SupplierAdapter(this, R.layout.custom_adapter_item_layout, (ArrayList<GetSupplierData>) supplierDataList);
             if (stateAdapter != null) {
-           /* supplier_txt.setAdapter(stateAdapter);
-            supplier_txt.setThreshold(1);*/
+            supplier_txt.setAdapter(stateAdapter);
+            supplier_txt.setThreshold(1);
             } else {
                 stateAdapter.setnewlist(supplierDataList);
             }
-           /* supplier_txt.setOnItemClickListener((adapterView, view, i, l) -> {
+            supplier_txt.setOnItemClickListener((adapterView, view, i, l) -> {
                 supplierId=supplierDataList.get(i).getSupId();
-            });*/
-//            supplier_layout.setHintEnabled(true);
+            });
+            supplier_layout.setHintEnabled(true);
         }
     }
 

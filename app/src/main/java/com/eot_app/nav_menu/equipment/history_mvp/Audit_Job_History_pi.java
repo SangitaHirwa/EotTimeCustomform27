@@ -16,6 +16,7 @@ public interface Audit_Job_History_pi {
     void getEquipmentJobDetails(String audId);
 
     void getApiForUploadAttchment(String equId, String usrManualDoc);
-    void addAuditEquipment(List<String> equId, String jobId, String contrId);
+/** For link only one equipment isScannedEqu = 1*/
+    void addAuditEquipment(List<String> equId, String jobId, String contrId, String isScannedEqu);
     void getAttachedEquipmentList();
 }
