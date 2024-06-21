@@ -1156,6 +1156,7 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
                 }
                 break;
             case R.id.last_service_show_hide:
+            case R.id.last_service_show_hide_ll:
                 if (!clicked_service_history) {
                     clicked_service_history = true;
                     cl_loader1.setVisibility(View.VISIBLE);
@@ -1169,6 +1170,7 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
                 }
                 break;
             case R.id.upcoming_service_show_hide:
+            case R.id.upcoming_service_show_hide_cl:
                 if (!clicked_upcoming_service) {
                     clicked_upcoming_service = true;
                     cl_loader2.setVisibility(View.VISIBLE);
@@ -1183,6 +1185,7 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
                 }
                 break;
             case R.id.part_list_show_hide:
+            case R.id.part_list_show_hide_cl:
                 if (!click_part) {
                     cl_loader3.setVisibility(View.VISIBLE);
                     equ_details_pc.getEqPartsFromServer(equpId);
@@ -1196,6 +1199,7 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
                 }
                 break;
             case R.id.item_list_show_hide:
+            case R.id.item_list_show_hide_cl:
                 if (!click_item) {
                     cl_loader4.setVisibility(View.VISIBLE);
                     equ_details_pc.getEqItemFromServer(equpId, jobId);
@@ -1209,6 +1213,7 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
                 }
                 break;
             case R.id.audit_list_show_hide:
+            case R.id.audit_list_show_hide_cl:
                 if (!click_audit) {
                     cl_loader5.setVisibility(View.VISIBLE);
                     equ_details_pc.getEquipmentAduitHistory(equpId);

@@ -679,7 +679,7 @@
                         android:gravity="start"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/guideline_for_service"
-                        app:layout_constraintEnd_toStartOf="@+id/last_service_show_hide"
+                        app:layout_constraintEnd_toStartOf="@+id/last_service_show_hide_ll"
                         app:layout_constraintBottom_toBottomOf="parent"
                         android:text=""
                         tools:ignore="RtlSymmetry" />
@@ -698,16 +698,22 @@
                             app:layout_constraintBottom_toBottomOf="parent"
                             android:text=""
                             tools:ignore="RtlSymmetry" />-->
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/last_service_show_hide_ll"
+                            android:layout_width="45dp"
+                            android:layout_height="match_parent"
+                            android:paddingVertical="8dp"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent">
                         <ImageView
                             android:id="@+id/last_service_show_hide"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:padding="5dp"
                             android:src="@drawable/ic_arrow_drop_down_black_24dp"
-                            app:layout_constraintTop_toTopOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintBottom_toBottomOf="parent" />
-
+                        </androidx.constraintlayout.widget.ConstraintLayout>
                     </androidx.constraintlayout.widget.ConstraintLayout>
                      <TextView
                          android:id="@+id/servic_histry_not_found"
@@ -789,7 +795,7 @@
                             android:gravity="end"
                             app:layout_constraintTop_toTopOf="parent"
                             app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toStartOf="@+id/upcoming_service_show_hide"
+                            app:layout_constraintEnd_toStartOf="@+id/upcoming_service_show_hide_cl"
                           app:layout_constraintStart_toEndOf="@+id/guideline_for_upcoming_service"
                             android:text=""
                             tools:ignore="RtlSymmetry" />
@@ -807,16 +813,23 @@
                             app:layout_constraintEnd_toEndOf="parent"
                             android:text=""
                             tools:ignore="RtlSymmetry" />-->
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/upcoming_service_show_hide_cl"
+                        android:layout_width="45dp"
+                        android:layout_height="match_parent"
+                        android:paddingVertical="8dp"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent">
                         <ImageView
                             android:id="@+id/upcoming_service_show_hide"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:padding="5dp"
                             android:src="@drawable/ic_arrow_drop_down_black_24dp"
                             app:layout_constraintTop_toTopOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintBottom_toBottomOf="parent" />
-
+                    </androidx.constraintlayout.widget.ConstraintLayout>
                     </androidx.constraintlayout.widget.ConstraintLayout>
                     <TextView
                         android:id="@+id/upcoming_servic_not_found"
@@ -867,7 +880,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     >
-                    <LinearLayout
+                    <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:minHeight="@dimen/_37sdp"
@@ -885,17 +898,30 @@
                         android:text=""
                         android:layout_weight="1"
                         android:textColor="@color/about_equipment"
+                        app:layout_constraintEnd_toStartOf="@+id/part_list_show_hide_cl"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         />
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/part_list_show_hide_cl"
+                            android:layout_width="45dp"
+                            android:layout_height="match_parent"
+                             android:paddingVertical="8dp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                           >
                         <ImageView
                             android:id="@+id/part_list_show_hide"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:padding="5dp"
                             android:src="@drawable/ic_arrow_drop_down_black_24dp"
-                            app:layout_constraintTop_toTopOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
                             app:layout_constraintBottom_toBottomOf="parent" />
-                    </LinearLayout>
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+                    </androidx.constraintlayout.widget.ConstraintLayout>
                     <TextView
                         android:id="@+id/parts_not_found"
                         android:layout_width="match_parent"
@@ -947,8 +973,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     tools:ignore="TooManyViews"
+                    android:gravity="center"
                     >
-                <LinearLayout
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:minHeight="@dimen/_37sdp"
@@ -966,17 +993,30 @@
                         android:layout_weight="1"
                         android:text=""
                         android:gravity="center_vertical"
+                        app:layout_constraintEnd_toStartOf="@+id/item_list_show_hide_cl"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
                          />
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/item_list_show_hide_cl"
+                        android:layout_width="45dp"
+                        android:layout_height="match_parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        android:paddingVertical="8dp"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        >
                     <ImageView
                         android:id="@+id/item_list_show_hide"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:padding="5dp"
                         android:src="@drawable/ic_arrow_drop_down_black_24dp"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent" />
-                </LinearLayout>
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </androidx.constraintlayout.widget.ConstraintLayout>
                     <TextView
                         android:id="@+id/items_not_found"
                         android:layout_width="match_parent"
@@ -1030,7 +1070,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     >
-                    <LinearLayout
+                    <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:minHeight="@dimen/_37sdp"
@@ -1049,17 +1089,30 @@
                             android:layout_weight="1"
                             android:text=""
                             android:textColor="@color/about_equipment"
-                            tools:ignore="RtlSymmetry" />
+                            tools:ignore="RtlSymmetry"
+                            app:layout_constraintEnd_toStartOf="@+id/audit_list_show_hide_cl"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"/>
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/audit_list_show_hide_cl"
+                            android:layout_width="45dp"
+                            android:layout_height="match_parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            android:paddingVertical="8dp"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            >
                         <ImageView
                             android:id="@+id/audit_list_show_hide"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:padding="5dp"
                             android:src="@drawable/ic_arrow_drop_down_black_24dp"
                             app:layout_constraintTop_toTopOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintBottom_toBottomOf="parent" />
-                    </LinearLayout>
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+                    </androidx.constraintlayout.widget.ConstraintLayout>
                     <TextView
                         android:id="@+id/audit_not_found"
                         android:layout_width="match_parent"
