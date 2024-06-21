@@ -66,12 +66,19 @@
             android:textColor="@color/date_colore"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
+        <View
+            android:id="@+id/view"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:visibility="visible"
+            android:background="@color/border_font_color"
+            app:layout_constraintTop_toBottomOf="@+id/txt_new_location"
+            />
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/new_location_Detail_l"
-            app:layout_constraintTop_toBottomOf="@+id/txt_new_location"
+            app:layout_constraintTop_toBottomOf="@+id/view"
             android:visibility="visible"
             >
             <!--new Site name field-->

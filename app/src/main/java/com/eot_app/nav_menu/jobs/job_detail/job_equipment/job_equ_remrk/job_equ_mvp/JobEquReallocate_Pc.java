@@ -62,6 +62,7 @@ public class JobEquReallocate_Pc implements JobEquReallocate_Pi{
                         @Override
                         public void onError(@NotNull Throwable e) {
                             AppUtility.progressBarDissMiss();
+                            view.errorMsg(LanguageController.getInstance().getServerMsgByKey(AppConstant.went_wrong));
                             Log.e("TAG", e.getMessage());
                         }
 
