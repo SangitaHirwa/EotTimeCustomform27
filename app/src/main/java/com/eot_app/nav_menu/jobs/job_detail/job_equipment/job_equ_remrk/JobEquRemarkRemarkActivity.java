@@ -56,7 +56,6 @@ import com.eot_app.nav_menu.client.clientlist.client_detail.site.sitelist.editsi
 import com.eot_app.nav_menu.jobs.job_db.EquArrayModel;
 import com.eot_app.nav_menu.jobs.job_db.Job;
 import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.AddEditInvoiceItemActivity2;
-import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.ReplaceItemEquipmentActivity;
 import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.model.InvoiceItemDataModel;
 import com.eot_app.nav_menu.jobs.job_detail.chat.fire_Base_Model.Chat_Send_Msg_Model;
 import com.eot_app.nav_menu.jobs.job_detail.chat.img_crop_pkg.ImageCropFragment;
@@ -86,7 +85,6 @@ import com.eot_app.nav_menu.jobs.job_detail.job_audit_remark_attchment_pkg.mvp.J
 import com.eot_app.nav_menu.jobs.job_detail.job_audit_remark_attchment_pkg.mvp.JobAudit_Pc;
 import com.eot_app.nav_menu.jobs.job_detail.job_audit_remark_attchment_pkg.mvp.JobAudit_View;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.EquipmentAttchmentList;
-import com.eot_app.nav_menu.jobs.job_detail.job_equipment.JobEquipmentActivity;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.job_equ_remrk.job_equ_mvp.JobEquRemark_PC;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.job_equ_remrk.job_equ_mvp.JobEquRemark_PI;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.job_equ_remrk.job_equ_mvp.JobEquRemark_View;
@@ -1103,28 +1101,58 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
                 startActivityForResult(intent, REALLOCATE_LC);
                 break;
             case R.id.tv_repair:
-                if (jobId != null && !jobId.isEmpty() && equipment != null && !equipment.getEquId().isEmpty()) {
-                    for (EquipmentStatus status : equipmentStatusList2) {
-                        if (status.getStatusText().equalsIgnoreCase("In Repair")) {
-                            String equStatus = status.getEsId();
-                            UpdateEquStatusReqModel reqModel = new UpdateEquStatusReqModel(jobId, equipment.getEquId(), equStatus);
-                            jobEquimPi.updateEquStatus(reqModel);
-                            break;
-                        }
-                    }
-                }
+                AppUtility.alertDialog2(this, LanguageController.getInstance().
+                                getMobileMsgByKey(AppConstant.dialog_alert),
+                        "Do You Want to repair this item?",
+                        LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok),
+                        LanguageController.getInstance().getMobileMsgByKey(AppConstant.cancel),
+                        new Callback_AlertDialog() {
+                            @Override
+                            public void onPossitiveCall() {
+                                if (jobId != null && !jobId.isEmpty() && equipment != null && !equipment.getEquId().isEmpty()) {
+                                    for (EquipmentStatus status : equipmentStatusList2) {
+                                        if (status.getStatusText().equalsIgnoreCase("In Repair")) {
+                                            String equStatus = status.getEsId();
+                                            UpdateEquStatusReqModel reqModel = new UpdateEquStatusReqModel(jobId, equipment.getEquId(), equStatus);
+                                            jobEquimPi.updateEquStatus(reqModel);
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onNegativeCall() {
+                                // do nothing
+                            }
+                        });
                 break;
             case R.id.tv_discard:
-                if (jobId != null && !jobId.isEmpty() && equipment != null && !equipment.getEquId().isEmpty()) {
-                    for (EquipmentStatus status : equipmentStatusList2) {
-                        if (status.getStatusText().equalsIgnoreCase("Discarded")) {
-                            String equStatus = status.getEsId();
-                            UpdateEquStatusReqModel reqModel = new UpdateEquStatusReqModel(jobId, equipment.getEquId(), equStatus);
-                            jobEquimPi.updateEquStatus(reqModel);
-                            break;
-                        }
-                    }
-                }
+                AppUtility.alertDialog2(this, LanguageController.getInstance().
+                                getMobileMsgByKey(AppConstant.dialog_alert),
+                        "Do You Want to discard this item?",
+                        LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok),
+                        LanguageController.getInstance().getMobileMsgByKey(AppConstant.cancel),
+                        new Callback_AlertDialog() {
+                            @Override
+                            public void onPossitiveCall() {
+                                if (jobId != null && !jobId.isEmpty() && equipment != null && !equipment.getEquId().isEmpty()) {
+                                    for (EquipmentStatus status : equipmentStatusList2) {
+                                        if (status.getStatusText().equalsIgnoreCase("Discarded")) {
+                                            String equStatus = status.getEsId();
+                                            UpdateEquStatusReqModel reqModel = new UpdateEquStatusReqModel(jobId, equipment.getEquId(), equStatus);
+                                            jobEquimPi.updateEquStatus(reqModel);
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onNegativeCall() {
+                                // do nothing
+                            }
+                        });
                 break;
         }
     }

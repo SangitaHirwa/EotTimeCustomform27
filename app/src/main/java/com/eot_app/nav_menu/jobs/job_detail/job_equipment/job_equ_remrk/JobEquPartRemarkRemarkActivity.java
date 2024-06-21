@@ -1136,28 +1136,59 @@ public class JobEquPartRemarkRemarkActivity extends UploadDocumentActivity imple
                 startActivityForResult(intent, REALLOCATE_LC);
                 break;
             case R.id.tv_repair:
-                if (jobId != null && !jobId.isEmpty() && equipment != null && !equipment.getEquId().isEmpty()) {
-                    for (EquipmentStatus status : equipmentStatusList2) {
-                        if (status.getStatusText().equalsIgnoreCase("In Repair")) {
-                            String equStatus = status.getEsId();
-                            UpdateEquStatusReqModel reqModel = new UpdateEquStatusReqModel(jobId, equipment.getEquId(), equStatus);
-                            jobEquimPi.updateEquStatus(reqModel);
-                            break;
-                        }
-                    }
-                }
+                AppUtility.alertDialog2(this, LanguageController.getInstance().
+                                getMobileMsgByKey(AppConstant.dialog_alert),
+                        "Do You Want to repair this item?",
+                        LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok),
+                        LanguageController.getInstance().getMobileMsgByKey(AppConstant.cancel),
+                        new Callback_AlertDialog() {
+                            @Override
+                            public void onPossitiveCall() {
+                                if (jobId != null && !jobId.isEmpty() && equipment != null && !equipment.getEquId().isEmpty()) {
+                                    for (EquipmentStatus status : equipmentStatusList2) {
+                                        if (status.getStatusText().equalsIgnoreCase("In Repair")) {
+                                            String equStatus = status.getEsId();
+                                            UpdateEquStatusReqModel reqModel = new UpdateEquStatusReqModel(jobId, equipment.getEquId(), equStatus);
+                                            jobEquimPi.updateEquStatus(reqModel);
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onNegativeCall() {
+                                // do nothing
+                            }
+                        });
+
                 break;
             case R.id.tv_discard:
-                if (jobId != null && !jobId.isEmpty() && equipment != null && !equipment.getEquId().isEmpty()) {
-                    for (EquipmentStatus status : equipmentStatusList2) {
-                        if (status.getStatusText().equalsIgnoreCase("Discarded")) {
-                            String equStatus = status.getEsId();
-                            UpdateEquStatusReqModel reqModel = new UpdateEquStatusReqModel(jobId, equipment.getEquId(), equStatus);
-                            jobEquimPi.updateEquStatus(reqModel);
-                            break;
-                        }
-                    }
-                }
+                AppUtility.alertDialog2(this, LanguageController.getInstance().
+                                getMobileMsgByKey(AppConstant.dialog_alert),
+                        "Do You Want to discard this item?",
+                        LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok),
+                        LanguageController.getInstance().getMobileMsgByKey(AppConstant.cancel),
+                        new Callback_AlertDialog() {
+                            @Override
+                            public void onPossitiveCall() {
+                                if (jobId != null && !jobId.isEmpty() && equipment != null && !equipment.getEquId().isEmpty()) {
+                                    for (EquipmentStatus status : equipmentStatusList2) {
+                                        if (status.getStatusText().equalsIgnoreCase("Discarded")) {
+                                            String equStatus = status.getEsId();
+                                            UpdateEquStatusReqModel reqModel = new UpdateEquStatusReqModel(jobId, equipment.getEquId(), equStatus);
+                                            jobEquimPi.updateEquStatus(reqModel);
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onNegativeCall() {
+                                // do nothing
+                            }
+                        });
                 break;
         }
     }
