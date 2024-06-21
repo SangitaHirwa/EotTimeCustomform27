@@ -8,8 +8,9 @@ import androidx.room.PrimaryKey;
 public class StockData {
     @PrimaryKey
     @NonNull
-    private String sat_usrid;
     private String sat_itemid;
+    private String sat_usrid;
+
     private String balance;
 
     @NonNull

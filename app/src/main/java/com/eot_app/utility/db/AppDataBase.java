@@ -762,10 +762,10 @@ public abstract class AppDataBase extends RoomDatabase {
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) {
 
-            database.execSQL("CREATE TABLE IF NOT EXISTS `Stock_Balance` (`sat_usrid` TEXT NOT NULL UNIQUE," +
-                    "'sat_itemid' TEXT," +
+            database.execSQL("CREATE TABLE IF NOT EXISTS `Stock_Balance` (`sat_itemid` TEXT NOT NULL UNIQUE," +
+                    "'sat_usrid' TEXT," +
                     "'balance' TEXT," +
-                    " PRIMARY KEY(`sat_usrid`)) ");
+                    " PRIMARY KEY(`sat_itemid`)) ");
             /* **Alter  Equipment Table  **/
             database.execSQL("ALTER TABLE Equipment ADD COLUMN servIntvalType TEXT");
             database.execSQL("ALTER TABLE Equipment ADD COLUMN servIntvalValue TEXT");

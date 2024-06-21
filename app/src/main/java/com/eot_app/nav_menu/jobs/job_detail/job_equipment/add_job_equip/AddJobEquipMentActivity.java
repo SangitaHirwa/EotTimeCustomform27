@@ -1386,7 +1386,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
             case R.id.remove_txt:
                 removeTagData();
                 break;
-            case R.id.client_site_layout:
+            case R.id.client_site_layout, R.id.auto_client_site:
                 if(clientEquResList != null && clientEquResList.size() > 0) {
                     auto_client_site.showDropDown();
                 }
@@ -1414,11 +1414,6 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
             case R.id.auto_equipment:
                 if (equipment_list != null && equipment_list.size() > 0)
                     auto_equipment.showDropDown();
-                break;
-            case R.id.auto_client_site:
-                if (clientSiteList != null && clientSiteList.size() > 0) {
-                    auto_client_site.showDropDown();
-                }
                 break;
             case R.id.auto_grp:
                 if (GetgrpDataList != null && GetgrpDataList.size() > 0) auto_grp.showDropDown();
