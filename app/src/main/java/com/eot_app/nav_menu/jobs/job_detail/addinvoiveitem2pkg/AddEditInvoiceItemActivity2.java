@@ -1821,7 +1821,11 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
 
     private void checkMandtryFileds() {
         if (!IS_ITEM_MANDATRY && TAB_SELECT == 1) {
-            AppUtility.alertDialog(this, "", LanguageController.getInstance().getMobileMsgByKey(AppConstant.item_empty), LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), "", () -> null);
+            if (comeFrom != null && comeFrom.equalsIgnoreCase("AddRemark") || comeFrom != null && comeFrom.equalsIgnoreCase("JobListScan") || comeFrom != null && comeFrom.equalsIgnoreCase("AddRemarkReplace")  || comeFrom != null && comeFrom.equalsIgnoreCase("AddRemarkItem")){
+                AppUtility.alertDialog(this, "", LanguageController.getInstance().getMobileMsgByKey(AppConstant.request_item_empty), LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), "", () -> null);
+            }else {
+                AppUtility.alertDialog(this, "", LanguageController.getInstance().getMobileMsgByKey(AppConstant.item_empty), LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), "", () -> null);
+            }
         } else if (!IS_FW_MANDATRY && TAB_SELECT == 2) {
             AppUtility.alertDialog(this, "", LanguageController.getInstance().getMobileMsgByKey(AppConstant.fw_valid), LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), "", () -> null);
         } else if (!IS_SERVICES_MANDATRY && TAB_SELECT == 3) {

@@ -1074,6 +1074,9 @@ public class AppConstant {
     public static String equipment_action_page = "equipment_action_page";
     public static String went_wrong = "went_wrong";
     public static String replace_action_msg = "replace_action_msg";
+    public static String no_address_found = "no_address_found";
+    public static String repair_alert_msg = "repair_alert_msg";
+    public static String discard_alert_msg = "discard_alert_msg";
 
     public static String server(String location) {
         switch (location) {

@@ -1979,7 +1979,9 @@
     "tomorrow": "Tomorrow",
     "warranty_start_date": "Warranty start date",
     "yesterday": "Yesterday",
-    "replace_action_msg": "Do you want to discard this equipment and replace with a new one?"
+    "replace_action_msg": "Do you want to discard this equipment and replace with a new one?",
+    "repair_alert_msg": "Are you sure, want to repair this equipment.",
+    "discard_alert_msg": "Are you sure, want to discard this equipment."
   }
 }
 

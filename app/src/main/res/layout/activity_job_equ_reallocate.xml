@@ -112,10 +112,9 @@
                     <ImageView
                         android:id="@+id/site_dp_img"
                         style="@style/subtext_style"
-                        android:layout_width="25dp"
+                        android:layout_width="45dp"
                         android:layout_height="25dp"
                         android:layout_gravity="center|end"
-                        android:layout_marginTop="12dp"
                         android:src="@drawable/ic_drop_down_black"
                         tools:ignore="ContentDescription" />
 
@@ -126,7 +125,7 @@
             android:id="@+id/no_site"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_27sdp"
-            android:text="No Address Found"
+            android:text=""
             android:visibility="gone"
             style="@style/text_style"
             android:gravity="center"

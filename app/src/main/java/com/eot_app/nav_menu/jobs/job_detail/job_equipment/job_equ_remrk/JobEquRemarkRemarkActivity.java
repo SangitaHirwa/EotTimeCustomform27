@@ -1103,7 +1103,7 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
             case R.id.tv_repair:
                 AppUtility.alertDialog2(this, LanguageController.getInstance().
                                 getMobileMsgByKey(AppConstant.dialog_alert),
-                        "Do You Want to repair this item?",
+                        LanguageController.getInstance().getMobileMsgByKey(AppConstant.repair_alert_msg),
                         LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok),
                         LanguageController.getInstance().getMobileMsgByKey(AppConstant.cancel),
                         new Callback_AlertDialog() {
@@ -1130,7 +1130,7 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
             case R.id.tv_discard:
                 AppUtility.alertDialog2(this, LanguageController.getInstance().
                                 getMobileMsgByKey(AppConstant.dialog_alert),
-                        "Do You Want to discard this item?",
+                        LanguageController.getInstance().getMobileMsgByKey(AppConstant.discard_alert_msg),
                         LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok),
                         LanguageController.getInstance().getMobileMsgByKey(AppConstant.cancel),
                         new Callback_AlertDialog() {

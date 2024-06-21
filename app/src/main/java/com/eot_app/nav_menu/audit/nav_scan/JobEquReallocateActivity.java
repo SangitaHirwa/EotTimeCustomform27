@@ -120,7 +120,7 @@ public class JobEquReallocateActivity extends AppCompatActivity implements View.
         if(!oldLocation.isEmpty()) {
             old_location_detail.setText(oldLocation);
         }else {
-            old_location_detail.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.no_location));
+            old_location_detail.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.no_address_found));
         }
         if (clientId != null && !clientId.isEmpty()) {
             getSiteList(clientId);
@@ -143,6 +143,7 @@ public class JobEquReallocateActivity extends AppCompatActivity implements View.
         txt_new_location.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.new_location));
         txt_old_location.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.old_location));
         location_save_btn.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.save_btn));
+        no_site.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.no_address_found));
 
         location_save_btn.setOnClickListener(this);
         auto_sites.setOnClickListener(this);
@@ -171,6 +172,8 @@ public class JobEquReallocateActivity extends AppCompatActivity implements View.
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.site_dp_img:
+            case R.id.auto_sites:
+                auto_sites.setCursorVisible(false);
                 auto_sites.showDropDown();
                 break;
             case R.id.location_save_btn:
