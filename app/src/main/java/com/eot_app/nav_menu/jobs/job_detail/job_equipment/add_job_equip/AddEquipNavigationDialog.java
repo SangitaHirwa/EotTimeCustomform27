@@ -32,7 +32,7 @@ public class AddEquipNavigationDialog extends DialogFragment implements View.OnC
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setStyle(DialogFragment.STYLE_NO_FRAME, R.style.CustomDialog);
+        setStyle(DialogFragment.STYLE_NO_FRAME, R.style.CustomDialog1);
 
     }
 
