@@ -1260,6 +1260,7 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
         Intent intent = new Intent(this, AddEditInvoiceItemActivity2.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         intent.putExtra("jobId", jobId);
+        intent.putExtra("cltId", cltId);
         intent.putExtra("locId", locId);
         intent.putExtra("invId", "");
         intent.putExtra("equipment", strEqu);
@@ -1291,6 +1292,7 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
         intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         intent.putExtra("invId", "");
         intent.putExtra("jobId", jobId);
+        intent.putExtra("cltId", cltId);
         intent.putExtra("equipmentId", equipment.getEquId());
         intent.putExtra("equipmentIdName", equipment.getEqunm());
         intent.putExtra("equipmentType", equipment.getType());
@@ -1591,6 +1593,7 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
             String strEquipment = intent.getExtras().getString("equipment");
             equipment = new Gson().fromJson(strEquipment, EquArrayModel.class);
         }
+
 
         if (isRemarkUpdated) {
             Job job = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(mParam2.getJobId());

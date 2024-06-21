@@ -1387,7 +1387,9 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
                 removeTagData();
                 break;
             case R.id.client_site_layout:
-                auto_client_site.showDropDown();
+                if(clientEquResList != null && clientEquResList.size() > 0) {
+                    auto_client_site.showDropDown();
+                }
                 break;
 //            case R.id.linearLayout_status:
 //                status_Dp.performClick();
@@ -1414,8 +1416,9 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
                     auto_equipment.showDropDown();
                 break;
             case R.id.auto_client_site:
-//                if (clientSiteList != null && clientSiteList.size() > 0)
-                auto_client_site.showDropDown();
+                if (clientSiteList != null && clientSiteList.size() > 0) {
+                    auto_client_site.showDropDown();
+                }
                 break;
             case R.id.auto_grp:
                 if (GetgrpDataList != null && GetgrpDataList.size() > 0) auto_grp.showDropDown();

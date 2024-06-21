@@ -33,5 +33,6 @@ public interface Audit_Job_History_View {
 
     void uploadAttchView(String msg);
     void linkEquipment();
+    void notLinkEquipment();
 
 }

@@ -581,13 +581,15 @@ public class Audit_Job_History_pc implements Audit_Job_History_pi {
                                 addRecordsToDB(jobData);
                             } else if (jsonObject.get("statusCode") != null && jsonObject.get("statusCode").getAsString().equals(AppConstant.SESSION_EXPIRE)) {
                                 audit_history_view.sessionExpire(LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
+                            }else {
+                                audit_history_view.notLinkEquipment();
                             }
                         }
 
                         @Override
                         public void onError(Throwable e) {
                             AppUtility.progressBarDissMiss();
-
+                            audit_history_view.notLinkEquipment();
                         }
 
                         @Override

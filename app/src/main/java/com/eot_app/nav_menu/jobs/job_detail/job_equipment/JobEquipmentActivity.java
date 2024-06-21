@@ -469,6 +469,18 @@ public class JobEquipmentActivity extends AppCompatActivity implements Job_equim
                         if (item.getEquId().equals(equipment.getEquId())) {
                             isLinked = true;
                             break;
+                        }else {
+                            if(item.getEquComponent()!= null && item.getEquComponent().size() > 0){
+                                for (EquArrayModel item1 : item.getEquComponent()) {
+                                    if (item1.getEquId().equals(equipment.getEquId())) {
+                                        isLinked = true;
+                                        break;
+                                    }
+                            }
+                                if(isLinked){
+                                    break;
+                                }
+                            }
                         }
 
                     }
@@ -807,6 +819,7 @@ public class JobEquipmentActivity extends AppCompatActivity implements Job_equim
         intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         intent.putExtra("invId", "");
         intent.putExtra("jobId", jobId);
+        intent.putExtra("cltId", cltId);
         intent.putExtra("locId", locId);
         intent.putExtra("comeFrom", "JobListScan");
         intent.putExtra("scanCode", scanCode);

@@ -244,6 +244,7 @@ public class JobEquPartRemarkRemarkActivity extends UploadDocumentActivity imple
         intent.putExtra("invId", "");
 
         intent.putExtra("jobId", jobId);
+        intent.putExtra("cltId", cltId);
         intent.putExtra("equipmentId", equipment.getEquId());
         intent.putExtra("equipmentIdName", equipment.getEqunm());
         intent.putExtra("equipmentType", equipment.getType());
@@ -1295,6 +1296,7 @@ public class JobEquPartRemarkRemarkActivity extends UploadDocumentActivity imple
         Intent intent = new Intent(this, AddEditInvoiceItemActivity2.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         intent.putExtra("jobId", jobId);
+        intent.putExtra("cltId", cltId);
         intent.putExtra("locId", locId);
         intent.putExtra("invId", "");
         intent.putExtra("equipment", strEqu);

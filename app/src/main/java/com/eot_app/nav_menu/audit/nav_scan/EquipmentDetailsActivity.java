@@ -1062,7 +1062,6 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
                         List<String> equipList = new ArrayList<>();
                         equipList.add(equipment.getEquId());
                         equ_details_pc.addAuditEquipment(equipList, jobId, "","1");
-                        Toast.makeText(this, "Not Linked", Toast.LENGTH_LONG).show();
                     }
                 } else {
                     String jobData = "";
@@ -1240,8 +1239,14 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
 
     @Override
     public void linkEquipment() {
+        Toast.makeText(this,LanguageController.getInstance().getServerMsgByKey(AppConstant.item_linked),Toast.LENGTH_SHORT ).show();
         isLinked = true;
         button_job.performClick();
+    }
+
+    @Override
+    public void notLinkEquipment() {
+        Toast.makeText(this,LanguageController.getInstance().getServerMsgByKey(AppConstant.item_not_linked),Toast.LENGTH_SHORT ).show();
     }
 
     @Override
