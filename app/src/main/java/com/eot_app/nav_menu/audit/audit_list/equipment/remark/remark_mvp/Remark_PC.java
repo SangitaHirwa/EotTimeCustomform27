@@ -17,6 +17,7 @@ import com.eot_app.utility.App_preference;
 import com.eot_app.utility.EotApp;
 import com.eot_app.utility.db.AppDataBase;
 import com.eot_app.utility.language_support.LanguageController;
+import com.eot_app.utility.settings.equipmentdb.Equipment;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -27,6 +28,7 @@ import java.io.File;
 import java.lang.reflect.Type;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -221,6 +223,7 @@ public class Remark_PC implements Remark_PI {
                         @Override
                         public void onComplete() {
                             Log.d("mahi", "Completed");
+                            getEquipmentList();
                             AppUtility.progressBarDissMiss();
                         }
                     });
@@ -257,6 +260,68 @@ public class Remark_PC implements Remark_PI {
             }
         }
     }
+    public void getEquipmentList() {
 
+        if (AppUtility.isInternetConnected()) {
+
+
+            HashMap<String, String> auditListRequestModel = new HashMap<>();
+            auditListRequestModel.put("search", "");
+            auditListRequestModel.put("isActive", "");
+            auditListRequestModel.put("limit", ""+updatelimit);
+            auditListRequestModel.put("index", ""+updateindex);
+            auditListRequestModel.put("type", "");
+            auditListRequestModel.put("dateTime", App_preference.getSharedprefInstance().getAllEquipmentSyncTime());
+
+
+            String data = new Gson().toJson(auditListRequestModel);
+            ApiClient.getservices().eotServiceCall(Service_apis.getAllEquipments, AppUtility.getApiHeaders(), AppUtility.getJsonObject(data))
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<JsonObject>() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
+                        }
+
+                        @Override
+                        public void onNext(JsonObject jsonObject) {
+                            Log.e("getAllEquipments", "AddJobPc");
+                            try {
+                                Log.d("mahi", jsonObject.toString());
+                                if (jsonObject.get("success").getAsBoolean()) {
+                                    count = jsonObject.get("count").getAsInt();
+                                    String convert = new Gson().toJson(jsonObject.get("data").getAsJsonArray());
+                                    Type listType = new TypeToken<List<Equipment>>() {
+                                    }.getType();
+                                    List<Equipment> equipmentList = new Gson().fromJson(convert, listType);
+                                    if (equipmentList != null)
+                                        AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).equipmentDao().insertEquipmentList(equipmentList);
+                                }
+                            } catch (Exception ex) {
+                                ex.printStackTrace();
+                            }
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            Log.e("", "");
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            if ((updateindex + updatelimit) <= count) {
+                                updateindex += updatelimit;
+                                getEquipmentList();
+                            } else {
+                                if (count != 0) {
+                                    App_preference.getSharedprefInstance().setAllEquipmentSyncTime(AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT));
+                                }
+                                updateindex = 0;
+                                count = 0;
+                            }
+                        }
+                    });
+        }
+    }
 
 }

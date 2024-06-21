@@ -29,6 +29,7 @@ import com.eot_app.utility.App_preference;
 import com.eot_app.utility.EotApp;
 import com.eot_app.utility.db.AppDataBase;
 import com.eot_app.utility.language_support.LanguageController;
+import com.eot_app.utility.settings.equipmentdb.Equipment;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
@@ -408,6 +409,7 @@ public class JobEquRemark_PC implements JobEquRemark_PI {
                         @Override
                         public void onComplete() {
                             Log.d("mahi", "Completed");
+                            getEquipmentList();
                             AppUtility.progressBarDissMiss();
                         }
                     });
@@ -757,5 +759,68 @@ public class JobEquRemark_PC implements JobEquRemark_PI {
                         getMobileMsgByKey(AppConstant.dialog_alert), LanguageController.getInstance().getMobileMsgByKey
                         (AppConstant.err_check_network), LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok),
                 "", () -> null);
+    }
+    public void getEquipmentList() {
+
+        if (AppUtility.isInternetConnected()) {
+
+
+            HashMap<String, String> auditListRequestModel = new HashMap<>();
+            auditListRequestModel.put("search", "");
+            auditListRequestModel.put("isActive", "");
+            auditListRequestModel.put("limit", ""+updatelimit);
+            auditListRequestModel.put("index", ""+updateindexCustomForm);
+            auditListRequestModel.put("type", "");
+            auditListRequestModel.put("dateTime", App_preference.getSharedprefInstance().getAllEquipmentSyncTime());
+
+
+            String data = new Gson().toJson(auditListRequestModel);
+            ApiClient.getservices().eotServiceCall(Service_apis.getAllEquipments, AppUtility.getApiHeaders(), AppUtility.getJsonObject(data))
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<JsonObject>() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
+                        }
+
+                        @Override
+                        public void onNext(JsonObject jsonObject) {
+                            Log.e("getAllEquipments", "AddJobPc");
+                            try {
+                                Log.d("mahi", jsonObject.toString());
+                                if (jsonObject.get("success").getAsBoolean()) {
+                                    count = jsonObject.get("count").getAsInt();
+                                    String convert = new Gson().toJson(jsonObject.get("data").getAsJsonArray());
+                                    Type listType = new TypeToken<List<Equipment>>() {
+                                    }.getType();
+                                    List<Equipment> equipmentList = new Gson().fromJson(convert, listType);
+                                    if (equipmentList != null)
+                                        AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).equipmentDao().insertEquipmentList(equipmentList);
+                                }
+                            } catch (Exception ex) {
+                                ex.printStackTrace();
+                            }
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            Log.e("", "");
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            if ((updateindexCustomForm + updatelimit) <= count) {
+                                updateindexCustomForm += updatelimit;
+                                getEquipmentList();
+                            } else {
+                                if (count != 0) {
+                                    App_preference.getSharedprefInstance().setAllEquipmentSyncTime(AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT));
+                                }
+                                updateindexCustomForm = 0;
+                                count = 0;
+                            }
+                        }
+                    });
+        }
     }
 }
