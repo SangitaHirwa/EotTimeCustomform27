@@ -43,7 +43,6 @@ import com.eot_app.utility.EotApp;
 import com.eot_app.utility.States;
 import com.eot_app.utility.db.AppDataBase;
 import com.eot_app.utility.language_support.LanguageController;
-import com.eot_app.utility.settings.equipmentdb.Equipment;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.gson.Gson;
 
@@ -285,15 +284,6 @@ public class JobEquReallocateActivity extends AppCompatActivity implements View.
     @Override
     public void setNewLocation(String msg) {
         EotApp.getAppinstance().showToastmsg(msg);
-        Equipment equipment = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).equipmentDao().getEquipmentById(equId);
-        if(equipment != null && reqModel != null){
-            equipment.setAdr(reqModel.getAdr());
-            equipment.setCity(reqModel.getCity());
-            equipment.setState(reqModel.getState());
-            equipment.setZip(reqModel.getZip());
-            equipment.setSno(reqModel.getSiteId());
-            AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).equipmentDao().updateEquipment(equipment);
-        }
         Intent intent = new Intent();
         String json = new Gson().toJson(reqModel);
         intent.putExtra("adr_model",json);
