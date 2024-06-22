@@ -72,6 +72,7 @@ public class InvoiceItemDataModel implements Parcelable {
     private String groupId;
     private String isRemoveStock;
     private String brandNm;
+    private String stkusrId;
 
     public String getBrandNm() {
         return brandNm;
@@ -144,7 +145,7 @@ public class InvoiceItemDataModel implements Parcelable {
                                 String pno, String unit, String taxamnt, String supplierCost,
                                 List<Tax> tax, String jtId, String serialNo, String isBillableChange,
                                 String equId,String isBillable,
-                                String partTempId,int isPartParent,int isPartChild,String isRemoveStock) {//, String isBillable
+                                String partTempId,int isPartParent,int isPartChild,String isRemoveStock,String stkusrId) {//, String isBillable
         this.tempNm = tempNm;
         this.inm = inm;
         this.itemId = itemId;
@@ -171,6 +172,7 @@ public class InvoiceItemDataModel implements Parcelable {
         this.isPartParent = isPartParent;
         this.isPartChild = isPartChild;
         this.isRemoveStock = isRemoveStock;
+        this.stkusrId = stkusrId;
     }
 
 
@@ -181,7 +183,7 @@ public class InvoiceItemDataModel implements Parcelable {
                                 String itemType, String rate, String qty, String discount, String des,
                                 String hsncode, String pno, String unit, String taxamnt, String supplierCost,
                                 List<Tax> tax, String jtId, String serialNo, String itemConvertCount
-            , String isBillableChange,String equId, String partTempId,int isPartParent,int isPartChild, String groupId,String isRemoveStock){
+            , String isBillableChange,String equId, String partTempId,int isPartParent,int isPartChild, String groupId,String isRemoveStock,String stkusrId){
 //            , String partTempId,int isPartParent,int isPartChild) {//, String isBillable
         this.tempNm = tempNm;
         this.itemConvertCount = itemConvertCount;
@@ -211,6 +213,7 @@ public class InvoiceItemDataModel implements Parcelable {
         this.isPartChild = isPartChild;
         this.groupId = groupId;
         this.isRemoveStock = isRemoveStock;
+        this.stkusrId = stkusrId;
     }
 
 
@@ -251,6 +254,7 @@ public class InvoiceItemDataModel implements Parcelable {
         groupId = in.readString();
         isRemoveStock = in.readString();
         brandNm = in.readString();
+        stkusrId = in.readString();
     }
 
     public static Creator<InvoiceItemDataModel> getCREATOR() {
@@ -456,6 +460,7 @@ public class InvoiceItemDataModel implements Parcelable {
         dest.writeString(groupId);
         dest.writeString(isRemoveStock);
         dest.writeString(brandNm);
+        dest.writeString(stkusrId);
     }
 
 
@@ -496,6 +501,7 @@ public class InvoiceItemDataModel implements Parcelable {
                 Objects.equals(getParentId(), that.getParentId())&&
                 Objects.equals(getGroupId(), that.getGroupId())&&
                 Objects.equals(getIsRemoveStock(), that.getIsRemoveStock())&&
+                Objects.equals(getStkusrId(), that.getStkusrId())&&
                 Objects.equals(getBrandNm(), that.getBrandNm());
     }
 
@@ -544,6 +550,14 @@ public class InvoiceItemDataModel implements Parcelable {
 
     public void setIsRemoveStock(String isRemoveStock) {
         this.isRemoveStock = isRemoveStock;
+    }
+
+    public String getStkusrId() {
+        return stkusrId;
+    }
+
+    public void setStkusrId(String stkusrId) {
+        this.stkusrId = stkusrId;
     }
 
     @Override

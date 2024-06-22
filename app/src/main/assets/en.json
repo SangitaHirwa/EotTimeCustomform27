@@ -1981,7 +1981,8 @@
     "yesterday": "Yesterday",
     "replace_action_msg": "Do you want to discard this equipment and replace with a new one?",
     "repair_alert_msg": "Are you sure, want to repair this equipment.",
-    "discard_alert_msg": "Are you sure, want to discard this equipment."
+    "discard_alert_msg": "Are you sure, want to discard this equipment.",
+    "stock_remove_alert_msg" : "remove stock"
   }
 }
 

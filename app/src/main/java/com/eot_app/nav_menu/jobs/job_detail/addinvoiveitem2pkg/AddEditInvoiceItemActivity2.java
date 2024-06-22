@@ -12,6 +12,7 @@ import android.os.Handler;
 import android.os.Parcelable;
 import android.text.Editable;
 import android.text.Html;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MenuItem;
@@ -52,10 +53,12 @@ import com.eot_app.nav_menu.appointment.appointment_model.AppointmentUpdateItem_
 import com.eot_app.nav_menu.appointment.dbappointment.Appointment;
 import com.eot_app.nav_menu.appointment.details.RequirementGetheringListAdapter;
 import com.eot_app.nav_menu.appointment.details.documents.AppointmentTax;
+import com.eot_app.nav_menu.jobs.add_job.Add_job_activity;
 import com.eot_app.nav_menu.jobs.job_db.EquArrayModel;
 import com.eot_app.nav_menu.jobs.job_db.Job;
 import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.model.AddInvoiceItemReqModel;
 import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.model.InvoiceItemDataModel;
+import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.model.StockData;
 import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.mvp.AddEditInvoiceItem_PC;
 import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.mvp.AddEditInvoiceItem_PI;
 import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.mvp.AddEditInvoiceItem_View;
@@ -102,6 +105,8 @@ import java.util.concurrent.Callable;
 
 import static com.eot_app.nav_menu.jobs.job_detail.invoice2list.JoBInvoiceItemList2Activity.ADD_ITEM_DATA;
 import static com.eot_app.utility.AppConstant.add;
+import static com.eot_app.utility.AppConstant.flat_discount;
+import static com.eot_app.utility.AppConstant.item;
 import static com.eot_app.utility.AppConstant.qty;
 import static com.eot_app.utility.AppConstant.serial_no;
 
@@ -187,8 +192,9 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
     private String appInm = "";
     private AppointmentUpdateItem_Req_Model itemAddRequestModel;
     private AppointmentAddItem_Res updateItem_res;
-    CheckBox add_stock_checkBox;
+    CheckBox add_stock_checkBox, chiled_add_stock_checkBox;
     String isRemoveStock = "1", scanCode = "";
+    String stkusrId = "0";
     boolean show_stock_checkbox = false;
     boolean isTaxUpdated = false, isSerialNoSelected = false;
     public static AddEditInvoiceItemActivity2 addEditInvoiceItemActivity2;
@@ -199,6 +205,10 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
     Inventry_ReS_Model invetoryItemData = new Inventry_ReS_Model();
     InvoiceItemDataModel invoiceItemDataModelWithIjmmId = new InvoiceItemDataModel();
     ImageView ivCross;
+    String stockQty = "";
+    String userId = "";
+    boolean isShowStockAlert = false;
+    StockData stockData;
 
     public AddEditInvoiceItemActivity2 getInstance() {
 
@@ -365,10 +375,9 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
             @Override
             public void afterTextChanged(Editable editable) {
                 if (comeFrom != null && comeFrom.equalsIgnoreCase("AddRemark") || comeFrom != null && comeFrom.equalsIgnoreCase("JobListScan") || comeFrom != null && comeFrom.equalsIgnoreCase("AddRemarkReplace")) {
-                    if(!autocomplete_item.getText().toString().isEmpty()){
+                    if (!autocomplete_item.getText().toString().isEmpty()) {
                         ivCross.setVisibility(View.VISIBLE);
-                    }
-                    else {
+                    } else {
                         ivCross.setVisibility(View.GONE);
                     }
                 }
@@ -774,21 +783,34 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
         inm = updateItemDataModel.getInm();
         jtId = updateItemDataModel.getJtId();
         if (updateItemDataModel.getItemType() != null && updateItemDataModel.getItemType().equals("0")) {
+            if (!itemType.isEmpty() && itemType.equals("0") && itemId != null && !itemId.isEmpty()) {
+                stockData = AppDataBase.getInMemoryDatabase(this).stockDataDao().getItemBalanceByItemId(itemId);
+            }
             if (updateItemDataModel.getIsRemoveStock() != null && updateItemDataModel.getIsRemoveStock().equals("0")) {
                 add_stock_checkBox.setChecked(false);
                 isRemoveStock = "0";
+                chiled_add_stock_checkBox.setVisibility(View.GONE);
             } else {
+                if (updateItemDataModel.getStkusrId() != null &&
+                        updateItemDataModel.getStkusrId().equalsIgnoreCase(App_preference.getSharedprefInstance().getLoginRes().getUsrId())) {
+                    stkusrId = updateItemDataModel.getStkusrId();
+                    chiled_add_stock_checkBox.setChecked(true);
+                } else {
+                    chiled_add_stock_checkBox.setChecked(false);
+                    stkusrId = updateItemDataModel.getStkusrId();
+                }
                 add_stock_checkBox.setChecked(true);
                 isRemoveStock = "1";
+                chiled_add_stock_checkBox.setVisibility(View.VISIBLE);
             }
             if (updateItemDataModel.getDataType() != null && updateItemDataModel.getDataType().equals(("3"))) {
                 add_stock_checkBox.setVisibility(View.GONE);
+                chiled_add_stock_checkBox.setVisibility(View.GONE);
             } else {
                 add_stock_checkBox.setVisibility(View.VISIBLE);
             }
         } else {
             add_stock_checkBox.setVisibility(View.GONE);
-
         }
         try {
             if (!NONBILLABLE && updateItemDataModel.getDataType().equals("1")) {
@@ -830,6 +852,7 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
         isBillableChange = "";
         total_tax = 0f;
         edt_item_desc.setText("");
+        isShowStockAlert = false;
         edt_item_qty.setText("1");
         edt_item_rate.setText("0");
         edt_item_supplier.setText("0");
@@ -1033,7 +1056,9 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
         text_default.setText(" (" + LanguageController.getInstance().getMobileMsgByKey(AppConstant.text_default) + ")");
 
         add_stock_checkBox = findViewById(R.id.add_stock_checkBox);
+        chiled_add_stock_checkBox = findViewById(R.id.chiled_add_stock_checkBox);
         add_stock_checkBox.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.remove_stock_from_inventory));
+        chiled_add_stock_checkBox.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.remove_stock_from_inventory));
         txt_lbl_link = findViewById(R.id.txt_lbl_link);
         txt_lbl_link.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.select_job_items_to_link_equipment));
         btn_link_item = findViewById(R.id.btn_link_item);
@@ -1164,13 +1189,118 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
         add_stock_checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (!isChecked) {
                 isRemoveStock = "0";
+                stkusrId = "0";
+                chiled_add_stock_checkBox.setVisibility(View.GONE);
             } else {
                 isRemoveStock = "1";
+                chiled_add_stock_checkBox.setVisibility(View.VISIBLE);
+            }
+        });
+        chiled_add_stock_checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (!isChecked) {
+                chiled_add_stock_checkBox.setChecked(false);
+                stkusrId = "0";
+            } else {
+                chiled_add_stock_checkBox.setChecked(true);
+                getStockBalance();
             }
         });
 
         invoiceItemPi = new AddEditInvoiceItem_PC(this);
         invoiceItemPi.getInventryItemList();
+    }
+
+    private void getStockBalance() {
+        boolean showDialog = false;
+        stockQty = edt_item_qty.getText().toString();
+//            Log.e("stockData", stockData.toString());
+            if(stockData != null) {
+                if (userId.isEmpty()) {
+                    showDialog = stockQty != null && !stockQty.isEmpty() && Integer.parseInt(stockQty) > Integer.parseInt(stockData.getBalance());
+                } else if (stockData != null && stockData.getSat_usrid().equalsIgnoreCase(userId)) {
+                    showDialog = stockQty != null && !stockQty.isEmpty() && Integer.parseInt(stockQty) > Integer.parseInt(stockData.getBalance());
+                }
+
+                if (showDialog) {
+                        AppUtility.alertDialog2(this,
+                                "",
+                                LanguageController.getInstance().getMobileMsgByKey(AppConstant.stock_remove_alert_msg),
+                                LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok),
+                                LanguageController.getInstance().getMobileMsgByKey(AppConstant.cancel),
+                                new Callback_AlertDialog() {
+                                    @Override
+                                    public void onPossitiveCall() {
+                                        chiled_add_stock_checkBox.setChecked(true);
+                                        stkusrId = App_preference.getSharedprefInstance().getLoginRes().getUsrId();
+                                    }
+
+                                    @Override
+                                    public void onNegativeCall() {
+                                        chiled_add_stock_checkBox.setChecked(false);
+                                        stkusrId = "0";
+                                    }
+                                });
+                } else {
+                    chiled_add_stock_checkBox.setChecked(true);
+                    stkusrId = App_preference.getSharedprefInstance().getLoginRes().getUsrId();
+                }
+            }else{
+                chiled_add_stock_checkBox.setChecked(false);
+                stkusrId = "0";
+            }
+      /*  stockQty = edt_item_qty.getText().toString();
+        if(!itemType.isEmpty() && itemType.equals("0") && itemId != null && !itemId.isEmpty()) {
+            StockData stockData = AppDataBase.getInMemoryDatabase(this).stockDataDao().getItemBalanceByItemId(itemId);
+            if (userId.isEmpty()) {
+                if (stockQty != null && !stockQty.isEmpty() && Integer.parseInt(stockQty) > Integer.parseInt(stockData.getBalance())) {
+                    AppUtility.alertDialog2(this,
+                            "",
+                            "shdgshf",
+                            LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok),
+                            LanguageController.getInstance().getMobileMsgByKey(AppConstant.cancel), new Callback_AlertDialog() {
+                                @Override
+                                public void onPossitiveCall() {
+                                    chiled_add_stock_checkBox.setChecked(true);
+                                    stkusrId = App_preference.getSharedprefInstance().getLoginRes().getUsrId();
+                                }
+
+                                @Override
+                                public void onNegativeCall() {
+                                    chiled_add_stock_checkBox.setChecked(false);
+                                    stkusrId = "0";
+                                }
+                            });
+                } else {
+                    chiled_add_stock_checkBox.setChecked(true);
+                    stkusrId = App_preference.getSharedprefInstance().getLoginRes().getUsrId();
+                }
+            } else{
+                if (stockData != null && stockData.getSat_usrid().equalsIgnoreCase(userId)) {
+                if (stockQty != null && !stockQty.isEmpty() && Integer.parseInt(stockQty) > Integer.parseInt(stockData.getBalance())) {
+                    AppUtility.alertDialog2(this,
+                            "",
+                            "shdgshf",
+                            LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok),
+                            LanguageController.getInstance().getMobileMsgByKey(AppConstant.cancel), new Callback_AlertDialog() {
+                                @Override
+                                public void onPossitiveCall() {
+                                    chiled_add_stock_checkBox.setChecked(true);
+                                    stkusrId = App_preference.getSharedprefInstance().getLoginRes().getUsrId();
+                                }
+
+                                @Override
+                                public void onNegativeCall() {
+                                    chiled_add_stock_checkBox.setChecked(false);
+                                    stkusrId = "0";
+                                }
+                            });
+                } else {
+                    chiled_add_stock_checkBox.setChecked(true);
+                    stkusrId = App_preference.getSharedprefInstance().getLoginRes().getUsrId();
+                }
+            }
+        }
+        }*/
     }
 
     /**
@@ -1217,8 +1347,8 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
             intent.putExtra("equipment", strEqu);
         }
 
-        if(comeFrom != null && comeFrom.equalsIgnoreCase("JobListScan")){
-            if(equDefaultType != null && !equDefaultType.isEmpty()){
+        if (comeFrom != null && comeFrom.equalsIgnoreCase("JobListScan")) {
+            if (equDefaultType != null && !equDefaultType.isEmpty()) {
                 intent.putExtra("equDefaultType", equDefaultType);
             }
         }
@@ -1246,8 +1376,8 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
             }
             intent.putExtra("equipment", strEqu);
         }
-        if(comeFrom != null && comeFrom.equalsIgnoreCase("JobListScan")){
-            if(equDefaultType != null && !equDefaultType.isEmpty()){
+        if (comeFrom != null && comeFrom.equalsIgnoreCase("JobListScan")) {
+            if (equDefaultType != null && !equDefaultType.isEmpty()) {
                 intent.putExtra("equDefaultType", equDefaultType);
             }
         }
@@ -1409,9 +1539,7 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
             Log.e("checkEmpty:;", warrantyValue + " " + warrantyType);
 
         }
-        if (show_stock_checkbox) {
-            add_stock_checkBox.setVisibility(View.VISIBLE);
-        }
+
         /* 1 For Selected tax on Item************/
         if (itemselected.getTaxType() != null && itemselected.getTaxType().equals("1")) {
             setDefaultTax(itemselected.getTax());
@@ -1456,8 +1584,37 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
         edt_unit.setText(itemselected.getUnit());
         edt_serialNo.setText(itemselected.getSerialNo());
 
+        if (!itemType.isEmpty() && itemType.equals("0") && itemId != null && !itemId.isEmpty()) {
+             stockData = AppDataBase.getInMemoryDatabase(this).stockDataDao().getItemBalanceByItemId(itemId);
+        }
+
+        if (show_stock_checkbox) {
+            add_stock_checkBox.setVisibility(View.VISIBLE);
+            if (add_stock_checkBox.isChecked()) {
+                stkusrId = "0";
+                chiled_add_stock_checkBox.setVisibility(View.VISIBLE);
+            } else {
+                stkusrId = "0";
+                chiled_add_stock_checkBox.setVisibility(View.GONE);
+            }
+        }
         if (!add_stock_checkBox.isChecked()) {
             isRemoveStock = "0";
+            stkusrId = "0";
+            chiled_add_stock_checkBox.setVisibility(View.GONE);
+        } else {
+            isRemoveStock = "1";
+            chiled_add_stock_checkBox.setVisibility(View.VISIBLE);
+            if(stockData != null) {
+                stockQty = edt_item_qty.getText().toString();
+                if(stockQty != null && !stockQty.isEmpty() && Integer.parseInt(stockQty) > Integer.parseInt(stockData.getBalance())){
+                    chiled_add_stock_checkBox.setChecked(false);
+                    stkusrId = "0";
+                }else {
+                    chiled_add_stock_checkBox.setChecked(true);
+                    stkusrId = App_preference.getSharedprefInstance().getLoginRes().getUsrId();
+                }
+            }
         }
         Log.v("Rate:::", itemselected.getRate());
         if (itemselected.getRate().isEmpty()) {
@@ -1580,6 +1737,7 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
         itemType = "";
         inm = "";
         /* quantity always be 1 initially */
+        isShowStockAlert = false;
         edt_item_qty.setText("1");
         edt_item_rate.setText("0");
         edt_item_supplier.setText("0");
@@ -1616,6 +1774,7 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
         itemId = serViceItem.getJtId();
         inm = serViceItem.getName();
         isBillable = "1";
+
         if (serViceItem.getQty() != null && !serViceItem.getQty().isEmpty()) {
             edt_item_qty.setText(serViceItem.getQty()); // quantity always be 1 initially
         } else {
@@ -1744,6 +1903,7 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
             case R.id.item_select:
                 autocomplete_item.setTag("Item");
                 add_stock_checkBox.setVisibility(View.GONE);
+                chiled_add_stock_checkBox.setVisibility(View.GONE);
                 invoiceItemPi.getInventryItemList();
                 setTxtBkgColor(1);
                 fw_service_filed_hide(1);
@@ -1762,6 +1922,7 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
                 setTxtBkgColor(3);
                 invoiceItemPi.getJobServiceTittle();
                 add_stock_checkBox.setVisibility(View.GONE);
+                chiled_add_stock_checkBox.setVisibility(View.GONE);
                 fw_service_filed_hide(3);
                 break;
             case R.id.tv_skip:
@@ -2214,7 +2375,8 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
             if (edt_item_qty.getText().toString().isEmpty()) {
                 edt_item_qty.setText("0");
             }
-            InvoiceItemDataModel addItemDataModel = new InvoiceItemDataModel(autocomplete_item.getText().toString().trim(), inm, itemId, dataType, itemType, edt_item_rate.getText().toString().trim(), edt_item_qty.getText().toString().trim(), edt_item_disc.getText().toString().trim(), edt_item_desc.getText().toString().trim(), edt_hsnCode.getText().toString().trim(), edt_part_no.getText().toString().trim(), edt_unit.getText().toString().trim(), taxamount_value_txt.getText().toString().trim(), edt_item_supplier.getText().toString().trim(), taxListFilter, jtId, edt_serialNo.getText().toString().trim(), isBillableChange, equipmentId, "", partTempId, isPartParent, 0, isRemoveStock);
+            InvoiceItemDataModel addItemDataModel = new InvoiceItemDataModel(autocomplete_item.getText().toString().trim(), inm, itemId, dataType, itemType, edt_item_rate.getText().toString().trim(),
+                    edt_item_qty.getText().toString().trim(), edt_item_disc.getText().toString().trim(), edt_item_desc.getText().toString().trim(), edt_hsnCode.getText().toString().trim(), edt_part_no.getText().toString().trim(), edt_unit.getText().toString().trim(), taxamount_value_txt.getText().toString().trim(), edt_item_supplier.getText().toString().trim(), taxListFilter, jtId, edt_serialNo.getText().toString().trim(), isBillableChange, equipmentId, "", partTempId, isPartParent, 0, isRemoveStock, stkusrId);
 
             try {
                 if (!isBillable.equals("")) {
@@ -2238,7 +2400,7 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
 
             //TODO need to be checked to be done later
             for (int i = 0; i < partsList.size(); i++) {
-                itemDataList.add(new InvoiceItemDataModel(partsList.get(i).getInm(), partsList.get(i).getInm(), partsList.get(i).getItemId(), dataType, partsList.get(i).getType(), partsList.get(i).getRate(), partsList.get(i).getQty(), partsList.get(i).getDiscount(), partsList.get(i).getDes(), partsList.get(i).getHsncode(), partsList.get(i).getPno(), partsList.get(i).getUnit(), "0", partsList.get(i).getSupplierCost(), partsList.get(i).getTax(), "", partsList.get(i).getSerialNo(), partsList.get(i).getIsBillableChange(), equipmentId, partsList.get(i).getIsBillable(), partTempId, 0, 1, isRemoveStock));
+                itemDataList.add(new InvoiceItemDataModel(partsList.get(i).getInm(), partsList.get(i).getInm(), partsList.get(i).getItemId(), dataType, partsList.get(i).getType(), partsList.get(i).getRate(), partsList.get(i).getQty(), partsList.get(i).getDiscount(), partsList.get(i).getDes(), partsList.get(i).getHsncode(), partsList.get(i).getPno(), partsList.get(i).getUnit(), "0", partsList.get(i).getSupplierCost(), partsList.get(i).getTax(), "", partsList.get(i).getSerialNo(), partsList.get(i).getIsBillableChange(), equipmentId, partsList.get(i).getIsBillable(), partTempId, 0, 1, isRemoveStock, stkusrId));
             }
             if (!isSerialNoSelected) {
 //            Add  item's in job**
@@ -2413,7 +2575,7 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
             }
             InvoiceItemDataModel updateItemModel = new InvoiceItemDataModel(autocomplete_item.getText().toString().trim(), inm, updateItemDataModel.getIjmmId(), itemId, dataType, itemType, edt_item_rate.getText().toString().trim(), edt_item_qty.getText().toString().trim(), edt_item_disc.getText().toString().trim(), edt_item_desc.getText().toString().trim(), edt_hsnCode.getText().toString().trim(), edt_part_no.getText().toString().trim(), edt_unit.getText().toString().trim(), taxamount_value_txt.getText().toString().trim(), edt_item_supplier.getText().toString().trim(), taxListFilter, jtId, edt_serialNo.getText().toString().trim(), updateItemDataModel.getItemConvertCount(), isBillableChange, equipmentId, updateItemDataModel.getIsPartTempId(), isPartParent, isPartChild, updateItemDataModel.getGroupId(), isRemoveStock
                     //        , updateItemDataModel.getIsBillable()
-            );
+                    , stkusrId);
 
             try {
                 if (!isBillable.equals("")) {
@@ -3078,8 +3240,12 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
         if (charSequence.length() >= 1) {
             if (charSequence.hashCode() == edt_item_desc.getText().hashCode())
                 item_desc_layout.setHintEnabled(true);
-            if (charSequence.hashCode() == edt_item_qty.getText().hashCode())
+            if (charSequence.hashCode() == edt_item_qty.getText().hashCode()) {
                 item_qty_layout.setHintEnabled(true);
+                if(chiled_add_stock_checkBox.isChecked()){
+                getStockBalance();
+                }
+            }
             if (charSequence.hashCode() == edt_item_rate.getText().hashCode()) {
                 item_rate_layout.setHintEnabled(true);
                 if (!firstTimeOnPage) {

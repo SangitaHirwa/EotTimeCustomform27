@@ -1077,6 +1077,7 @@ public class AppConstant {
     public static String no_address_found = "no_address_found";
     public static String repair_alert_msg = "repair_alert_msg";
     public static String discard_alert_msg = "discard_alert_msg";
+    public static String stock_remove_alert_msg = "stock_remove_alert_msg";
 
     public static String server(String location) {
         switch (location) {

@@ -741,7 +741,7 @@ Choose an item from the inventory Choose an item from the inventory yy" />
                             android:layout_height="wrap_content"
                             android:layout_centerVertical="true"
                             android:layout_gravity="center"
-                            android:layout_marginStart="-2dp"
+                            android:layout_marginStart="2dp"
                             android:layout_marginTop="5dp"
                             android:divider="?android:attr/dividerHorizontal"
                             android:gravity="start|center"
@@ -791,13 +791,27 @@ Choose an item from the inventory Choose an item from the inventory yy" />
                             android:id="@+id/add_stock_checkBox"
                             style="@style/style_sec_sec"
                             android:layout_width="wrap_content"
-                            android:layout_height="@dimen/input_field_height"
-                            android:layout_marginStart="-5dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="5dp"
                             android:checked="true"
                             android:gravity="center|start"
                             android:paddingTop="5dp"
                             android:visibility="gone" />
+                        <TextView
+                            android:id="@+id/txt_for_stock_checkbox"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:visibility="gone"
+                            style="@style/style_sec_sec"/>
 
+                        <CheckBox
+                            android:id="@+id/chiled_add_stock_checkBox"
+                            style="@style/style_sec_sec"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="30dp"
+                            android:gravity="center|start"
+                            android:visibility="gone" />
                         <androidx.cardview.widget.CardView
                             android:id="@+id/ll_part_items"
                             android:layout_width="match_parent"
