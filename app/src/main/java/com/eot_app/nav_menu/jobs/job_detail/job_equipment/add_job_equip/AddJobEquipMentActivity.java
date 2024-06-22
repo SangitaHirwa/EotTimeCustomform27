@@ -541,6 +541,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
 
         rediogrp_interval = findViewById(R.id.rediogrp_interval);
         rediogrp_interval.setOnCheckedChangeListener(this);
+        rediogrp_interval.clearCheck();
 
         /**Add barcode and QRcode**/
         txt_addBarcode = findViewById(R.id.txt_addBarcode);
@@ -1514,7 +1515,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
                 edt_day.setVisibility(View.GONE);
                 edt_month.setVisibility(View.GONE);
                 edt_year.setVisibility(View.GONE);
-                rediogrp.clearCheck();
+                rediogrp_interval.clearCheck();
                 clear_btn.setVisibility(View.GONE);
                 break;
         }

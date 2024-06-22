@@ -178,9 +178,7 @@ public class SyncDataJobService extends JobService {
                 getCustomForm();
                 break;
             case 16:
-//                getUserStockBalance();
-                App_preference.getSharedprefInstance().setFirstSyncState(17);
-                startSyncFromStatus();
+                getUserStockBalance();
                 break;
             case 17:
                 goHomePage();
