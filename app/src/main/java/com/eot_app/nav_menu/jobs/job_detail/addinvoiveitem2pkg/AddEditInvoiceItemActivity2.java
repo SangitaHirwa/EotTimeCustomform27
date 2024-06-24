@@ -9,6 +9,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Parcelable;
 import android.text.Editable;
 import android.text.Html;
@@ -208,7 +209,10 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
     String stockQty = "";
     String userId = "";
     boolean isShowStockAlert = false;
+    boolean isFromQty = false;
+    boolean isFromQtyCancel = false;
     StockData stockData;
+    String lastUpdateQty ="";
 
     public AddEditInvoiceItemActivity2 getInstance() {
 
@@ -765,7 +769,7 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
         autocomplete_item.setFocusableInTouchMode(false);
         autocomplete_item.dismissDropDown();
         itemlayout.setHintEnabled(true);
-
+        chiled_add_stock_checkBox.setChecked(false);
         edt_item_qty.setText(updateItemDataModel.getQty());
         edt_item_rate.setText(AppUtility.getRoundoff_amount(updateItemDataModel.getRate()));
         edt_item_supplier.setText(AppUtility.getRoundoff_amount((updateItemDataModel.getSupplierCost())));
@@ -782,6 +786,7 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
         itemType = updateItemDataModel.getItemType();
         inm = updateItemDataModel.getInm();
         jtId = updateItemDataModel.getJtId();
+        lastUpdateQty = updateItemDataModel.getQty();
         if (updateItemDataModel.getItemType() != null && updateItemDataModel.getItemType().equals("0")) {
             if (!itemType.isEmpty() && itemType.equals("0") && itemId != null && !itemId.isEmpty()) {
                 stockData = AppDataBase.getInMemoryDatabase(this).stockDataDao().getItemBalanceByItemId(itemId);
@@ -792,12 +797,16 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
                 chiled_add_stock_checkBox.setVisibility(View.GONE);
             } else {
                 if (updateItemDataModel.getStkusrId() != null &&
-                        updateItemDataModel.getStkusrId().equalsIgnoreCase(App_preference.getSharedprefInstance().getLoginRes().getUsrId())) {
-                    stkusrId = updateItemDataModel.getStkusrId();
+                        updateItemDataModel.getStkusrId().equalsIgnoreCase(App_preference.getSharedprefInstance().getLoginRes().getUsrId()))
+                {
+
                     chiled_add_stock_checkBox.setChecked(true);
-                } else {
-                    chiled_add_stock_checkBox.setChecked(false);
                     stkusrId = updateItemDataModel.getStkusrId();
+                    userId = stkusrId;
+
+                } else {  chiled_add_stock_checkBox.setChecked(false);
+                    stkusrId = updateItemDataModel.getStkusrId();
+                    userId = stkusrId;
                 }
                 add_stock_checkBox.setChecked(true);
                 isRemoveStock = "1";
@@ -1196,29 +1205,37 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
                 chiled_add_stock_checkBox.setVisibility(View.VISIBLE);
             }
         });
-        chiled_add_stock_checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (!isChecked) {
+        chiled_add_stock_checkBox.setOnClickListener(v -> {
+            if (!chiled_add_stock_checkBox.isChecked()) {
                 chiled_add_stock_checkBox.setChecked(false);
-                stkusrId = "0";
+                if(userId.isEmpty() && userId.equals("0")) {
+                    stkusrId = "0";
+                }
             } else {
-                chiled_add_stock_checkBox.setChecked(true);
+                stockQty = edt_item_qty.getText().toString();
                 getStockBalance();
             }
         });
-
         invoiceItemPi = new AddEditInvoiceItem_PC(this);
         invoiceItemPi.getInventryItemList();
     }
 
     private void getStockBalance() {
         boolean showDialog = false;
-        stockQty = edt_item_qty.getText().toString();
 //            Log.e("stockData", stockData.toString());
             if(stockData != null) {
                 if (userId.isEmpty()) {
+                    stockQty = edt_item_qty.getText().toString().trim();
                     showDialog = stockQty != null && !stockQty.isEmpty() && Integer.parseInt(stockQty) > Integer.parseInt(stockData.getBalance());
-                } else if (stockData != null && stockData.getSat_usrid().equalsIgnoreCase(userId)) {
+                } else if (userId.equalsIgnoreCase(App_preference.getSharedprefInstance().getLoginRes().getUsrId()))
+                {
+                    stockQty = edt_item_qty.getText().toString().trim();
+                    if(!updateItemDataModel.getQty().isEmpty() && !stockQty.isEmpty()) {
+                        stockQty = String.valueOf(Integer.parseInt(stockQty) - Integer.parseInt(updateItemDataModel.getQty()));
+                    }
                     showDialog = stockQty != null && !stockQty.isEmpty() && Integer.parseInt(stockQty) > Integer.parseInt(stockData.getBalance());
+                }else{
+                    chiled_add_stock_checkBox.setChecked(false);
                 }
 
                 if (showDialog) {
@@ -1232,75 +1249,38 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
                                     public void onPossitiveCall() {
                                         chiled_add_stock_checkBox.setChecked(true);
                                         stkusrId = App_preference.getSharedprefInstance().getLoginRes().getUsrId();
+                                        stockQty = edt_item_qty.getText().toString().trim();
+                                        lastUpdateQty = edt_item_qty.getText().toString().trim();
+                                        isFromQty = false;
                                     }
 
                                     @Override
                                     public void onNegativeCall() {
-                                        chiled_add_stock_checkBox.setChecked(false);
-                                        stkusrId = "0";
+                                        if(isFromQty){
+                                            isFromQtyCancel = true;
+                                            isFromQty = false;
+                                            if(updateItemDataModel != null){
+                                                edt_item_qty.setText(updateItemDataModel.getQty());
+                                            }else {
+                                                edt_item_qty.setText("1");
+                                            }
+                                        }else {
+                                            chiled_add_stock_checkBox.setChecked(false);
+                                            if (userId.isEmpty() || userId.equals("0")) {
+                                                stkusrId = "0";
+                                            }
+                                        }
                                     }
                                 });
                 } else {
+                    lastUpdateQty = edt_item_qty.getText().toString();
                     chiled_add_stock_checkBox.setChecked(true);
                     stkusrId = App_preference.getSharedprefInstance().getLoginRes().getUsrId();
                 }
             }else{
-                chiled_add_stock_checkBox.setChecked(false);
-                stkusrId = "0";
+                chiled_add_stock_checkBox.setChecked(true);
+                stkusrId = App_preference.getSharedprefInstance().getLoginRes().getUsrId();
             }
-      /*  stockQty = edt_item_qty.getText().toString();
-        if(!itemType.isEmpty() && itemType.equals("0") && itemId != null && !itemId.isEmpty()) {
-            StockData stockData = AppDataBase.getInMemoryDatabase(this).stockDataDao().getItemBalanceByItemId(itemId);
-            if (userId.isEmpty()) {
-                if (stockQty != null && !stockQty.isEmpty() && Integer.parseInt(stockQty) > Integer.parseInt(stockData.getBalance())) {
-                    AppUtility.alertDialog2(this,
-                            "",
-                            "shdgshf",
-                            LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok),
-                            LanguageController.getInstance().getMobileMsgByKey(AppConstant.cancel), new Callback_AlertDialog() {
-                                @Override
-                                public void onPossitiveCall() {
-                                    chiled_add_stock_checkBox.setChecked(true);
-                                    stkusrId = App_preference.getSharedprefInstance().getLoginRes().getUsrId();
-                                }
-
-                                @Override
-                                public void onNegativeCall() {
-                                    chiled_add_stock_checkBox.setChecked(false);
-                                    stkusrId = "0";
-                                }
-                            });
-                } else {
-                    chiled_add_stock_checkBox.setChecked(true);
-                    stkusrId = App_preference.getSharedprefInstance().getLoginRes().getUsrId();
-                }
-            } else{
-                if (stockData != null && stockData.getSat_usrid().equalsIgnoreCase(userId)) {
-                if (stockQty != null && !stockQty.isEmpty() && Integer.parseInt(stockQty) > Integer.parseInt(stockData.getBalance())) {
-                    AppUtility.alertDialog2(this,
-                            "",
-                            "shdgshf",
-                            LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok),
-                            LanguageController.getInstance().getMobileMsgByKey(AppConstant.cancel), new Callback_AlertDialog() {
-                                @Override
-                                public void onPossitiveCall() {
-                                    chiled_add_stock_checkBox.setChecked(true);
-                                    stkusrId = App_preference.getSharedprefInstance().getLoginRes().getUsrId();
-                                }
-
-                                @Override
-                                public void onNegativeCall() {
-                                    chiled_add_stock_checkBox.setChecked(false);
-                                    stkusrId = "0";
-                                }
-                            });
-                } else {
-                    chiled_add_stock_checkBox.setChecked(true);
-                    stkusrId = App_preference.getSharedprefInstance().getLoginRes().getUsrId();
-                }
-            }
-        }
-        }*/
     }
 
     /**
@@ -1583,6 +1563,7 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
         edt_item_desc.setText(itemselected.getIdes());
         edt_unit.setText(itemselected.getUnit());
         edt_serialNo.setText(itemselected.getSerialNo());
+        lastUpdateQty = "1";
 
         if (!itemType.isEmpty() && itemType.equals("0") && itemId != null && !itemId.isEmpty()) {
              stockData = AppDataBase.getInMemoryDatabase(this).stockDataDao().getItemBalanceByItemId(itemId);
@@ -1591,16 +1572,13 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
         if (show_stock_checkbox) {
             add_stock_checkBox.setVisibility(View.VISIBLE);
             if (add_stock_checkBox.isChecked()) {
-                stkusrId = "0";
                 chiled_add_stock_checkBox.setVisibility(View.VISIBLE);
             } else {
-                stkusrId = "0";
                 chiled_add_stock_checkBox.setVisibility(View.GONE);
             }
         }
         if (!add_stock_checkBox.isChecked()) {
             isRemoveStock = "0";
-            stkusrId = "0";
             chiled_add_stock_checkBox.setVisibility(View.GONE);
         } else {
             isRemoveStock = "1";
@@ -2023,6 +2001,20 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
                     }
                 }
             }
+
+            if(stockData != null){
+                String balance = "";
+                if(!edt_item_qty.getText().toString().isEmpty()) {
+                   balance = String.valueOf(Integer.parseInt(stockData.getBalance()) - Integer.parseInt(edt_item_qty.getText().toString().trim()));
+                }
+                stockData.setSat_usrid(stockData.getSat_usrid());
+                AppDataBase.getInMemoryDatabase(this).stockDataDao().updateStockData(balance,stockData.getSat_itemid());
+            }else{
+                StockData data = new StockData(App_preference.getSharedprefInstance().getLoginRes().getUsrId(),
+                        itemId,"-"+edt_item_qty.getText().toString().trim());
+                AppDataBase.getInMemoryDatabase(this).stockDataDao().insertStockSingleData(data);
+            }
+
             if (jobModel != null && jobModel.getIsJobInvoiced().equals("1")) {
                 if (getTaxMethodType.equals("1")) {
                     if (!taxId.equals(getSingleTaxId)) {
@@ -2376,7 +2368,12 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
                 edt_item_qty.setText("0");
             }
             InvoiceItemDataModel addItemDataModel = new InvoiceItemDataModel(autocomplete_item.getText().toString().trim(), inm, itemId, dataType, itemType, edt_item_rate.getText().toString().trim(),
-                    edt_item_qty.getText().toString().trim(), edt_item_disc.getText().toString().trim(), edt_item_desc.getText().toString().trim(), edt_hsnCode.getText().toString().trim(), edt_part_no.getText().toString().trim(), edt_unit.getText().toString().trim(), taxamount_value_txt.getText().toString().trim(), edt_item_supplier.getText().toString().trim(), taxListFilter, jtId, edt_serialNo.getText().toString().trim(), isBillableChange, equipmentId, "", partTempId, isPartParent, 0, isRemoveStock, stkusrId);
+                    edt_item_qty.getText().toString().trim(), edt_item_disc.getText().toString().trim(),
+                    edt_item_desc.getText().toString().trim(), edt_hsnCode.getText().toString().trim(),
+                    edt_part_no.getText().toString().trim(), edt_unit.getText().toString().trim(),
+                    taxamount_value_txt.getText().toString().trim(), edt_item_supplier.getText().toString().trim(),
+                    taxListFilter, jtId, edt_serialNo.getText().toString().trim(), isBillableChange, equipmentId,
+                    "", partTempId, isPartParent, 0, isRemoveStock, stkusrId);
 
             try {
                 if (!isBillable.equals("")) {
@@ -3242,8 +3239,15 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
                 item_desc_layout.setHintEnabled(true);
             if (charSequence.hashCode() == edt_item_qty.getText().hashCode()) {
                 item_qty_layout.setHintEnabled(true);
-                if(chiled_add_stock_checkBox.isChecked()){
-                getStockBalance();
+                if (chiled_add_stock_checkBox.isChecked()) {
+                            if(!isFromQtyCancel) {
+                                isFromQty = true;
+                            getStockBalance();
+                        }else {
+                            stockQty = charSequence.toString();
+                            isFromQtyCancel = false;
+                        }
+
                 }
             }
             if (charSequence.hashCode() == edt_item_rate.getText().hashCode()) {

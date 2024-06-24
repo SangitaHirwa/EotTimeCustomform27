@@ -13,6 +13,11 @@ public class StockData {
 
     private String balance;
 
+    public StockData(@NonNull String sat_usrid, String sat_itemid, String balance) {
+        this.sat_usrid = sat_usrid;
+        this.sat_itemid = sat_itemid;
+        this.balance = balance;
+    }
     @NonNull
     public String getSat_usrid() {
         return sat_usrid;
