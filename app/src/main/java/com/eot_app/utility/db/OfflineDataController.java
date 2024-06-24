@@ -494,7 +494,9 @@ public class OfflineDataController {
                 List<InvoiceItemDataModel> dataList = new Gson().fromJson(new Gson().toJson(obj.get("data").getAsJsonArray()), listType);
                 AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().updateJobitems(addInvoiceItemReqModel.
                         getJobId(), dataList);
-                EotApp.getAppinstance().notifyEquipItemObserver(obj.get("ijmmId").toString());
+                if (data.getService_name().equals(Service_apis.addItemOnJob)) {
+                    EotApp.getAppinstance().notifyEquipItemObserver(obj.get("ijmmId").toString());
+                }
                 if (!addInvoiceItemReqModel.isAddItemOnInvoice()) {
                     EotApp.getAppinstance().notifyApiItemAddEdit_Observer(data.getService_name(), addInvoiceItemReqModel.getJobId());
                     EotApp.getAppinstance().getNotifyForItemCount();
