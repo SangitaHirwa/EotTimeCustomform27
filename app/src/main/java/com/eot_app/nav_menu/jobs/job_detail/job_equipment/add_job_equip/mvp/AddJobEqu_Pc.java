@@ -35,6 +35,7 @@ import com.eot_app.utility.EotApp;
 import com.eot_app.utility.States;
 import com.eot_app.utility.db.AppDataBase;
 import com.eot_app.utility.language_support.LanguageController;
+import com.eot_app.utility.settings.equipmentdb.Equipment;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
@@ -678,6 +679,12 @@ public class AddJobEqu_Pc implements AddJobEqu_Pi {
                                 if (jsonObject.get("success").getAsBoolean()) {
                                     count = jsonObject.get("count").getAsInt();
                                     String convert = new Gson().toJson(jsonObject.get("data").getAsJsonArray());
+                                    Type listType1 = new TypeToken<List<Equipment>>() {
+                                    }.getType();
+                                    List<Equipment> equipmentList = new Gson().fromJson(convert, listType1);
+                                    if (equipmentList != null) {
+                                        AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).equipmentDao().insertEquipmentList(equipmentList);
+                                    }
                                     Type listType = new com.google.common.reflect.TypeToken<List<EquArrayModel>>() {
                                     }.getType();
                                     List<EquArrayModel> data = new Gson().fromJson(convert, listType);

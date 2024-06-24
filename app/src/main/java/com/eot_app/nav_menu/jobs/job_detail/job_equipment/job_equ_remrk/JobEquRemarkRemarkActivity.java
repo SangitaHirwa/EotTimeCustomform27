@@ -900,6 +900,9 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
                 selectedCondition = position;
                 String selectedValue = equipmentStatusList.get(position).getStatusText();
                 status_label.setText(selectedValue);
+                if(edit_remarks.getText().toString().isEmpty()){
+                    edit_remarks.setText("@"+selectedValue);
+                }
             }
 
             @Override

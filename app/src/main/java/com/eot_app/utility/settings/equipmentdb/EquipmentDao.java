@@ -19,6 +19,8 @@ public interface EquipmentDao {
 
     @Query("select * from Equipment where equId=:equId")
     Equipment getEquipmentById(String equId);
+    @Query("select * from Equipment")
+    List<Equipment> getAllEquipment();
 
     @Query("select * from Equipment where barcode=:barcode or sno =:serialno")
     Equipment getEquipmentByBarcodeOrSerialNo(String barcode, String serialno);
