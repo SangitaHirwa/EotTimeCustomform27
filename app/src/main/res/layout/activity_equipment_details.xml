@@ -789,7 +789,9 @@
                             app:layout_constraintEnd_toStartOf="@+id/upcoming_service_show_hide_cl"
                           app:layout_constraintStart_toEndOf="@+id/guideline_for_upcoming_service"
                             android:text=""
-                            tools:ignore="RtlSymmetry" />
+                            tools:ignore="RtlSymmetry"
+                            android:visibility="gone"
+                            />
                       <!--  <TextView
                             android:id="@+id/deu_service_date"
                             style="@style/new_equipment_detail"

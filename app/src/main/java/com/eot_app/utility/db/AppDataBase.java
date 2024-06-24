@@ -769,6 +769,7 @@ public abstract class AppDataBase extends RoomDatabase {
             /* **Alter  Equipment Table  **/
             database.execSQL("ALTER TABLE Equipment ADD COLUMN servIntvalType TEXT");
             database.execSQL("ALTER TABLE Equipment ADD COLUMN servIntvalValue TEXT");
+            database.execSQL("ALTER TABLE Equipment ADD COLUMN isPart TEXT");
 
         }
     };

@@ -116,6 +116,7 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
     public boolean isComeFromJobScan = false, isLinked = false;
     EquArrayModel equipment;
     ConstraintLayout cl_loader1,cl_loader2,cl_loader3,cl_loader4,cl_loader5;
+    boolean isFind = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -591,6 +592,29 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
 //                        equ_details_pc.getEqItemFromServer(equipment.getEquId(), joblist.get(0).getJobId());
 //                        equ_details_pc.getEqPartsFromServer(equipment.getEquId());
                         break;
+                    }else {
+                        if(equipment.getEquComponent() != null && equipment.getEquComponent().size()>0) {
+                            for (EquArrayModel partEquipment : equipment.getEquComponent()
+                            ) {
+                                if (partEquipment.getSno() != null && partEquipment.getSno().equals(codeText) || partEquipment.getBarcode() != null && partEquipment.getBarcode().equals(codeText) || partEquipment.getQrcode() != null && partEquipment.getQrcode().equals(codeText)) {
+                                    equpId = partEquipment.getEquId();
+                                    /**Due to we are not getting date in lastJobDate param of equipment array of gerUserJobListForMobile api response, and we are getting same value in updateData param of equipment array of gerUserJobListForMobile api response*/
+                                    Equipment equipmentRes = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).equipmentDao().getEquipmentById(partEquipment.getEquId());
+                                    if(equipmentRes != null) {
+                                        String equip = new Gson().toJson(equipmentRes);
+                                        partEquipment = new Gson().fromJson(equip, EquArrayModel.class);
+                                        partEquipment.setEquipment_group(equipmentRes.getGroupName());
+                                    }
+                                    isFind = true;
+                                    setJobEquipment(partEquipment);
+                                    break;
+                                }
+                                if(isFind){
+                                    isFind = false;
+                                    break;
+                                }
+                            }
+                        }
                     }
                 }
             }

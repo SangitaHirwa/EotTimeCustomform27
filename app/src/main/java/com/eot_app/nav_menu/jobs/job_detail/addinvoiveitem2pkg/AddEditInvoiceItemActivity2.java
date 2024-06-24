@@ -252,6 +252,7 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
                         layout_fw_item.setVisibility(View.GONE);
                         ll_serialNo.setVisibility(View.GONE);
                         ll_below_rd_serialNo.setVisibility(View.GONE);
+                        isSerialNoSelected = true;
                     } else {
                         cltId = bundle.getString("cltId");
                         show_stock_checkbox = true;
@@ -271,6 +272,7 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
                             layout_fw_item.setVisibility(View.GONE);
                             ll_serialNo.setVisibility(View.GONE);
                             ll_below_rd_serialNo.setVisibility(View.GONE);
+                            isSerialNoSelected = true;
                         } else if (comeFrom != null && comeFrom.equalsIgnoreCase("AddRemarkItem")) {
                             ll_link_note.setVisibility(View.VISIBLE);
                         }
@@ -1969,7 +1971,7 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
             AppUtility.alertDialog(this, "", LanguageController.getInstance().getMobileMsgByKey(AppConstant.fw_valid), LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), "", () -> null);
         } else if (!IS_SERVICES_MANDATRY && TAB_SELECT == 3) {
             AppUtility.alertDialog(this, "", LanguageController.getInstance().getMobileMsgByKey(AppConstant.service_error), AppConstant.ok, "", () -> null);
-        } else if (!isSerialNoSelected && serialNoList.size() > 1 && itemId1 == null && ijmmId == null) {
+        } else if (isSerialNoSelected && serialNoList.size() > 1 && itemId1 == null && ijmmId == null) {
             AppUtility.alertDialog(this, "", LanguageController.getInstance().getMobileMsgByKey(AppConstant.select_serial_no), AppConstant.ok, "", () -> null);
         } else {
 

@@ -95,15 +95,18 @@ import com.eot_app.utility.EotApp;
 import com.eot_app.utility.States;
 import com.eot_app.utility.db.AppDataBase;
 import com.eot_app.utility.language_support.LanguageController;
+import com.eot_app.utility.settings.equipmentdb.Equipment;
 import com.eot_app.utility.util_interfaces.Callback_AlertDialog;
 import com.eot_app.utility.util_interfaces.MySpinnerAdapter;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -1758,6 +1761,13 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
 
     @Override
     public void setEuqipmentList(List<EquArrayModel> equArray) {
+        /**Getting data from local db for showing parent equipment*/
+        List<Equipment> equipment1 = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).equipmentDao().getAllEquipment();
+        String equip = new Gson().toJson(equipment1);
+        Type listType1 = new TypeToken<List<EquArrayModel>>() {
+        }.getType();
+        equArray = new Gson().fromJson(equip, listType1);
+        equipment_list.clear();
         for (int i = 0; i < equArray.size(); i++) {
             if (equArray.get(i).getIsPart().equalsIgnoreCase("0")) {
                 equipment_list.add(equArray.get(i));

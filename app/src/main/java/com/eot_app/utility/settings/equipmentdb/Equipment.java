@@ -56,6 +56,15 @@ public class Equipment {
     private String qrcodeImg;
     private String servIntvalType;
     private String servIntvalValue;
+    private String isPart;
+
+    public String getIsPart() {
+        return isPart;
+    }
+
+    public void setIsPart(String isPart) {
+        this.isPart = isPart;
+    }
 
     public String getServIntvalType() {
         return servIntvalType;
