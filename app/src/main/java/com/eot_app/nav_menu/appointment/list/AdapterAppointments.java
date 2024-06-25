@@ -105,8 +105,12 @@ public class AdapterAppointments extends RecyclerView.Adapter<AdapterAppointment
                 holder.equi_flag.setVisibility(View.GONE);
             }
             /**Requested item flag show**/
-            if(appointment.getRequestedItemCount() != null && appointment.getRequestedItemCount().equals("1")){
-                holder.req_item_flag.setVisibility(View.VISIBLE);
+            if(App_preference.getSharedprefInstance().getLoginRes().getCompPermission().get(0).getIsItemRequested() == 0) {
+                if (appointment.getRequestedItemCount() != null && appointment.getRequestedItemCount().equals("1")) {
+                    holder.req_item_flag.setVisibility(View.VISIBLE);
+                } else {
+                    holder.req_item_flag.setVisibility(View.GONE);
+                }
             }else {
                 holder.req_item_flag.setVisibility(View.GONE);
             }

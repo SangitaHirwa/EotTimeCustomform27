@@ -397,7 +397,7 @@ public class FirstSyncPC implements FirstSyncPi {
                     boolean isLanChangebyUser = Language_Preference.getSharedprefInstance().isUserChangeLang();
                     String islock = App_preference.getSharedprefInstance().getLoginRes().getLanguage().getIsLock();//"1";
                     //the language file only download if user not change by it self or admin change the language
-                    if (!islock.equals("0") || !isLanChangebyUser || (!existing_name.equals(new_filename) && existing_version != new_version)) {
+                    if (islock != null && !islock.equals("0") || !isLanChangebyUser || (!existing_name.equals(new_filename) && existing_version != new_version)) {
                         String file_path = App_preference.getSharedprefInstance().getLoginRes().getLanguage().getFilePath();
                         String download_url = file_path + new_filename + ".json";
                         LanguageController.getInstance().downloadFile(download_url, new Callable<Boolean>() {
