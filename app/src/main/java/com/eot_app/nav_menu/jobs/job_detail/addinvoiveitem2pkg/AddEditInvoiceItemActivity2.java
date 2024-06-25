@@ -207,7 +207,7 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
     InvoiceItemDataModel invoiceItemDataModelWithIjmmId = new InvoiceItemDataModel();
     ImageView ivCross;
     String stockQty = "";
-    String userId = "";
+    String userId = "0";
     boolean isShowStockAlert = false;
     boolean isFromQty = false;
     boolean isFromQtyCancel = false;
@@ -1242,7 +1242,7 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
                     if(isFromQty){
                         stockQty = edt_item_qty.getText().toString().trim();
                     }
-                    if(!updateItemDataModel.getQty().isEmpty() && !stockQty.isEmpty()) {
+                    if(updateItemDataModel != null && !updateItemDataModel.getQty().isEmpty() && !stockQty.isEmpty()) {
 
                         if(isFromQty){
                             stockQty = String.valueOf( Integer.parseInt(stockQty));
@@ -2026,7 +2026,7 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
                     String balance = "";
                     if (!edt_item_qty.getText().toString().isEmpty()) {
                         stockQty = edt_item_qty.getText().toString().trim();
-                        if (userId.isEmpty() || !userId.equals("0") || !userId.equalsIgnoreCase(App_preference.getSharedprefInstance().getLoginRes().getUsrId())) {
+                        if (userId.isEmpty() || !userId.equals("0") && !userId.equalsIgnoreCase(App_preference.getSharedprefInstance().getLoginRes().getUsrId())) {
                             balance = String.valueOf(Integer.parseInt(stockData.getBalance()) -
                                     Integer.parseInt(String.valueOf(Integer.parseInt(stockQty))));
                         } else {
@@ -2038,6 +2038,12 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
                     stockData.setSat_usrid(stockData.getSat_usrid());
                     AppDataBase.getInMemoryDatabase(this).stockDataDao().updateStockData(balance, stockData.getSat_itemid());
                 } else {
+                    StockData data = new StockData(App_preference.getSharedprefInstance().getLoginRes().getUsrId(),
+                            itemId, "-" + edt_item_qty.getText().toString().trim());
+                    AppDataBase.getInMemoryDatabase(this).stockDataDao().insertStockSingleData(data);
+                }
+            }else {
+                if(chiled_add_stock_checkBox.isChecked()){
                     StockData data = new StockData(App_preference.getSharedprefInstance().getLoginRes().getUsrId(),
                             itemId, "-" + edt_item_qty.getText().toString().trim());
                     AppDataBase.getInMemoryDatabase(this).stockDataDao().insertStockSingleData(data);

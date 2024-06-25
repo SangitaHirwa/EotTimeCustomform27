@@ -187,7 +187,11 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
 
             }
             if (!getIntent().hasExtra("job_equip_scan")) {
-                cl_parent_bottom_btn.setVisibility(View.GONE);
+                if (getIntent().hasExtra("equipment_id")){
+                    cl_parent_bottom_btn.setVisibility(View.VISIBLE);
+                }else {
+                    cl_parent_bottom_btn.setVisibility(View.GONE);
+                }
                 button_audit.setVisibility(View.GONE);
                 button_job.setVisibility(View.GONE);
             }

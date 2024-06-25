@@ -44,6 +44,7 @@ import com.eot_app.nav_menu.jobs.job_card_view.JobCardViewActivity;
 import com.eot_app.nav_menu.jobs.job_db.Job;
 import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.AddEditInvoiceItemActivity2;
 import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.model.InvoiceItemDataModel;
+import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.model.StockData;
 import com.eot_app.nav_menu.jobs.job_detail.detail.DialogJobCardDocuments;
 import com.eot_app.nav_menu.jobs.job_detail.generate_invoice.invoice_adpter_pkg.Sipping_Adpter;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_db.location_tax_dao.TaxLocAdpter;
@@ -53,6 +54,7 @@ import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_detail_pkg.inv_detai
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_email_pkg.Invoice_Email_Activity;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_email_pkg.get_email_temp_model.InvoiceEmaliTemplate;
 import com.eot_app.nav_menu.jobs.job_detail.invoice2list.GenerateInvoiceItemAdpter;
+import com.eot_app.nav_menu.jobs.job_detail.invoice2list.JoBInvoiceItemList2Activity;
 import com.eot_app.nav_menu.jobs.job_detail.invoice2list.adapter.InvoiceTaxAdapter;
 import com.eot_app.nav_menu.jobs.job_detail.invoice2list.itemlist_model.InvoiceItemDetailsModel;
 import com.eot_app.nav_menu.jobs.job_detail.invoice2list.itemlist_model.TaxData;
@@ -923,6 +925,17 @@ public class Generate_Invoice_Activity extends AppCompatActivity implements MyLi
 
                             if (totalItemSize > rm_DataItem.size()) {
                                 for (InvoiceItemDataModel str : rm_DataItem) {
+                                    /** Increase Quantity of Assign Items of user*/
+                                    if(str.getStkusrId().equalsIgnoreCase(App_preference.getSharedprefInstance().getLoginRes().getUsrId())){
+                                        List<StockData> stockData = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).stockDataDao().getAllStockData();
+                                        for (StockData data : stockData){
+                                            if(data.getSat_itemid().equalsIgnoreCase(str.getItemId())){
+                                                int qty = Integer.parseInt(data.getBalance());
+                                                qty = qty + Integer.parseInt(str.getQty());
+                                                AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).stockDataDao().updateStockData(String.valueOf(qty),data.getSat_itemid());
+                                            }
+                                        }
+                                    }
                                     if (str.getIjmmId().equals("")) {
                                         tempItemList.remove(str);
                                         notSyncItemList.add(str);

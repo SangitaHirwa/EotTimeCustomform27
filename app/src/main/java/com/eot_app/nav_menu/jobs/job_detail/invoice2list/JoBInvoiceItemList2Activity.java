@@ -536,10 +536,9 @@ public class JoBInvoiceItemList2Activity extends AppCompatActivity implements Vi
 
                     if (totalItemSize > rm_DataItem.size()) {
                         for (InvoiceItemDataModel str : rm_DataItem) {
-                            //tempItemList -  the remaining items list
-                            // firstly managing the lists by adding and removing items
+                            /** Increase Quantity of Assign Items of user*/
                             if(str.getStkusrId().equalsIgnoreCase(App_preference.getSharedprefInstance().getLoginRes().getUsrId())){
-                                List<StockData> stockData = AppDataBase.getInMemoryDatabase(JoBInvoiceItemList2Activity.this).stockDataDao().getAllStockData();
+                                List<StockData> stockData = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).stockDataDao().getAllStockData();
                                 for (StockData data : stockData){
                                     if(data.getSat_itemid().equalsIgnoreCase(str.getItemId())){
                                         int qty = Integer.parseInt(data.getBalance());
@@ -548,6 +547,8 @@ public class JoBInvoiceItemList2Activity extends AppCompatActivity implements Vi
                                     }
                                 }
                             }
+                            //tempItemList -  the remaining items list
+                            // firstly managing the lists by adding and removing items
                             if (str.getIjmmId().equals("")) {
                                 tempItemList.remove(str);
                                 notSyncItemList.add(str);

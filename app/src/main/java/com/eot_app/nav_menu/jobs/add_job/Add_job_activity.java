@@ -92,6 +92,7 @@ import com.eot_app.utility.language_support.LanguageController;
 import com.eot_app.utility.language_support.Language_Preference;
 import com.eot_app.utility.settings.SettingUrls;
 import com.eot_app.utility.settings.contractdb.ContractRes;
+import com.eot_app.utility.settings.equipmentdb.Equipment;
 import com.eot_app.utility.settings.setting_db.FieldWorker;
 import com.eot_app.utility.settings.setting_db.JobTitle;
 import com.eot_app.utility.settings.setting_db.Suggestion;
@@ -264,7 +265,15 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
                     appId = getIntent().getStringExtra("appId");
                 }else if (getIntent().hasExtra("addJobByEquipment")) {
                     cltId = getIntent().getStringExtra("addJobByEquipment");
-                    equId.add(getIntent().getStringExtra("equId"));
+                    if(getIntent().getStringExtra("equId") != null){
+                        Equipment equipment = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).equipmentDao().getEquipmentById(getIntent().getStringExtra("equId"));
+                        if(equipment.getIsPart() != null && equipment.getIsPart().equalsIgnoreCase("1") && equipment.getParentId()!= null && !equipment.getParentId().isEmpty()){
+                            equId.add(equipment.getParentId());
+                        }else {
+                            equId.add(getIntent().getStringExtra("equId"));
+                        }
+                    }
+
                 }
                 customDPController = new CustomDPController();
                 tagDpController=new TagDpController();
