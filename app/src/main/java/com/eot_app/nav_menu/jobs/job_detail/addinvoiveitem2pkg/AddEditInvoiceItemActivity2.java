@@ -1236,7 +1236,15 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
                         stockQty = String.valueOf(Integer.parseInt(stockQty) - Integer.parseInt(updateItemDataModel.getQty()));
                     }
                     showDialog = stockQty != null && !stockQty.isEmpty() && Integer.parseInt(stockQty) > Integer.parseInt(stockData.getBalance());
-                }else{
+                } else if (!userId.equalsIgnoreCase(App_preference.getSharedprefInstance().getLoginRes().getUsrId()))
+                {
+                    stockQty ="0";
+                    if(!updateItemDataModel.getQty().isEmpty() && !stockQty.isEmpty()) {
+                        stockQty = updateItemDataModel.getQty();
+                    }
+                    showDialog = stockQty != null && !stockQty.isEmpty() && Integer.parseInt(stockQty) > Integer.parseInt(stockData.getBalance());
+                }
+                else{
                     chiled_add_stock_checkBox.setChecked(false);
                 }
 
@@ -2011,7 +2019,6 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
                 if(!edt_item_qty.getText().toString().isEmpty()) {
                   stockQty = edt_item_qty.getText().toString().trim();
                   if(userId.isEmpty() || userId.equals("0")){
-                     stockQty = String.valueOf(Integer.parseInt(stockQty) - 0);
                       balance = String.valueOf(Integer.parseInt(stockData.getBalance()) -
                               Integer.parseInt(  String.valueOf(Integer.parseInt(stockQty))));
                   }else {
