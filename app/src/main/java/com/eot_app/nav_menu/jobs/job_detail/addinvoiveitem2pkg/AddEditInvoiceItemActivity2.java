@@ -1239,8 +1239,16 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
                 } else if (!userId.equalsIgnoreCase(App_preference.getSharedprefInstance().getLoginRes().getUsrId()))
                 {
                     stockQty ="0";
+                    if(isFromQty){
+                        stockQty = edt_item_qty.getText().toString().trim();
+                    }
                     if(!updateItemDataModel.getQty().isEmpty() && !stockQty.isEmpty()) {
-                        stockQty = updateItemDataModel.getQty();
+
+                        if(isFromQty){
+                            stockQty = String.valueOf( Integer.parseInt(stockQty));
+                        }else {
+                            stockQty = updateItemDataModel.getQty();
+                        }
                     }
                     showDialog = stockQty != null && !stockQty.isEmpty() && Integer.parseInt(stockQty) > Integer.parseInt(stockData.getBalance());
                 }
@@ -2018,7 +2026,7 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
                 String balance = "";
                 if(!edt_item_qty.getText().toString().isEmpty()) {
                   stockQty = edt_item_qty.getText().toString().trim();
-                  if(userId.isEmpty() || userId.equals("0")){
+                  if(userId.isEmpty() || userId.equals("0") || !userId.equalsIgnoreCase(App_preference.getSharedprefInstance().getLoginRes().getUsrId())){
                       balance = String.valueOf(Integer.parseInt(stockData.getBalance()) -
                               Integer.parseInt(  String.valueOf(Integer.parseInt(stockQty))));
                   }else {
