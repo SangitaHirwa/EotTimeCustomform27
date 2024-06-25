@@ -28,6 +28,7 @@ import com.eot_app.nav_menu.jobs.job_db.Job;
 import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.AddEditInvoiceItemActivity2;
 import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.model.AddInvoiceItemReqModel;
 import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.model.InvoiceItemDataModel;
+import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.model.StockData;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_db.location_tax_dao.TaxLocAdpter;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_db.location_tax_dao.TaxesLocation;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_email_pkg.get_email_temp_model.InvoiceEmaliTemplate;
@@ -537,6 +538,16 @@ public class JoBInvoiceItemList2Activity extends AppCompatActivity implements Vi
                         for (InvoiceItemDataModel str : rm_DataItem) {
                             //tempItemList -  the remaining items list
                             // firstly managing the lists by adding and removing items
+                            if(str.getStkusrId().equalsIgnoreCase(App_preference.getSharedprefInstance().getLoginRes().getUsrId())){
+                                List<StockData> stockData = AppDataBase.getInMemoryDatabase(JoBInvoiceItemList2Activity.this).stockDataDao().getAllStockData();
+                                for (StockData data : stockData){
+                                    if(data.getSat_itemid().equalsIgnoreCase(str.getItemId())){
+                                        int qty = Integer.parseInt(data.getBalance());
+                                        qty = qty + Integer.parseInt(str.getQty());
+                                        AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).stockDataDao().updateStockData(String.valueOf(qty),data.getSat_itemid());
+                                    }
+                                }
+                            }
                             if (str.getIjmmId().equals("")) {
                                 tempItemList.remove(str);
                                 notSyncItemList.add(str);

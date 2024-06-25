@@ -2021,26 +2021,27 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
                     }
                 }
             }
-
-            if(stockData != null){
-                String balance = "";
-                if(!edt_item_qty.getText().toString().isEmpty()) {
-                  stockQty = edt_item_qty.getText().toString().trim();
-                  if(userId.isEmpty() || userId.equals("0") || !userId.equalsIgnoreCase(App_preference.getSharedprefInstance().getLoginRes().getUsrId())){
-                      balance = String.valueOf(Integer.parseInt(stockData.getBalance()) -
-                              Integer.parseInt(  String.valueOf(Integer.parseInt(stockQty))));
-                  }else {
-                     stockQty = String.valueOf(Integer.parseInt(stockQty) - Integer.parseInt(updateItemDataModel.getQty()));
-                      balance = String.valueOf(Integer.parseInt(stockData.getBalance()) -
-                              Integer.parseInt(stockQty ));
-                  }
+            if(!userId.equals("0") && !userId.isEmpty()) {
+                if (stockData != null ) {
+                    String balance = "";
+                    if (!edt_item_qty.getText().toString().isEmpty()) {
+                        stockQty = edt_item_qty.getText().toString().trim();
+                        if (userId.isEmpty() || !userId.equals("0") || !userId.equalsIgnoreCase(App_preference.getSharedprefInstance().getLoginRes().getUsrId())) {
+                            balance = String.valueOf(Integer.parseInt(stockData.getBalance()) -
+                                    Integer.parseInt(String.valueOf(Integer.parseInt(stockQty))));
+                        } else {
+                            stockQty = String.valueOf(Integer.parseInt(stockQty) - Integer.parseInt(updateItemDataModel.getQty()));
+                            balance = String.valueOf(Integer.parseInt(stockData.getBalance()) -
+                                    Integer.parseInt(stockQty));
+                        }
+                    }
+                    stockData.setSat_usrid(stockData.getSat_usrid());
+                    AppDataBase.getInMemoryDatabase(this).stockDataDao().updateStockData(balance, stockData.getSat_itemid());
+                } else {
+                    StockData data = new StockData(App_preference.getSharedprefInstance().getLoginRes().getUsrId(),
+                            itemId, "-" + edt_item_qty.getText().toString().trim());
+                    AppDataBase.getInMemoryDatabase(this).stockDataDao().insertStockSingleData(data);
                 }
-                stockData.setSat_usrid(stockData.getSat_usrid());
-                AppDataBase.getInMemoryDatabase(this).stockDataDao().updateStockData(balance,stockData.getSat_itemid());
-            }else{
-                StockData data = new StockData(App_preference.getSharedprefInstance().getLoginRes().getUsrId(),
-                        itemId,"-"+edt_item_qty.getText().toString().trim());
-                AppDataBase.getInMemoryDatabase(this).stockDataDao().insertStockSingleData(data);
             }
 
             if (jobModel != null && jobModel.getIsJobInvoiced().equals("1")) {

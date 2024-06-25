@@ -18,6 +18,8 @@ public interface StockDataDao {
     @Query("select * from Stock_Balance where  sat_itemid = :sat_itemid")
     StockData getItemBalanceByItemId(String sat_itemid);
 
+    @Query("select * from Stock_Balance")
+    List<StockData> getAllStockData();
     @Query("UPDATE Stock_Balance SET balance = :balance WHERE sat_itemid = :sat_itemid")
     void updateStockData(String balance, String sat_itemid);
     @Query("delete from Stock_Balance")
