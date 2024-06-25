@@ -1769,7 +1769,11 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
         equArray = new Gson().fromJson(equip, listType1);
         equipment_list.clear();
         for (int i = 0; i < equArray.size(); i++) {
-            if (equArray.get(i).getIsPart().equalsIgnoreCase("0")) {
+            if (/*equArray.get(i).getIsPart().equalsIgnoreCase("0") &&*/ equDefaultType != null && equDefaultType.equalsIgnoreCase("1") && equArray.get(i).getType().equalsIgnoreCase("1")) {
+                equipment_list.add(equArray.get(i));
+            }else if(equDefaultType != null && equDefaultType.equalsIgnoreCase("2") && equArray.get(i).getType().equalsIgnoreCase("2")){
+                equipment_list.add(equArray.get(i));
+            }else if(equDefaultType == null || equDefaultType.isEmpty()){
                 equipment_list.add(equArray.get(i));
             }
         }
@@ -1777,7 +1781,24 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
         final EquipmentAdapter countryAdapter = new EquipmentAdapter(this, R.layout.custom_adpter_item_layout_new, (ArrayList<EquArrayModel>) equipment_list);
         auto_equipment.setAdapter(countryAdapter);
         auto_equipment.setThreshold(1);
-        auto_equipment.setOnItemClickListener((adapterView, view, i, l) -> equipmentId = ((EquArrayModel) adapterView.getItemAtPosition(i)).getEquId());
+        auto_equipment.setOnItemClickListener((adapterView, view, i, l) -> {
+            equipmentId = ((EquArrayModel) adapterView.getItemAtPosition(i)).getEquId();
+            if(equDefaultType == null || equDefaultType.isEmpty()){
+                if(((EquArrayModel) adapterView.getItemAtPosition(i)).getType().equalsIgnoreCase("1")){
+
+                        radio_owner.setChecked(true);
+                        radio_serv_prov.setChecked(false);
+                    radio_owner.setEnabled(false);
+                    radio_serv_prov.setEnabled(false);
+                }else if(((EquArrayModel) adapterView.getItemAtPosition(i)).getType().equalsIgnoreCase("2")){
+                    radio_owner.setChecked(false);
+                    radio_serv_prov.setChecked(true);
+                    radio_owner.setEnabled(false);
+                    radio_serv_prov.setEnabled(false);
+                }
+            }
+
+        });
 
         auto_equipment.addTextChangedListener(new TextWatcher() {
             @Override
@@ -1858,6 +1879,11 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
                 } else {
                     equipment_layout.setVisibility(View.GONE);
                     eq_view.setVisibility(View.GONE);
+                    if(equDefaultType == null || equDefaultType.isEmpty()){
+                        radio_owner.setChecked(true);
+                        radio_owner.setEnabled(true);
+                        radio_serv_prov.setEnabled(true);
+                    }
                 }
                 break;
 
