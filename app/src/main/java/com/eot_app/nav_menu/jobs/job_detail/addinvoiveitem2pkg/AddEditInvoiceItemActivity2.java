@@ -1936,6 +1936,8 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
                 break;
             case R.id.ivCross:
                 autocomplete_item.setText("");
+                ll_serialNo.setVisibility(View.GONE);
+                ll_below_rd_serialNo.setVisibility(View.GONE);
                 break;
             default:
                 if (comeFrom != null && comeFrom.equalsIgnoreCase("AddRemark") || comeFrom != null && comeFrom.equalsIgnoreCase("JobListScan") || comeFrom != null && comeFrom.equalsIgnoreCase("AddRemarkReplace")) {
@@ -2007,7 +2009,16 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
             if(stockData != null){
                 String balance = "";
                 if(!edt_item_qty.getText().toString().isEmpty()) {
-                   balance = String.valueOf(Integer.parseInt(stockData.getBalance()) - Integer.parseInt(edt_item_qty.getText().toString().trim()));
+                  stockQty = edt_item_qty.getText().toString().trim();
+                  if(userId.isEmpty() || userId.equals("0")){
+                     stockQty = String.valueOf(Integer.parseInt(stockQty) - 0);
+                      balance = String.valueOf(Integer.parseInt(stockData.getBalance()) -
+                              Integer.parseInt(  String.valueOf(Integer.parseInt(stockQty))));
+                  }else {
+                     stockQty = String.valueOf(Integer.parseInt(stockQty) - Integer.parseInt(updateItemDataModel.getQty()));
+                      balance = String.valueOf(Integer.parseInt(stockData.getBalance()) -
+                              Integer.parseInt(stockQty ));
+                  }
                 }
                 stockData.setSat_usrid(stockData.getSat_usrid());
                 AppDataBase.getInMemoryDatabase(this).stockDataDao().updateStockData(balance,stockData.getSat_itemid());
