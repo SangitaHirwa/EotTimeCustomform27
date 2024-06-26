@@ -381,6 +381,8 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
 
             @Override
             public void afterTextChanged(Editable editable) {
+                add_stock_checkBox.setVisibility(View.GONE);
+                chiled_add_stock_checkBox.setVisibility(View.GONE);
                 if (comeFrom != null && comeFrom.equalsIgnoreCase("AddRemark") || comeFrom != null && comeFrom.equalsIgnoreCase("JobListScan") || comeFrom != null && comeFrom.equalsIgnoreCase("AddRemarkReplace")) {
                     if (!autocomplete_item.getText().toString().isEmpty()) {
                         ivCross.setVisibility(View.VISIBLE);
@@ -1598,34 +1600,36 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
         edt_serialNo.setText(itemselected.getSerialNo());
         lastUpdateQty = "1";
 
-        if (!itemType.isEmpty() && itemType.equals("0") && itemId != null && !itemId.isEmpty()) {
-             stockData = AppDataBase.getInMemoryDatabase(this).stockDataDao().getItemBalanceByItemId(itemId);
-        }
 
         if (show_stock_checkbox) {
             add_stock_checkBox.setVisibility(View.VISIBLE);
+            if (!itemType.isEmpty() && itemType.equals("0") && itemId != null && !itemId.isEmpty()) {
+                stockData = AppDataBase.getInMemoryDatabase(this).stockDataDao().getItemBalanceByItemId(itemId);
+            }
             if (add_stock_checkBox.isChecked()) {
                 chiled_add_stock_checkBox.setVisibility(View.VISIBLE);
+                if(stockData != null) {
+                    stockQty = edt_item_qty.getText().toString();
+                    if(stockQty != null && !stockQty.isEmpty() && Integer.parseInt(stockQty) > Integer.parseInt(stockData.getBalance())){
+                        chiled_add_stock_checkBox.setChecked(false);
+                        stkusrId = "0";
+                    }else {
+                        chiled_add_stock_checkBox.setChecked(true);
+                        stkusrId = App_preference.getSharedprefInstance().getLoginRes().getUsrId();
+                    }
+                }
             } else {
                 chiled_add_stock_checkBox.setVisibility(View.GONE);
             }
+        }else {
+            chiled_add_stock_checkBox.setVisibility(View.GONE);
+            add_stock_checkBox.setVisibility(View.GONE);
         }
         if (!add_stock_checkBox.isChecked()) {
             isRemoveStock = "0";
             chiled_add_stock_checkBox.setVisibility(View.GONE);
         } else {
             isRemoveStock = "1";
-            chiled_add_stock_checkBox.setVisibility(View.VISIBLE);
-            if(stockData != null) {
-                stockQty = edt_item_qty.getText().toString();
-                if(stockQty != null && !stockQty.isEmpty() && Integer.parseInt(stockQty) > Integer.parseInt(stockData.getBalance())){
-                    chiled_add_stock_checkBox.setChecked(false);
-                    stkusrId = "0";
-                }else {
-                    chiled_add_stock_checkBox.setChecked(true);
-                    stkusrId = App_preference.getSharedprefInstance().getLoginRes().getUsrId();
-                }
-            }
         }
         Log.v("Rate:::", itemselected.getRate());
         if (itemselected.getRate().isEmpty()) {
