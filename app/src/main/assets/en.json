@@ -1770,7 +1770,7 @@
     "status_sent": "Sent",
     "status_revised": "Revised request",
     "service_interval": "Service Interval",
-    "service_due_date": "Service Due Date",
+    "service_due_date": "Next service expected date",
     "title_replace_equipment": "Replace Equipment",
     "actual_job_time": "Actual Job Time",
     "travel_job_time": "Travel Job Time",
@@ -1984,7 +1984,6 @@
     "discard_alert_msg": "Are you sure, want to discard this equipment.",
     "stock_remove_alert_msg" : "You're short on stock, but you still want to continue?",
     "adjust_stock": "Adjust it with my stock",
-    "discountError1": "Discount must not be more than Amount."
+    "discountError1": "The discount cannot exceed the total value of the item."
   }
 }
-
