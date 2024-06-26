@@ -1220,7 +1220,8 @@ public class DetailFragment extends Fragment
             showRecurmsg();
         else recur_parent_view.setVisibility(View.GONE);*/
         // for equipment
-
+        if (jobDetail_pi != null)
+            jobDetail_pi.getEquipmentStatus();
         setEuqipmentList(mParam2.getEquArray());
         if (jobDetail_pi != null)
             jobDetail_pi.loadFromServer(mParam2.getJobId());
@@ -1228,8 +1229,6 @@ public class DetailFragment extends Fragment
         if (jobDetail_pi != null)
             jobDetail_pi.getJobCompletionDetails(mParam2.getJobId());
         // for completion details
-        if (jobDetail_pi != null)
-            jobDetail_pi.getEquipmentStatus();
         // for get attachment
         if (jobDetail_pi != null) {
             jobDetail_pi.getAttachFileList(mParam2.getJobId(), App_preference.getSharedprefInstance().getLoginRes().getUsrId()
