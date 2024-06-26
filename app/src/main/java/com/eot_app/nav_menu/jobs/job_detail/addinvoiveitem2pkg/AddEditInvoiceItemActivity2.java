@@ -211,6 +211,7 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
     boolean isShowStockAlert = false;
     boolean isFromQty = false;
     boolean isFromQtyCancel = false;
+    boolean isIncresStock = false;
     StockData stockData;
     String lastUpdateQty ="";
 
@@ -1199,6 +1200,13 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
 //        }
         add_stock_checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (!isChecked) {
+                if(updateItemDataModel != null) {
+                    if(chiled_add_stock_checkBox.isChecked()){
+                        if(userId.equalsIgnoreCase(App_preference.getSharedprefInstance().getLoginRes().getUsrId())){
+                            isIncresStock = true;
+                        }
+                    }
+                }
                 isRemoveStock = "0";
                 stkusrId = "0";
                 chiled_add_stock_checkBox.setVisibility(View.GONE);
@@ -2028,33 +2036,53 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
                     }
                 }
             }
-            if(!userId.equals("0") && !userId.isEmpty()) {
-                if (stockData != null ) {
-                    String balance = "";
-                    if (!edt_item_qty.getText().toString().isEmpty()) {
-                        stockQty = edt_item_qty.getText().toString().trim();
-                        if (userId.isEmpty() || !userId.equals("0") && !userId.equalsIgnoreCase(App_preference.getSharedprefInstance().getLoginRes().getUsrId())) {
+            if(!isIncresStock) {
+                if (!userId.equals("0") && !userId.isEmpty()) {
+                    if (stockData != null) {
+                        String balance = "";
+                        if (!edt_item_qty.getText().toString().isEmpty()) {
+                            stockQty = edt_item_qty.getText().toString().trim();
+                            if (userId.isEmpty() || !userId.equals("0") && !userId.equalsIgnoreCase(App_preference.getSharedprefInstance().getLoginRes().getUsrId())) {
+                                balance = String.valueOf(Integer.parseInt(stockData.getBalance()) -
+                                        Integer.parseInt(String.valueOf(Integer.parseInt(stockQty))));
+                            } else {
+                                stockQty = String.valueOf(Integer.parseInt(stockQty) - Integer.parseInt(updateItemDataModel.getQty()));
+                                balance = String.valueOf(Integer.parseInt(stockData.getBalance()) -
+                                        Integer.parseInt(stockQty));
+                            }
+                        }
+                        stockData.setSat_usrid(stockData.getSat_usrid());
+                        AppDataBase.getInMemoryDatabase(this).stockDataDao().updateStockData(balance, stockData.getSat_itemid());
+                    } else {
+                        StockData data = new StockData(App_preference.getSharedprefInstance().getLoginRes().getUsrId(),
+                                itemId, "-" + edt_item_qty.getText().toString().trim());
+                        AppDataBase.getInMemoryDatabase(this).stockDataDao().insertStockSingleData(data);
+                    }
+                } else {
+                    if (chiled_add_stock_checkBox.isChecked()) {
+                        if (stockData != null) {
+                            String balance = "";
                             balance = String.valueOf(Integer.parseInt(stockData.getBalance()) -
                                     Integer.parseInt(String.valueOf(Integer.parseInt(stockQty))));
+                            stockData.setSat_usrid(stockData.getSat_usrid());
+                            AppDataBase.getInMemoryDatabase(this).stockDataDao().updateStockData(balance, stockData.getSat_itemid());
                         } else {
-                            stockQty = String.valueOf(Integer.parseInt(stockQty) - Integer.parseInt(updateItemDataModel.getQty()));
-                            balance = String.valueOf(Integer.parseInt(stockData.getBalance()) -
-                                    Integer.parseInt(stockQty));
+                            StockData data = new StockData(App_preference.getSharedprefInstance().getLoginRes().getUsrId(),
+                                    itemId, "-" + edt_item_qty.getText().toString().trim());
+                            AppDataBase.getInMemoryDatabase(this).stockDataDao().insertStockSingleData(data);
                         }
                     }
-                    stockData.setSat_usrid(stockData.getSat_usrid());
-                    AppDataBase.getInMemoryDatabase(this).stockDataDao().updateStockData(balance, stockData.getSat_itemid());
-                } else {
-                    StockData data = new StockData(App_preference.getSharedprefInstance().getLoginRes().getUsrId(),
-                            itemId, "-" + edt_item_qty.getText().toString().trim());
-                    AppDataBase.getInMemoryDatabase(this).stockDataDao().insertStockSingleData(data);
                 }
             }else {
-                if(chiled_add_stock_checkBox.isChecked()){
-                    StockData data = new StockData(App_preference.getSharedprefInstance().getLoginRes().getUsrId(),
-                            itemId, "-" + edt_item_qty.getText().toString().trim());
-                    AppDataBase.getInMemoryDatabase(this).stockDataDao().insertStockSingleData(data);
+                if (stockData != null) {
+                    String balance = "";
+                    stockQty = updateItemDataModel.getQty();
+                    balance = String.valueOf(Integer.parseInt(stockData.getBalance()) +
+                            Integer.parseInt(String.valueOf(Integer.parseInt(stockQty))));
+                    stockData.setSat_usrid(stockData.getSat_usrid());
+                    AppDataBase.getInMemoryDatabase(this).stockDataDao().updateStockData(balance, stockData.getSat_itemid());
                 }
+                isIncresStock = false;
             }
 
             if (jobModel != null && jobModel.getIsJobInvoiced().equals("1")) {
