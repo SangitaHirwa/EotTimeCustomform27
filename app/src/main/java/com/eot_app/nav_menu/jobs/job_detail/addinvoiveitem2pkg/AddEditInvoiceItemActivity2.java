@@ -1069,7 +1069,7 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
         add_stock_checkBox = findViewById(R.id.add_stock_checkBox);
         chiled_add_stock_checkBox = findViewById(R.id.chiled_add_stock_checkBox);
         add_stock_checkBox.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.remove_stock_from_inventory));
-        chiled_add_stock_checkBox.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.remove_stock_from_inventory));
+        chiled_add_stock_checkBox.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.adjust_stock));
         txt_lbl_link = findViewById(R.id.txt_lbl_link);
         txt_lbl_link.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.select_job_items_to_link_equipment));
         btn_link_item = findViewById(R.id.btn_link_item);
@@ -1202,8 +1202,11 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
                 isRemoveStock = "0";
                 stkusrId = "0";
                 chiled_add_stock_checkBox.setVisibility(View.GONE);
+                chiled_add_stock_checkBox.setChecked(false);
             } else {
                 isRemoveStock = "1";
+                chiled_add_stock_checkBox.setChecked(false);
+                stkusrId = "0";
                 chiled_add_stock_checkBox.setVisibility(View.VISIBLE);
             }
         });
@@ -1212,6 +1215,10 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
                 chiled_add_stock_checkBox.setChecked(false);
                 if(userId.isEmpty() && userId.equals("0")) {
                     stkusrId = "0";
+                }else if(userId.equalsIgnoreCase(App_preference.getSharedprefInstance().getLoginRes().getUsrId())){
+                    stkusrId = "0";
+                }else if(!userId.equalsIgnoreCase(App_preference.getSharedprefInstance().getLoginRes().getUsrId())){
+                    stkusrId = userId;
                 }
             } else {
                 stockQty = edt_item_qty.getText().toString();
