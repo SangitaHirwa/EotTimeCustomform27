@@ -1983,7 +1983,8 @@
     "repair_alert_msg": "Are you sure, want to repair this equipment.",
     "discard_alert_msg": "Are you sure, want to discard this equipment.",
     "stock_remove_alert_msg" : "You're short on stock, but you still want to continue?",
-    "adjust_stock": "Adjust it with my stock"
+    "adjust_stock": "Adjust it with my stock",
+    "discountError1": "Discount must not be more than Amount."
   }
 }
 

@@ -3309,8 +3309,8 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
                         edt_item_disc.setText("0");
                     }
                 } else if (getDisCalculationType != null && getDisCalculationType.equals("1")) {
-                    if (!edt_item_disc.getText().toString().isEmpty() && !edt_item_rate.getText().toString().isEmpty() && Float.parseFloat(edt_item_disc.getText().toString()) > Float.parseFloat(edt_item_rate.getText().toString())) {
-                        showDisError(LanguageController.getInstance().getMobileMsgByKey(AppConstant.discountError));
+                    if (!edt_item_disc.getText().toString().isEmpty() && !edt_item_rate.getText().toString().isEmpty() && Float.parseFloat(edt_item_disc.getText().toString()) > (Float.parseFloat(edt_item_rate.getText().toString())) * Float.parseFloat(edt_item_qty.getText().toString())) {
+                        showDisError(LanguageController.getInstance().getMobileMsgByKey(AppConstant.discountError1));
                         edt_item_disc.setText("0");
                     }
                 } else {
