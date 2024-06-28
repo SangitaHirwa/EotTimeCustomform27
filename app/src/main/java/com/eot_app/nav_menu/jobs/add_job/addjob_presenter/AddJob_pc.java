@@ -213,7 +213,7 @@ public class AddJob_pc implements Add_job_pi {
                 try {
                     SimpleDateFormat spf = new SimpleDateFormat("dd-MM-yyyy");
                     Date date = spf.parse(datestr);
-                    spf= new SimpleDateFormat(AppConstant.DATE_FORMAT);
+                    spf= new SimpleDateFormat(AppConstant.DATE_FORMAT,Locale.ENGLISH);
                     datestr = spf.format(date);
                     System.out.println(datestr);
                 }catch (Exception e){

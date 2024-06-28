@@ -2441,5 +2441,29 @@ public static void askPerMissionForLocation(Context context) {
         return new File(imageFile.getPath());
     }
 
+    public static String getDateByLang(String date, boolean dateTime){
+        String parsDate = "";
+        SimpleDateFormat dateFormat1;
+        SimpleDateFormat dateFormat;
+        Date dateLang;
+        try {
+            if(dateTime){
+                dateFormat1 = new SimpleDateFormat(AppUtility.dateTimeByAmPmFormate
+                        ("dd-MMM-yyyy hh:mm a", "dd-MMM-yyyy HH:mm"),Locale.ENGLISH);
+                dateLang = dateFormat1.parse(date);
+                dateFormat = new SimpleDateFormat(AppUtility.dateTimeByAmPmFormate
+                        ("dd-MMM-yyyy hh:mm a", "dd-MMM-yyyy HH:mm"),Locale.getDefault());
+            }else{
+                 dateFormat1 = new SimpleDateFormat(AppConstant.DATE_FORMAT,Locale.ENGLISH);
+               dateLang = dateFormat1.parse(date);
+                dateFormat = new SimpleDateFormat(AppConstant.DATE_FORMAT,Locale.getDefault());
+            }
+            parsDate = dateFormat.format(dateLang);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+        return parsDate;
+    }
+
 }
 

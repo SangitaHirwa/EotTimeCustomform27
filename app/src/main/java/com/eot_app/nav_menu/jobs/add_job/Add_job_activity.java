@@ -485,7 +485,7 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
     private void setDataInDateTimeField(ShiftTimeReSModel shiftTimeReSModel) {
         try {
             date_str = AppUtility.getDateByFormats(AppConstant.DATE_FORMAT);
-            date_start.setText(date_str);
+            date_start.setText(AppUtility.getDateByLang(date_str,false));
 
             String[] startTime = shiftTimeReSModel.getShiftStartTime().split(":");
 
@@ -504,7 +504,7 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
             String[] aaen = temptime_en.split(":");
             time_en = ((formatterend.format(Integer.parseInt(aaen[0]))) + ":" + aaen[1]);
 
-            date_end.setText(date_en);
+            date_end.setText(AppUtility.getDateByLang(date_en,false));
             time_end.setText(time_en);
 
             /*this for Add recur**/
@@ -929,8 +929,8 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
         recur_pattern_view.setVisibility(View.VISIBLE);
         normal_weekly_recur.setVisibility(View.VISIBLE);
         recur_view.setVisibility(View.VISIBLE);
-        if (!date_start.getText().toString().equals(""))
-            jobWeeklyRecurPi.getTillDateForRecur(date_start.getText().toString());
+        if (!date_str.equals(""))
+            jobWeeklyRecurPi.getTillDateForRecur(date_str);
 
         mon_week_day.setSeleted(false);
         tu_week_day.setSeleted(false);
@@ -1299,7 +1299,7 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
     public void set_Str_DTime(String str_dt_tm, String time_str) {
         date_str = str_dt_tm;
         this.time_str = time_str;
-        date_start.setText(date_str);
+        date_start.setText(AppUtility.getDateByLang(date_str,false));
         String date_str_c= str_dt_tm+" "+time_str;
         time_start.setText(this.time_str);
         if (App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable() != null &&
@@ -1353,7 +1353,7 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
         } catch (Exception e) {
             e.printStackTrace();
         }
-        date_start.setText(date_str);
+        date_start.setText(AppUtility.getDateByLang(date_str,false));
         time_start.setText(time_str);
 
         /* *this for Add recur**/
@@ -1376,9 +1376,9 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
                     App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable().equals("0")) {
                 time_en = time_duration[1] + " " + time_duration[2];
                 try {
-                    SimpleDateFormat spf = new SimpleDateFormat("dd-MMM-yyyy hh:mm a");
+                    SimpleDateFormat spf = new SimpleDateFormat("dd-MMM-yyyy hh:mm a",Locale.ENGLISH);
                     Date date = spf.parse(std);
-                    spf = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+                    spf = new SimpleDateFormat("dd-MM-yyyy HH:mm",Locale.ENGLISH);
                     String[] datestr = spf.format(date).split(" ");
                     String[] time_ary_end = datestr[1].split(":");
                     cTEnd.set(Calendar.HOUR_OF_DAY, Integer.parseInt(time_ary_end[0]));
@@ -1395,7 +1395,7 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
         } catch (Exception e) {
              e.printStackTrace();
         }
-        date_end.setText(date_en);
+        date_end.setText(AppUtility.getDateByLang(date_en,false));
         time_end.setText(time_en);
 
 
@@ -2843,13 +2843,13 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
                             case "6":
                                 if (!TextUtils.isEmpty(questionList.get(i).getAns().get(0).getValue())) {
                                     long l = Long.parseLong(questionList.get(i).getAns().get(0).getValue());
-                                    ans = AppUtility.getDates(l, "hh:mm a");
+                                    ans = AppUtility.getDates(l, "HH:MM:SS");
                                 }
                                 break;
                             case "7":
                                 if (!TextUtils.isEmpty(questionList.get(i).getAns().get(0).getValue())) {
                                     long l = Long.parseLong(questionList.get(i).getAns().get(0).getValue());
-                                    ans = AppUtility.getDates(l, "dd-MMM-yyyy hh:mm a");
+                                    ans = AppUtility.getDates(l, "dd-MMM-yyyy HH:MM:SS");
                                 }
                                 break;
                             default:
@@ -3022,7 +3022,7 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
                         try {
                             DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy", Locale.US);//hh:mm:ss a
                             Date endDate = formatter.parse(selectedDay + "-" + (selectedMonth + 1) + "-" + selectedYear);
-                            dateselect = new SimpleDateFormat(AppConstant.DATE_FORMAT, Locale.US).format(endDate);
+                            dateselect = new SimpleDateFormat(AppConstant.DATE_FORMAT, Locale.getDefault()).format(endDate);
                             end_date_for_weekly_recur.setText(dateselect);
                         } catch (ParseException e) {
                             e.printStackTrace();
@@ -3055,8 +3055,8 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
                             DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy", Locale.US);//hh:mm:ss a
                             Date endDate = formatter.parse(selectedDay + "-" + (selectedMonth + 1) + "-" + selectedYear);
                             dateselect = new SimpleDateFormat(AppConstant.DATE_FORMAT, Locale.US).format(endDate);
-                            date_start.setText(dateselect);
-                            date_end.setText(dateselect);
+                            date_start.setText(AppUtility.getDateByLang(dateselect,false));
+                            date_end.setText(AppUtility.getDateByLang(dateselect,false));
                             date_en = date_str = dateselect;
                         } catch (ParseException e) {
                             e.printStackTrace();
@@ -3106,7 +3106,7 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
                             DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy", Locale.US);//hh:mm:ss a
                             Date endDate = formatter.parse(selectedDay + "-" + (selectedMonth + 1) + "-" + selectedYear);
                             dateselect = new SimpleDateFormat(AppConstant.DATE_FORMAT, Locale.US).format(endDate);
-                            date_end.setText(dateselect);
+                            date_end.setText(AppUtility.getDateByLang(dateselect,false));
                             date_en = dateselect;
                         } catch (ParseException e) {
                             e.printStackTrace();
