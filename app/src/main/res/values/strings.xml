@@ -11,7 +11,7 @@
 
     //login
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="privacy_policy">Copyright &#169; Eyeontask 2023 <a href="https://www.eyeontask.com/policy.html"> Privacy Policy</a></string>
+    <string name="privacy_policy">Copyright &#169; Eyeontask 2024 <a href="https://www.eyeontask.com/policy.html"> Privacy Policy</a></string>
     <string name="login_email">User Name</string>
     <string name="pass_word">Password</string>
     <string name="rember">Remember me</string>
