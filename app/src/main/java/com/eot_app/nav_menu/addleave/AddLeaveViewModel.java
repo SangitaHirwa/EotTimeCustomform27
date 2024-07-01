@@ -1,6 +1,7 @@
 package com.eot_app.nav_menu.addleave;
 
 import android.app.Application;
+import android.text.Html;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -8,9 +9,11 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.eot_app.common_api_contr.ApiCalServerReqRes;
 import com.eot_app.common_api_contr.ApiRequestresponce;
+import com.eot_app.nav_menu.jobs.job_controller.ChatController;
 import com.eot_app.services.Service_apis;
 import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.AppUtility;
+import com.eot_app.utility.App_preference;
 import com.eot_app.utility.EotApp;
 import com.eot_app.utility.language_support.LanguageController;
 import com.google.gson.Gson;
@@ -48,6 +51,12 @@ public class AddLeaveViewModel extends AndroidViewModel implements ApiCalServerR
         if (requestCode == LEAVEReqCode) {
             if (jsonObject.get("success").getAsBoolean()) {
                 EotApp.getAppinstance().showToastmsg(LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
+                String s1 = (String.valueOf(Html.fromHtml("<b>" + App_preference.getSharedprefInstance().getLoginRes().getFnm()+" "+App_preference.getSharedprefInstance().getLoginRes().getLnm()+ "</b>")));
+
+                String tempMsg = "A new Leave has been " + (Html.fromHtml("<b>requested</b>"))
+                        + " by "+ s1 + ".";
+
+                ChatController.getInstance().notifyWeBforNew("LEAVE", "ReqLeave", App_preference.getSharedprefInstance().getLoginRes().getUsrId(), tempMsg, "");
                 finishActivity.setValue(true);
 
             } else if (jsonObject.get("statusCode") != null && jsonObject.get("statusCode").getAsString().equals(AppConstant.SESSION_EXPIRE)) {
