@@ -2014,7 +2014,32 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
         if (convert != null && !convert.isEmpty()) {
             ArrayList<Attachments> equipmentList = new ArrayList<>();
             jobEquimPi.getEquipmentList(equipment.getType(), cltId, jobId, equipment.getEquId());
+            Job job  = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(jobId);
+
             try {
+                if(job.getEquArray() != null && job.getEquArray().size() >0){
+                    for (EquArrayModel item : job.getEquArray()
+                    ) {
+                        boolean equipFind = false;
+                        if(item.getEquId().equals(equipment.getEquId())){
+                            equipment = item;
+                            break;
+                        }else if(item.getEquComponent() != null && item.getEquComponent().size() > 0){
+                            for (EquArrayModel item2 : item.getEquComponent()
+                            ) {
+                                if(item.getEquId().equals(item2.getEquId())){
+                                    equipment = item2;
+                                    equipFind = true;
+                                    break;
+                                }
+                            }
+                            if(equipFind){
+                                equipFind = false;
+                                break;
+                            }
+                        }
+                    }
+                }
                 Type listType = new TypeToken<List<Attachments>>() {
                 }.getType();
                 equipmentList = new Gson().fromJson(convert, listType);

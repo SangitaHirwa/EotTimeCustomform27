@@ -1410,8 +1410,8 @@ public class AddQutesItem_Activity extends AppCompatActivity implements TextWatc
                 }
                 else if(getDisCalculationType.equals("1"))
                 {
-                    if (!edt_item_discount.getText().toString().isEmpty()&&!edt_item_rate.getText().toString().isEmpty()&& Float.parseFloat(edt_item_discount.getText().toString()) > Float.parseFloat(edt_item_rate.getText().toString())) {
-                        showDisError(LanguageController.getInstance().getMobileMsgByKey(AppConstant.discountError));
+                    if (!edt_item_discount.getText().toString().isEmpty()&&!edt_item_rate.getText().toString().isEmpty()&& Float.parseFloat(edt_item_discount.getText().toString()) > (Float.parseFloat(edt_item_rate.getText().toString()) * Float.parseFloat(edt_item_qty.getText().toString()))) {
+                        showDisError(LanguageController.getInstance().getMobileMsgByKey(AppConstant.discountError1));
                         edt_item_discount.setText("0");
                     }
                 }
