@@ -241,8 +241,13 @@ public class JobEquReallocateActivity extends AppCompatActivity implements View.
     }
 
     public void getSiteList(String cltId) {
-        if (Integer.parseInt(cltId) > 0) {
+        if (!cltId.isEmpty() && !cltId.equals("0")) {
             setSiteList(AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).sitemodel().getActiveSitesFromCltId(Integer.parseInt(cltId)));
+        }else{
+            new_location_Detail_l.setVisibility(View.GONE);
+            no_site.setVisibility(View.VISIBLE);
+            location_save_btn.setClickable(false);
+            location_save_btn.setBackgroundResource(R.drawable.disable_submit_btn);
         }
     }
 
