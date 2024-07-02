@@ -2027,7 +2027,7 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
                         }else if(item.getEquComponent() != null && item.getEquComponent().size() > 0){
                             for (EquArrayModel item2 : item.getEquComponent()
                             ) {
-                                if(item.getEquId().equals(item2.getEquId())){
+                                if(item2.getEquId().equals(equipment.getEquId())){
                                     equipment = item2;
                                     equipFind = true;
                                     break;
