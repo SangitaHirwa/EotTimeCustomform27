@@ -998,6 +998,9 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
                 }
                 quote_notes_edt.setText(updateItemDataModel.getDes());
                 auto_brand.setText(updateItemDataModel.getBrandNm());
+                if(updateItemDataModel.getBrandNm() != null && !updateItemDataModel.getBrandNm().isEmpty()){
+                    auto_barnd_layout.setHintEnabled(true);
+                }
                 quote_notes_layout.setHintEnabled(true);
                 if(updateItemDataModel.getBrandNm() != null && !updateItemDataModel.getBrandNm().isEmpty()){
                     brandId = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).brandDao().getBrandIdByName(updateItemDataModel.getBrandNm());
