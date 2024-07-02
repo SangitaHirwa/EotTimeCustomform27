@@ -21,6 +21,8 @@ public interface BrandDao {
 
     @Query("select name from Brand where  ebId = :brandId")
     String getBrandNameById(String brandId);
+    @Query("select ebId from Brand where  name = :brandName")
+    String getBrandIdByName(String brandName);
     @Query("delete from Brand")
     void delete();
 }

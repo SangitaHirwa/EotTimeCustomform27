@@ -619,7 +619,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
 //                equipmentIdName = bundle.getString("equipmentIdName");
                 isSerialNoSelected = bundle.getBoolean("isSerialNoSelected", false);
                 updateItemDataModel = new Gson().fromJson(string, InvoiceItemDataModel.class);
-                setItemDefaultData();
+                 setItemDefaultData();
                 if (equipmentId != null && !equipmentId.isEmpty()) {
                     auto_equipment.setEnabled(false);
                     auto_equipment.setText(equipmentIdName);
@@ -984,15 +984,27 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
         try {
             if (updateItemDataModel != null) {
                 edt_equ.setText(updateItemDataModel.getInm());
-
+                if(updateItemDataModel.getInm() != null && !updateItemDataModel.getInm().isEmpty()){
+                    equ_layout.setHintEnabled(true);
+                }
                 edt_equ_model.setText(updateItemDataModel.getPno());
+                if(updateItemDataModel.getPno() != null && !updateItemDataModel.getPno().isEmpty()){
+                    equ_model_layout.setHintEnabled(true);
+                }
                 edt_equ_supplier.setText(updateItemDataModel.getSupplierCost());
-
-
                 edt_equ_serial.setText(updateItemDataModel.getSerialNo());
+                if(updateItemDataModel.getSerialNo() != null && !updateItemDataModel.getSerialNo().isEmpty()){
+                    equ_serial_layout.setHintEnabled(true);
+                }
                 quote_notes_edt.setText(updateItemDataModel.getDes());
+                auto_brand.setText(updateItemDataModel.getBrandNm());
+                if(updateItemDataModel.getBrandNm() != null && !updateItemDataModel.getBrandNm().isEmpty()){
+                    auto_barnd_layout.setHintEnabled(true);
+                }
                 quote_notes_layout.setHintEnabled(true);
-
+                if(updateItemDataModel.getBrandNm() != null && !updateItemDataModel.getBrandNm().isEmpty()){
+                    brandId = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).brandDao().getBrandIdByName(updateItemDataModel.getBrandNm());
+                }
                 if (jobId != null) {
                     job = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(jobId);
                     if (job != null) {
