@@ -110,6 +110,8 @@ public class CompletionFormAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     Map<Integer,CompletionAdpterJobDteails1> attachAdapterPosition = new HashMap<>();
     BackgroundTaskExecutor backgroundTaskExecutor;
     boolean isTime24Format = false;
+    String sDate="";
+    String sTimeDate="";
 
     @Override
     public long getItemId(int position) {
@@ -343,10 +345,11 @@ public class CompletionFormAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                             // tvDate.setText(dayOfMonth + "-" + month_String + "-" + year + " ");
                         } else
                             completeDate = dayOfMonth + "-" + month_String + "-" + year;
-                        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+                        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
                         try {
                             Date parse = sdf.parse(completeDate.trim());
-                            tvDate.setText(new SimpleDateFormat("dd-MMM-yyyy").format(parse));
+                            sDate = new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH).format(parse);
+                            tvDate.setText(AppUtility.getDateByLang(sDate,false));
                         } catch (ParseException e) {
                             e.printStackTrace();
                         }
@@ -361,12 +364,13 @@ public class CompletionFormAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                         date = (dayOfMonth + "-" + monthString + "-" + year + " ");
                         String newDateTime = date + " " + time;
                         SimpleDateFormat sdf = new SimpleDateFormat(
-                                AppUtility.dateTimeByAmPmFormate("dd-MM-yyyy hh:mm a", "dd-MM-yyyy HH:mm"));
+                                AppUtility.dateTimeByAmPmFormate("dd-MM-yyyy hh:mm a", "dd-MM-yyyy HH:mm"),Locale.ENGLISH);
                         try {
                             Date parseDate = sdf.parse(newDateTime);
-                            tvTimeDate.setText(new SimpleDateFormat(AppUtility.dateTimeByAmPmFormate(
+                            sTimeDate = new SimpleDateFormat(AppUtility.dateTimeByAmPmFormate(
                                     "dd-MMM-yyyy hh:mm a",
-                                    "dd-MMM-yyyy HH:mm")).format(parseDate));
+                                    "dd-MMM-yyyy HH:mm"),Locale.ENGLISH).format(parseDate);
+                            tvTimeDate.setText(AppUtility.getDateByLang(sTimeDate,true));
                         } catch (ParseException e) {
                             e.printStackTrace();
                         }
@@ -474,13 +478,13 @@ public class CompletionFormAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                     if (tvDate.getTag() != null) {
                         String pos = tvDate.getTag().toString();
                         int position = Integer.parseInt(pos);
-                        if (s != null && s.toString().length() > 0) {
+                        if (sDate != null && !sDate.equals("0")) {
                             long startDate = 0;
                             try {
                                 SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yyyy hh:mm:ss", Locale.US);
                                 SimpleDateFormat tsdf = new SimpleDateFormat("hh:mm:ss", Locale.US);
                                 String time = tsdf.format(Calendar.getInstance().getTime());
-                                Date date = sdf.parse(s.toString()+" "+time);
+                                Date date = sdf.parse(sDate+" "+time);
                                 startDate = date.getTime() / 1000;
                             } catch (ParseException e) {
                                 e.printStackTrace();
@@ -573,9 +577,9 @@ public class CompletionFormAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 public void onClick(View view) {
                     if( !tvDate.getText().toString().isEmpty()) {
                         myCalendar.clear();
-                        String inputTime = tvDate.getText().toString();
-                        SimpleDateFormat inputFormat = new SimpleDateFormat("dd-MMM-yyyy", Locale.getDefault());
-                        SimpleDateFormat outputFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
+                        String inputTime = sDate;
+                        SimpleDateFormat inputFormat = new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH);
+                        SimpleDateFormat outputFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
 
                         try {
                             Date date = inputFormat.parse(inputTime);
@@ -675,13 +679,13 @@ public class CompletionFormAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                     if (tvTimeDate.getTag() != null) {
                         String pos = tvTimeDate.getTag().toString();
                         int position = Integer.parseInt(pos);
-                        if (s != null && s.toString().length() > 0) {
+                        if (sTimeDate != null && !sTimeDate.equals("0")) {
                             long startDate = 0;
                             try {
                                 SimpleDateFormat sdf = new SimpleDateFormat(
                                         AppUtility.dateTimeByAmPmFormate("dd-MMM-yyyy hh:mm a",
                                                 "dd-MMM-yyyy HH:mm"), Locale.US);
-                                Date date = sdf.parse(s.toString());
+                                Date date = sdf.parse(sTimeDate);
                                 startDate = date.getTime() / 1000;
                             } catch (ParseException e) {
                                 e.printStackTrace();
@@ -710,10 +714,10 @@ public class CompletionFormAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                         String inputTime = "";
                         if (App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable() != null
                                 && App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable().equals("0")) {
-                            String[] ary_inputTime = AppUtility.get24HoursTimeFormate(tvTimeDate.getText().toString()).split(" ");
+                            String[] ary_inputTime = AppUtility.get24HoursTimeFormate(sTimeDate).split(" ");
                              inputTime = ary_inputTime[0];
                         }else{
-                            String[] ary_inputTime = tvTimeDate.getText().toString().split(" ");
+                            String[] ary_inputTime = sTimeDate.split(" ");
                             inputTime = ary_inputTime[0];
                         }
 
@@ -745,7 +749,7 @@ public class CompletionFormAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 @Override
                 public void onClick(View v) {
                     if(!tvTimeDate.getText().toString().isEmpty()) {
-                        String[] ary_inputTime = tvTimeDate.getText().toString().split(" ");
+                        String[] ary_inputTime =sTimeDate.split(" ");
                         if (App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable() != null
                                 && App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable().equals("0")) {
                             String inputTime = ary_inputTime[1] + " " + ary_inputTime[2];
@@ -921,18 +925,19 @@ public class CompletionFormAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                                 if (dateConvert!=null) {
                                     String s = dateConvert[0];
                                     String[] date = s.split(",");
-                                    tvDate.setText(date[1].trim().replace(" ", "-"));
+                                    sDate = date[1].trim().replace(" ", "-");
+                                    tvDate.setText(AppUtility.getDateByLang(sDate,false));
                                 }else {
-                                    SimpleDateFormat dt = new SimpleDateFormat("yyyy-MMM-dd hh:mm:ss");
+                                    SimpleDateFormat dt = new SimpleDateFormat("yyyy-MMM-dd hh:mm:ss",Locale.ENGLISH);
                                     Date date = dt.parse(question.getAns().get(0).getValue());
-                                    SimpleDateFormat dt1 = new SimpleDateFormat("dd-MMM-yyyy");
+                                    SimpleDateFormat dt1 = new SimpleDateFormat("dd-MMM-yyyy",Locale.ENGLISH);
                                     if (App_preference.getSharedprefInstance().getLoginRes().getIsAutoTimeZone().equals("1")) {
                                         dt1.setTimeZone(TimeZone.getTimeZone(App_preference.getSharedprefInstance().getLoginRes().getLoginUsrTz()));
                                     } else {
                                         dt1.setTimeZone(TimeZone.getDefault());
                                     }
-                                    String format = dt1.format(date);
-                                    tvDate.setText(format);
+                                    sDate = dt1.format(date);
+                                    tvDate.setText(AppUtility.getDateByLang(sDate,false));
                                 }
 
                             }
@@ -1010,10 +1015,12 @@ public class CompletionFormAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                                 Long dateLong = Long.parseLong(question.getAns().get(0).getValue());
                                 String dateConvert = AppUtility.getDate(dateLong,
                                         AppUtility.dateTimeByAmPmFormate("dd-MMM-yyyy hh:mm a", "dd-MMM-yyyy HH:mm"));
-                                tvTimeDate.setText(dateConvert);
+                                sTimeDate = dateConvert;
+                                tvTimeDate.setText(AppUtility.getDateByLang(sTimeDate,true));
                             }
                         } catch (NumberFormatException e) {
                             AppCenterLogs.addLogToAppCenterOnAPIFail("CustomForm","","onBindViewHolder(Q.7) "+e.getMessage(),"QuestionListAdapter","");
+                            sTimeDate = question.getAns().get(0).getValue();
                             tvTimeDate.setText(question.getAns().get(0).getValue());
                         }catch (Exception e)
                         {
@@ -1376,13 +1383,13 @@ public class CompletionFormAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                                     time = timeData;
                                     String newdateTime = date + " " + timeData;
                                     try {
-                                        String s = new SimpleDateFormat(
+                                        sTimeDate = new SimpleDateFormat(
                                                 AppUtility.dateTimeByAmPmFormate("dd-MMM-yyyy hh:mm a",
-                                                        "dd-MMM-yyyy HH:mm")).format(
+                                                        "dd-MMM-yyyy HH:mm"),Locale.ENGLISH).format(
                                                 new SimpleDateFormat(
                                                         AppUtility.dateTimeByAmPmFormate(
-                                                                "dd-MM-yyyy hh:mm a", "dd-MM-yyyy HH:mm")).parse(newdateTime));
-                                        textView.setText(s);
+                                                                "dd-MM-yyyy hh:mm a", "dd-MM-yyyy HH:mm"),Locale.ENGLISH).parse(newdateTime));
+                                        textView.setText(AppUtility.getDateByLang(sTimeDate,true));
                                     } catch (ParseException e) {
                                         e.printStackTrace();
                                     }
