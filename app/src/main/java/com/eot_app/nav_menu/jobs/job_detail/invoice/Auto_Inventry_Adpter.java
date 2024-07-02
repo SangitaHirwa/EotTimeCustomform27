@@ -1,5 +1,6 @@
 package com.eot_app.nav_menu.jobs.job_detail.invoice;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -92,6 +93,7 @@ public class Auto_Inventry_Adpter extends ArrayAdapter<Inventry_ReS_Model> {
         this.suggestions = new ArrayList<Inventry_ReS_Model>();
     }
 
+    @SuppressLint("SetTextI18n")
     public View getView(int position, View convertView, ViewGroup parent) {
         View v = convertView;
         if (v == null) {
@@ -109,7 +111,11 @@ public class Auto_Inventry_Adpter extends ArrayAdapter<Inventry_ReS_Model> {
                 /***This For Search Key***/
                 if (pickOrDropModel.getSearchKey() != null && !pickOrDropModel.getSearchKey().equals("") && searchKey != null) {
                     searchKey.setVisibility(View.VISIBLE);
-                    searchKey.setText(pickOrDropModel.getSearchKey());
+                    if(pickOrDropModel.getBrandNm() != null && !pickOrDropModel.getBrandNm().equals("")){
+                        searchKey.setText("("+pickOrDropModel.getBrandNm()+")"+pickOrDropModel.getSearchKey());
+                    }else{
+                        searchKey.setText(pickOrDropModel.getSearchKey());
+                    }
                 } else if (searchKey != null) {
                     searchKey.setVisibility(View.GONE);
                     int paddingDp = 12;
@@ -118,7 +124,11 @@ public class Auto_Inventry_Adpter extends ArrayAdapter<Inventry_ReS_Model> {
                     customerNameLabel.setPadding(paddingPixel, paddingPixel, paddingPixel, paddingPixel);
                 }
                 if (searchKey != null) {
-                    searchKey.setText(pickOrDropModel.getSearchKey());
+                    if(pickOrDropModel.getBrandNm() != null && !pickOrDropModel.getBrandNm().equals("")){
+                        searchKey.setText("("+pickOrDropModel.getBrandNm()+") "+pickOrDropModel.getSearchKey());
+                    }else{
+                        searchKey.setText(pickOrDropModel.getSearchKey());
+                    }
                 }
             }
         }

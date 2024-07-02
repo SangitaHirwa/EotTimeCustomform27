@@ -214,6 +214,7 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
     boolean isIncresStock = false;
     StockData stockData;
     String lastUpdateQty ="";
+    String brand_name ="";
 
     public AddEditInvoiceItemActivity2 getInstance() {
 
@@ -1571,6 +1572,7 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
         dataType = "1";
         itemType = "0";
         jtId = "";
+        brand_name = itemselected.getBrandNm();
         try {
             if (itemselected.getIsBillable() != null) isBillable = itemselected.getIsBillable();
             if (itemselected.getIsBillableChange() != null)
@@ -2514,6 +2516,7 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
                 addItemDataModel.setWarrantyType(warrantyType);
                 addItemDataModel.setWarrantyValue(warrantyValue);
                 addItemDataModel.setIsGrouped(isGrouped);
+                addItemDataModel.setBrandNm(brand_name);
                 addItemDataModel.setInm(autocomplete_item.getText().toString().trim());
                 if (isSerialNoSelected) {
                     convertInEquip(addItemDataModel);
