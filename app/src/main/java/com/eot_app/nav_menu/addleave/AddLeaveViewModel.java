@@ -10,6 +10,7 @@ import androidx.lifecycle.MutableLiveData;
 import com.eot_app.common_api_contr.ApiCalServerReqRes;
 import com.eot_app.common_api_contr.ApiRequestresponce;
 import com.eot_app.nav_menu.jobs.job_controller.ChatController;
+import com.eot_app.nav_menu.userleave_list_pkg.UserLeaveResModel;
 import com.eot_app.services.Service_apis;
 import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.AppUtility;
@@ -51,10 +52,21 @@ public class AddLeaveViewModel extends AndroidViewModel implements ApiCalServerR
         if (requestCode == LEAVEReqCode) {
             if (jsonObject.get("success").getAsBoolean()) {
                 EotApp.getAppinstance().showToastmsg(LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
+                String transVarModel = new Gson().toJson(jsonObject.get("data").getAsJsonObject());
+                UserLeaveResModel userLeaveResModel = new Gson().fromJson(transVarModel, UserLeaveResModel.class);
                 String s1 = (String.valueOf(Html.fromHtml("<b>" + App_preference.getSharedprefInstance().getLoginRes().getFnm()+" "+App_preference.getSharedprefInstance().getLoginRes().getLnm()+ "</b>")));
 
-                String tempMsg = "A new Leave has been " + (Html.fromHtml("<b>requested</b>"))
-                        + " by "+ s1 + ".";
+                String tempMsg = "";
+                String startDate =  AppUtility.getDateWithFormate(Long.parseLong(userLeaveResModel.getStartDateTime()),
+                        "MMMM dd");
+                String finishtDate =  AppUtility.getDateWithFormate(Long.parseLong(userLeaveResModel.getFinishDateTime()),
+                       "MMMM dd");
+                if(startDate.equalsIgnoreCase(finishtDate)){
+                    tempMsg = s1+" has submitted a request for leave on "+startDate+"th.";
+                }else {
+                    tempMsg = s1+" has submitted a request for leave From "+startDate+"th to "+finishtDate+"th.";
+                }
+
 
                 ChatController.getInstance().notifyWeBforNew("LEAVE", "ReqLeave", App_preference.getSharedprefInstance().getLoginRes().getUsrId(), tempMsg, "");
                 finishActivity.setValue(true);
