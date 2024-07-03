@@ -527,11 +527,11 @@ public class CustomFiledQueAdpter extends RecyclerView.Adapter<CustomFiledQueAdp
                             try {
                                 @SuppressLint("SimpleDateFormat") String s = new SimpleDateFormat(
                                         AppUtility.dateTimeByAmPmFormate("dd-MMM-yyyy hh:mm a"
-                                                , "dd-MMM-yyyy HH:mm"))
+                                                , "dd-MMM-yyyy HH:mm"), Locale.ENGLISH)
                                         .format(Objects.requireNonNull(new SimpleDateFormat(
                                                 AppUtility.dateTimeByAmPmFormate(
-                                                        "dd-MM-yyyy hh:mm a", "dd-MM-yyyy HH:mm"
-                                                )).parse(newdateTime)));
+                                                        "dd-MMM-yyyy hh:mm a", "dd-MMM-yyyy HH:mm"
+                                                ), Locale.ENGLISH).parse(newdateTime)));
                                 sTimeDate = s;
                                 textView.setText(AppUtility.getDateByLang(sTimeDate,true));
                             } catch (ParseException e) {

@@ -1619,21 +1619,19 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
                         if (quesRspncModelList.get(i).getType().equals("5")) {
                             if (!TextUtils.isEmpty(quesRspncModelList.get(i).getAns().get(0).getValue())) {
                                 long l = Long.parseLong(quesRspncModelList.get(i).getAns().get(0).getValue());
-                                String date = AppUtility.getDates(l, "yyyy-MMM-dd hh:mm:ss");
+                                String date = AppUtility.getDates(l, "yyyy-MMM-dd");
                                 ans = date;
                             }
                         } else if (quesRspncModelList.get(i).getType().equals("6")) {
                             if (!TextUtils.isEmpty(quesRspncModelList.get(i).getAns().get(0).getValue())) {
                                 long l = Long.parseLong(quesRspncModelList.get(i).getAns().get(0).getValue());
-                                String date = AppUtility.getDates(l,
-                                        AppUtility.dateTimeByAmPmFormate("hh:mm a", "HH:mm"));
+                                String date = AppUtility.getDates(l,"HH:mm");
                                 ans = date;
                             }
                         } else if (quesRspncModelList.get(i).getType().equals("7")) {
                             if (!TextUtils.isEmpty(quesRspncModelList.get(i).getAns().get(0).getValue())) {
                                 long l = Long.parseLong(quesRspncModelList.get(i).getAns().get(0).getValue());
-                                String date = AppUtility.getDates(l, AppUtility.dateTimeByAmPmFormate(
-                                        "dd-MMM-yyyy hh:mm a","dd-MMM-yyyy HH:mm"));
+                                String date = AppUtility.getDates(l,"dd-MMM-yyyy HH:mm");
                                 ans = date;
                             }
                         } else

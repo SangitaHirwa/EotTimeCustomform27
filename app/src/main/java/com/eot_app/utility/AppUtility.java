@@ -2325,7 +2325,7 @@ public static void askPerMissionForLocation(Context context) {
 
     public static String getCurrentDateByFormats(String format) { //get current date time
         /* *****not work default language so always set US langauge for this request*****/
-        SimpleDateFormat gettingfmt = new SimpleDateFormat(format, Locale.ENGLISH);
+        SimpleDateFormat gettingfmt = new SimpleDateFormat(format, Locale.getDefault());
         return gettingfmt.format(Calendar.getInstance().getTime());
     }
 

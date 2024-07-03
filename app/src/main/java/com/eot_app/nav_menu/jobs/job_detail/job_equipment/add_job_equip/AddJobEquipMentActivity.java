@@ -169,6 +169,11 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
     private String egId = "";
     private String ecId = "";
     private String jobId = "";
+    private String sPurchaseDate = "";
+    private String sManufacDate = "";
+    private String sInstDate = "";
+    private String sWarLastDate = "";
+    private String sWarStartDate = "";
     private LinearLayout manuf_date_layout, date_purchase_layout, date_warnty_layout, date_warnty_layout_start/*, linearLayout_status*/;
     private LinearLayout lay, ll_show_more_less;
     private Job job;
@@ -259,7 +264,8 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
     private AuditList_Res audit;
 
     private void setPurchaseViews(String dateselect, LinearLayout.LayoutParams params) {
-        purchase_date_lable.setText(dateselect);
+        sPurchaseDate = dateselect;
+        purchase_date_lable.setText(AppUtility.getDateByLang(sPurchaseDate,false));
         txt_date_purchase.setLayoutParams(params);
         txt_date_purchase.setVisibility(View.VISIBLE);
         txt_date_purchase.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.purchase_date));
@@ -267,7 +273,8 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
     }
 
     private void setInstalledViews(String dateselect, LinearLayout.LayoutParams params) {
-        binding.installedDateLable.setText(dateselect);
+        sInstDate = dateselect;
+        binding.installedDateLable.setText(AppUtility.getDateByLang(sInstDate,false));
         binding.txtDateInstalled.setLayoutParams(params);
         binding.txtDateInstalled.setVisibility(View.VISIBLE);
         binding.txtDateInstalled.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.installed_date));
@@ -275,7 +282,8 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
     }
 
     private void setWarrntyViews(String dateselect, LinearLayout.LayoutParams params) {
-        warnty_date_lable.setText(dateselect);
+        sWarLastDate = dateselect;
+        warnty_date_lable.setText(AppUtility.getDateByLang(sWarLastDate,false));
         txt_date_warnty.setLayoutParams(params);
         txt_date_warnty.setVisibility(View.VISIBLE);
         txt_date_warnty.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.warranty_expiry_date));
@@ -285,8 +293,8 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
     private void setWarrntyStartViews(String dateselect) {
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         params.setMargins(0, 5, 0, -20);
-
-        warnty_date_lable_start.setText(dateselect);
+        sWarStartDate = dateselect;
+        warnty_date_lable_start.setText(AppUtility.getDateByLang(sWarStartDate,false));
         // to set installed date as current date
         setInstalledViews(dateselect, params);
 
@@ -301,7 +309,8 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
     }
 
     private void setManufactureViews(String dateselect, LinearLayout.LayoutParams params) {
-        manuf_date_lable.setText(dateselect);
+        sManufacDate = dateselect;
+        manuf_date_lable.setText(AppUtility.getDateByLang(sManufacDate,false));
         txt_date.setLayoutParams(params);
         txt_date.setVisibility(View.VISIBLE);
         txt_date.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.manufacture_date));
@@ -1442,29 +1451,34 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
                 break;
             case R.id.manuf_date_cancel:
                 if (!manuf_date_lable.getText().toString().equals("")) manuf_date_lable.setText("");
+                sManufacDate = "";
                 binding.manufDateCancel.setVisibility(View.GONE);
                 binding.txtDate.setVisibility(View.GONE);
                 break;
             case R.id.warnty_date_cancel:
                 if (!warnty_date_lable.getText().toString().equals(""))
+                    sWarLastDate = "";
                     warnty_date_lable.setText("");
                 binding.warntyDateCancel.setVisibility(View.GONE);
                 binding.txtDateWarnty.setVisibility(View.GONE);
                 break;
             case R.id.purchase_date_cancel:
                 if (!purchase_date_lable.getText().toString().equals(""))
+                    sPurchaseDate = "";
                     purchase_date_lable.setText("");
                 binding.purchaseDateCancel.setVisibility(View.GONE);
                 binding.txtDatePurchase.setVisibility(View.GONE);
                 break;
             case R.id.installed_date_cancel:
                 if (!binding.installedDateLable.getText().toString().equals(""))
+                    sInstDate = "";
                     binding.installedDateLable.setText("");
                 binding.installedDateCancel.setVisibility(View.GONE);
                 binding.txtDateInstalled.setVisibility(View.GONE);
                 break;
             case R.id.warnty_start_date_cancel:
                 if (!warnty_date_lable_start.getText().toString().equals(""))
+                    sWarStartDate = "";
                     warnty_date_lable_start.setText("");
                 binding.warntyStartDateCancel.setVisibility(View.GONE);
                 binding.txtDateWarntyStart.setVisibility(View.GONE);
@@ -1569,7 +1583,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
         datePickerDialog.show();
     }
 
-    SimpleDateFormat stf = new SimpleDateFormat("hh:mm:ss", Locale.US);
+    SimpleDateFormat stf = new SimpleDateFormat("HH:MM:SS", Locale.US);
     String formatetime = stf.format(Calendar.getInstance().getTime());
     String puchaseDate = "", manufactureDate = "", warantyStartDate = "",warantyDate = "", installDate ="";
     private void createEquipmentForJobAudit() {
@@ -1585,15 +1599,15 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
         }
 
         if(!TextUtils.isEmpty(purchase_date_lable.getText().toString().trim())){
-            puchaseDate = purchase_date_lable.getText().toString().trim()+" "+formatetime;
+            puchaseDate = sPurchaseDate.trim()+" "+formatetime;
         }if(!TextUtils.isEmpty(manuf_date_lable.getText().toString().trim())){
-            manufactureDate = manuf_date_lable.getText().toString().trim()+" "+formatetime;
+            manufactureDate = sManufacDate.trim()+" "+formatetime;
         }if(!TextUtils.isEmpty(warnty_date_lable.getText().toString().trim())){
-            warantyDate = warnty_date_lable.getText().toString().trim()+" "+formatetime;
+            warantyDate = sWarLastDate.trim()+" "+formatetime;
         }if(!TextUtils.isEmpty(binding.installedDateLable.getText().toString().trim())){
-            installDate = binding.installedDateLable.getText().toString().trim()+" "+formatetime;
+            installDate = sInstDate.trim()+" "+formatetime;
         }if(!TextUtils.isEmpty(warnty_date_lable_start.getText().toString().trim())){
-            warantyStartDate = warnty_date_lable_start.getText().toString().trim()+" "+formatetime;
+            warantyStartDate = sManufacDate.trim()+" "+formatetime;
         }
         if (comeFrom != null && comeFrom.equalsIgnoreCase("AddRemarkReplace")) {
             createEqquipmentRequestForReplace();
