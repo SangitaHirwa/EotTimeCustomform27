@@ -1305,9 +1305,9 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
         if (App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable() != null &&
                 App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable().equals("0")) {
             try {
-                SimpleDateFormat spf = new SimpleDateFormat("dd-MMM-yyyy hh:mm a");
+                SimpleDateFormat spf = new SimpleDateFormat(AppConstant.DATE_TIME_FORMAT_new,Locale.ENGLISH);
                 Date date = spf.parse(date_str_c);
-                spf = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+                spf = new SimpleDateFormat(AppConstant.DATE_Time_FORMAT2,Locale.ENGLISH);
                 String[] datestr = spf.format(date).split(" ");
                 String[] time_ary_end = datestr[1].split(":");
                 cTStart.set(Calendar.HOUR_OF_DAY, Integer.parseInt(time_ary_end[0]));
@@ -2673,8 +2673,8 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
                     post_code.getText().toString(),
                     member_type,
                     listwork,
-                    AppUtility.get24HoursTimeFormate(schdlStart),
-                    AppUtility.get24HoursTimeFormate(schdlFinish),
+                    AppUtility.sendDateByFormate(schdlStart,true),
+                    AppUtility.sendDateByFormate(schdlFinish,true),
                     status,
                     tagArray,
                     App_preference.getSharedprefInstance().getLoginRes().getUsrId(),
@@ -2837,7 +2837,8 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
                             case "5":
                                 if (!TextUtils.isEmpty(questionList.get(i).getAns().get(0).getValue())) {
                                     long l = Long.parseLong(questionList.get(i).getAns().get(0).getValue());
-                                    ans = AppUtility.getDates(l, "dd-MMM-yyyy");
+                                    ans = AppUtility.getDates(l, AppConstant.DATE_FORMAT);
+                                    ans = AppUtility.sendDateByFormate(ans,false);
                                 }
                                 break;
                             case "6":
@@ -2849,7 +2850,8 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
                             case "7":
                                 if (!TextUtils.isEmpty(questionList.get(i).getAns().get(0).getValue())) {
                                     long l = Long.parseLong(questionList.get(i).getAns().get(0).getValue());
-                                    ans = AppUtility.getDates(l, "dd-MMM-yyyy HH:MM:SS");
+                                    ans = AppUtility.getDates(l, AppConstant.DATE_TIME_FORMAT_new);
+                                    ans = AppUtility.sendDateByFormate(ans,true);
                                 }
                                 break;
                             default:

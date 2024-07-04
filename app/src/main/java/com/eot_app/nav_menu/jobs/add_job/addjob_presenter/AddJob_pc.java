@@ -159,9 +159,9 @@ public class AddJob_pc implements Add_job_pi {
             schdul_Start_Date_Time(AppUtility.getFormatedTime(time1), datestr);
             }else {
                 try {
-                    SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+                    SimpleDateFormat dateFormat = new SimpleDateFormat(AppConstant.DATE_FORMAT2,Locale.ENGLISH);
                     Date parse = dateFormat.parse(calenderDate);
-                    SimpleDateFormat dateFormat1 = new SimpleDateFormat("dd-MMM-yyyy");
+                    SimpleDateFormat dateFormat1 = new SimpleDateFormat(AppConstant.DATE_FORMAT,Locale.ENGLISH);
                     datestr1 = dateFormat1.format(parse);
                 } catch (Exception e) {
                     e.printStackTrace();

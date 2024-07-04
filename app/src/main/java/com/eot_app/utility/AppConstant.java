@@ -18,11 +18,15 @@ public class AppConstant {
 
 
     public static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";// 2021-12-09 23:00:00
-    public static final String DATE_TIME_FORMAT_new = "dd-MMM-yyyy hh:mm:ss a";
+    public static final String DATE_TIME_FORMAT_new = "dd-MMM-yyyy hh:mm a";
+    public static final String DATE_24_TIME_FORMAT_new = "dd-MMM-yyyy HH:mm";
     public static final String DATE_FORMAT = "dd-MMM-yyyy";
     public static final int LIMIT_MID = 50;
     public static final int LIMIT_HIGH = 120;
     public static final String SESSION_EXPIRE = "401";
+    public static final String DATE_FORMAT1 = "yyyy-MM-dd";
+    public static final String DATE_FORMAT2 = "dd-MM-yyyy";
+    public static final String DATE_Time_FORMAT2 = "dd-MM-yyyy HH:mm";
     public static final String network_error = "Please check your internet connection.";
     public static final String[] status = {
             "New",

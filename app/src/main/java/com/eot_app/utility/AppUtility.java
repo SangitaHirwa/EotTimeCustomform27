@@ -2237,7 +2237,7 @@ public static void askPerMissionForLocation(Context context) {
     //testing perpose
     public static String getDateByFormats(String format) { //get current date time
         /* *****not work default language so always set US langauge for this request*****/
-        SimpleDateFormat gettingfmt = new SimpleDateFormat(format, Locale.US);
+        SimpleDateFormat gettingfmt = new SimpleDateFormat(format, Locale.getDefault());
         return gettingfmt.format(Calendar.getInstance().getTime());
     }
 
@@ -2464,6 +2464,30 @@ public static void askPerMissionForLocation(Context context) {
         }
         return parsDate;
     }
+    public static String sendDateByFormate(String date, boolean isDateTime)
+    {
+        String parsDate = "";
+        SimpleDateFormat dateFormat1;
+        SimpleDateFormat dateFormat;
+        Date dateLang;
+        try {
+            if(isDateTime){
+                dateFormat1 = new SimpleDateFormat(AppUtility.dateTimeByAmPmFormate
+                        (AppConstant.DATE_TIME_FORMAT_new, AppConstant.DATE_24_TIME_FORMAT_new),Locale.ENGLISH);
+                dateLang = dateFormat1.parse(date);
+                dateFormat = new SimpleDateFormat(AppConstant.DATE_TIME_FORMAT,Locale.ENGLISH);
+            }else{
+                dateFormat1 = new SimpleDateFormat(AppConstant.DATE_FORMAT,Locale.ENGLISH);
+                dateLang = dateFormat1.parse(date);
+                dateFormat = new SimpleDateFormat(AppConstant.DATE_FORMAT1,Locale.ENGLISH);
+            }
+            parsDate = dateFormat.format(dateLang);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+        return parsDate;
+    }
+
 
 }
 
