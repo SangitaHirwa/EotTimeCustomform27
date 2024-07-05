@@ -127,7 +127,7 @@ public class ReportFragment extends Fragment implements View.OnClickListener {
                 } else {
                     Log.e("", "");
                     if (PERMMISSIONALLOW)
-                        reportViewModel.generateReport(reportBinding.timeFrom.getText().toString().trim(), reportBinding.timeTo.getText().toString().trim());
+                        reportViewModel.generateReport(AppUtility.sendDateByFormate(reportBinding.timeFrom.getText().toString().trim(),false), AppUtility.sendDateByFormate(reportBinding.timeTo.getText().toString().trim(),false));
                     else {
                         requestPermissionAndContinue();//("You have need internal storage permission for download Report");
                     }

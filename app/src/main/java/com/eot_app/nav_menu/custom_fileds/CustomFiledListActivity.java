@@ -212,8 +212,9 @@ public class CustomFiledListActivity extends AppCompatActivity implements Custom
                         if (questionList.get(i).getType().equals("5")) {
                             if (!TextUtils.isEmpty(questionList.get(i).getAns().get(0).getValue())) {
                                 long l = Long.parseLong(questionList.get(i).getAns().get(0).getValue());
-                                String date = AppUtility.getDates(l, "yyyy-MMM-dd");
-                                ans = date;
+                                String date = AppUtility.getDates(l, AppUtility.dateTimeByAmPmFormate(
+                                        AppConstant.DATE_FORMAT+" hh:mm a", AppConstant.DATE_FORMAT+" HH:mm"));
+                                ans = AppUtility.sendDateByFormate(date,true);
                             }
                         } else if (questionList.get(i).getType().equals("6")) {
                             if (!TextUtils.isEmpty(questionList.get(i).getAns().get(0).getValue())) {
@@ -224,8 +225,9 @@ public class CustomFiledListActivity extends AppCompatActivity implements Custom
                         } else if (questionList.get(i).getType().equals("7")) {
                             if (!TextUtils.isEmpty(questionList.get(i).getAns().get(0).getValue())) {
                                 long l = Long.parseLong(questionList.get(i).getAns().get(0).getValue());
-                                String date = AppUtility.getDates(l,AppConstant.DATE_FORMAT+" HH:mm");
-                                ans = date;
+                                String date = AppUtility.getDates(l,AppUtility.dateTimeByAmPmFormate(
+                                        AppConstant.DATE_FORMAT+" hh:mm a", AppConstant.DATE_FORMAT+" HH:mm"));
+                                ans = AppUtility.sendDateByFormate(date,true);
                             }
                         } else
                             ans = questionList.get(i).getAns().get(0).getValue();

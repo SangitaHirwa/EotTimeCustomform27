@@ -629,8 +629,9 @@ public class FormQueAns_Activity extends UploadDocumentActivity implements View.
                         if (quesRspncModelList.get(i).getType().equals("5")) {
                             if (!TextUtils.isEmpty(quesRspncModelList.get(i).getAns().get(0).getValue())) {
                                 long l = Long.parseLong(quesRspncModelList.get(i).getAns().get(0).getValue());
-                                String date = AppUtility.getDates(l, "yyyy-MMM-dd hh:mm:ss");
-                                ans = date;
+                                String date = AppUtility.getDates(l, AppUtility.dateTimeByAmPmFormate(
+                                        "dd-MMM-yyyy hh:mm a","dd-MMM-yyyy HH:mm"));
+                                ans = AppUtility.sendDateByFormate(date,true);
                             }
                         } else if (quesRspncModelList.get(i).getType().equals("6")) {
                             if (!TextUtils.isEmpty(quesRspncModelList.get(i).getAns().get(0).getValue())) {
@@ -644,7 +645,7 @@ public class FormQueAns_Activity extends UploadDocumentActivity implements View.
                                 long l = Long.parseLong(quesRspncModelList.get(i).getAns().get(0).getValue());
                                 String date = AppUtility.getDates(l, AppUtility.dateTimeByAmPmFormate(
                                         "dd-MMM-yyyy hh:mm a","dd-MMM-yyyy HH:mm"));
-                                ans = date;
+                                ans = AppUtility.sendDateByFormate(date,true);
                             }
                         } else
                             ans = quesRspncModelList.get(i).getAns().get(0).getValue();

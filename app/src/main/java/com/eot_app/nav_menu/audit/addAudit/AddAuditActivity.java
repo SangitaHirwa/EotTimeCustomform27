@@ -1718,8 +1718,8 @@ public class AddAuditActivity extends UploadDocumentActivity implements Add_Adui
                     1,
                     App_preference.getSharedprefInstance().getLoginRes().getUsrId(),
                     kpr,
-                    schdlStart,
-                    schdlFinish,
+                    AppUtility.sendDateByFormate(schdlStart,true),
+                    AppUtility.sendDateByFormate(schdlFinish,true),
                     audit_instr.getText().toString(),
                     new_con_nm,
                     new_site_nm,
@@ -1836,7 +1836,8 @@ public class AddAuditActivity extends UploadDocumentActivity implements Add_Adui
                             case "5":
                                 if (!TextUtils.isEmpty(questionList.get(i).getAns().get(0).getValue())) {
                                     long l = Long.parseLong(questionList.get(i).getAns().get(0).getValue());
-                                    ans = AppUtility.getDates(l, "yyyy-MMM-dd hh:mm:ss");
+                                    String date = AppUtility.getDates(l,AppUtility.dateTimeByAmPmFormate(AppConstant.DATE_FORMAT+" hh:mm a", AppConstant.DATE_FORMAT+" HH:mm"));
+                                    ans = AppUtility.sendDateByFormate(date,true);
                                 }
                                 break;
                             case "6":
@@ -1851,7 +1852,8 @@ public class AddAuditActivity extends UploadDocumentActivity implements Add_Adui
                                 if (!TextUtils.isEmpty(questionList.get(i).getAns().get(0).getValue())) {
                                     long l = Long.parseLong(questionList.get(i).getAns().get(0).getValue());
                                     String formate = AppUtility.dateTimeByAmPmFormate(AppConstant.DATE_FORMAT+" hh:mm a", AppConstant.DATE_FORMAT+" HH:mm");
-                                    ans = AppUtility.getDates(l, formate);
+                                    String date = AppUtility.getDates(l, formate);
+                                    ans = AppUtility.sendDateByFormate(date,true);
                                 }
                                 break;
                             default:

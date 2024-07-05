@@ -357,7 +357,7 @@ public class RemarkCustomFormFragment extends Fragment implements View.OnClickLi
                             if (!TextUtils.isEmpty(question_List.get(i).getAns().get(0).getValue())) {
                                 long l = Long.parseLong(question_List.get(i).getAns().get(0).getValue());
                                 String date = AppUtility.getDate(l, "dd-MMM-yyyy");
-                                ans = date;
+                                ans = AppUtility.sendDateByFormate(date,false);
                             }
                         } else if (question_List.get(i).getType().equals("6")) {
                             if (!TextUtils.isEmpty(question_List.get(i).getAns().get(0).getValue())) {
@@ -368,8 +368,8 @@ public class RemarkCustomFormFragment extends Fragment implements View.OnClickLi
                         } else if (question_List.get(i).getType().equals("7")) {
                             if (!TextUtils.isEmpty(question_List.get(i).getAns().get(0).getValue())) {
                                 long l = Long.parseLong(question_List.get(i).getAns().get(0).getValue());
-                                String date = AppUtility.getDate(l, "dd-MMM-yyyy hh:mm a");
-                                ans = date;
+                                String date = AppUtility.getDate(l, AppUtility.dateTimeByAmPmFormate(AppConstant.DATE_FORMAT+" hh:mm a", AppConstant.DATE_FORMAT+" HH:mm"));
+                                ans = AppUtility.sendDateByFormate(date,true);
                             }
                         } else
                             ans = question_List.get(i).getAns().get(0).getValue();

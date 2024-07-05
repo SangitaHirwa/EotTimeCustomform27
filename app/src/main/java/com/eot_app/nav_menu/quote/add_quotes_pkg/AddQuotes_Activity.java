@@ -1097,7 +1097,8 @@ public class AddQuotes_Activity extends UploadDocumentActivity implements View.O
 
             }
             /*Remove invId variable after discuss with Rani Yadav for 2.92 release on 26 Dec 2023*/
-
+            invDate = AppUtility.sendDateByFormate(invDate,true);
+            dueDate = AppUtility.sendDateByFormate(dueDate,true);
             final Add_Quote_ReQ add_quote_reQ = new Add_Quote_ReQ(jtIdList, cltId, siteId, conId,
                     "",
                     App_preference.getSharedprefInstance().getLoginRes().getUsrId(), quote_instr_edt.getText().toString().trim(),

@@ -2914,7 +2914,7 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
             SimpleDateFormat gettingfmt = new SimpleDateFormat(
                     //"dd-MM-yyyy hh:mm a"
                     AppUtility.dateTimeByAmPmFormate(AppConstant.DATE_FORMAT+" hh:mm a", AppConstant.DATE_FORMAT+" HH:mm")
-                    , Locale.US);
+                    , Locale.ENGLISH);
             Date date = gettingfmt.parse(schdlStart);
             assert date != null;
             date.getTime();
@@ -3022,9 +3022,9 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
                         cJobRecur.set(Calendar.DAY_OF_MONTH, selectedDay);
                         String dateselect = "";
                         try {
-                            DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy", Locale.US);//hh:mm:ss a
+                            DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);//hh:mm:ss a
                             Date endDate = formatter.parse(selectedDay + "-" + (selectedMonth + 1) + "-" + selectedYear);
-                            dateselect = new SimpleDateFormat(AppConstant.DATE_FORMAT, Locale.getDefault()).format(endDate);
+                            dateselect = new SimpleDateFormat(AppConstant.DATE_FORMAT, Locale.ENGLISH).format(endDate);
                             end_date_for_weekly_recur.setText(dateselect);
                         } catch (ParseException e) {
                             e.printStackTrace();
@@ -3054,9 +3054,9 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
                         cEnd.set(Calendar.DAY_OF_MONTH, selectedDay);
                         String dateselect = "";
                         try {
-                            DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy", Locale.US);//hh:mm:ss a
+                            DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);//hh:mm:ss a
                             Date endDate = formatter.parse(selectedDay + "-" + (selectedMonth + 1) + "-" + selectedYear);
-                            dateselect = new SimpleDateFormat(AppConstant.DATE_FORMAT, Locale.US).format(endDate);
+                            dateselect = new SimpleDateFormat(AppConstant.DATE_FORMAT, Locale.ENGLISH).format(endDate);
                             date_start.setText(AppUtility.getDateByLang(dateselect,false));
                             date_end.setText(AppUtility.getDateByLang(dateselect,false));
                             date_en = date_str = dateselect;
@@ -3068,7 +3068,7 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
                             Date date = new Date(System.currentTimeMillis());
                             String formate = AppUtility.dateTimeByAmPmFormate("hh:mm aa", "HH:mm");
                             SimpleDateFormat dateFormat = new SimpleDateFormat(formate,
-                                    Locale.getDefault());
+                                    Locale.ENGLISH);
                             time_str = dateFormat.format(date);
                             time_start.setText(time_str);
                         }
@@ -3105,16 +3105,16 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
                         cEnd.set(Calendar.DAY_OF_MONTH, selectedDay);
                         String dateselect = "";
                         try {
-                            DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy", Locale.US);//hh:mm:ss a
+                            DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);//hh:mm:ss a
                             Date endDate = formatter.parse(selectedDay + "-" + (selectedMonth + 1) + "-" + selectedYear);
-                            dateselect = new SimpleDateFormat(AppConstant.DATE_FORMAT, Locale.US).format(endDate);
+                            dateselect = new SimpleDateFormat(AppConstant.DATE_FORMAT, Locale.ENGLISH).format(endDate);
                             date_end.setText(AppUtility.getDateByLang(dateselect,false));
                             date_en = dateselect;
                         } catch (ParseException e) {
                             e.printStackTrace();
                         }
                         DateFormat dateFormat = new SimpleDateFormat(
-                                AppUtility.dateTimeByAmPmFormate("hh:mm:ss a", "HH:mm:ss"), Locale.US);//append current time
+                                AppUtility.dateTimeByAmPmFormate("hh:mm:ss a", "HH:mm:ss"), Locale.ENGLISH);//append current time
                         dateFormat.format(new Date());
                         time_end.setText(time_en);
 

@@ -175,13 +175,13 @@ public class DialogActualTravelDateTime extends DialogFragment implements View.O
         // set values
         String schdlFinish = "", schdlStart = "", tlogEnd = "", tlogStart = "";
         if (actualFinish != null && !actualFinish.isEmpty())
-            schdlFinish = AppUtility.changeDateFormat(actualFinish, timeFormateInput, timeFormate) + ":00";
+            schdlFinish =  AppUtility.sendDateByFormate(actualFinish,true);
         if (actualStart != null && !actualStart.isEmpty())
-            schdlStart = AppUtility.changeDateFormat(actualStart, timeFormateInput, timeFormate) + ":00";
+            schdlStart =  AppUtility.sendDateByFormate(actualStart,true);
         if (travelFinish != null && !travelFinish.isEmpty())
-            tlogEnd = AppUtility.changeDateFormat(travelFinish, timeFormateInput, timeFormate) + ":00";
+            tlogEnd =  AppUtility.sendDateByFormate(travelFinish,true);
         if (travelStart != null && !travelStart.isEmpty())
-            tlogStart = AppUtility.changeDateFormat(travelStart, timeFormateInput, timeFormate) + ":00";
+            tlogStart =  AppUtility.sendDateByFormate(travelStart,true);
 
 
         if (logType == 1 && schdlFinish.isEmpty() && schdlStart.isEmpty()) {

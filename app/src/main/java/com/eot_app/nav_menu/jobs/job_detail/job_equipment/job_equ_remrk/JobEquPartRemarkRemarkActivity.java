@@ -1430,7 +1430,9 @@ public class JobEquPartRemarkRemarkActivity extends UploadDocumentActivity imple
                         if (quesRspncModelList.get(i).getType().equals("5")) {
                             if (!TextUtils.isEmpty(quesRspncModelList.get(i).getAns().get(0).getValue())) {
                                 long l = Long.parseLong(quesRspncModelList.get(i).getAns().get(0).getValue());
-                                ans = AppUtility.getDate(l, "dd-MMM-yyyy");
+                                String date = AppUtility.getDate(l, AppUtility.dateTimeByAmPmFormate(
+                                        "dd-MMM-yyyy", "dd-MMM-yyyy"));
+                                ans = AppUtility.sendDateByFormate(date,true);
                             }
                         } else if (quesRspncModelList.get(i).getType().equals("6")) {
                             if (!TextUtils.isEmpty(quesRspncModelList.get(i).getAns().get(0).getValue())) {
@@ -1440,7 +1442,9 @@ public class JobEquPartRemarkRemarkActivity extends UploadDocumentActivity imple
                         } else if (quesRspncModelList.get(i).getType().equals("7")) {
                             if (!TextUtils.isEmpty(quesRspncModelList.get(i).getAns().get(0).getValue())) {
                                 long l = Long.parseLong(quesRspncModelList.get(i).getAns().get(0).getValue());
-                                ans = AppUtility.getDate(l,"dd-MMM-yyyy HH:mm");
+                                String date = AppUtility.getDate(l, AppUtility.dateTimeByAmPmFormate(
+                                        "dd-MMM-yyyy hh:mm a", "dd-MMM-yyyy HH:mm"));
+                                ans = AppUtility.sendDateByFormate(date,true);
                             }
                         } else
                             ans = quesRspncModelList.get(i).getAns().get(0).getValue();
