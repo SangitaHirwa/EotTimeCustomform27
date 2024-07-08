@@ -1333,9 +1333,9 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
                     App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable().equals("0")) {
                 time_str = time_duration[1] + " " + time_duration[2];
                 try {
-                    SimpleDateFormat spf = new SimpleDateFormat("dd-MMM-yyyy hh:mm a");
+                    SimpleDateFormat spf = new SimpleDateFormat("dd-MMM-yyyy hh:mm a",Locale.ENGLISH);
                     Date date = spf.parse(std);
-                    spf = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+                    spf = new SimpleDateFormat("dd-MM-yyyy HH:mm",Locale.ENGLISH);
                     String[] datestr = spf.format(date).split(" ");
                     String[] time_ary_end = datestr[1].split(":");
                     cTStart.set(Calendar.HOUR_OF_DAY, Integer.parseInt(time_ary_end[0]));

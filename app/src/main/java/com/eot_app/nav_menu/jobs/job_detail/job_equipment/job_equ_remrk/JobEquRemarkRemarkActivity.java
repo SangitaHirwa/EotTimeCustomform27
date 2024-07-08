@@ -1430,7 +1430,7 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
                                 long l = Long.parseLong(quesRspncModelList.get(i).getAns().get(0).getValue());
                                 String date = AppUtility.getDate(l, AppUtility.dateTimeByAmPmFormate(
                                         "dd-MMM-yyyy", "dd-MMM-yyyy"));
-                                ans = AppUtility.sendDateByFormate(date,true);
+                                ans = AppUtility.sendDateByFormate(date,false);
                             }
                         } else if (quesRspncModelList.get(i).getType().equals("6")) {
                             if (!TextUtils.isEmpty(quesRspncModelList.get(i).getAns().get(0).getValue())) {

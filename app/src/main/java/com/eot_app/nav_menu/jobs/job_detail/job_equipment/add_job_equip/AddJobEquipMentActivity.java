@@ -204,7 +204,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
     private final DatePickerDialog.OnDateSetListener datePickerListener = (view, selectedYear, selectedMonth, selectedDay) -> {
         String dateselect;
         try {
-            DateFormat formatter = new SimpleDateFormat(AppConstant.DATE_FORMAT, Locale.US);//hh:mm:ss a
+            DateFormat formatter = new SimpleDateFormat(AppConstant.DATE_FORMAT, Locale.ENGLISH);//hh:mm:ss a
 //            Date startDate = formatter.parse(selectedDay + "-" + (selectedMonth + 1) + "-" + selectedYear);
             Calendar cal = Calendar.getInstance();
             cal.setTimeInMillis(0);
@@ -1029,7 +1029,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
     @SuppressLint("ClickableViewAccessibility")
     private void emptyGroupCheck() {
         auto_grp.setOnTouchListener((v, event) -> {
-            final int DRAWABLE_RIGHT = 2;
+            final int DRAWABLE_RIGHT = 0;
             auto_grp.requestFocus();
             if (event.getAction() == MotionEvent.ACTION_UP) {
                 if (GetgrpDataList != null && GetgrpDataList.size() > 0) {
@@ -1064,7 +1064,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
     @SuppressLint("ClickableViewAccessibility")
     private void emptyCatryCheck() {
         auto_catery.setOnTouchListener((v, event) -> {
-            final int DRAWABLE_RIGHT = 2;
+            final int DRAWABLE_RIGHT = 0;
             auto_catery.requestFocus();
             if (event.getAction() == MotionEvent.ACTION_UP) {
                 if (GetCatgDataList != null && GetCatgDataList.size() > 0) {
@@ -1098,7 +1098,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
     @SuppressLint("ClickableViewAccessibility")
     private void emptyBrandCheck() {
         auto_brand.setOnTouchListener((v, event) -> {
-            final int DRAWABLE_RIGHT = 2;
+            final int DRAWABLE_RIGHT = 0;
             auto_brand.requestFocus();
             if (event.getAction() == MotionEvent.ACTION_UP) {
                 if (BrandDataList != null && BrandDataList.size() > 0) {
@@ -1583,7 +1583,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
         datePickerDialog.show();
     }
 
-    SimpleDateFormat stf = new SimpleDateFormat("HH:MM:SS", Locale.US);
+    SimpleDateFormat stf = new SimpleDateFormat(AppUtility.dateTimeByAmPmFormate("hh:mm a","HH:mm"), Locale.ENGLISH);
     String formatetime = stf.format(Calendar.getInstance().getTime());
     String puchaseDate = "", manufactureDate = "", warantyStartDate = "",warantyDate = "", installDate ="";
     private void createEquipmentForJobAudit() {
@@ -1624,7 +1624,31 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
         statename = auto_states.getText().toString();*/
         ctry = addJobEqu_pi.cntryId(countryNameById);
         state = addJobEqu_pi.statId(ctry, statenameById);
-
+        if(sPurchaseDate != null && !sPurchaseDate.isEmpty()) {
+            puchaseDate = AppUtility.sendDateByFormate(puchaseDate, true);
+        }else {
+            puchaseDate = "";
+        }
+        if(sManufacDate != null && !sManufacDate.isEmpty()) {
+            manufactureDate = AppUtility.sendDateByFormate(manufactureDate, true);
+        }else {
+            manufactureDate = "";
+        }
+        if(sWarLastDate != null && !sWarLastDate.isEmpty()) {
+            warantyDate = AppUtility.sendDateByFormate(warantyDate, true);
+        }else {
+            warantyDate = "";
+        }
+        if(sInstDate != null && !sInstDate.isEmpty()) {
+            installDate = AppUtility.sendDateByFormate(installDate, true);
+        }else {
+            installDate = "";
+        }
+        if(sManufacDate != null && !sManufacDate.isEmpty()) {
+            warantyStartDate = AppUtility.sendDateByFormate(sManufacDate, true);
+        }else {
+            warantyStartDate = "";
+        }
         if (updateItemDataModel == null) {
 
             /*Convert item to EQUIPMENT*****/
@@ -1663,7 +1687,31 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
         statename =auto_states.getText().toString();*/
         ctry = addJobEqu_pi.cntryId(countryNameById);
         state = addJobEqu_pi.statId(ctry, statenameById);
-
+        if(sPurchaseDate != null && !sPurchaseDate.isEmpty()) {
+            puchaseDate = AppUtility.sendDateByFormate(puchaseDate, true);
+        }else {
+            puchaseDate = "";
+        }
+        if(sManufacDate != null && !sManufacDate.isEmpty()) {
+            manufactureDate = AppUtility.sendDateByFormate(manufactureDate, true);
+        }else {
+            manufactureDate = "";
+        }
+        if(sWarLastDate != null && !sWarLastDate.isEmpty()) {
+            warantyDate = AppUtility.sendDateByFormate(warantyDate, true);
+        }else {
+            warantyDate = "";
+        }
+        if(sInstDate != null && !sInstDate.isEmpty()) {
+            installDate = AppUtility.sendDateByFormate(installDate, true);
+        }else {
+            installDate = "";
+        }
+        if(sManufacDate != null && !sManufacDate.isEmpty()) {
+            warantyStartDate = AppUtility.sendDateByFormate(sManufacDate, true);
+        }else {
+            warantyStartDate = "";
+        }
         if (updateItemDataModel == null) {
             if (addJobEqu_pi.RequiredFields(edt_equ.getText().toString().trim())) {
                 if (comeFrom1 != null && comeFrom1.equalsIgnoreCase("AddPartWithoutItem")) {
@@ -1672,6 +1720,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
                         parentId = equipment.getParentId();
                         isCnvtItemParts = "0";
                     }
+
                     addJobEqu_pi.convertItemToequip(new AddEquReq(type, egId, ecId, zip, city, edt_equ_adrs.getText().toString().trim(), ctry, state, /*isBarcodeGenerate,*/
                             quote_notes_edt.getText().toString().trim(), puchaseDate, manufactureDate, warantyDate, supplier_txt.getText().toString().trim(), edt_equ_serial.getText().toString().trim(), edt_equ_model.getText().toString().trim(), brandId, edt_equ.getText().toString().trim(), jobId, job.getCltId(), job.getContrId(), "", "", siteId, isPart, status, invId, custom_filed_txt_1.getText().toString().trim(), custom_filed_txt_2.getText().toString().trim(), servIntvalType, interval, "1", equipmentId, isCnvtItemParts, installDate, supplierId, "",warantyStartDate), path, barcodeString, qrCodeString, parentId);
                 } else if (audit != null) {

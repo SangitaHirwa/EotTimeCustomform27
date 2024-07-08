@@ -138,6 +138,7 @@ public class Generate_Invoice_Activity extends AppCompatActivity implements MyLi
     private String toJsonTemplate;
     static Dialog dialog;
     Job mjob;
+    String selectedDeuDate = "";
     final Calendar myCalendar = Calendar.getInstance();
 
     @Override
@@ -585,9 +586,9 @@ public class Generate_Invoice_Activity extends AppCompatActivity implements MyLi
         inv_total_amount.setText(AppUtility.getRoundoff_amount(invResModel.getTotal() + ""));
 
         if (!invResModel.getInvDate().equals(""))
-            invoice_cre_dt.setText(AppUtility.getDateWithFormate(Long.parseLong(invResModel.getInvDate()), "dd-MMM-yyyy"));
+            invoice_cre_dt.setText(AppUtility.getDateByLang(AppUtility.getDateWithFormate(Long.parseLong(invResModel.getInvDate()), "dd-MMM-yyyy"),false));
         if (!invResModel.getDuedate().equals(""))
-            invoice_due_dt.setText(AppUtility.getDateWithFormate(Long.parseLong(invResModel.getDuedate()), "dd-MMM-yyyy"));
+            invoice_due_dt.setText(AppUtility.getDateByLang(AppUtility.getDateWithFormate(Long.parseLong(invResModel.getDuedate()), "dd-MMM-yyyy"),false));
     }
 
     private String getSpiningTotal(String total) {
@@ -774,16 +775,16 @@ public class Generate_Invoice_Activity extends AppCompatActivity implements MyLi
                 dialog.dismiss();
                 break;
             case R.id.ok_btn:
-                if (!conditionCheck(AppUtility.getDateWithFormate(Long.parseLong(invResModelForDueDate.getInvDate()), "dd-MMM-yyyy"), txt_date.getText().toString())) {
+                if (!conditionCheck(AppUtility.getDateWithFormate(Long.parseLong(invResModelForDueDate.getInvDate()), "dd-MMM-yyyy"), selectedDeuDate.trim())) {
                     EotApp.getAppinstance().
                             showToastmsg(LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_due_Invoice_date));
                 } else {
-                    invoice_due_dt.setText(txt_date.getText().toString());
+                    invoice_due_dt.setText(AppUtility.getDateByLang(selectedDeuDate.trim(),false));
                     dialog.dismiss();
                     try {
                         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH);
-                        Date date = dateFormat.parse(txt_date.getText().toString());
-                        SimpleDateFormat dateFormat1 = new SimpleDateFormat("yyyy-MM-dd", Locale.UK);
+                        Date date = dateFormat.parse(selectedDeuDate.trim());
+                        SimpleDateFormat dateFormat1 = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
                         if (App_preference.getSharedprefInstance().getLoginRes().getIsAutoTimeZone().equals("1")) {
                             dateFormat1.setTimeZone(TimeZone.getTimeZone(App_preference.getSharedprefInstance().getLoginRes().getLoginUsrTz()));
                         } else {
@@ -825,19 +826,20 @@ public class Generate_Invoice_Activity extends AppCompatActivity implements MyLi
                 myCalendar.set(Calendar.DAY_OF_MONTH, selectedDay);
                 String dateselect = "";
                 try {
-                    DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy", Locale.US);//hh:mm:ss a
+                    DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);//hh:mm:ss a
                     Date dueDate = formatter.parse(selectedDay + "-" + (selectedMonth + 1) + "-" + selectedYear);
-                    dateselect = new SimpleDateFormat(AppConstant.DATE_FORMAT, Locale.US).format(dueDate);
+                    dateselect = new SimpleDateFormat(AppConstant.DATE_FORMAT, Locale.ENGLISH).format(dueDate);
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
                 DateFormat dateFormat = new SimpleDateFormat(
-                        AppUtility.dateTimeByAmPmFormate("hh:mm:ss a", "HH:mm:ss"), Locale.US);//append current time
+                        AppUtility.dateTimeByAmPmFormate("hh:mm:ss a", "HH:mm:ss"), Locale.ENGLISH);//append current time
                 dateFormat.format(new Date());
                 String tag = ((String) view.getTag());
 
                 if (tag.equals(End_Date)) {
-                    txt_date.setText(dateselect);
+                    selectedDeuDate = dateselect;
+                    txt_date.setText(AppUtility.getDateByLang(dateselect,false));
                 }
             }
 
@@ -1012,7 +1014,8 @@ public class Generate_Invoice_Activity extends AppCompatActivity implements MyLi
         txt_cancel = dialog.findViewById(R.id.cancel);
         txt_cancel.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.cancel));
         txt_date = dialog.findViewById(R.id.date_taxt);
-        txt_date.setText(AppUtility.getDateWithFormate(Long.parseLong(invResModelForDueDate.getDuedate()), "dd-MMM-yyyy"));
+        selectedDeuDate = AppUtility.getDateWithFormate(Long.parseLong(invResModelForDueDate.getDuedate()), "dd-MMM-yyyy");
+        txt_date.setText(AppUtility.getDateByLang(selectedDeuDate,false));
         dueDate.setOnClickListener(this);
         txt_ok.setOnClickListener(this);
         txt_cancel.setOnClickListener(this);

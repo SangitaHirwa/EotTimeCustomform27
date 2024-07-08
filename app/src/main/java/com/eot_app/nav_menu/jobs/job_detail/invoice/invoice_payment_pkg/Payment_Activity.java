@@ -57,6 +57,7 @@ import androidx.recyclerview.widget.RecyclerView;
 public class Payment_Activity extends UploadDocumentActivity implements  DocumentListAdapter.FileDesc_Item_Selected,
         View.OnClickListener, AdapterView.OnItemSelectedListener, TextWatcher, PayMent_View {
     final Calendar myCalendar = Calendar.getInstance();
+    String paymentDate = "";
     final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
         @Override
         public void onDateSet(DatePicker view, int year, int monthOfYear,
@@ -64,7 +65,8 @@ public class Payment_Activity extends UploadDocumentActivity implements  Documen
             myCalendar.set(Calendar.YEAR, year);
             myCalendar.set(Calendar.MONTH, monthOfYear);
             myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-            txt_date_value.setText(AppUtility.getDateWithFormate2(myCalendar.getTimeInMillis(), "dd-MMM-yyyy"));
+            paymentDate = AppUtility.getDateWithFormate2(myCalendar.getTimeInMillis(), "dd-MMM-yyyy");
+            txt_date_value.setText(AppUtility.getDateByLang(paymentDate,false));
         }
     };
     Inv_Res_Model invoiceDetails;
@@ -262,7 +264,8 @@ public class Payment_Activity extends UploadDocumentActivity implements  Documen
     private void setTextData() {
         tv_payment_type.setText(paymentType.get(0));
         payType = "1";
-        txt_date_value.setText(AppUtility.getDateWithFormate2(myCalendar.getTimeInMillis(), "dd-MMM-yyyy"));
+        paymentDate = AppUtility.getDateWithFormate2(myCalendar.getTimeInMillis(), "dd-MMM-yyyy");
+        txt_date_value.setText(AppUtility.getDateByLang(paymentDate,false));
     }
 
     @Override

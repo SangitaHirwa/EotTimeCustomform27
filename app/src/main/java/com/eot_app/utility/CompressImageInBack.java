@@ -19,6 +19,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import static android.content.Context.MODE_PRIVATE;
@@ -133,7 +134,7 @@ public class CompressImageInBack {
     }
 
     private void saveImageToCache(Bitmap bitmap) {
-        String mTimeStamp = new SimpleDateFormat("ddMMyyyy_HHmm").format(new Date());
+        String mTimeStamp = new SimpleDateFormat("ddMMyyyy_HHmm", Locale.ENGLISH).format(new Date());
 
         String mImageName = "eot_" + AppUtility.getCurrentMiliTiem() + ".jpg";
 

@@ -904,7 +904,9 @@
     "qrcode_already_exist": "This QR is already allocated to another equipment, please choose another one.",
     "qrcode_generate_success": "QR Code generated successfully.",
     "qrcode_not_generated": "Unable to generate QR Code, please try again.",
-    "equ_relocated": "Equipment relocate successfully."
+    "equ_relocated": "Equipment relocate successfully.",
+    "invalid_domain": "You have entered invalid domain name.",
+    "lead_setting_not_success": "Unable to update lead setting, please try again."
   },
   "mobileMsgsModel": {
     "accept": "Accept",
@@ -1161,7 +1163,6 @@
     "items_name": "Item’s name",
     "items_screen_title": "Items",
     "items_selected": "Items selected",
-    "invalid_domain": "You have entered invalid domain name.",
     "job_code": "Job Code",
     "job_desc": "Job Description",
     "job_det_email": "Email-id not available for this job",
@@ -1200,7 +1201,6 @@
     "longitued": "Longitude",
     "low": "Low",
     "lead_setting_success": "Lead setting successfully updated.",
-    "lead_setting_not_success": "Unable to update lead setting, please try again.",
     "map": "Map",
     "medium": "Medium",
     "message": "Message",
@@ -1984,6 +1984,7 @@
     "discard_alert_msg": "Are you sure, want to discard this equipment.",
     "stock_remove_alert_msg" : "You're short on stock, but you still want to continue?",
     "adjust_stock": "Adjust it with my stock",
-    "discountError1": "The discount cannot exceed the total value of the item."
+    "discountError1": "The discount cannot exceed the total value of the item.",
+    "select_user": "Select User"
   }
 }

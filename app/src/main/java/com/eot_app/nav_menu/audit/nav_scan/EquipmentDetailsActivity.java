@@ -706,7 +706,7 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
                 lastJobDate = lastJobDate.replace("am","AM");
                 lastJobDate = lastJobDate.replace("pm","PM");
                 last_serv_date_lable.setText(lastJobDate);
-                last_service_txt.setText(new StringBuilder().append(LanguageController.getInstance().getMobileMsgByKey(AppConstant.last_service)).append(": ").append(AppUtility.getDateWithFormate(Long.parseLong(equipment.getLastJobDate()), "dd-MMM-yyyy")).toString());
+                last_service_txt.setText(new StringBuilder().append(LanguageController.getInstance().getMobileMsgByKey(AppConstant.last_service)).append(": ").append(AppUtility.getDateByLang(AppUtility.getDateWithFormate(Long.parseLong(equipment.getLastJobDate()), "dd-MMM-yyyy"),false)).toString());
 //                last_service_date.setText(AppUtility.getDateWithFormate(Long.parseLong(equipment.getLastJobDate()), "dd-MMM-yyyy"));
 
             }
@@ -715,9 +715,9 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
             //month=1
             //year=2
             if (equipment.getServIntvalType() != null && equipment.getServIntvalValue() != null && !equipment.getServIntvalType().isEmpty() && !equipment.getServIntvalValue().equalsIgnoreCase("0")) {
-                serv_due_date.setText(AppUtility.getServiceDueDate(equipment.getServIntvalType(), equipment.getServIntvalValue(), Long.parseLong(equipment.getLastJobDate())));
+                serv_due_date.setText(AppUtility.getDateByLang(AppUtility.getServiceDueDate(equipment.getServIntvalType(), equipment.getServIntvalValue(), Long.parseLong(equipment.getLastJobDate())),false));
 //                deu_service_date.setText(AppUtility.getServiceDueDate(equipment.getServIntvalType(), equipment.getServIntvalValue(), Long.parseLong(equipment.getLastJobDate())));
-                deu_service_txt.setText(new StringBuilder().append(LanguageController.getInstance().getMobileMsgByKey(AppConstant.upcoming_service)).append(": ").append(AppUtility.getServiceDueDate(equipment.getServIntvalType(), equipment.getServIntvalValue(), Long.parseLong(equipment.getLastJobDate()))).toString());
+                deu_service_txt.setText(new StringBuilder().append(LanguageController.getInstance().getMobileMsgByKey(AppConstant.upcoming_service)).append(": ").append(AppUtility.getDateByLang(AppUtility.getServiceDueDate(equipment.getServIntvalType(), equipment.getServIntvalValue(), Long.parseLong(equipment.getLastJobDate())),false)).toString());
             }
         } catch (Exception exception) {
             exception.printStackTrace();
@@ -842,14 +842,14 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
 
         try {
             if (equipment.getLastJobDate() != null && !TextUtils.isEmpty(equipment.getLastJobDate())) {
-                last_serv_date_lable.setText(AppUtility.getDateWithFormate(Long.parseLong(equipment.getLastJobDate()), "dd-MMM-yyyy hh:mm"));
+                last_serv_date_lable.setText(AppUtility.getDateByLang(AppUtility.getDateWithFormate(Long.parseLong(equipment.getLastJobDate()), "dd-MMM-yyyy hh:mm a"),true));
 
                 // calculate service due date with the help of service interval value and type
                 // days=0
                 //month=1
                 //year=2
                 if (equipment.getServIntvalType() != null && equipment.getServIntvalValue() != null)
-                    serv_due_date.setText(AppUtility.getServiceDueDate(equipment.getServIntvalType(), equipment.getServIntvalValue(), Long.parseLong(equipment.getLastJobDate())));
+                    serv_due_date.setText(AppUtility.getDateByLang(AppUtility.getServiceDueDate(equipment.getServIntvalType(), equipment.getServIntvalValue(), Long.parseLong(equipment.getLastJobDate())),false));
 
             }
         } catch (Exception exception) {
@@ -1026,7 +1026,7 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
             if (dateString != null && !dateString.isEmpty()) {
                 long longStartTime = Long.parseLong(dateString);
                 String dateWithFormate = AppUtility.getDateWithFormate(longStartTime, "dd-MMM-yyyy");
-                tv.setText(dateWithFormate);
+                tv.setText(AppUtility.getDateByLang(dateWithFormate,false));
             }
         } catch (Exception ex) {
             ex.printStackTrace();
