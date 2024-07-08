@@ -88,7 +88,7 @@ public class AddLeaveViewModel extends AndroidViewModel implements ApiCalServerR
                 }
 
 
-                ChatController.getInstance().notifyWeBforNew("LEAVE", "ReqLeave", App_preference.getSharedprefInstance().getLoginRes().getUsrId(), tempMsg, "");
+                ChatController.getInstance().notifyWeBforNew("LEAVE", "ReqLeave", userLeaveResModel.getLeaveId(), tempMsg, "");
                 finishActivity.setValue(true);
 
             } else if (jsonObject.get("statusCode") != null && jsonObject.get("statusCode").getAsString().equals(AppConstant.SESSION_EXPIRE)) {
