@@ -61,10 +61,30 @@ public class AddLeaveViewModel extends AndroidViewModel implements ApiCalServerR
                         "MMMM dd");
                 String finishtDate =  AppUtility.getDateWithFormate(Long.parseLong(userLeaveResModel.getFinishDateTime()),
                        "MMMM dd");
-                if(startDate.equalsIgnoreCase(finishtDate)){
-                    tempMsg = s1+" has submitted a request for leave on "+startDate+"th.";
+                String [] splitStartDate = startDate.trim().split(" ");
+                String [] splitFinishDate = finishtDate.trim().split(" ");
+                if(splitStartDate[1].equalsIgnoreCase("01")||splitStartDate[1].equalsIgnoreCase("21")||splitStartDate[1].equalsIgnoreCase("31")){
+                    startDate = startDate+"st";
+                }else if(splitStartDate[1].equalsIgnoreCase("02")||splitStartDate[1].equalsIgnoreCase("22")){
+                    startDate = startDate+"nd";
+                }else if(splitStartDate[1].equalsIgnoreCase("03")||splitStartDate[1].equalsIgnoreCase("23")){
+                    startDate = startDate+"rd";
                 }else {
-                    tempMsg = s1+" has submitted a request for leave From "+startDate+"th to "+finishtDate+"th.";
+                    startDate = startDate+"th";
+                }
+                if(splitFinishDate[1].equalsIgnoreCase("01")||splitFinishDate[1].equalsIgnoreCase("21")||splitFinishDate[1].equalsIgnoreCase("31")){
+                    finishtDate = finishtDate+"st";
+                }else if(splitFinishDate[1].equalsIgnoreCase("02")||splitFinishDate[1].equalsIgnoreCase("22")){
+                    finishtDate = finishtDate+"nd";
+                }else if(splitFinishDate[1].equalsIgnoreCase("03")||splitFinishDate[1].equalsIgnoreCase("23")){
+                    finishtDate = finishtDate+"rd";
+                }else {
+                    finishtDate = finishtDate+"th";
+                }
+                if(startDate.equalsIgnoreCase(finishtDate)){
+                    tempMsg = s1+" has submitted a request for leave on "+startDate;
+                }else {
+                    tempMsg = s1+" has submitted a request for leave From "+startDate+" to "+finishtDate;
                 }
 
 
