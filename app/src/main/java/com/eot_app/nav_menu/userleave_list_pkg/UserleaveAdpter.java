@@ -112,8 +112,8 @@ public class UserleaveAdpter extends RecyclerView.Adapter<UserleaveAdpter.ViewHo
         holder.leave_time_label2.setText(endTime);
 
 
-        holder.leave_date_label1.setText(statDate);
-        holder.leave_date_label2.setText(endDate);
+        holder.leave_date_label1.setText(AppUtility.getDateByLang(statDate,false));
+        holder.leave_date_label2.setText(AppUtility.getDateByLang(endDate,false));
 
         if (model.getNote() != null && !model.getNote().equals("")) {
             holder.leave_label.setVisibility(View.VISIBLE);

@@ -53,6 +53,8 @@ public class TimeSheetFragment extends Fragment implements View.OnClickListener 
     boolean SHEETPERMMISSIONALLOW = false;
     int year,month,day;
     boolean isNewCalanderInstance = false;
+    String toDate ="";
+    String fromDate ="";
 
     public TimeSheetFragment() {
         // Required empty public constructor
@@ -102,10 +104,12 @@ public class TimeSheetFragment extends Fragment implements View.OnClickListener 
                 throw new RuntimeException(e);
             }
             if (dateView.equals("time_from")) {
-                binding.timeFrom.setText(currentDateString);
+                fromDate = currentDateString;
+                binding.timeFrom.setText(AppUtility.getDateByLang(currentDateString,false));
                 binding.fromLable.setVisibility(View.VISIBLE);
             } else if (dateView.equals("time_to")) {
-                binding.timeTo.setText(currentDateString);
+                toDate = currentDateString;
+                binding.timeTo.setText(AppUtility.getDateByLang(currentDateString,false));
                 binding.toLable.setVisibility(View.VISIBLE);
             }
         }, false,year,month,day,isNewCalanderInstance);
@@ -153,6 +157,8 @@ public class TimeSheetFragment extends Fragment implements View.OnClickListener 
 
         timeSheetFragViewModel.getFinishActivity().observe(this, aBoolean -> {
             if (aBoolean) {
+                toDate = "";
+                fromDate = "";
                 binding.timeFrom.setText("");
                 binding.timeTo.setText("");
                 binding.fromLable.setVisibility(View.GONE);
@@ -213,12 +219,11 @@ public class TimeSheetFragment extends Fragment implements View.OnClickListener 
                     showAlertDialog(LanguageController.getInstance().getMobileMsgByKey(AppConstant.from_date_error));
                 } else if (binding.timeTo.getText().toString().trim().equals("")) {
                     showAlertDialog(LanguageController.getInstance().getMobileMsgByKey(AppConstant.to_date_error));
-                } else if (!AppUtility.compareTwoDatesForTimeSheet(binding.timeFrom.getText().toString().trim(), binding.timeTo.getText().toString().trim(), AppConstant.DATE_FORMAT)) {
+                } else if (!AppUtility.compareTwoDatesForTimeSheet(fromDate.trim(), toDate.trim(), AppConstant.DATE_FORMAT)) {
                     showAlertDialog(LanguageController.getInstance().getMobileMsgByKey(AppConstant.time_sheet_date_error));
                 } else {
                     if (SHEETPERMMISSIONALLOW)
-                        timeSheetFragViewModel.generatetimeSheet(binding.timeFrom.getText().toString().trim(),
-                                binding.timeTo.getText().toString().trim());
+                        timeSheetFragViewModel.generatetimeSheet(AppUtility.sendDateByFormate(fromDate.trim(),false), AppUtility.sendDateByFormate(toDate.trim(),false));
                     else requestPermissionAndContinue();
                 }
                 break;

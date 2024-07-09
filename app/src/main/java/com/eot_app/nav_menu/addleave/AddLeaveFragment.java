@@ -44,6 +44,8 @@ public class AddLeaveFragment extends AppCompatActivity implements View.OnClickL
     List<LeaveUserModel> listuser;
     final Calendar mcurrentTime = Calendar.getInstance();
     final Calendar mEndTime = Calendar.getInstance();
+    String toDate ="";
+    String fromDate ="";
 
     private String STARTSELCTEDATE = "", STARTSELCTETIME = " 12:00 AM", ENDSELCTETIME = " 11:59 PM", ENDSELCTEDATE = "";
     private final DatePickerDialog.OnDateSetListener datePickerListener = new DatePickerDialog.OnDateSetListener() {
@@ -59,13 +61,14 @@ public class AddLeaveFragment extends AppCompatActivity implements View.OnClickL
                     myCalendar.set(Calendar.YEAR,selectedYear);
                     myCalendar.set(Calendar.MONTH,selectedMonth);
                     myCalendar.set(Calendar.DAY_OF_MONTH,selectedDay);
-                    DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy", Locale.US);//hh:mm:ss a
+                    DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);//hh:mm:ss a
                     Date startDate = formatter.parse(selectedDay + "-" + (selectedMonth + 1) + "-" + selectedYear);
                     STARTSELCTEDATE = "";
                     assert startDate != null;
-                    STARTSELCTEDATE = " " + new SimpleDateFormat(AppConstant.DATE_FORMAT, Locale.US).format(startDate);
+                    STARTSELCTEDATE = " " + new SimpleDateFormat(AppConstant.DATE_FORMAT, Locale.ENGLISH).format(startDate);
+                    fromDate = STARTSELCTEDATE.concat(STARTSELCTETIME);
                     binding.timeFrom.setText("");
-                    binding.timeFrom.setText(STARTSELCTEDATE.concat(STARTSELCTETIME));
+                    binding.timeFrom.setText(AppUtility.getDateByLang(fromDate.trim(),true));
                     hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
                     minute = mcurrentTime.get(Calendar.MINUTE);
                     selectStartTime("START");
@@ -75,13 +78,14 @@ public class AddLeaveFragment extends AppCompatActivity implements View.OnClickL
                     myCalendar1.set(Calendar.YEAR,selectedYear);
                     myCalendar1.set(Calendar.MONTH,selectedMonth);
                     myCalendar1.set(Calendar.DAY_OF_MONTH,selectedDay);
-                    DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy", Locale.US);//hh:mm:ss a
+                    DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);//hh:mm:ss a
                     Date startDate = formatter.parse(selectedDay + "-" + (selectedMonth + 1) + "-" + selectedYear);
                     ENDSELCTEDATE = "";
                     assert startDate != null;
-                    ENDSELCTEDATE = " " + new SimpleDateFormat(AppConstant.DATE_FORMAT, Locale.US).format(startDate);
+                    ENDSELCTEDATE = " " + new SimpleDateFormat(AppConstant.DATE_FORMAT, Locale.ENGLISH).format(startDate);
                     binding.timeTo.setText("");
-                    binding.timeTo.setText(ENDSELCTEDATE.concat(ENDSELCTETIME));
+                    toDate = ENDSELCTEDATE.concat(ENDSELCTETIME);
+                    binding.timeTo.setText(AppUtility.getDateByLang(toDate.trim(),true));
                     hour = mEndTime.get(Calendar.HOUR_OF_DAY);
                     minute = mEndTime.get(Calendar.MINUTE);
                     selectStartTime("END");
@@ -190,13 +194,15 @@ public class AddLeaveFragment extends AppCompatActivity implements View.OnClickL
                     mcurrentTime.set(Calendar.MINUTE,selectedMinute);
                     STARTSELCTETIME = "";
                     STARTSELCTETIME = " " + stime;
-                    binding.timeFrom.setText(STARTSELCTEDATE.concat(STARTSELCTETIME));
+                    fromDate = STARTSELCTEDATE.concat(STARTSELCTETIME);
+                    binding.timeFrom.setText(AppUtility.getDateByLang(fromDate.trim(),true));
                 } else if (tag.equals("END")) {
                     mEndTime.set(Calendar.HOUR_OF_DAY,selectedHour);
                     mEndTime.set(Calendar.MINUTE,selectedMinute);
                     ENDSELCTETIME = "";
                     ENDSELCTETIME = " " + stime;
-                    binding.timeTo.setText(ENDSELCTEDATE.concat(ENDSELCTETIME));
+                    toDate = ENDSELCTEDATE.concat(ENDSELCTETIME);
+                    binding.timeTo.setText(AppUtility.getDateByLang(toDate.trim(),true));
                 }
             
         }, hour, minute, isTime24Format);
@@ -258,8 +264,10 @@ public class AddLeaveFragment extends AppCompatActivity implements View.OnClickL
                 STARTSELCTETIME = " 00:00";
                 ENDSELCTETIME = " 23:59";
             }
-        binding.timeFrom.setText(AppUtility.getDateByFormat(AppConstant.DATE_FORMAT).concat(" "+STARTSELCTETIME));
-        binding.timeTo.setText(AppUtility.getDateByFormat(AppConstant.DATE_FORMAT).concat(" "+ENDSELCTETIME));
+            fromDate =AppUtility.getDateByFormat(AppConstant.DATE_FORMAT).concat(" "+STARTSELCTETIME);
+            toDate = AppUtility.getDateByFormat(AppConstant.DATE_FORMAT).concat(" "+ENDSELCTETIME);
+        binding.timeFrom.setText(AppUtility.getDateByLang(fromDate,true));
+        binding.timeTo.setText(AppUtility.getDateByLang(toDate,true));
         listuser=new ArrayList<>();
         emptyfields();
     }
@@ -296,18 +304,18 @@ public class AddLeaveFragment extends AppCompatActivity implements View.OnClickL
                     datetiemform = AppConstant.DATE_FORMAT+" HH:mm";
                 }
                 try {
-                    startDate = new SimpleDateFormat(datetiemform, Locale.ENGLISH).parse(binding.timeFrom.getText().toString().trim());
-                    endDate = new SimpleDateFormat(datetiemform, Locale.ENGLISH).parse(binding.timeTo.getText().toString().trim());
+                    startDate = new SimpleDateFormat(datetiemform, Locale.ENGLISH).parse(fromDate.trim());
+                    endDate = new SimpleDateFormat(datetiemform, Locale.ENGLISH).parse(toDate.trim());
                     assert startDate != null;
-                    s = new SimpleDateFormat(AppConstant.DATE_FORMAT+" hh:mm:ss a", Locale.ENGLISH).format(startDate);
+                    s = new SimpleDateFormat(AppConstant.DATE_FORMAT+" hh:mm a", Locale.ENGLISH).format(startDate);
                     assert endDate != null;
-                    e = new SimpleDateFormat(AppConstant.DATE_FORMAT+" hh:mm:ss a", Locale.ENGLISH).format(endDate);
+                    e = new SimpleDateFormat(AppConstant.DATE_FORMAT+" hh:mm a", Locale.ENGLISH).format(endDate);
 //                    e = AppUtility.getDate(e);
                 } catch (Exception exception) {
                     exception.printStackTrace();
                 }
 
-                if (!AppUtility.compareTwoDatesForTimeSheet2(s, e, AppConstant.DATE_FORMAT+" hh:mm:ss a")) {
+                if (!AppUtility.compareTwoDatesForTimeSheet2(s, e, AppConstant.DATE_FORMAT+" hh:mm a")) {
                     showMyDialog(LanguageController.getInstance().getMobileMsgByKey(AppConstant.leave_date_error));
                 } else {
                     AppUtility.progressBarShow(this);
@@ -320,7 +328,7 @@ public class AddLeaveFragment extends AppCompatActivity implements View.OnClickL
                         }
                     }
                     addLeaveViewModel.getLeaveApiCall(binding.reasonEdt.getText().toString().trim(), binding.notesEdt.getText().toString().trim()
-                            , s, e,id);
+                            , AppUtility.sendDateByFormate(s,true), AppUtility.sendDateByFormate(e,true),id);
                 }
                 break;
         }

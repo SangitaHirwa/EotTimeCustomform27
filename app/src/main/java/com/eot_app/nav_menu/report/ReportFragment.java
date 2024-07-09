@@ -55,6 +55,8 @@ public class ReportFragment extends Fragment implements View.OnClickListener {
 
     int year,month,day;
     boolean isNewCalanderInstance = false;
+    String toDate ="";
+    String fromDate ="";
 
     public ReportFragment() {
         // Required empty public constructor
@@ -94,6 +96,8 @@ public class ReportFragment extends Fragment implements View.OnClickListener {
         reportViewModel = new ViewModelProvider(this).get(ReportViewModel.class);
         reportViewModel.getFinishActivity().observe(this, aBoolean -> {
             if (aBoolean) {
+                toDate = "";
+                fromDate = "";
                 reportBinding.timeFrom.setText("");
                 reportBinding.timeTo.setText("");
             }
@@ -122,12 +126,12 @@ public class ReportFragment extends Fragment implements View.OnClickListener {
                     showAlertDialog(LanguageController.getInstance().getMobileMsgByKey(AppConstant.from_date_error));
                 } else if (reportBinding.timeTo.getText().toString().trim().equals("")) {
                     showAlertDialog(LanguageController.getInstance().getMobileMsgByKey(AppConstant.to_date_error));
-                } else if (!AppUtility.compareTwoDatesForTimeSheet(reportBinding.timeFrom.getText().toString().trim(), reportBinding.timeTo.getText().toString().trim(), "dd-MMM-yyyy")) {
+                } else if (!AppUtility.compareTwoDatesForTimeSheet(fromDate.trim(), toDate.trim(), "dd-MMM-yyyy")) {
                     showAlertDialog(LanguageController.getInstance().getMobileMsgByKey(AppConstant.time_report_date_error));
                 } else {
                     Log.e("", "");
                     if (PERMMISSIONALLOW)
-                        reportViewModel.generateReport(AppUtility.sendDateByFormate(reportBinding.timeFrom.getText().toString().trim(),false), AppUtility.sendDateByFormate(reportBinding.timeTo.getText().toString().trim(),false));
+                        reportViewModel.generateReport(AppUtility.sendDateByFormate(fromDate.trim(),false), AppUtility.sendDateByFormate(toDate.trim(),false));
                     else {
                         requestPermissionAndContinue();//("You have need internal storage permission for download Report");
                     }
@@ -155,11 +159,11 @@ public class ReportFragment extends Fragment implements View.OnClickListener {
 
     private void getDatePickerDialog(final String dateView) {
         DialogFragment datePicker = new DateTimeDiloag(currentDateString -> {
-            DateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy", Locale.US);//hh:mm:ss a
+            DateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH);//hh:mm:ss a
             Date date = null;
             try {
                 date = formatter.parse(currentDateString);
-                String dateselect = new SimpleDateFormat("dd-MM-yyyy", Locale.US).format(date);
+                String dateselect = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH).format(date);
                 String[] date_ary = dateselect.split("-");
                 year = Integer.parseInt(date_ary[2]);
                 month = Integer.parseInt(date_ary[1]) - 1;
@@ -169,12 +173,13 @@ public class ReportFragment extends Fragment implements View.OnClickListener {
             }
 
             if (dateView.equals("time_from")) {
-
-                reportBinding.timeFrom.setText(currentDateString);
+                fromDate = currentDateString;
+                reportBinding.timeFrom.setText(AppUtility.getDateByLang(currentDateString,false));
                 reportBinding.fromLable.setVisibility(View.VISIBLE);
 
             } else if (dateView.equals("time_to")) {
-                reportBinding.timeTo.setText(currentDateString);
+                toDate = currentDateString;
+                reportBinding.timeTo.setText(AppUtility.getDateByLang(currentDateString,false));
                 reportBinding.toLable.setVisibility(View.VISIBLE);
             }
         }, false,year,month,day,isNewCalanderInstance);
