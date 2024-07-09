@@ -147,8 +147,8 @@ public class AddQuotes_Activity extends UploadDocumentActivity implements View.O
                 myCalendar.set(Calendar.YEAR,selectedYear);
                 myCalendar.set(Calendar.MONTH,selectedMonth);
                 myCalendar.set(Calendar.DAY_OF_MONTH,selectedDay);
-                date_start.setText(dateselect);
-                SimpleDateFormat stf = new SimpleDateFormat("hh:mm:ss", Locale.US);
+                date_start.setText(AppUtility.getDateByLang(dateselect,false));
+                SimpleDateFormat stf = new SimpleDateFormat("hh:mm", Locale.US);
                 String time = stf.format(Calendar.getInstance().getTime());
                 invDate = dateselect + " "+time;// + dateFormat.format(new Date());
                 //dueDate= dateselect + " " + dateFormat.format(new Date());
@@ -156,8 +156,8 @@ public class AddQuotes_Activity extends UploadDocumentActivity implements View.O
                 myCalendar1.set(Calendar.YEAR,selectedYear);
                 myCalendar1.set(Calendar.MONTH,selectedMonth);
                 myCalendar1.set(Calendar.DAY_OF_MONTH,selectedDay);
-                date_end.setText(dateselect);
-                SimpleDateFormat stf = new SimpleDateFormat("hh:mm:ss", Locale.US);
+                date_end.setText(AppUtility.getDateByLang(dateselect,false));
+                SimpleDateFormat stf = new SimpleDateFormat("hh:mm", Locale.US);
                 String time = stf.format(Calendar.getInstance().getTime());
                 dueDate = dateselect + " "+time;//+ dateFormat.format(new Date());
             }
@@ -445,14 +445,14 @@ public class AddQuotes_Activity extends UploadDocumentActivity implements View.O
             dueDate = AppUtility.getDateWithFormate(Long.parseLong(quotesDetails.getInvData().getDuedate()),
                     AppUtility.dateTimeByAmPmFormate("dd-MMM-yyyy hh:mm:ss"
                             , "dd-MMM-yyyy HH:mm:ss"));
-            date_start.setText(AppUtility.getDateWithFormate
-                    (Long.parseLong(quotesDetails.getInvData().getInvDate()), AppConstant.DATE_FORMAT));
+            date_start.setText(AppUtility.getDateByLang(AppUtility.getDateWithFormate
+                    (Long.parseLong(quotesDetails.getInvData().getInvDate()), AppConstant.DATE_FORMAT),false));
             String dateStart = AppUtility.getDateWithFormate(Long.parseLong(quotesDetails.getInvData().getInvDate()), "dd-MM-yyyy");
             String[] dateStart_ary = dateStart.split("-");
             myCalendar.set(Calendar.YEAR,Integer.parseInt(dateStart_ary[2]));
             myCalendar.set(Calendar.MONTH,Integer.parseInt(dateStart_ary[1])-1);
             myCalendar.set(Calendar.DAY_OF_MONTH,Integer.parseInt(dateStart_ary[0]));
-            date_end.setText(AppUtility.getDateWithFormate(Long.parseLong(quotesDetails.getInvData().getDuedate()), AppConstant.DATE_FORMAT));
+            date_end.setText(AppUtility.getDateByLang(AppUtility.getDateWithFormate(Long.parseLong(quotesDetails.getInvData().getDuedate()), AppConstant.DATE_FORMAT),false));
             String dateEnd = AppUtility.getDateWithFormate(Long.parseLong(quotesDetails.getInvData().getDuedate()), "dd-MM-yyyy");
             String[] dateEnd_ary = dateEnd.split("-");
             myCalendar1.set(Calendar.YEAR,Integer.parseInt(dateEnd_ary[2]));
@@ -863,11 +863,11 @@ public class AddQuotes_Activity extends UploadDocumentActivity implements View.O
 
     private void getCurrentdate() {
         String datetime = AppUtility.getDateByFormat(
-                AppUtility.dateTimeByAmPmFormate(AppConstant.DATE_FORMAT+" hh:mm:ss a", AppConstant.DATE_FORMAT+" HH:mm:ss"));//get current date time
+                AppUtility.dateTimeByAmPmFormate(AppConstant.DATE_FORMAT+" hh:mm a", AppConstant.DATE_FORMAT+" HH:mm"));//get current date time
         dueDate = invDate = datetime;
         String crrntDate = getDate(datetime);
-        date_start.setText(crrntDate);
-        date_end.setText(crrntDate);
+        date_start.setText(AppUtility.getDateByLang(crrntDate,false));
+        date_end.setText(AppUtility.getDateByLang(crrntDate,false));
     }
 
     private void textInputLayoutHint() {
@@ -1097,8 +1097,8 @@ public class AddQuotes_Activity extends UploadDocumentActivity implements View.O
 
             }
             /*Remove invId variable after discuss with Rani Yadav for 2.92 release on 26 Dec 2023*/
-            invDate = AppUtility.sendDateByFormate(invDate,true);
-            dueDate = AppUtility.sendDateByFormate(dueDate,true);
+            invDate = AppUtility.sendDateByFormate(invDate,false);
+            dueDate = AppUtility.sendDateByFormate(dueDate,false);
             final Add_Quote_ReQ add_quote_reQ = new Add_Quote_ReQ(jtIdList, cltId, siteId, conId,
                     "",
                     App_preference.getSharedprefInstance().getLoginRes().getUsrId(), quote_instr_edt.getText().toString().trim(),

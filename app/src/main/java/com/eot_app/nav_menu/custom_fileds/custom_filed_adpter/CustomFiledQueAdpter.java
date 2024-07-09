@@ -225,8 +225,10 @@ public class CustomFiledQueAdpter extends RecyclerView.Adapter<CustomFiledQueAdp
 
 
                 holder.tvDate.setTag(position);
-                if (questionList.get(position).getAns().isEmpty())
+                if (questionList.get(position).getAns().isEmpty()) {
                     holder.tvDate.setText("");
+                    sDate = "";
+                }
                 else if (questionList.get(position).getAns().size() > 0) {
                     try {
                         if (!(questionList.get(position).getAns().get(0).getValue()).equals("")) {
@@ -287,9 +289,10 @@ public class CustomFiledQueAdpter extends RecyclerView.Adapter<CustomFiledQueAdp
                 holder.checkbox_single.setVisibility(View.GONE);
 
                 holder.tvTimeDate.setTag(position);
-                if (questionList.get(position).getAns().isEmpty())
+                if (questionList.get(position).getAns().isEmpty()) {
                     holder.tvTimeDate.setText("");
-                else if (questionList.get(position).getAns().size() > 0) {
+                    sTimeDate = "";
+                } else if (questionList.get(position).getAns().size() > 0) {
                     try {
                         if (!questionList.get(position).getAns().get(0).getValue().equals("")) {
                             Long dateLong = Long.parseLong(questionList.get(position).getAns().get(0).getValue());
@@ -526,8 +529,8 @@ public class CustomFiledQueAdpter extends RecyclerView.Adapter<CustomFiledQueAdp
                             String newdateTime = date + " " + timeData;
                             try {
                                 @SuppressLint("SimpleDateFormat") String s = new SimpleDateFormat(
-                                        AppUtility.dateTimeByAmPmFormate("dd-MMM-yyyy hh:mm a"
-                                                , "dd-MMM-yyyy HH:mm"), Locale.ENGLISH)
+                                        AppUtility.dateTimeByAmPmFormate("dd-MM-yyyy hh:mm a"
+                                                , "dd-MM-yyyy HH:mm"), Locale.ENGLISH)
                                         .format(Objects.requireNonNull(new SimpleDateFormat(
                                                 AppUtility.dateTimeByAmPmFormate(
                                                         "dd-MMM-yyyy hh:mm a", "dd-MMM-yyyy HH:mm"
@@ -584,8 +587,8 @@ public class CustomFiledQueAdpter extends RecyclerView.Adapter<CustomFiledQueAdp
                         if (sDate != null && !sDate.equals("0")) {
                             long startDate = 0;
                             try {
-                                SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yyyy hh:mm:ss", Locale.US);
-                                SimpleDateFormat stf = new SimpleDateFormat("hh:mm:ss", Locale.US);
+                                SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yyyy hh:mm:ss", Locale.ENGLISH);
+                                SimpleDateFormat stf = new SimpleDateFormat("hh:mm:ss", Locale.ENGLISH);
                                 String time = stf.format(Calendar.getInstance().getTime());
                                 Date date = sdf.parse(sDate+" "+time);
                                 startDate = date.getTime() / 1000;
@@ -739,7 +742,7 @@ public class CustomFiledQueAdpter extends RecyclerView.Adapter<CustomFiledQueAdp
                         // tvDate.setText(dayOfMonth + "-" + month_String + "-" + year + " ");
                     } else
                         completeDate = dayOfMonth + "-" + month_String + "-" + year;
-                    @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+                    @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy",Locale.ENGLISH);
                     try {
                         Date parse = sdf.parse(completeDate.trim());
                         sDate = new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH).format(parse);
@@ -758,7 +761,7 @@ public class CustomFiledQueAdpter extends RecyclerView.Adapter<CustomFiledQueAdp
                     date = (dayOfMonth + "-" + monthString + "-" + year + " ");
                     String newDateTime = date + " " + time;
                     @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat(
-                            AppUtility.dateTimeByAmPmFormate("dd-MM-yyyy hh:mm a", "dd-MM-yyyy HH:mm"));
+                            AppUtility.dateTimeByAmPmFormate("dd-MM-yyyy hh:mm a", "dd-MM-yyyy HH:mm"),Locale.ENGLISH);
                     try {
                         Date parseDate = sdf.parse(newDateTime);
                         sTimeDate = new SimpleDateFormat(AppUtility.dateTimeByAmPmFormate(
@@ -817,7 +820,7 @@ public class CustomFiledQueAdpter extends RecyclerView.Adapter<CustomFiledQueAdp
                             long startDate = 10;
                             try {
                                 SimpleDateFormat sdf = new SimpleDateFormat(AppUtility.dateTimeByAmPmFormate(
-                                        "hh:mm a", "HH:mm"), Locale.US);
+                                        "hh:mm a", "HH:mm"), Locale.ENGLISH);
                                 Date date = sdf.parse(s.toString());
                                 startDate = date.getTime() / 1000;
                             } catch (ParseException e) {
@@ -848,8 +851,8 @@ public class CustomFiledQueAdpter extends RecyclerView.Adapter<CustomFiledQueAdp
                 if(!tvTime.getText().toString().isEmpty()) {
                     if (App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable() != null
                             && App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable().equals("0")) {
-                        SimpleDateFormat inputFormat = new SimpleDateFormat("hh:mm a", Locale.getDefault());
-                        SimpleDateFormat outputFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
+                        SimpleDateFormat inputFormat = new SimpleDateFormat("hh:mm a", Locale.ENGLISH);
+                        SimpleDateFormat outputFormat = new SimpleDateFormat("HH:mm", Locale.ENGLISH);
 
                         try {
                             Date date = inputFormat.parse(inputTime);
@@ -889,7 +892,7 @@ public class CustomFiledQueAdpter extends RecyclerView.Adapter<CustomFiledQueAdp
                             try {
                                 SimpleDateFormat sdf = new SimpleDateFormat(
                                         AppUtility.dateTimeByAmPmFormate("dd-MMM-yyyy hh:mm a"
-                                                , "dd-MMM-yyyy HH:mm"), Locale.US);
+                                                , "dd-MMM-yyyy HH:mm"), Locale.ENGLISH);
                                 Date date = sdf.parse(sTimeDate);
                                 startDate = date.getTime() / 1000;
                             } catch (ParseException e) {

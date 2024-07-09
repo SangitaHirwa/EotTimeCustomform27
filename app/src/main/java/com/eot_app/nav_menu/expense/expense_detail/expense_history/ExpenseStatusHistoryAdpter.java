@@ -64,7 +64,7 @@ public class ExpenseStatusHistoryAdpter extends
             if (date != null) {
 //                String[] parts = date[0].split(",");
 //                String part1 = parts[1]; // 004
-                holder.expense_date.setText(date);
+                holder.expense_date.setText(AppUtility.getDateByLang(date,false));
             }
         } catch (Exception e) {
             e.printStackTrace();

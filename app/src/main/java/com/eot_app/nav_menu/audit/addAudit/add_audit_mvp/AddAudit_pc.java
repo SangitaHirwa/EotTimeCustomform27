@@ -279,9 +279,9 @@ public class AddAudit_pc implements AddAduit_pi {
                 schdul_Start_Date_Time(AppUtility.getFormatedTimes(time1), datestr);
             }else {
                 try {
-                    SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy",Locale.ENGLISH);
                     Date parse = dateFormat.parse(calenderDate);
-                    SimpleDateFormat dateFormat1 = new SimpleDateFormat("dd-MMM-yyyy");
+                    SimpleDateFormat dateFormat1 = new SimpleDateFormat("dd-MMM-yyyy",Locale.ENGLISH);
                     datestr1 = dateFormat1.format(parse);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -329,9 +329,9 @@ public class AddAudit_pc implements AddAduit_pi {
 
             if(datestr!=null && !datestr.isEmpty()){
                 try {
-                    SimpleDateFormat spf = new SimpleDateFormat("dd-MM-yyyy");
+                    SimpleDateFormat spf = new SimpleDateFormat("dd-MM-yyyy",Locale.ENGLISH);
                     Date date = spf.parse(datestr);
-                    spf= new SimpleDateFormat(AppConstant.DATE_FORMAT);
+                    spf= new SimpleDateFormat(AppConstant.DATE_FORMAT,Locale.ENGLISH);
                     datestr = spf.format(date);
                     System.out.println(datestr);
                 }catch (Exception e){
@@ -348,7 +348,7 @@ public class AddAudit_pc implements AddAduit_pi {
                     TimeUnit.MINUTES.toSeconds(Integer.parseInt(time_dur[1])));
 
             SimpleDateFormat simpleDate = new SimpleDateFormat(AppUtility.dateTimeByAmPmFormate(
-                    AppConstant.DATE_FORMAT+" hh:mm a", AppConstant.DATE_FORMAT+" HH:mm"), Locale.US);
+                    AppConstant.DATE_FORMAT+" hh:mm a", AppConstant.DATE_FORMAT+" HH:mm"), Locale.ENGLISH);
             Date past = null;
             long milisce = 0;
             try {
@@ -401,7 +401,7 @@ public class AddAudit_pc implements AddAduit_pi {
     private void end_Date_Time() {
         String date_time = date_str + " " + time_str;
         SimpleDateFormat simpleDate = new SimpleDateFormat(AppUtility.dateTimeByAmPmFormate(
-                AppConstant.DATE_FORMAT+" hh:mm a", AppConstant.DATE_FORMAT+" HH:mm"), Locale.US);
+                AppConstant.DATE_FORMAT+" hh:mm a", AppConstant.DATE_FORMAT+" HH:mm"), Locale.ENGLISH);
         Date past = null;
         long milisce = 0;
         try {
@@ -526,9 +526,9 @@ public class AddAudit_pc implements AddAduit_pi {
     private String getTimeStampFromFormatedDate(String schdlStart) {
         SimpleDateFormat gettingfmt = new SimpleDateFormat(
                 //AppUtility.dateTimeByAmPmFormate(
-                AppConstant.DATE_FORMAT+" hh:mm a"
+                AppConstant.DATE_TIME_FORMAT
                 //        , "dd-MM-yyyy kk:mm")
-                , Locale.US);
+                , Locale.ENGLISH);
         try {
             Date formated = gettingfmt.parse(schdlStart);
             return String.valueOf(formated.getTime() / 1000);

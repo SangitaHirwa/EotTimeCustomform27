@@ -116,7 +116,7 @@ public class MyExpenseRecyclerViewAdapter extends RecyclerView.Adapter<MyExpense
                 txtFrst.setSpan(new ForegroundColorSpan(Color.parseColor("#00848d")), 0, txtFrst.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
 
-                String dateExpenses = date_separated[1];
+                String dateExpenses = AppUtility.getDateByLang(date_separated[1],false);
                 String[] dateExpensesArray = dateExpenses.split("-");
                /* DecimalFormat formatter = new DecimalFormat("00");
                 String[] aa = dateExpensesArray[1].split(" ");*/
@@ -128,7 +128,7 @@ public class MyExpenseRecyclerViewAdapter extends RecyclerView.Adapter<MyExpense
                 if (position < filterList.size())
                     if (position == 0 || (filterList.get(position - 1).getDateTime() != null && filterList.get(position - 1).getDateTime().equals(""))) {
                         holder.txt_date.setText(txtFrst);
-                        holder.txt_date.append(date_separated[1]);
+                        holder.txt_date.append(AppUtility.getDateByLang(date_separated[1],false));
                         holder.date_layout.setVisibility(View.VISIBLE);
 
                     } else if (filterList.get(position - 1).getDateTime() != null && !filterList.get(position - 1).getDateTime().equals("")) {
@@ -138,7 +138,7 @@ public class MyExpenseRecyclerViewAdapter extends RecyclerView.Adapter<MyExpense
                             holder.date_layout.setVisibility(View.GONE);
                         } else {
                             holder.txt_date.setText(txtFrst);
-                            holder.txt_date.append(date_separated[1]);
+                            holder.txt_date.append(AppUtility.getDateByLang(date_separated[1],false));
                             holder.date_layout.setVisibility(View.VISIBLE);
                         }
                     }

@@ -80,7 +80,7 @@ public class QuoteList_Adpter extends RecyclerView.Adapter<QuoteList_Adpter.MyVi
                 if (position < quoteListData.size())
                     if (position == 0 || (quoteListData.get(position - 1).getQuotDate() != null && quoteListData.get(position - 1).getQuotDate().equals(""))) {
                         holder.txt_date.setText(txtFrst);
-                        holder.txt_date.append(date_separated[1]);
+                        holder.txt_date.append(AppUtility.getDateByLang(date_separated[1],false));
                         holder.date_layout.setVisibility(View.VISIBLE);
 
                     } else if (quoteListData.get(position - 1).getQuotDate() != null && !quoteListData.get(position - 1).getQuotDate().equals("")) {
@@ -90,7 +90,7 @@ public class QuoteList_Adpter extends RecyclerView.Adapter<QuoteList_Adpter.MyVi
                             holder.date_layout.setVisibility(View.GONE);
                         } else {
                             holder.txt_date.setText(txtFrst);
-                            holder.txt_date.append(date_separated[1]);
+                            holder.txt_date.append(AppUtility.getDateByLang(date_separated[1],false));
                             holder.date_layout.setVisibility(View.VISIBLE);
                         }
                     }
