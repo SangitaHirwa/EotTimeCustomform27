@@ -1029,7 +1029,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
     @SuppressLint("ClickableViewAccessibility")
     private void emptyGroupCheck() {
         auto_grp.setOnTouchListener((v, event) -> {
-            final int DRAWABLE_RIGHT = 0;
+            final int DRAWABLE_RIGHT = 2;
             auto_grp.requestFocus();
             if (event.getAction() == MotionEvent.ACTION_UP) {
                 if (GetgrpDataList != null && GetgrpDataList.size() > 0) {
@@ -1064,7 +1064,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
     @SuppressLint("ClickableViewAccessibility")
     private void emptyCatryCheck() {
         auto_catery.setOnTouchListener((v, event) -> {
-            final int DRAWABLE_RIGHT = 0;
+            final int DRAWABLE_RIGHT = 2;
             auto_catery.requestFocus();
             if (event.getAction() == MotionEvent.ACTION_UP) {
                 if (GetCatgDataList != null && GetCatgDataList.size() > 0) {
@@ -1098,7 +1098,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
     @SuppressLint("ClickableViewAccessibility")
     private void emptyBrandCheck() {
         auto_brand.setOnTouchListener((v, event) -> {
-            final int DRAWABLE_RIGHT = 0;
+            final int DRAWABLE_RIGHT = 2;
             auto_brand.requestFocus();
             if (event.getAction() == MotionEvent.ACTION_UP) {
                 if (BrandDataList != null && BrandDataList.size() > 0) {
