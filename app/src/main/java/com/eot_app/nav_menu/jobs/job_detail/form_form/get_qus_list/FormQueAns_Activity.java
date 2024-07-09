@@ -636,8 +636,7 @@ public class FormQueAns_Activity extends UploadDocumentActivity implements View.
                         } else if (quesRspncModelList.get(i).getType().equals("6")) {
                             if (!TextUtils.isEmpty(quesRspncModelList.get(i).getAns().get(0).getValue())) {
                                 long l = Long.parseLong(quesRspncModelList.get(i).getAns().get(0).getValue());
-                                String date = AppUtility.getDates(l,
-                                        AppUtility.dateTimeByAmPmFormate("hh:mm a", "HH:mm"));
+                                String date = AppUtility.getDates(l, "HH:mm:ss");
                                 ans = date;
                             }
                         } else if (quesRspncModelList.get(i).getType().equals("7")) {

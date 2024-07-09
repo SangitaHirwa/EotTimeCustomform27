@@ -2837,21 +2837,29 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
                             case "5":
                                 if (!TextUtils.isEmpty(questionList.get(i).getAns().get(0).getValue())) {
                                     long l = Long.parseLong(questionList.get(i).getAns().get(0).getValue());
+                                    if(l > 0) {
                                     ans = AppUtility.getDates(l, AppConstant.DATE_FORMAT);
-                                    ans = AppUtility.sendDateByFormate(ans,false);
+                                        ans = AppUtility.sendDateByFormate(ans, false);
+                                    }else {
+                                        ans = "";
+                                    }
                                 }
                                 break;
                             case "6":
                                 if (!TextUtils.isEmpty(questionList.get(i).getAns().get(0).getValue())) {
                                     long l = Long.parseLong(questionList.get(i).getAns().get(0).getValue());
-                                    ans = AppUtility.getDates(l, "HH:MM:SS");
+                                    ans = AppUtility.getDates(l, "HH:mm:ss");
                                 }
                                 break;
                             case "7":
                                 if (!TextUtils.isEmpty(questionList.get(i).getAns().get(0).getValue())) {
                                     long l = Long.parseLong(questionList.get(i).getAns().get(0).getValue());
-                                    ans = AppUtility.getDates(l, AppConstant.DATE_TIME_FORMAT_new);
-                                    ans = AppUtility.sendDateByFormate(ans,true);
+                                    if(l > 0) {
+                                    ans = AppUtility.getDates(l,AppUtility.dateTimeByAmPmFormate(AppConstant.DATE_TIME_FORMAT_new,AppConstant.DATE_24_TIME_FORMAT_new));
+                                        ans = AppUtility.sendDateByFormate(ans, true);
+                                    }else {
+                                        ans = "";
+                                    }
                                 }
                                 break;
                             default:

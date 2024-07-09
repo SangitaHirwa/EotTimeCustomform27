@@ -199,9 +199,10 @@ public class CustomFieldJobAdapter extends RecyclerView.Adapter<CustomFieldJobAd
 
 
                 holder.tvDate.setTag(position);
-                if (questionList.get(position).getAns().isEmpty())
+                if (questionList.get(position).getAns().isEmpty()) {
                     holder.tvDate.setText("");
-                else if (questionList.get(position).getAns().size() > 0) {
+                    sDate = "";
+                }else if (questionList.get(position).getAns().size() > 0) {
                     try {
                         if (!(questionList.get(position).getAns().get(0).getValue()).equals("")) {
                             String[] dateConvert = AppUtility.getFormatedTime(questionList.get(position).
@@ -260,9 +261,10 @@ public class CustomFieldJobAdapter extends RecyclerView.Adapter<CustomFieldJobAd
                 holder.type_text_number.setVisibility(View.GONE);
 
                 holder.tvTimeDate.setTag(position);
-                if (questionList.get(position).getAns().isEmpty())
+                if (questionList.get(position).getAns().isEmpty()) {
                     holder.tvTimeDate.setText("");
-                else if (questionList.get(position).getAns().size() > 0) {
+                    sTimeDate = "";
+                }else if (questionList.get(position).getAns().size() > 0) {
                     try {
                         if (!questionList.get(position).getAns().get(0).getValue().equals("")) {
                             Long dateLong = Long.parseLong(questionList.get(position).getAns().get(0).getValue());
@@ -554,7 +556,7 @@ public class CustomFieldJobAdapter extends RecyclerView.Adapter<CustomFieldJobAd
                     if (tvDate.getTag() != null) {
                         String pos = tvDate.getTag().toString();
                         int position = Integer.parseInt(pos);
-                        if (sDate != null && !sDate.equals("0")) {
+                        if (sDate != null && !sDate.isEmpty()) {
                             long startDate = 0;
                             try {
                                 SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yyyy hh:mm:ss", Locale.US);
@@ -864,7 +866,7 @@ public class CustomFieldJobAdapter extends RecyclerView.Adapter<CustomFieldJobAd
                     if (tvTimeDate.getTag() != null) {
                         String pos = tvTimeDate.getTag().toString();
                         int position = Integer.parseInt(pos);
-                        if (sTimeDate != null && !sTimeDate.equals("0")) {
+                        if (sTimeDate != null && !sTimeDate.isEmpty()) {
                             long startDate = 0;
                             try {
                                 SimpleDateFormat sdf = new SimpleDateFormat(

@@ -705,7 +705,7 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
                 String lastJobDate = AppUtility.getDateWithFormate(Long.parseLong(equipment.getLastJobDate()), AppUtility.dateTimeByAmPmFormate(AppConstant.DATE_FORMAT+" "+"hh:mm aa", AppConstant.DATE_FORMAT+" "+"HH:MM"));
                 lastJobDate = lastJobDate.replace("am","AM");
                 lastJobDate = lastJobDate.replace("pm","PM");
-                last_serv_date_lable.setText(lastJobDate);
+                last_serv_date_lable.setText(AppUtility.getDateByLang(lastJobDate,true));
                 last_service_txt.setText(new StringBuilder().append(LanguageController.getInstance().getMobileMsgByKey(AppConstant.last_service)).append(": ").append(AppUtility.getDateByLang(AppUtility.getDateWithFormate(Long.parseLong(equipment.getLastJobDate()), "dd-MMM-yyyy"),false)).toString());
 //                last_service_date.setText(AppUtility.getDateWithFormate(Long.parseLong(equipment.getLastJobDate()), "dd-MMM-yyyy"));
 

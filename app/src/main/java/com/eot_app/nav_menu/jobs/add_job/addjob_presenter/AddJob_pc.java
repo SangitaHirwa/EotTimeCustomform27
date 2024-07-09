@@ -211,7 +211,7 @@ public class AddJob_pc implements Add_job_pi {
             }
             if(datestr!=null && !datestr.isEmpty()){
                 try {
-                    SimpleDateFormat spf = new SimpleDateFormat("dd-MM-yyyy",Locale.ENGLISH);
+                    SimpleDateFormat spf = new SimpleDateFormat("dd-MMM-yyyy",Locale.ENGLISH);
                     Date date = spf.parse(datestr);
                     spf= new SimpleDateFormat(AppConstant.DATE_FORMAT,Locale.ENGLISH);
                     datestr = spf.format(date);
@@ -496,7 +496,7 @@ public class AddJob_pc implements Add_job_pi {
 //                )
 //                , Locale.US);
         try {
-            SimpleDateFormat dateFormat =new SimpleDateFormat("dd-MMM-yyyy HH:mm",Locale.ENGLISH);
+            SimpleDateFormat dateFormat =new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",Locale.ENGLISH);
             Date date = dateFormat.parse(schdlStart);
             SimpleDateFormat dateFormat1 = new SimpleDateFormat("dd-MM-yyyy hh:mm a",Locale.ENGLISH);
              String dateformat = dateFormat1.format(date);

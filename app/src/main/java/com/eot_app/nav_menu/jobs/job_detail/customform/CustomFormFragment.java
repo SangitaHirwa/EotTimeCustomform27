@@ -399,8 +399,7 @@ public class CustomFormFragment extends androidx.fragment.app.Fragment
                         } else if (question_List.get(i).getType().equals("6")) {
                             if (!TextUtils.isEmpty(question_List.get(i).getAns().get(0).getValue())) {
                                 long l = Long.parseLong(question_List.get(i).getAns().get(0).getValue());
-                                String date = AppUtility.getDate(l,
-                                        AppUtility.dateTimeByAmPmFormate("hh:mm a", "HH:mm"));
+                                String date = AppUtility.getDate(l,"HH:mm:ss");
                                 ans = date;
                             }
                         } else if (question_List.get(i).getType().equals("7")) {
