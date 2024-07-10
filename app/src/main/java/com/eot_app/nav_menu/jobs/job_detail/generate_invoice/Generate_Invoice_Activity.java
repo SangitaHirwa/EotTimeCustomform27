@@ -372,11 +372,13 @@ public class Generate_Invoice_Activity extends AppCompatActivity implements MyLi
         itemListPi = new ItemList_PC(this);
         itemListPi.getloctaxexList();
         itemListPi.getJobInvoicetemplateList();
-        if (!isJobInvoiced.equals("") && isJobInvoiced.equals("0")) {
-            itemListPi.getInvoiceFormobile(jobId);
-        } else {
+        /*
+        * After discussion with Jit Sir remove this condition because  addInvoiceForMobile api is calling intrenaly 10-7-2024*/
+//        if (!isJobInvoiced.equals("") && isJobInvoiced.equals("0")) {
+//            itemListPi.getInvoiceFormobile(jobId);
+//        } else {
             itemListPi.getinvoicedetails(jobId);
-        }
+//        }
 
         swiperefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override

@@ -1127,6 +1127,7 @@ public class JobDetailActivity extends AppCompatActivity implements
                     Intent generateInvoiceIntent = new Intent(JobDetailActivity.this,
                             Generate_Invoice_Activity.class);
                     generateInvoiceIntent.putExtra("JobId", dataJob.getJobId());
+                    generateInvoiceIntent.putExtra("isJobInvoiced", dataJob.getIsJobInvoiced());
                     startActivity(generateInvoiceIntent);
                 }
             } else {
