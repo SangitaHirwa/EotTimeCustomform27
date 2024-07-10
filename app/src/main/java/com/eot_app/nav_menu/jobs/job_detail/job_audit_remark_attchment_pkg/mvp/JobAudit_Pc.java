@@ -46,6 +46,8 @@ public class JobAudit_Pc implements JobAudit_PI {
     public void uploadAttchmentOnserverForJobAudit(JobAuditSingleAttchReqModel model,String imageName) {
         if (AppUtility.isInternetConnected()) {
             HyperLog.i("", "JobEquRemark_PC: " + "addNewRemark:::: Start");
+            String request = new Gson().toJson(model);
+            Log.e("","Request Param equip attachment"+ request + "image Name "+ imageName);
             String mimeType = "";
             MultipartBody.Part body = null;
             if (!TextUtils.isEmpty(model.getPath())) {

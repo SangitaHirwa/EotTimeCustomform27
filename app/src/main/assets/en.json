@@ -891,6 +891,9 @@
     "leave_approved": "<b> Hi %s %s</b>, <br><br>Your leave request for <b>%s</b> to <b>%s</b> is approved.<br><br>Support team, <br>EyeOnTask",
     "leave_rejected": "<b>Hi %s %s</b>, <br><br>Your leave request for <b>%s</b> to <b>%s</b> is rejected.<br><br>Support team, <br>EyeOnTask",
     "lead_cmt_mail_subject": "Comment on Lead %s by %s.",
+    "invalid_domain": "You have entered invalid domain name.",
+    "lead_setting_success": "Lead setting successfully updated.",
+    "lead_setting_not_success": "Unable to update lead setting, please try again.",
     "mail_limit_exceed": "Company mail limit exceed today.",
     "add_item_req":"Item requested successfully.",
     "not_add_item_req":"Item requested not successfully.",
@@ -904,9 +907,7 @@
     "qrcode_already_exist": "This QR is already allocated to another equipment, please choose another one.",
     "qrcode_generate_success": "QR Code generated successfully.",
     "qrcode_not_generated": "Unable to generate QR Code, please try again.",
-    "equ_relocated": "Equipment relocate successfully.",
-    "invalid_domain": "You have entered invalid domain name.",
-    "lead_setting_not_success": "Unable to update lead setting, please try again."
+    "equ_relocated": "Equipment relocate successfully."
   },
   "mobileMsgsModel": {
     "accept": "Accept",
@@ -1200,7 +1201,6 @@
     "logout": "Logout",
     "longitued": "Longitude",
     "low": "Low",
-    "lead_setting_success": "Lead setting successfully updated.",
     "map": "Map",
     "medium": "Medium",
     "message": "Message",

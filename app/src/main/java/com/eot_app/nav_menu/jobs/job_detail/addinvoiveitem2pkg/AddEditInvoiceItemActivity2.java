@@ -214,6 +214,7 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
     boolean isIncresStock = false;
     StockData stockData;
     String lastUpdateQty ="";
+    String brand_name ="";
 
     public AddEditInvoiceItemActivity2 getInstance() {
 
@@ -499,14 +500,15 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
 
     /**
      * After discussion with Rani change validation of canInvoiceCreated by isJobInvoiced 12/04/2024
+     * After discussion with Rani add validation of quotation 03/06/2024
      **/
     private void getTaxDisType(String jobId) {
         if (jobId != null && !jobId.equals("")) {
             Job job = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(jobId);
-            if (job.getIsJobInvoiced().equals("1")) {
+            if (job.getIsJobInvoiced().equals("1") || job.getQuotId()!= null && !job.getQuotId().isEmpty() && !job.getQuotId().equalsIgnoreCase("0")) {
                 getDisCalculationType = AppDataBase.getInMemoryDatabase(this).jobModel().disCalculationType(jobId);
                 getTaxCalculationType = AppDataBase.getInMemoryDatabase(this).jobModel().taxCalculationType(jobId);
-            } else {
+            }else {
                 getDisCalculationType = App_preference.getSharedprefInstance().getLoginRes().getDisCalculationType();
                 getTaxCalculationType = App_preference.getSharedprefInstance().getLoginRes().getTaxCalculationType();
             }
@@ -1571,6 +1573,7 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
         dataType = "1";
         itemType = "0";
         jtId = "";
+        brand_name = itemselected.getBrandNm();
         try {
             if (itemselected.getIsBillable() != null) isBillable = itemselected.getIsBillable();
             if (itemselected.getIsBillableChange() != null)
@@ -2514,6 +2517,7 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
                 addItemDataModel.setWarrantyType(warrantyType);
                 addItemDataModel.setWarrantyValue(warrantyValue);
                 addItemDataModel.setIsGrouped(isGrouped);
+                addItemDataModel.setBrandNm(brand_name);
                 addItemDataModel.setInm(autocomplete_item.getText().toString().trim());
                 if (isSerialNoSelected) {
                     convertInEquip(addItemDataModel);

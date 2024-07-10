@@ -9,7 +9,6 @@ import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -54,7 +53,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 public class AppointmentListFragment extends
@@ -132,7 +130,7 @@ public class AppointmentListFragment extends
         return adapterAppointments;
     }
     private void setUILables() {
-        Objects.requireNonNull(getActivity()).setTitle("");
+        requireActivity().setTitle("");
         binding.nolistTxt.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.appointment_not_found));
         binding.tvFabAddAppoint.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_appointment));
         binding.tvFabJob.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.title_add_job));
@@ -156,10 +154,10 @@ public class AppointmentListFragment extends
                             LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), null, null);
                 }
         });
-        alvm.getIsRefresh().observe(Objects.requireNonNull(getActivity()), aBoolean -> binding.swiperefresh.setRefreshing(aBoolean));
+        alvm.getIsRefresh().observe(requireActivity(), aBoolean -> binding.swiperefresh.setRefreshing(aBoolean));
         alvm.getLiveTodayAppointments().observe(getActivity(), commonAppointmentModels -> {
             if (refreshCalendar) {
-                searchEvents();
+//                searchEvents();
                 refreshCalendar = false;
             }
             if (commonAppointmentModels != null && commonAppointmentModels.size() > 0) {
@@ -172,6 +170,7 @@ public class AppointmentListFragment extends
                 binding.nolistLinear.setVisibility(View.VISIBLE);
                 adapterAppointments.setList(Collections.emptyList());
             }
+            searchEvents();
         });
         binding.calendarView.expandIconView.setVisibility(View.GONE);
         Calendar todayDate = Calendar.getInstance();
@@ -232,9 +231,9 @@ public class AppointmentListFragment extends
         binding.linearFabAppointment.setOnClickListener(this);
         binding.backgroundView.setOnClickListener(this);
         searchEvents();
-        LocalBroadcastManager.getInstance(Objects.requireNonNull(getActivity())).registerReceiver(mMessageReceiver,
+        LocalBroadcastManager.getInstance(requireActivity()).registerReceiver(mMessageReceiver,
                 new IntentFilter("appointment_refresh"));
-        LocalBroadcastManager.getInstance(Objects.requireNonNull(getActivity())).registerReceiver(mMessageReceiver,
+        LocalBroadcastManager.getInstance(requireActivity()).registerReceiver(mMessageReceiver,
                 new IntentFilter("Archived_jobs"));
         refreshFullList();
     }
@@ -263,7 +262,7 @@ public class AppointmentListFragment extends
     public void refreshAppointmentList() {
         if (alvm != null) {
             alvm.localRefresh();
-            searchEvents();
+//            searchEvents();
             alvm.refreshList();
         }
     }
@@ -338,7 +337,7 @@ public class AppointmentListFragment extends
     }
 
     private void showFBButtons() {
-        ((AppCompatActivity) Objects.requireNonNull(getActivity())).getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.bg_color)));
+        ((AppCompatActivity) requireActivity()).getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.bg_color)));
         Objects.requireNonNull(((AppCompatActivity) getActivity()).getSupportActionBar()).setStackedBackgroundDrawable(new ColorDrawable(Color.parseColor("#90ffffff")));
         binding.backgroundView.setVisibility(View.VISIBLE);
 
@@ -402,7 +401,7 @@ public class AppointmentListFragment extends
                     binding.linearFabAppointment.setVisibility(View.GONE);
                     binding.linearFabJob.setVisibility(View.GONE);
                     binding.linearFabAudit.setVisibility(View.GONE);
-                    Objects.requireNonNull(((AppCompatActivity) Objects.requireNonNull(getActivity())).getSupportActionBar()).setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorPrimary)));
+                    Objects.requireNonNull(((AppCompatActivity) requireActivity()).getSupportActionBar()).setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorPrimary)));
                 }
             }
 
@@ -467,7 +466,7 @@ public class AppointmentListFragment extends
     public void onDestroyView() {
         try {
             if (mMessageReceiver != null)
-                LocalBroadcastManager.getInstance(Objects.requireNonNull(getActivity())).unregisterReceiver(mMessageReceiver);
+                LocalBroadcastManager.getInstance(requireActivity()).unregisterReceiver(mMessageReceiver);
         } catch (Exception e) {
             e.printStackTrace();
         }
