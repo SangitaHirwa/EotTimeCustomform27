@@ -95,6 +95,7 @@ import com.eot_app.utility.EotApp;
 import com.eot_app.utility.States;
 import com.eot_app.utility.db.AppDataBase;
 import com.eot_app.utility.language_support.LanguageController;
+import com.eot_app.utility.language_support.Language_Preference;
 import com.eot_app.utility.settings.equipmentdb.Equipment;
 import com.eot_app.utility.util_interfaces.Callback_AlertDialog;
 import com.eot_app.utility.util_interfaces.MySpinnerAdapter;
@@ -1041,7 +1042,12 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
     @SuppressLint("ClickableViewAccessibility")
     private void emptyGroupCheck() {
         auto_grp.setOnTouchListener((v, event) -> {
-            final int DRAWABLE_RIGHT = 2;
+            final int DRAWABLE_RIGHT;
+            if(Language_Preference.getSharedprefInstance().getlanguageFilename().equals("iw")){
+                   DRAWABLE_RIGHT = 0;
+            }else {
+                DRAWABLE_RIGHT = 2;
+            }
             auto_grp.requestFocus();
             if (event.getAction() == MotionEvent.ACTION_UP) {
                 if (GetgrpDataList != null && GetgrpDataList.size() > 0) {
@@ -1076,7 +1082,12 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
     @SuppressLint("ClickableViewAccessibility")
     private void emptyCatryCheck() {
         auto_catery.setOnTouchListener((v, event) -> {
-            final int DRAWABLE_RIGHT = 2;
+            final int DRAWABLE_RIGHT;
+            if(Language_Preference.getSharedprefInstance().getlanguageFilename().equals("iw")){
+                DRAWABLE_RIGHT = 0;
+            }else {
+                DRAWABLE_RIGHT = 2;
+            }
             auto_catery.requestFocus();
             if (event.getAction() == MotionEvent.ACTION_UP) {
                 if (GetCatgDataList != null && GetCatgDataList.size() > 0) {
@@ -1110,7 +1121,12 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
     @SuppressLint("ClickableViewAccessibility")
     private void emptyBrandCheck() {
         auto_brand.setOnTouchListener((v, event) -> {
-            final int DRAWABLE_RIGHT = 2;
+            final int DRAWABLE_RIGHT;
+            if(Language_Preference.getSharedprefInstance().getlanguageFilename().equals("iw")){
+                DRAWABLE_RIGHT = 0;
+            }else {
+                DRAWABLE_RIGHT = 2;
+            }
             auto_brand.requestFocus();
             if (event.getAction() == MotionEvent.ACTION_UP) {
                 if (BrandDataList != null && BrandDataList.size() > 0) {
