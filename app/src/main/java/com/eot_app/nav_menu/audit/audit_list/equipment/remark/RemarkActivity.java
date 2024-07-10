@@ -712,7 +712,7 @@ public class RemarkActivity extends UploadDocumentActivity implements JobAudit_V
                             if (!TextUtils.isEmpty(quesRspncModelList.get(i).getAns().get(0).getValue())) {
                                 long l = Long.parseLong(quesRspncModelList.get(i).getAns().get(0).getValue());
                                 String date = AppUtility.getDate(l, "dd-MMM-yyyy");
-                                ans = date;
+                                ans = AppUtility.sendDateByFormate(date,false);
                             }
                         } else if (quesRspncModelList.get(i).getType().equals("6")) {
                             if (!TextUtils.isEmpty(quesRspncModelList.get(i).getAns().get(0).getValue())) {
@@ -727,7 +727,7 @@ public class RemarkActivity extends UploadDocumentActivity implements JobAudit_V
                                 String date = AppUtility.getDate(l, AppUtility.dateTimeByAmPmFormate(
 
                                         "dd-MMM-yyyy hh:mm a", "dd-MMM-yyyy HH:mm"));
-                                ans = date;
+                                ans = AppUtility.sendDateByFormate(date,true);
                             }
                         } else
                             ans = quesRspncModelList.get(i).getAns().get(0).getValue();

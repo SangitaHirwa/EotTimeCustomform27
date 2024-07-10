@@ -108,7 +108,7 @@ String formate = AppUtility.dateTimeByAmPmFormate("EEE, "+AppConstant.DATE_FORMA
             if (position < list.size())
                 if (position == 0 || (list.get(position - 1).getSchdlStart() != null && list.get(position - 1).getSchdlStart().equals(""))) {
                     holder.txt_date.setText(txtFrst);
-                    holder.txt_date.append(date_separated[1]);
+                    holder.txt_date.append(AppUtility.getDateByLang(date_separated[1],false));
                     holder.date_layout.setVisibility(View.VISIBLE);
 
                 } else if (list.get(position - 1).getSchdlStart() != null && !list.get(position - 1).getSchdlStart().equals("")) {
@@ -118,7 +118,7 @@ String formate = AppUtility.dateTimeByAmPmFormate("EEE, "+AppConstant.DATE_FORMA
                         holder.date_layout.setVisibility(View.GONE);
                     } else {
                         holder.txt_date.setText(txtFrst);
-                        holder.txt_date.append(date_separated[1]);
+                        holder.txt_date.append(AppUtility.getDateByLang(date_separated[1],false));
                         holder.date_layout.setVisibility(View.VISIBLE);
                     }
                 }

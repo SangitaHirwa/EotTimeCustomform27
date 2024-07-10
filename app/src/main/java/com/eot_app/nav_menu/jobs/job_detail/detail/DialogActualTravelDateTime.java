@@ -117,23 +117,24 @@ public class DialogActualTravelDateTime extends DialogFragment implements View.O
             if (LanguageController.getInstance().getMobileMsgByKey(AppConstant.select_start_date).equals("Başlangıç \u200B\u200BTarihini Seç")){
                 binding.dateAcStart.setCompoundDrawablePadding(-15);
             }
-            binding.dateAcStart.setText(AppUtility.getDate(Long.parseLong(completionDetails.getLoginTime()), timeFormate1));
             actualStart = AppUtility.getDate(Long.parseLong(completionDetails.getLoginTime()), timeFormate1);
+            binding.dateAcStart.setText(AppUtility.getDateByLang(actualStart,true));
+
         }
         if (completionDetails!=null&&completionDetails.getLogoutTime() != null && !completionDetails.getLogoutTime().isEmpty() && !completionDetails.getLogoutTime().equals("0")) {
-            binding.dateAcEnd.setText(AppUtility.getDate(Long.parseLong(completionDetails.getLogoutTime()), timeFormate1));
             actualFinish = AppUtility.getDate(Long.parseLong(completionDetails.getLogoutTime()), timeFormate1);
+            binding.dateAcEnd.setText(AppUtility.getDateByLang(actualFinish,true));
         }
         if (completionDetails!=null&&completionDetails.getTravel_loginTime() != null && !completionDetails.getTravel_loginTime().isEmpty()) {
             if (LanguageController.getInstance().getMobileMsgByKey(AppConstant.select_start_date).equals("Başlangıç \u200B\u200BTarihini Seç")){
                 binding.dateTrStart.setCompoundDrawablePadding(-15);
             }
-            binding.dateTrStart.setText(AppUtility.getDate(Long.parseLong(completionDetails.getTravel_loginTime()), timeFormate1));
             travelStart = AppUtility.getDate(Long.parseLong(completionDetails.getTravel_loginTime()), timeFormate1);
+            binding.dateTrStart.setText(AppUtility.getDateByLang(travelStart,true));
         }
         if (completionDetails!=null&&completionDetails.getTarvel_logoutTime() != null && !completionDetails.getTarvel_logoutTime().isEmpty()) {
-            binding.dateTrEnd.setText(AppUtility.getDate(Long.parseLong(completionDetails.getTarvel_logoutTime()), timeFormate1));
             travelFinish = AppUtility.getDate(Long.parseLong(completionDetails.getTarvel_logoutTime()), timeFormate1);
+            binding.dateTrEnd.setText(AppUtility.getDateByLang(travelFinish,true));
         }
     }
 
@@ -174,13 +175,13 @@ public class DialogActualTravelDateTime extends DialogFragment implements View.O
         // set values
         String schdlFinish = "", schdlStart = "", tlogEnd = "", tlogStart = "";
         if (actualFinish != null && !actualFinish.isEmpty())
-            schdlFinish = AppUtility.changeDateFormat(actualFinish, timeFormateInput, timeFormate) + ":00";
+            schdlFinish =  AppUtility.sendDateByFormate(actualFinish,true);
         if (actualStart != null && !actualStart.isEmpty())
-            schdlStart = AppUtility.changeDateFormat(actualStart, timeFormateInput, timeFormate) + ":00";
+            schdlStart =  AppUtility.sendDateByFormate(actualStart,true);
         if (travelFinish != null && !travelFinish.isEmpty())
-            tlogEnd = AppUtility.changeDateFormat(travelFinish, timeFormateInput, timeFormate) + ":00";
+            tlogEnd =  AppUtility.sendDateByFormate(travelFinish,true);
         if (travelStart != null && !travelStart.isEmpty())
-            tlogStart = AppUtility.changeDateFormat(travelStart, timeFormateInput, timeFormate) + ":00";
+            tlogStart =  AppUtility.sendDateByFormate(travelStart,true);
 
 
         if (logType == 1 && schdlFinish.isEmpty() && schdlStart.isEmpty()) {
@@ -295,7 +296,7 @@ public class DialogActualTravelDateTime extends DialogFragment implements View.O
                                         EotApp.getAppinstance().showToastmsg(LanguageController.getInstance().getMobileMsgByKey(AppConstant.error_actual_start_end));
                                     } else {
                                         actualStart = date_start_ac + " " + time_str_ac;
-                                        binding.dateAcStart.setText(actualStart);
+                                        binding.dateAcStart.setText(AppUtility.getDateByLang(actualStart,true));
                                     }
                                 }
                             }, LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_start_end_time)), mHour, mMinute, isTime24Format);
@@ -369,9 +370,9 @@ public class DialogActualTravelDateTime extends DialogFragment implements View.O
                     cActualEnd.set(Calendar.DAY_OF_MONTH, selectedDay);
                     String dateselect = "";
                     try {
-                        DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy", Locale.US);//hh:mm:ss a
+                        DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);//hh:mm:ss a
                         Date endDate = formatter.parse(selectedDay + "-" + (selectedMonth + 1) + "-" + selectedYear);
-                        dateselect = new SimpleDateFormat(AppConstant.DATE_FORMAT, Locale.US).format(endDate);
+                        dateselect = new SimpleDateFormat(AppConstant.DATE_FORMAT, Locale.ENGLISH).format(endDate);
                         date_end_ac = dateselect;
                         TimePickerDialog timePickerDialog1 = new TimePickerDialog(getActivity(), AppUtility.OutPutTime(getActivity(), new Add_job_activity.DateTimeCallback() {
                             @SuppressLint("SetTextI18n")
@@ -382,7 +383,7 @@ public class DialogActualTravelDateTime extends DialogFragment implements View.O
                                     EotApp.getAppinstance().showToastmsg(LanguageController.getInstance().getMobileMsgByKey(AppConstant.error_actual_start_end));
                                 } else {
                                     actualFinish = date_end_ac + " " + time_en_ac;
-                                    binding.dateAcEnd.setText(actualFinish);
+                                    binding.dateAcEnd.setText(AppUtility.getDateByLang(actualFinish,true));
                                 }
                             }
                         }, LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_due_start_time)), mHour, mMinute, isTime24Format);
@@ -447,7 +448,7 @@ public class DialogActualTravelDateTime extends DialogFragment implements View.O
                                         EotApp.getAppinstance().showToastmsg(LanguageController.getInstance().getMobileMsgByKey(AppConstant.error_travel_start_end));
                                     } else {
                                         travelStart = date_start_tr + " " + time_str_tr;
-                                        binding.dateTrStart.setText(travelStart);
+                                        binding.dateTrStart.setText(AppUtility.getDateByLang(travelStart,true));
                                     }
                                 }
                             }, LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_start_end_time)), mHour, mMinute, true);
@@ -515,7 +516,7 @@ public class DialogActualTravelDateTime extends DialogFragment implements View.O
                                         EotApp.getAppinstance().showToastmsg(LanguageController.getInstance().getMobileMsgByKey(AppConstant.error_travel_start_end));
                                     } else {
                                         travelFinish = date_end_tr + " " + time_en_tr;
-                                        binding.dateTrEnd.setText(travelFinish);
+                                        binding.dateTrEnd.setText(AppUtility.getDateByLang(travelFinish,true));
                                     }
                                 }
                             }, LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_due_start_time)), mHour, mMinute, true);

@@ -361,7 +361,8 @@ public class AuditDetailsFragment extends Fragment implements View.OnClickListen
                                                 String[] dateConvert = AppUtility.getFormatedTime(model.getValue());
                                                 String s = dateConvert[0];
                                                 String[] date = s.split(",");
-                                                textView.append(date[1].trim().replace(" ", "-"));
+                                                String date1 = date[1].trim().replace(" ", "-");
+                                                textView.append(AppUtility.getDateByLang(date1,false));
 
                                                 //  holder.tvDate.setText(date[1].trim().replace(" ", "-"));
                                             }
@@ -391,7 +392,7 @@ public class AuditDetailsFragment extends Fragment implements View.OnClickListen
                                                         AppUtility.dateTimeByAmPmFormate(
                                                                 "dd-MMM-yyyy hh:mm a",
                                                                 "dd-MMM-yyyy HH:mm"));
-                                                textView.append(dateConvert);
+                                                textView.append(AppUtility.getDateByLang(dateConvert,true));
                                             }
                                         } catch (NumberFormatException e) {
                                             e.printStackTrace();
@@ -520,7 +521,7 @@ public class AuditDetailsFragment extends Fragment implements View.OnClickListen
             if (!TextUtils.isEmpty(this.audit.getSchdlStart())) {
                 long startDateLong = Long.parseLong(this.audit.getSchdlStart());
                 String startDate = AppUtility.getDateWithFormate2(startDateLong * 1000, dateFormat);
-                tv_start_date.setText(startDate);
+                tv_start_date.setText(AppUtility.getDateByLang(startDate,false));
                 String startTime = AppUtility.getDateWithFormate2(startDateLong * 1000, timeFormat);
                 tv_start_time.setText(startTime);
             }
@@ -529,7 +530,7 @@ public class AuditDetailsFragment extends Fragment implements View.OnClickListen
                 long endDateLong = Long.parseLong(this.audit.getSchdlFinish());
 
                 String endDate = AppUtility.getDateWithFormate2(endDateLong * 1000, dateFormat);
-                tv_end_date.setText(endDate);
+                tv_end_date.setText(AppUtility.getDateByLang(endDate,false));
 
                 String endTime = AppUtility.getDateWithFormate2(endDateLong * 1000, timeFormat);
                 tv_end_time.setText(endTime);

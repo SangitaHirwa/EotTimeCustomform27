@@ -725,14 +725,14 @@ public class AddAuditActivity extends UploadDocumentActivity implements Add_Adui
         date_str = str_dt_tm;
         this.time_str = time_str;
         String date_str_c= str_dt_tm+" "+time_str;
-        date_start.setText(date_str);
+        date_start.setText(AppUtility.getDateByLang(date_str,false));
         time_start.setText(this.time_str);
         if (App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable() != null &&
                 App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable().equals("0")) {
             try {
-                SimpleDateFormat spf = new SimpleDateFormat("dd-MMM-yyyy hh:mm a");
+                SimpleDateFormat spf = new SimpleDateFormat("dd-MMM-yyyy hh:mm a", Locale.ENGLISH);
                 Date date = spf.parse(date_str_c);
-                spf = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+                spf = new SimpleDateFormat("dd-MM-yyyy HH:mm", Locale.ENGLISH);
                 String[] datestr = spf.format(date).split(" ");
                 String[] time_ary_end = datestr[1].split(":");
                 cTStart.set(Calendar.HOUR_OF_DAY, Integer.parseInt(time_ary_end[0]));
@@ -756,9 +756,9 @@ public class AddAuditActivity extends UploadDocumentActivity implements Add_Adui
                     App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable().equals("0")){
                 time_str = time_duration[1] + " " + time_duration[2];
             try {
-                SimpleDateFormat spf = new SimpleDateFormat("dd-MMM-yyyy hh:mm a");
+                SimpleDateFormat spf = new SimpleDateFormat("dd-MMM-yyyy hh:mm a",Locale.ENGLISH);
                 Date date = spf.parse(std);
-                spf = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+                spf = new SimpleDateFormat("dd-MM-yyyy HH:mm",Locale.ENGLISH);
                 String[] datestr = spf.format(date).split(" ");
                 String[] time_ary_end = datestr[1].split(":");
                 cTStart.set(Calendar.HOUR_OF_DAY, Integer.parseInt(time_ary_end[0]));
@@ -778,7 +778,7 @@ public class AddAuditActivity extends UploadDocumentActivity implements Add_Adui
             e.printStackTrace();
         }
 
-        date_start.setText(date_str);
+        date_start.setText(AppUtility.getDateByLang(date_str,false));
         time_start.setText(time_str);
     }
 
@@ -849,9 +849,9 @@ public class AddAuditActivity extends UploadDocumentActivity implements Add_Adui
             {
                 time_en = time_duration[1] + " " + time_duration[2];
                 try {
-                    SimpleDateFormat spf = new SimpleDateFormat("dd-MMM-yyyy hh:mm a");
+                    SimpleDateFormat spf = new SimpleDateFormat("dd-MMM-yyyy hh:mm a",Locale.ENGLISH);
                     Date date = spf.parse(std);
-                    spf = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+                    spf = new SimpleDateFormat("dd-MM-yyyy HH:mm",Locale.ENGLISH);
                     String[] datestr = spf.format(date).split(" ");
                     String[] time_ary_end = datestr[1].split(":");
                     cTEnd.set(Calendar.HOUR_OF_DAY, Integer.parseInt(time_ary_end[0]));
@@ -869,7 +869,7 @@ public class AddAuditActivity extends UploadDocumentActivity implements Add_Adui
         } catch (Exception e) {
               e.printStackTrace();
         }
-        date_end.setText(date_en);
+        date_end.setText(AppUtility.getDateByLang(date_en,false));
         time_end.setText(time_en);
     }
 
@@ -1677,20 +1677,20 @@ public class AddAuditActivity extends UploadDocumentActivity implements Add_Adui
             int t2 = Integer.parseInt(words2[0]);
             try {
                 if (t1 != 12) {
-                    startDate = new SimpleDateFormat("hh:mm", Locale.ENGLISH).parse(time_str);
+                    startDate = new SimpleDateFormat(AppUtility.dateTimeByAmPmFormate("hh:mm a","HH:mm"), Locale.ENGLISH).parse(time_str);
                     time_str = "";
                     assert startDate != null;
-                    time_str = new SimpleDateFormat("hh:mm a", Locale.ENGLISH).format(startDate);
+                    time_str = new SimpleDateFormat(AppUtility.dateTimeByAmPmFormate("hh:mm a","HH:mm"), Locale.ENGLISH).format(startDate);
                 } else {
                     time_str = "";
                     time_str = time_start.getText().toString() + " " + "PM";
                     //   time_str = time_str + " " + "PM";
                 }
                 if (t2 != 12) {
-                    endDate = new SimpleDateFormat("hh:mm", Locale.ENGLISH).parse(time_en);
+                    endDate = new SimpleDateFormat(AppUtility.dateTimeByAmPmFormate("hh:mm a","HH:mm"), Locale.ENGLISH).parse(time_en);
                     time_en = "";
                     assert endDate != null;
-                    time_en = new SimpleDateFormat("hh:mm a", Locale.ENGLISH).format(endDate);
+                    time_en = new SimpleDateFormat(AppUtility.dateTimeByAmPmFormate("hh:mm a","HH:mm"), Locale.ENGLISH).format(endDate);
                 } else {
                     time_en = "";
                     time_en = time_end.getText().toString() + " " + "PM";
@@ -1718,8 +1718,8 @@ public class AddAuditActivity extends UploadDocumentActivity implements Add_Adui
                     1,
                     App_preference.getSharedprefInstance().getLoginRes().getUsrId(),
                     kpr,
-                    schdlStart,
-                    schdlFinish,
+                    AppUtility.sendDateByFormate(schdlStart,true),
+                    AppUtility.sendDateByFormate(schdlFinish,true),
                     audit_instr.getText().toString(),
                     new_con_nm,
                     new_site_nm,
@@ -1836,22 +1836,34 @@ public class AddAuditActivity extends UploadDocumentActivity implements Add_Adui
                             case "5":
                                 if (!TextUtils.isEmpty(questionList.get(i).getAns().get(0).getValue())) {
                                     long l = Long.parseLong(questionList.get(i).getAns().get(0).getValue());
-                                    ans = AppUtility.getDates(l, "yyyy-MMM-dd hh:mm:ss");
+                                    if(l > 0) {
+                                        String date = AppUtility.getDates(l,AppUtility.dateTimeByAmPmFormate(AppConstant.DATE_FORMAT+" hh:mm a", AppConstant.DATE_FORMAT+" HH:mm"));
+                                        ans = AppUtility.sendDateByFormate(date, true);
+                                    }else {
+                                        ans = "";
+                                    }
                                 }
                                 break;
                             case "6":
                                 if (!TextUtils.isEmpty(questionList.get(i).getAns().get(0).getValue())) {
                                     long l = Long.parseLong(questionList.get(i).getAns().get(0).getValue());
-                                    String formate = AppUtility.dateTimeByAmPmFormate(
-                                            "hh:mm a", "HH:mm");
-                                    ans = AppUtility.getDates(l, formate);
+                                    if(l > 0) {
+                                        ans = AppUtility.getDates(l, "HH:mm:ss");
+                                    }else {
+                                        ans = "";
+                                    }
                                 }
                                 break;
                             case "7":
                                 if (!TextUtils.isEmpty(questionList.get(i).getAns().get(0).getValue())) {
                                     long l = Long.parseLong(questionList.get(i).getAns().get(0).getValue());
-                                    String formate = AppUtility.dateTimeByAmPmFormate(AppConstant.DATE_FORMAT+" hh:mm a", AppConstant.DATE_FORMAT+" HH:mm");
-                                    ans = AppUtility.getDates(l, formate);
+                                    if(l>0) {
+                                        String formate = AppUtility.dateTimeByAmPmFormate(AppConstant.DATE_FORMAT + " hh:mm a", AppConstant.DATE_FORMAT + " HH:mm");
+                                        String date = AppUtility.getDates(l, formate);
+                                        ans = AppUtility.sendDateByFormate(date, true);
+                                    }else {
+                                        ans = "";
+                                    }
                                 }
                                 break;
                             default:
@@ -1902,7 +1914,7 @@ public class AddAuditActivity extends UploadDocumentActivity implements Add_Adui
         Locale.getDefault().getDisplayLanguage();
         try {
             SimpleDateFormat gettingfmt = new SimpleDateFormat(AppUtility.dateTimeByAmPmFormate(
-                    AppConstant.DATE_FORMAT+" hh:mm a", AppConstant.DATE_FORMAT+" HH:mm"), Locale.US);//, Locale.US
+                    AppConstant.DATE_FORMAT+" hh:mm a", AppConstant.DATE_FORMAT+" HH:mm"), Locale.ENGLISH);//, Locale.US
             Date date = gettingfmt.parse(schdlStart);
             assert date != null;
             date.getTime();
@@ -1974,11 +1986,11 @@ public class AddAuditActivity extends UploadDocumentActivity implements Add_Adui
                         cEnd.set(Calendar.DAY_OF_MONTH, selectedDay);
                         String dateselect = "";
                         try {
-                            DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy", Locale.US);//hh:mm:ss a
+                            DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);//hh:mm:ss a
                             Date endDate = formatter.parse(selectedDay + "-" + (selectedMonth + 1) + "-" + selectedYear);
-                            dateselect = new SimpleDateFormat(AppConstant.DATE_FORMAT, Locale.US).format(endDate);
-                            date_start.setText(dateselect);
-                            date_end.setText(dateselect);
+                            dateselect = new SimpleDateFormat(AppConstant.DATE_FORMAT, Locale.ENGLISH).format(endDate);
+                            date_start.setText(AppUtility.getDateByLang(dateselect,false));
+                            date_end.setText(AppUtility.getDateByLang(dateselect,false));
                             oldDate_str = dateselect;
                             oldDate_en = dateselect;
                             date_en = date_str = dateselect;
@@ -2010,10 +2022,10 @@ public class AddAuditActivity extends UploadDocumentActivity implements Add_Adui
                         cEnd.set(Calendar.DAY_OF_MONTH, selectedDay);
                         String dateselect = "";
                         try {
-                            DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy", Locale.US);//hh:mm:ss a
+                            DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);//hh:mm:ss a
                             Date endDate = formatter.parse(selectedDay + "-" + (selectedMonth + 1) + "-" + selectedYear);
-                            dateselect = new SimpleDateFormat(AppConstant.DATE_FORMAT, Locale.US).format(endDate);
-                            date_end.setText(dateselect);
+                            dateselect = new SimpleDateFormat(AppConstant.DATE_FORMAT, Locale.ENGLISH).format(endDate);
+                            date_end.setText(AppUtility.getDateByLang(dateselect,false));
                             oldDate_en = dateselect;
                             date_en = dateselect;
                         } catch (ParseException e) {

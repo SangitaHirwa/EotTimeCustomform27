@@ -60,6 +60,7 @@ import static com.eot_app.utility.AppUtility.updateTime;
 public class CustomFieldJobAdapter extends RecyclerView.Adapter<CustomFieldJobAdapter.ViewHolder> {
     Context context;
     String time = "", date = "";
+    String sDate = "", sTimeDate = "";
     ArrayList<CustOmFormQuestionsRes> questionList;
     private boolean isTime24Format;
     final Calendar myCalendar = Calendar.getInstance();
@@ -198,16 +199,18 @@ public class CustomFieldJobAdapter extends RecyclerView.Adapter<CustomFieldJobAd
 
 
                 holder.tvDate.setTag(position);
-                if (questionList.get(position).getAns().isEmpty())
+                if (questionList.get(position).getAns().isEmpty()) {
                     holder.tvDate.setText("");
-                else if (questionList.get(position).getAns().size() > 0) {
+                    sDate = "";
+                }else if (questionList.get(position).getAns().size() > 0) {
                     try {
                         if (!(questionList.get(position).getAns().get(0).getValue()).equals("")) {
                             String[] dateConvert = AppUtility.getFormatedTime(questionList.get(position).
                                     getAns().get(0).getValue());
                             String s = dateConvert[0];
                             String[] date = s.split(",");
-                            holder.tvDate.setText(date[1].trim().replace(" ", "-"));
+                            sDate = date[1].trim().replace(" ", "-");
+                            holder.tvDate.setText(AppUtility.getDateByLang(sDate,false));
                         }
                     } catch (Exception ex) {
                         ex.printStackTrace();
@@ -258,16 +261,18 @@ public class CustomFieldJobAdapter extends RecyclerView.Adapter<CustomFieldJobAd
                 holder.type_text_number.setVisibility(View.GONE);
 
                 holder.tvTimeDate.setTag(position);
-                if (questionList.get(position).getAns().isEmpty())
+                if (questionList.get(position).getAns().isEmpty()) {
                     holder.tvTimeDate.setText("");
-                else if (questionList.get(position).getAns().size() > 0) {
+                    sTimeDate = "";
+                }else if (questionList.get(position).getAns().size() > 0) {
                     try {
                         if (!questionList.get(position).getAns().get(0).getValue().equals("")) {
                             Long dateLong = Long.parseLong(questionList.get(position).getAns().get(0).getValue());
                             String dateConvert = AppUtility.getDate(dateLong, AppUtility.dateTimeByAmPmFormate(
 
                                     "dd-MMM-yyyy hh:mm a", "dd-MMM-yyyy hh:mm"));
-                            holder.tvTimeDate.setText(dateConvert);
+                            sTimeDate =dateConvert;
+                            holder.tvTimeDate.setText(AppUtility.getDateByLang(dateConvert,true));
                         }
                     } catch (NumberFormatException e) {
                         e.printStackTrace();
@@ -503,14 +508,14 @@ public class CustomFieldJobAdapter extends RecyclerView.Adapter<CustomFieldJobAd
                             time = timeData;
                             String newdateTime = date + " " + timeData;
                             try {
-                                @SuppressLint("SimpleDateFormat") String s = new SimpleDateFormat(
+                             sTimeDate = new SimpleDateFormat(
                                         AppUtility.dateTimeByAmPmFormate("dd-MMM-yyyy hh:mm a"
-                                                , "dd-MMM-yyyy HH:mm"))
+                                                , "dd-MMM-yyyy HH:mm"),Locale.ENGLISH)
                                         .format(Objects.requireNonNull(new SimpleDateFormat(
                                                 AppUtility.dateTimeByAmPmFormate(
                                                         "dd-MM-yyyy hh:mm a", "dd-MM-yyyy HH:mm"
-                                                )).parse(newdateTime)));
-                                textView.setText(s);
+                                                ),Locale.ENGLISH).parse(newdateTime)));
+                                textView.setText(AppUtility.getDateByLang(sTimeDate,true));
                             } catch (ParseException e) {
                                 e.printStackTrace();
                             }
@@ -551,13 +556,13 @@ public class CustomFieldJobAdapter extends RecyclerView.Adapter<CustomFieldJobAd
                     if (tvDate.getTag() != null) {
                         String pos = tvDate.getTag().toString();
                         int position = Integer.parseInt(pos);
-                        if (s != null && s.toString().length() > 0) {
+                        if (sDate != null && !sDate.isEmpty()) {
                             long startDate = 0;
                             try {
                                 SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yyyy hh:mm:ss", Locale.US);
                                 SimpleDateFormat tsdf = new SimpleDateFormat("hh:mm:ss", Locale.US);
                                 String time = tsdf.format(Calendar.getInstance().getTime());
-                                Date date = sdf.parse(s.toString()+" "+time);
+                                Date date = sdf.parse(sDate+" "+time);
                                 startDate = date.getTime() / 1000;
                             } catch (ParseException e) {
                                 e.printStackTrace();
@@ -718,7 +723,8 @@ public class CustomFieldJobAdapter extends RecyclerView.Adapter<CustomFieldJobAd
                     @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
                     try {
                         Date parse = sdf.parse(completeDate.trim());
-                        tvDate.setText(new SimpleDateFormat("dd-MMM-yyyy").format(parse));
+                         sDate = new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH).format(parse);
+                        tvDate.setText(AppUtility.getDateByLang(sDate,false));
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
@@ -733,11 +739,13 @@ public class CustomFieldJobAdapter extends RecyclerView.Adapter<CustomFieldJobAd
                     date = (dayOfMonth + "-" + monthString + "-" + year + " ");
                     String newDateTime = date + " " + time;
                     SimpleDateFormat sdf = new SimpleDateFormat(
-                            AppUtility.dateTimeByAmPmFormate("dd-MM-yyyy hh:mm a", "dd-MM-yyyy HH:mm"));
+                            AppUtility.dateTimeByAmPmFormate("dd-MM-yyyy hh:mm a", "dd-MM-yyyy HH:mm"),Locale.ENGLISH);
                     try {
                         Date parseDate = sdf.parse(newDateTime);
-                        tvTimeDate.setText(new SimpleDateFormat(AppUtility.dateTimeByAmPmFormate
-                                ("dd-MMM-yyyy hh:mm a", "dd-MMM-yyyy HH:mm")).format(parseDate));
+                        String date = new SimpleDateFormat(AppUtility.dateTimeByAmPmFormate
+                                ("dd-MMM-yyyy hh:mm a", "dd-MMM-yyyy HH:mm"),Locale.ENGLISH).format(parseDate);
+                        sTimeDate = date;
+                        tvTimeDate.setText(AppUtility.getDateByLang(date,true));
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
@@ -748,9 +756,9 @@ public class CustomFieldJobAdapter extends RecyclerView.Adapter<CustomFieldJobAd
             linearDate.setOnClickListener(view -> {
                 if( !tvDate.getText().toString().isEmpty()) {
                     myCalendar.clear();
-                    String inputTime = tvDate.getText().toString();
-                    SimpleDateFormat inputFormat = new SimpleDateFormat("dd-MMM-yyyy", Locale.getDefault());
-                    SimpleDateFormat outputFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
+                    String inputTime = sDate;
+                    SimpleDateFormat inputFormat = new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH);
+                    SimpleDateFormat outputFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
 
                     try {
                         Date date = inputFormat.parse(inputTime);
@@ -858,13 +866,13 @@ public class CustomFieldJobAdapter extends RecyclerView.Adapter<CustomFieldJobAd
                     if (tvTimeDate.getTag() != null) {
                         String pos = tvTimeDate.getTag().toString();
                         int position = Integer.parseInt(pos);
-                        if (s != null && s.toString().length() > 0) {
+                        if (sTimeDate != null && !sTimeDate.isEmpty()) {
                             long startDate = 0;
                             try {
                                 SimpleDateFormat sdf = new SimpleDateFormat(
                                         AppUtility.dateTimeByAmPmFormate(
                                                 "dd-MMM-yyyy hh:mm a", "dd-MMM-yyyy HH:mm"), Locale.US);
-                                Date date = sdf.parse(s.toString());
+                                Date date = sdf.parse(sTimeDate);
                                 startDate = date.getTime() / 1000;
                             } catch (ParseException e) {
                                 e.printStackTrace();
@@ -895,15 +903,15 @@ public class CustomFieldJobAdapter extends RecyclerView.Adapter<CustomFieldJobAd
                     String inputTime = "";
                     if (App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable() != null
                             && App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable().equals("0")) {
-                        String[] ary_inputTime = AppUtility.get24HoursTimeFormate(tvTimeDate.getText().toString()).split(" ");
+                        String[] ary_inputTime = AppUtility.get24HoursTimeFormate(sTimeDate).split(" ");
                         inputTime = ary_inputTime[0];
                     }else{
-                        String[] ary_inputTime = tvTimeDate.getText().toString().split(" ");
+                        String[] ary_inputTime = sTimeDate.split(" ");
                         inputTime = ary_inputTime[0];
                     }
 
-                    SimpleDateFormat inputFormat = new SimpleDateFormat("dd-MMM-yyyy", Locale.getDefault());
-                    SimpleDateFormat outputFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
+                    SimpleDateFormat inputFormat = new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH);
+                    SimpleDateFormat outputFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
 
                     try {
                         Date date = inputFormat.parse(inputTime);
@@ -929,12 +937,12 @@ public class CustomFieldJobAdapter extends RecyclerView.Adapter<CustomFieldJobAd
                 @Override
                 public void onClick(View v) {
                     if(!tvTimeDate.getText().toString().isEmpty()) {
-                        String[] ary_inputTime = tvTimeDate.getText().toString().split(" ");
+                        String[] ary_inputTime = sTimeDate.split(" ");
                         if (App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable() != null
                                 && App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable().equals("0")) {
                             String inputTime = ary_inputTime[1] + " " + ary_inputTime[2];
-                            SimpleDateFormat inputFormat = new SimpleDateFormat("hh:mm a", Locale.getDefault());
-                            SimpleDateFormat outputFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
+                            SimpleDateFormat inputFormat = new SimpleDateFormat("hh:mm a", Locale.ENGLISH);
+                            SimpleDateFormat outputFormat = new SimpleDateFormat("HH:mm", Locale.ENGLISH);
 
                             try {
                                 Date date = inputFormat.parse(inputTime);

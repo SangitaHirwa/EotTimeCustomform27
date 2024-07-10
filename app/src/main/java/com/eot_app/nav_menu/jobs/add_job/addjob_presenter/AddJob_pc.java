@@ -159,9 +159,9 @@ public class AddJob_pc implements Add_job_pi {
             schdul_Start_Date_Time(AppUtility.getFormatedTime(time1), datestr);
             }else {
                 try {
-                    SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+                    SimpleDateFormat dateFormat = new SimpleDateFormat(AppConstant.DATE_FORMAT2,Locale.ENGLISH);
                     Date parse = dateFormat.parse(calenderDate);
-                    SimpleDateFormat dateFormat1 = new SimpleDateFormat("dd-MMM-yyyy");
+                    SimpleDateFormat dateFormat1 = new SimpleDateFormat(AppConstant.DATE_FORMAT,Locale.ENGLISH);
                     datestr1 = dateFormat1.format(parse);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -211,9 +211,9 @@ public class AddJob_pc implements Add_job_pi {
             }
             if(datestr!=null && !datestr.isEmpty()){
                 try {
-                    SimpleDateFormat spf = new SimpleDateFormat("dd-MM-yyyy");
+                    SimpleDateFormat spf = new SimpleDateFormat("dd-MMM-yyyy",Locale.ENGLISH);
                     Date date = spf.parse(datestr);
-                    spf= new SimpleDateFormat(AppConstant.DATE_FORMAT);
+                    spf= new SimpleDateFormat(AppConstant.DATE_FORMAT,Locale.ENGLISH);
                     datestr = spf.format(date);
                     System.out.println(datestr);
                 }catch (Exception e){
@@ -230,7 +230,7 @@ public class AddJob_pc implements Add_job_pi {
                     TimeUnit.MINUTES.toSeconds(Integer.parseInt(time_dur[1])));
 
             SimpleDateFormat simpleDate = new SimpleDateFormat(
-                    AppUtility.dateTimeByAmPmFormate(AppConstant.DATE_FORMAT+" hh:mm a", AppConstant.DATE_FORMAT+" HH:mm"), Locale.US);
+                    AppUtility.dateTimeByAmPmFormate(AppConstant.DATE_FORMAT+" hh:mm a", AppConstant.DATE_FORMAT+" HH:mm"), Locale.ENGLISH);
             Date past = null;
             long milisce = 0;
             try {
@@ -281,7 +281,7 @@ public class AddJob_pc implements Add_job_pi {
     private void end_Date_Time() {
         String date_time = date_str + " " + time_str;
         SimpleDateFormat simpleDate = new SimpleDateFormat(
-                AppUtility.dateTimeByAmPmFormate(AppConstant.DATE_FORMAT+" hh:mm a", AppConstant.DATE_FORMAT+" HH:mm"), Locale.US);
+                AppUtility.dateTimeByAmPmFormate(AppConstant.DATE_FORMAT+" hh:mm a", AppConstant.DATE_FORMAT+" HH:mm"), Locale.ENGLISH);
         Date past = null;
         long milisce = 0;
         try {
@@ -496,11 +496,11 @@ public class AddJob_pc implements Add_job_pi {
 //                )
 //                , Locale.US);
         try {
-            SimpleDateFormat dateFormat =new SimpleDateFormat("dd-MMM-yyyy HH:mm");
+            SimpleDateFormat dateFormat =new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",Locale.ENGLISH);
             Date date = dateFormat.parse(schdlStart);
-            SimpleDateFormat dateFormat1 = new SimpleDateFormat("dd-MM-yyyy hh:mm a",Locale.US);
+            SimpleDateFormat dateFormat1 = new SimpleDateFormat("dd-MM-yyyy hh:mm a",Locale.ENGLISH);
              String dateformat = dateFormat1.format(date);
-            Date date1 = new SimpleDateFormat("dd-MM-yyyy hh:mm a",Locale.US).parse(dateformat);
+            Date date1 = new SimpleDateFormat("dd-MM-yyyy hh:mm a",Locale.ENGLISH).parse(dateformat);
             return String.valueOf(date1.getTime()/1000);
 //            Date formated = gettingfmt.parse(schdlStart);
 //            return String.valueOf(formated.getTime() / 1000);

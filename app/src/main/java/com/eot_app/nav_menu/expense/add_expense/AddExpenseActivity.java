@@ -106,13 +106,13 @@ public class AddExpenseActivity extends UploadDocumentActivity implements TextWa
             myCalendar.set(Calendar.DAY_OF_MONTH,selectedDay);
             String dateselect = "";
             try {
-                DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy", Locale.US);//hh:mm:ss a
+                DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);//hh:mm:ss a
                 Date startDate = formatter.parse(selectedDay + "-" + (selectedMonth + 1) + "-" + selectedYear);
-                dateselect = new SimpleDateFormat(AppConstant.DATE_FORMAT, Locale.US).format(startDate);
+                dateselect = new SimpleDateFormat(AppConstant.DATE_FORMAT, Locale.ENGLISH).format(startDate);
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-            DateFormat dateFormat = new SimpleDateFormat("hh:mm:ss a", Locale.US);//append current time
+            DateFormat dateFormat = new SimpleDateFormat(AppUtility.dateTimeByAmPmFormate(" hh:mm a"," HH:mm"), Locale.ENGLISH);//append current time
             dateFormat.format(new Date());
             exDate = dateselect + " " + dateFormat.format(new Date());
 
@@ -120,7 +120,7 @@ public class AddExpenseActivity extends UploadDocumentActivity implements TextWa
             params.setMargins(0, 5, 0, 0);
             txt_date.setLayoutParams(params);
             txt_date.setVisibility(View.VISIBLE);
-            edt_expense_date.setText(dateselect);
+            edt_expense_date.setText(AppUtility.getDateByLang(dateselect,false));
         }
     };
     private String status = "1";
@@ -201,8 +201,8 @@ public class AddExpenseActivity extends UploadDocumentActivity implements TextWa
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             params.setMargins(0, 5, 0, 0);
             txt_date.setLayoutParams(params);
-            edt_expense_date.setText(AppUtility.getDateWithFormate
-                    (Long.parseLong(expenseDetails.getDateTime()), AppConstant.DATE_FORMAT));
+            edt_expense_date.setText(AppUtility.getDateByLang(AppUtility.getDateWithFormate
+                    (Long.parseLong(expenseDetails.getDateTime()), AppConstant.DATE_FORMAT),false));
         }
 
         if (!expenseDetails.getCategoryName().equals("")) {
@@ -224,10 +224,10 @@ public class AddExpenseActivity extends UploadDocumentActivity implements TextWa
         cltId = expenseDetails.getCltId();
         try {
             if (expenseDetails.getDateTime() != null && !expenseDetails.getDateTime().equals("")) {
-                exDate = AppUtility.getDate(Long.parseLong(expenseDetails.getDateTime()), AppConstant.DATE_FORMAT);
-                edt_expense_date.setText(exDate);
+                exDate = AppUtility.getDate(Long.parseLong(expenseDetails.getDateTime()), AppUtility.dateTimeByAmPmFormate(AppConstant.DATE_FORMAT+" hh:mm a",AppConstant.DATE_FORMAT+" HH:mm"));
+                edt_expense_date.setText(AppUtility.getDateByLang(exDate,false));
             } else {
-                edt_expense_date.setText(AppUtility.getDateByFormat(AppConstant.DATE_FORMAT));
+                edt_expense_date.setText(AppUtility.getDateByLang(AppUtility.getDateByFormat(AppConstant.DATE_FORMAT),false));
             }
         } catch (Exception e) {
             e.getMessage();
@@ -381,8 +381,8 @@ public class AddExpenseActivity extends UploadDocumentActivity implements TextWa
         tv_spinner_category.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.expense_category));
 
 
-        edt_expense_date.setText(AppUtility.getDateByFormat(AppConstant.DATE_FORMAT));
-        exDate = AppUtility.getDateByFormat(AppConstant.DATE_FORMAT+" hh:mm:ss a");
+        edt_expense_date.setText(AppUtility.getDateByLang(AppUtility.getDateByFormat(AppConstant.DATE_FORMAT),false));
+        exDate = AppUtility.getDateByFormat(AppUtility.dateTimeByAmPmFormate(AppConstant.DATE_FORMAT+" hh:mm a",AppConstant.DATE_FORMAT+" HH:mm"));
 
         clickListners();
 
@@ -695,7 +695,7 @@ public class AddExpenseActivity extends UploadDocumentActivity implements TextWa
                     cltId,
                     edt_expense_nm.getText().toString().trim(),
                     edt_expense_amount.getText().toString().trim()
-                    , exDate, ecId,
+                    , AppUtility.sendDateByFormate(exDate,true), ecId,
                     etId, edt_expense_desc.getText().toString().trim()
                     , status, receipt));
             Log.e("Add Ecpense", "");
@@ -729,7 +729,7 @@ public class AddExpenseActivity extends UploadDocumentActivity implements TextWa
                         addExpensePi.updateExpense(new UpdateExpenseReq(jobId, cltId,
                                 edt_expense_nm.getText().toString().trim(),
                                 edt_expense_amount.getText().toString().trim()
-                                , exDate, ecId, etId, status,
+                                , AppUtility.sendDateByFormate(exDate,true), ecId, etId, status,
                                 edt_expense_desc.getText().toString().trim()
                                 , receipt, expenseDetails.getExpId()
                                 , ""));
@@ -739,7 +739,7 @@ public class AddExpenseActivity extends UploadDocumentActivity implements TextWa
                         addExpensePi.updateExpense(new UpdateExpenseReq(jobId, cltId,
                                 edt_expense_nm.getText().toString().trim(),
                                 edt_expense_amount.getText().toString().trim()
-                                , exDate, ecId, etId, status,
+                                , AppUtility.sendDateByFormate(exDate,true), ecId, etId, status,
                                 edt_expense_desc.getText().toString().trim()
                                 , receipt, expenseDetails.getExpId()
                                 , ""));
@@ -748,7 +748,7 @@ public class AddExpenseActivity extends UploadDocumentActivity implements TextWa
                     addExpensePi.updateExpense(new UpdateExpenseReq(jobId, cltId,
                             edt_expense_nm.getText().toString().trim(),
                             edt_expense_amount.getText().toString().trim()
-                            , exDate, ecId, etId, status,
+                            , AppUtility.sendDateByFormate(exDate,true), ecId, etId, status,
                             edt_expense_desc.getText().toString().trim()
                             , receipt, expenseDetails.getExpId()
                             , ""));

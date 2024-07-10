@@ -111,7 +111,7 @@ public class AdapterAuditList extends RecyclerView.Adapter<AdapterAuditList.MyVi
             if (position < list.size())
                 if (position == 0 || (list.get(position - 1).getSchdlStart() != null && list.get(position - 1).getSchdlStart().equals(""))) {
                     holder.txt_date.setText(txtFrst);
-                    holder.txt_date.append(date_separated[1]);
+                    holder.txt_date.append(AppUtility.getDateByLang(date_separated[1],false));
                     holder.date_layout.setVisibility(View.VISIBLE);
 
                 } else if (list.get(position - 1).getSchdlStart() != null && !list.get(position - 1).getSchdlStart().equals("")) {
@@ -121,7 +121,7 @@ public class AdapterAuditList extends RecyclerView.Adapter<AdapterAuditList.MyVi
                         holder.date_layout.setVisibility(View.GONE);
                     } else {
                         holder.txt_date.setText(txtFrst);
-                        holder.txt_date.append(date_separated[1]);
+                        holder.txt_date.append(AppUtility.getDateByLang(date_separated[1],false));
                         holder.date_layout.setVisibility(View.VISIBLE);
                     }
                 }

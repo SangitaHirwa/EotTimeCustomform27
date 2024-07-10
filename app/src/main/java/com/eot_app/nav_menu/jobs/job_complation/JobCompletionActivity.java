@@ -1619,22 +1619,22 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
                         if (quesRspncModelList.get(i).getType().equals("5")) {
                             if (!TextUtils.isEmpty(quesRspncModelList.get(i).getAns().get(0).getValue())) {
                                 long l = Long.parseLong(quesRspncModelList.get(i).getAns().get(0).getValue());
-                                String date = AppUtility.getDates(l, "yyyy-MMM-dd hh:mm:ss");
-                                ans = date;
+                                String date = AppUtility.getDates(l, AppUtility.dateTimeByAmPmFormate(
+                                        "dd-MMM-yyyy","dd-MMM-yyyy"));
+                                ans = AppUtility.sendDateByFormate(date,false);
                             }
                         } else if (quesRspncModelList.get(i).getType().equals("6")) {
                             if (!TextUtils.isEmpty(quesRspncModelList.get(i).getAns().get(0).getValue())) {
                                 long l = Long.parseLong(quesRspncModelList.get(i).getAns().get(0).getValue());
-                                String date = AppUtility.getDates(l,
-                                        AppUtility.dateTimeByAmPmFormate("hh:mm a", "HH:mm"));
+                                String date = AppUtility.getDates(l,"HH:mm:ss");
                                 ans = date;
                             }
                         } else if (quesRspncModelList.get(i).getType().equals("7")) {
                             if (!TextUtils.isEmpty(quesRspncModelList.get(i).getAns().get(0).getValue())) {
                                 long l = Long.parseLong(quesRspncModelList.get(i).getAns().get(0).getValue());
-                                String date = AppUtility.getDates(l, AppUtility.dateTimeByAmPmFormate(
+                                String date = AppUtility.getDates(l,AppUtility.dateTimeByAmPmFormate(
                                         "dd-MMM-yyyy hh:mm a","dd-MMM-yyyy HH:mm"));
-                                ans = date;
+                                ans =  AppUtility.sendDateByFormate(date,true);
                             }
                         } else
                             ans = quesRspncModelList.get(i).getAns().get(0).getValue();

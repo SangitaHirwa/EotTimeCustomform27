@@ -35,7 +35,7 @@ public class Payment_pc implements Payment_pi {
                                         long paymentDate, Boolean isEmailSendOrNot, String jobId, String isMailSentToClt,String image) {
         try {
             float amt = Float.parseFloat(amount);
-            String date = AppUtility.getDateWithFormate2(paymentDate, "yyyy-MM-dd");
+            String date = AppUtility.getDateWithFormateInENG(paymentDate, "yyyy-MM-dd");
            /* Payment_ReQ_Model payment_reQ_model = new Payment_ReQ_Model(am, invId, refName, payType, date, notes, isEmailSendOrNot, jobId, isMailSentToClt,image);
             JsonObject jsonObject = AppUtility.getJsonObject(new Gson().toJson(payment_reQ_model));
 */

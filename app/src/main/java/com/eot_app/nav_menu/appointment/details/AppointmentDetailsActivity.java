@@ -506,8 +506,9 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
 
 
                 String dateFormat = AppUtility.getDateWithFormate(longStartTime, "dd-MMM-yyyy");
-                binding.tvStartDate.setText(dateFormat);
-                binding.tvDateTime.setText(timeFormat+" "+dateFormat);
+                String s = AppUtility.getDateByLang(dateFormat,false);
+                binding.tvStartDate.setText(s);
+                binding.tvDateTime.setText(timeFormat+" "+s);
 
                 long endTime = Long.parseLong(model.getSchdlFinish());
                 timeFormat = AppUtility.getDateWithFormate(endTime,
@@ -516,7 +517,7 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
                 binding.tvEndTime.setText(timeFormat);
 
                 dateFormat = AppUtility.getDateWithFormate(endTime, "dd-MMM-yyyy");
-                binding.tvEndDate.setText(dateFormat);
+                binding.tvEndDate.setText(AppUtility.getDateByLang(dateFormat,false));
 
             } catch (Exception ex) {
                 HyperLog.i("", "setScheduleDates(M) exception:" + ex.toString());

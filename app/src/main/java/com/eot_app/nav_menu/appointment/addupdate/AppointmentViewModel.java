@@ -55,6 +55,7 @@ public class AppointmentViewModel extends AndroidViewModel implements ServerResp
                 String dateTime = AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT);
                 Gson gson = new Gson();
                 String addAppointmentReq = gson.toJson(appointmentModel);//2308  2739
+                Log.d("", "addAppointment(M) " + addAppointmentReq);
                 saveAppointmentTOLocalDB(appointmentModel);
                 OfflineDataController.getInstance().addInOfflineDB(Service_apis.addAppointment, addAppointmentReq, dateTime);
                 finishActivity.setValue(true);

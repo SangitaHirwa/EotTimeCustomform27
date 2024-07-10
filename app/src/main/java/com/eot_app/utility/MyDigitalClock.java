@@ -12,6 +12,7 @@ import com.hypertrack.hyperlog.HyperLog;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
@@ -125,7 +126,7 @@ public class MyDigitalClock {
             if (!time1.isEmpty() && !time2.isEmpty()) {
                 @SuppressLint("SimpleDateFormat") SimpleDateFormat simpleDateFormat
 //                        = new SimpleDateFormat("hh:mm a");
-                        = new SimpleDateFormat("dd/MM/yyyy-hh:mm a");
+                        = new SimpleDateFormat("dd/MM/yyyy-hh:mm a", Locale.ENGLISH);
                 Date date1 = null, date2 = null;
                 try {
                     date1 = simpleDateFormat.parse(time1);
@@ -199,7 +200,7 @@ public class MyDigitalClock {
             if (!time1.isEmpty() && !time2.isEmpty()) {
                 @SuppressLint("SimpleDateFormat") SimpleDateFormat simpleDateFormat
 //                        = new SimpleDateFormat("hh:mm a");
-                        = new SimpleDateFormat("dd/MM/yyyy-hh:mm a");
+                        = new SimpleDateFormat("dd/MM/yyyy-hh:mm a",Locale.ENGLISH);
                 Date date1 = null, date2 = null;
                 try {
                     date1 = simpleDateFormat.parse(time1);

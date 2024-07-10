@@ -114,7 +114,7 @@ public class AdpterJobHistory extends RecyclerView.Adapter<AdpterJobHistory.MyVi
             if (position < jobdata.size())
                 if (position == 0 || (jobdata.get(position - 1).getSchdlStart() != null && jobdata.get(position - 1).getSchdlStart().equals(""))) {
                     holder.txt_date.setText(txtFrst);
-                    holder.txt_date.append(date_separated[1]);
+                    holder.txt_date.append(AppUtility.getDateByLang(date_separated[1],false));
                     holder.date_layout.setVisibility(View.VISIBLE);
 
                 } else if (jobdata.get(position - 1).getSchdlStart() != null && !jobdata.get(position - 1).getSchdlStart().equals("")) {
@@ -124,7 +124,7 @@ public class AdpterJobHistory extends RecyclerView.Adapter<AdpterJobHistory.MyVi
                         holder.date_layout.setVisibility(View.GONE);
                     } else {
                         holder.txt_date.setText(txtFrst);
-                        holder.txt_date.append(date_separated[1]);
+                        holder.txt_date.append(AppUtility.getDateByLang(date_separated[1],false));
                         holder.date_layout.setVisibility(View.VISIBLE);
                     }
                 }

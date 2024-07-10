@@ -135,7 +135,7 @@ public class AppUtility {
     }
 
     public static String addDaysInDate(String date, int days, String type, String format) {
-        DateFormat dateFormat = new SimpleDateFormat(format, Locale.US);
+        DateFormat dateFormat = new SimpleDateFormat(format, Locale.ENGLISH);
         if (App_preference.getSharedprefInstance().getLoginRes().getIsAutoTimeZone().equals("1")) {
             dateFormat.setTimeZone(TimeZone.getTimeZone(App_preference.getSharedprefInstance().getLoginRes().getLoginUsrTz()));
         }else{
@@ -181,7 +181,7 @@ public class AppUtility {
     }
 
     public static String getDate(long milliSeconds, String formate) { //Convert milisecond to Date time for chat
-        SimpleDateFormat formatter = new SimpleDateFormat(formate, Locale.US);
+        SimpleDateFormat formatter = new SimpleDateFormat(formate, Locale.ENGLISH);
         if (App_preference.getSharedprefInstance().getLoginRes().getIsAutoTimeZone().equals("1")) {
             formatter.setTimeZone(TimeZone.getTimeZone(App_preference.getSharedprefInstance().getLoginRes().getLoginUsrTz()));
         }else{
@@ -199,7 +199,7 @@ public class AppUtility {
 
     /****get Yesterday Date*****/
     public static String getYesterDayDate(String formate, int decrease) {
-        DateFormat dateFormat = new SimpleDateFormat(formate, Locale.US);
+        DateFormat dateFormat = new SimpleDateFormat(formate, Locale.ENGLISH);
         if (App_preference.getSharedprefInstance().getLoginRes().getIsAutoTimeZone().equals("1")) {
             dateFormat.setTimeZone(TimeZone.getTimeZone(App_preference.getSharedprefInstance().getLoginRes().getLoginUsrTz()));
         }else{
@@ -215,7 +215,7 @@ public class AppUtility {
         Locale.getDefault().getDisplayLanguage();
         try {
             SimpleDateFormat gettingfmt = new SimpleDateFormat(
-                    AppUtility.dateTimeByAmPmFormate("dd-MM-yyyy hh:mm a", "dd-MM-yyyy HH:mm"), Locale.US);//, Locale.US
+                    AppUtility.dateTimeByAmPmFormate("dd-MM-yyyy hh:mm a", "dd-MM-yyyy HH:mm"), Locale.ENGLISH);//, Locale.US
             if (App_preference.getSharedprefInstance().getLoginRes().getIsAutoTimeZone().equals("1")) {
                 gettingfmt.setTimeZone(TimeZone.getTimeZone(App_preference.getSharedprefInstance().getLoginRes().getLoginUsrTz()));
             }else{
@@ -241,7 +241,7 @@ public class AppUtility {
         Locale.getDefault().getDisplayLanguage();
         try {
             SimpleDateFormat gettingfmt = new SimpleDateFormat(
-                    formate, Locale.getDefault());//, Locale.US
+                    formate, Locale.ENGLISH);//, Locale.US
             if (App_preference.getSharedprefInstance().getLoginRes().getIsAutoTimeZone().equals("1")) {
                 gettingfmt.setTimeZone(TimeZone.getTimeZone(App_preference.getSharedprefInstance().getLoginRes().getLoginUsrTz()));
             }else{
@@ -267,7 +267,7 @@ public class AppUtility {
         Locale.getDefault().getDisplayLanguage();
         try {
             SimpleDateFormat gettingfmt = new SimpleDateFormat(
-                    formate, Locale.getDefault());//, Locale.US
+                    formate, Locale.ENGLISH);//, Locale.US
             if (App_preference.getSharedprefInstance().getLoginRes().getIsAutoTimeZone().equals("1")) {
                 gettingfmt.setTimeZone(TimeZone.getTimeZone(App_preference.getSharedprefInstance().getLoginRes().getLoginUsrTz()));
             }else{
@@ -293,7 +293,7 @@ public class AppUtility {
         Locale.getDefault().getDisplayLanguage();
         try {
             SimpleDateFormat gettingfmt = new SimpleDateFormat(
-                    formate, Locale.getDefault());//, Locale.US
+                    formate, Locale.ENGLISH);//, Locale.US
             if (App_preference.getSharedprefInstance().getLoginRes().getIsAutoTimeZone().equals("1")) {
                 gettingfmt.setTimeZone(TimeZone.getTimeZone(App_preference.getSharedprefInstance().getLoginRes().getLoginUsrTz()));
             }else{
@@ -325,7 +325,7 @@ public class AppUtility {
     public static String getDate(long milliSeconds) { //Convert milisecond to Date time for chat
         try {
             SimpleDateFormat formatter = new SimpleDateFormat(
-                    AppUtility.dateTimeByAmPmFormate(AppConstant.DATE_FORMAT+" hh:mm a", AppConstant.DATE_FORMAT+" HH:mm"), Locale.US);
+                    AppUtility.dateTimeByAmPmFormate(AppConstant.DATE_FORMAT+" hh:mm a", AppConstant.DATE_FORMAT+" HH:mm"), Locale.ENGLISH);
             if (App_preference.getSharedprefInstance().getLoginRes().getIsAutoTimeZone().equals("1")) {
                 formatter.setTimeZone(TimeZone.getTimeZone(App_preference.getSharedprefInstance().getLoginRes().getLoginUsrTz()));
             }else{
@@ -344,7 +344,7 @@ public class AppUtility {
     public static String getDateWithFormate(long milliSeconds, String formate) { //Convert milisecond to Date time for chat
 //        Locale.getDefault().getDisplayLanguage();
         try {
-            @SuppressLint("SimpleDateFormat") SimpleDateFormat formatter = new SimpleDateFormat(formate);
+            @SuppressLint("SimpleDateFormat") SimpleDateFormat formatter = new SimpleDateFormat(formate,Locale.ENGLISH);
             if (App_preference.getSharedprefInstance().getLoginRes().getIsAutoTimeZone().equals("1")) {
                 formatter.setTimeZone(TimeZone.getTimeZone(App_preference.getSharedprefInstance().getLoginRes().getLoginUsrTz()));
             }else{
@@ -361,7 +361,7 @@ public class AppUtility {
     }
 
     public static String getDateWithFormate2(long milliSeconds, String formate) { //Convert milisecond to Date time for chat
-        SimpleDateFormat formatter = new SimpleDateFormat(formate, Locale.US);
+        SimpleDateFormat formatter = new SimpleDateFormat(formate, Locale.ENGLISH);
         if (App_preference.getSharedprefInstance().getLoginRes().getIsAutoTimeZone().equals("1")) {
             formatter.setTimeZone(TimeZone.getTimeZone(App_preference.getSharedprefInstance().getLoginRes().getLoginUsrTz()));
         }else{
@@ -385,7 +385,7 @@ public class AppUtility {
 
     public static String getDateByFormat(String format) { //get current date time
         /* *****not work default language so always set US langauge for this request*****/
-        SimpleDateFormat gettingfmt = new SimpleDateFormat(format, Locale.US);
+        SimpleDateFormat gettingfmt = new SimpleDateFormat(format, Locale.ENGLISH);
         if (App_preference.getSharedprefInstance().getLoginRes().getIsAutoTimeZone().equals("1")) {
             gettingfmt.setTimeZone(TimeZone.getTimeZone(App_preference.getSharedprefInstance().getLoginRes().getLoginUsrTz()));
         }else{
@@ -396,7 +396,7 @@ public class AppUtility {
 
     public static String changeDateFormat(String format, String Date) { //get current date time
         /* *****not work default language so always set US langauge for this request*****/
-        SimpleDateFormat gettingfmt = new SimpleDateFormat(format, Locale.US);
+        SimpleDateFormat gettingfmt = new SimpleDateFormat(format, Locale.ENGLISH);
         if (App_preference.getSharedprefInstance().getLoginRes().getIsAutoTimeZone().equals("1")) {
             gettingfmt.setTimeZone(TimeZone.getTimeZone(App_preference.getSharedprefInstance().getLoginRes().getLoginUsrTz()));
         }else{
@@ -593,7 +593,7 @@ public class AppUtility {
     }
 
     public static String convertSecondToHHMMString(int secondtTime) {
-        @SuppressLint("SimpleDateFormat") SimpleDateFormat df = new SimpleDateFormat("HH:mm");
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat df = new SimpleDateFormat("HH:mm",Locale.ENGLISH);
         if (App_preference.getSharedprefInstance().getLoginRes().getIsAutoTimeZone().equals("1")) {
             df.setTimeZone(TimeZone.getTimeZone(App_preference.getSharedprefInstance().getLoginRes().getLoginUsrTz()));
         }else{
@@ -738,7 +738,7 @@ public class AppUtility {
             day = selectedDay;
             try {
                 dateStr = day + "-" + (month + 1) + "-" + year;
-                DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
+                DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
                 if (App_preference.getSharedprefInstance().getLoginRes().getIsAutoTimeZone().equals("1")) {
                     formatter.setTimeZone(TimeZone.getTimeZone(App_preference.getSharedprefInstance().getLoginRes().getLoginUsrTz()));
                 }else{
@@ -746,7 +746,7 @@ public class AppUtility {
                 }
                 startDate = formatter.parse(dateStr);
                 assert startDate != null;
-                callback.setDateTime(new SimpleDateFormat(AppConstant.DATE_FORMAT).format(startDate));
+                callback.setDateTime(new SimpleDateFormat(AppConstant.DATE_FORMAT,Locale.ENGLISH).format(startDate));
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -787,7 +787,7 @@ public class AppUtility {
 
             try {
                 String dateEnd = day + "-" + (month + 1) + "-" + year;
-                DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
+                DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
                 if (App_preference.getSharedprefInstance().getLoginRes().getIsAutoTimeZone().equals("1")) {
                     formatter.setTimeZone(TimeZone.getTimeZone(App_preference.getSharedprefInstance().getLoginRes().getLoginUsrTz()));
                 }else{
@@ -797,7 +797,7 @@ public class AppUtility {
                 try {
                     endDate = formatter.parse(dateEnd);
                     assert endDate != null;
-                    callback.setDateTime(new SimpleDateFormat(AppConstant.DATE_FORMAT).format(endDate));
+                    callback.setDateTime(new SimpleDateFormat(AppConstant.DATE_FORMAT,Locale.ENGLISH).format(endDate));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -1825,7 +1825,7 @@ public static void askPerMissionForLocation(Context context) {
     public static boolean dateGraterOrLess(String schdlStart, String schdlFinish) {
         Locale.getDefault().getDisplayLanguage();
         try {
-            SimpleDateFormat gettingfmt = new SimpleDateFormat("dd-MMM-yyyy", Locale.US);//, Locale.US
+            SimpleDateFormat gettingfmt = new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH);//, Locale.US
             if (App_preference.getSharedprefInstance().getLoginRes().getIsAutoTimeZone().equals("1")) {
                 gettingfmt.setTimeZone(TimeZone.getTimeZone(App_preference.getSharedprefInstance().getLoginRes().getLoginUsrTz()));
             }else{
@@ -1870,7 +1870,7 @@ public static void askPerMissionForLocation(Context context) {
 
                 // if the shift is of multiple days
                 //to add one day in last check in date
-                @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+                @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy",Locale.ENGLISH);
                 if (App_preference.getSharedprefInstance().getLoginRes().getIsAutoTimeZone().equals("1")) {
                     sdf.setTimeZone(TimeZone.getTimeZone(App_preference.getSharedprefInstance().getLoginRes().getLoginUsrTz()));
                 }else{
@@ -1883,7 +1883,7 @@ public static void askPerMissionForLocation(Context context) {
                     e.printStackTrace();
                 }
                 c.add(Calendar.DAY_OF_YEAR, 1);  // number of days to add, can also use Calendar.DAY_OF_MONTH in place of Calendar.DATE
-                @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf1 = new SimpleDateFormat("dd-MM-yyyy");
+                @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf1 = new SimpleDateFormat("dd-MM-yyyy",Locale.ENGLISH);
                 if (App_preference.getSharedprefInstance().getLoginRes().getIsAutoTimeZone().equals("1")) {
                     sdf1.setTimeZone(TimeZone.getTimeZone(App_preference.getSharedprefInstance().getLoginRes().getLoginUsrTz()));
                 }else{
@@ -1899,7 +1899,7 @@ public static void askPerMissionForLocation(Context context) {
 
             HyperLog.e("TAG","Check in checkout compareCheckInOutTime endShiftTime  "+endShiftTime);
 
-            @SuppressLint("SimpleDateFormat") SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+            @SuppressLint("SimpleDateFormat") SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm",Locale.ENGLISH);
             if (App_preference.getSharedprefInstance().getLoginRes().getIsAutoTimeZone().equals("1")) {
                 simpleDateFormat.setTimeZone(TimeZone.getTimeZone(App_preference.getSharedprefInstance().getLoginRes().getLoginUsrTz()));
             }else{
@@ -2104,7 +2104,7 @@ public static void askPerMissionForLocation(Context context) {
             SimpleDateFormat gettingfmt = new SimpleDateFormat(
                     //"dd-MM-yyyy hh:mm a"
                     AppUtility.dateTimeByAmPmFormate("dd-MM-yyyy hh:mm a", "dd-MM-yyyy HH:mm")
-                    , Locale.US);
+                    , Locale.ENGLISH);
             if (App_preference.getSharedprefInstance().getLoginRes().getIsAutoTimeZone().equals("1")) {
                 gettingfmt.setTimeZone(TimeZone.getTimeZone(App_preference.getSharedprefInstance().getLoginRes().getLoginUsrTz()));
             }else{
@@ -2163,7 +2163,7 @@ public static void askPerMissionForLocation(Context context) {
 
         // get last service date from ms
         try {
-            @SuppressLint("SimpleDateFormat") SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy");
+            @SuppressLint("SimpleDateFormat") SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy",Locale.ENGLISH);
             if (App_preference.getSharedprefInstance().getLoginRes().getIsAutoTimeZone().equals("1")) {
                 formatter.setTimeZone(TimeZone.getTimeZone(App_preference.getSharedprefInstance().getLoginRes().getLoginUsrTz()));
             }else{
@@ -2237,12 +2237,12 @@ public static void askPerMissionForLocation(Context context) {
     //testing perpose
     public static String getDateByFormats(String format) { //get current date time
         /* *****not work default language so always set US langauge for this request*****/
-        SimpleDateFormat gettingfmt = new SimpleDateFormat(format, Locale.US);
+        SimpleDateFormat gettingfmt = new SimpleDateFormat(format, Locale.ENGLISH);
         return gettingfmt.format(Calendar.getInstance().getTime());
     }
 
     public static String getDates(long milliSeconds, String formate) { //Convert milisecond to Date time for chat
-        SimpleDateFormat formatter = new SimpleDateFormat(formate, Locale.US);
+        SimpleDateFormat formatter = new SimpleDateFormat(formate, Locale.ENGLISH);
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(milliSeconds * 1000);
         return formatter.format(calendar.getTime());
@@ -2271,10 +2271,10 @@ public static void askPerMissionForLocation(Context context) {
             day = selectedDay;
             try {
                 dateStr = day + "-" + (month + 1) + "-" + year;
-                DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
+                DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
                 startDate = formatter.parse(dateStr);
                 assert startDate != null;
-                callback.setDateTime(new SimpleDateFormat(AppConstant.DATE_FORMAT).format(startDate));
+                callback.setDateTime(new SimpleDateFormat(AppConstant.DATE_FORMAT,Locale.ENGLISH).format(startDate));
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -2292,11 +2292,11 @@ public static void askPerMissionForLocation(Context context) {
 
             try {
                 String dateEnd = day + "-" + (month + 1) + "-" + year;
-                DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
+                DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
                 try {
                     endDate = formatter.parse(dateEnd);
                     assert endDate != null;
-                    callback.setDateTime(new SimpleDateFormat(AppConstant.DATE_FORMAT).format(endDate));
+                    callback.setDateTime(new SimpleDateFormat(AppConstant.DATE_FORMAT,Locale.ENGLISH).format(endDate));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -2332,7 +2332,7 @@ public static void askPerMissionForLocation(Context context) {
     public static String getDateWithFormates(long milliSeconds, String formate) { //Convert milisecond to Date time for chat
 //        Locale.getDefault().getDisplayLanguage();
         try {
-            @SuppressLint("SimpleDateFormat") SimpleDateFormat formatter = new SimpleDateFormat(formate);
+            @SuppressLint("SimpleDateFormat") SimpleDateFormat formatter = new SimpleDateFormat(formate,Locale.ENGLISH);
             Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis(milliSeconds * 1000);
             return formatter.format(calendar.getTime());
@@ -2346,7 +2346,7 @@ public static void askPerMissionForLocation(Context context) {
     public static String getDateByFormatsync(String format,String times) { //get current date time
         try {
             /* *****not work default language so always set US langauge for this request*****/
-            SimpleDateFormat gettingfmt = new SimpleDateFormat(format, Locale.US);
+            SimpleDateFormat gettingfmt = new SimpleDateFormat(format, Locale.ENGLISH);
             if (App_preference.getSharedprefInstance().getLoginRes().getIsAutoTimeZone().equals("1")) {
                 gettingfmt.setTimeZone(TimeZone.getTimeZone(App_preference.getSharedprefInstance().getLoginRes().getLoginUsrTz()));
             } else {
@@ -2365,9 +2365,9 @@ public static void askPerMissionForLocation(Context context) {
     public static String dateByFormeteNew(String date){
         String dateByFormatsync=null;
         try{
-            SimpleDateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            SimpleDateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",Locale.ENGLISH);
             Date date1 = dateFormat.parse(date);
-            SimpleDateFormat dateFormat1=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            SimpleDateFormat dateFormat1=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",Locale.ENGLISH);
             if (App_preference.getSharedprefInstance().getLoginRes().getIsAutoTimeZone().equals("1")) {
                 dateFormat1.setTimeZone(TimeZone.getTimeZone(App_preference.getSharedprefInstance().getLoginRes().getLoginUsrTz()));
             } else {
@@ -2440,6 +2440,78 @@ public static void askPerMissionForLocation(Context context) {
         }
         return new File(imageFile.getPath());
     }
+
+    public static String getDateByLang(String date, boolean dateTime){
+        String parsDate = "";
+        SimpleDateFormat dateFormat1;
+        SimpleDateFormat dateFormat;
+        Date dateLang;
+        try {
+            if(dateTime){
+                dateFormat1 = new SimpleDateFormat(AppUtility.dateTimeByAmPmFormate
+                        ("dd-MMM-yyyy hh:mm a", "dd-MMM-yyyy HH:mm"),Locale.ENGLISH);
+                dateLang = dateFormat1.parse(date);
+                dateFormat = new SimpleDateFormat(AppUtility.dateTimeByAmPmFormate
+                        ("dd-MMM-yyyy hh:mm a", "dd-MMM-yyyy HH:mm"),Locale.getDefault());
+            }else{
+                 dateFormat1 = new SimpleDateFormat(AppConstant.DATE_FORMAT,Locale.ENGLISH);
+               dateLang = dateFormat1.parse(date);
+                dateFormat = new SimpleDateFormat(AppConstant.DATE_FORMAT,Locale.getDefault());
+            }
+            parsDate = dateFormat.format(dateLang);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+        return parsDate;
+    }
+    public static String sendDateByFormate(String date, boolean isDateTime)
+    {
+        String parsDate = "";
+        SimpleDateFormat dateFormat1;
+        SimpleDateFormat dateFormat;
+        Date dateLang;
+        try {
+            if(isDateTime){
+                dateFormat1 = new SimpleDateFormat(AppUtility.dateTimeByAmPmFormate
+                        (AppConstant.DATE_TIME_FORMAT_new, AppConstant.DATE_24_TIME_FORMAT_new),Locale.ENGLISH);
+                dateLang = dateFormat1.parse(date);
+                dateFormat = new SimpleDateFormat(AppConstant.DATE_TIME_FORMAT,Locale.ENGLISH);
+            }else{
+                dateFormat1 = new SimpleDateFormat(AppConstant.DATE_FORMAT,Locale.ENGLISH);
+                dateLang = dateFormat1.parse(date);
+                dateFormat = new SimpleDateFormat(AppConstant.DATE_FORMAT1,Locale.ENGLISH);
+            }
+            parsDate = dateFormat.format(dateLang);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+        return parsDate;
+    }
+    public static String getDateWithFormateInENG(long milliSeconds, String formate) { //Convert milisecond to Date time for chat
+        SimpleDateFormat formatter = new SimpleDateFormat(formate, Locale.ENGLISH);
+        if (App_preference.getSharedprefInstance().getLoginRes().getIsAutoTimeZone().equals("1")) {
+            formatter.setTimeZone(TimeZone.getTimeZone(App_preference.getSharedprefInstance().getLoginRes().getLoginUsrTz()));
+        }else{
+            formatter.setTimeZone(TimeZone.getDefault());
+        }
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(milliSeconds);
+        return formatter.format(calendar.getTime());
+    }
+    public static String getTimeInEng(long milliSeconds, String formate) { //Convert milisecond to Date time for chat
+        SimpleDateFormat formatter = new SimpleDateFormat(formate, Locale.ENGLISH);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(milliSeconds * 1000);
+        return formatter.format(calendar.getTime());
+    }
+    public static String getTime(String date, String formate) { //Convert milisecond to Date time for chat
+        SimpleDateFormat formatter = new SimpleDateFormat(formate, Locale.getDefault());
+        Calendar calendar = Calendar.getInstance();
+//        calendar.setTimeInMillis(milliSeconds * 1000);
+        return formatter.format(calendar.getTime());
+    }
+
+
 
 }
 
