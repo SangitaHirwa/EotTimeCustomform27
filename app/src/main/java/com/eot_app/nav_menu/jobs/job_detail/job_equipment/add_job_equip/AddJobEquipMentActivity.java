@@ -1619,7 +1619,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
         }if(!TextUtils.isEmpty(binding.installedDateLable.getText().toString().trim())){
             installDate = sInstDate.trim()+" "+formatetime;
         }if(!TextUtils.isEmpty(warnty_date_lable_start.getText().toString().trim())){
-            warantyStartDate = sManufacDate.trim()+" "+formatetime;
+            warantyStartDate = sWarStartDate.trim()+" "+formatetime;
         }
         if (comeFrom != null && comeFrom.equalsIgnoreCase("AddRemarkReplace")) {
             createEqquipmentRequestForReplace();
@@ -1656,8 +1656,8 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
         }else {
             installDate = "";
         }
-        if(sManufacDate != null && !sManufacDate.isEmpty()) {
-            warantyStartDate = AppUtility.sendDateByFormate(sManufacDate, true);
+        if(sWarStartDate != null && !sWarStartDate.isEmpty()) {
+            warantyStartDate = AppUtility.sendDateByFormate(warantyStartDate, true);
         }else {
             warantyStartDate = "";
         }
@@ -1719,8 +1719,8 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
         }else {
             installDate = "";
         }
-        if(sManufacDate != null && !sManufacDate.isEmpty()) {
-            warantyStartDate = AppUtility.sendDateByFormate(sManufacDate, true);
+        if(sWarStartDate != null && !sWarStartDate.isEmpty()) {
+            warantyStartDate = AppUtility.sendDateByFormate(warantyStartDate, true);
         }else {
             warantyStartDate = "";
         }

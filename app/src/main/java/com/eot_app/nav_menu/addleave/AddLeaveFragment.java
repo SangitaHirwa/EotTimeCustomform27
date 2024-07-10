@@ -307,15 +307,15 @@ public class AddLeaveFragment extends AppCompatActivity implements View.OnClickL
                     startDate = new SimpleDateFormat(datetiemform, Locale.ENGLISH).parse(fromDate.trim());
                     endDate = new SimpleDateFormat(datetiemform, Locale.ENGLISH).parse(toDate.trim());
                     assert startDate != null;
-                    s = new SimpleDateFormat(AppConstant.DATE_FORMAT+" hh:mm a", Locale.ENGLISH).format(startDate);
+                    s = new SimpleDateFormat(AppUtility.dateTimeByAmPmFormate( AppConstant.DATE_FORMAT+" hh:mm a",AppConstant.DATE_FORMAT+" HH:mm"), Locale.ENGLISH).format(startDate);
                     assert endDate != null;
-                    e = new SimpleDateFormat(AppConstant.DATE_FORMAT+" hh:mm a", Locale.ENGLISH).format(endDate);
+                    e = new SimpleDateFormat(AppUtility.dateTimeByAmPmFormate( AppConstant.DATE_FORMAT+" hh:mm a",AppConstant.DATE_FORMAT+" HH:mm"), Locale.ENGLISH).format(endDate);
 //                    e = AppUtility.getDate(e);
                 } catch (Exception exception) {
                     exception.printStackTrace();
                 }
 
-                if (!AppUtility.compareTwoDatesForTimeSheet2(s, e, AppConstant.DATE_FORMAT+" hh:mm a")) {
+                if (!AppUtility.compareTwoDatesForTimeSheet2(s, e, AppUtility.dateTimeByAmPmFormate( AppConstant.DATE_FORMAT+" hh:mm a",AppConstant.DATE_FORMAT+" HH:mm"))) {
                     showMyDialog(LanguageController.getInstance().getMobileMsgByKey(AppConstant.leave_date_error));
                 } else {
                     AppUtility.progressBarShow(this);

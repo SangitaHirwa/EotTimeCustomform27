@@ -112,7 +112,7 @@ public class AddExpenseActivity extends UploadDocumentActivity implements TextWa
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-            DateFormat dateFormat = new SimpleDateFormat("hh:mm a", Locale.ENGLISH);//append current time
+            DateFormat dateFormat = new SimpleDateFormat(AppUtility.dateTimeByAmPmFormate(" hh:mm a"," HH:mm"), Locale.ENGLISH);//append current time
             dateFormat.format(new Date());
             exDate = dateselect + " " + dateFormat.format(new Date());
 
@@ -224,7 +224,7 @@ public class AddExpenseActivity extends UploadDocumentActivity implements TextWa
         cltId = expenseDetails.getCltId();
         try {
             if (expenseDetails.getDateTime() != null && !expenseDetails.getDateTime().equals("")) {
-                exDate = AppUtility.getDate(Long.parseLong(expenseDetails.getDateTime()), AppConstant.DATE_FORMAT);
+                exDate = AppUtility.getDate(Long.parseLong(expenseDetails.getDateTime()), AppUtility.dateTimeByAmPmFormate(AppConstant.DATE_FORMAT+" hh:mm a",AppConstant.DATE_FORMAT+" HH:mm"));
                 edt_expense_date.setText(AppUtility.getDateByLang(exDate,false));
             } else {
                 edt_expense_date.setText(AppUtility.getDateByLang(AppUtility.getDateByFormat(AppConstant.DATE_FORMAT),false));
@@ -382,7 +382,7 @@ public class AddExpenseActivity extends UploadDocumentActivity implements TextWa
 
 
         edt_expense_date.setText(AppUtility.getDateByLang(AppUtility.getDateByFormat(AppConstant.DATE_FORMAT),false));
-        exDate = AppUtility.getDateByFormat(AppConstant.DATE_FORMAT+" hh:mm a");
+        exDate = AppUtility.getDateByFormat(AppUtility.dateTimeByAmPmFormate(AppConstant.DATE_FORMAT+" hh:mm a",AppConstant.DATE_FORMAT+" HH:mm"));
 
         clickListners();
 
