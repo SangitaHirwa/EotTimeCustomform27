@@ -57,7 +57,10 @@ public class Inventry_ReS_Model implements Parcelable, DropdownListBean {
     private String isGrouped;
     private String brandNm;
     private String ebId;
-
+    @TypeConverters(PartConverter.class)
+    private List<ItemParts> parts = null;
+    private String category = "0" ;
+    private String isTrackBySn = "0";
 
     public String getIsGrouped() {
         return isGrouped;
@@ -82,9 +85,6 @@ public class Inventry_ReS_Model implements Parcelable, DropdownListBean {
     public void setWarrantyValue(String warrantyValue) {
         this.warrantyValue = warrantyValue;
     }
-
-    @TypeConverters(PartConverter.class)
-    private List<ItemParts> parts = null;
 
     public List<ItemParts> getParts() {
         return parts;
@@ -125,6 +125,8 @@ public class Inventry_ReS_Model implements Parcelable, DropdownListBean {
         isGrouped = in.readString();
         brandNm = in.readString();
         ebId = in.readString();
+        category = in.readString();
+        isTrackBySn = in.readString();
 
     }
 
@@ -167,6 +169,8 @@ public class Inventry_ReS_Model implements Parcelable, DropdownListBean {
         dest.writeString(isGrouped);
         dest.writeString(brandNm);
         dest.writeString(ebId);
+        dest.writeString(category);
+        dest.writeString(isTrackBySn);
     }
 
     @Override
@@ -367,5 +371,21 @@ public class Inventry_ReS_Model implements Parcelable, DropdownListBean {
 
     public void setEbId(String ebId) {
         this.ebId = ebId;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public String getIsTrackBySn() {
+        return isTrackBySn;
+    }
+
+    public void setIsTrackBySn(String isTrackBySn) {
+        this.isTrackBySn = isTrackBySn;
     }
 }
