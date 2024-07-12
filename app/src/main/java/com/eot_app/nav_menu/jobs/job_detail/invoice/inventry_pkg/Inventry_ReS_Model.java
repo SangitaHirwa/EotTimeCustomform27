@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
@@ -59,8 +60,10 @@ public class Inventry_ReS_Model implements Parcelable, DropdownListBean {
     private String ebId;
     @TypeConverters(PartConverter.class)
     private List<ItemParts> parts = null;
-    private String category = "0" ;
-    private String isTrackBySn = "0";
+//    category = 0- none, 1-consumable,2-non - consumable
+    private String category;
+    //    isTrackBySn = 0- No, 1 - Yes
+    private String isTrackBySn;
 
     public String getIsGrouped() {
         return isGrouped;

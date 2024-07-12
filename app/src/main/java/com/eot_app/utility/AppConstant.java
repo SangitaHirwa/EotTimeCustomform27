@@ -1086,6 +1086,7 @@ public class AppConstant {
     public static String stock_remove_alert_msg = "stock_remove_alert_msg";
     public static String adjust_stock = "adjust_stock";
     public static final String discountError1 = "discountError1";
+    public static final String serial_no_error = "serial_no_error";
 
     public static String server(String location) {
         switch (location) {

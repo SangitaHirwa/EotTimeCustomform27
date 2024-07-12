@@ -73,6 +73,10 @@ public class InvoiceItemDataModel implements Parcelable {
     private String isRemoveStock;
     private String brandNm;
     private String stkusrId;
+    //    category = 0- none, 1-consumable,2-non - consumable
+    private String category;
+    //    isTrackBySn = 0- No, 1 - Yes
+    private String isTrackBySn ;
 
     public String getBrandNm() {
         return brandNm;
@@ -255,6 +259,8 @@ public class InvoiceItemDataModel implements Parcelable {
         isRemoveStock = in.readString();
         brandNm = in.readString();
         stkusrId = in.readString();
+        category = in.readString();
+        isTrackBySn = in.readString();
     }
 
     public static Creator<InvoiceItemDataModel> getCREATOR() {
@@ -461,6 +467,8 @@ public class InvoiceItemDataModel implements Parcelable {
         dest.writeString(isRemoveStock);
         dest.writeString(brandNm);
         dest.writeString(stkusrId);
+        dest.writeString(category);
+        dest.writeString(isTrackBySn);
     }
 
 
@@ -502,7 +510,9 @@ public class InvoiceItemDataModel implements Parcelable {
                 Objects.equals(getGroupId(), that.getGroupId())&&
                 Objects.equals(getIsRemoveStock(), that.getIsRemoveStock())&&
                 Objects.equals(getStkusrId(), that.getStkusrId())&&
-                Objects.equals(getBrandNm(), that.getBrandNm());
+                Objects.equals(getBrandNm(), that.getBrandNm())&&
+                Objects.equals(getCategory(), that.getCategory())&&
+                Objects.equals(getIsTrackBySn(), that.getIsTrackBySn());
     }
 
     public String getIsBillableChange() {
@@ -560,8 +570,24 @@ public class InvoiceItemDataModel implements Parcelable {
         this.stkusrId = stkusrId;
     }
 
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public String getIsTrackBySn() {
+        return isTrackBySn;
+    }
+
+    public void setIsTrackBySn(String isTrackBySn) {
+        this.isTrackBySn = isTrackBySn;
+    }
+
     @Override
     public int hashCode() {
-        return Objects.hash(getTempNm(), getInm(), getIjmmId(), getItemId(), getDataType(), getItemType(), getRate(), getQty(), getDiscount(), getDes(), getHsncode(), getPno(), getUnit(), getTaxamnt(), getSupplierCost(), getIsGrouped(), getTax(), getJtId(), getIsBillable(), getIsBillableChange(),getWarrantyType(),getWarrantyValue(),getEquId(),getIsPartTempId(),getIsPartParent(),getIsPartChild(),getParentId(),isRemoveStock,getBrandNm());
+        return Objects.hash(getTempNm(), getInm(), getIjmmId(), getItemId(), getDataType(), getItemType(), getRate(), getQty(), getDiscount(), getDes(), getHsncode(), getPno(), getUnit(), getTaxamnt(), getSupplierCost(), getIsGrouped(), getTax(), getJtId(), getIsBillable(), getIsBillableChange(),getWarrantyType(),getWarrantyValue(),getEquId(),getIsPartTempId(),getIsPartParent(),getIsPartChild(),getParentId(),isRemoveStock,getBrandNm(),getCategory(),getIsTrackBySn());
     }
 }

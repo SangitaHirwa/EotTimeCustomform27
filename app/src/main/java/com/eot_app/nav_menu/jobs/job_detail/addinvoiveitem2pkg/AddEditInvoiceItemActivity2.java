@@ -215,6 +215,7 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
     StockData stockData;
     String lastUpdateQty ="";
     String brand_name ="";
+    boolean isSerialNoMandatory = false;
 
     public AddEditInvoiceItemActivity2 getInstance() {
 
@@ -398,6 +399,7 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
                     switch (autocomplete_item.getTag().toString()) {
                         case "Item":
                             Log.e("", "");
+                            trackBySerialno(null);
                             if (editable.length() >= 1) {
                                 if (comeFrom != null && comeFrom.equalsIgnoreCase("AddRemark") || comeFrom != null && comeFrom.equalsIgnoreCase("JobListScan") || comeFrom != null && comeFrom.equalsIgnoreCase("AddRemarkReplace")) {
                                     if (ll_serialNo.getVisibility() == View.VISIBLE) {
@@ -699,6 +701,10 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
 
     private void goneViewsForUpdate() {
         layout_fw_item.setVisibility(View.GONE);
+            String data = new Gson().toJson(updateItemDataModel);
+            Inventry_ReS_Model inventryReSModel = new Gson().fromJson(data, Inventry_ReS_Model.class);
+            trackBySerialno(inventryReSModel);
+
         try {
             if (locId != null && !locId.equals("0") && updateItemDataModel.getTaxType() != null && updateItemDataModel.getTaxType().equals("2")) {
                 applytaxBasesOnLoc();
@@ -1529,6 +1535,9 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
     private void setSelectedItemData(Inventry_ReS_Model itemselected) {
         // to remove the callback on item selection
 //        handler.removeCallbacks(input_finish_checker);
+        if(!getIntent().hasExtra("AddRequirmentGetheringItem") && !getIntent().hasExtra("UpdateItemRequirmentGethering")) {
+            trackBySerialno(itemselected);
+        }
 
         Log.e("itemselected", new Gson().toJson(itemselected));
         /*For Item Parts on Item************/
@@ -1925,12 +1934,14 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
                 invoiceItemPi.getInventryItemList();
                 setTxtBkgColor(1);
                 fw_service_filed_hide(1);
+                trackBySerialno(null);
                 break;
             case R.id.fw_select:
                 autocomplete_item.setTag("Fw");
                 setTxtBkgColor(2);
                 invoiceItemPi.getFwList();
                 fw_service_filed_hide(2);
+                trackBySerialno(null);
                 break;
             case R.id.tax_value_txt:
                 showDialogTax();
@@ -1942,6 +1953,7 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
                 add_stock_checkBox.setVisibility(View.GONE);
                 chiled_add_stock_checkBox.setVisibility(View.GONE);
                 fw_service_filed_hide(3);
+                trackBySerialno(null);
                 break;
             case R.id.tv_skip:
                 isSerialNoSelected = false;
@@ -2013,6 +2025,8 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
             AppUtility.alertDialog(this, "", LanguageController.getInstance().getMobileMsgByKey(AppConstant.service_error), AppConstant.ok, "", () -> null);
         } else if (isSerialNoSelected && serialNoList.size() > 1 && itemId1 == null && ijmmId == null) {
             AppUtility.alertDialog(this, "", LanguageController.getInstance().getMobileMsgByKey(AppConstant.select_serial_no), AppConstant.ok, "", () -> null);
+        }else  if(isSerialNoMandatory && edt_serialNo.getText().toString() != null && edt_serialNo.getText().toString().isEmpty()){
+            AppUtility.alertDialog(this, "", LanguageController.getInstance().getMobileMsgByKey(AppConstant.serial_no_error), AppConstant.ok, "", () -> null);
         } else {
 
             List<Tax> taxListFilter = new ArrayList<>();
@@ -3599,6 +3613,24 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
                 Toast.makeText(this, LanguageController.getInstance().getServerMsgByKey(AppConstant.went_wrong), Toast.LENGTH_SHORT).show();
                 AppUtility.progressBarDissMiss();
             }
+        }
+    }
+//    set UI for serial no and quantity if Item non consumable
+    public void trackBySerialno(Inventry_ReS_Model item){
+        if(item != null && item.getCategory().equals("2")) {
+                if (item.getIsTrackBySn().equals("1")) {
+                    edt_serialNo.setHint(LanguageController.getInstance().getMobileMsgByKey(serial_no) + " *");
+                    edt_item_qty.setEnabled(false);
+                    isSerialNoMandatory = true;
+                }else {
+                    edt_serialNo.setHint(LanguageController.getInstance().getMobileMsgByKey(serial_no));
+                    edt_item_qty.setEnabled(true);
+                    isSerialNoMandatory = false;
+                }
+        }else {
+            edt_serialNo.setHint(LanguageController.getInstance().getMobileMsgByKey(serial_no));
+            edt_item_qty.setEnabled(true);
+            isSerialNoMandatory = false;
         }
     }
 }

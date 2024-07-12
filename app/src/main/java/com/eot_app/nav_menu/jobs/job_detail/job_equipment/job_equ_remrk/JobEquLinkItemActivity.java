@@ -163,7 +163,7 @@ public class JobEquLinkItemActivity extends AppCompatActivity implements JobEquR
             startActivityForResult(intent, 201);
             finish();
         }else {
-            new ReplaceItemEquipmentActivity().getInstance().finish();
+            new AddEditInvoiceItemActivity2().getInstance().finish();
             Intent intent = new Intent(JobEquLinkItemActivity.this, UpdateJobEquipMentActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
 

@@ -1985,6 +1985,7 @@
     "stock_remove_alert_msg" : "You're short on stock, but you still want to continue?",
     "adjust_stock": "Adjust it with my stock",
     "discountError1": "The discount cannot exceed the total value of the item.",
-    "select_user": "Select User"
+    "select_user": "Select User",
+    "serial_no_error": "Serial number can not be empty."
   }
 }
