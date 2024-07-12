@@ -72,7 +72,7 @@ public class AddJob_pc implements Add_job_pi {
         this.addjobView = addjobView;
     }
     int updatelimit = AppConstant.LIMIT_HIGH;
-
+    boolean isCalender = false;
     @Override
     public void getTimeShiftList() {
         List<ShiftTimeReSModel> list = new ArrayList<>();
@@ -148,6 +148,11 @@ public class AddJob_pc implements Add_job_pi {
 
     @Override
     public void getCurrentdateTime(String calenderDate) {
+        if(calenderDate != null && !calenderDate.isEmpty()){
+            isCalender = true;
+        }else {
+            isCalender = false;
+        }
         String dateTime = AppUtility.getDateByFormats(AppUtility.dateTimeByAmPmFormate(AppConstant.DATE_FORMAT+" hh:mm:ss a"
                 , AppConstant.DATE_FORMAT+" HH:mm:ss"));
         String[] date_Time = dateTime.split(" ");
@@ -209,17 +214,32 @@ public class AddJob_pc implements Add_job_pi {
             } catch (Exception e) {
                 e.getMessage();
             }
-            if(datestr!=null && !datestr.isEmpty()){
-                try {
-                    SimpleDateFormat spf = new SimpleDateFormat("dd-MMM-yyyy",Locale.ENGLISH);
-                    Date date = spf.parse(datestr);
-                    spf= new SimpleDateFormat(AppConstant.DATE_FORMAT,Locale.ENGLISH);
-                    datestr = spf.format(date);
-                    System.out.println(datestr);
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
+            if (isCalender){
+                if (datestr != null && !datestr.isEmpty()) {
+                    try {
+                        SimpleDateFormat spf = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
+                        Date date = spf.parse(datestr);
+                        spf = new SimpleDateFormat(AppConstant.DATE_FORMAT, Locale.ENGLISH);
+                        datestr = spf.format(date);
+                        System.out.println(datestr);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
 
+                }
+        }else {
+                if (datestr != null && !datestr.isEmpty()) {
+                    try {
+                        SimpleDateFormat spf = new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH);
+                        Date date = spf.parse(datestr);
+                        spf = new SimpleDateFormat(AppConstant.DATE_FORMAT, Locale.ENGLISH);
+                        datestr = spf.format(date);
+                        System.out.println(datestr);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                }
             }
             //  String[] am_pm = date_Time.split(" ");
             String cur_start = remv_sec[0] + ":" + remv_sec[1] + an_pm;
