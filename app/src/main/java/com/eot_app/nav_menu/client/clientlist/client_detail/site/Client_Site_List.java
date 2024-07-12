@@ -248,6 +248,7 @@ public class Client_Site_List extends Fragment implements MyListItemSelected<Sit
 
     @Override
     public void updateFromObserver() {
+        site_pi.siteResponce();
         site_pi.GetSiteDetailsFromDB();
     }
 }

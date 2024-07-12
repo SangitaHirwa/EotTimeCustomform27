@@ -90,7 +90,7 @@ public class EditSite_Pc implements EditSite_Pi {
 //        int countrow = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).sitemodel().getTotalCount();
         addSiteModel.setTempId(AppUtility.getTempIdFormat("Site"));
         addtempSiteIntoDB(addSiteModel, custOmFormQuestionsList);
-        EotApp.getAppinstance().notifyCon_SiteObserver(Service_apis.addClientSite);
+//        EotApp.getAppinstance().notifyCon_SiteObserver(Service_apis.addClientSite);
 
         Gson gson = new Gson();
         String data = gson.toJson(addSiteModel);
