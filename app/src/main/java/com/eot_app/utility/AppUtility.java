@@ -1521,7 +1521,7 @@ public static void askPerMissionForLocation(Context context) {
                             total_tax += Float.parseFloat(item_rate);
                         }
                     }
-                }else if(tax.size()==1 && item.isSelect()){
+                }else if(tax.size()==1){
                     total_tax = Float.parseFloat(item.getRate());
                 }
             }
