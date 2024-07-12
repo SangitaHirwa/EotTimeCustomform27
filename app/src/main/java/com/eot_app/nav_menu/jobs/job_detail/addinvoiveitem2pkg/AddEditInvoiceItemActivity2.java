@@ -2027,6 +2027,8 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
             AppUtility.alertDialog(this, "", LanguageController.getInstance().getMobileMsgByKey(AppConstant.select_serial_no), AppConstant.ok, "", () -> null);
         }else  if(isSerialNoMandatory && edt_serialNo.getText().toString() != null && edt_serialNo.getText().toString().isEmpty()){
             AppUtility.alertDialog(this, "", LanguageController.getInstance().getMobileMsgByKey(AppConstant.serial_no_error), AppConstant.ok, "", () -> null);
+        } else  if(isSerialNoMandatory && edt_item_qty.getText().toString() != null && Integer.parseInt(edt_item_qty.getText().toString())>1){
+            AppUtility.alertDialog(this, "", LanguageController.getInstance().getMobileMsgByKey(AppConstant.quantity_error), AppConstant.ok, "", () -> null);
         } else {
 
             List<Tax> taxListFilter = new ArrayList<>();

@@ -1986,6 +1986,8 @@
     "adjust_stock": "Adjust it with my stock",
     "discountError1": "The discount cannot exceed the total value of the item.",
     "select_user": "Select User",
-    "serial_no_error": "Serial number can not be empty."
+    "serial_no_error": "Serial number can not be empty.",
+    "quantity_error": "Please contact your admin."
+
   }
 }
