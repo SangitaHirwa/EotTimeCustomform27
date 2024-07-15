@@ -1986,8 +1986,7 @@
     "adjust_stock": "Adjust it with my stock",
     "discountError1": "The discount cannot exceed the total value of the item.",
     "select_user": "Select User",
-    "serial_no_error": "Serial number can not be empty.",
-    "quantity_error": "Please contact your admin."
-
+    "serial_no_error": "Serial number tracking is enabled for this item, so providing the serial number is mandatory.",
+    "quantity_error": "Item has a serial no. for tracking and has multiple quantities so it can not be modified from the mobile app."
   }
 }

@@ -921,7 +921,7 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
             if (App_preference.getSharedprefInstance().getLoginRes().getIsEquipmentEnable().equals("1") && updateItemDataModel.getItemType().equals("0")) {
                 for (FooterMenu serverList : App_preference.getSharedprefInstance().getLoginRes().getFooterMenu()) {
                     if (serverList.isEnable.equals("1") && serverList.getMenuField().equals("set_equipmentMenuOrdrNo")) {
-                        if (updateItemDataModel.getDataType() != null && updateItemDataModel.getDataType().equalsIgnoreCase("3")) {
+                        if (updateItemDataModel.getDataType() != null && updateItemDataModel.getDataType().equalsIgnoreCase("3") || updateItemDataModel.getCategory().equals("1")) {
                             convert_item_to_equi.setVisibility(View.GONE);
                         } else {
                             convert_item_to_equi.setVisibility(View.VISIBLE);
