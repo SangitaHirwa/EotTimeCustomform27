@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -22,20 +23,27 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
+import androidx.constraintlayout.widget.ConstraintLayout;
+
 import com.eot_app.BuildConfig;
 import com.eot_app.R;
 import com.eot_app.login_next.login_next_model.Right;
+import com.eot_app.nav_menu.setting.setting_presenter.Setting_pc;
+import com.eot_app.nav_menu.setting.setting_presenter.Setting_view;
 import com.eot_app.services.ApiClient;
 import com.eot_app.services.Service_apis;
 import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.AppUtility;
 import com.eot_app.utility.App_preference;
+import com.eot_app.utility.EotApp;
 import com.eot_app.utility.language_support.LanguageController;
 import com.eot_app.utility.language_support.Language_Model;
 import com.eot_app.utility.language_support.Language_Preference;
 import com.eot_app.utility.settings.setting_db.ErrorLog;
 import com.eot_app.utility.util_interfaces.Callback_AlertDialog;
 import com.eot_app.utility.util_interfaces.MySpinnerAdapter;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.hypertrack.hyperlog.DeviceLogModel;
@@ -53,7 +61,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
-public class SettingActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener {
+public class SettingActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener, Setting_view {
     private final List<Language_Model> lan_list = App_preference.getSharedprefInstance().getLoginRes().getLanguageList();
     Spinner page_spinner, language_spinner;
     TextView title_language, text_page, tv_label_language, tv_label_view, site_name_show_txt;
@@ -64,8 +72,14 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
     View report_divider;
     LinearLayout ll_report_bug;
     Context mContext;
-    TextView tv_report_msg;
+    TextView tv_report_msg,txt_change_pass;
     private Switch site_name_show_btn;
+    ConstraintLayout cl_parent_pass;
+    TextInputEditText editText_old_pass, editText_new_pass, editText_conf_pass;
+    TextInputLayout til_old_pass, til_new_pass, til_conf_pass;
+    Button btn_change_pass;
+    boolean isChangePassView = false;
+    Setting_pc settingPc;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,7 +89,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.settings));
 
-
+        settingPc = new Setting_pc(this);
         initializelables();
         /* *show and hide site name from list*/
         site_name_show_btn.setChecked(App_preference.getSharedprefInstance().getSiteNameShowInSetting());
@@ -139,12 +153,29 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
 
         page_spinner = findViewById(R.id.page_spinner);
         language_spinner = findViewById(R.id.language_spinner);
+        txt_change_pass = findViewById(R.id.txt_change_pass);
+        txt_change_pass.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.change_password));
+        editText_old_pass = findViewById(R.id.editText_old_pass);
+        til_old_pass = findViewById(R.id.til_old_pass);
+        til_old_pass.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.current_password));
+        editText_new_pass = findViewById(R.id.editText_new_pass);
+        til_new_pass = findViewById(R.id.til_new_pass);
+        til_new_pass.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.new_password));
+        editText_conf_pass = findViewById(R.id.editText_conf_pass);
+        til_conf_pass = findViewById(R.id.til_conf_pass);
+        til_conf_pass.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.cnf_pass));
+        btn_change_pass = findViewById(R.id.btn_change_pass);
+        btn_change_pass.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.change_password));
+        cl_parent_pass = findViewById(R.id.cl_parent_pass);
+
 
         text_page = findViewById(R.id.text_page);
         title_language.setOnClickListener(this);
         text_page.setOnClickListener(this);
         tv_label_language.setOnClickListener(this);
         button_report.setOnClickListener(this);
+        txt_change_pass.setOnClickListener(this);
+        btn_change_pass.setOnClickListener(this);
     }
 
 
@@ -287,6 +318,22 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
             case R.id.button_report:
                 /* ***Very important ***/
                 sendDeviceLog();
+                break;
+            case R.id.txt_change_pass:
+                if(isChangePassView){
+                    cl_parent_pass.setVisibility(View.GONE);
+                    changeViewOfArrow(false);
+                    isChangePassView = false;
+                }else {
+                    cl_parent_pass.setVisibility(View.VISIBLE);
+                    changeViewOfArrow(true);
+                    isChangePassView = true;
+                }
+                break;
+            case R.id.btn_change_pass:
+                if(checkMandatoryFields()){
+                    settingPc.changePassword(App_preference.getSharedprefInstance().getLoginRes().getUsrId(),editText_old_pass.getText().toString().trim(),editText_new_pass.getText().toString().trim());
+                }
                 break;
         }
     }
@@ -503,5 +550,54 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
             return true;
         });
 
+    }
+    public void changeViewOfArrow(boolean isExpand){
+
+        if(isExpand){
+            txt_change_pass.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.up), null);
+        }else {
+            txt_change_pass.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.down), null);
+        }
+    }
+    public boolean checkMandatoryFields(){
+        if(editText_old_pass.getText().toString().trim() != null && editText_old_pass.getText().toString().trim().isEmpty()){
+            AppUtility.alertDialog(this,"",LanguageController.getInstance().getMobileMsgByKey(AppConstant.current_pass_req),null,LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok),null);
+            return false;
+        }else if(editText_new_pass.getText().toString().trim() != null && editText_new_pass.getText().toString().trim().isEmpty()){
+            AppUtility.alertDialog(this,"",LanguageController.getInstance().getMobileMsgByKey(AppConstant.new_pass_req),null,LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok),null);
+            return false;
+        }else if(editText_conf_pass.getText().toString().trim() != null && editText_conf_pass.getText().toString().trim().isEmpty()){
+            AppUtility.alertDialog(this,"",LanguageController.getInstance().getMobileMsgByKey(AppConstant.confirm_pass_req),null,LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok),null);
+            return false;
+        }else if(!editText_new_pass.getText().toString().trim().equals(editText_conf_pass.getText().toString().trim())){
+            AppUtility.alertDialog(this,"",LanguageController.getInstance().getMobileMsgByKey(AppConstant.confirm_pass_not_match),null,LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok),null);
+            return false;
+        }else {
+            return true;
+        }
+    }
+
+    @Override
+    public void changePasswordSuccess(String msg) {
+    Toast.makeText(this,LanguageController.getInstance().getServerMsgByKey(msg),Toast.LENGTH_SHORT).show();
+        App_preference.getSharedprefInstance().setLoginCredentials(App_preference.getSharedprefInstance().getLoginRes().getUsername(), "");
+    EotApp.getAppinstance().sessionExpired();
+    }
+
+    @Override
+    public void onSessionExpired(String msg) {
+        AppUtility.alertDialog(this, LanguageController.getInstance().getMobileMsgByKey(AppConstant.dialog_error_title), msg, LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), "", () -> {
+            EotApp.getAppinstance().sessionExpired();
+            return null;
+        });
+    }
+
+    @Override
+    public void changePasswordFailure(String msg) {
+        if (msg.trim().equals("usrId_req")) {
+            Toast.makeText(this, LanguageController.getInstance().getMobileMsgByKey(AppConstant.went_wrong), Toast.LENGTH_SHORT).show();
+        }else {
+            Toast.makeText(this, LanguageController.getInstance().getServerMsgByKey(msg), Toast.LENGTH_SHORT).show();
+        }
     }
 }

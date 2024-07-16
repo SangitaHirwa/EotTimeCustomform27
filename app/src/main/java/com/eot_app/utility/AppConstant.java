@@ -1085,9 +1085,17 @@ public class AppConstant {
     public static String discard_alert_msg = "discard_alert_msg";
     public static String stock_remove_alert_msg = "stock_remove_alert_msg";
     public static String adjust_stock = "adjust_stock";
-    public static final String discountError1 = "discountError1";
-    public static final String serial_no_error = "serial_no_error";
-    public static final String quantity_error = "quantity_error";
+    public static String discountError1 = "discountError1";
+    public static String serial_no_error = "serial_no_error";
+    public static String quantity_error = "quantity_error";
+    public static String new_password = "new_password";
+    public static String cnf_pass = "cnf_pass";
+    public static String current_password = "current_password";
+    public static String change_password = "change_password";
+    public static String new_pass_req = "new_pass_req";
+    public static String confirm_pass_req = "confirm_pass_req";
+    public static String current_pass_req = "current_pass_req";
+    public static String confirm_pass_not_match = "confirm_pass_not_match";
 
     public static String server(String location) {
         switch (location) {

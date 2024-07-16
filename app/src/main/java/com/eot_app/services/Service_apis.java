@@ -257,6 +257,7 @@ public interface Service_apis {
     String equipmentRelocate = "AssetsController/equipmentRelocate";
     /**get Stock data and add this api in sync api**/
      String getUserStockBalance = "InvoiceController/getUserStockBalance";
+     String changePassword = "UserController/changePassword";
     //no token required & header
     @POST
     Observable<JsonObject> service_Call_Without_Token(@Url String url,
