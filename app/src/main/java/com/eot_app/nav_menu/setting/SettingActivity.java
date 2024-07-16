@@ -336,6 +336,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                 break;
             case R.id.btn_change_pass:
                 if(checkMandatoryFields()){
+                    AppUtility.progressBarShow(this);
                     settingPc.changePassword(App_preference.getSharedprefInstance().getLoginRes().getUsrId(),editText_old_pass.getText().toString().trim(),editText_new_pass.getText().toString().trim());
                 }
                 break;
@@ -583,6 +584,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
 
     @Override
     public void changePasswordSuccess(String msg) {
+        AppUtility.progressBarDissMiss();
     Toast.makeText(this,LanguageController.getInstance().getServerMsgByKey(msg),Toast.LENGTH_SHORT).show();
         App_preference.getSharedprefInstance().setLoginCredentials(App_preference.getSharedprefInstance().getLoginRes().getUsername(), "");
     EotApp.getAppinstance().sessionExpired();
@@ -590,6 +592,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
 
     @Override
     public void onSessionExpired(String msg) {
+        AppUtility.progressBarDissMiss();
         AppUtility.alertDialog(this, LanguageController.getInstance().getMobileMsgByKey(AppConstant.dialog_error_title), msg, LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), "", () -> {
             EotApp.getAppinstance().sessionExpired();
             return null;
@@ -598,6 +601,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
 
     @Override
     public void changePasswordFailure(String msg) {
+        AppUtility.progressBarDissMiss();
         if (msg.trim().equals("usrId_req")) {
             Toast.makeText(this, LanguageController.getInstance().getMobileMsgByKey(AppConstant.went_wrong), Toast.LENGTH_SHORT).show();
         }else {
