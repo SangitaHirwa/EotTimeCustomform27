@@ -320,14 +320,18 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                 sendDeviceLog();
                 break;
             case R.id.txt_change_pass:
-                if(isChangePassView){
-                    cl_parent_pass.setVisibility(View.GONE);
-                    changeViewOfArrow(false);
-                    isChangePassView = false;
+                if (AppUtility.isInternetConnected()) {
+                    if (isChangePassView) {
+                        cl_parent_pass.setVisibility(View.GONE);
+                        changeViewOfArrow(false);
+                        isChangePassView = false;
+                    } else {
+                        cl_parent_pass.setVisibility(View.VISIBLE);
+                        changeViewOfArrow(true);
+                        isChangePassView = true;
+                    }
                 }else {
-                    cl_parent_pass.setVisibility(View.VISIBLE);
-                    changeViewOfArrow(true);
-                    isChangePassView = true;
+                    AppUtility.alertDialog(this,"",LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_check_network),null,LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok),null);
                 }
                 break;
             case R.id.btn_change_pass:
