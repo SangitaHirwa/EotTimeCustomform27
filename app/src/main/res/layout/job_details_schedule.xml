@@ -156,7 +156,7 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="10dp"
                 android:layout_toEndOf="@+id/time_picker_icon"
-                android:text="11-June-2021, 11:30 PM - 7:30 PM"
+                android:text=""
                 tools:ignore="HardcodedText" />
 
             <TextView
