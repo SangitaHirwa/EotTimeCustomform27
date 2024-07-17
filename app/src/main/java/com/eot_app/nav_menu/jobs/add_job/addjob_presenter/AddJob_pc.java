@@ -66,6 +66,7 @@ public class AddJob_pc implements Add_job_pi {
     private List<States> statesList;
     private List<Country> countryList;
     private String date_str, time_str;
+    private int MOBILE_LIMIT = 7;
     private int count;
     int updateindex = 0;
     public AddJob_pc(AddjobView addjobView) {
@@ -82,16 +83,27 @@ public class AddJob_pc implements Add_job_pi {
 
     @Override
     public boolean RequiredFieldsForRiviste(String cltId, String adr, Set<String> jtId, String countryId, String stateId, String mob, String alterNateMob, String email) {
+        if(!mob.isEmpty() && mob.contains("+")){
+            MOBILE_LIMIT = 8;
+        }else {
+            MOBILE_LIMIT = 7;
+        }
         if (jtId.isEmpty()) {
             addjobView.showErrorMsgsForValidation(LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_job_title));
             return false;
         } else if (cltId.equals("")) {
             addjobView.showErrorMsgsForValidation(LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_client_name));
             return false;
-        } else if (!mob.isEmpty() && !mob.equalsIgnoreCase(App_preference.getSharedprefInstance().getLoginRes().getCtryCode()) && mob.length() < AppConstant.MOBILE_LIMIT) {
+        }  else if (!mob.isEmpty() && !AppUtility.isValidPhoneNumber(mob)) {
+            addjobView.showErrorMsgsForValidation(LanguageController.getInstance().getMobileMsgByKey(AppConstant.enter_valid_mobile_number));
+            return false;
+        } else if (!mob.isEmpty() && !mob.equalsIgnoreCase(App_preference.getSharedprefInstance().getLoginRes().getCtryCode()) && mob.length() < MOBILE_LIMIT) {
             addjobView.showErrorMsgsForValidation(LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_mob_lent));
             return false;
-        } else if (!alterNateMob.isEmpty() && !mob.equalsIgnoreCase(App_preference.getSharedprefInstance().getLoginRes().getCtryCode()) && alterNateMob.length() < AppConstant.MOBILE_LIMIT) {
+        }else if (!alterNateMob.isEmpty() && !AppUtility.isValidPhoneNumber(alterNateMob)) {
+            addjobView.showErrorMsgsForValidation(LanguageController.getInstance().getMobileMsgByKey(AppConstant.enter_valid_alternate_mobile_number));
+            return false;
+        } else if (!alterNateMob.isEmpty() && !mob.equalsIgnoreCase(App_preference.getSharedprefInstance().getLoginRes().getCtryCode())  && alterNateMob.length() < MOBILE_LIMIT) {
             addjobView.showErrorMsgsForValidation(LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_alter_mob_lent));
             return false;
         } else if (!email.isEmpty() && (!Eot_Validation.email_checker(email).equals(""))) {
@@ -115,16 +127,27 @@ public class AddJob_pc implements Add_job_pi {
     public boolean RequiredFields(String cltId, boolean contactSelf, boolean siteSelf, String conNm,
                                   String siteNm, String adr, Set<String> jtId, String countryId, String stateId, String mob, String
                                           alterNateMob, String email, boolean WEEKLYRECUR, int weekdaysize) {
+        if(!mob.isEmpty() && mob.contains("+")){
+            MOBILE_LIMIT = 8;
+        }else {
+            MOBILE_LIMIT = 7;
+        }
         if (jtId.isEmpty()) {
             addjobView.showErrorMsgsForValidation(LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_job_title));
             return false;
         } else if (cltId.equals("")) {
             addjobView.showErrorMsgsForValidation(LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_client_name));
             return false;
-        } else if (!mob.isEmpty() && !mob.equalsIgnoreCase(App_preference.getSharedprefInstance().getLoginRes().getCtryCode()) && mob.length() < AppConstant.MOBILE_LIMIT) {
+        } else if (!mob.isEmpty() && !AppUtility.isValidPhoneNumber(mob)) {
+            addjobView.showErrorMsgsForValidation(LanguageController.getInstance().getMobileMsgByKey(AppConstant.enter_valid_mobile_number));
+            return false;
+        } else if (!mob.isEmpty() && !mob.equalsIgnoreCase(App_preference.getSharedprefInstance().getLoginRes().getCtryCode()) && mob.length() < MOBILE_LIMIT) {
             addjobView.showErrorMsgsForValidation(LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_mob_lent));
             return false;
-        } else if (!alterNateMob.isEmpty() && !mob.equalsIgnoreCase(App_preference.getSharedprefInstance().getLoginRes().getCtryCode()) && alterNateMob.length() < AppConstant.MOBILE_LIMIT) {
+        }else if (!alterNateMob.isEmpty() && !AppUtility.isValidPhoneNumber(alterNateMob)) {
+            addjobView.showErrorMsgsForValidation(LanguageController.getInstance().getMobileMsgByKey(AppConstant.enter_valid_alternate_mobile_number));
+            return false;
+        } else if (!alterNateMob.isEmpty() && !mob.equalsIgnoreCase(App_preference.getSharedprefInstance().getLoginRes().getCtryCode())  && alterNateMob.length() < MOBILE_LIMIT) {
             addjobView.showErrorMsgsForValidation(LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_alter_mob_lent));
             return false;
         } else if (!email.isEmpty() && (!Eot_Validation.email_checker(email).equals(""))) {

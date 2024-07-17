@@ -78,6 +78,9 @@ import java.util.TimeZone;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import okhttp3.RequestBody;
 
 /**
@@ -2510,7 +2513,13 @@ public static void askPerMissionForLocation(Context context) {
 //        calendar.setTimeInMillis(milliSeconds * 1000);
         return formatter.format(calendar.getTime());
     }
+    public static boolean isValidPhoneNumber(String number) {
 
+        String regex = "^\\+?([0-9]+)$";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(number);
+        return matcher.matches();
+    }
 
 
 }

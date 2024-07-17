@@ -1096,6 +1096,8 @@ public class AppConstant {
     public static String confirm_pass_req = "confirm_pass_req";
     public static String current_pass_req = "current_pass_req";
     public static String confirm_pass_not_match = "confirm_pass_not_match";
+    public static String enter_valid_mobile_number = "enter_valid_mobile_number";
+    public static String enter_valid_alternate_mobile_number = "enter_valid_alternate_mobile_number";
 
     public static String server(String location) {
         switch (location) {
