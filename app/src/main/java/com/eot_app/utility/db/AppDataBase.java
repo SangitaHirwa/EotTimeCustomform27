@@ -768,7 +768,6 @@ public abstract class AppDataBase extends RoomDatabase {
                     " PRIMARY KEY(`sat_itemid`)) ");
             /* **Alter  Equipment Table  **/
             database.execSQL("ALTER TABLE Equipment ADD COLUMN servIntvalType TEXT");
-            database.execSQL("ALTER TABLE Equipment ADD COLUMN servIntvalValue TEXT");
             database.execSQL("ALTER TABLE Equipment ADD COLUMN isPart TEXT");
 
         }
@@ -776,8 +775,8 @@ public abstract class AppDataBase extends RoomDatabase {
  static final Migration MIGRATION_50_51 = new Migration(50, 51) {
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) {
-            database.execSQL("ALTER TABLE Inventry_ReS_Model ADD COLUMN servIntvalValue TEXT");
-            database.execSQL("ALTER TABLE Inventry_ReS_Model ADD COLUMN isPart TEXT");
+            database.execSQL("ALTER TABLE Inventry_ReS_Model ADD COLUMN category TEXT");
+            database.execSQL("ALTER TABLE Inventry_ReS_Model ADD COLUMN isTrackBySn TEXT");
         }
     };
 

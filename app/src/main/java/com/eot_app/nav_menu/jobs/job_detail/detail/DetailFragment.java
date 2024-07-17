@@ -2277,8 +2277,20 @@ public void setCompletionDetail(){
                     e.printStackTrace();
                 }
             }
-            textViewTime.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.start)+": " +AppUtility.getDateByLang(startDatTime,true) +"\n" +
-                    LanguageController.getInstance().getMobileMsgByKey(AppConstant.end)+": " + AppUtility.getDateByLang( endtime,true));
+
+                String splitStartDate [] = AppUtility.getDateByLang(startDatTime,true).split(" ");
+                String splitEndtDate [] = AppUtility.getDateByLang(endtime,true).split(" ");
+                String setStartDate= "",setEndDate = "";
+                if(splitStartDate.length == 3){
+                    setStartDate = splitStartDate[0]+", "+splitStartDate[1]+" "+splitStartDate[2];
+                    setEndDate = splitEndtDate[0]+", "+splitEndtDate[1]+" "+splitEndtDate[2];
+                }else{
+                    setStartDate = splitStartDate[0]+", "+splitStartDate[1];
+                    setEndDate = splitEndtDate[0]+", "+splitEndtDate[1];
+                }
+
+            textViewTime.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.start)+": " +setStartDate +"\n" +
+                    LanguageController.getInstance().getMobileMsgByKey(AppConstant.end)+": " + setEndDate);
 
 
             if (mParam2.getPrty().equals("1"))
@@ -3234,7 +3246,7 @@ public void setCompletionDetail(){
     /***** Method call for custom form success ******/
     @Override
     public void onFormSuccess(String statusCompleteFor, String jobType) {
-        String dateTime = AppUtility.getDateByFormat(AppConstant.DATE_FORMAT+", hh:mm a");
+        String dateTime = AppUtility.getDateByFormat(AppConstant.DATE_FORMAT+" hh:mm a");
         HyperLog.i(TAG, "onFormSuccess(M) Start");
          if (jobstatus != null) {
              if (jobDetail_pi.checkContactHideOrNot()) {
