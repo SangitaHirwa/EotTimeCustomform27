@@ -126,7 +126,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
     private static final int BAR_CODE_REQUEST = 122;
     private final int EQUIPMENT_UPDATE_CODE = 141;
     String path = "";
-    String type = "1";
+    String type = "2";
     String servIntvalType = "";
     String comeFrom = "";
     String comeFrom1 = "";
@@ -890,7 +890,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
                 radio_owner.setEnabled(false);
                 radio_serv_prov.setEnabled(false);
             }else {
-                radio_owner.setChecked(true);
+                radio_serv_prov.setChecked(true);
             }
         }
         // for setting the equipment type as the main equipment type and non editable
@@ -1971,7 +1971,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
                     equipment_layout.setVisibility(View.GONE);
                     eq_view.setVisibility(View.GONE);
                     if(equDefaultType == null || equDefaultType.isEmpty()){
-                        radio_owner.setChecked(true);
+                        radio_serv_prov.setChecked(true);
                         radio_owner.setEnabled(true);
                         radio_serv_prov.setEnabled(true);
                     }
