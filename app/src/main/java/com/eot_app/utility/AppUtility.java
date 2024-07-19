@@ -2445,50 +2445,58 @@ public static void askPerMissionForLocation(Context context) {
     }
 
     public static String getDateByLang(String date, boolean dateTime){
-        String parsDate = "";
-        SimpleDateFormat dateFormat1;
-        SimpleDateFormat dateFormat;
-        Date dateLang;
-        try {
-            if(dateTime){
-                dateFormat1 = new SimpleDateFormat(AppUtility.dateTimeByAmPmFormate
-                        ("dd-MMM-yyyy hh:mm a", "dd-MMM-yyyy HH:mm"),Locale.ENGLISH);
-                dateLang = dateFormat1.parse(date);
-                dateFormat = new SimpleDateFormat(AppUtility.dateTimeByAmPmFormate
-                        ("dd-MMM-yyyy hh:mm a", "dd-MMM-yyyy HH:mm"),Locale.getDefault());
-            }else{
-                 dateFormat1 = new SimpleDateFormat(AppConstant.DATE_FORMAT,Locale.ENGLISH);
-               dateLang = dateFormat1.parse(date);
-                dateFormat = new SimpleDateFormat(AppConstant.DATE_FORMAT,Locale.getDefault());
+        if(date != null && !date.isEmpty()) {
+            String parsDate = "";
+            SimpleDateFormat dateFormat1;
+            SimpleDateFormat dateFormat;
+            Date dateLang;
+            try {
+                if (dateTime) {
+                    dateFormat1 = new SimpleDateFormat(AppUtility.dateTimeByAmPmFormate
+                            ("dd-MMM-yyyy hh:mm a", "dd-MMM-yyyy HH:mm"), Locale.ENGLISH);
+                    dateLang = dateFormat1.parse(date);
+                    dateFormat = new SimpleDateFormat(AppUtility.dateTimeByAmPmFormate
+                            ("dd-MMM-yyyy hh:mm a", "dd-MMM-yyyy HH:mm"), Locale.getDefault());
+                } else {
+                    dateFormat1 = new SimpleDateFormat(AppConstant.DATE_FORMAT, Locale.ENGLISH);
+                    dateLang = dateFormat1.parse(date);
+                    dateFormat = new SimpleDateFormat(AppConstant.DATE_FORMAT, Locale.getDefault());
+                }
+                parsDate = dateFormat.format(dateLang);
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
             }
-            parsDate = dateFormat.format(dateLang);
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
+            return parsDate;
+        }else {
+            return "";
         }
-        return parsDate;
     }
     public static String sendDateByFormate(String date, boolean isDateTime)
     {
-        String parsDate = "";
-        SimpleDateFormat dateFormat1;
-        SimpleDateFormat dateFormat;
-        Date dateLang;
-        try {
-            if(isDateTime){
-                dateFormat1 = new SimpleDateFormat(AppUtility.dateTimeByAmPmFormate
-                        (AppConstant.DATE_TIME_FORMAT_new, AppConstant.DATE_24_TIME_FORMAT_new),Locale.ENGLISH);
-                dateLang = dateFormat1.parse(date);
-                dateFormat = new SimpleDateFormat(AppConstant.DATE_TIME_FORMAT,Locale.ENGLISH);
-            }else{
-                dateFormat1 = new SimpleDateFormat(AppConstant.DATE_FORMAT,Locale.ENGLISH);
-                dateLang = dateFormat1.parse(date);
-                dateFormat = new SimpleDateFormat(AppConstant.DATE_FORMAT1,Locale.ENGLISH);
+        if(date != null && !date.isEmpty()) {
+            String parsDate = "";
+            SimpleDateFormat dateFormat1;
+            SimpleDateFormat dateFormat;
+            Date dateLang;
+            try {
+                if (isDateTime) {
+                    dateFormat1 = new SimpleDateFormat(AppUtility.dateTimeByAmPmFormate
+                            (AppConstant.DATE_TIME_FORMAT_new, AppConstant.DATE_24_TIME_FORMAT_new), Locale.ENGLISH);
+                    dateLang = dateFormat1.parse(date);
+                    dateFormat = new SimpleDateFormat(AppConstant.DATE_TIME_FORMAT, Locale.ENGLISH);
+                } else {
+                    dateFormat1 = new SimpleDateFormat(AppConstant.DATE_FORMAT, Locale.ENGLISH);
+                    dateLang = dateFormat1.parse(date);
+                    dateFormat = new SimpleDateFormat(AppConstant.DATE_FORMAT1, Locale.ENGLISH);
+                }
+                parsDate = dateFormat.format(dateLang);
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
             }
-            parsDate = dateFormat.format(dateLang);
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
+            return parsDate;
+        }else {
+            return "";
         }
-        return parsDate;
     }
     public static String getDateWithFormateInENG(long milliSeconds, String formate) { //Convert milisecond to Date time for chat
         SimpleDateFormat formatter = new SimpleDateFormat(formate, Locale.ENGLISH);
