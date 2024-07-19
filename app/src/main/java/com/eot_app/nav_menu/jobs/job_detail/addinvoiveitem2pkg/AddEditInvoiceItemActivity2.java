@@ -434,7 +434,7 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
                                 inm = editable.toString();
                                 setEmptyFieldsNonInventry();
                                 if (comeFrom != null && comeFrom.equalsIgnoreCase("AddRemark") || comeFrom != null && comeFrom.equalsIgnoreCase("JobListScan") || comeFrom != null && comeFrom.equalsIgnoreCase("AddRemarkReplace")) {
-                                    if (editable.length() > 3) {
+                                    if (editable.length() >= 3) {
                                         ll_below_rd_serialNo.setVisibility(View.VISIBLE);
                                     } else {
                                         ll_below_rd_serialNo.setVisibility(View.GONE);
@@ -1459,6 +1459,7 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
      */
     @Override
     public void setItemdata(List<Inventry_ReS_Model> list) {
+
         Log.e("", "");
         this.itemsList = list;
         Log.v("ItemList::", new Gson().toJson(list));
