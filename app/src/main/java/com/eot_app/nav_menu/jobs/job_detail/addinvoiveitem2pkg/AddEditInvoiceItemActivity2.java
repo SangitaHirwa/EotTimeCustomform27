@@ -383,6 +383,7 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
 
             @Override
             public void afterTextChanged(Editable editable) {
+                isSerialNoSelected = false;
                 add_stock_checkBox.setVisibility(View.GONE);
                 chiled_add_stock_checkBox.setVisibility(View.GONE);
                 if (comeFrom != null && comeFrom.equalsIgnoreCase("AddRemark") || comeFrom != null && comeFrom.equalsIgnoreCase("JobListScan") || comeFrom != null && comeFrom.equalsIgnoreCase("AddRemarkReplace")) {
@@ -1492,10 +1493,12 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
                         ll_below_rd_serialNo.setVisibility(View.GONE);
                         add_edit_item_Btn.performClick();
                     } else if (serialNoList.size() > 1) {
+                        isSerialNoSelected = true;
                         ll_serialNo.setVisibility(View.VISIBLE);
                         ll_below_rd_serialNo.setVisibility(View.GONE);
                         setRadioButton(serialNoList);
                     } else {
+                        isSerialNoSelected = false;
                         ll_serialNo.setVisibility(View.GONE);
                         ll_below_rd_serialNo.setVisibility(View.VISIBLE);
                     }
