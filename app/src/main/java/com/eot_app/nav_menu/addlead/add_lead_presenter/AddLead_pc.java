@@ -112,13 +112,19 @@ public class AddLead_pc implements Add_lead_pi {
         if (cltId.equals("")) {
             addLeadView.showErrorMsgsForValidation(LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_client_name));
             return false;
+        } else if (!mob.isEmpty()  && !AppUtility.isValidPhoneNumber(mob)) {
+            addLeadView.showErrorMsgsForValidation(LanguageController.getInstance().getMobileMsgByKey(AppConstant.enter_valid_mobile_number));
+            return false;
         } else if (!mob.isEmpty() && !mob.equalsIgnoreCase(App_preference.getSharedprefInstance().getLoginRes().getCtryCode()) && mob.length() < AppConstant.MOBILE_LIMIT) {
             addLeadView.showErrorMsgsForValidation(LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_mob_lent));
             return false;
-        } else if (!alterNateMob.isEmpty() && !mob.equalsIgnoreCase(App_preference.getSharedprefInstance().getLoginRes().getCtryCode()) && alterNateMob.length() < AppConstant.MOBILE_LIMIT) {
+        } else if (!alterNateMob.isEmpty() && !AppUtility.isValidPhoneNumber(alterNateMob)) {
+            addLeadView.showErrorMsgsForValidation(LanguageController.getInstance().getMobileMsgByKey(AppConstant.enter_valid_alternate_mobile_number));
+            return false;
+        }  else if (!alterNateMob.isEmpty() && !mob.equalsIgnoreCase(App_preference.getSharedprefInstance().getLoginRes().getCtryCode())  && alterNateMob.length() < AppConstant.MOBILE_LIMIT) {
             addLeadView.showErrorMsgsForValidation(LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_alter_mob_lent));
             return false;
-        } else if (!email.isEmpty() && (!Eot_Validation.email_checker(email).equals(""))) {
+        }  else if (!email.isEmpty() && (!Eot_Validation.email_checker(email).equals(""))) {
             addLeadView.showErrorMsgsForValidation(Eot_Validation.email_checker(email));
             return false;
         } else if (adr.equals("")) {
