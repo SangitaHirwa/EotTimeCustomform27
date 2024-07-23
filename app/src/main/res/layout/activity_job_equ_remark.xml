@@ -123,6 +123,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_alignParentEnd="true"
                                     android:text="Update"
+                                    android:background="?android:attr/selectableItemBackground"
                                     android:textColor="@color/colorPrimary"
                                     android:textStyle="bold"
                                     tools:ignore="HardcodedText" />
@@ -316,6 +317,7 @@
                                 android:text=""
                                 android:textColor="@color/colorPrimary"
                                 android:textStyle="bold"
+                                android:background="?android:attr/selectableItemBackground"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -401,6 +403,7 @@
                                     android:layout_alignParentEnd="true"
                                     android:gravity="end"
                                     android:text="Update"
+                                    android:background="?android:attr/selectableItemBackground"
                                     android:textColor="@color/colorPrimary"
                                     android:textStyle="bold"
                                     tools:ignore="HardcodedText" />
@@ -453,6 +456,7 @@
                                     android:layout_alignParentEnd="true"
                                     android:gravity="end"
                                     android:text="Add"
+                                    android:background="?android:attr/selectableItemBackground"
                                     android:textColor="@color/colorPrimary"
                                     android:textStyle="bold"
                                     tools:ignore="HardcodedText" />
@@ -474,7 +478,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="10dp"
-                        android:visibility="gone"
+                        android:visibility="visible"
                         app:cardBackgroundColor="@color/white">
 
                         <LinearLayout
@@ -503,6 +507,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_alignParentEnd="true"
                                     android:text="Add"
+                                    android:background="?android:attr/selectableItemBackground"
                                     android:textColor="@color/colorPrimary"
                                     android:textStyle="bold"
                                     tools:ignore="HardcodedText" />

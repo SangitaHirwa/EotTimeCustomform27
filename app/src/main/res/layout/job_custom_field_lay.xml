@@ -54,7 +54,7 @@
                 android:layout_alignParentEnd="true"
                 android:text="Edit"
                 android:textAllCaps="false"
-                android:background="@drawable/ripple_effect_1"                android:textColor="@color/colorPrimary"
+                android:background="?android:attr/selectableItemBackground"        android:textColor="@color/colorPrimary"
                 android:textSize="@dimen/medium_txt"
                 android:textStyle="bold"
                 android:visibility="visible"

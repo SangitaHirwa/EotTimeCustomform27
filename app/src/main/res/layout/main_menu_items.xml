@@ -17,6 +17,9 @@
         android:layout_marginBottom="15dp"
         android:gravity="center"
         android:paddingStart="10dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="@drawable/ripple_effect_1"
         android:paddingEnd="10dp"
         android:paddingTop="10dp">
 
@@ -27,7 +30,7 @@
             tools:ignore="ContentDescription" />
 
         <LinearLayout
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:orientation="vertical">
@@ -39,7 +42,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/large_sec_text"
                 android:layout_weight="1"
-                android:background="?android:attr/selectableItemBackground"
                 tools:ignore="InefficientWeight,NestedWeights" />
 
             <TextView
@@ -120,6 +122,7 @@
                 android:gravity="center"
                 android:padding="10dp"
                 android:visibility="visible"
+                android:background="?android:attr/selectableItemBackground"
                 tools:ignore="UseCompoundDrawables">
 
                 <ImageView
@@ -133,7 +136,6 @@
                     style="@style/style_sec"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="?android:attr/selectableItemBackground"
                     android:layout_marginStart="@dimen/large_sec_text"
                     android:text="" />
             </LinearLayout>

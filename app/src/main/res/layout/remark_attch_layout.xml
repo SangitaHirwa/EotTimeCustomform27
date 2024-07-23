@@ -95,6 +95,7 @@
             android:textSize="@dimen/large_text"
             android:textStyle="bold"
             android:visibility="visible"
+            android:background="?android:attr/selectableItemBackground"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:ignore="HardcodedText,SpUsage" />

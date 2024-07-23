@@ -799,7 +799,7 @@ public class DetailFragment extends Fragment
         recyclerView_requested_item = layout.findViewById(R.id.recyclerView_requested_item);
         recyclerView_job_eq = layout.findViewById(R.id.recyclerView_job_eq);
         signature_pad = layout.findViewById(R.id.signature_pad);
-        signature_pad.setText(LanguageController.getInstance().getMobileMsgByKey("sretertyruyrgiouoju uyiuyiuyuutuyty"));
+        signature_pad.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.customer_signature));
 
 
         map_layout = layout.findViewById(R.id.map_layout);
