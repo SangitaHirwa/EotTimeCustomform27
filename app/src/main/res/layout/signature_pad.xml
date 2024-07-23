@@ -28,18 +28,26 @@
                 <TextView
                     android:id="@+id/signature_pad"
                     style="@style/style_sec"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text=""
+                    android:text="fdjfhdkjfgkjdfhgkjhfgjdkjghdkjfghfhjgjd"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/guideline_for_signature"/>
 
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/guideline_for_signature"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintStart_toEndOf="@+id/signature_pad"
+                    app:layout_constraintGuide_begin="209dp" />
 
                 <TextView
                     android:id="@+id/btn_add_signature"
                     style="@style/subtext_style"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="30dp"
                     android:layout_alignParentEnd="true"
                     android:text="@string/add"
@@ -48,9 +56,10 @@
                     android:textSize="@dimen/medium_txt"
                     android:textStyle="bold"
                     android:gravity="end"
-                    android:visibility="gone"
+
+                    android:background="@drawable/ripple_effect_1"                    android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/signature_pad"
+                    app:layout_constraintStart_toEndOf="@+id/guideline_for_signature"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:ignore="HardcodedText,SpUsage" />
 

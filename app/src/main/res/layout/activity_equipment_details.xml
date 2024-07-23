@@ -327,13 +327,13 @@
                         app:layout_constraintEnd_toStartOf="@+id/guideline"
                         android:text=""
                         tools:ignore="RtlSymmetry" />
+
                     <androidx.constraintlayout.widget.Guideline
                         android:id="@+id/guideline"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:orientation="vertical"
-                        app:layout_constraintGuide_percent=".5"
-                        />
+                        app:layout_constraintGuide_begin="185dp" />
                     <TextView
                         android:id="@+id/manufacture_date"
                         style="@style/new_equipment_detail"

@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
+import android.content.Context;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
@@ -56,13 +57,15 @@ public class JobList_pc implements JobList_pi {
     private int updateindex;
     private JobFilterModel jobFilterModel;
     private int visibilityFlag = 0;
+    Context context;
 
-    public JobList_pc(Joblist_view joblist_view, boolean isFromScan) {
+    public JobList_pc(Joblist_view joblist_view, boolean isFromScan, Context context) {
         this.isFromScan = isFromScan;
         this.joblist_view = joblist_view;
         this.updatelimit = AppConstant.LIMIT_HIGH;
         jobFilterModel = new JobFilterModel();
         this.updateindex = 0;
+        this.context = context;
     }
 
     @Override
@@ -129,7 +132,7 @@ public class JobList_pc implements JobList_pi {
     @Override
     synchronized public void loadFromServer() {
         if (AppUtility.isInternetConnected()) {
-
+            AppUtility.progressBarShow(context);
             LogModel logModel = ActivityLogController
                     .getObj(ActivityLogController.JOB_MODULE, ActivityLogController.JOB_LIST, ActivityLogController.JOB_MODULE);
             ActivityLogController.saveOfflineTable(logModel);
