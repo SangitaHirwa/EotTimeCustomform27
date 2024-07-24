@@ -2369,6 +2369,7 @@ public void setCompletionDetail(){
                         btn_add_signature.setVisibility(View.GONE);
                         signature_img.setVisibility(View.VISIBLE);
                         customer_name.setVisibility(View.VISIBLE);
+                        customer_name.setText(mParam2.getCustomerName());
                         Picasso.get().load(App_preference.getSharedprefInstance().getBaseURL() +
                                 mParam2.getSignature()).placeholder(R.drawable.ic_profile).error(R.drawable.ic_profile)
                                 .into(signature_img);

@@ -115,7 +115,8 @@ public class Job implements Parcelable {//
     private String isSubjob ="0";
     private String parentRecurType="0";
     private String itemRequested;
-
+    /*add param for customer name in customer signature pad*/
+    private String customerName;
     @TypeConverters(CompliAnsArrayConvrtr.class)
     private List<CompliAnsArray> compliAnsArray = new ArrayList<>() ;
     @TypeConverters(IsMarkDoneConvrtr.class)
@@ -214,6 +215,7 @@ public class Job implements Parcelable {//
         isSubjob =in.readString();
         parentRecurType =in.readString();
         itemRequested = in.readString();
+        customerName = in.readString();
     }
 
     public static Creator<Job> getCREATOR() {
@@ -742,6 +744,7 @@ public class Job implements Parcelable {//
         dest.writeString(isSubjob);
         dest.writeString(parentRecurType);
         dest.writeString(itemRequested);
+        dest.writeString(customerName);
     }
 
     public String getPono() {
@@ -822,5 +825,13 @@ public class Job implements Parcelable {//
 
     public void setItemRequested(String itemRequested) {
         this.itemRequested = itemRequested;
+    }
+
+    public String getCustomerName() {
+        return customerName;
+    }
+
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
     }
 }
