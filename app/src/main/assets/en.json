@@ -1993,6 +1993,7 @@
     "new_pass_req": "New password required.",
     "confirm_pass_req": "Confirm password required.",
     "current_pass_req": "Current password required.",
-    "confirm_pass_not_match": "New password and confirm password not match."
+    "confirm_pass_not_match": "New password and confirm password not match.",
+    "go_to_equ" : "Go to Equipment"
   }
 }

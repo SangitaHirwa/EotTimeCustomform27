@@ -1098,6 +1098,7 @@ public class AppConstant {
     public static String confirm_pass_not_match = "confirm_pass_not_match";
     public static String enter_valid_mobile_number = "enter_valid_mobile_number";
     public static String enter_valid_alternate_mobile_number = "enter_valid_alternate_mobile_number";
+    public static String go_to_equ = "go_to_equ";
 
     public static String server(String location) {
         switch (location) {
