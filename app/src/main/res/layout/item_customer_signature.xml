@@ -15,10 +15,40 @@
         android:layout_marginStart="10dp"
         android:layout_marginTop="5dp"
         android:layout_marginEnd="10dp"
-        android:layout_marginBottom="3dp"
-        android:padding="3dp"
+        android:padding="2dp"
         android:text="Customer signature on the job card"
         tools:ignore="HardcodedText" />
+        <TextView
+            android:id="@+id/add_cust_name"
+            style="@style/style_sec"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="start"
+            android:background="?android:attr/selectableItemBackground"
+            android:padding="1dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:text="Add Customer Name"
+            android:textColor="@color/primarycolor_light"
+            android:textStyle="bold"
+            tools:ignore="SpUsage" />
+
+        <EditText
+            android:id="@+id/c_name"
+            style="@style/style_sec_sec"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:padding="3dp"
+            android:layout_margin="5dp"
+            android:layout_marginBottom="3dp"
+            android:background="@drawable/edt_cntct_brdr"
+            android:hint="customer name"
+            android:visibility="gone"
+            android:singleLine="true"
+            tools:ignore="Autofill" />
 
     <LinearLayout
         android:layout_width="match_parent"
