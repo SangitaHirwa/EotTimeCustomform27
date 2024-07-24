@@ -35,9 +35,10 @@
         android:layout_marginTop="2.5dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="2.5dp"
-        app:cardBackgroundColor="@color/white"
         app:cardCornerRadius="3dp"
-        app:cardElevation="0dp"
+        app:cardElevation="20dp"
+        android:clickable="true"
+        android:foreground="?android:attr/selectableItemBackground"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
