@@ -57,11 +57,17 @@ public class EditContact_Pc implements EditContact_Pi {
             editContact_view.setEmailError(Eot_Validation.emailAlter_checker(alternateEmail));
             return false;
 
+        } else if (!mob.isEmpty() && !AppUtility.isValidPhoneNumber(mob)) {
+            editContact_view.setMobError(LanguageController.getInstance().getMobileMsgByKey(AppConstant.enter_valid_mobile_number));
+            return false;
         }
         else if (!mob.isEmpty() && !mob.equalsIgnoreCase(App_preference.getSharedprefInstance().getLoginRes().getCtryCode()) && mob.length() < AppConstant.MOBILE_LIMIT) {
             editContact_view.setMobError(LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_mob_lent));
             return false;
-        } else if (!alterNate.isEmpty() && !mob.equalsIgnoreCase(App_preference.getSharedprefInstance().getLoginRes().getCtryCode()) && alterNate.length() < AppConstant.MOBILE_LIMIT) {
+        } else if (!alterNate.isEmpty() && !AppUtility.isValidPhoneNumber(alterNate)) {
+            editContact_view.setAlterNateError(LanguageController.getInstance().getMobileMsgByKey(AppConstant.enter_valid_alternate_mobile_number));
+            return false;
+        }else if (!alterNate.isEmpty() && !mob.equalsIgnoreCase(App_preference.getSharedprefInstance().getLoginRes().getCtryCode()) && alterNate.length() < AppConstant.MOBILE_LIMIT) {
             editContact_view.setAlterNateError(LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_alter_mob_lent));
             return false;
         }

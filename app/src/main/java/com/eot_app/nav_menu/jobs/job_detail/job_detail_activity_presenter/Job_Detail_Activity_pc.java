@@ -257,7 +257,7 @@ public class Job_Detail_Activity_pc implements Job_Detail_Activity_pi {
     }
 
     @Override
-    public void uploadCustomerSign(final String jobId, File file1) {
+    public void uploadCustomerSign(final String jobId, File file1,String custName) {
         if (AppUtility.isInternetConnected()) {
             AppUtility.progressBarShow((Context) activity_view);
             ActivityLogController.saveActivity(ActivityLogController.JOB_MODULE, ActivityLogController.JOB_UPLOAD_DOC, ActivityLogController.JOB_MODULE);
@@ -272,9 +272,9 @@ public class Job_Detail_Activity_pc implements Job_Detail_Activity_pi {
                 body = MultipartBody.Part.createFormData("signImg", file1.getAbsolutePath(), requestFile);
             }
             RequestBody requestBody_jobId = RequestBody.create(jobId, MultipartBody.FORM);
-
+            RequestBody requestBody_custName = RequestBody.create(custName, MultipartBody.FORM);
             ApiClient.getservices().uploadCustomerSignature(AppUtility.getApiHeaders(),
-                    requestBody_jobId, body)
+                    requestBody_jobId,requestBody_custName, body)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
 
@@ -286,10 +286,15 @@ public class Job_Detail_Activity_pc implements Job_Detail_Activity_pi {
                         @Override
                         public void onNext(JsonObject jsonObject) {
                             if (jsonObject.get("success").getAsBoolean()) {
-                                String signaturePath = jsonObject.get("data").getAsString();
+                                String convert = new Gson().toJson(jsonObject.get("data").getAsJsonArray());
+                                Type type = new TypeToken<ArrayList<String>>() {
+                                }.getType();
+                                ArrayList<String> data=new Gson().fromJson(convert, type);
+                                String signaturePath = data.get(0);
+                                String customerName = data.get(1);
                                 if (!TextUtils.isEmpty(signaturePath)) {
                                     AppDataBase.getInMemoryDatabase(EotApp.getAppinstance())
-                                            .jobModel().updateSignaturePath(signaturePath, jobId);
+                                            .jobModel().updateSignaturePath(signaturePath,customerName, jobId);
                                     activity_view.onSignatureUpload(signaturePath, LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
 
                                 }

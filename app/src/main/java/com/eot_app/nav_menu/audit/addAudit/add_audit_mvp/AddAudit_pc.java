@@ -237,20 +237,26 @@ public class AddAudit_pc implements AddAduit_pi {
     @Override
     public boolean RequiredFields(String cltId, boolean contactSelf, boolean siteSelf, String conNm, String siteNm,
                                   String adr, Set<String> auditorsId, String countryId, String stateId, String mob, String alterNateMob, String email) {
+
         if (auditorsId.isEmpty()) {
             add_aduitView.set_auditor_Error(LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_auditorsname));
             return false;
         } else if (cltId.equals("")) {
             add_aduitView.clientNameError(LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_client_name));
             return false;
-        } else if (!mob.isEmpty() && !mob.equalsIgnoreCase(App_preference.getSharedprefInstance().getLoginRes().getCtryCode()) &&
-                mob.length() < AppConstant.MOBILE_LIMIT) {
-            add_aduitView.setMobError(LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_mob_lent));
+        } else if (!mob.isEmpty() && !AppUtility.isValidPhoneNumber(mob)) {
+            add_aduitView.setEmailError(LanguageController.getInstance().getMobileMsgByKey(AppConstant.enter_valid_mobile_number));
             return false;
-        } else if (!alterNateMob.isEmpty() && !mob.equalsIgnoreCase(App_preference.getSharedprefInstance().getLoginRes().getCtryCode()) && alterNateMob.length() < AppConstant.MOBILE_LIMIT) {
-            add_aduitView.setMobError(LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_alter_mob_lent));
+        }else if (!mob.isEmpty() && !mob.equalsIgnoreCase(App_preference.getSharedprefInstance().getLoginRes().getCtryCode()) && mob.length() < AppConstant.MOBILE_LIMIT) {
+            add_aduitView.setEmailError(LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_mob_lent));
             return false;
-        } else if (!email.isEmpty() && (!Eot_Validation.email_checker(email).equals(""))) {
+        } else if (!alterNateMob.isEmpty()&& !AppUtility.isValidPhoneNumber(alterNateMob)) {
+            add_aduitView.setEmailError(LanguageController.getInstance().getMobileMsgByKey(AppConstant.enter_valid_alternate_mobile_number));
+            return false;
+        }  else if (!alterNateMob.isEmpty() && !mob.equalsIgnoreCase(App_preference.getSharedprefInstance().getLoginRes().getCtryCode())  && alterNateMob.length() < AppConstant.MOBILE_LIMIT) {
+            add_aduitView.setEmailError(LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_alter_mob_lent));
+            return false;
+        }  else if (!email.isEmpty() && (!Eot_Validation.email_checker(email).equals(""))) {
             add_aduitView.setEmailError(Eot_Validation.email_checker(email));
             return false;
         } else if (adr.equals("")) {

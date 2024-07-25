@@ -108,7 +108,7 @@ import com.eot_app.utility.settings.setting_db.TagData;
         CustomFormSubmited.class, CustomFormListOffline.class, AuditStatusModel.class, AppointmentStatusModel.class, OfflieCompleQueAns.class,
         Attachments.class, BrandData.class, StockData.class},
 
-        version = 51, exportSchema = false)
+        version = 52, exportSchema = false)
 @TypeConverters({TaxDataConverter.class, TagDataConverter.class, InvoiceItemDataModelConverter.class, TaxConverter.class
         , EquipmentTypeConverter.class, EquArrayConvrtr.class, EquCategoryConvrtr.class
         , SiteCustomFieldConverter.class, JobRecurTypeConvert.class, SelecetedDaysConverter.class
@@ -780,6 +780,12 @@ public abstract class AppDataBase extends RoomDatabase {
             database.execSQL("ALTER TABLE Inventry_ReS_Model ADD COLUMN isTrackBySn TEXT");
         }
     };
+    static final Migration MIGRATION_51_52 = new Migration(51, 52) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            database.execSQL("ALTER TABLE Job ADD COLUMN customerName TEXT");
+        }
+    };
 
     private static final String DB_NAME = "eot_db";
 
@@ -845,6 +851,7 @@ public abstract class AppDataBase extends RoomDatabase {
                     .addMigrations(MIGRATION_48_49)
                     .addMigrations(MIGRATION_49_50)
                     .addMigrations(MIGRATION_50_51)
+                    .addMigrations(MIGRATION_51_52)
                     .fallbackToDestructiveMigration()
                     .build();
         }

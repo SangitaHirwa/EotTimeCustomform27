@@ -55,6 +55,9 @@ public class AddClient_Pc implements AddClient_Pi {
         } else if ((!alternateEmail.equals("")) && !Eot_Validation.emailAlter_checker(alternateEmail).equals("")) {
             addClient_view.setEmailError(Eot_Validation.emailAlter_checker(alternateEmail));
             return false;
+        } else if (!mob.isEmpty() && !AppUtility.isValidPhoneNumber(mob)) {
+            addClient_view.setMobError(LanguageController.getInstance().getMobileMsgByKey(AppConstant.enter_valid_mobile_number));
+            return false;
         }
         //else if ((!mob.equals("")) && !Eot_Validation.mob_checker(mob).equals("")) {
         else if (!mob.isEmpty() && !mob.equalsIgnoreCase(App_preference.getSharedprefInstance().getLoginRes().getCtryCode()) && mob.length() < AppConstant.MOBILE_LIMIT) {

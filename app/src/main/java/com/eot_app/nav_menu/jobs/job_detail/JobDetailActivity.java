@@ -23,6 +23,7 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
@@ -150,7 +151,8 @@ public class JobDetailActivity extends AppCompatActivity implements
     private String completeFor;
     private String jobType;
     private ExecutorService executorService;
-
+    boolean isClicked = false;
+    private String mCustName = "";
     BroadcastReceiver loadfromforserver=new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -1372,7 +1374,10 @@ public class JobDetailActivity extends AppCompatActivity implements
 
                 Button btn_close = view.findViewById(R.id.btn_close);
                 Button btn_upload = view.findViewById(R.id.btn_upload);
-
+                TextView add_cust_nm = view.findViewById(R.id.add_cust_name);
+                EditText cust_nm = view.findViewById(R.id.c_name);
+                add_cust_nm.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_customer_name));
+                cust_nm.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.customer_name));
                 btn_upload.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.expense_upload));
                 btn_close.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.close));
 
@@ -1386,7 +1391,15 @@ public class JobDetailActivity extends AppCompatActivity implements
                 builder.setView(view);
 
                 final AlertDialog alertDialog = builder.create();
-
+                add_cust_nm.setOnClickListener(v -> {
+                    if(!isClicked) {
+                         isClicked = true;
+                        cust_nm.setVisibility(View.VISIBLE);
+                    }else{
+                        isClicked = false;
+                        cust_nm.setVisibility(View.GONE);
+                    }
+                        });
                 btn_upload.setOnClickListener(v -> {
                     if (mSignature.isSignatureEmpty()) {
                         AppUtility.alertDialog(JobDetailActivity.this,
@@ -1400,11 +1413,15 @@ public class JobDetailActivity extends AppCompatActivity implements
                     if (mSignature.isSignatureEmpty()) {
                         mfile = null;
                     }
+                    String cust_name = cust_nm.getText().toString().trim();
+                    if(!cust_name.isEmpty() && mfile!=null){
+                        mCustName = cust_name;
+                    }
                     Log.e("Signature Param", "JobId = "+dataJob.getJobId());
                     Log.e("Signature Param", "File = "+mfile);
                     detail_activity_pi.uploadCustomerSign(
                             dataJob.getJobId(),
-                            mfile);
+                            mfile,mCustName);
 
                     alertDialog.dismiss();
                 });

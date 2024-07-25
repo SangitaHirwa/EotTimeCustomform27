@@ -67,6 +67,7 @@ import com.eot_app.nav_menu.jobs.job_detail.form_form.get_qus_list.qus_model.All
 import com.eot_app.nav_menu.jobs.job_detail.form_form.get_qus_list.qus_model.AnswerModel;
 import com.eot_app.nav_menu.jobs.job_detail.form_form.get_qus_list.qus_model.OptionModel;
 import com.eot_app.nav_menu.jobs.job_detail.form_form.get_qus_list.qus_model.QuesRspncModel;
+import com.eot_app.nav_menu.jobs.job_detail.job_equipment.JobEquipmentActivity;
 import com.eot_app.services.Service_apis;
 import com.eot_app.utility.AppCenterLogs;
 import com.eot_app.utility.AppConstant;
@@ -122,7 +123,7 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
     RecyclerView.LayoutManager layoutManager;
     Doc_Attch_Pi doc_attch_pi;
     String[] suggestionsArray = new String[suggestionList.size()];
-    TextView cancel_txt, complHeader, save_txt, txt_notSyncLabel;
+    TextView cancel_txt, complHeader, save_txt, txt_notSyncLabel,go_to_equi;
     private Compl_PI complPi;
     private RecyclerView recyclerView, completionRecyclerView;
     private JobCompletionAdpter jobCompletionAdpter;
@@ -153,7 +154,7 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
     private List<String> signanspath=new ArrayList<>();
     private final ArrayList<Answer> answerArrayList = new ArrayList<>();
     private boolean isShowingImg = false, showOnlyImg = false;
-    private LinearLayout ll_attachment,ll_completionForm;
+    private LinearLayout ll_attachment,ll_completionForm,go_to_ll;
     private List<IsMarkDoneWithJtid> isMarkDoneList = new ArrayList<>();
     BackgroundTaskExecutor backgroundTaskExecutor;
     ConstraintLayout cl_notSyncParent;
@@ -267,6 +268,9 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
         cancel_txt.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.cancel));
         complHeader.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.completion_details));
 
+        go_to_equi = findViewById(R.id.go_to_equi);
+        go_to_equi.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.go_to_equ));
+        go_to_ll = findViewById(R.id.go_to_ll);
         ll_attachment = findViewById(R.id.ll_attachment);
         ll_completionForm = findViewById(R.id.ll_completionForm);
         cl_notSyncParent = findViewById(R.id.cl_notSyncParent);
@@ -285,6 +289,12 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
             ll_attachment.setVisibility(View.GONE);
             setLists();
         }
+        String isEquipmentEnabled = App_preference.getSharedprefInstance().getLoginRes().getIsEquipmentEnable();
+        Job job = null;
+        if (isEquipmentEnabled.equals("1") && jobId != null && !jobId.isEmpty()) {
+            job = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(jobId);
+        }
+        go_to_ll.setVisibility(job != null && job.getEquArray().size() > 0 ? View.VISIBLE : View.GONE);
     }
 
     private void filterJobServices() {
@@ -349,6 +359,7 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
     private void viewClickListner() {
         cancel_txt.setOnClickListener(this);
         save_txt.setOnClickListener(this);
+        go_to_equi.setOnClickListener(this);
     }
 
     @SuppressLint("NonConstantResourceId")
@@ -449,6 +460,19 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
                     }
                     complPi.addEditJobComplation(jobData.getJobId(), complNotes, answerArrayList,signanspath,docanspath,signQueIdArray,docQueIdArray,isMarkDoneList);
                 }
+                break;
+            case R.id.go_to_equi:
+                Intent intenteq = new Intent(this, JobEquipmentActivity.class);
+                intenteq.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                intenteq.putExtra("JobId", jobData.getJobId());
+                intenteq.putExtra("cltId", jobData.getCltId());
+                intenteq.putExtra("contrId", jobData.getContrId());
+                intenteq.putExtra("appId", "");
+                intenteq.putExtra("siteid",jobData.getSiteId());
+                if (jobData.getEquArray() != null && jobData.getEquArray().size() > 0)
+                    intenteq.putExtra("auditid", jobData.getEquArray().get(0).getAudId());
+                else intenteq.putExtra("auditid", "0");
+                startActivity(intenteq);
                 break;
         }
     }

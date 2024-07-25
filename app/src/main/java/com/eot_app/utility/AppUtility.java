@@ -78,6 +78,9 @@ import java.util.TimeZone;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import okhttp3.RequestBody;
 
 /**
@@ -1036,6 +1039,8 @@ public class AppUtility {
         headers.put("deviceInfo", Build.BRAND + " " + Build.MODEL+" OS:- "+Build.VERSION.RELEASE
                 + " " + Build.VERSION_CODES.class.getFields()[Build.VERSION.SDK_INT].getName());
         headers.put("appVersion", BuildConfig.VERSION_NAME);
+        /** After discussion with Malkhan and Rani, Added below new Header param for validation and check on backend side 24/july/24*/
+        headers.put("deviceType", "1");
         return headers;
     }
 
@@ -2442,50 +2447,58 @@ public static void askPerMissionForLocation(Context context) {
     }
 
     public static String getDateByLang(String date, boolean dateTime){
-        String parsDate = "";
-        SimpleDateFormat dateFormat1;
-        SimpleDateFormat dateFormat;
-        Date dateLang;
-        try {
-            if(dateTime){
-                dateFormat1 = new SimpleDateFormat(AppUtility.dateTimeByAmPmFormate
-                        ("dd-MMM-yyyy hh:mm a", "dd-MMM-yyyy HH:mm"),Locale.ENGLISH);
-                dateLang = dateFormat1.parse(date);
-                dateFormat = new SimpleDateFormat(AppUtility.dateTimeByAmPmFormate
-                        ("dd-MMM-yyyy hh:mm a", "dd-MMM-yyyy HH:mm"),Locale.getDefault());
-            }else{
-                 dateFormat1 = new SimpleDateFormat(AppConstant.DATE_FORMAT,Locale.ENGLISH);
-               dateLang = dateFormat1.parse(date);
-                dateFormat = new SimpleDateFormat(AppConstant.DATE_FORMAT,Locale.getDefault());
+        if(date != null && !date.isEmpty()) {
+            String parsDate = "";
+            SimpleDateFormat dateFormat1;
+            SimpleDateFormat dateFormat;
+            Date dateLang;
+            try {
+                if (dateTime) {
+                    dateFormat1 = new SimpleDateFormat(AppUtility.dateTimeByAmPmFormate
+                            ("dd-MMM-yyyy hh:mm a", "dd-MMM-yyyy HH:mm"), Locale.ENGLISH);
+                    dateLang = dateFormat1.parse(date);
+                    dateFormat = new SimpleDateFormat(AppUtility.dateTimeByAmPmFormate
+                            ("dd-MMM-yyyy hh:mm a", "dd-MMM-yyyy HH:mm"), Locale.getDefault());
+                } else {
+                    dateFormat1 = new SimpleDateFormat(AppConstant.DATE_FORMAT, Locale.ENGLISH);
+                    dateLang = dateFormat1.parse(date);
+                    dateFormat = new SimpleDateFormat(AppConstant.DATE_FORMAT, Locale.getDefault());
+                }
+                parsDate = dateFormat.format(dateLang);
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
             }
-            parsDate = dateFormat.format(dateLang);
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
+            return parsDate;
+        }else {
+            return "";
         }
-        return parsDate;
     }
     public static String sendDateByFormate(String date, boolean isDateTime)
     {
-        String parsDate = "";
-        SimpleDateFormat dateFormat1;
-        SimpleDateFormat dateFormat;
-        Date dateLang;
-        try {
-            if(isDateTime){
-                dateFormat1 = new SimpleDateFormat(AppUtility.dateTimeByAmPmFormate
-                        (AppConstant.DATE_TIME_FORMAT_new, AppConstant.DATE_24_TIME_FORMAT_new),Locale.ENGLISH);
-                dateLang = dateFormat1.parse(date);
-                dateFormat = new SimpleDateFormat(AppConstant.DATE_TIME_FORMAT,Locale.ENGLISH);
-            }else{
-                dateFormat1 = new SimpleDateFormat(AppConstant.DATE_FORMAT,Locale.ENGLISH);
-                dateLang = dateFormat1.parse(date);
-                dateFormat = new SimpleDateFormat(AppConstant.DATE_FORMAT1,Locale.ENGLISH);
+        if(date != null && !date.isEmpty()) {
+            String parsDate = "";
+            SimpleDateFormat dateFormat1;
+            SimpleDateFormat dateFormat;
+            Date dateLang;
+            try {
+                if (isDateTime) {
+                    dateFormat1 = new SimpleDateFormat(AppUtility.dateTimeByAmPmFormate
+                            (AppConstant.DATE_TIME_FORMAT_new, AppConstant.DATE_24_TIME_FORMAT_new), Locale.ENGLISH);
+                    dateLang = dateFormat1.parse(date);
+                    dateFormat = new SimpleDateFormat(AppConstant.DATE_TIME_FORMAT, Locale.ENGLISH);
+                } else {
+                    dateFormat1 = new SimpleDateFormat(AppConstant.DATE_FORMAT, Locale.ENGLISH);
+                    dateLang = dateFormat1.parse(date);
+                    dateFormat = new SimpleDateFormat(AppConstant.DATE_FORMAT1, Locale.ENGLISH);
+                }
+                parsDate = dateFormat.format(dateLang);
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
             }
-            parsDate = dateFormat.format(dateLang);
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
+            return parsDate;
+        }else {
+            return "";
         }
-        return parsDate;
     }
     public static String getDateWithFormateInENG(long milliSeconds, String formate) { //Convert milisecond to Date time for chat
         SimpleDateFormat formatter = new SimpleDateFormat(formate, Locale.ENGLISH);
@@ -2510,7 +2523,13 @@ public static void askPerMissionForLocation(Context context) {
 //        calendar.setTimeInMillis(milliSeconds * 1000);
         return formatter.format(calendar.getTime());
     }
+    public static boolean isValidPhoneNumber(String number) {
 
+        String regex = "^\\+?([0-9]+)$";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(number);
+        return matcher.matches();
+    }
 
 
 }
