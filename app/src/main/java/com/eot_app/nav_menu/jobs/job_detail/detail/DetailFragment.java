@@ -2277,18 +2277,19 @@ public void setCompletionDetail(){
                     e.printStackTrace();
                 }
             }
+            String setStartDate = "", setEndDate = "";
+            if(!startDatTime.isEmpty() && !endtime.isEmpty()) {
+                String splitStartDate[] = AppUtility.getDateByLang(startDatTime, true).split(" ");
+                String splitEndtDate[] = AppUtility.getDateByLang(endtime, true).split(" ");
 
-                String splitStartDate [] = AppUtility.getDateByLang(startDatTime,true).split(" ");
-                String splitEndtDate [] = AppUtility.getDateByLang(endtime,true).split(" ");
-                String setStartDate= "",setEndDate = "";
-                if(splitStartDate.length == 3){
-                    setStartDate = splitStartDate[0]+", "+splitStartDate[1]+" "+splitStartDate[2];
-                    setEndDate = splitEndtDate[0]+", "+splitEndtDate[1]+" "+splitEndtDate[2];
-                }else{
-                    setStartDate = splitStartDate[0]+", "+splitStartDate[1];
-                    setEndDate = splitEndtDate[0]+", "+splitEndtDate[1];
+                if (splitStartDate.length == 3) {
+                    setStartDate = splitStartDate[0] + ", " + splitStartDate[1] + " " + splitStartDate[2];
+                    setEndDate = splitEndtDate[0] + ", " + splitEndtDate[1] + " " + splitEndtDate[2];
+                } else {
+                    setStartDate = splitStartDate[0] + ", " + splitStartDate[1];
+                    setEndDate = splitEndtDate[0] + ", " + splitEndtDate[1];
                 }
-
+            }
             textViewTime.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.start)+": " +setStartDate +"\n" +
                     LanguageController.getInstance().getMobileMsgByKey(AppConstant.end)+": " + setEndDate);
 
