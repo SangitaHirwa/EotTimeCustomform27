@@ -31,7 +31,6 @@
                 android:background="@drawable/ripple_effect_1"
                 >
 
-
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/img_equipment"
                     android:layout_width="60dp"

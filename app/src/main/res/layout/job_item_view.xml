@@ -38,7 +38,6 @@
         app:cardCornerRadius="3dp"
         app:cardElevation="20dp"
         android:clickable="true"
-        android:foreground="?android:attr/selectableItemBackground"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -46,6 +45,9 @@
             android:id="@+id/item_main_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="@drawable/ripple_effect_1"
             android:orientation="horizontal">
 
             <androidx.constraintlayout.widget.ConstraintLayout

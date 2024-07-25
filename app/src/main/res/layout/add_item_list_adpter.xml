@@ -10,6 +10,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
         app:cardCornerRadius="2dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="@drawable/ripple_effect_1"
         app:cardElevation="0dp">
     <LinearLayout
         android:id="@+id/item_layout"

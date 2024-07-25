@@ -12,6 +12,9 @@
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp"
         app:cardCornerRadius="2dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="@drawable/ripple_effect_1"
         app:cardElevation="0dp">
         <LinearLayout
             android:background="@color/requested_List"
