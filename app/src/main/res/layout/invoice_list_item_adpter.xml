@@ -10,6 +10,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
         app:cardCornerRadius="2dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="@drawable/ripple_effect_1"
         app:cardElevation="0dp">
         <RelativeLayout
             android:id="@+id/item_layout"
@@ -17,7 +20,10 @@
             android:layout_height="match_parent"
             android:padding="5dp"
             android:layout_marginLeft="5dp"
-            android:gravity="center">
+            android:gravity="center"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="@drawable/ripple_effect_1">
 
             <CheckBox
                 android:id="@+id/checkbox_invoice"

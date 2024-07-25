@@ -20,6 +20,8 @@
             android:layout_height="wrap_content"
             android:padding="5dp"
             android:orientation="horizontal"
+            android:clickable="true"
+            android:focusable="true"
             android:gravity="center">
             <RelativeLayout
                 android:id="@+id/relativeLayout"
@@ -27,6 +29,9 @@
                 android:layout_weight="1"
                 android:layout_marginEnd="5dp"
                 android:layout_height="wrap_content"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="@drawable/ripple_effect_1"
                 android:padding="10dp">
          <LinearLayout
              android:id="@+id/relativeLayout1"
@@ -88,15 +93,24 @@
                 <!--
                 -->
             </RelativeLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="@drawable/ripple_effect_1"
+                tools:targetApi="m">
+
             <ImageView
                 android:id="@+id/remove_item"
                 android:layout_width="15dp"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
+                android:foreground="@drawable/ripple_effect_1"
                 android:src="@drawable/img_dialog_close"/>
+            </LinearLayout>
         </LinearLayout>
-
     </androidx.cardview.widget.CardView>
 
 </layout>

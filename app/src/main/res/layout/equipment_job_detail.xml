@@ -38,8 +38,8 @@
                 <TextView
                     android:id="@+id/btn_add_eq"
                     style="@style/subtext_style"
-                    android:layout_width="100dp"
-                    android:layout_height="30dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:text="@string/add"
                     android:gravity="end"
@@ -48,7 +48,11 @@
                     android:textSize="@dimen/medium_txt"
                     android:textStyle="bold"
                     android:visibility="visible"
-                    android:background="?android:attr/selectableItemBackground"                   app:layout_constraintEnd_toEndOf="parent"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:paddingHorizontal="5dp"
+                    android:background="@drawable/ripple_effect_1"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:ignore="HardcodedText,SpUsage" />
 
