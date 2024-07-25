@@ -1199,9 +1199,10 @@ public class JobDetailActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onSignatureUpload(String signaturePath, String msg) {
+    public void onSignatureUpload(String signaturePath,String customerName, String msg) {
         if (dataJob != null) {
             dataJob.setSignature(signaturePath);
+            dataJob.setCustomerName(customerName);
             if (detailFragment != null) {
                 AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().updateJob(dataJob);
                 detailFragment.notifyCustomberSign();

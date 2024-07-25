@@ -861,7 +861,7 @@ public class JobCardViewActivity extends AppCompatActivity  implements
     }
 
     @Override
-    public void onSignatureUpload(String signaturePath, String msg) {
+    public void onSignatureUpload(String signaturePath,String customerName, String msg) {
 
     }
 
