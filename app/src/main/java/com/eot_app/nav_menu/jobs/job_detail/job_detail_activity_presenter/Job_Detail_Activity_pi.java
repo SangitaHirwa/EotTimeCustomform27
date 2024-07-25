@@ -10,7 +10,7 @@ public interface Job_Detail_Activity_pi {
 
     void printJobCard(String jobId,String tempId,String techId);
 
-    void uploadCustomerSign(String jobId, File file);
+    void uploadCustomerSign(String jobId, File file,String custName);
     void getJobCardetemplateList();
     void getGenerateInvoicePdf(String invId, String isProformaInv,String tempId);
     void generateQuotPDF(String quotId,String tempId);

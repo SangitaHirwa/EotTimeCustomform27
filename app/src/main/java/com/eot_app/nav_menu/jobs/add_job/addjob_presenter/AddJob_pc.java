@@ -167,7 +167,7 @@ public class AddJob_pc implements Add_job_pi {
         String time1 = App_preference.getSharedprefInstance().getLoginRes().getJobSchedule();
         if (!TextUtils.isEmpty(time1)) {
             if(calenderDate.isEmpty()) {
-            schdul_Start_Date_Time(AppUtility.getFormatedTime(time1), datestr);
+            schdul_Start_Date_Time(AppUtility.getFormatedTimes(time1), datestr);
             }else {
                 try {
                     SimpleDateFormat dateFormat = new SimpleDateFormat(AppConstant.DATE_FORMAT2,Locale.ENGLISH);
@@ -295,7 +295,7 @@ public class AddJob_pc implements Add_job_pi {
         try {
             if (App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable() != null &&
                     App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable().equals("0"))
-                time_str = sch_time[1]+" " /*+ sch_time[2]*/;
+                time_str = sch_time[1]+" " + sch_time[2];
             else time_str = sch_time[1] + "";
         } catch (Exception e) {
                  e.printStackTrace();

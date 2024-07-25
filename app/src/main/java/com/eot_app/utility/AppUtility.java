@@ -1039,6 +1039,8 @@ public class AppUtility {
         headers.put("deviceInfo", Build.BRAND + " " + Build.MODEL+" OS:- "+Build.VERSION.RELEASE
                 + " " + Build.VERSION_CODES.class.getFields()[Build.VERSION.SDK_INT].getName());
         headers.put("appVersion", BuildConfig.VERSION_NAME);
+        /** After discussion with Malkhan and Rani, Added below new Header param for validation and check on backend side 24/july/24*/
+        headers.put("deviceType", "1");
         return headers;
     }
 
