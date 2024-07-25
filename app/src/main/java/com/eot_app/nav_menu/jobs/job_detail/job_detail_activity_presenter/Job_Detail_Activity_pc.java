@@ -295,7 +295,7 @@ public class Job_Detail_Activity_pc implements Job_Detail_Activity_pi {
                                 if (!TextUtils.isEmpty(signaturePath)) {
                                     AppDataBase.getInMemoryDatabase(EotApp.getAppinstance())
                                             .jobModel().updateSignaturePath(signaturePath,customerName, jobId);
-                                    activity_view.onSignatureUpload(signaturePath, LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
+                                    activity_view.onSignatureUpload(signaturePath,customerName, LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
 
                                 }
 

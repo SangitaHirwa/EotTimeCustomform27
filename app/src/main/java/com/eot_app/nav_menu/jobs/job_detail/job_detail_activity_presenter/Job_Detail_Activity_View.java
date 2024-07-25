@@ -19,7 +19,7 @@ public interface Job_Detail_Activity_View {
 
     void onGetPdfPath(String pdfPath);
 
-    void onSignatureUpload(String signaturePath, String msg);
+    void onSignatureUpload(String signaturePath,String customerName, String msg);
     void setInvoiceTmpList(ArrayList<InvoiceEmaliTemplate> templateList);
     // void setBooleanForGenerateInvoice(boolean CheckInvoice);
 }
