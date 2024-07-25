@@ -152,7 +152,7 @@ public class JobDetailActivity extends AppCompatActivity implements
     private String jobType;
     private ExecutorService executorService;
     boolean isClicked = false;
-
+    private String mCustName = "";
     BroadcastReceiver loadfromforserver=new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -1413,11 +1413,15 @@ public class JobDetailActivity extends AppCompatActivity implements
                     if (mSignature.isSignatureEmpty()) {
                         mfile = null;
                     }
+                    String cust_name = cust_nm.getText().toString().trim();
+                    if(!cust_name.isEmpty() && mfile!=null){
+                        mCustName = cust_name;
+                    }
                     Log.e("Signature Param", "JobId = "+dataJob.getJobId());
                     Log.e("Signature Param", "File = "+mfile);
                     detail_activity_pi.uploadCustomerSign(
                             dataJob.getJobId(),
-                            mfile);
+                            mfile,mCustName);
 
                     alertDialog.dismiss();
                 });

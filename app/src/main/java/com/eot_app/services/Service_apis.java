@@ -348,6 +348,7 @@ public interface Service_apis {
     Observable<JsonObject>
     uploadCustomerSignature(@HeaderMap Map<String, String> map,
                             @Part("jobId") RequestBody jobId,
+                            @Part("customerName") RequestBody customerName,
                             @Part MultipartBody.Part file);
 
     /*appointment attachment*/
