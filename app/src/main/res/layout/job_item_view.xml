@@ -45,10 +45,10 @@
             android:id="@+id/item_main_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="horizontal"
             android:clickable="true"
             android:focusable="true"
-            android:background="@drawable/ripple_effect_1"
-            android:orientation="horizontal">
+            android:foreground="?android:attr/selectableItemBackground">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/status_constraints"
