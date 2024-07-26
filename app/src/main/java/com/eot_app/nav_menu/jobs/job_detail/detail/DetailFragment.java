@@ -2368,15 +2368,15 @@ public void setCompletionDetail(){
                     cardView_signature_pad.setVisibility(View.VISIBLE);
                     if (mParam2.getSignature() != null && !mParam2.getSignature().equals("")) {
                         btn_add_signature.setVisibility(View.GONE);
-                        customer_name.setVisibility(View.VISIBLE);
-                        customer_name.setText(mParam2.getCustomerName());
+                        signature_img.setVisibility(View.VISIBLE);
                         Picasso.get().load(App_preference.getSharedprefInstance().getBaseURL() +
                                 mParam2.getSignature()).placeholder(R.drawable.ic_profile).error(R.drawable.ic_profile)
                                 .into(signature_img);
                         if(mParam2.getCustomerName() != null && !mParam2.getCustomerName().isEmpty()){
-                            signature_img.setVisibility(View.VISIBLE);
+                            customer_name.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.signatory)+": "+mParam2.getCustomerName());
+                            customer_name.setVisibility(View.VISIBLE);
                         }else{
-                            signature_img.setVisibility(View.GONE);
+                            customer_name.setVisibility(View.GONE);
                         }
                     } else {
                         btn_add_signature.setVisibility(View.VISIBLE);
