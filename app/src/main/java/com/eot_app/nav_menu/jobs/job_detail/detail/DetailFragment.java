@@ -2372,7 +2372,7 @@ public void setCompletionDetail(){
                                 mParam2.getSignature()).placeholder(R.drawable.ic_profile).error(R.drawable.ic_profile)
                                 .into(signature_img);
                         if(mParam2.getCustomerName() != null && !mParam2.getCustomerName().isEmpty()){
-                            customer_name.setText(mParam2.getCustomerName());
+                            customer_name.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.signatory)+": "+mParam2.getCustomerName());
                             customer_name.setVisibility(View.VISIBLE);
                         }else{
                             customer_name.setVisibility(View.GONE);
