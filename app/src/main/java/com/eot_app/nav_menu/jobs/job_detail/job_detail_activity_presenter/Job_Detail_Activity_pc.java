@@ -294,7 +294,7 @@ public class Job_Detail_Activity_pc implements Job_Detail_Activity_pi {
                                 }.getType();
                                 ArrayList<SignatureUploadModel> data=new Gson().fromJson(convert, type);
                                 if(data.size()>0) {
-                                     signaturePath = data.get(0).getSignaturePath();
+                                     signaturePath = data.get(0).getSignature();
                                      customerName = data.get(0).getCustomerName();
                                 }
                                 if (!TextUtils.isEmpty(signaturePath)) {
