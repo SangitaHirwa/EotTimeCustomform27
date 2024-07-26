@@ -1923,7 +1923,11 @@ public class AddAppointmentActivity extends UploadDocumentActivity implements Te
             case R.id.submit_btn:
                 if (TextUtils.isEmpty(cltId) && TextUtils.isEmpty(new_cnm)) {
                     showDialogs(LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_client_name));
-                } else {
+                }else if(!binding.mobNo.getText().toString().trim().isEmpty() && !AppUtility.isValidPhoneNumber(binding.mobNo.getText().toString().trim())){
+                showDialogs(LanguageController.getInstance().getMobileMsgByKey(AppConstant.enter_valid_mobile_number));
+            }else if(!binding.mobNo.getText().toString().trim().isEmpty() && binding.mobNo.getText().toString().trim().length() < AppConstant.MOBILE_LIMIT){
+                    showDialogs(LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_mob_lent));
+                }else {
 
                     if (binding.cbFutureClient.isChecked()) {
                         if (TextUtils.isEmpty(binding.adderes.getText().toString())) {

@@ -188,7 +188,7 @@ public class DetailFragment extends Fragment
     RelativeLayout map_layout;
     TextView custom_filed_txt, btnStopRecurView, btnComplationView,
              btn_add_item, btn_add_eq, recur_txt, txt_recur_msg, contact_name_lable, schdule_details_txt, job_status_lable, btn_add_requested_item;
-    TextView customfiled_btn, signature_pad, btn_add_signature, quotes_details_txt, quotes_details_number_txt, quotes_details_number;
+    TextView customfiled_btn, signature_pad,customer_name, btn_add_signature, quotes_details_txt, quotes_details_number_txt, quotes_details_number;
     String strAddress = "";
     RecyclerView recyclerView, rv_mark_done;
     InvoiceItemList2Adpter invoice_list_adpter;
@@ -791,7 +791,7 @@ public class DetailFragment extends Fragment
 
         cardView_signature_pad = layout.findViewById(R.id.cardView_signature_pad);
         signature_img = layout.findViewById(R.id.signature_img);
-
+        customer_name = layout.findViewById(R.id.customer_name);
         chipGroup = layout.findViewById(R.id.chipGroup);
 
         recyclerView = layout.findViewById(R.id.recyclerView);
@@ -2368,13 +2368,20 @@ public void setCompletionDetail(){
                     cardView_signature_pad.setVisibility(View.VISIBLE);
                     if (mParam2.getSignature() != null && !mParam2.getSignature().equals("")) {
                         btn_add_signature.setVisibility(View.GONE);
-                        signature_img.setVisibility(View.VISIBLE);
+                        customer_name.setVisibility(View.VISIBLE);
+                        customer_name.setText(mParam2.getCustomerName());
                         Picasso.get().load(App_preference.getSharedprefInstance().getBaseURL() +
                                 mParam2.getSignature()).placeholder(R.drawable.ic_profile).error(R.drawable.ic_profile)
                                 .into(signature_img);
+                        if(mParam2.getCustomerName() != null && !mParam2.getCustomerName().isEmpty()){
+                            signature_img.setVisibility(View.VISIBLE);
+                        }else{
+                            signature_img.setVisibility(View.GONE);
+                        }
                     } else {
                         btn_add_signature.setVisibility(View.VISIBLE);
                         signature_img.setVisibility(View.GONE);
+                        customer_name.setVisibility(View.GONE);
                     }
                 } else {
                     cardView_signature_pad.setVisibility(View.GONE);

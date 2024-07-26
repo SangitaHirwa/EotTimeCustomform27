@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.eot_app.activitylog.ActivityLogController;
 import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.model.InvoiceItemDataModel;
+import com.eot_app.nav_menu.jobs.job_detail.detail.jobdetial_model.SignatureUploadModel;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.inventry_pkg.Inventry_ReQ_Model;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.inventry_pkg.Inventry_ReS_Model;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_db.model_pkg.ItembyJobModel;
@@ -46,6 +47,8 @@ public class Job_Detail_Activity_pc implements Job_Detail_Activity_pi {
     private final int updatelimit;
     private int updateindex;
     private int count;
+    String signaturePath ="";
+    String customerName ="";
 
     public Job_Detail_Activity_pc(Job_Detail_Activity_View activity_view) {
         this.activity_view = activity_view;
@@ -257,7 +260,7 @@ public class Job_Detail_Activity_pc implements Job_Detail_Activity_pi {
     }
 
     @Override
-    public void uploadCustomerSign(final String jobId, File file1) {
+    public void uploadCustomerSign(final String jobId, File file1,String custName) {
         if (AppUtility.isInternetConnected()) {
             AppUtility.progressBarShow((Context) activity_view);
             ActivityLogController.saveActivity(ActivityLogController.JOB_MODULE, ActivityLogController.JOB_UPLOAD_DOC, ActivityLogController.JOB_MODULE);
@@ -272,9 +275,9 @@ public class Job_Detail_Activity_pc implements Job_Detail_Activity_pi {
                 body = MultipartBody.Part.createFormData("signImg", file1.getAbsolutePath(), requestFile);
             }
             RequestBody requestBody_jobId = RequestBody.create(jobId, MultipartBody.FORM);
-
+            RequestBody requestBody_custName = RequestBody.create(custName, MultipartBody.FORM);
             ApiClient.getservices().uploadCustomerSignature(AppUtility.getApiHeaders(),
-                    requestBody_jobId, body)
+                    requestBody_jobId,requestBody_custName, body)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
 
@@ -286,11 +289,18 @@ public class Job_Detail_Activity_pc implements Job_Detail_Activity_pi {
                         @Override
                         public void onNext(JsonObject jsonObject) {
                             if (jsonObject.get("success").getAsBoolean()) {
-                                String signaturePath = jsonObject.get("data").getAsString();
+                                String convert = new Gson().toJson(jsonObject.get("data").getAsJsonArray());
+                                Type type = new TypeToken<ArrayList<SignatureUploadModel>>() {
+                                }.getType();
+                                ArrayList<SignatureUploadModel> data=new Gson().fromJson(convert, type);
+                                if(data.size()>0) {
+                                     signaturePath = data.get(0).getSignaturePath();
+                                     customerName = data.get(0).getCustomerName();
+                                }
                                 if (!TextUtils.isEmpty(signaturePath)) {
                                     AppDataBase.getInMemoryDatabase(EotApp.getAppinstance())
-                                            .jobModel().updateSignaturePath(signaturePath, jobId);
-                                    activity_view.onSignatureUpload(signaturePath, LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
+                                            .jobModel().updateSignaturePath(signaturePath,customerName, jobId);
+                                    activity_view.onSignatureUpload(signaturePath,customerName, LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
 
                                 }
 

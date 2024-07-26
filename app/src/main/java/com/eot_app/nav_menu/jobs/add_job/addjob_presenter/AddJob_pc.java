@@ -88,10 +88,10 @@ public class AddJob_pc implements Add_job_pi {
         } else if (cltId.equals("")) {
             addjobView.showErrorMsgsForValidation(LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_client_name));
             return false;
-        } else if (!mob.isEmpty() && !mob.equalsIgnoreCase(App_preference.getSharedprefInstance().getLoginRes().getCtryCode()) && mob.length() < AppConstant.MOBILE_LIMIT) {
+        }else if (!mob.isEmpty() && !mob.equalsIgnoreCase(App_preference.getSharedprefInstance().getLoginRes().getCtryCode()) && mob.length() < AppConstant.MOBILE_LIMIT) {
             addjobView.showErrorMsgsForValidation(LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_mob_lent));
             return false;
-        } else if (!alterNateMob.isEmpty() && !mob.equalsIgnoreCase(App_preference.getSharedprefInstance().getLoginRes().getCtryCode()) && alterNateMob.length() < AppConstant.MOBILE_LIMIT) {
+        } else if (!alterNateMob.isEmpty() && !mob.equalsIgnoreCase(App_preference.getSharedprefInstance().getLoginRes().getCtryCode())  && alterNateMob.length() < AppConstant.MOBILE_LIMIT) {
             addjobView.showErrorMsgsForValidation(LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_alter_mob_lent));
             return false;
         } else if (!email.isEmpty() && (!Eot_Validation.email_checker(email).equals(""))) {
@@ -121,10 +121,16 @@ public class AddJob_pc implements Add_job_pi {
         } else if (cltId.equals("")) {
             addjobView.showErrorMsgsForValidation(LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_client_name));
             return false;
+        } else if (!mob.isEmpty() && !AppUtility.isValidPhoneNumber(mob)) {
+            addjobView.showErrorMsgsForValidation(LanguageController.getInstance().getMobileMsgByKey(AppConstant.enter_valid_mobile_number));
+            return false;
         } else if (!mob.isEmpty() && !mob.equalsIgnoreCase(App_preference.getSharedprefInstance().getLoginRes().getCtryCode()) && mob.length() < AppConstant.MOBILE_LIMIT) {
             addjobView.showErrorMsgsForValidation(LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_mob_lent));
             return false;
-        } else if (!alterNateMob.isEmpty() && !mob.equalsIgnoreCase(App_preference.getSharedprefInstance().getLoginRes().getCtryCode()) && alterNateMob.length() < AppConstant.MOBILE_LIMIT) {
+        }else if (!alterNateMob.isEmpty() && !AppUtility.isValidPhoneNumber(alterNateMob)) {
+            addjobView.showErrorMsgsForValidation(LanguageController.getInstance().getMobileMsgByKey(AppConstant.enter_valid_alternate_mobile_number));
+            return false;
+        } else if (!alterNateMob.isEmpty() && !mob.equalsIgnoreCase(App_preference.getSharedprefInstance().getLoginRes().getCtryCode())  && alterNateMob.length() < AppConstant.MOBILE_LIMIT) {
             addjobView.showErrorMsgsForValidation(LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_alter_mob_lent));
             return false;
         } else if (!email.isEmpty() && (!Eot_Validation.email_checker(email).equals(""))) {
@@ -161,7 +167,7 @@ public class AddJob_pc implements Add_job_pi {
         String time1 = App_preference.getSharedprefInstance().getLoginRes().getJobSchedule();
         if (!TextUtils.isEmpty(time1)) {
             if(calenderDate.isEmpty()) {
-            schdul_Start_Date_Time(AppUtility.getFormatedTime(time1), datestr);
+            schdul_Start_Date_Time(AppUtility.getFormatedTimes(time1), datestr);
             }else {
                 try {
                     SimpleDateFormat dateFormat = new SimpleDateFormat(AppConstant.DATE_FORMAT2,Locale.ENGLISH);
@@ -289,7 +295,7 @@ public class AddJob_pc implements Add_job_pi {
         try {
             if (App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable() != null &&
                     App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable().equals("0"))
-                time_str = sch_time[1]+" " /*+ sch_time[2]*/;
+                time_str = sch_time[1]+" " + sch_time[2];
             else time_str = sch_time[1] + "";
         } catch (Exception e) {
                  e.printStackTrace();

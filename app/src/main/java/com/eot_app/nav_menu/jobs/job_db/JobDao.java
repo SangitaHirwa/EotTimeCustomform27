@@ -172,8 +172,8 @@ public interface JobDao {
     @Query("UPDATE Job  SET cltId = :cltId WHERE jobId = :jobId ")
     void updateJobCltID(String jobId, String cltId);
 
-    @Query("UPDATE Job SET signature=:signature WHERE jobId= :jobId")
-    void updateSignaturePath(String signature, String jobId);
+    @Query("UPDATE Job SET signature=:signature, customerName=:customerName WHERE jobId= :jobId")
+    void updateSignaturePath(String signature,String customerName, String jobId);
 
     @Query("UPDATE Job SET complNote=:complNote WHERE jobId= :jobId")
     void updateComplitionNotes(String complNote, String jobId);
