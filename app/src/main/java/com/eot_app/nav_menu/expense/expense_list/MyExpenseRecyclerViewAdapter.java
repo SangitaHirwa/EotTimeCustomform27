@@ -150,7 +150,7 @@ public class MyExpenseRecyclerViewAdapter extends RecyclerView.Adapter<MyExpense
         } catch (Exception e) {
             e.printStackTrace();
         }
-        holder.cardView.setOnClickListener(new View.OnClickListener() {
+        holder.item_main_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (null != mListener) {
@@ -285,7 +285,7 @@ public class MyExpenseRecyclerViewAdapter extends RecyclerView.Adapter<MyExpense
         public CardView cardView;
         public ImageView status_img;
         public View blank_view;
-        LinearLayout date_layout;
+        LinearLayout date_layout,item_main_layout;
 
         public ViewHolder(View view) {
             super(view);
@@ -303,6 +303,7 @@ public class MyExpenseRecyclerViewAdapter extends RecyclerView.Adapter<MyExpense
             txt_date = view.findViewById(R.id.txt_date);
             cardView = view.findViewById(R.id.cardView);
             date_layout = view.findViewById(R.id.date_layout);
+            item_main_layout = view.findViewById(R.id.item_main_layout);
         }
     }
 

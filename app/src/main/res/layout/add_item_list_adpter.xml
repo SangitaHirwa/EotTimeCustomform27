@@ -12,19 +12,19 @@
         app:cardCornerRadius="2dp"
         android:clickable="true"
         android:focusable="true"
-        android:foreground="@drawable/ripple_effect_1"
+        android:foreground="?android:attr/selectableItemBackground"
         app:cardElevation="0dp">
     <LinearLayout
         android:id="@+id/item_layout"
-        android:clickable="true"
-        android:focusable="true"
-        android:background="@drawable/ripple_effect_1"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingLeft="8dp"
         android:paddingTop="8dp"
         android:paddingRight="8dp"
         android:weightSum="2"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?android:attr/selectableItemBackground"
         tools:ignore="DisableBaselineAlignment">
 
 

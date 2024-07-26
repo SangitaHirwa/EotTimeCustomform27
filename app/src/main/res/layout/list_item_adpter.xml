@@ -10,20 +10,18 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
-        app:cardCornerRadius="2dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:foreground="@drawable/ripple_effect_1"
-        app:cardElevation="0dp">
+        app:cardElevation="0dp"
+        >
         <RelativeLayout
             android:id="@+id/item_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="5dp"
             android:gravity="center"
+            app:cardCornerRadius="2dp"
             android:clickable="true"
             android:focusable="true"
-            android:background="@drawable/ripple_effect_1">
+            android:foreground="?android:attr/selectableItemBackground">
 
             <CheckBox
                 android:id="@+id/checkbox_invoice"

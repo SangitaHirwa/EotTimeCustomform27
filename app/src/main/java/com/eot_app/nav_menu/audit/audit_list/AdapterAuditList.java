@@ -261,7 +261,7 @@ public class AdapterAuditList extends RecyclerView.Adapter<AdapterAuditList.MyVi
     public class MyViewHolder extends RecyclerView.ViewHolder {
         TextView txt_date, job_time, job_am_pm, label, address, status, des, site_name;
         ImageView status_img;
-        LinearLayout date_layout;
+        LinearLayout date_layout,item_main_layout;
         ConstraintLayout status_constraints;
         View blank_view;
         ImageView equi_flag, attachmemt_flag;
@@ -282,7 +282,8 @@ public class AdapterAuditList extends RecyclerView.Adapter<AdapterAuditList.MyVi
             equi_flag = itemView.findViewById(R.id.equi_flag);
             attachmemt_flag = itemView.findViewById(R.id.attachmemt_flag);
             site_name = itemView.findViewById(R.id.site_name);
-            itemView.setOnClickListener(v -> {
+            item_main_layout = itemView.findViewById(R.id.item_main_layout);
+            item_main_layout.setOnClickListener(v -> {
                 if (onAuditSelection != null)
                     try {
                         onAuditSelection.onAuditSelected(list.get(getBindingAdapterPosition()), getBindingAdapterPosition());
