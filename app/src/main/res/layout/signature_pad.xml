@@ -32,6 +32,7 @@
                     android:layout_height="wrap_content"
                     android:text=""
                     android:textStyle="bold"
+                    android:paddingBottom="8dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/guideline_for_signature"/>
@@ -64,6 +65,21 @@
                     app:layout_constraintStart_toEndOf="@+id/guideline_for_signature"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:ignore="HardcodedText,SpUsage" />
+
+                <ImageView
+                    android:id="@+id/signature_img"
+                    android:layout_width="200dp"
+                    android:visibility="gone"
+                    android:layout_height="80dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerInParent="true"
+                    android:background="@drawable/date_dp_bck"
+                    android:padding="5dp"
+                    android:paddingBottom="5dp"
+                    tools:ignore="ContentDescription"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/signature_pad"
+                    />
                 <TextView
                     android:id="@+id/customer_name"
                     style="@style/style_thrid_thrd"
@@ -71,24 +87,9 @@
                     android:layout_height="wrap_content"
                     android:text=""
                     android:visibility="gone"
-                    android:layout_marginTop="10dp"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/signature_pad"
+                    app:layout_constraintTop_toBottomOf="@+id/signature_img"
                     />
-                <ImageView
-                    android:id="@+id/signature_img"
-                    android:layout_width="200dp"
-                    android:visibility="gone"
-                    android:layout_marginTop="5dp"
-                    android:layout_height="80dp"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerInParent="true"
-                    android:background="@drawable/date_dp_bck"
-                    android:padding="5dp"
-                    tools:ignore="ContentDescription"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/customer_name" />
-
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.cardview.widget.CardView>
 

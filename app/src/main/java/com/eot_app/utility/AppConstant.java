@@ -1099,9 +1099,8 @@ public class AppConstant {
     public static String enter_valid_mobile_number = "enter_valid_mobile_number";
     public static String enter_valid_alternate_mobile_number = "enter_valid_alternate_mobile_number";
     public static String go_to_equ = "go_to_equ";
-    public static String customer_name = "customer_name";
-    public static String add_customer_name = "add_customer_name";
-
+    public static String signatory = "signatory";
+    public static String add_signatory = "add_signatory";
     public static String server(String location) {
         switch (location) {
             case "America":

@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.eot_app.activitylog.ActivityLogController;
 import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.model.InvoiceItemDataModel;
+import com.eot_app.nav_menu.jobs.job_detail.detail.jobdetial_model.SignatureUploadModel;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.inventry_pkg.Inventry_ReQ_Model;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.inventry_pkg.Inventry_ReS_Model;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_db.model_pkg.ItembyJobModel;
@@ -46,6 +47,8 @@ public class Job_Detail_Activity_pc implements Job_Detail_Activity_pi {
     private final int updatelimit;
     private int updateindex;
     private int count;
+    String signaturePath ="";
+    String customerName ="";
 
     public Job_Detail_Activity_pc(Job_Detail_Activity_View activity_view) {
         this.activity_view = activity_view;
@@ -287,15 +290,17 @@ public class Job_Detail_Activity_pc implements Job_Detail_Activity_pi {
                         public void onNext(JsonObject jsonObject) {
                             if (jsonObject.get("success").getAsBoolean()) {
                                 String convert = new Gson().toJson(jsonObject.get("data").getAsJsonArray());
-                                Type type = new TypeToken<ArrayList<String>>() {
+                                Type type = new TypeToken<ArrayList<SignatureUploadModel>>() {
                                 }.getType();
-                                ArrayList<String> data=new Gson().fromJson(convert, type);
-                                String signaturePath = data.get(0);
-                                String customerName = data.get(1);
+                                ArrayList<SignatureUploadModel> data=new Gson().fromJson(convert, type);
+                                if(data.size()>0) {
+                                     signaturePath = data.get(0).getSignature();
+                                     customerName = data.get(0).getCustomerName();
+                                }
                                 if (!TextUtils.isEmpty(signaturePath)) {
                                     AppDataBase.getInMemoryDatabase(EotApp.getAppinstance())
                                             .jobModel().updateSignaturePath(signaturePath,customerName, jobId);
-                                    activity_view.onSignatureUpload(signaturePath, LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
+                                    activity_view.onSignatureUpload(signaturePath,customerName, LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
 
                                 }
 

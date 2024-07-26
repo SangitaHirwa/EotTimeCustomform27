@@ -1995,7 +1995,7 @@
     "current_pass_req": "Current password required.",
     "confirm_pass_not_match": "New password and confirm password not match.",
     "go_to_equ" : "Go to Equipment",
-    "customer_name" : "Customer Name",
-    "add_customer_name" : "Add Customer Name"
+    "add_signatory": "Add signatory",
+    "signatory": "Signatory"
   }
 }

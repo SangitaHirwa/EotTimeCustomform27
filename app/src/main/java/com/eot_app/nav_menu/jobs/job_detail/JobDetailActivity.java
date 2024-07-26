@@ -1199,9 +1199,10 @@ public class JobDetailActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onSignatureUpload(String signaturePath, String msg) {
+    public void onSignatureUpload(String signaturePath,String customerName, String msg) {
         if (dataJob != null) {
             dataJob.setSignature(signaturePath);
+            dataJob.setCustomerName(customerName);
             if (detailFragment != null) {
                 AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().updateJob(dataJob);
                 detailFragment.notifyCustomberSign();
@@ -1376,8 +1377,8 @@ public class JobDetailActivity extends AppCompatActivity implements
                 Button btn_upload = view.findViewById(R.id.btn_upload);
                 TextView add_cust_nm = view.findViewById(R.id.add_cust_name);
                 EditText cust_nm = view.findViewById(R.id.c_name);
-                add_cust_nm.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_customer_name));
-                cust_nm.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.customer_name));
+                add_cust_nm.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_signatory));
+                cust_nm.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.signatory));
                 btn_upload.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.expense_upload));
                 btn_close.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.close));
 
