@@ -60,6 +60,9 @@ app:cardUseCompatPadding="true"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:src="@drawable/ic_phone"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="@drawable/ripple_effect_1"
                     tools:ignore="ContentDescription" />
 
                 <ImageView
@@ -68,6 +71,9 @@ app:cardUseCompatPadding="true"
                     android:layout_height="24dp"
                     android:layout_marginStart="5dp"
                     android:src="@drawable/ic_chat_circle"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="@drawable/ripple_effect_1"
                     tools:ignore="ContentDescription" />
 
                 <ImageView
@@ -76,6 +82,9 @@ app:cardUseCompatPadding="true"
                     android:layout_height="24dp"
                     android:layout_marginStart="5dp"
                     android:layout_marginEnd="5dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="@drawable/ripple_effect_1"
                     android:src="@drawable/ic_mail"
                     tools:ignore="ContentDescription" />
             </LinearLayout>

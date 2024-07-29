@@ -56,7 +56,7 @@
                     android:textColor="@color/colorPrimary"
                     android:textSize="@dimen/medium_txt"
                     android:textStyle="bold"
-                    android:gravity="start"
+                    android:gravity="start|center"
                     android:clickable="true"
                     android:focusable="true"
                     android:background="@drawable/ripple_effect_1"

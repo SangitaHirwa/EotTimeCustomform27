@@ -91,6 +91,9 @@
                             android:layout_height="wrap_content"
                            android:background="@drawable/bg_mark_as_done"
                             android:paddingStart="10dp"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:foreground="?android:attr/selectableItemBackground"
                             >
                             <TextView
                                 android:id="@+id/status_label"
@@ -597,7 +600,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
                         android:gravity="center_vertical"
-                        android:visibility="visible">
+                        android:visibility="gone">
 
                         <CheckBox
                             android:id="@+id/checkbox_select_all"
