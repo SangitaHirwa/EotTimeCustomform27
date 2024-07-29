@@ -13,15 +13,19 @@
         app:cardElevation="0dp"
         >
         <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#f2f7fa"
+            >
+        <RelativeLayout
             android:id="@+id/item_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="5dp"
             android:gravity="center"
             app:cardCornerRadius="2dp"
-            android:clickable="true"
-            android:focusable="true"
-            android:foreground="?android:attr/selectableItemBackground">
+            android:background="@drawable/ripple_effect_1"
+           >
 
             <CheckBox
                 android:id="@+id/checkbox_invoice"
@@ -133,7 +137,7 @@
                 android:textStyle="normal"
                 tools:ignore="HardcodedText,SpUsage" />
         </RelativeLayout>
-
+        </RelativeLayout>
     </androidx.cardview.widget.CardView>
 
 </layout>

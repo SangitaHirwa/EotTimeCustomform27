@@ -20,60 +20,65 @@
             android:layout_height="wrap_content"
             android:padding="5dp"
             android:orientation="horizontal"
-            android:clickable="true"
-            android:focusable="true"
-            android:foreground="?android:attr/selectableItemBackground"
             android:gravity="center">
+
             <RelativeLayout
                 android:id="@+id/relativeLayout"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_marginEnd="5dp"
+                android:layout_width="367dp"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:layout_weight="1"
+                android:background="@drawable/ripple_effect_1"
+                android:clickable="true"
+                android:focusable="true"
                 android:padding="10dp">
-         <LinearLayout
-             android:id="@+id/relativeLayout1"
-             android:layout_width="match_parent"
-             android:layout_height="wrap_content"
 
-             >
-             <TextView
-                 android:id="@+id/item_nm"
-                 style="@style/style_sec"
-                 android:layout_width="0dp"
-                 android:layout_height="wrap_content"
-                 android:layout_marginEnd="3dp"
-                 android:layout_weight="1"
-                 android:textStyle="bold"
-                 tools:ignore="HardcodedText" />
-             <TextView
-                 android:id="@+id/qty_item"
-                 style="@style/style_thrid"
-                 android:layout_width="wrap_content"
-                 android:layout_height="wrap_content"
-                 android:layout_marginTop="1dp"
-                 android:textStyle="normal"
-                 android:visibility="visible"
-                 tools:ignore="HardcodedText" />
+                <LinearLayout
+                    android:id="@+id/relativeLayout1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    >
+
+                    <TextView
+                        android:id="@+id/item_nm"
+                        style="@style/style_sec"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="3dp"
+                        android:layout_weight="1"
+                        android:textStyle="bold"
+                        tools:ignore="HardcodedText" />
+
+                    <TextView
+                        android:id="@+id/qty_item"
+                        style="@style/style_thrid"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="1dp"
+                        android:textStyle="normal"
+                        android:visibility="visible"
+                        tools:ignore="HardcodedText" />
 
 
-         </LinearLayout>
+                </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/relativeLayout1"
-                    android:weightSum="2"
                     android:paddingTop="5dp"
-                    >
-                <TextView
-                    android:id="@+id/model_no_text"
-                    style="@style/style_thrid_thrd"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
+                    android:weightSum="2">
 
-                    android:visibility="visible" />
+                    <TextView
+                        android:id="@+id/model_no_text"
+                        style="@style/style_thrid_thrd"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+
+                        android:visibility="visible" />
+
                     <TextView
                         android:id="@+id/item_brand"
                         style="@style/style_thrid_thrd"
@@ -91,10 +96,6 @@
                 <!--
                 -->
             </RelativeLayout>
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                tools:targetApi="m">
 
             <ImageView
                 android:id="@+id/remove_item"
@@ -102,8 +103,11 @@
                 android:layout_height="match_parent"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="@drawable/ripple_effect_1"
                 android:src="@drawable/img_dialog_close"/>
-            </LinearLayout>
+
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 

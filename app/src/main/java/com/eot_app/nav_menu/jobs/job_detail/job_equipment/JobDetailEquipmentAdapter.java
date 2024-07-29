@@ -101,6 +101,7 @@ public class JobDetailEquipmentAdapter extends RecyclerView.Adapter<JobDetailEqu
 
 
         holder.ll_main.setOnClickListener(v -> onEquipmentClicked.OnEquipmentClicked());
+        holder.equipment_item_ll.setOnClickListener(v -> onEquipmentClicked.OnEquipmentClicked());
 
 //        holder.client_item_constraint.setOnClickListener(v -> onEquipmentClicked.OnEquipmentClicked());
         /* 0 Mean equipment 1 means Part(Sub equipment) ****/
@@ -194,7 +195,7 @@ public class JobDetailEquipmentAdapter extends RecyclerView.Adapter<JobDetailEqu
         AppCompatImageView img_equipment;
         TextView equ_img_view;
         AppCompatTextView tv_model, tv_serial,tv_date, tv_model_label, tv_serial_label,tv_status;//, tv_des;// tv_status, , tv_details ,, tv_remark
-        LinearLayout ll_main;
+        LinearLayout ll_main,equipment_item_ll;
         LinearLayout ll_status;
 
         public MyViewHolder(@NonNull View itemView) {
@@ -207,6 +208,7 @@ public class JobDetailEquipmentAdapter extends RecyclerView.Adapter<JobDetailEqu
             tv_item_name = itemView.findViewById(R.id.tv_item_name);
             img_equipment = itemView.findViewById(R.id.img_equipment);
             ll_main = itemView.findViewById(R.id.ll_main);
+            equipment_item_ll = itemView.findViewById(R.id.equipment_item_ll);
             tv_model = itemView.findViewById(R.id.tv_model);
             tv_serial = itemView.findViewById(R.id.tv_serial);
             tv_model_label = itemView.findViewById(R.id.tv_model_label);
