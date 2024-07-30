@@ -2597,12 +2597,14 @@ public void setCompletionDetail(){
             if (itemRequested != null && itemRequested.equals("1")) {
                 requested_item_flag.setVisibility(View.VISIBLE);
                 requested_item_txt.setClickable(true);
+                recyclerView_requested_item.setVisibility(View.GONE);
 //                requested_itemList_show_hide_rl.setVisibility(View.VISIBLE);
                 requested_item_txt.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.down), null, null, null);
             }else {
                 requested_item_txt.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
                 requested_item_flag.setVisibility(View.GONE);
                 requested_item_txt.setClickable(false);
+                recyclerView_requested_item.setVisibility(View.GONE);
             }
         }
     }
@@ -3738,7 +3740,7 @@ public void setCompletionDetail(){
     public void itemSelected(RequestedItemModel updateRequestedItemModel) {
 //        show_requested_list.setVisibility(View.VISIBLE);
         requested_item_txt.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.down), null, null, null);
-        recyclerView_requested_item.setVisibility(View.GONE);
+        recyclerView_requested_item.setVisibility(View.VISIBLE);
 //        hide_requested_list.setVisibility(View.GONE);
         Intent intent = new Intent(getActivity(),AddUpdateRquestedItemActivity.class);
         intent.putExtra("updateSelectedReqItem",updateRequestedItemModel);

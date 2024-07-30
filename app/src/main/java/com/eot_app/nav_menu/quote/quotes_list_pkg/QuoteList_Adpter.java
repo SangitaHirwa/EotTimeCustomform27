@@ -207,7 +207,7 @@ public class QuoteList_Adpter extends RecyclerView.Adapter<QuoteList_Adpter.MyVi
             txt_date = itemView.findViewById(R.id.txt_date);
             date_layout = itemView.findViewById(R.id.date_layout);
             item_flag = itemView.findViewById(R.id.item_flag);
-            itemView.setOnClickListener(new View.OnClickListener() {
+            item_main_layout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     try {

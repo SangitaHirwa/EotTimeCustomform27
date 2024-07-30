@@ -291,6 +291,9 @@
                         android:layout_height="wrap_content"
                         android:gravity="end"
                         android:text="Add Attachment"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:background="@drawable/ripple_effect_1"
                         android:textColor="@color/txt_dialog_link_color" />
 
                 </LinearLayout>

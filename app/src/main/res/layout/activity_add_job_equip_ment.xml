@@ -325,6 +325,7 @@
                                 android:gravity="center_vertical"
                                 android:padding="2dp"
                                 android:text=""
+                                android:background="?android:attr/selectableItemBackground"
                                 android:textColor="@color/txt_link_color"
                                 app:layout_constraintEnd_toStartOf="@+id/guideline1"
                                 app:layout_constraintStart_toStartOf="parent"
@@ -360,6 +361,7 @@
                                 android:drawablePadding="5dp"
                                 android:gravity="center_vertical"
                                 android:padding="2dp"
+                                android:background="?android:attr/selectableItemBackground"
                                 android:textColor="@color/txt_link_color"
                                 android:textStyle="bold"
                                 app:layout_constraintEnd_toEndOf="parent"
@@ -398,6 +400,7 @@
                             android:gravity="center"
                             android:layout_marginTop="10dp"
                             android:layout_marginBottom="12dp"
+                            android:background="?android:attr/selectableItemBackground"
                             android:text="Show More Details"
                             android:textColor="@color/colorPrimary"
                             android:visibility="visible" />
@@ -663,6 +666,7 @@
                                 android:layout_marginTop="8dp"
                                 android:layout_marginBottom="8dp"
                                 android:text="Show Less Details"
+                                android:background="?android:attr/selectableItemBackground"
                                 android:textColor="@color/colorPrimary"
                                 android:visibility="visible" />
                             <View

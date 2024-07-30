@@ -39,6 +39,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/large_sec_text"
                 android:layout_weight="1"
+                android:background="?android:attr/selectableItemBackground"
                 tools:ignore="InefficientWeight,NestedWeights" />
 
             <TextView
@@ -119,6 +120,7 @@
                 android:gravity="center"
                 android:padding="10dp"
                 android:visibility="visible"
+                android:background="?android:attr/selectableItemBackground"
                 tools:ignore="UseCompoundDrawables">
 
                 <ImageView
@@ -132,6 +134,7 @@
                     style="@style/style_sec"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="?android:attr/selectableItemBackground"
                     android:layout_marginStart="@dimen/large_sec_text"
                     android:text="" />
             </LinearLayout>
@@ -155,6 +158,7 @@
                     style="@style/style_sec"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="?android:attr/selectableItemBackground"
                     android:layout_marginStart="@dimen/large_sec_text" />
             </LinearLayout>
 
@@ -178,6 +182,7 @@
                     style="@style/style_sec"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="?android:attr/selectableItemBackground"
                     android:layout_marginStart="@dimen/large_sec_text" />
             </LinearLayout>
 
@@ -202,6 +207,7 @@
                     style="@style/style_sec"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="?android:attr/selectableItemBackground"
                     android:layout_marginStart="@dimen/large_sec_text" />
             </LinearLayout>
 
@@ -225,6 +231,7 @@
                     android:id="@+id/title_qoutes"
                     style="@style/style_sec"
                     android:layout_width="match_parent"
+                    android:background="?android:attr/selectableItemBackground"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/large_sec_text" />
             </LinearLayout>
@@ -250,6 +257,7 @@
                     style="@style/style_sec"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="?android:attr/selectableItemBackground"
                     android:layout_marginStart="@dimen/large_sec_text" />
             </LinearLayout>
 
@@ -277,6 +285,7 @@
                     android:layout_marginStart="@dimen/large_sec_text"
                     android:layout_weight="1"
                     android:text="Chat"
+                    android:background="?android:attr/selectableItemBackground"
                     tools:ignore="HardcodedText" />
 
                 <TextView
@@ -317,6 +326,7 @@
                     style="@style/style_sec"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="?android:attr/selectableItemBackground"
                     android:layout_marginStart="@dimen/large_sec_text" />
             </LinearLayout>
 
@@ -339,6 +349,7 @@
                     style="@style/style_sec"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="?android:attr/selectableItemBackground"
                     android:layout_marginStart="@dimen/large_sec_text" />
             </LinearLayout>
 
@@ -362,6 +373,7 @@
                     style="@style/style_sec"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="?android:attr/selectableItemBackground"
                     android:layout_marginStart="@dimen/large_sec_text" />
             </LinearLayout>
 
@@ -384,6 +396,7 @@
                     android:id="@+id/title_addLeave"
                     style="@style/style_sec"
                     android:layout_width="match_parent"
+                    android:background="?android:attr/selectableItemBackground"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/large_sec_text" />
             </LinearLayout>

@@ -17,7 +17,10 @@
             android:layout_height="match_parent"
             android:padding="5dp"
             android:layout_marginLeft="5dp"
-            android:gravity="center">
+            android:gravity="center"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?android:attr/selectableItemBackground">
 
             <CheckBox
                 android:id="@+id/checkbox_invoice"

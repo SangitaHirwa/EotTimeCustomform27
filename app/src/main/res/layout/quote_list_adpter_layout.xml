@@ -44,7 +44,10 @@
             android:id="@+id/item_main_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?android:attr/selectableItemBackground">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/status_constraints"

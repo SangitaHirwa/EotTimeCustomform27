@@ -28,14 +28,22 @@
                 <TextView
                     android:id="@+id/signature_pad"
                     style="@style/style_sec"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text=""
                     android:textStyle="bold"
                     android:paddingBottom="8dp"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/guideline_for_signature"/>
 
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/guideline_for_signature"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_begin="201dp"
+                    app:layout_constraintStart_toEndOf="@+id/signature_pad" />
 
                 <TextView
                     android:id="@+id/btn_add_signature"
@@ -48,10 +56,13 @@
                     android:textColor="@color/colorPrimary"
                     android:textSize="@dimen/medium_txt"
                     android:textStyle="bold"
-                    android:gravity="end"
-                    android:visibility="gone"
+                    android:gravity="start|center"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="@drawable/ripple_effect_1"
+                    android:visibility="visible"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/signature_pad"
+                    app:layout_constraintStart_toEndOf="@+id/guideline_for_signature"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:ignore="HardcodedText,SpUsage" />
 
