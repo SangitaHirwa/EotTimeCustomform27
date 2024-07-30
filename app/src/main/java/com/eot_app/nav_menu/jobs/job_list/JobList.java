@@ -1029,7 +1029,6 @@ public class JobList extends Fragment implements MyListItemSelected<Job>, Joblis
 
     @SafeVarargs
     private final void backGroundJobListListner(final int visibilityFlag, final List<Job>... lists) {
-        AppUtility.progressBarDissMiss();
         ExecutorService service = Executors.newSingleThreadExecutor();
         service.execute(() -> {
             final List<Job> dataList = new ArrayList<>();
@@ -1117,6 +1116,7 @@ public class JobList extends Fragment implements MyListItemSelected<Job>, Joblis
 
                 adapter.setUnScheduleHeaderPos(unScheduleHeaderPos);
                 adapter.updateRecords(dataList);
+                AppUtility.progressBarDissMiss();
                 if (adapter.getItemCount() <= 0) {
                     nojobs_linear.setVisibility(View.VISIBLE);
 
