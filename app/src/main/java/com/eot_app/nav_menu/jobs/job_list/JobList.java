@@ -1116,7 +1116,6 @@ public class JobList extends Fragment implements MyListItemSelected<Job>, Joblis
 
                 adapter.setUnScheduleHeaderPos(unScheduleHeaderPos);
                 adapter.updateRecords(dataList);
-                AppUtility.progressBarDissMiss();
                 if (adapter.getItemCount() <= 0) {
                     nojobs_linear.setVisibility(View.VISIBLE);
 
@@ -1150,6 +1149,7 @@ public class JobList extends Fragment implements MyListItemSelected<Job>, Joblis
                 }
             });
         });
+        AppUtility.progressBarDissMiss();
     }
 
     @Override
