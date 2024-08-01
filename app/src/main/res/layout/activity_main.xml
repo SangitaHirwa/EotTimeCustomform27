@@ -53,28 +53,29 @@
                     android:id="@+id/setting"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/button_field_height"
-                    android:layout_marginStart="5dp"
                     android:layout_marginBottom="5dp"
                     android:gravity="center"
-                    android:padding="5dp"
+                    android:padding="2dp"
                     tools:ignore="UseCompoundDrawables">
-
+<!--
                     <ImageView
                         android:layout_width="@dimen/start_margin"
                         android:layout_height="@dimen/start_margin"
                         android:layout_gravity="center"
                         android:src="@drawable/vc_new_setting"
                         android:tint="@color/colorPrimary"
-                        tools:ignore="ContentDescription" />
+                        tools:ignore="ContentDescription" />-->
 
                     <TextView
                         android:id="@+id/title_setting"
                         style="@style/style_sec"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
+                        android:layout_height="match_parent"
+                        android:drawableLeft="@drawable/settings"
                         android:background="?android:attr/selectableItemBackground"
-                        android:layout_marginStart="@dimen/large_sec_text"
+                        android:drawablePadding="15dp"
+                        android:padding="10dp"
+                        android:gravity="center_vertical"
                         android:layout_weight="1" />
 
                 </LinearLayout>
@@ -84,26 +85,27 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/button_field_height"
                     android:layout_below="@id/setting"
-                    android:layout_marginStart="5dp"
                     android:layout_marginBottom="5dp"
                     android:gravity="center"
-                    android:padding="5dp">
-
+                    android:padding="2dp">
+<!--
                     <ImageView
                         android:layout_width="@dimen/start_margin"
                         android:layout_height="@dimen/start_margin"
                         android:layout_gravity="center"
                         android:src="@drawable/ic_logout"
-                        tools:ignore="ContentDescription" />
+                        tools:ignore="ContentDescription" />-->
 
                     <TextView
                         android:id="@+id/title_logout"
                         style="@style/style_sec"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
+                        android:layout_height="match_parent"
+                        android:drawableLeft="@drawable/logout_side_menu_ic"
                         android:background="?android:attr/selectableItemBackground"
-                        android:layout_marginStart="@dimen/large_sec_text"
+                        android:drawablePadding="15dp"
+                        android:padding="10dp"
+                        android:gravity="center_vertical"
                         android:layout_weight="1" />
 
                     <Button
