@@ -27,7 +27,10 @@
                 android:id="@+id/cancel_txt"
                 style="@style/jobComStyle"
                 android:text="@string/cancel"
-                android:textColor="@color/white" />
+                android:textColor="@color/white"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackground"/>
 
             <TextView
                 android:id="@+id/complHeader"
@@ -47,6 +50,9 @@
                 android:id="@+id/save_txt1"
                 style="@style/jobComStyle"
                 android:text="@string/save"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackground"
                 android:textColor="@color/white"
                 android:visibility="invisible"
                 />

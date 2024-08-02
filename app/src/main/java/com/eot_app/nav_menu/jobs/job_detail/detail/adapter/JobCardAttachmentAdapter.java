@@ -37,14 +37,22 @@ public class JobCardAttachmentAdapter extends RecyclerView.Adapter<JobCardAttach
         JobCardAttachmentModel item = list.get(position);
         holder.checkBox.setText(item.getName());
         holder.checkBox.setChecked(item.getChecked());
-
-        holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        holder.checkBox.setOnClickListener(v -> {
+            if(item.getChecked()){
+                item.setChecked(false);
+                listener.cbClickListener(item);
+            }else {
+                item.setChecked(true);
+                listener.cbClickListener(item);
+            }
+        });
+       /* holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 item.setChecked(isChecked);
                 listener.cbClickListener(item);
             }
-        });
+        });*/
     }
 
     @Override

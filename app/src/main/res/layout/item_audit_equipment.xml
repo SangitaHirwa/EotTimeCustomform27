@@ -234,6 +234,7 @@
                             android:layout_height="wrap_content"
                             android:text="View details"
                             android:textColor="@color/colorPrimary"
+                            android:background="?android:attr/selectableItemBackground"
                             android:textStyle="bold"
                             tools:ignore="HardcodedText" />
                     </RelativeLayout>
@@ -248,6 +249,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Add remark"
+                            android:background="?android:attr/selectableItemBackground"
                             android:textColor="@color/colorPrimary"
                             android:textStyle="bold"
                             tools:ignore="HardcodedText" />

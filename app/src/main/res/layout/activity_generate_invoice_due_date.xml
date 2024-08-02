@@ -91,6 +91,7 @@
                         android:layout_marginEnd="15dp"
                         android:layout_width="wrap_content"
                         android:text=""
+                        android:background="?android:attr/selectableItemBackground"
                         android:textSize="12dp"
                         android:textStyle="bold"
                         style="@style/style_sec_sec"/>
@@ -102,6 +103,7 @@
                         android:layout_marginEnd="15dp"
                         android:layout_width="wrap_content"
                         android:text=""
+                        android:background="?android:attr/selectableItemBackground"
                         android:textSize="12dp"
                         android:textStyle="bold"
                         android:textColor="@color/colorPrimary"

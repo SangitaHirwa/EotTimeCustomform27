@@ -266,14 +266,15 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
         binding.tvExportAll.setOnClickListener(this);
         binding.linearArrawLayout.setOnClickListener(this);
         binding.seemore.setOnClickListener(this);
+        binding.txtSeeMore.setOnClickListener(this);
         binding.seeless.setOnClickListener(this);
-        binding.tvAddNewItem.setOnClickListener(this);
+        binding.btnAddItem.setOnClickListener(this);
 
         if (App_preference.getSharedprefInstance().getLoginRes().getCompPermission().get(0).getIsItemEnable().equals("1")) {
-            binding.tvAddNewItem.setVisibility(View.GONE);
+            binding.btnAddItem.setVisibility(View.GONE);
         }
 
-        binding.tvAddNewItem.setOnClickListener(view -> {
+        binding.btnAddItem.setOnClickListener(view -> {
             Intent intent = new Intent(this, AddEditInvoiceItemActivity2.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
             intent.putExtra("AddRequirmentGetheringItem",true);
@@ -797,6 +798,7 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
                 break;
 
             case R.id.seemore:
+            case R.id.txt_seeMore:
                 binding.seemore.setVisibility(View.GONE);
                 binding.seeless.setVisibility(View.VISIBLE);
                 binding.LayoutForSeeMoreLess.setVisibility(View.VISIBLE);

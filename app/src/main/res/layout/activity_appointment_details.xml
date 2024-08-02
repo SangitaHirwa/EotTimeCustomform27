@@ -91,6 +91,9 @@
                             android:layout_height="wrap_content"
                            android:background="@drawable/bg_mark_as_done"
                             android:paddingStart="10dp"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:foreground="?android:attr/selectableItemBackground"
                             >
                             <TextView
                                 android:id="@+id/status_label"
@@ -122,13 +125,19 @@
                             android:id="@+id/img_call"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:src="@drawable/svg_mobile_appointment" />
+                            android:src="@drawable/svg_mobile_appointment"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:foreground="?android:attr/selectableItemBackground"/>
 
                         <androidx.appcompat.widget.AppCompatImageView
                             android:id="@+id/img_email"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            app:srcCompat="@drawable/svg_email_yellow" />
+                            app:srcCompat="@drawable/svg_email_yellow"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:foreground="?android:attr/selectableItemBackground"/>
                     </LinearLayout>
 
 
@@ -187,6 +196,9 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="26dp"
                         android:layout_marginTop="10dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="?android:attr/selectableItemBackground"
                         android:text="@string/view_on_map"
                         android:textColor="#EBB057" />
 
@@ -203,16 +215,23 @@
                         android:layout_height="wrap_content"
                         android:gravity="center"
                         android:layout_marginTop="8dp"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="?android:attr/selectableItemBackground">
 
                         <TextView
                             android:id="@+id/txt_seeMore"
                             style="@style/style_sec"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="See More"
+                            android:gravity="center"
                             android:textColor="@color/colorPrimary"
                             android:textSize="11sp"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:foreground="?android:attr/selectableItemBackground"
                             android:textStyle="normal" />
 
                         <ImageView
@@ -373,6 +392,9 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:text="@string/_1234"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:foreground="?android:attr/selectableItemBackground"
                                 android:textColor="@color/colorPrimary"
                                 android:textStyle="bold" />
 
@@ -434,6 +456,9 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:text="@string/_1234"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:foreground="?android:attr/selectableItemBackground"
                                 android:textColor="@color/colorPrimary"
                                 android:textStyle="bold" />
 
@@ -448,7 +473,9 @@
                     android:id="@+id/seeless"
                     android:visibility="gone"
                     android:gravity="center"
-
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="?android:attr/selectableItemBackground"
 
                     >
                     <TextView
@@ -504,6 +531,9 @@
                             android:paddingTop="3dp"
                             android:paddingBottom="3dp"
                             android:text="Add"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:foreground="?android:attr/selectableItemBackground"
                             android:textColor="@color/colorPrimary"
                             android:textStyle="bold" />
                         <!--<ImageView
@@ -557,6 +587,9 @@
                             android:layout_alignParentEnd="true"
                             android:textStyle="bold"
                             android:text="Add"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:foreground="?android:attr/selectableItemBackground"
                             android:layout_marginEnd="10dp"
                             android:textColor="@color/colorPrimary" />
                     </RelativeLayout>
@@ -585,7 +618,9 @@
                             android:layout_height="wrap_content"
                             android:layout_alignParentEnd="true"
                             android:layout_centerVertical="true"
-                            android:layout_toEndOf="@id/checkbox_select_all"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:foreground="?android:attr/selectableItemBackground"
                             android:gravity="end"
                             android:text="@string/export_document"
                             android:textColor="#EBB057" />
