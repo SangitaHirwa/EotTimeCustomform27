@@ -10,16 +10,21 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
         app:cardCornerRadius="2dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?android:attr/selectableItemBackground"
         app:cardElevation="0dp">
     <LinearLayout
         android:id="@+id/item_layout"
-
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingLeft="8dp"
         android:paddingTop="8dp"
         android:paddingRight="8dp"
         android:weightSum="2"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?android:attr/selectableItemBackground"
         tools:ignore="DisableBaselineAlignment">
 
 

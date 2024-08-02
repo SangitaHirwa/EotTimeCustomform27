@@ -474,7 +474,7 @@ public class JobList extends Fragment implements MyListItemSelected<Job>, Joblis
 
 
         filter_list_btn.setOnClickListener(this);
-        jobListPi = new JobList_pc(this, isFromScan);
+        jobListPi = new JobList_pc(this, isFromScan,getContext());
         List<Job> jobsdata = new ArrayList<>();
         swiperefresh.setOnRefreshListener(() -> {
             isAutoScrolled = false;
@@ -1029,7 +1029,6 @@ public class JobList extends Fragment implements MyListItemSelected<Job>, Joblis
 
     @SafeVarargs
     private final void backGroundJobListListner(final int visibilityFlag, final List<Job>... lists) {
-
         ExecutorService service = Executors.newSingleThreadExecutor();
         service.execute(() -> {
             final List<Job> dataList = new ArrayList<>();
@@ -1150,6 +1149,7 @@ public class JobList extends Fragment implements MyListItemSelected<Job>, Joblis
                 }
             });
         });
+        AppUtility.progressBarDissMiss();
     }
 
     @Override
@@ -1157,7 +1157,7 @@ public class JobList extends Fragment implements MyListItemSelected<Job>, Joblis
         if(jobListPi != null){
         refreshJobList();
         }else {
-            jobListPi = new JobList_pc(this,isFromScan);
+            jobListPi = new JobList_pc(this,isFromScan,getActivity().getApplicationContext());
             jobListPi.getJobList();
         }
     }

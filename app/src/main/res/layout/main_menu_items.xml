@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:tools="http://schemas.android.com/tools"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    >
+<layout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -13,18 +13,18 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="15dp"
-        android:layout_marginBottom="15dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
         android:gravity="center"
-        android:paddingStart="10dp"
-        android:paddingEnd="10dp"
-        android:paddingTop="10dp">
+        android:paddingStart="2dp"
+        android:paddingEnd="2dp"
+        android:paddingTop="5dp">
 
-        <ImageView
-            android:layout_width="@dimen/start_margin"
-            android:layout_height="@dimen/start_margin"
-            android:src="@drawable/watch_icon"
-            tools:ignore="ContentDescription" />
+           <!-- <ImageView
+                android:layout_width="@dimen/start_margin"
+                android:layout_height="@dimen/start_margin"
+                android:src="@drawable/watch_icon"
+                tools:ignore="ContentDescription" />-->
 
         <LinearLayout
             android:layout_width="0dp"
@@ -37,8 +37,12 @@
                 style="@style/style_sec"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/large_sec_text"
                 android:layout_weight="1"
+                android:text="Check In/Out"
+                android:drawablePadding="10dp"
+                android:padding="8dp"
+                android:drawableLeft="@drawable/watch_side_menu_ic"
+                android:background="?android:attr/selectableItemBackground"
                 tools:ignore="InefficientWeight,NestedWeights" />
 
             <TextView
@@ -48,26 +52,27 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/large_sec_text"
                 android:text="Check In"
+                android:paddingStart="28dp"
                 tools:ignore="HardcodedText" />
         </LinearLayout>
 
 
-        <ImageView
-            android:id="@+id/loader"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/sync_loader"
-            android:visibility="gone"
-            tools:ignore="ContentDescription" />
+            <ImageView
+                android:id="@+id/loader"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/sync_loader"
+                android:visibility="gone"
+                tools:ignore="ContentDescription" />
 
-        <TextView
-            android:id="@+id/text_clock"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="visible" />
+            <TextView
+                android:id="@+id/text_clock"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="visible" />
 
 
-    </LinearLayout>
+        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/timezonelayout"
@@ -94,68 +99,79 @@
 
 
         <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/border_font_color" />
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/border_font_color" />
 
-    <androidx.core.widget.NestedScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fillViewport="true">
-
-        <LinearLayout
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:gravity="center"
-            android:orientation="vertical">
+            android:fillViewport="true">
 
-
-            <!--Appoinment Menu-->
             <LinearLayout
-                android:id="@+id/parent_calender"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
                 android:gravity="center"
-                android:padding="10dp"
-                android:visibility="visible"
-                tools:ignore="UseCompoundDrawables">
+                android:orientation="vertical">
 
-                <ImageView
+
+                <!--Appoinment Menu-->
+                <LinearLayout
+                    android:id="@+id/parent_calender"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:padding="2dp"
+                    android:visibility="visible"
+                    android:background="?android:attr/selectableItemBackground"
+                    tools:ignore="UseCompoundDrawables">
+
+                    <!-- <ImageView
                     android:layout_width="@dimen/start_margin"
                     android:layout_height="@dimen/start_margin"
                     android:src="@drawable/svg_appointment"
-                    tools:ignore="ContentDescription" />
+                    tools:ignore="ContentDescription" />-->
 
-                <TextView
-                    android:id="@+id/title_calender"
-                    style="@style/style_sec"
+                    <TextView
+                        android:id="@+id/title_calender"
+                        style="@style/style_sec"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:drawableLeft="@drawable/appointment_side_menu_ic"
+                        android:background="?android:attr/selectableItemBackground"
+                        android:drawablePadding="15dp"
+                        android:padding="10dp"
+                        android:gravity="center_vertical"
+                        android:text="Calender" />
+                </LinearLayout>
+
+                <!--Job menu-->
+                <LinearLayout
+                    android:id="@+id/parent_jobs"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/large_sec_text"
-                    android:text="" />
-            </LinearLayout>
+                    android:gravity="center"
+                    android:padding="2dp"
+                    android:background="?android:attr/selectableItemBackground"
+                    tools:ignore="UseCompoundDrawables">
 
-            <!--Job menu-->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:padding="10dp"
-                tools:ignore="UseCompoundDrawables">
-
-                <ImageView
+                    <!--  <ImageView
                     android:layout_width="@dimen/start_margin"
                     android:layout_height="@dimen/start_margin"
                     android:src="@drawable/ic_job"
-                    tools:ignore="ContentDescription" />
+                    tools:ignore="ContentDescription" />-->
 
-                <TextView
-                    android:id="@+id/title_jobs"
-                    style="@style/style_sec"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/large_sec_text" />
+                    <TextView
+                        android:id="@+id/title_jobs"
+                        style="@style/style_sec"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:drawablePadding="15dp"
+                        android:padding="10dp"
+                        android:background="?android:attr/selectableItemBackground"
+                        android:gravity="center_vertical"
+                        app:drawableLeftCompat="@drawable/jobs_side_menu_ic" />
             </LinearLayout>
 
             <!--Aduit Menu-->
@@ -164,21 +180,25 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:padding="10dp"
+                android:padding="2dp"
                 tools:ignore="UseCompoundDrawables">
-
+<!--
                 <ImageView
                     android:layout_width="@dimen/start_margin"
                     android:layout_height="@dimen/start_margin"
                     android:src="@drawable/ic_audit"
-                    tools:ignore="ContentDescription" />
+                    tools:ignore="ContentDescription" />-->
 
                 <TextView
                     android:id="@+id/title_audit"
                     style="@style/style_sec"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/large_sec_text" />
+                    android:layout_height="match_parent"
+                    android:drawablePadding="15dp"
+                    android:padding="10dp"
+                    android:background="?android:attr/selectableItemBackground"
+                    app:drawableLeftCompat="@drawable/audit_side_menu_ic"
+                    android:gravity="center_vertical"/>
             </LinearLayout>
 
 
@@ -188,21 +208,25 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:padding="10dp"
+                android:padding="2dp"
                 tools:ignore="UseCompoundDrawables">
 
-                <ImageView
+                <!--<ImageView
                     android:layout_width="@dimen/start_margin"
                     android:layout_height="@dimen/start_margin"
                     android:src="@drawable/client_icon"
-                    tools:ignore="ContentDescription" />
+                    tools:ignore="ContentDescription" />-->
 
                 <TextView
                     android:id="@+id/title_client"
                     style="@style/style_sec"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/large_sec_text" />
+                    android:layout_height="match_parent"
+                    android:drawablePadding="15dp"
+                    android:padding="10dp"
+                    android:background="?android:attr/selectableItemBackground"
+                    app:drawableLeftCompat="@drawable/client_side_menu_ic"
+                    android:gravity="center_vertical" />
             </LinearLayout>
 
 
@@ -212,21 +236,25 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:padding="10dp"
+                android:padding="2dp"
                 tools:ignore="UseCompoundDrawables">
 
-                <ImageView
+               <!-- <ImageView
                     android:layout_width="@dimen/start_margin"
                     android:layout_height="@dimen/start_margin"
                     android:src="@drawable/ic_quote"
-                    tools:ignore="ContentDescription" />
+                    tools:ignore="ContentDescription" />-->
 
                 <TextView
                     android:id="@+id/title_qoutes"
                     style="@style/style_sec"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/large_sec_text" />
+                    android:layout_height="match_parent"
+                    android:drawablePadding="15dp"
+                    android:padding="10dp"
+                    android:background="?android:attr/selectableItemBackground"
+                    app:drawableLeftCompat="@drawable/quote_side_menu_ic"
+                    android:gravity="center_vertical" />
             </LinearLayout>
 
 
@@ -236,21 +264,25 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:padding="10dp"
+                android:padding="2dp"
                 tools:ignore="UseCompoundDrawables">
 
-                <ImageView
+              <!--  <ImageView
                     android:layout_width="@dimen/start_margin"
                     android:layout_height="@dimen/start_margin"
                     android:src="@drawable/ic_qr_code"
                     tools:ignore="ContentDescription" />
-
+-->
                 <TextView
                     android:id="@+id/title_scan"
                     style="@style/style_sec"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/large_sec_text" />
+                    android:layout_height="match_parent"
+                    android:drawablePadding="15dp"
+                    android:padding="10dp"
+                    android:background="?android:attr/selectableItemBackground"
+                    app:drawableLeftCompat="@drawable/qr_code_side_menu_ic"
+                    android:gravity="center_vertical" />
             </LinearLayout>
 
 
@@ -260,25 +292,32 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:padding="10dp"
+                android:padding="2dp"
+                android:background="?android:attr/selectableItemBackground"
                 android:visibility="visible">
 
-                <ImageView
+              <!--  <ImageView
                     android:layout_width="@dimen/start_margin"
                     android:layout_height="@dimen/start_margin"
                     android:src="@drawable/chat_tab_icon"
-                    tools:ignore="ContentDescription" />
+                    tools:ignore="ContentDescription" />-->
 
                 <TextView
                     android:id="@+id/chat_textview"
                     style="@style/style_sec"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/large_sec_text"
+                    android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:text="Chat"
+                    android:drawablePadding="15dp"
+                    android:padding="10dp"
+                    android:background="?android:attr/selectableItemBackground"
+                    app:drawableLeftCompat="@drawable/chat_side_menu_ic"
+                    android:gravity="center_vertical"
                     tools:ignore="HardcodedText" />
-
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent">
                 <TextView
                     android:id="@+id/badge_count"
                     android:layout_width="20dp"
@@ -293,7 +332,7 @@
                     android:textStyle="normal"
                     android:visibility="gone"
                     tools:ignore="HardcodedText,SpUsage" />
-
+                </LinearLayout>
             </LinearLayout>
 
 
@@ -303,21 +342,25 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:padding="10dp"
+                android:padding="2dp"
                 tools:ignore="UseCompoundDrawables">
 
-                <ImageView
+              <!--  <ImageView
                     android:layout_width="@dimen/start_margin"
                     android:layout_height="@dimen/start_margin"
                     android:src="@drawable/ic_expense_icon"
-                    tools:ignore="ContentDescription" />
+                    tools:ignore="ContentDescription" />-->
 
                 <TextView
                     android:id="@+id/title_expence"
                     style="@style/style_sec"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/large_sec_text" />
+                    android:layout_height="match_parent"
+                    android:drawablePadding="15dp"
+                    android:padding="10dp"
+                    android:background="?android:attr/selectableItemBackground"
+                    app:drawableLeftCompat="@drawable/expense_side_menu_ic"
+                    android:gravity="center_vertical"/>
             </LinearLayout>
 
             <LinearLayout
@@ -325,21 +368,25 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:padding="10dp"
+                android:padding="2dp"
                 tools:ignore="UseCompoundDrawables">
 
-                <ImageView
+           <!--     <ImageView
                     android:layout_width="@dimen/start_margin"
                     android:layout_height="@dimen/start_margin"
                     android:src="@drawable/ic_report"
                     tools:ignore="ContentDescription" />
-
+-->
                 <TextView
                     android:id="@+id/title_report"
                     style="@style/style_sec"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/large_sec_text" />
+                    android:layout_height="match_parent"
+                    android:drawablePadding="15dp"
+                    android:padding="10dp"
+                    android:background="?android:attr/selectableItemBackground"
+                    app:drawableLeftCompat="@drawable/report_side_menu_ic"
+                    android:gravity="center_vertical" />
             </LinearLayout>
 
             <!--Time sheet Menu-->
@@ -348,21 +395,25 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:padding="10dp"
+                android:padding="2dp"
                 tools:ignore="UseCompoundDrawables">
 
-                <ImageView
+               <!-- <ImageView
                     android:layout_width="@dimen/start_margin"
                     android:layout_height="@dimen/start_margin"
                     android:src="@drawable/time_sheet_ic"
                     tools:ignore="ContentDescription" />
-
+-->
                 <TextView
                     android:id="@+id/title_timeSheet"
                     style="@style/style_sec"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/large_sec_text" />
+                    android:layout_height="match_parent"
+                    android:drawablePadding="15dp"
+                    android:padding="10dp"
+                    android:background="?android:attr/selectableItemBackground"
+                    app:drawableLeftCompat="@drawable/time_sheet_ic"
+                    android:gravity="center_vertical" />
             </LinearLayout>
 
             <!--Add Leave Menu-->
@@ -371,21 +422,27 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:padding="10dp"
+                android:padding="2dp"
                 tools:ignore="UseCompoundDrawables">
+<!--
 
                 <ImageView
                     android:layout_width="@dimen/start_margin"
                     android:layout_height="@dimen/start_margin"
                     android:src="@drawable/leave_icon_3"
                     tools:ignore="ContentDescription" />
+-->
 
                 <TextView
                     android:id="@+id/title_addLeave"
                     style="@style/style_sec"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/large_sec_text" />
+                    android:layout_height="match_parent"
+                    android:drawablePadding="15dp"
+                    android:padding="10dp"
+                    android:background="?android:attr/selectableItemBackground"
+                    app:drawableLeftCompat="@drawable/leave"
+                    android:gravity="center_vertical" />
             </LinearLayout>
             <!--Add lead Menu TODO-->
             <LinearLayout
@@ -397,19 +454,23 @@
                 android:padding="10dp"
                 tools:ignore="UseCompoundDrawables">
 
-                <ImageView
+            <!--    <ImageView
                     android:layout_width="@dimen/start_margin"
                     android:layout_height="@dimen/start_margin"
                     android:src="@drawable/leave_icon_3"
-                    tools:ignore="ContentDescription" />
+                    tools:ignore="ContentDescription" />-->
 
                 <TextView
                     android:id="@+id/title_addLead"
                     style="@style/style_sec"
                     android:text="Lead"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/large_sec_text"
+                    android:layout_height="match_parent"
+                    android:drawablePadding="15dp"
+                    android:padding="10dp"
+                    android:background="?android:attr/selectableItemBackground"
+                    app:drawableLeftCompat="@drawable/leave"
+                    android:gravity="center_vertical"
                     tools:ignore="HardcodedText" />
             </LinearLayout>
 

@@ -194,6 +194,7 @@
                     android:layout_weight="1"
                     android:text="View details"
                     android:textColor="@color/colorPrimary"
+                    android:background="?android:attr/selectableItemBackground"
                     android:textStyle="bold"
                     tools:ignore="HardcodedText" />
 
@@ -207,6 +208,7 @@
                     android:text="Add remark"
                     android:textColor="@color/colorPrimary"
                     android:textStyle="bold"
+                    android:background="?android:attr/selectableItemBackground"
                     tools:ignore="HardcodedText" />
                 <ImageView
                     android:visibility="gone"

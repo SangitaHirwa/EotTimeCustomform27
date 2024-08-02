@@ -327,13 +327,13 @@
                         app:layout_constraintEnd_toStartOf="@+id/guideline"
                         android:text=""
                         tools:ignore="RtlSymmetry" />
+
                     <androidx.constraintlayout.widget.Guideline
                         android:id="@+id/guideline"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:orientation="vertical"
-                        app:layout_constraintGuide_percent=".5"
-                        />
+                        app:layout_constraintGuide_begin="185dp" />
                     <TextView
                         android:id="@+id/manufacture_date"
                         style="@style/new_equipment_detail"
@@ -542,6 +542,7 @@
                         android:textStyle="bold"
                         android:drawablePadding="5dp"
                         style="@style/style_thrid"
+                        android:background="?android:attr/selectableItemBackground"
                         app:layout_constraintEnd_toStartOf="@+id/guideline1"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
@@ -577,6 +578,7 @@
                         android:padding="2dp"
                         android:gravity="start|center"
                         android:textColor="@color/colorPrimary"
+                        android:background="?android:attr/selectableItemBackground"
                         android:textStyle="bold"
                         style="@style/style_thrid"
                         android:drawablePadding="5dp"

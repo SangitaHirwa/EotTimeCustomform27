@@ -35,9 +35,9 @@
         android:layout_marginTop="2.5dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="2.5dp"
-        app:cardBackgroundColor="@color/white"
         app:cardCornerRadius="3dp"
         app:cardElevation="0dp"
+        android:clickable="true"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -45,7 +45,10 @@
             android:id="@+id/item_main_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?android:attr/selectableItemBackground">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/status_constraints"
