@@ -1994,7 +1994,7 @@
     "confirm_pass_req": "Confirm password required.",
     "current_pass_req": "Current password required.",
     "confirm_pass_not_match": "New password and confirm password not match.",
-    "go_to_equ" : "Go to Equipment",
+    "go_to_equ" : "Wanna give remark specific to the equipment?",
     "add_signatory": "Add signatory",
     "signatory": "Signatory"
   }
