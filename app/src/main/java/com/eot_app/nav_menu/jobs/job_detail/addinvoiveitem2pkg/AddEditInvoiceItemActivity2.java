@@ -216,6 +216,7 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
     String lastUpdateQty ="";
     String brand_name ="";
     boolean isSerialNoMandatory = false;
+    boolean itemInAppointment = false;
 
     public AddEditInvoiceItemActivity2 getInstance() {
 
@@ -296,11 +297,11 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
             if (getIntent().hasExtra("jobId")) {
                 jobId = bundle.getString("jobId");
                 invId = bundle.getString("invId");
+                addItemOnInvoice = bundle.getBoolean("addItemOnInvoice");
+                getTaxMethodType = bundle.getString("getTaxMethodType");
                 show_stock_checkbox = true;
                 getTaxDisType(jobId);
                 initializelables();
-                addItemOnInvoice = bundle.getBoolean("addItemOnInvoice");
-                getTaxMethodType = bundle.getString("getTaxMethodType");
                 if (getTaxMethodType.equals("1")) {
                     getSingleTaxId = bundle.getString("getSingleTaxId");
                     getSingleTaxRate = bundle.getString("getSingleTaxRate");
@@ -317,12 +318,12 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
             } else if (getIntent().hasExtra("InvoiceItemDataModel")) {
                 jobId = bundle.getString("edit_jobId");
                 invId = bundle.getString("invId");
-                show_stock_checkbox = true;
-                getTaxDisType(jobId);
-                initializelables();
                 addItemOnInvoice = bundle.getBoolean("addItemOnInvoice");
                 updateItemDataModel = bundle.getParcelable("InvoiceItemDataModel");
                 getTaxMethodType = bundle.getString("getTaxMethodType");
+                show_stock_checkbox = true;
+                getTaxDisType(jobId);
+                initializelables();
                 if (getTaxMethodType.equals("1")) {
                     getSingleTaxId = bundle.getString("getSingleTaxId");
                     getSingleTaxRate = bundle.getString("getSingleTaxRate");
@@ -332,6 +333,7 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
                 goneViewsForUpdate();
             }
             if (getIntent().hasExtra("AddRequirmentGetheringItem")) {
+                itemInAppointment = true;
                 appId = bundle.getString("appId");
                 getTaxDisTypeForApp(appId);
                 initializelables();
@@ -344,7 +346,7 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
                 invoiceItemPi.getTaxList();
 
             } else if (getIntent().hasExtra("UpdateItemRequirmentGethering")) {
-                bundle.getBoolean("UpdateItemRequirmentGethering");
+                itemInAppointment = bundle.getBoolean("UpdateItemRequirmentGethering");
                 appId = bundle.getString("appId");
                 getTaxDisTypeForApp(appId);
                 initializelables();
@@ -3264,10 +3266,44 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
                 item_desc_layout.setVisibility(View.GONE);
                 desc_view.setVisibility(View.GONE);
             }
-            if (compPermission.getRate().equals("1")) {
+            /*if (compPermission.getRate().equals("1")) {
                 item_rate_layout.setVisibility(View.GONE);
                 rate_view.setVisibility(View.GONE);
             }
+            if (compPermission.getTax().equals("1")) {
+                tax_layout.setVisibility(View.GONE);
+                tax_view.setVisibility(View.GONE);
+            }
+            if (compPermission.getAmount().equals("1")) {
+                amount_layout.setVisibility(View.GONE);
+                amount_view.setVisibility(View.GONE);
+            }*/
+            if(itemInAppointment || addItemOnInvoice){
+                item_rate_layout.setVisibility(View.VISIBLE);
+                rate_view.setVisibility(View.VISIBLE);
+                tax_layout.setVisibility(View.VISIBLE);
+                tax_view.setVisibility(View.VISIBLE);
+                amount_layout.setVisibility(View.VISIBLE);
+                amount_view.setVisibility(View.VISIBLE);
+            }else{
+                if (compPermission.getAmount().equals("1")) {
+                    item_rate_layout.setVisibility(View.GONE);
+                    rate_view.setVisibility(View.GONE);
+                    tax_layout.setVisibility(View.GONE);
+                    tax_view.setVisibility(View.GONE);
+                    amount_layout.setVisibility(View.GONE);
+                    amount_view.setVisibility(View.GONE);
+                }else {
+                    item_rate_layout.setVisibility(View.VISIBLE);
+                    rate_view.setVisibility(View.VISIBLE);
+                    tax_layout.setVisibility(View.VISIBLE);
+                    tax_view.setVisibility(View.VISIBLE);
+                    amount_layout.setVisibility(View.VISIBLE);
+                    amount_view.setVisibility(View.VISIBLE);
+                }
+            }
+
+
             if (compPermission.getSupplierCost().equals("1")) {
                 item_supplier_layout.setVisibility(View.GONE);
                 supplier_view.setVisibility(View.GONE);
@@ -3277,14 +3313,6 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
                 disc_view.setVisibility(View.GONE);
             }
             tax_layout = findViewById(R.id.tax_layout);
-            if (compPermission.getTax().equals("1")) {
-                tax_layout.setVisibility(View.GONE);
-                tax_view.setVisibility(View.GONE);
-            }
-            if (compPermission.getAmount().equals("1")) {
-                amount_layout.setVisibility(View.GONE);
-                amount_view.setVisibility(View.GONE);
-            }
             if (compPermission.getPno().equals("1")) {
                 item_partNo_layout.setVisibility(View.GONE);
                 part_no_view.setVisibility(View.GONE);
