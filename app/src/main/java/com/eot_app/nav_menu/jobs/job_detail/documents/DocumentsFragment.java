@@ -827,7 +827,7 @@ public class DocumentsFragment extends Fragment implements Doc_Attch_View, Docum
                     Attachments attachments = new Attachments(tempId, fileNameExt, fileNameExt, imgPathArray[i], "", "", "", jobId, "2", savedImagePath, tempId);
                     AppDataBase.getInMemoryDatabase(getActivity()).attachments_dao().insertSingleAttachments(attachments);
                     JsonObject jsonObject = new JsonObject();
-                    jsonObject.addProperty("name", imgPathArray[i]);
+                    jsonObject.addProperty("name", savedImagePath);
                     jsonObject.addProperty("tempId", tempId);
                     jsonArray.add(jsonObject);
                     requireActivity().runOnUiThread(new Runnable() {

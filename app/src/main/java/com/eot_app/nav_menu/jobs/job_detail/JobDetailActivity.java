@@ -151,7 +151,6 @@ public class JobDetailActivity extends AppCompatActivity implements
     private String completeFor;
     private String jobType;
     private ExecutorService executorService;
-    boolean isClicked = false;
     private String mCustName = "";
     BroadcastReceiver loadfromforserver=new BroadcastReceiver() {
         @Override
@@ -1393,13 +1392,8 @@ public class JobDetailActivity extends AppCompatActivity implements
 
                 final AlertDialog alertDialog = builder.create();
                 add_cust_nm.setOnClickListener(v -> {
-                    if(!isClicked) {
-                         isClicked = true;
                         cust_nm.setVisibility(View.VISIBLE);
-                    }else{
-                        isClicked = false;
-                        cust_nm.setVisibility(View.GONE);
-                    }
+                        add_cust_nm.setVisibility(View.GONE);
                         });
                 btn_upload.setOnClickListener(v -> {
                     if (mSignature.isSignatureEmpty()) {

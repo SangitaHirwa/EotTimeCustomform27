@@ -132,7 +132,6 @@ public class JobList_pc implements JobList_pi {
     @Override
     synchronized public void loadFromServer() {
         if (AppUtility.isInternetConnected()) {
-            AppUtility.progressBarShow(context);
             LogModel logModel = ActivityLogController
                     .getObj(ActivityLogController.JOB_MODULE, ActivityLogController.JOB_LIST, ActivityLogController.JOB_MODULE);
             ActivityLogController.saveOfflineTable(logModel);
