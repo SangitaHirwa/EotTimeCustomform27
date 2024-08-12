@@ -322,6 +322,7 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
                 initializelables();
                 addItemOnInvoice = bundle.getBoolean("addItemOnInvoice");
                 updateItemDataModel = bundle.getParcelable("InvoiceItemDataModel");
+                equipmentId = updateItemDataModel.getEquId();
                 getTaxMethodType = bundle.getString("getTaxMethodType");
                 if (getTaxMethodType.equals("1")) {
                     getSingleTaxId = bundle.getString("getSingleTaxId");

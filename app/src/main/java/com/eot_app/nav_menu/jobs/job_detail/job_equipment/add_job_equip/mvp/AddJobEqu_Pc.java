@@ -437,7 +437,7 @@ public class AddJobEqu_Pc implements AddJobEqu_Pi {
             EotApp.getAppinstance().getNotifyForEquipmentCount();
             EotApp.getAppinstance().getNotifyForEquipmentCountRemark();
             EotApp.getAppinstance().getNotifyForEquipmentCountList();
-
+            EotApp.getAppinstance().notifyApiItemAddEdit_Observer(Service_apis.convertItemToEquipmentApi, jobId);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -489,6 +489,7 @@ public class AddJobEqu_Pc implements AddJobEqu_Pi {
             AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().updateJobitems(jobId, data);
             EotApp.getAppinstance().getJobFlagOverView();
             EotApp.getAppinstance().getNotifyForItemCount();
+            EotApp.getAppinstance().notifyInvoiceItemObserver(Service_apis.convertItemToEquipmentApi);
         }
     }
 

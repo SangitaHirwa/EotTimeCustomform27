@@ -62,6 +62,7 @@ import com.eot_app.nav_menu.jobs.job_detail.invoice2list.itemlist_mvp.ItemList_P
 import com.eot_app.nav_menu.jobs.job_detail.invoice2list.itemlist_mvp.ItemList_PI;
 import com.eot_app.nav_menu.jobs.job_detail.invoice2list.itemlist_mvp.ItemList_View;
 import com.eot_app.nav_menu.quote.add_quotes_pkg.AddQuotes_Activity;
+import com.eot_app.services.Service_apis;
 import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.AppUtility;
 import com.eot_app.utility.App_preference;
@@ -1093,8 +1094,12 @@ public class Generate_Invoice_Activity extends AppCompatActivity implements MyLi
     @Override
     public void onObserveCallBack(String totalAmount) {
         if (itemListPi != null) {
-            inv_total_amount.setText(AppUtility.getRoundoff_amount(totalAmount + ""));
-            txt_total.setText(AppUtility.getRoundoff_amount(""+totalAmount));
+            if(totalAmount!=null && !totalAmount.isEmpty() && totalAmount.equals(Service_apis.convertItemToEquipmentApi)){
+                itemListPi.getinvoicedetails(jobId);
+            }else {
+                inv_total_amount.setText(AppUtility.getRoundoff_amount(totalAmount + ""));
+                txt_total.setText(AppUtility.getRoundoff_amount("" + totalAmount));
+            }
         }
     }
     Double totalOfShippingItem = 0.0;
