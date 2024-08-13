@@ -462,7 +462,12 @@ public class DetailFragment extends Fragment
             Log.e("Error", e.getMessage());
         }
         initializelables();
-        mMapView.getMapAsync(this);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mMapView.getMapAsync(instanse);
+            }
+        },3000);
 
         // adapter for job status dropdown
         mySpinnerAdapter = new Job_Status_Adpter(getActivity(), statusArray,arraystatus, statusKey -> {
@@ -876,7 +881,7 @@ public class DetailFragment extends Fragment
         EotApp.getAppinstance().setNotifyForRequestedItemList(this);
 
         if (mParam2!= null && mParam2.getRecurType() != null && App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsRecur().equals("0") && !mParam2.getRecurType().equalsIgnoreCase("0")
-        ||mParam2.getParentRecurType() != null && App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsRecur().equals("0") && !mParam2.getParentRecurType().equalsIgnoreCase("0")){
+        ||mParam2!= null&&mParam2.getParentRecurType() != null && App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsRecur().equals("0") && !mParam2.getParentRecurType().equalsIgnoreCase("0")){
             if(!mParam2.getParentId().equalsIgnoreCase("0") && mParam2.getIsSubjob().equals("0") || mParam2.getParentId().equalsIgnoreCase("0") && mParam2.getIsRecur().equalsIgnoreCase("1")) {
                 recur_parent_view.setVisibility(View.VISIBLE);
             }else {
