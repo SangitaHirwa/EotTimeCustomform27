@@ -216,7 +216,6 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
     String lastUpdateQty ="";
     String brand_name ="";
     boolean isSerialNoMandatory = false;
-    boolean itemInAppointment = false;
 
     public AddEditInvoiceItemActivity2 getInstance() {
 
@@ -333,7 +332,6 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
                 goneViewsForUpdate();
             }
             if (getIntent().hasExtra("AddRequirmentGetheringItem")) {
-                itemInAppointment = true;
                 appId = bundle.getString("appId");
                 getTaxDisTypeForApp(appId);
                 initializelables();
@@ -346,7 +344,6 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
                 invoiceItemPi.getTaxList();
 
             } else if (getIntent().hasExtra("UpdateItemRequirmentGethering")) {
-                itemInAppointment = bundle.getBoolean("UpdateItemRequirmentGethering");
                 appId = bundle.getString("appId");
                 getTaxDisTypeForApp(appId);
                 initializelables();
@@ -3278,7 +3275,7 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
                 amount_layout.setVisibility(View.GONE);
                 amount_view.setVisibility(View.GONE);
             }*/
-            if(itemInAppointment || addItemOnInvoice){
+            if(addItemOnInvoice){
                 item_rate_layout.setVisibility(View.VISIBLE);
                 rate_view.setVisibility(View.VISIBLE);
                 tax_layout.setVisibility(View.VISIBLE);
