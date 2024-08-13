@@ -371,7 +371,7 @@ public class ItemListPartAdpter extends RecyclerView.Adapter<ItemListPartAdpter.
                 non_billable = itemView.findViewById(R.id.non_billable);
                 linear_lay_billable = itemView.findViewById(R.id.linear_lay_billable);
                 //TODO permission of amount
-                if (compPermission.getAmount().equals("1")) {
+                if (compPermission.getIsRateAmountTax().equals("1")) {
                     item_price_invoice.setVisibility(View.GONE);
                 }
                 else {
@@ -388,7 +388,7 @@ public class ItemListPartAdpter extends RecyclerView.Adapter<ItemListPartAdpter.
                 qtyedit = qty_edit;
                 non_billable = itemView.findViewById(R.id.non_billable);
                 //TODO permission of amount
-                if (compPermission.getAmount().equals("1")) {
+                if (compPermission.getIsRateAmountTax().equals("1")) {
                     price.setVisibility(View.GONE);
                 }
                 else {

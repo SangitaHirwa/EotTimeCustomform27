@@ -406,7 +406,7 @@ public class InvoiceItemList2Adpter extends RecyclerView.Adapter<InvoiceItemList
                 qty_invoice = itemView.findViewById(R.id.qty_invoice);
                 item_price_invoice = itemView.findViewById(R.id.item_price_invoice);
 
-                if (compPermission.getAmount().equals("1")) {
+                if (compPermission.getIsRateAmountTax().equals("1")) {
                     item_price_invoice.setVisibility(View.GONE);
                 }
                 else {
@@ -425,7 +425,7 @@ public class InvoiceItemList2Adpter extends RecyclerView.Adapter<InvoiceItemList
                 item_nm = itemView.findViewById(R.id.item_nm);
                 price = itemView.findViewById(R.id.price);
 
-                if (compPermission.getAmount().equals("1")) {
+                if (compPermission.getIsRateAmountTax().equals("1")) {
                     price.setVisibility(View.GONE);
                 }
                 else {
