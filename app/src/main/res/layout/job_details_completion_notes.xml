@@ -93,7 +93,7 @@
                 android:focusable="true"
                 android:paddingHorizontal="5dp"
                 android:background="@drawable/ripple_effect_1"
-                android:visibility="visible"
+                android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:ignore="HardcodedText,SpUsage" />

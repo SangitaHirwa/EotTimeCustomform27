@@ -523,6 +523,7 @@ public class DetailFragment extends Fragment
         String[] kprArr = mParam2.getKpr().split(",");
         if (kprArr.length > 1) {
         if(statusId.equalsIgnoreCase(AppConstant.Completed)) {
+
             if (mParam2.getIsLeader().equals(App_preference.getSharedprefInstance().getLoginRes().getUsrId())) {
                     if(App_preference.getSharedprefInstance().getLoginRes().getCompPermission().get(0).getIsLeaderChgAllUsrStatusOnJb().equals("0")) {
                         AppUtility.alertDialog2(getActivity(), LanguageController.getInstance()
@@ -545,6 +546,12 @@ public class DetailFragment extends Fragment
                     }
             } else {
                 changeStatus(statusId, isKprChgStatusFalse,multipleKpr);
+            }
+            /**After discuss with Ayush sir and jit sir we add a new permission for Completion notes add/ Edit**/
+            if(App_preference.getSharedprefInstance().getLoginRes().getIsComplNoteBeforeComplete() != null && App_preference.getSharedprefInstance().getLoginRes().getIsComplNoteBeforeComplete().equals("1")){
+                btnComplationView.setVisibility(View.GONE);
+            }else{
+                btnComplationView.setVisibility(View.VISIBLE);
             }
         }else{
             changeStatus(statusId, isKprChgStatusFalse,multipleKpr);
@@ -1861,7 +1868,16 @@ public void setCompletionDetail(){
         String status = model.getStatus_no();
         // for setting the selected status name on view
         textViewJobStatus.setText(model.getStatus_name());
-
+        /**After discuss with Ayush sir and jit sir we add a new permission for Completion notes add/ Edit**/
+        if(status.equalsIgnoreCase(AppConstant.Completed)) {
+            if (App_preference.getSharedprefInstance().getLoginRes().getIsComplNoteBeforeComplete() != null && App_preference.getSharedprefInstance().getLoginRes().getIsComplNoteBeforeComplete().equals("1")) {
+                btnComplationView.setVisibility(View.GONE);
+            } else {
+                btnComplationView.setVisibility(View.VISIBLE);
+            }
+        }else {
+            btnComplationView.setVisibility(View.VISIBLE);
+        }
         HyperLog.i(TAG, "setButtonsUI(M) 11 " + model.getStatus_name());
         // by default visibility should be gone
         buttonAccept.setVisibility(View.VISIBLE);
@@ -1992,6 +2008,12 @@ public void setCompletionDetail(){
                 buttonDecline.setVisibility(View.GONE);*/
 
                 // TODO changed from hiding the full view to buttons
+                /**After discuss with Ayush sir and jit sir we add a new permission for Completion notes add/ Edit**/
+                if(App_preference.getSharedprefInstance().getLoginRes().getIsComplNoteBeforeComplete() != null && App_preference.getSharedprefInstance().getLoginRes().getIsComplNoteBeforeComplete().equals("1")){
+                    btnComplationView.setVisibility(View.GONE);
+                }else{
+                    btnComplationView.setVisibility(View.VISIBLE);
+                }
                 buttonAccept.setVisibility(View.GONE);
                 buttonDecline.setVisibility(View.GONE);
                 arraystatus.clear();
