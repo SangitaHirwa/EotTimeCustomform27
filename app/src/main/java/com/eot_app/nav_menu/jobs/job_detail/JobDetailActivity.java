@@ -430,7 +430,74 @@ public class JobDetailActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_job_detail);
-        setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.job_details));
+        executorService = Executors.newSingleThreadExecutor();
+        executorService.execute(new Runnable() {
+            @Override
+            public void run() {
+                /* **Add bottom navigation Option's *****/
+                initializeMenuItemList();
+                /* ****add current(root task) activity when app at background*/
+                if (!isTaskRoot()) {
+                    final Intent intent = getIntent();
+                    final String intentAction = intent.getAction();
+                    if (intent.hasCategory(Intent.CATEGORY_LAUNCHER) && intentAction != null && intentAction.equals(Intent.ACTION_MAIN)) {
+                        finish();
+                        return;
+                    }
+                    attachKeyboardListeners();
+                }
+
+                viewPager = findViewById(R.id.jobdetail_pager);
+                navigation = findViewById(R.id.navigation);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        setUpViewPager(viewPager);
+                        Menu menu = navigation.getMenu();
+                        if (menu_items_ilist.size() > 0) {
+                            int count_menu = 0;
+                            for (MenuItemsModel item : menu_items_ilist) {
+                                if (count_menu == 4) {
+                                    break;
+                                }
+                                menu.add(Menu.NONE, item.getMenu_item_id(), Menu.NONE, item.getMenu_title()).setIcon(item.getMenu_icon());
+                                item.setIsalreadySet(true);
+                                count_menu++;
+                            }
+//            more option is always stay on the place.
+                            if (menu_items_ilist.size() > 4)
+                                menu.add(Menu.NONE, ID_MORE, Menu.NONE, LanguageController.getInstance().getMobileMsgByKey(AppConstant.more)).setIcon(R.drawable.ic_more_horiz_black_24dp);
+                        }
+                    }});
+                setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.job_details));
+                /* ** add view for chat batch icon ***/
+//                        BottomNavigationMenuView bottomNavigationMenuView = (BottomNavigationMenuView) navigation.getChildAt(0);
+                if(navigation != null) {
+                    for (int i = 0; i < navigation.getChildCount(); i++) {
+                        int chatId = navigation.getChildAt(i).getId();
+                        if (chatId == ID_CHAT) {
+                            View v = navigation.getChildAt(i);
+                            @SuppressLint("RestrictedApi") BottomNavigationItemView itemView = (BottomNavigationItemView) v;
+                            /* ** add view for chat batch icon ***/
+                            View badge = LayoutInflater.from(JobDetailActivity.this).inflate(R.layout.chat_batch_count_layout, navigation, false);
+                            text = badge.findViewById(R.id.badge_text_view);
+                            itemView.addView(badge);
+                        } else if (chatId == ID_CLIENT_CHAT) {
+                            View v = navigation.getChildAt(i);
+                            @SuppressLint("RestrictedApi") BottomNavigationItemView itemView = (BottomNavigationItemView) v;
+                            /* ** add view for chat batch icon ***/
+                            View badge = LayoutInflater.from(JobDetailActivity.this).inflate(R.layout.chat_batch_count_layout, navigation, false);
+                            clientChatTextView = badge.findViewById(R.id.badge_text_view);
+                            itemView.addView(badge);
+                        }
+                    }
+                }
+
+                navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+                EotApp.getAppinstance().setAddJobObserver(JobDetailActivity.this);
+
+            }
+        });
         /* * *intent data for Notifications*****/
         bundle = getIntent().getExtras();
         if (bundle != null) {
@@ -484,7 +551,7 @@ public class JobDetailActivity extends AppCompatActivity implements
                         Job tempJobData = AppDataBase.getInMemoryDatabase(JobDetailActivity.this).jobModel().getJobsById(dataJob.getJobId());
                         if ((dataJob != null && tempJobData != null) && dataJob.getJobId().equals(tempJobData.getJobId())) {
                             Log.e("", "");
- //                            if (navigation.getMenu().findItem(ID_CLIENT_CHAT) != null) {
+                            //                            if (navigation.getMenu().findItem(ID_CLIENT_CHAT) != null) {
 //                                navigation.setSelectedItemId(ID_CLIENT_CHAT);
 //                            } else {
 //                                viewPager.setCurrentItem(CLINET_CHAT_VIEW, false);
@@ -550,112 +617,66 @@ public class JobDetailActivity extends AppCompatActivity implements
         executorService.execute(new Runnable() {
             @Override
             public void run() {
-                /* **Add bottom navigation Option's *****/
-                initializeMenuItemList();
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        viewPager = findViewById(R.id.jobdetail_pager);
-                        setUpViewPager(viewPager);
-                        /* ****add current(root task) activity when app at background*/
-                        if (!isTaskRoot()) {
-                            final Intent intent = getIntent();
-                            final String intentAction = intent.getAction();
-                            if (intent.hasCategory(Intent.CATEGORY_LAUNCHER) && intentAction != null && intentAction.equals(Intent.ACTION_MAIN)) {
-                                finish();
-                                return;
+
+                        Log.e("DataJob", new Gson().toJson(dataJob));
+                        cstm_form_pc = new Cstm_Form_Pc(JobDetailActivity.this);
+                        ArrayList<String> jTitleId = null;
+                        try {
+                            jTitleId = new ArrayList<>();
+                            for (JtId jobTitleId : dataJob.getJtId()) {
+                                jTitleId.add(jobTitleId.getJtId());
                             }
-                            Log.e("DataJob",new Gson().toJson(dataJob));
-                            cstm_form_pc = new Cstm_Form_Pc(JobDetailActivity.this);
-                            ArrayList<String> jTitleId = null;
-                            try {
-                                jTitleId = new ArrayList<>();
-                                for (JtId jobTitleId : dataJob.getJtId()) {
-                                    jTitleId.add(jobTitleId.getJtId());
-                                }
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                            if (dataJob != null && dataJob.getJobId() != null) {
-                                cstm_form_pc.callApiGetFormlist(dataJob.getJobId(), jTitleId);
-                            }
-                            try {
-                                if (dataJob == null) {
-                                    startActivity(new Intent(JobDetailActivity.this, MainActivity.class));
-                                    JobDetailActivity.this.finish();
-                                }
-                            } catch (Exception exception) {
-                                exception.printStackTrace();
-                            }
-                            ChatController.getInstance().setJobdetailListener(JobDetailActivity.this);
-                            LocalBroadcastManager.getInstance(JobDetailActivity.this).registerReceiver(loadfromforserver,
-                                    new IntentFilter("loadfromserver"));
-                            attachKeyboardListeners();
-                            navigation = findViewById(R.id.navigation);
-                            Menu menu = navigation.getMenu();
-                            if (menu_items_ilist.size() > 0) {
-                                int count_menu = 0;
-                                for (MenuItemsModel item : menu_items_ilist) {
-                                    if (count_menu == 4) {
-                                        break;
-                                    }
-                                    menu.add(Menu.NONE, item.getMenu_item_id(), Menu.NONE, item.getMenu_title()).setIcon(item.getMenu_icon());
-                                    item.setIsalreadySet(true);
-                                    count_menu++;
-                                }
-//            more option is always stay on the place.
-                                if (menu_items_ilist.size() > 4)
-                                    menu.add(Menu.NONE, ID_MORE, Menu.NONE, LanguageController.getInstance().getMobileMsgByKey(AppConstant.more)).setIcon(R.drawable.ic_more_horiz_black_24dp);
-                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
-                        /* ** add view for chat batch icon ***/
-//                        BottomNavigationMenuView bottomNavigationMenuView = (BottomNavigationMenuView) navigation.getChildAt(0);
-                        if(navigation != null) {
-                            for (int i = 0; i < navigation.getChildCount(); i++) {
-                                int chatId = navigation.getChildAt(i).getId();
-                                if (chatId == ID_CHAT) {
-                                    View v = navigation.getChildAt(i);
-                                    BottomNavigationItemView itemView = (BottomNavigationItemView) v;
-                                    /* ** add view for chat batch icon ***/
-                                    View badge = LayoutInflater.from(JobDetailActivity.this).inflate(R.layout.chat_batch_count_layout, navigation, false);
-                                    text = badge.findViewById(R.id.badge_text_view);
-                                    itemView.addView(badge);
-                                } else if (chatId == ID_CLIENT_CHAT) {
-                                    View v = navigation.getChildAt(i);
-                                    BottomNavigationItemView itemView = (BottomNavigationItemView) v;
-                                    /* ** add view for chat batch icon ***/
-                                    View badge = LayoutInflater.from(JobDetailActivity.this).inflate(R.layout.chat_batch_count_layout, navigation, false);
-                                    clientChatTextView = badge.findViewById(R.id.badge_text_view);
-                                    itemView.addView(badge);
-                                }
-                            }
+                        if (dataJob != null && dataJob.getJobId() != null) {
+                            cstm_form_pc.callApiGetFormlist(dataJob.getJobId(), jTitleId);
                         }
                         try {
-                            if (dataJob != null && dataJob.getJobId() != null) {
-                                /* *
-                                 * *
-                                 *  create batch count for JOB **/
-                                showBadge(ChatController.getInstance().getbatchCount(dataJob.getJobId()));
-                                /* *
-                                 * * client chat batch count ***/
-                                showBadgeForClientChat(ChatController.getInstance().getClientChatBatchCount(dataJob.getJobId()));
+                            if (dataJob == null) {
+                                startActivity(new Intent(JobDetailActivity.this, MainActivity.class));
+                                JobDetailActivity.this.finish();
                             }
                         } catch (Exception exception) {
                             exception.printStackTrace();
                         }
-                        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-                        EotApp.getAppinstance().setAddJobObserver(JobDetailActivity.this);
+                        detail_activity_pi = new Job_Detail_Activity_pc(JobDetailActivity.this);
+                        detail_activity_pi.getInvoiceItemList();
+                        // permission for job card
+                        if(App_preference.getSharedprefInstance().getLoginRes().getCompPermission().get(0).getIsJobCardEnableMobile()
+                                != null && App_preference.getSharedprefInstance().getLoginRes().getCompPermission().get(0).
+                                getIsJobCardEnableMobile().equals("0"))
+                        {
+                            detail_activity_pi.getJobCardetemplateList();
+                        }
+                        ChatController.getInstance().setJobdetailListener(JobDetailActivity.this);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    if (dataJob != null && dataJob.getJobId() != null) {
+                                        /* *
+                                         * *
+                                         *  create batch count for JOB **/
+                                        showBadge(ChatController.getInstance().getbatchCount(dataJob.getJobId()));
+                                        /* *
+                                         * * client chat batch count ***/
+                                        showBadgeForClientChat(ChatController.getInstance().getClientChatBatchCount(dataJob.getJobId()));
+                                    }
+                                } catch (Exception exception) {
+                                    exception.printStackTrace();
+                                }
+                            }
+                        });
+                        LocalBroadcastManager.getInstance(JobDetailActivity.this).registerReceiver(loadfromforserver,
+                                new IntentFilter("loadfromserver"));
+                        addButtomCustomFormWindow();
                     }
                 });
-                detail_activity_pi = new Job_Detail_Activity_pc(JobDetailActivity.this);
-                detail_activity_pi.getInvoiceItemList();
-                // permission for job card
-                if(App_preference.getSharedprefInstance().getLoginRes().getCompPermission().get(0).getIsJobCardEnableMobile()
-                        != null && App_preference.getSharedprefInstance().getLoginRes().getCompPermission().get(0).
-                        getIsJobCardEnableMobile().equals("0"))
-                {
-                    detail_activity_pi.getJobCardetemplateList();
-                }
+
             }
         });
     }

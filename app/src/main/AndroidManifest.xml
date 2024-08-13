@@ -349,7 +349,7 @@
             android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
             android:name=".nav_menu.jobs.job_detail.JobDetailActivity"
-            android:hardwareAccelerated="false"
+            android:hardwareAccelerated="true"
             android:parentActivityName=".home_screens.MainActivity"
             android:screenOrientation="portrait"
             android:exported="false"

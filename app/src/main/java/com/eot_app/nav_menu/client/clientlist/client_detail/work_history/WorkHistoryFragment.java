@@ -41,8 +41,8 @@ public class WorkHistoryFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        assert container != null;
-        View view = LayoutInflater.from(container.getContext())
+//        assert container != null;
+        View view = LayoutInflater.from(requireContext())
                 .inflate(R.layout.fragment_client_work_hitory, container, false);
         Bundle bundle = getArguments();
         if (bundle != null) {
