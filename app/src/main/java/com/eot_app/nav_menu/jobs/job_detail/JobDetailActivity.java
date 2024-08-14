@@ -533,7 +533,7 @@ public class JobDetailActivity extends AppCompatActivity implements
                                     menu.add(Menu.NONE, ID_MORE, Menu.NONE, LanguageController.getInstance().getMobileMsgByKey(AppConstant.more)).setIcon(R.drawable.ic_more_horiz_black_24dp);
                             }
                         }
-                        if (bundle != null) {
+                        if (bundle != null && !getIntent().hasExtra("JOBS")) {
                                 /*Job Chat notification*/
                                 if (getIntent().hasExtra("CHAT_JOB")) {
                                     try {
