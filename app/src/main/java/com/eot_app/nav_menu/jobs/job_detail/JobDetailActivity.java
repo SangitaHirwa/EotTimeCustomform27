@@ -533,98 +533,6 @@ public class JobDetailActivity extends AppCompatActivity implements
                                     menu.add(Menu.NONE, ID_MORE, Menu.NONE, LanguageController.getInstance().getMobileMsgByKey(AppConstant.more)).setIcon(R.drawable.ic_more_horiz_black_24dp);
                             }
                         }
-                        if (bundle != null && !getIntent().hasExtra("JOBS")) {
-                                /*Job Chat notification*/
-                                if (getIntent().hasExtra("CHAT_JOB")) {
-                                    try {
-
-                    Job tempJobData = AppDataBase.getInMemoryDatabase(JobDetailActivity.this).jobModel().getJobsById(dataJob.getJobId());
-                    if ((dataJob != null && tempJobData != null) && dataJob.getJobId().equals(tempJobData.getJobId())) {
-                        if (navigation.getMenu().findItem(ID_CHAT) != null) {
-                            navigation.setSelectedItemId(ID_CHAT);
-                        } else {
-                            navigation.getMenu().findItem(ID_MORE).setChecked(true);
-                            if (mBottomSheetDialog == null)
-                                addButtomCustomFormWindow();
-                            if (mBottomSheetDialog != null) {
-                                if (buttomBarAdapter != null) {
-                                    mBottomSheetDialog.dismiss();
-                                    buttomBarAdapter.updateSelectedMenu(ID_CHAT);
-                                }
-                            }
-                            viewPager.setCurrentItem(CHAT_VIEW, false);
-                        }
-                    } else {
-                        startActivity(new Intent(JobDetailActivity.this, MainActivity.class));
-                        JobDetailActivity.this.finish();
-                    }
-                                    } catch (Exception exception) {
-                                        exception.printStackTrace();
-                                        startActivity(new Intent(JobDetailActivity.this, MainActivity.class));
-                                        JobDetailActivity.this.finish();
-                                    }
-                                } else if (getIntent().hasExtra("CLIENT_CHAT")) {
-                                    try {
-
-                    Job tempJobData = AppDataBase.getInMemoryDatabase(JobDetailActivity.this).jobModel().getJobsById(dataJob.getJobId());
-                    if ((dataJob != null && tempJobData != null) && dataJob.getJobId().equals(tempJobData.getJobId())) {
-                        Log.e("", "");
-                        if (navigation.getMenu().findItem(ID_CLIENT_CHAT) != null) {
-                            navigation.setSelectedItemId(ID_CLIENT_CHAT);
-                        } else {
-                            navigation.getMenu().findItem(ID_MORE).setChecked(true);
-                            if (mBottomSheetDialog == null)
-                                addButtomCustomFormWindow();
-                            if (mBottomSheetDialog != null) {
-                                if (buttomBarAdapter != null) {
-                                    mBottomSheetDialog.dismiss();
-                                    buttomBarAdapter.updateSelectedMenu(ID_CLIENT_CHAT);
-                                }
-                            }
-                            viewPager.setCurrentItem(CLINET_CHAT_VIEW, false);
-                        }
-                    } else {
-                        startActivity(new Intent(JobDetailActivity.this, MainActivity.class));
-                        JobDetailActivity.this.finish();
-                    }
-                                    } catch (Exception exception) {
-                                        exception.printStackTrace();
-                                        startActivity(new Intent(JobDetailActivity.this, MainActivity.class));
-                                        JobDetailActivity.this.finish();
-                                    }
-                                }
-                                /*when bundle data not found*/
-                                else if (getIntent().getAction() != null) {
-                if (getIntent().getType().equals("CLIENTCHAT")) {
-                    try {
-                        dataJob = AppDataBase.getInMemoryDatabase(JobDetailActivity.this).jobModel().getJobsById(getIntent().getAction());
-                        if (navigation.getMenu().findItem(ID_CLIENT_CHAT) != null) {
-                            navigation.setSelectedItemId(ID_CLIENT_CHAT);
-                        } else {
-                            viewPager.setCurrentItem(CLINET_CHAT_VIEW, false);
-                        }
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                        startActivity(new Intent(JobDetailActivity.this, MainActivity.class));
-                        JobDetailActivity.this.finish();
-                    }
-                } else if (getIntent().getType().equals("ADMINCHAT")) {
-                    try {
-                        dataJob = AppDataBase.getInMemoryDatabase(JobDetailActivity.this).jobModel().getJobsById(getIntent().getAction());
-                        if (navigation.getMenu().findItem(ID_CHAT) != null) {
-                            navigation.setSelectedItemId(ID_CHAT);
-                        } else {
-                            viewPager.setCurrentItem(CHAT_VIEW, false);
-                        }
-                    } catch (Exception exception) {
-                        exception.printStackTrace();
-                    }
-                }
-            } else {
-                navigation.setSelectedItemId(ID_JOB_DETAIL);
-                return;
-                                }
-                        }
                         /* * add view for chat batch icon ***/
 //                        BottomNavigationMenuView bottomNavigationMenuView = (BottomNavigationMenuView) navigation.getChildAt(0);
                         if(navigation != null) {
@@ -662,6 +570,98 @@ public class JobDetailActivity extends AppCompatActivity implements
                         }
                         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
                         EotApp.getAppinstance().setAddJobObserver(JobDetailActivity.this);
+                        if (bundle != null && !getIntent().hasExtra("JOBS")) {
+                            /*Job Chat notification*/
+                            if (getIntent().hasExtra("CHAT_JOB")) {
+                                try {
+
+                                    Job tempJobData = AppDataBase.getInMemoryDatabase(JobDetailActivity.this).jobModel().getJobsById(dataJob.getJobId());
+                                    if ((dataJob != null && tempJobData != null) && dataJob.getJobId().equals(tempJobData.getJobId())) {
+                                        if (navigation.getMenu().findItem(ID_CHAT) != null) {
+                                            navigation.setSelectedItemId(ID_CHAT);
+                                        } else {
+                                            navigation.getMenu().findItem(ID_MORE).setChecked(true);
+                                            if (mBottomSheetDialog == null)
+                                                addButtomCustomFormWindow();
+                                            if (mBottomSheetDialog != null) {
+                                                if (buttomBarAdapter != null) {
+                                                    mBottomSheetDialog.dismiss();
+                                                    buttomBarAdapter.updateSelectedMenu(ID_CHAT);
+                                                }
+                                            }
+                                            viewPager.setCurrentItem(CHAT_VIEW, false);
+                                        }
+                                    } else {
+                                        startActivity(new Intent(JobDetailActivity.this, MainActivity.class));
+                                        JobDetailActivity.this.finish();
+                                    }
+                                } catch (Exception exception) {
+                                    exception.printStackTrace();
+                                    startActivity(new Intent(JobDetailActivity.this, MainActivity.class));
+                                    JobDetailActivity.this.finish();
+                                }
+                            } else if (getIntent().hasExtra("CLIENT_CHAT")) {
+                                try {
+
+                                    Job tempJobData = AppDataBase.getInMemoryDatabase(JobDetailActivity.this).jobModel().getJobsById(dataJob.getJobId());
+                                    if ((dataJob != null && tempJobData != null) && dataJob.getJobId().equals(tempJobData.getJobId())) {
+                                        Log.e("", "");
+                                        if (navigation.getMenu().findItem(ID_CLIENT_CHAT) != null) {
+                                            navigation.setSelectedItemId(ID_CLIENT_CHAT);
+                                        } else {
+                                            navigation.getMenu().findItem(ID_MORE).setChecked(true);
+                                            if (mBottomSheetDialog == null)
+                                                addButtomCustomFormWindow();
+                                            if (mBottomSheetDialog != null) {
+                                                if (buttomBarAdapter != null) {
+                                                    mBottomSheetDialog.dismiss();
+                                                    buttomBarAdapter.updateSelectedMenu(ID_CLIENT_CHAT);
+                                                }
+                                            }
+                                            viewPager.setCurrentItem(CLINET_CHAT_VIEW, false);
+                                        }
+                                    } else {
+                                        startActivity(new Intent(JobDetailActivity.this, MainActivity.class));
+                                        JobDetailActivity.this.finish();
+                                    }
+                                } catch (Exception exception) {
+                                    exception.printStackTrace();
+                                    startActivity(new Intent(JobDetailActivity.this, MainActivity.class));
+                                    JobDetailActivity.this.finish();
+                                }
+                            }
+                            /*when bundle data not found*/
+                            else if (getIntent().getAction() != null) {
+                                if (getIntent().getType().equals("CLIENTCHAT")) {
+                                    try {
+                                        dataJob = AppDataBase.getInMemoryDatabase(JobDetailActivity.this).jobModel().getJobsById(getIntent().getAction());
+                                        if (navigation.getMenu().findItem(ID_CLIENT_CHAT) != null) {
+                                            navigation.setSelectedItemId(ID_CLIENT_CHAT);
+                                        } else {
+                                            viewPager.setCurrentItem(CLINET_CHAT_VIEW, false);
+                                        }
+                                    } catch (Exception ex) {
+                                        ex.printStackTrace();
+                                        startActivity(new Intent(JobDetailActivity.this, MainActivity.class));
+                                        JobDetailActivity.this.finish();
+                                    }
+                                } else if (getIntent().getType().equals("ADMINCHAT")) {
+                                    try {
+                                        dataJob = AppDataBase.getInMemoryDatabase(JobDetailActivity.this).jobModel().getJobsById(getIntent().getAction());
+                                        if (navigation.getMenu().findItem(ID_CHAT) != null) {
+                                            navigation.setSelectedItemId(ID_CHAT);
+                                        } else {
+                                            viewPager.setCurrentItem(CHAT_VIEW, false);
+                                        }
+                                    } catch (Exception exception) {
+                                        exception.printStackTrace();
+                                    }
+                                }
+                            } else {
+                                navigation.setSelectedItemId(ID_JOB_DETAIL);
+                                return;
+                            }
+                        }
                     }
                 });
                 detail_activity_pi = new Job_Detail_Activity_pc(JobDetailActivity.this);
