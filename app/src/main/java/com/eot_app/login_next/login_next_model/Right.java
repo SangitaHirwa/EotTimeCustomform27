@@ -26,6 +26,8 @@ public class Right {
     private int isSchedular;
     /** isItemRequested permission is get from compPermission**/
 //    private int isItemRequested;
+    /** After discuss with Ayush sir and jit sir add a new permission for show/hide change password layout**/
+    private String isPasswordEdit;
 
     public int getIsSchedular() {
         return isSchedular;
@@ -133,4 +135,7 @@ public class Right {
    /* public int getIsItemRequested() {
         return isItemRequested;
     }*/
+    public String getIsPasswordEdit() {
+        return isPasswordEdit;
+    }
 }
