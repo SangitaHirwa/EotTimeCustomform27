@@ -206,7 +206,7 @@ public class AppointmentListViewModel extends AndroidViewModel implements Server
                     } else {
                         if (count != 0 ) {
                             if(App_preference.getSharedprefInstance().getJobStartSyncTime()!=null&&
-                                    App_preference.getSharedprefInstance().getJobStartSyncTime().isEmpty()
+                                    App_preference.getSharedprefInstance().getJobStartSyncTime().isBlank()
                                     && mainActivity.isSyncDone && !startJobSyncTime.isEmpty()){
 //                                App_preference.getSharedprefInstance().setJobSyncTime(AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT));
                                 App_preference.getSharedprefInstance().setJobSyncTime(startJobSyncTime);

@@ -83,7 +83,7 @@ public class JobItemAdapter extends RecyclerView.Adapter<JobItemAdapter.MyViewHo
             //TODO
             CompPermission compPermission = App_preference.getSharedprefInstance().getLoginRes().getCompPermission().get(0);
 
-            if (compPermission.getIsRateAmountTax().equals("1")) {
+            if (compPermission.getIsRateAmountTax().equals("0")) {
                 item_price_invoice.setVisibility(View.GONE);
             }
             else {
