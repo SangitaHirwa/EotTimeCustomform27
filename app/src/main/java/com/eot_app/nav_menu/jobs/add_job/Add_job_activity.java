@@ -2848,7 +2848,11 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
                             case "6":
                                 if (!TextUtils.isEmpty(questionList.get(i).getAns().get(0).getValue())) {
                                     long l = Long.parseLong(questionList.get(i).getAns().get(0).getValue());
-                                    ans = AppUtility.getDates(l, "HH:mm:ss");
+                                    if(l > 0) {
+                                        ans = AppUtility.getDates(l, "HH:mm:ss");
+                                    }else {
+                                        ans = "";
+                                    }
                                 }
                                 break;
                             case "7":

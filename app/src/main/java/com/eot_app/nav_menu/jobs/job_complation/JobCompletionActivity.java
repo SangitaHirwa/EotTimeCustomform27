@@ -1643,22 +1643,34 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
                         if (quesRspncModelList.get(i).getType().equals("5")) {
                             if (!TextUtils.isEmpty(quesRspncModelList.get(i).getAns().get(0).getValue())) {
                                 long l = Long.parseLong(quesRspncModelList.get(i).getAns().get(0).getValue());
-                                String date = AppUtility.getDates(l, AppUtility.dateTimeByAmPmFormate(
-                                        "dd-MMM-yyyy","dd-MMM-yyyy"));
-                                ans = AppUtility.sendDateByFormate(date,false);
+                                if(l > 0) {
+                                    String date = AppUtility.getDates(l, AppUtility.dateTimeByAmPmFormate(
+                                            "dd-MMM-yyyy", "dd-MMM-yyyy"));
+                                    ans = AppUtility.sendDateByFormate(date, false);
+                                }else{
+                                    ans = "";
+                                }
                             }
                         } else if (quesRspncModelList.get(i).getType().equals("6")) {
                             if (!TextUtils.isEmpty(quesRspncModelList.get(i).getAns().get(0).getValue())) {
                                 long l = Long.parseLong(quesRspncModelList.get(i).getAns().get(0).getValue());
-                                String date = AppUtility.getDates(l,"HH:mm:ss");
-                                ans = date;
+                                if(l > 0) {
+                                    String date = AppUtility.getDates(l, "HH:mm:ss");
+                                    ans = date;
+                                }else{
+                                    ans = "";
+                                }
                             }
                         } else if (quesRspncModelList.get(i).getType().equals("7")) {
                             if (!TextUtils.isEmpty(quesRspncModelList.get(i).getAns().get(0).getValue())) {
                                 long l = Long.parseLong(quesRspncModelList.get(i).getAns().get(0).getValue());
-                                String date = AppUtility.getDates(l,AppUtility.dateTimeByAmPmFormate(
-                                        "dd-MMM-yyyy hh:mm a","dd-MMM-yyyy HH:mm"));
-                                ans =  AppUtility.sendDateByFormate(date,true);
+                                if(l > 0) {
+                                    String date = AppUtility.getDates(l, AppUtility.dateTimeByAmPmFormate(
+                                            "dd-MMM-yyyy hh:mm a", "dd-MMM-yyyy HH:mm"));
+                                    ans = AppUtility.sendDateByFormate(date, true);
+                                }else{
+                                    ans = "";
+                                }
                             }
                         } else
                             ans = quesRspncModelList.get(i).getAns().get(0).getValue();
