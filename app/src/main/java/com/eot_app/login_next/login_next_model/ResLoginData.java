@@ -227,6 +227,8 @@ public class ResLoginData {
     private String isQuotStatusComtEnable;
     private String checkInOutDuration ="10";
     private String isJobCompCustSignEnable ;
+    /**After discuss with Ayush sir and jit sir we add a new permission for Completion notes add/ Edit**/
+    private String isComplNoteBeforeComplete ;
 
     public String getCheckInOutDuration() {
         return checkInOutDuration;
@@ -430,6 +432,10 @@ public class ResLoginData {
         return equipmentStatus;
     }
 
+    public String getIsComplNoteBeforeComplete() {
+        return isComplNoteBeforeComplete;
+    }
+
     /**
      * set Login responce Data
      *****/
@@ -543,7 +549,7 @@ public class ResLoginData {
         this.isHideContactOnDispatch = mobileDefaultSettings.getIsHideContactOnDispatch();
         this.isCompleShowMarkDone = mobileDefaultSettings.getIsCompleShowMarkDone();
         this.compleMoFldVisiblty = mobileDefaultSettings.getCompleMoFldVisiblty();
-
+        this.isComplNoteBeforeComplete = mobileDefaultSettings.getIsComplNoteBeforeComplete();
 
     }
 

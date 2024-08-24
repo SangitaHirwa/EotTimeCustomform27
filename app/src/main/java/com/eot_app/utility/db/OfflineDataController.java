@@ -495,7 +495,7 @@ public class OfflineDataController {
                 AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().updateJobitems(addInvoiceItemReqModel.
                         getJobId(), dataList);
                 if (data.getService_name().equals(Service_apis.addItemOnJob)) {
-                    EotApp.getAppinstance().notifyEquipItemObserver(obj.get("ijmmId").toString());
+                    EotApp.getAppinstance().notifyEquipItemObserver(obj.get("ijmmId").getAsString());
                 }
                 if (!addInvoiceItemReqModel.isAddItemOnInvoice()) {
                     EotApp.getAppinstance().notifyApiItemAddEdit_Observer(data.getService_name(), addInvoiceItemReqModel.getJobId());

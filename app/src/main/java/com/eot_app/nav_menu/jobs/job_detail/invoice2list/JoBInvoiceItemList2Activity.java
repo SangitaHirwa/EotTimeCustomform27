@@ -260,6 +260,7 @@ public class JoBInvoiceItemList2Activity extends AppCompatActivity implements Vi
             case Service_apis.deleteItemFromJob:
             case Service_apis.updateItemInJobMobile:
             case Service_apis.updateItemQuantity:
+            case Service_apis.convertItemToEquipmentApi:
                 if (itemListPi != null) {
                     this.jobId = jobId;
                     itemListPi.getItemListByJobFromDB(jobId);

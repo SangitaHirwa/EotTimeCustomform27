@@ -80,6 +80,7 @@ public class MobileDefaultSettings {
     private int isCustomField;
     private String AdminIdsWithFBasePerm;
     private String isHideContactOnDispatch;
+    private String isComplNoteBeforeComplete ;
 
     public String getIsCompleShowMarkDone() {
         return isCompleShowMarkDone;
@@ -494,4 +495,9 @@ public class MobileDefaultSettings {
     public int getIsCustomField() {
         return isCustomField;
     }
+
+    public String getIsComplNoteBeforeComplete() {
+        return isComplNoteBeforeComplete;
+    }
+
 }

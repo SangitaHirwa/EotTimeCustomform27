@@ -310,6 +310,7 @@ public class Quote_Details_Adpter extends RecyclerView.Adapter<Quote_Details_Adp
             item_nm_invoice = itemView.findViewById(R.id.item_nm_invoice);
             qty_invoice = itemView.findViewById(R.id.qty_invoice);
             item_price_invoice = itemView.findViewById(R.id.item_price_invoice);
+            item_price_invoice.setVisibility(View.VISIBLE);
             checkbox_invoice = itemView.findViewById(R.id.checkbox_invoice);
 
             card_invoice_item = itemView.findViewById(R.id.card_invoice_item);
@@ -320,12 +321,12 @@ public class Quote_Details_Adpter extends RecyclerView.Adapter<Quote_Details_Adp
             description = itemView.findViewById(R.id.description);
             //TODO permission of amount
             CompPermission compPermission = App_preference.getSharedprefInstance().getLoginRes().getCompPermission().get(0);
-            if (compPermission.getAmount().equals("1")) {
+           /* if (compPermission.getAmount().equals("1")) {
                 item_price_invoice.setVisibility(View.GONE);
             }
             else {
                 item_price_invoice.setVisibility(View.VISIBLE);
-            }
+            }*/
 
         }
     }

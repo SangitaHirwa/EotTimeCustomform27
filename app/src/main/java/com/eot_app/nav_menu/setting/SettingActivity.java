@@ -69,8 +69,8 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
     List<ModuleCodeModel> allowedModules = new ArrayList<>();
     int defaultPageView;
     AppCompatButton button_report;
-    View report_divider;
-    LinearLayout ll_report_bug;
+    View report_divider,view_change_pas_ll;
+    LinearLayout ll_report_bug,change_pass_ll;
     Context mContext;
     TextView tv_report_msg,txt_change_pass;
     private Switch site_name_show_btn;
@@ -167,6 +167,8 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         btn_change_pass = findViewById(R.id.btn_change_pass);
         btn_change_pass.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.change_password));
         cl_parent_pass = findViewById(R.id.cl_parent_pass);
+        view_change_pas_ll = findViewById(R.id.view_change_pas_ll);
+        change_pass_ll = findViewById(R.id.change_pass_ll);
 
 
         text_page = findViewById(R.id.text_page);
@@ -176,6 +178,13 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         button_report.setOnClickListener(this);
         txt_change_pass.setOnClickListener(this);
         btn_change_pass.setOnClickListener(this);
+        if(App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsPasswordEdit() != null && App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsPasswordEdit().equals("1")){
+            view_change_pas_ll.setVisibility(View.GONE);
+            change_pass_ll.setVisibility(View.GONE);
+        }else{
+            view_change_pas_ll.setVisibility(View.VISIBLE);
+            change_pass_ll.setVisibility(View.VISIBLE);
+        }
     }
 
 

@@ -379,6 +379,7 @@ public class GenerateInvoiceItemAdpter extends RecyclerView.Adapter<GenerateInvo
             item_nm_invoice = itemView.findViewById(R.id.item_nm_invoice);
             qty_invoice = itemView.findViewById(R.id.qty_invoice);
             item_price_invoice = itemView.findViewById(R.id.item_price_invoice);
+            item_price_invoice.setVisibility(View.VISIBLE);
             checkbox_invoice = itemView.findViewById(R.id.checkbox_invoice);
             des = itemView.findViewById(R.id.des);
             description = itemView.findViewById(R.id.description);
@@ -389,12 +390,12 @@ public class GenerateInvoiceItemAdpter extends RecyclerView.Adapter<GenerateInvo
             CompPermission compPermission = App_preference.getSharedprefInstance().getLoginRes().getCompPermission().get(0);
 
             //TODO permission of amount
-            if (compPermission.getAmount().equals("1")) {
+          /*  if (compPermission.getAmount().equals("1")) {
                 item_price_invoice.setVisibility(View.GONE);
             }
             else {
                 item_price_invoice.setVisibility(View.VISIBLE);
-            }
+            }*/
         }
     }
 }

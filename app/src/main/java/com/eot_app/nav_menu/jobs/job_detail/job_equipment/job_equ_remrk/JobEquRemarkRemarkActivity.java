@@ -1267,6 +1267,7 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
         intent.putExtra("locId", locId);
         intent.putExtra("invId", "");
         intent.putExtra("equipment", strEqu);
+        intent.putExtra("equipmentId", equipment.getEquId());
 //        intent.putExtra("InvoiceItemDataModel", invoiceItemDataModel);
 //        intent.putExtra("comeFrom", "AddRemarkPart");
         intent.putExtra("comeFrom", "AddRemarkReplace");

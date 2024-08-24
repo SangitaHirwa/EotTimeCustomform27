@@ -221,7 +221,7 @@
 
 
         <LinearLayout
-
+            android:id="@+id/change_pass_ll"
             android:visibility="visible"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -340,6 +340,7 @@
 
 
         <View
+            android:id="@+id/view_change_pas_ll"
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_below="@+id/a"
