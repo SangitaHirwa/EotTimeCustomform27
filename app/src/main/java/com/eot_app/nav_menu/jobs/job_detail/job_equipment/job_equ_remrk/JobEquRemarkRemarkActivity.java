@@ -2264,7 +2264,18 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
     public void showRemarkSection() {
         cv_showRemark.setVisibility(View.GONE);
         part_cardview.setVisibility(View.GONE);
-        item_cardview.setVisibility(View.GONE);
+
+        if (App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsItemVisible() == 0
+                &&
+                App_preference.getSharedprefInstance().getLoginRes().getCompPermission().get(0).getIsItemEnable().equals("0")) {
+            if (isAction) {
+                item_cardview.setVisibility(View.VISIBLE);
+            } else {
+                item_cardview.setVisibility(View.GONE);
+            }
+        } else {
+            item_cardview.setVisibility(View.GONE);
+        }
         ll_replace.setVisibility(View.GONE);
         ll_repair.setVisibility(View.GONE);
         ll_reallocate.setVisibility(View.GONE);
@@ -2278,7 +2289,17 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
     public void hideRemarkSection() {
         cv_showRemark.setVisibility(View.VISIBLE);
         part_cardview.setVisibility(View.VISIBLE);
-        item_cardview.setVisibility(View.VISIBLE);
+        if (App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsItemVisible() == 0
+                &&
+                App_preference.getSharedprefInstance().getLoginRes().getCompPermission().get(0).getIsItemEnable().equals("0")) {
+            if (isAction) {
+                item_cardview.setVisibility(View.VISIBLE);
+            } else {
+                item_cardview.setVisibility(View.GONE);
+            }
+        } else {
+            item_cardview.setVisibility(View.GONE);
+        }
         ll_reallocate.setVisibility(View.VISIBLE);
         ll_repair.setVisibility(View.VISIBLE);
         if (txt_status.getText().toString().equalsIgnoreCase("Discarded")) {
