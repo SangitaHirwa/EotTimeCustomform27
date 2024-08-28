@@ -273,6 +273,13 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
         if (App_preference.getSharedprefInstance().getLoginRes().getCompPermission().get(0).getIsItemEnable().equals("1")) {
             binding.btnAddItem.setVisibility(View.GONE);
         }
+        if(App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsItemVisible() == 0){
+            binding.recyclerOfReqGeth.setVisibility(View.VISIBLE);
+            binding.itemLl.setVisibility(View.VISIBLE);
+        }else {
+            binding.recyclerOfReqGeth.setVisibility(View.GONE);
+            binding.itemLl.setVisibility(View.GONE);
+        }
 
         binding.btnAddItem.setOnClickListener(view -> {
             Intent intent = new Intent(this, AddEditInvoiceItemActivity2.class);
