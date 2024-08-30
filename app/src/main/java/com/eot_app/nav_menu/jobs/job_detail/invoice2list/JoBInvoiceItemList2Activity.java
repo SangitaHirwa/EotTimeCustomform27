@@ -656,10 +656,15 @@ public class JoBInvoiceItemList2Activity extends AppCompatActivity implements Vi
         getMenuInflater().inflate(R.menu.items_menu, menu);
 
         MenuItem item = menu.findItem(R.id.miCompose);
+
         item.setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.update_btn));
         List<InvoiceItemDataModel> itemList = invoice_list_adpter.getItemList();
         if (App_preference.getSharedprefInstance().getLoginRes().getIsJobItemQuantityFormEnable().equals("1")) {
-            item.setVisible(itemList.size() > 0);
+            if(App_preference.getSharedprefInstance().getLoginRes().getCompPermission().get(0).getIsItemEnable().equals("1")){
+                item.setVisible(false);
+            }else {
+                item.setVisible(itemList.size() > 0);
+            }
         } else {
             item.setVisible(false);
         }
