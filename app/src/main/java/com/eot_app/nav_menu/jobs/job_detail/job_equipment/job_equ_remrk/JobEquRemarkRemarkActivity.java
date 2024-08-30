@@ -1239,7 +1239,8 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
         startActivityForResult(intent, ADD_ITEM_DATA);
     }
 
-    /****replace equipment **/
+    /****replace equipment
+     *  After discussion with Ayush sir and Jit sir we are not applied item show and hide permission 30-Aug-2024**/
     private void replaceEquipment(InvoiceItemDataModel invoiceItemDataModel) {
 
 
@@ -1278,7 +1279,8 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
 
     }
 
-    /****Add Item and equipment as a part**/
+    /****Add Item and equipment as a part
+     *  After discussion with Ayush sir and Jit sir we are not applied item show and hide permission 30-Aug-2024**/
     private void addEquipmentItem() {
         String locId = "";
         try {
@@ -1648,11 +1650,10 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
             // both fw and mobile app permission should be granted
             if (serverList.isEnable.equals("1"))
                 if ("set_itemMenuOdrNo".equals(serverList.getMenuField())) {
-                    if (App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsItemVisible() == 0
-                            &&
-                            App_preference.getSharedprefInstance().getLoginRes().getCompPermission().get(0).getIsItemEnable().equals("0")) {
+                    if (App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsItemVisible() == 0) {
                         if (isAction) {
                             item_cardview.setVisibility(View.VISIBLE);
+                            hideAddItemButton();
                         } else {
                             item_cardview.setVisibility(View.GONE);
                         }
@@ -2264,17 +2265,21 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
     public void showRemarkSection() {
         cv_showRemark.setVisibility(View.GONE);
         part_cardview.setVisibility(View.GONE);
-
-        if (App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsItemVisible() == 0
-                &&
-                App_preference.getSharedprefInstance().getLoginRes().getCompPermission().get(0).getIsItemEnable().equals("0")) {
-            if (isAction) {
-                item_cardview.setVisibility(View.VISIBLE);
-            } else {
-                item_cardview.setVisibility(View.GONE);
-            }
-        } else {
-            item_cardview.setVisibility(View.GONE);
+        for (FooterMenu serverList : App_preference.getSharedprefInstance().getLoginRes().getFooterMenu()) {
+            // both fw and mobile app permission should be granted
+            if (serverList.isEnable.equals("1"))
+                if ("set_itemMenuOdrNo".equals(serverList.getMenuField())) {
+                    if (App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsItemVisible() == 0) {
+                        if (isAction) {
+                            item_cardview.setVisibility(View.VISIBLE);
+                            hideAddItemButton();
+                        } else {
+                            item_cardview.setVisibility(View.GONE);
+                        }
+                    } else {
+                        item_cardview.setVisibility(View.GONE);
+                    }
+                }
         }
         ll_replace.setVisibility(View.GONE);
         ll_repair.setVisibility(View.GONE);
@@ -2289,16 +2294,21 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
     public void hideRemarkSection() {
         cv_showRemark.setVisibility(View.VISIBLE);
         part_cardview.setVisibility(View.VISIBLE);
-        if (App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsItemVisible() == 0
-                &&
-                App_preference.getSharedprefInstance().getLoginRes().getCompPermission().get(0).getIsItemEnable().equals("0")) {
-            if (isAction) {
-                item_cardview.setVisibility(View.VISIBLE);
-            } else {
-                item_cardview.setVisibility(View.GONE);
-            }
-        } else {
-            item_cardview.setVisibility(View.GONE);
+        for (FooterMenu serverList : App_preference.getSharedprefInstance().getLoginRes().getFooterMenu()) {
+            // both fw and mobile app permission should be granted
+            if (serverList.isEnable.equals("1"))
+                if ("set_itemMenuOdrNo".equals(serverList.getMenuField())) {
+                    if (App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsItemVisible() == 0) {
+                        if (isAction) {
+                            item_cardview.setVisibility(View.VISIBLE);
+                            hideAddItemButton();
+                        } else {
+                            item_cardview.setVisibility(View.GONE);
+                        }
+                    } else {
+                        item_cardview.setVisibility(View.GONE);
+                    }
+                }
         }
         ll_reallocate.setVisibility(View.VISIBLE);
         ll_repair.setVisibility(View.VISIBLE);
@@ -2362,5 +2372,12 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
             super.onBackPressed();
         }
 
+    }
+    public void hideAddItemButton(){
+        if(App_preference.getSharedprefInstance().getLoginRes().getCompPermission().get(0).getIsItemEnable().equals("1")){
+                         add_item_layout.setVisibility(View.GONE);
+                            }else {
+                                add_item_layout.setVisibility(View.VISIBLE);
+                            }
     }
 }

@@ -573,13 +573,13 @@ public class Quote_Invoice_Details_Activity extends AppCompatActivity implements
 //      linearFabPrintInvoice.animate().translationY(getResources().getDimension(R.dimen.standard_55));
         backgroundView.setVisibility(View.VISIBLE);
 
-
-        for (FooterMenu serverList : App_preference.getSharedprefInstance().getLoginRes().getFooterMenu()) {
+        /**After discussion with Ayush Sir and Jeet Sir  in Quote section ignore footer permission and isItemVisible(user level) permission.**/
+       /* for (FooterMenu serverList : App_preference.getSharedprefInstance().getLoginRes().getFooterMenu()) {
             // both fw and mobile app permission should be granted
             if (serverList.isEnable.equals("1"))
-                if ("set_itemMenuOdrNo".equals(serverList.getMenuField())) {
-                    if (App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsItemVisible() == 0
-                            &&
+                if ("set_itemMenuOdrNo".equals(serverList.getMenuField())) {*/
+                    if (/*App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsItemVisible() == 0
+                            &&*/
                             App_preference.getSharedprefInstance().getLoginRes().getCompPermission().get(0).getIsItemEnable().equals("0")) {
                         linearFabAddNewItem.setVisibility(View.VISIBLE);
                         linearFabQuotesInJob.animate().translationY(getResources().getDimension(R.dimen.standard_145));
@@ -592,8 +592,8 @@ public class Quote_Invoice_Details_Activity extends AppCompatActivity implements
                         linearFabEmail.animate().translationY(getResources().getDimension(R.dimen.standard_55));
 //                        linearFabPrintInvoice.animate().translationY(getResources().getDimension(R.dimen.standard_55));
                     }
-                }
-        }
+//                }
+//        }
 
     }
 
