@@ -1033,25 +1033,23 @@ public class Generate_Invoice_Activity extends AppCompatActivity implements MyLi
         linearFabEmail.setVisibility(View.VISIBLE);
 //        linearFabPrintInvoice.setVisibility(View.VISIBLE);
 
-
-        for (FooterMenu serverList : App_preference.getSharedprefInstance().getLoginRes().getFooterMenu()) {
+        /**After discussion with Ayush Sir and Jeet Sir  in invoice section ignore footer permission and isItemVisible(user level) permission.**/
+      /*  for (FooterMenu serverList : App_preference.getSharedprefInstance().getLoginRes().getFooterMenu()) {
             // both fw and mobile app permission should be granted
             if (serverList.isEnable.equals("1"))
-                if ("set_itemMenuOdrNo".equals(serverList.getMenuField())) {
-                    if (App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsItemVisible() == 0
-                            &&
-                            App_preference.getSharedprefInstance().getLoginRes().getCompPermission().get(0).getIsItemEnable().equals("0")) {
-                        linearFabAddNewItem.setVisibility(View.VISIBLE);
-                        linearFabEmail.animate().translationY(getResources().getDimension(R.dimen.standard_100));
+                if ("set_itemMenuOdrNo".equals(serverList.getMenuField())) {*/
+        if (App_preference.getSharedprefInstance().getLoginRes().getCompPermission().get(0).getIsItemEnable().equals("0")) {
+            linearFabAddNewItem.setVisibility(View.VISIBLE);
+            linearFabEmail.animate().translationY(getResources().getDimension(R.dimen.standard_100));
 //                      linearFabPrintInvoice.animate().translationY(getResources().getDimension(R.dimen.standard_100));
-                        linearFabAddNewItem.animate().translationY(getResources().getDimension(R.dimen.standard_55));
-                    } else {
-                        linearFabAddNewItem.setVisibility(View.GONE);
-                        linearFabEmail.animate().translationY(getResources().getDimension(R.dimen.standard_55));
+            linearFabAddNewItem.animate().translationY(getResources().getDimension(R.dimen.standard_55));
+        } else {
+            linearFabAddNewItem.setVisibility(View.GONE);
+            linearFabEmail.animate().translationY(getResources().getDimension(R.dimen.standard_55));
 //                        linearFabPrintInvoice.animate().translationY(getResources().getDimension(R.dimen.standard_55));
-                    }
-                }
         }
+//                }
+//    }
 
 
     }

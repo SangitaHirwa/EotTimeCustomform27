@@ -794,7 +794,8 @@ public class JobEquipmentActivity extends AppCompatActivity implements Job_equim
         }
     }
 
-    /****Add Item  as a equipment**/
+    /****Add Item  as a equipment
+     * After discussion with Ayush sir and Jit sir we are not applied item show and hide permission 30-Aug-2024 **/
     private void addEquipmentItem() {
         String locId = "";
         try {

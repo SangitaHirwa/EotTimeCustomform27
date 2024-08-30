@@ -29,6 +29,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.eot_app.R;
 import com.eot_app.UploadDocumentActivity;
+import com.eot_app.login_next.FooterMenu;
 import com.eot_app.login_next.login_next_model.CompPermission;
 import com.eot_app.nav_menu.audit.audit_list.audit_mvp.model.AuditList_Res;
 import com.eot_app.nav_menu.audit.audit_list.equipment.model.Equipment_Res;
@@ -452,6 +453,18 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
         txt_about_equipment.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.about_equipment));
 //        last_service_txt.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.last_service));
 //        deu_service_txt.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.service_history));
+        for (FooterMenu serverList : App_preference.getSharedprefInstance().getLoginRes().getFooterMenu()) {
+            // both fw and mobile app permission should be granted
+            if (serverList.isEnable.equals("1"))
+                if ("set_itemMenuOdrNo".equals(serverList.getMenuField())) {
+                    if (App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsItemVisible() == 0) {
+                        item_cardview.setVisibility(View.VISIBLE);
+                    } else {
+                    item_cardview.setVisibility(View.GONE);
+                }
+        }
+
+        }
         ShowHideEqupHistory();
     }
 

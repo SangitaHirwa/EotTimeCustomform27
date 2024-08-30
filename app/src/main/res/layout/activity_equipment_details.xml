@@ -940,7 +940,7 @@
             </androidx.cardview.widget.CardView>
             <!-- item of equipment-->
             <androidx.cardview.widget.CardView
-                android:visibility="visible"
+                android:visibility="gone"
                 android:id="@+id/item_cardview"
                 android:layout_width="match_parent"
                 app:cardElevation="0dp"
