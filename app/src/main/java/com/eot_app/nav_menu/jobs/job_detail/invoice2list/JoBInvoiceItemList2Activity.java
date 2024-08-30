@@ -660,7 +660,7 @@ public class JoBInvoiceItemList2Activity extends AppCompatActivity implements Vi
         item.setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.update_btn));
         List<InvoiceItemDataModel> itemList = invoice_list_adpter.getItemList();
         if (App_preference.getSharedprefInstance().getLoginRes().getIsJobItemQuantityFormEnable().equals("1")) {
-            if(App_preference.getSharedprefInstance().getLoginRes().getCompPermission().get(0).getIsItemEnable().equals("1")){
+            if(App_preference.getSharedprefInstance().getLoginRes().getIsItemEditEnable().equals("0")){
                 item.setVisible(false);
             }else {
                 item.setVisible(itemList.size() > 0);
