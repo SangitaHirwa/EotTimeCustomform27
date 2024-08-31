@@ -33,9 +33,13 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.DialogFragment;
 
 import com.eot_app.R;
+import com.eot_app.nav_menu.audit.audit_list.documents.ActivityEditImageDialog;
 import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.AppUtility;
+import com.eot_app.utility.CompressImageInBack;
+import com.eot_app.utility.EotApp;
 import com.eot_app.utility.language_support.LanguageController;
+import com.eot_app.utility.util_interfaces.OnImageCompressed;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.ByteArrayOutputStream;
@@ -270,7 +274,7 @@ public class EditImageDialog extends DialogFragment implements View.OnClickListe
         // file = new File(Environment.getExternalStorageDirectory()
         file = new File(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
                 + File.separator + "image_"
-                + System.currentTimeMillis() + ".png");
+                + System.currentTimeMillis() + ".jng");
         try {
             file.createNewFile();
             String fname = file.getName();
@@ -449,13 +453,22 @@ public class EditImageDialog extends DialogFragment implements View.OnClickListe
     @Override
     public void onGetCroppedImageComplete(CropImageView view, final Bitmap bitmap, Exception error) {
         if (error == null) {
-            imageBitmap = bitmap;
-            getVisibleViews();
+//            imageBitmap = bitmap;
+//            getVisibleViews();
             //getBitmapToUri(bitmap);
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    photo_editor_view.getSource().setImageBitmap(bitmap);
+//                    photo_editor_view.getSource().setImageBitmap(bitmap);
+
+                    new CompressImageInBack(EotApp.getCurrentActivity(), new OnImageCompressed() {
+                        @Override
+                        public void onImageCompressed(Bitmap bitmap) {
+                            imageBitmap = bitmap;
+                            photo_editor_view.getSource().setImageBitmap(imageBitmap);
+                            getVisibleViews();
+                        }
+                    },AppUtility.getBitmapToUri(bitmap)).compressImageInBckg();//.execute(uri).compressImageInBckg();
 
                 }
             });

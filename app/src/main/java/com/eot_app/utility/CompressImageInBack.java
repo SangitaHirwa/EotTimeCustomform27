@@ -9,7 +9,11 @@ import android.net.Uri;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
+import android.provider.DocumentsContract;
 import android.util.Log;
+
+import com.eot_app.nav_menu.jobs.job_detail.documents.PathUtils;
+import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.CompressImg1;
 import com.eot_app.utility.util_interfaces.OnImageCompressed;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -31,7 +35,7 @@ public class CompressImageInBack {
     OnImageCompressed onImageCompressed;
     Uri uriAsyn;
     private final Context context;
-    private boolean saveBitmap;
+    private boolean saveBitmap = false;
     private String savedImagePath;
 
     public CompressImageInBack(Context context, OnImageCompressed onImageCompressed, Uri uriAsyn) {
@@ -83,45 +87,54 @@ public class CompressImageInBack {
     }
 
     private Bitmap getImageBitmapFromURI(Uri imagePath) {
-        ContentResolver resolver = context.getContentResolver();
-        InputStream is;
-        try {
-            is = resolver.openInputStream(imagePath);
-        } catch (FileNotFoundException e) {
-            Log.e("TAG", "Image not found.", e);
-            return null;
-        }
-        BitmapFactory.Options opts = new BitmapFactory.Options();
-        opts.inJustDecodeBounds = true;
-        BitmapFactory.decodeStream(is, null, opts);
-
-        // scale the image
-        float maxSideLength = 1000;
-        float scaleFactor = Math.min(maxSideLength / opts.outWidth, maxSideLength / opts.outHeight);
-        // do not upscale!
-        if (scaleFactor < 1) {
-            opts.inDensity = 10000;
-            opts.inTargetDensity = (int) ((float) opts.inDensity * scaleFactor);
-        }
-        opts.inJustDecodeBounds = false;
-
-        try {
-            is.close();
-        } catch (IOException e) {
-            // ignore
-        }
-        try {
-            is = resolver.openInputStream(imagePath);
-        } catch (FileNotFoundException e) {
-            Log.e("TAG", "Image not found.", e);
-            return null;
-        }
-        Bitmap bitmap = BitmapFactory.decodeStream(is, null, opts);
-        try {
-            is.close();
-        } catch (IOException e) {
-            // ignore
-        }
+        Bitmap bitmap = null;
+try {
+    Log.e("Img", "Single img compress");
+    CompressImg1 compressImg1 = new CompressImg1();
+    String path = compressImg1.compressImage(new File(PathUtils.getRealPath(EotApp.getCurrentActivity(),imagePath)), 1280, 720, 200);
+    bitmap = AppUtility.getBitmapFromPath(path);
+}catch (Exception e){
+    Log.e("error", e.getMessage());
+}
+//        ContentResolver resolver = context.getContentResolver();
+//        InputStream is;
+//        try {
+//            is = resolver.openInputStream(imagePath);
+//        } catch (FileNotFoundException e) {
+//            Log.e("TAG", "Image not found.", e);
+//            return null;
+//        }
+//        BitmapFactory.Options opts = new BitmapFactory.Options();
+//        opts.inJustDecodeBounds = true;
+//        BitmapFactory.decodeStream(is, null, opts);
+//
+//        // scale the image
+//        float maxSideLength = 1000;
+//        float scaleFactor = Math.min(maxSideLength / opts.outWidth, maxSideLength / opts.outHeight);
+//        // do not upscale!
+//        if (scaleFactor < 1) {
+//            opts.inDensity = 10000;
+//            opts.inTargetDensity = (int) ((float) opts.inDensity * scaleFactor);
+//        }
+//        opts.inJustDecodeBounds = false;
+//
+//        try {
+//            is.close();
+//        } catch (IOException e) {
+//            // ignore
+//        }
+//        try {
+//            is = resolver.openInputStream(imagePath);
+//        } catch (FileNotFoundException e) {
+//            Log.e("TAG", "Image not found.", e);
+//            return null;
+//        }
+//        Bitmap bitmap = BitmapFactory.decodeStream(is, null, opts);
+//        try {
+//            is.close();
+//        } catch (IOException e) {
+//            // ignore
+//        }
        /* Bitmap bitmap = null;
         try {
             bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), imagePath);

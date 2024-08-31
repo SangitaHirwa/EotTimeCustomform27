@@ -815,6 +815,28 @@ public class DocumentsFragment extends Fragment implements Doc_Attch_View, Docum
 
         service.execute(()->{
             for(int i =0; i<data.getClipData().getItemCount();i++) {
+                try {
+                    Uri uri = data.getClipData().getItemAt(i).getUri();
+            tempId = "Attachment-"+App_preference.getSharedprefInstance().getLoginRes().getUsrId()+"-"+jobId+"-"+i+"-"+AppUtility.getCurrentMiliTiem();
+            Attachments attachments = new Attachments(tempId, "checking_img"+i+".jpg", "checking_img"+i+".jpg", imgPathArray[i], "", "", "", jobId, "2", uri.toString(), tempId,true);
+            AppDataBase.getInMemoryDatabase(getActivity()).attachments_dao().insertSingleAttachments(attachments);
+            JsonObject  jsonObject = new JsonObject();
+            jsonObject.addProperty("name",imgPathArray[i]);
+            jsonObject.addProperty("tempId", tempId);
+            jsonArray.add(jsonObject);
+                }catch (Exception e){
+                    Log.e("Error", e.getMessage());
+                }
+            }
+            requireActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    setMultiList((ArrayList<Attachments>) AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).attachments_dao().getAllAttachmentsOfJob(jobId), "2", true, -1, -1, queId, jobId);
+
+                    uploadOffline(jsonArray.toString(),true,false,jobId);
+                }
+            });
+           /* for(int i =0; i<data.getClipData().getItemCount();i++) {
                 Uri uri = data.getClipData().getItemAt(i).getUri();
                 CompressImg compressImg = new CompressImg(requireActivity());
                 String savedImagePath = compressImg.compressImage(uri.toString());
@@ -852,7 +874,7 @@ public class DocumentsFragment extends Fragment implements Doc_Attch_View, Docum
                     }
                     uploadOffline(jsonArray.toString(),true,false,jobId);
                 }
-            });
+            });*/
 
         });
 

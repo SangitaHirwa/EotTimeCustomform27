@@ -25,6 +25,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.FileProvider;
@@ -54,6 +56,7 @@ import com.eot_app.nav_menu.jobs.job_detail.documents.EditImageDialog;
 import com.eot_app.nav_menu.jobs.job_detail.documents.PathUtils;
 import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.Attachments;
 import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.CompressImg;
+import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.CompressImg1;
 import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.NotifyForMultiDocAdd;
 import com.eot_app.nav_menu.jobs.job_detail.documents.fileattach_mvp.Doc_Attch_Pc;
 import com.eot_app.nav_menu.jobs.job_detail.documents.fileattach_mvp.Doc_Attch_Pi;
@@ -74,6 +77,7 @@ import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.AppUtility;
 import com.eot_app.utility.App_preference;
 import com.eot_app.utility.EotApp;
+import com.eot_app.utility.ImageUtils;
 import com.eot_app.utility.db.AppDataBase;
 import com.eot_app.utility.db.OfflineDataController;
 import com.eot_app.utility.language_support.LanguageController;
@@ -1117,6 +1121,10 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
                 if (resultCode == RESULT_OK)
                     if (doc_attch_pi != null){
                         String fileNameExt = AppUtility.getFileNameWithExtension(data.getStringExtra("imgPath"));
+                        Uri uri1 = Uri.fromFile(new File(data.getStringExtra("imgPath")));
+                        // Get the image size in MB
+                        double imageSizeInMB1 = ImageUtils.getImageSizeInMB(this, uri1);
+                        Log.e("IMG","Size After Compress======================="+imageSizeInMB1);
                         String img_extension = data.getStringExtra("imgPath").substring(data.getStringExtra("imgPath").lastIndexOf("."));
                         //('jpg','png','jpeg','pdf','doc','docx','xlsx','csv','xls'); supporting extensions
                         if (img_extension.equals(".jpg") || img_extension.equals(".png") || img_extension.equals(".jpeg")
@@ -1224,6 +1232,8 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
                             //('jpg','png','jpeg','pdf','doc','docx','xlsx','csv','xls'); supporting extensions
                             if (img_extension.equals(".jpg") || img_extension.equals(".png") || img_extension.equals(".jpeg")) {
                                 if (!isMultipleImages) {
+                                    double imageSizeInMB = ImageUtils.getImageSizeInMB(this, data.getClipData().getItemAt(0).getUri());
+                                    Log.e("IMG","Size======================="+imageSizeInMB);
                                     imageEditing(data.getClipData().getItemAt(0).getUri(), true);
                                 } else {
                                     uploadMultipleImges(data, true, jobId, this.queId, this.jtId);
@@ -1384,49 +1394,103 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
         notSupportImgCount = 0;
         String [] imgPathArray = new String[data.getClipData().getItemCount()];
         JsonArray jsonArray = new JsonArray();
+//        AppUtility.progressBarShow(this);
         ExecutorService service = Executors.newSingleThreadExecutor();
         service.execute(()->{
+            Log.e("Img","Image");
             for(int i =0; i<data.getClipData().getItemCount();i++) {
-                Uri uri = data.getClipData().getItemAt(i).getUri();
-                CompressImg compressImg = new CompressImg(this);
-                String savedImagePath = compressImg.compressImage(uri.toString());
-                String fileNameExt = AppUtility.getFileNameWithExtension(savedImagePath);
-                String img_extension = savedImagePath.substring(savedImagePath.lastIndexOf("."));
-                String[] fileName = fileNameExt.split("\\.");
-                if(img_extension.equals(".jpg") || img_extension.equals(".png") || img_extension.equals(".jpeg")) {
-                imgPathArray[i] = PathUtils.getRealPath(JobCompletionActivity.this, uri);
+                try {
+                    Uri uri = data.getClipData().getItemAt(i).getUri();
+                    // Get the image size in MB
+//                    double imageSizeInMB = ImageUtils.getImageSizeInMB(this, uri);
+//                    Log.e("IMG", "Size=======================" + imageSizeInMB);
+//                    CompressImg1 compressImg = new CompressImg1();
+//                    String savedImagePath = compressImg.compressImage(new File(PathUtils.getRealPath(JobCompletionActivity.this, uri)), 1280, 720, 200);
+//                    ;
+//                    Uri uri1 = Uri.fromFile(new File(savedImagePath));
+//                    // Get the image size in MB
+//                    double imageSizeInMB1 = ImageUtils.getImageSizeInMB(this, uri1);
+//                    Log.e("IMG", "Size After Compress=======================" + imageSizeInMB1);
+
+
                 tempId = "Attachment-"+App_preference.getSharedprefInstance().getLoginRes().getUsrId()+"-"+jobData.getJobId()+"-"+i+"-"+AppUtility.getCurrentMiliTiem();
-                Attachments attachments = new Attachments(tempId,fileNameExt,fileNameExt,imgPathArray[i],queId, jtId,"",jobData.getJobId(),"6",savedImagePath,tempId);
+                Attachments attachments = new Attachments(tempId,"checking_img"+i+".jpg","checking_img"+i+".jpg",uri.toString(),queId, jtId,"",jobData.getJobId(),"6",uri.toString(),tempId,true);
                 AppDataBase.getInMemoryDatabase(this).attachments_dao().insertSingleAttachments(attachments);
                 JsonObject  jsonObject = new JsonObject();
-                jsonObject.addProperty("name",savedImagePath);
+                jsonObject.addProperty("name",imgPathArray[i]);
                 jsonObject.addProperty("tempId", tempId);
                 jsonArray.add(jsonObject);
-
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        onDocumentSelected("","",false,parentPositon,position,queId,jtId);
-                    }
-                });
-                }else {
-                    notSupportImgCount++;
+//                imgPathArray[i] = PathUtils.getRealPath(JobCompletionActivity.this, uri);
+//                    String fileNameExt = AppUtility.getFileNameWithExtension(savedImagePath);
+//                    String img_extension = savedImagePath.substring(savedImagePath.lastIndexOf("."));
+//                    String[] fileName = fileNameExt.split("\\.");
+//                    if (img_extension.equals(".jpg") || img_extension.equals(".png") || img_extension.equals(".jpeg")) {
+//                        Log.e("Img", "Image" + fileNameExt);
+//                        imgPathArray[i] = PathUtils.getRealPath(JobCompletionActivity.this, uri);
+//                        tempId = "Attachment-" + App_preference.getSharedprefInstance().getLoginRes().getUsrId() + "-" + jobData.getJobId() + "-" + i + "-" + AppUtility.getCurrentMiliTiem();
+//                        Attachments attachments = new Attachments(tempId, fileNameExt, fileNameExt, imgPathArray[i], queId, jtId, "", jobData.getJobId(), "6", savedImagePath, tempId);
+//                        AppDataBase.getInMemoryDatabase(this).attachments_dao().insertSingleAttachments(attachments);
+//                        JsonObject jsonObject = new JsonObject();
+//                        jsonObject.addProperty("name", savedImagePath);
+//                        jsonObject.addProperty("tempId", tempId);
+//                        jsonArray.add(jsonObject);
+//
+//                runOnUiThread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        onDocumentSelected("","",false,parentPositon,position,queId,jtId);
+//                    }
+//                });
+//                    } else {
+//                        notSupportImgCount++;
+//                    }
+                }catch (Exception e){
+                    Log.e("Error", e.getMessage());
                 }
-
             }
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    if(notSupportImgCount > 0){
-                        String msg = LanguageController.getInstance().getServerMsgByKey(AppConstant.invalid_extension);
-                        if(notSupportImgCount > 1){
-                            msg = notSupportImgCount+" "+LanguageController.getInstance().getServerMsgByKey(AppConstant.invalid_extension);
-                        }
-                        showImageErrorDialog(msg);
-                    }
+                    onDocumentSelected("","",false,parentPositon,position,queId,jtId);
+//                    new Handler().postDelayed(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            AppUtility.progressBarDissMiss();
+//                        }
+//                    },3000);
                     uploadOffline(jsonArray.toString(),true,false,jobId,queId,jtId,tempId);
+
                 }
             });
+            new Handler(getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+//                    if(notSupportImgCount > 0){
+//                        String msg = LanguageController.getInstance().getServerMsgByKey(AppConstant.invalid_extension);
+//                        if(notSupportImgCount > 1){
+//                            msg = notSupportImgCount+" "+LanguageController.getInstance().getServerMsgByKey(AppConstant.invalid_extension);
+//                        }
+//                        showImageErrorDialog(msg);
+//                    }
+//                    onDocumentSelected("","",false,parentPositon,position,queId,jtId);
+//                    AppUtility.progressBarDissMiss();
+//                    uploadOffline(jsonArray.toString(),true,false,jobId,queId,jtId,tempId);
+
+                }
+            });
+//            runOnUiThread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    if(notSupportImgCount > 0){
+//                        String msg = LanguageController.getInstance().getServerMsgByKey(AppConstant.invalid_extension);
+//                        if(notSupportImgCount > 1){
+//                            msg = notSupportImgCount+" "+LanguageController.getInstance().getServerMsgByKey(AppConstant.invalid_extension);
+//                        }
+//                        showImageErrorDialog(msg);
+//                    }
+//                    uploadOffline(jsonArray.toString(),true,false,jobId,queId,jtId,tempId);
+//                }
+//            });
         });
 
 
@@ -1816,5 +1880,20 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
     public void showImageErrorDialog(String msg) {
         AppUtility.alertDialog(this, LanguageController.getInstance().getMobileMsgByKey(AppConstant.dialog_alert), msg,
                 "",LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), null);
+    }
+    public String calculateFileSize(Uri filepath)
+    {
+        //String filepathstr=filepath.toString();
+        File file = new File(filepath.getPath());
+
+        // Get length of file in bytes
+        float fileSizeInBytes = file.length();
+        // Convert the bytes to Kilobytes (1 KB = 1024 Bytes)
+        float fileSizeInKB = fileSizeInBytes / 1024;
+        // Convert the KB to MegaBytes (1 MB = 1024 KBytes)
+        float fileSizeInMB = fileSizeInKB / 1024;
+
+        String calString=Float.toString(fileSizeInMB);
+        return calString;
     }
 }

@@ -193,7 +193,7 @@ public class ActivityEditImageDialog extends AppCompatActivity implements View.O
 
         file = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES)
                 + File.separator + "image_"
-                + System.currentTimeMillis() + ".png");
+                + System.currentTimeMillis() + ".jpg");
 
         try {
             file.createNewFile();
@@ -426,10 +426,19 @@ public class ActivityEditImageDialog extends AppCompatActivity implements View.O
     @Override
     public void onGetCroppedImageComplete(CropImageView view, Bitmap bitmap, Exception error) {
         if (error == null) {
-            imageBitmap = bitmap;
-            getVisibleViews();
-            //getBitmapToUri(bitmap);
-            photo_editor_view.getSource().setImageBitmap(bitmap);
+//            imageBitmap = bitmap;
+//            getVisibleViews();
+//            //getBitmapToUri(bitmap);
+//            photo_editor_view.getSource().setImageBitmap(bitmap);
+
+            new CompressImageInBack(ActivityEditImageDialog.this, new OnImageCompressed() {
+                @Override
+                public void onImageCompressed(Bitmap bitmap) {
+                    imageBitmap = bitmap;
+                    photo_editor_view.getSource().setImageBitmap(imageBitmap);
+                    getVisibleViews();
+                }
+            },AppUtility.getBitmapToUri(bitmap)).compressImageInBckg();//.execute(uri).compressImageInBckg();
 
         } else {
             cropiExit();

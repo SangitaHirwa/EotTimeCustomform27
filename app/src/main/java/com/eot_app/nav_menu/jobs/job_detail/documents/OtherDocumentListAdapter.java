@@ -17,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DecodeFormat;
 import com.eot_app.R;
 import com.eot_app.nav_menu.jobs.job_complation.JobCompletionActivity;
 import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.Attachments;
@@ -137,10 +138,18 @@ public class OtherDocumentListAdapter extends RecyclerView.Adapter<OtherDocument
 //                            .format(DecodeFormat.PREFER_ARGB_8888)
 //                            .thumbnail(Glide.with(context).load(R.raw.loader_eot)).placeholder(R.drawable.picture).into(holder.image_thumb_nail);
 //                }else
-                    if( fileList.getBitmap()!=null && !fileList.getBitmap().isEmpty() && new File(fileList.getBitmap()).exists())
+                    if( fileList.getBitmap()!=null && !fileList.getBitmap().isEmpty())
                 {
-                    Bitmap bitmap1= AppUtility.getBitmapFromPath(fileList.getBitmap());
-                    holder.image_thumb_nail.setImageBitmap(bitmap1);
+                    if(new File(fileList.getBitmap()).exists()) {
+                        Bitmap bitmap1 = AppUtility.getBitmapFromPath(fileList.getBitmap());
+                        Glide.with(context).load(bitmap1)
+                                .format(DecodeFormat.PREFER_ARGB_8888)
+                                .placeholder(R.drawable.picture).into(holder.image_thumb_nail);
+                    }else {
+                        Glide.with(context).load(fileList.getBitmap())
+                                .format(DecodeFormat.PREFER_ARGB_8888)
+                                .placeholder(R.drawable.picture).into(holder.image_thumb_nail);
+                    }
                 }
                 else {
                     Glide

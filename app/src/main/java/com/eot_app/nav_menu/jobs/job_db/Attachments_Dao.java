@@ -36,8 +36,8 @@ public interface  Attachments_Dao {
     void deleteTable();
     @Query("UPDATE Attachments SET bitmap = :bitmap WHERE attachmentId =:attachmentId")
     void updateAttachment(String bitmap, String attachmentId);
-    @Query("UPDATE Attachments SET attachmentId = :attachmentId and deleteTable = :deleteTable and image_name = :image_name and userId = :userId and attachFileName = :attachFileName and attachThumnailFileName = :attachThumnailFileName and attachFileActualName = :attachFileActualName and type = :type and createdate = :createdate and attFolderNm = :attFolderNm and queId = :queId and jtId = :jtId and name = :name and att_docName = :att_docName and des = :des and attchOriginId = :attchOriginId and isFeedback = :isFeedback and jobId = :jobId and size = :size and attchParentId = :attchParentId and isLinked = :isLinked and isdelete = :isdelete and bitmap = :bitmap   WHERE tempId =:tempId")
-    void updateAttachmentByTempId(String tempId,String attachmentId,String deleteTable,String image_name, String userId, String attachFileName, String attachThumnailFileName, String attachFileActualName, String type, String createdate, String attFolderNm, String queId, String jtId, String name, String att_docName, String des, String attchOriginId, String isFeedback, String jobId, String size, String attchParentId, String isLinked, String isdelete, String bitmap);
+    @Query("UPDATE Attachments SET image_name = :image_name , attachFileActualName = :attachFileActualName , bitmap = :bitmap, isUri = :isUri   WHERE tempId =:tempId")
+    void updateAttachmentByTempId(String tempId, String image_name,  String attachFileActualName, String bitmap,boolean isUri);
 
     @Query("Select * from Attachments  WHERE tempId =:tempId")
     Attachments getAttachmetByTempId( String tempId);
@@ -50,8 +50,6 @@ public interface  Attachments_Dao {
     @Query("SELECT EXISTS(select * from Attachments where attachmentId = :attachmentId)")
     boolean isAttachment(String attachmentId);
 
-
-
-
-
+    @Query("select bitmap from Attachments where attachmentId = :tempId")
+    String getBitmap(String tempId);
 }

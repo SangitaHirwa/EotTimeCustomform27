@@ -267,6 +267,7 @@ public class Doc_Attch_Pc implements Doc_Attch_Pi {
             RequestBody userId = RequestBody.create(App_preference.getSharedprefInstance().getLoginRes().getUsrId(), MultipartBody.FORM);
             RequestBody typeId = RequestBody.create(type, MultipartBody.FORM);
             RequestBody tempId = RequestBody.create("tempId", MultipartBody.FORM);
+            RequestBody forMobile = RequestBody.create("1", MultipartBody.FORM);
 
             if (isAddAttachAsCompletionNote == null)
                 isAddAttachAsCompletionNote = "0";
@@ -277,7 +278,7 @@ public class Doc_Attch_Pc implements Doc_Attch_Pi {
             String finalIsAddAttachAsCompletionNote = isAddAttachAsCompletionNote;
             ApiClient.getservices().uploadDocements(AppUtility.getApiHeaders(),
                             jobId, queId, jtId,userId, descBody, typeId, docName,
-                            isAddAttachAsCompletionNoteBody, tempId,body)
+                            isAddAttachAsCompletionNoteBody, tempId,forMobile,body)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Observer<JsonObject>() {
@@ -357,6 +358,7 @@ public class Doc_Attch_Pc implements Doc_Attch_Pi {
             RequestBody userId = RequestBody.create(App_preference.getSharedprefInstance().getLoginRes().getUsrId(), MultipartBody.FORM);
             RequestBody typeId = RequestBody.create(type, MultipartBody.FORM);
             RequestBody tempId = RequestBody.create("tempId", MultipartBody.FORM);
+            RequestBody forMobile = RequestBody.create("1", MultipartBody.FORM);
 
             if (isAddAttachAsCompletionNote == null)
                 isAddAttachAsCompletionNote = "0";
@@ -367,7 +369,7 @@ public class Doc_Attch_Pc implements Doc_Attch_Pi {
             String finalIsAddAttachAsCompletionNote = isAddAttachAsCompletionNote;
             ApiClient.getservices().uploadDocements(AppUtility.getApiHeaders(),
                     jobId, queId, jtId,userId, descBody, typeId, docName,
-                    isAddAttachAsCompletionNoteBody, tempId,body)
+                    isAddAttachAsCompletionNoteBody, tempId,forMobile,body)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Observer<JsonObject>() {

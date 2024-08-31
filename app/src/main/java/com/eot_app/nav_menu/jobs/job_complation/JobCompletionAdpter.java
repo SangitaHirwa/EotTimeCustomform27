@@ -24,6 +24,8 @@ import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.AppUtility;
 import com.eot_app.utility.App_preference;
 import com.eot_app.utility.language_support.LanguageController;
+
+import java.io.File;
 import java.util.ArrayList;
 
 public class JobCompletionAdpter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements Filterable {
@@ -141,10 +143,18 @@ public class JobCompletionAdpter extends RecyclerView.Adapter<RecyclerView.ViewH
 //                    {
 //                        holder.image_thumb_nail.setImageBitmap(fileList.getBitmap1());
 //                    }else
-                        if(fileList.getBitmap()!=null && !fileList.getBitmap().isEmpty())
+                    if(fileList.getBitmap()!=null && !fileList.getBitmap().isEmpty())
                     {
-                        Bitmap bitmap1= AppUtility.getBitmapFromPath(fileList.getBitmap());
-                        holder.image_thumb_nail.setImageBitmap(bitmap1);
+                        if(new File(fileList.getBitmap()).exists()) {
+                            Bitmap bitmap1 = AppUtility.getBitmapFromPath(fileList.getBitmap());
+                            Glide.with(context).load(bitmap1)
+                                    .format(DecodeFormat.PREFER_ARGB_8888)
+                                    .placeholder(R.drawable.picture).into(holder.image_thumb_nail);
+                        }else {
+                            Glide.with(context).load(fileList.getBitmap())
+                                    .format(DecodeFormat.PREFER_ARGB_8888)
+                                    .placeholder(R.drawable.picture).into(holder.image_thumb_nail);
+                        }
                     }
                     else {
                         Glide.with(context).load(App_preference.getSharedprefInstance().getBaseURL() + fileList.getAttachThumnailFileName())

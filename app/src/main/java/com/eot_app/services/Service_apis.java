@@ -317,7 +317,7 @@ public interface Service_apis {
                         @Part("lng") RequestBody lng,
                         @Part("desc") RequestBody desc,
                         @Part MultipartBody.Part attachment);
-
+//Added new param fromMobile for compress img back end side by -1;
     @Multipart
     @POST("JobController/uploadDocument")
     Observable<JsonObject>
@@ -331,6 +331,7 @@ public interface Service_apis {
                     @Part("docNm") RequestBody docNm,
                     @Part("isAddAttachAsCompletionNote") RequestBody isAddAttachAsCompletionNote,
                     @Part("tempId") RequestBody tempId,
+                    @Part("fromAndroid") RequestBody forMobile,
                     @Part MultipartBody.Part file);
 
     @Multipart

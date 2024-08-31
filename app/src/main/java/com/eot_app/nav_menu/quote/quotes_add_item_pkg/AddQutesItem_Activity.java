@@ -490,7 +490,12 @@ public class AddQutesItem_Activity extends AppCompatActivity implements TextWatc
                     dis = edt_item_discount.getText().toString();
                 }
             if (quotesDetails.getInvData() != null) {
-                Map<String, String> result = AppUtility.getCalculatedAmountForDiscount(qty,rate,dis,listFilter,getTaxCalculationType,getDisCalculationType,updateItem);
+                Map<String, String> result;
+                if(listFilter.size() == 1 && !listFilter.get(0).isSelect()){
+                    result = AppUtility.getCalculatedAmountForDiscount(qty, rate, dis, new ArrayList<Tax>(), getTaxCalculationType, getDisCalculationType, updateItem);
+                }else {
+                    result = AppUtility.getCalculatedAmountForDiscount(qty, rate, dis, listFilter, getTaxCalculationType, getDisCalculationType, updateItem);
+                }
                 taxamount_value_txt.setText(AppUtility.getRoundoff_amount(result.get("Tax")));
                 amount_value_txt.setText(AppUtility.getRoundoff_amount(result.get("Amount")));
             }

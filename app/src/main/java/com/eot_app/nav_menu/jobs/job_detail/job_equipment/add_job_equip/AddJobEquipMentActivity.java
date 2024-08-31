@@ -2608,5 +2608,4 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
 
         this.finish();
     }
-
 }

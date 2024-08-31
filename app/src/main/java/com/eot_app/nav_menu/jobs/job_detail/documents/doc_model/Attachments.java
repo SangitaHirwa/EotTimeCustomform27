@@ -71,9 +71,13 @@ public class Attachments implements Parcelable {
     private String tempId;
     @Ignore
     private String complNote;
-    String  bitmap="";
-    @Ignore
-    Bitmap bitmap1;
+
+    String  bitmap = "";
+    // 0 = false 1 = true Its for showing image in uri
+    @SerializedName("isUri")
+    boolean  isUri ;
+//    @Ignore
+//    Bitmap bitmap1;
 
 
     //    private String attachmentId;
@@ -148,18 +152,32 @@ public class Attachments implements Parcelable {
         this.bitmap = bitmap;
         this.tempId =tempId;
     }
+    public Attachments(@NonNull String attachmentId, String imageName, String attachFileActualName, String attachThumnailFileName, String queId, String jtId, String des, String jobId, String type,String bitmap,String tempId, boolean isUri) {
+        this.attachmentId = attachmentId;
+        this.image_name = imageName;
+        this.attachFileActualName = attachFileActualName;
+        this.attachThumnailFileName = attachThumnailFileName;
+        this.queId = queId;
+        this.jtId = jtId;
+        this.des = des;
+        this.jobId = jobId;
+        this.type = type;
+        this.bitmap = bitmap;
+        this.tempId =tempId;
+        this.isUri = isUri;
+    }
     public Attachments(String attachmentId, String image_name, String attachFileActualName, String bitmap) {
         this.attachmentId = attachmentId;
         this.image_name = image_name;
         this.attachFileActualName = attachFileActualName;
         this.bitmap = bitmap;
     }
-    public Attachments(String attachmentId, String image_name, String attachFileActualName, Bitmap bitmap) {
-        this.attachmentId = attachmentId;
-        this.image_name = image_name;
-        this.attachFileActualName = attachFileActualName;
-        this.bitmap1 = bitmap;
-    }
+//    public Attachments(String attachmentId, String image_name, String attachFileActualName, Bitmap bitmap) {
+//        this.attachmentId = attachmentId;
+//        this.image_name = image_name;
+//        this.attachFileActualName = attachFileActualName;
+//        this.bitmap1 = bitmap;
+//    }
     @SuppressLint("NewApi")
     protected Attachments(Parcel in) {
         attachmentId = in.readString();
@@ -386,6 +404,14 @@ public class Attachments implements Parcelable {
         this.tempId = tempId;
     }
 
+    public boolean isUri() {
+        return isUri;
+    }
+
+    public void setUri(boolean uri) {
+        isUri = uri;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -409,11 +435,11 @@ public class Attachments implements Parcelable {
         parcel.writeString(att_docName);
     }
 
-    public Bitmap getBitmap1() {
-        return bitmap1;
-    }
-
-    public void setBitmap1(Bitmap bitmap1) {
-        this.bitmap1 = bitmap1;
-    }
+//    public Bitmap getBitmap1() {
+//        return bitmap1;
+//    }
+//
+//    public void setBitmap1(Bitmap bitmap1) {
+//        this.bitmap1 = bitmap1;
+//    }
 }

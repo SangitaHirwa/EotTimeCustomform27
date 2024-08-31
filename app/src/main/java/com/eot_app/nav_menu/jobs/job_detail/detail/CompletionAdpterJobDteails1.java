@@ -2,6 +2,7 @@ package com.eot_app.nav_menu.jobs.job_detail.detail;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -100,9 +101,17 @@ public class CompletionAdpterJobDteails1 extends RecyclerView.Adapter<Completion
 //                            .format(DecodeFormat.PREFER_ARGB_8888)
 //                            .thumbnail(Glide.with(context).load(R.raw.loader_eot)).placeholder(R.drawable.picture).into(viewHolder.image_thumb_nail);
 //                }else
-                if(fileList.getBitmap()!= null && !fileList.getBitmap().isEmpty() && new File(fileList.getBitmap()).exists()){
-                    Bitmap bitmap1= AppUtility.getBitmapFromPath(fileList.getBitmap());
-                    viewHolder.image_thumb_nail.setImageBitmap(bitmap1);
+               if(fileList.getBitmap()!= null && !fileList.getBitmap().isEmpty()){
+                   if(new File(fileList.getBitmap()).exists()) {
+                       Bitmap bitmap1 = AppUtility.getBitmapFromPath(fileList.getBitmap());
+                       Glide.with(context).load(bitmap1)
+                               .format(DecodeFormat.PREFER_ARGB_8888)
+                               .placeholder(R.drawable.picture).into(viewHolder.image_thumb_nail);
+                   }else {
+                       Glide.with(context).load(fileList.getBitmap())
+                               .format(DecodeFormat.PREFER_ARGB_8888)
+                               .placeholder(R.drawable.picture).into(viewHolder.image_thumb_nail);
+                   }
                 }else
                 {
                     Glide.with(context).load(App_preference.getSharedprefInstance().getBaseURL() + fileList.getAttachThumnailFileName())

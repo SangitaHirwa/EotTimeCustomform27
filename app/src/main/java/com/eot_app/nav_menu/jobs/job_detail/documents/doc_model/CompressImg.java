@@ -169,7 +169,7 @@ public class CompressImg {
         while (totalPixels / (inSampleSize * inSampleSize) > totalReqPixelsCap) {
             inSampleSize++;
         }
-
+Log.e("IMG", "Compress Size=================="+inSampleSize);
         return inSampleSize;
     }
 }

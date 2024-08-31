@@ -2,6 +2,7 @@ package com.eot_app.utility;
 
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.app.AlertDialog;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
@@ -9,7 +10,12 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.eot_app.R;
 import com.eot_app.login_next.Login2Activity;
 import com.eot_app.nav_menu.appointment.AppointmentItem_Observer;
 import com.eot_app.nav_menu.jobs.job_complation.compla_model.NotifyForcompletion;
@@ -45,6 +51,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import androidx.annotation.NonNull;
 
@@ -78,14 +85,58 @@ public class EotApp extends Application implements Application.ActivityLifecycle
     private NotifyForMultiDocAddForAttach notifyForMultiDocAddForAttach;
     private NotifyForRequestedItemList notifyForRequestedItemList;
     private EquipItemObserver equipItemObserver;
+    private static Activity currentActivity = null;
+
 
 
     public static synchronized EotApp getAppinstance() {
         return INSTANCE;
     }
+    public static Activity getCurrentActivity() {
+        return currentActivity;
+    }
 
     public void showToastmsg(String msg) {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+    }
+    public void showAlerDialog( String title, String message,
+                               String positiveButton, String negativeButton,
+                               final Callable<Boolean> function){
+        try {
+
+            TextView dailog_title, dialog_msg;
+            final AlertDialog.Builder alertDialog = new AlertDialog.Builder(currentActivity);
+
+            LayoutInflater inflater =  (LayoutInflater) currentActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            final View customLayout = inflater.inflate(R.layout.dialog_layout, null);
+            alertDialog.setView(customLayout);
+            alertDialog.setCancelable(false);
+
+            dailog_title = customLayout.findViewById(R.id.dai_title);
+            dialog_msg = customLayout.findViewById(R.id.dia_msg);
+            if (!title.equals("")) {
+                dailog_title.setVisibility(View.VISIBLE);
+                dailog_title.setText(title);
+            }
+            dialog_msg.setText(message);
+
+            alertDialog.setPositiveButton(positiveButton, (dialog, which) -> {
+                try {
+                    function.call();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+
+            alertDialog.setNegativeButton(negativeButton, (dialog, which) -> dialog.dismiss());
+
+            alertDialog.show();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            EotApp.getAppinstance().showToastmsg("Something went wrong here.");
+            //Toast.makeText(context, "Something went wrong here.", Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void sessionExpired() {
@@ -407,12 +458,12 @@ public class EotApp extends Application implements Application.ActivityLifecycle
 
     @Override
     public void onActivityStarted(@NonNull Activity activity) {
-
+        currentActivity = activity;
     }
 
     @Override
     public void onActivityResumed(@NonNull Activity activity) {
-
+        currentActivity = activity;
     }
 
     @Override
@@ -423,7 +474,9 @@ public class EotApp extends Application implements Application.ActivityLifecycle
     @Override
     public void onActivityStopped(@NonNull Activity activity) {
         Log.e("", "");
-
+        if (currentActivity == activity) {
+            currentActivity = null;
+        }
     }
 
     @Override
