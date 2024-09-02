@@ -31,6 +31,7 @@ import com.eot_app.R;
 import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.AppUtility;
 import com.eot_app.utility.CompressImageInBack;
+import com.eot_app.utility.EotApp;
 import com.eot_app.utility.language_support.LanguageController;
 import com.eot_app.utility.util_interfaces.OnImageCompressed;
 import com.theartofdev.edmodo.cropper.CropImageView;
@@ -90,6 +91,7 @@ public class ActivityEditImageDialog extends AppCompatActivity implements View.O
         super.onCreate(savedInstanceState);
         setContentView(R.layout.edit_image_dialog_layout);
 
+        AppUtility.progressBarShow(this);
         if (getIntent() != null && getIntent().hasExtra("allowOffline")) {
             allowInOffline = getIntent().getBooleanExtra("allowOffline", false);
         }
@@ -104,6 +106,7 @@ public class ActivityEditImageDialog extends AppCompatActivity implements View.O
                     public void onImageCompressed(Bitmap bitmap) {
                         imageBitmap = bitmap;
                         photo_editor_view.getSource().setImageBitmap(imageBitmap);
+                        AppUtility.progressBarDissMiss();
                         getVisibleViews();
                     }
                 }, uri).compressImageInBckg();//.execute(uri);

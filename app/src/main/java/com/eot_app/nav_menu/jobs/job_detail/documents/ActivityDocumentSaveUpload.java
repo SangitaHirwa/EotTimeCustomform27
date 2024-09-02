@@ -10,6 +10,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -36,6 +37,7 @@ import com.eot_app.R;
 import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.AppUtility;
 import com.eot_app.utility.CompressImageInBack;
+import com.eot_app.utility.EotApp;
 import com.eot_app.utility.language_support.LanguageController;
 import com.eot_app.utility.util_interfaces.OnImageCompressed;
 import java.io.File;
@@ -76,7 +78,7 @@ public class ActivityDocumentSaveUpload extends AppCompatActivity implements Vie
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_job_doucment_save_upload);
-
+        AppUtility.progressBarShow(this);
         setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.document));
         desc_txt = findViewById(R.id.desc_txt);
         ll_layout = findViewById(R.id.ll_layout);
@@ -129,10 +131,14 @@ public class ActivityDocumentSaveUpload extends AppCompatActivity implements Vie
 
 
         jobId = getIntent().getStringExtra("jobid");
-        if (getIntent().getBooleanExtra("isImage", false))
+
+        if (getIntent().getBooleanExtra("isImage", false)) {
             setImage();
-        else
+        }
+        else {
             setFile();
+            AppUtility.progressBarDissMiss();
+        }
 
         if (getIntent().getBooleanExtra("SAVEASCOMPLETION", false)) {
             saveAsCompletionNotes();
@@ -196,6 +202,7 @@ public class ActivityDocumentSaveUpload extends AppCompatActivity implements Vie
             if (bitmap != null) {
                 bitmapString=AppUtility.BitMapToString(bitmap);
                 img_doc.setImageBitmap(bitmap);
+                AppUtility.progressBarDissMiss();
             }
         }, uri).compressImageInBckg();//.execute(uri);
 
