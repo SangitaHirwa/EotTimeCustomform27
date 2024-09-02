@@ -442,7 +442,7 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
             binding.tvRecentQuote.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.recent_quote) + " : ");
             binding.tvLabelQuotationId.setText(model.getQuotLabel());
             binding.llQuote.setVisibility(View.VISIBLE);
-            binding.llQuoteDetails.setOnClickListener(view -> {
+            binding.tvLabelQuotationId.setOnClickListener(view -> {
                 Intent quotesinvoiceIntent = new Intent(AppointmentDetailsActivity.this, Quote_Invoice_Details_Activity.class);
                 quotesinvoiceIntent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                 quotesinvoiceIntent.putExtra("quotId", model.getQuotId());
