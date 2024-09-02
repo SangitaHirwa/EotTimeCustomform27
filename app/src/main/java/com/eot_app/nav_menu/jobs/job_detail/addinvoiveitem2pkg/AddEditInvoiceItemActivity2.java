@@ -3285,7 +3285,7 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
                 amount_layout.setVisibility(View.VISIBLE);
                 amount_view.setVisibility(View.VISIBLE);
             }else{
-                if (compPermission.getIsRateAmountTax() != null && compPermission.getIsRateAmountTax().equals("0")) {
+                if (compPermission.getIsRateAmountTax() != null && compPermission.getIsRateAmountTax().equals("1")) {
                     item_rate_layout.setVisibility(View.GONE);
                     rate_view.setVisibility(View.GONE);
                     tax_layout.setVisibility(View.GONE);
