@@ -485,13 +485,15 @@
                         android:text="See Less"
                         android:textSize="11sp"
                         style="@style/style_sec"
+                        android:gravity="center"
+                        android:drawableRight="@drawable/ic_baseline_arrow_drop_up_24"
                         android:textColor="@color/colorPrimary"
                         />
-                    <ImageView
+                   <!-- <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:src="@drawable/ic_baseline_arrow_drop_up_24"
-                        />
+                        />-->
                 </LinearLayout>
                 </LinearLayout>
                 </LinearLayout>
