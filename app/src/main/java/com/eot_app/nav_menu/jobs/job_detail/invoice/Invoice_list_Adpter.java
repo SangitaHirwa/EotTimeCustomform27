@@ -134,7 +134,7 @@ public class Invoice_list_Adpter extends RecyclerView.Adapter<Invoice_list_Adpte
             CompPermission compPermission = App_preference.getSharedprefInstance().getLoginRes().getCompPermission().get(0);
 
             //TODO permission of amount
-            if (compPermission.getIsRateAmountTax() != null && compPermission.getIsRateAmountTax().equals("0")) {
+            if (compPermission.getIsRateAmountTax() != null && compPermission.getIsRateAmountTax().equals("1")) {
                 item_price_invoice.setVisibility(View.GONE);
             }
             else {
