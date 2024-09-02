@@ -579,15 +579,15 @@ public class AddQutesItem_Activity extends AppCompatActivity implements TextWatc
                 item_desc_layout.setVisibility(View.GONE);
                 desc_view.setVisibility(View.GONE);
             }
-            /*if (compPermission.getRate().equals("1")) {
+          /*  if (compPermission.getRate().equals("1")) {
                 item_rate_layout.setVisibility(View.GONE);
                 rate_view.setVisibility(View.GONE);
-            }
+            }*/
             if (compPermission.getTax().equals("1")) {
                 tax_layout.setVisibility(View.GONE);
                 tax_view.setVisibility(View.GONE);
             }
-            if (compPermission.getAmount().equals("1")) {
+           /* if (compPermission.getAmount().equals("1")) {
                 amount_layout.setVisibility(View.GONE);
                 amount_view.setVisibility(View.GONE);
             }*/
