@@ -102,7 +102,7 @@ Context context;
                                 String img_extension = savedImagePath.substring(savedImagePath.lastIndexOf("."));
                                 String[] fileName1 = fileNameExt.split("\\.");
                     if (img_extension.equals(".jpg") || img_extension.equals(".png") || img_extension.equals(".jpeg")) {
-                                AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).attachments_dao().updateAttachmentByTempId(list1.get(pos).getTempId(),fileNameExt,fileNameExt,savedImagePath,false);
+                                AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).attachments_dao().updateAttachmentByTempId(list1.get(pos).getTempId(),fileNameExt,fileNameExt,savedImagePath);
                                 Log.e("Loopin", "Run inner loop" + pos);
                                 Log.e("File name ", "Call api ===" + fileName[0]);
                                 OfflineDataController.getInstance().addInOfflineDB(Service_apis.upload_document, getParam(jobId, queId, jtId, savedImagePath,

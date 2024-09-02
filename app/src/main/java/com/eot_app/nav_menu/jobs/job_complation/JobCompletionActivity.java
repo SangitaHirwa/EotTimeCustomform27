@@ -1414,7 +1414,7 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
 
 
                 tempId = "Attachment-"+App_preference.getSharedprefInstance().getLoginRes().getUsrId()+"-"+jobData.getJobId()+"-"+i+"-"+AppUtility.getCurrentMiliTiem();
-                Attachments attachments = new Attachments(tempId,"checking_img"+i+".jpg","checking_img"+i+".jpg",uri.toString(),queId, jtId,"",jobData.getJobId(),"6",uri.toString(),tempId,true);
+                Attachments attachments = new Attachments(tempId,"checking_img"+i+".jpg","checking_img"+i+".jpg",uri.toString(),queId, jtId,"",jobData.getJobId(),"6",uri.toString(),tempId);
                 AppDataBase.getInMemoryDatabase(this).attachments_dao().insertSingleAttachments(attachments);
                 JsonObject  jsonObject = new JsonObject();
                 jsonObject.addProperty("name",imgPathArray[i]);

@@ -36,8 +36,8 @@ public interface  Attachments_Dao {
     void deleteTable();
     @Query("UPDATE Attachments SET bitmap = :bitmap WHERE attachmentId =:attachmentId")
     void updateAttachment(String bitmap, String attachmentId);
-    @Query("UPDATE Attachments SET image_name = :image_name , attachFileActualName = :attachFileActualName , bitmap = :bitmap, isUri = :isUri   WHERE tempId =:tempId")
-    void updateAttachmentByTempId(String tempId, String image_name,  String attachFileActualName, String bitmap,boolean isUri);
+    @Query("UPDATE Attachments SET image_name = :image_name , attachFileActualName = :attachFileActualName , bitmap = :bitmap   WHERE tempId =:tempId")
+    void updateAttachmentByTempId(String tempId, String image_name,  String attachFileActualName, String bitmap);
 
     @Query("Select * from Attachments  WHERE tempId =:tempId")
     Attachments getAttachmetByTempId( String tempId);

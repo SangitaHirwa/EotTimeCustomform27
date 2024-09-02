@@ -818,7 +818,7 @@ public class DocumentsFragment extends Fragment implements Doc_Attch_View, Docum
                 try {
                     Uri uri = data.getClipData().getItemAt(i).getUri();
             tempId = "Attachment-"+App_preference.getSharedprefInstance().getLoginRes().getUsrId()+"-"+jobId+"-"+i+"-"+AppUtility.getCurrentMiliTiem();
-            Attachments attachments = new Attachments(tempId, "checking_img"+i+".jpg", "checking_img"+i+".jpg", imgPathArray[i], "", "", "", jobId, "2", uri.toString(), tempId,true);
+            Attachments attachments = new Attachments(tempId, "checking_img"+i+".jpg", "checking_img"+i+".jpg", imgPathArray[i], "", "", "", jobId, "2", uri.toString(), tempId);
             AppDataBase.getInMemoryDatabase(getActivity()).attachments_dao().insertSingleAttachments(attachments);
             JsonObject  jsonObject = new JsonObject();
             jsonObject.addProperty("name",imgPathArray[i]);
