@@ -464,7 +464,7 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
                 binding.tvRecentJob.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.recent_job) + " : ");
                 binding.tvLabelJobId.setText(model.getJobLabel());
                 binding.llJob.setVisibility(View.VISIBLE);
-                binding.llJobDetails.setOnClickListener(view -> {
+                binding.tvLabelJobId.setOnClickListener(view -> {
                     Intent jobDetails = new Intent(AppointmentDetailsActivity.this, JobDetailActivity.class);
                     Job jobsById = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(model.getJobId());
                     if (jobsById != null) {
