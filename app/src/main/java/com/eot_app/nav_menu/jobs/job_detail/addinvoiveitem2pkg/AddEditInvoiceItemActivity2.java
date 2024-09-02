@@ -3265,15 +3265,15 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
                 item_desc_layout.setVisibility(View.GONE);
                 desc_view.setVisibility(View.GONE);
             }
-            /*if (compPermission.getRate().equals("1")) {
+           /* if (compPermission.getRate().equals("1")) {
                 item_rate_layout.setVisibility(View.GONE);
                 rate_view.setVisibility(View.GONE);
-            }
+            }*/
             if (compPermission.getTax().equals("1")) {
                 tax_layout.setVisibility(View.GONE);
                 tax_view.setVisibility(View.GONE);
             }
-            if (compPermission.getAmount().equals("1")) {
+            /*if (compPermission.getAmount().equals("1")) {
                 amount_layout.setVisibility(View.GONE);
                 amount_view.setVisibility(View.GONE);
             }*/
@@ -3285,18 +3285,14 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
                 amount_layout.setVisibility(View.VISIBLE);
                 amount_view.setVisibility(View.VISIBLE);
             }else{
-                if (compPermission.getIsRateAmountTax() != null && compPermission.getIsRateAmountTax().equals("1")) {
+                if (compPermission.getIsRateAmount() != null && compPermission.getIsRateAmount().equals("1")) {
                     item_rate_layout.setVisibility(View.GONE);
                     rate_view.setVisibility(View.GONE);
-                    tax_layout.setVisibility(View.GONE);
-                    tax_view.setVisibility(View.GONE);
                     amount_layout.setVisibility(View.GONE);
                     amount_view.setVisibility(View.GONE);
                 }else {
                     item_rate_layout.setVisibility(View.VISIBLE);
                     rate_view.setVisibility(View.VISIBLE);
-                    tax_layout.setVisibility(View.VISIBLE);
-                    tax_view.setVisibility(View.VISIBLE);
                     amount_layout.setVisibility(View.VISIBLE);
                     amount_view.setVisibility(View.VISIBLE);
                 }
