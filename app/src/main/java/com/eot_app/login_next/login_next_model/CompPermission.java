@@ -5,11 +5,11 @@ public class CompPermission {
     private String moduleId;
     private String description;
     private String discount;
-    /**After discuss with jit sir and Vaishnavi we remove rate, tax and amount permission and add a new permission isRateAmountTax for rate, tax and amount**/
-  /*  private String rate;
+    /**After discuss with jit sir and Vaishnavi we remove rate and amount permission and add a new permission isRateAmountTax for rate, tax and amount**/
+//    private String rate;
     private String tax;
-    private String amount;*/
-    private String isRateAmountTax;
+//    private String amount;
+    private String isRateAmount;
     private String pno;
     private String hsncode;
     private String unit;
@@ -133,13 +133,13 @@ public class CompPermission {
         this.discount = discount;
     }
 
-  /*  public String getRate() {
+   /* public String getRate() {
         return rate;
     }
 
     public void setRate(String rate) {
         this.rate = rate;
-    }
+    }*/
 
     public String getTax() {
         return tax;
@@ -149,20 +149,19 @@ public class CompPermission {
         this.tax = tax;
     }
 
-    public String getAmount() {
+   /* public String getAmount() {
         return amount;
     }
 
     public void setAmount(String amount) {
         this.amount = amount;
     }*/
+   public String getIsRateAmount() {
+       return isRateAmount;
+   }
 
-    public String getIsRateAmountTax() {
-        return isRateAmountTax;
-    }
-
-    public void setIsRateAmountTax(String isRateAmountTax) {
-        this.isRateAmountTax = isRateAmountTax;
+    public void setIsRateAmount(String isRateAmount) {
+        this.isRateAmount = isRateAmount;
     }
 
     public String getPno() {
