@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -449,9 +450,10 @@ public class JoBInvoiceItemList2Activity extends AppCompatActivity implements Vi
                 if (rm_DataItem.size() > 0) {
                     removeSelectedItem();
                 } else {
-                    show_Dialog(
+//                    rm_invice_im.setClickable(false);
+                   /* show_Dialog(
                             LanguageController.getInstance().getMobileMsgByKey(AppConstant.remove_item_mandtry)
-                    );
+                    );*/
                 }
                 break;
         }
@@ -496,9 +498,13 @@ public class JoBInvoiceItemList2Activity extends AppCompatActivity implements Vi
         if (rm_DataItem.size() > 0) {
             /* * item remove button enable */
             rm_invice_im.setEnabled(true);
+            TypedValue outValue = new TypedValue();
+            this.getTheme().resolveAttribute(android.R.attr.selectableItemBackground, outValue, true);
+            rm_invice_im.setBackgroundResource(outValue.resourceId);
             rm_invice_im.setColorFilter(ContextCompat.getColor(this, R.color.colorPrimary));
         } else {
             /* * item remove button disable */
+            rm_invice_im.setBackgroundResource(0);
             rm_invice_im.setEnabled(false);
             rm_invice_im.setColorFilter(ContextCompat.getColor(this, R.color.txt_color));
         }
@@ -531,93 +537,99 @@ public class JoBInvoiceItemList2Activity extends AppCompatActivity implements Vi
      * remove invoice item from list
      */
     private void removeSelectedItem() {
-        AppUtility.alertDialog2(this, "", LanguageController.getInstance().getMobileMsgByKey(AppConstant.invoice_remove), LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), LanguageController.getInstance().getMobileMsgByKey(AppConstant.cancel), new Callback_AlertDialog() {
-            @Override
-            public void onPossitiveCall() {
-                try {
-                    ArrayList<String> ijmmIdList = new ArrayList<>();
-                    List<InvoiceItemDataModel> notSyncItemList = new ArrayList<>();
+        if (totalItemSize != rm_DataItem.size() && rm_DataItem.size() < totalItemSize) {
+            AppUtility.alertDialog2(this, "", LanguageController.getInstance().getMobileMsgByKey(AppConstant.invoice_remove), LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), LanguageController.getInstance().getMobileMsgByKey(AppConstant.cancel), new Callback_AlertDialog() {
+                @Override
+                public void onPossitiveCall() {
+                    try {
+                        ArrayList<String> ijmmIdList = new ArrayList<>();
+                        List<InvoiceItemDataModel> notSyncItemList = new ArrayList<>();
 
-                    if (totalItemSize > rm_DataItem.size()) {
-                        for (InvoiceItemDataModel str : rm_DataItem) {
-                            /** Increase Quantity of Assign Items of user*/
-                            if(str.getStkusrId().equalsIgnoreCase(App_preference.getSharedprefInstance().getLoginRes().getUsrId())){
-                                List<StockData> stockData = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).stockDataDao().getAllStockData();
-                                for (StockData data : stockData){
-                                    if(data.getSat_itemid().equalsIgnoreCase(str.getItemId())){
-                                        int qty = Integer.parseInt(data.getBalance());
-                                        qty = qty + Integer.parseInt(str.getQty());
-                                        AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).stockDataDao().updateStockData(String.valueOf(qty),data.getSat_itemid());
-                                    }
-                                }
-                            }
-                            //tempItemList -  the remaining items list
-                            // firstly managing the lists by adding and removing items
-                            if (str.getIjmmId().equals("")) {
-                                tempItemList.remove(str);
-                                notSyncItemList.add(str);
-                            } else {
-                                tempItemList.remove(str);
-                                ijmmIdList.add(str.getIjmmId());
-                            }
-                            // for removing mapping from the items in case of deletion of items which were having part temp id
-                            if(str.getIsPartTempId() != null &&
-                                    !str.getIsPartTempId().isEmpty()){
-                                // if parent item  is deleted then update parent mapping id 0 and part temp id blank for all part items
-                                if(str.getParentId().equalsIgnoreCase("0")){
-                                    for (InvoiceItemDataModel tempList : tempItemList){
-                                        if(tempList.getParentId().equalsIgnoreCase(str.getIjmmId())){
-                                            tempList.setIsPartChild(0);
-                                            tempList.setIsPartTempId("");
-                                            tempList.setParentId("");
+//                        if (totalItemSize > rm_DataItem.size()) {
+                            for (InvoiceItemDataModel str : rm_DataItem) {
+                                /** Increase Quantity of Assign Items of user*/
+                                if (str.getStkusrId().equalsIgnoreCase(App_preference.getSharedprefInstance().getLoginRes().getUsrId())) {
+                                    List<StockData> stockData = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).stockDataDao().getAllStockData();
+                                    for (StockData data : stockData) {
+                                        if (data.getSat_itemid().equalsIgnoreCase(str.getItemId())) {
+                                            int qty = Integer.parseInt(data.getBalance());
+                                            qty = qty + Integer.parseInt(str.getQty());
+                                            AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).stockDataDao().updateStockData(String.valueOf(qty), data.getSat_itemid());
                                         }
                                     }
                                 }
-                                // if all part item are  deleted then update part temp id blank for parent item
-                                else {
-                                    boolean isPartExist=false;
-                                    int parentPosition=0;
-                                    for (int i = 0; i < tempItemList.size(); i++) {
-                                        // to check whether any other part with same parent id exist or not
-                                        if(tempItemList.get(i).getParentId().equalsIgnoreCase(str.getParentId())){
-                                            isPartExist=true;
-                                            break;
-                                        }
-                                        // for saving the position of the parent item
-                                        if(tempItemList.get(i).getIjmmId().equalsIgnoreCase(str.getParentId())){
-                                            parentPosition=i;
+                                //tempItemList -  the remaining items list
+                                // firstly managing the lists by adding and removing items
+                                if (str.getIjmmId().equals("")) {
+                                    tempItemList.remove(str);
+                                    notSyncItemList.add(str);
+                                } else {
+                                    tempItemList.remove(str);
+                                    ijmmIdList.add(str.getIjmmId());
+                                }
+                                // for removing mapping from the items in case of deletion of items which were having part temp id
+                                if (str.getIsPartTempId() != null &&
+                                        !str.getIsPartTempId().isEmpty()) {
+                                    // if parent item  is deleted then update parent mapping id 0 and part temp id blank for all part items
+                                    if (str.getParentId().equalsIgnoreCase("0")) {
+                                        for (InvoiceItemDataModel tempList : tempItemList) {
+                                            if (tempList.getParentId().equalsIgnoreCase(str.getIjmmId())) {
+                                                tempList.setIsPartChild(0);
+                                                tempList.setIsPartTempId("");
+                                                tempList.setParentId("");
+                                            }
                                         }
                                     }
-                                    // if part doesn't exist then set part temp id and is part parent as zero and empty
-                                    if(!isPartExist){
-                                        tempItemList.get(parentPosition).setIsPartParent(0);
-                                        tempItemList.get(parentPosition).setIsPartTempId("");
+                                    // if all part item are  deleted then update part temp id blank for parent item
+                                    else {
+                                        boolean isPartExist = false;
+                                        int parentPosition = 0;
+                                        for (int i = 0; i < tempItemList.size(); i++) {
+                                            // to check whether any other part with same parent id exist or not
+                                            if (tempItemList.get(i).getParentId().equalsIgnoreCase(str.getParentId())) {
+                                                isPartExist = true;
+                                                break;
+                                            }
+                                            // for saving the position of the parent item
+                                            if (tempItemList.get(i).getIjmmId().equalsIgnoreCase(str.getParentId())) {
+                                                parentPosition = i;
+                                            }
+                                        }
+                                        // if part doesn't exist then set part temp id and is part parent as zero and empty
+                                        if (!isPartExist) {
+                                            tempItemList.get(parentPosition).setIsPartParent(0);
+                                            tempItemList.get(parentPosition).setIsPartTempId("");
+                                        }
                                     }
                                 }
+
                             }
 
-                        }
 
-
-                        rm_invice_im.setEnabled(false);
-                        itemListPi.updareRmitemsInDB(jobId, tempItemList, ijmmIdList, notSyncItemList, false);
-                    } else {
-                        show_Dialog(
-                                LanguageController.getInstance().getMobileMsgByKey(AppConstant.remove_item_mandtry)
-                        );
+                            rm_invice_im.setEnabled(false);
+                            itemListPi.updareRmitemsInDB(jobId, tempItemList, ijmmIdList, notSyncItemList, false);
+                       /* } else {
+                            show_Dialog(
+                                    LanguageController.getInstance().getMobileMsgByKey(AppConstant.remove_item_mandtry)
+                            );
+                        }*/
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
+
+
                 }
 
+                @Override
+                public void onNegativeCall() {
 
-            }
-
-            @Override
-            public void onNegativeCall() {
-
-            }
-        });
+                }
+            });
+        }  else {
+            show_Dialog(
+                    LanguageController.getInstance().getMobileMsgByKey(AppConstant.remove_item_mandtry)
+            );
+        }
     }
 
     @Override

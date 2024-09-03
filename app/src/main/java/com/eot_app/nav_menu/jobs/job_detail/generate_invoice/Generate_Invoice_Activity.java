@@ -12,6 +12,7 @@ import android.nfc.Tag;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -444,8 +445,12 @@ public class Generate_Invoice_Activity extends AppCompatActivity implements MyLi
         rm_DataItem = itemDataRemove;
         if (rm_DataItem.size() > 0) {
             rm_invice_im.setEnabled(true);
+            TypedValue outValue = new TypedValue();
+            this.getTheme().resolveAttribute(android.R.attr.selectableItemBackground, outValue, true);
+            rm_invice_im.setBackgroundResource(outValue.resourceId);
             rm_invice_im.setColorFilter(ContextCompat.getColor(this, R.color.colorPrimary));
         } else {
+            rm_invice_im.setBackgroundResource(0);
             rm_invice_im.setEnabled(false);
             rm_invice_im.setColorFilter(ContextCompat.getColor(this, R.color.txt_color));
         }
@@ -491,7 +496,7 @@ public class Generate_Invoice_Activity extends AppCompatActivity implements MyLi
             }
             setInvoiceitemDetails(this.invoice_Details);
             sipping_adpter.updateShpiningItem(invoice_Details.getShippingItem(), App_preference.getSharedprefInstance().getLoginRes().getTaxCalculationType());
-            rm_invice_im.setColorFilter(getResources().getColor(R.color.txt_color));
+//            rm_invice_im.setColorFilter(getResources().getColor(R.color.txt_color));
             rm_invice_im.setEnabled(false);
             setTxtInsideView();
             /*if (this.itemData_Details.size() == 0) {
@@ -650,9 +655,9 @@ public class Generate_Invoice_Activity extends AppCompatActivity implements MyLi
             case R.id.rm_invice_im:
                 if (rm_DataItem.size() > 0) {
                     removeSelectedItem();
-                } else {
+                }/* else {
                     show_Dialog(LanguageController.getInstance().getMobileMsgByKey(AppConstant.remove_item_mandtry));
-                }
+                }*/
                 break;
             case R.id.invoiceFab:
                 if (!isFABOpen) {
@@ -917,7 +922,7 @@ public class Generate_Invoice_Activity extends AppCompatActivity implements MyLi
     }
 
     private void removeSelectedItem() {
-
+        if (totalItemSize != rm_DataItem.size() && rm_DataItem.size() < totalItemSize) {
         AppUtility.alertDialog2(this, "", LanguageController.getInstance().getMobileMsgByKey(AppConstant.invoice_remove),
                 LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok),
                 LanguageController.getInstance().getMobileMsgByKey(AppConstant.cancel), new Callback_AlertDialog() {
@@ -928,7 +933,7 @@ public class Generate_Invoice_Activity extends AppCompatActivity implements MyLi
 
                             ArrayList<String> ijmmIdList = new ArrayList<>();
 
-                            if (totalItemSize > rm_DataItem.size()) {
+                        /*    if (totalItemSize > rm_DataItem.size()) {*/
                                 for (InvoiceItemDataModel str : rm_DataItem) {
                                     /** Increase Quantity of Assign Items of user*/
                                     if(str.getStkusrId().equalsIgnoreCase(App_preference.getSharedprefInstance().getLoginRes().getUsrId())){
@@ -951,11 +956,11 @@ public class Generate_Invoice_Activity extends AppCompatActivity implements MyLi
                                 }
                                 rm_invice_im.setEnabled(false);
                                 itemListPi.updareRmitemsInDB(jobId, tempItemList, ijmmIdList, notSyncItemList, true);
-                            } else {
+                            /*} else {
                                 show_Dialog(
                                         LanguageController.getInstance().getMobileMsgByKey(AppConstant.remove_item_mandtry)
                                 );
-                            }
+                            }*/
                         } catch (Exception ex) {
                             ex.printStackTrace();
                         }
@@ -968,6 +973,11 @@ public class Generate_Invoice_Activity extends AppCompatActivity implements MyLi
 
                     }
                 });
+        }  else {
+            show_Dialog(
+                    LanguageController.getInstance().getMobileMsgByKey(AppConstant.remove_item_mandtry)
+            );
+        }
 
     }
 
