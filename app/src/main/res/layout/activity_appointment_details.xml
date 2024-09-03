@@ -654,7 +654,7 @@
                             <ImageView
                                 android:layout_width="24dp"
                                 android:layout_height="24dp"
-                                android:src="@drawable/ic_attach_document"
+                                android:src="@drawable/no_attech_icon"
                                 tools:ignore="ContentDescription" />
 
                             <TextView
