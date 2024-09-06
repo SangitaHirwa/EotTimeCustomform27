@@ -774,8 +774,8 @@ public class RemarkQuestionListAdpter extends RecyclerView.Adapter<RemarkQuestio
                                 try {
                                     //Unparseable date: "02-Jul-2021 22:31"
                                     SimpleDateFormat format1 = new SimpleDateFormat(
-                                            AppUtility.dateTimeByAmPmFormate("dd-MM-yyyy hh:mm a"
-                                                    , "dd-MM-yyyy HH:mm"),Locale.ENGLISH);
+                                            AppUtility.dateTimeByAmPmFormate("dd-MMM-yyyy hh:mm a"
+                                                    , "dd-MMM-yyyy HH:mm"),Locale.ENGLISH);
                                     SimpleDateFormat format2 = new SimpleDateFormat(
                                             AppUtility.dateTimeByAmPmFormate(
                                                     "dd-MMM-yyyy hh:mm a"
@@ -1288,6 +1288,14 @@ public class RemarkQuestionListAdpter extends RecyclerView.Adapter<RemarkQuestio
                                     AppUtility.dateTimeByAmPmFormate("dd-MMM-yyyy hh:mm a", "dd-MMM-yyyy HH:mm"), Locale.ENGLISH).format(parseDate);
                             tvTimeDate.setText(AppUtility.getDateByLang(sTimeDate,true));
                         } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                        try {
+                            SimpleDateFormat dateF1 = new SimpleDateFormat("dd-MM-yyyy ", Locale.ENGLISH);
+                            Date dateP = dateF1.parse(date);
+                            SimpleDateFormat dateF2 = new SimpleDateFormat("dd-MMM-yyyy " , Locale.ENGLISH);
+                            date = dateF2.format(dateP);
+                        }catch (ParseException e) {
                             e.printStackTrace();
                         }
 

@@ -529,8 +529,8 @@ public class CustomFiledQueAdpter extends RecyclerView.Adapter<CustomFiledQueAdp
                             String newdateTime = date + " " + timeData;
                             try {
                                 @SuppressLint("SimpleDateFormat") String s = new SimpleDateFormat(
-                                        AppUtility.dateTimeByAmPmFormate("dd-MM-yyyy hh:mm a"
-                                                , "dd-MM-yyyy HH:mm"), Locale.ENGLISH)
+                                        AppUtility.dateTimeByAmPmFormate("dd-MMM-yyyy hh:mm a"
+                                                , "dd-MMM-yyyy HH:mm"), Locale.ENGLISH)
                                         .format(Objects.requireNonNull(new SimpleDateFormat(
                                                 AppUtility.dateTimeByAmPmFormate(
                                                         "dd-MMM-yyyy hh:mm a", "dd-MMM-yyyy HH:mm"
@@ -584,7 +584,7 @@ public class CustomFiledQueAdpter extends RecyclerView.Adapter<CustomFiledQueAdp
                     if (tvDate.getTag() != null) {
                         String pos = tvDate.getTag().toString();
                         int position = Integer.parseInt(pos);
-                        if (sDate != null && !sDate.equals("0")) {
+                        if (sDate != null && !sDate.equals("0") && !sDate.isEmpty()) {
                             long startDate = 0;
                             try {
                                 SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yyyy hh:mm:ss", Locale.ENGLISH);
@@ -770,7 +770,14 @@ public class CustomFiledQueAdpter extends RecyclerView.Adapter<CustomFiledQueAdp
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
-
+                    try {
+                        SimpleDateFormat dateF1 = new SimpleDateFormat("dd-MM-yyyy ", Locale.ENGLISH);
+                        Date dateP = dateF1.parse(date);
+                        SimpleDateFormat dateF2 = new SimpleDateFormat("dd-MMM-yyyy " , Locale.ENGLISH);
+                        date = dateF2.format(dateP);
+                    }catch (ParseException e) {
+                        e.printStackTrace();
+                    }
                 }
             };
             linearDate.setOnClickListener(view -> {
