@@ -1445,9 +1445,11 @@ public class DetailFragment extends Fragment
                 complation_notes.setVisibility(View.GONE);
                 btnComplationView.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add));
             }else if(mParam2 != null && mParam2.getComplNote() != null && mParam2.getComplNote().isEmpty() &&  mParam2.getCompliAnsArray() != null && !mParam2.getCompliAnsArray().isEmpty()){
-                txt_notesHeader.setVisibility(View.GONE);
-                complation_notes.setVisibility(View.GONE);
-                btnComplationView.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit));
+                if (complation_notes != null && txt_notesHeader != null && btnComplationView != null) {
+                    txt_notesHeader.setVisibility(View.GONE);
+                    complation_notes.setVisibility(View.GONE);
+                    btnComplationView.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit));
+                }
             }else if(mParam2 != null && mParam2.getComplNote() != null && mParam2.getComplNote().isEmpty()){
                 txt_notesHeader.setVisibility(View.GONE);
                 complation_notes.setVisibility(View.GONE);
@@ -2193,8 +2195,10 @@ public void setCompletionDetail(){
     //Reset current job status
     @Override
     public void resetstatus(String status_no) {
-        jobstatus.setStatus_name("");
-        jobstatus.setStatus_no(status_no);
+        if(jobstatus != null) {
+            jobstatus.setStatus_name("");
+            jobstatus.setStatus_no(status_no);
+        }
     }
 
     @SuppressLint("SetTextI18n")
