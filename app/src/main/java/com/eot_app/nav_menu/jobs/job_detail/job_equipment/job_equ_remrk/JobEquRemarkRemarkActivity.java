@@ -2265,22 +2265,7 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
     public void showRemarkSection() {
         cv_showRemark.setVisibility(View.GONE);
         part_cardview.setVisibility(View.GONE);
-        for (FooterMenu serverList : App_preference.getSharedprefInstance().getLoginRes().getFooterMenu()) {
-            // both fw and mobile app permission should be granted
-            if (serverList.isEnable.equals("1"))
-                if ("set_itemMenuOdrNo".equals(serverList.getMenuField())) {
-                    if (App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsItemVisible() == 0) {
-                        if (isAction) {
-                            item_cardview.setVisibility(View.VISIBLE);
-                            hideAddItemButton();
-                        } else {
-                            item_cardview.setVisibility(View.GONE);
-                        }
-                    } else {
-                        item_cardview.setVisibility(View.GONE);
-                    }
-                }
-        }
+        item_cardview.setVisibility(View.GONE);
         ll_replace.setVisibility(View.GONE);
         ll_repair.setVisibility(View.GONE);
         ll_reallocate.setVisibility(View.GONE);
