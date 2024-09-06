@@ -36,6 +36,7 @@ import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_model_pkg.TaxList_Re
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.add_job_equip.model_pkg.BrandData;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.add_job_equip.model_pkg.GetBrandListReqModel;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.add_job_equip.model_pkg.GetListModel;
+import com.eot_app.nav_menu.setting.ModuleCode;
 import com.eot_app.time_shift_pkg.ShiftTimeReSModel;
 import com.eot_app.time_shift_pkg.ShiftTimeReqModel;
 import com.eot_app.utility.AppCenterLogs;
@@ -45,6 +46,7 @@ import com.eot_app.utility.App_preference;
 import com.eot_app.utility.EotApp;
 import com.eot_app.utility.db.AppDataBase;
 import com.eot_app.utility.db.OfflineDataController;
+import com.eot_app.utility.language_support.Language_Preference;
 import com.eot_app.utility.settings.contractdb.ContractReq;
 import com.eot_app.utility.settings.contractdb.ContractRes;
 import com.eot_app.utility.settings.equipmentdb.Equipment;
@@ -268,7 +270,11 @@ public class SyncDataJobService extends JobService {
 //                                AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().deleteJobStatusNot(
 //                                        "1","2","3","4","5","6","7","8","9","10","11","12"
 //                                );
+                                if(Language_Preference.getSharedprefInstance().getDefaultPageView() != ModuleCode.JOB && Language_Preference.getSharedprefInstance().getDefaultPageView() != ModuleCode.CALENDAR){
                                 App_preference.getSharedprefInstance().setFirstSyncState(2);
+                                }else{
+                                    App_preference.getSharedprefInstance().setFirstSyncState(3);
+                                }
                                 startSyncFromStatus();
                                 Log.v("MainSync","startJobSyncTimeCR"+" --" +App_preference.getSharedprefInstance().getJobSyncTime());
                                 Log.v("MainSync","Sync completed "+" --" +"JobSync Done");
