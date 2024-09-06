@@ -95,7 +95,7 @@ public class JobEquipmentActivity extends AppCompatActivity implements Job_equim
     private JobEquipmentAdapter adapter;
     private Job_equim_PI jobEquimPi;
     private String jobId = "", auditid = "", contrId = "", siteid = "";
-    private String cltId;
+    private String cltId="";
     private String comeFrom = "";
     CoordinatorLayout relative_layout;
     ConstraintLayout cl_parent_add_new_equipment;
@@ -139,7 +139,9 @@ public class JobEquipmentActivity extends AppCompatActivity implements Job_equim
     private void initializeView() {
         if (jobId != null) {
             job = AppDataBase.getInMemoryDatabase(this).jobModel().getJobsById(jobId);
-            cltId = job.getCltId();
+            if(job != null && job.getCltId() != null) {
+                cltId = job.getCltId();
+            }
         }
         if (!TextUtils.isEmpty(appId))
             alertDialogClass = new AlertDialogClass(this, this, jobId, "", appId);
