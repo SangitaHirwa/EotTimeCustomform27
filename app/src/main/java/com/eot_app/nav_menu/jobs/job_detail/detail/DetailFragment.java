@@ -2672,7 +2672,9 @@ public void setCompletionDetail(){
                 stopRecurpattern(recurData);
                 break;
             case R.id.btn_add_signature:
+                if(jobstatus != null && jobstatus.getStatus_no() != null){
                 ((JobDetailActivity) requireActivity()).openCustomSignatureDialog(jobstatus.getStatus_no());
+                }
                 break;
             case R.id.customfiled_btn:
                 Intent intent1 = new Intent(getActivity(), CustomFiledListActivity.class);
