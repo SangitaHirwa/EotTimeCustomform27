@@ -274,7 +274,7 @@ public class EditImageDialog extends DialogFragment implements View.OnClickListe
         // file = new File(Environment.getExternalStorageDirectory()
         file = new File(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
                 + File.separator + "image_"
-                + System.currentTimeMillis() + ".jng");
+                + System.currentTimeMillis() + ".jpg");
         try {
             file.createNewFile();
             String fname = file.getName();
