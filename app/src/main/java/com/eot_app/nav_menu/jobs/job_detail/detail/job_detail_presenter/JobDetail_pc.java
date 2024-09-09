@@ -413,7 +413,7 @@ public class JobDetail_pc implements JobDetail_pi {
             view.setEuqipmentList(job.getEquArray());
         }
     }
-
+     /**hide these method because we do not get some param for equipment detail page in this api**/
    /* @Override
     public void refreshList(String auditID, final String jobId) {
         if (AppUtility.isInternetConnected()) {
