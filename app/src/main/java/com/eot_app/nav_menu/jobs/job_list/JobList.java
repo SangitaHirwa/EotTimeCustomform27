@@ -29,10 +29,14 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkInfo;
+import androidx.work.WorkManager;
 import com.eot_app.R;
 import com.eot_app.home_screens.MainActivity;
 import com.eot_app.nav_menu.jobs.job_complation.compla_model.NotifyForcompletionInJob;
@@ -81,7 +85,7 @@ import java.util.concurrent.Executors;
  * Use the {@link JobList#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class JobList extends Fragment implements MyListItemSelected<Job>, Joblist_view, View.OnClickListener, NotifyForcompletionInJob  {
+public class JobList extends Fragment implements MyListItemSelected<Job>, Joblist_view, View.OnClickListener, NotifyForcompletionInJob, JobPositionGetWorker.PositionSetListner{
     public static final int UPDATE = 2;
     public static final int UPDATEAPPOINTMENT=77;
     // TODO: Rename parameter arguments, choose names that match
@@ -104,10 +108,10 @@ public class JobList extends Fragment implements MyListItemSelected<Job>, Joblis
     boolean filter_dropdown = false;
     ArrayList<DropdownListBean> listBeans = new ArrayList<>();
     ChipGroup chipGroup;
-    LinearLayout ll_in_progress;
-    LinearLayout ll_today_task;
-    int today_pos = -1;
-    int inprogress_pos;
+    static LinearLayout ll_in_progress;
+    static LinearLayout ll_today_task;
+    static int today_pos = -1;
+    static int inprogress_pos;
     int nearToday_pos = -1;
     boolean searchStopNear;
     LinearLayout lin_layout;
@@ -126,13 +130,15 @@ public class JobList extends Fragment implements MyListItemSelected<Job>, Joblis
     private ImageView img_new, img_accepted, img_hold, img_completed,img_job_break;
     private ImageView img_close_new, img_close_accpeted, img_close_hold, img_close_completed,img_close_job_break;
     //arrow
-    private ImageView img_arrow_in_progress;
-    private ImageView img_arrow_today;
+    private static ImageView img_arrow_in_progress;
+    private static ImageView img_arrow_today;
     private TextView txt_sort;
     private LinearLayout quotes_search_view;
     private EditText edtSearch;
     private JobFilterModel jobFilterModel;
     List<JobStatusModelNew> jobStatusDynamicList=new ArrayList<>();
+    List<Job> data;
+    int visibilityFlag;
 
 
     private final BroadcastReceiver myJobListfrefreshForNotif = new BroadcastReceiver() {
@@ -172,7 +178,7 @@ public class JobList extends Fragment implements MyListItemSelected<Job>, Joblis
      * filter list to show
      * Today Job and than unscehedule jobs and so on in DESC order
      */
-    private int unScheduleHeaderPos = -1;
+    static int unScheduleHeaderPos = -1;
 
     public JobList() {
         // Required empty public constructor
@@ -554,7 +560,7 @@ public class JobList extends Fragment implements MyListItemSelected<Job>, Joblis
     /**
      * <P>on scroll hide the today and in progress views</P>
      */
-    private void hideShowBottomOptions(int pos) {
+    public void hideShowBottomOptions(int pos) {
         int first = layoutManager.findFirstVisibleItemPosition();
         int last = layoutManager.findLastVisibleItemPosition();
         if (first == -1) return;
@@ -650,9 +656,12 @@ public class JobList extends Fragment implements MyListItemSelected<Job>, Joblis
 
     @Override
     public void setdata(List<Job> data, int visibilityFlag) {
-        if (data != null)
-            if(myActivity != null)
-            backGroundJobListListner(visibilityFlag, data);
+        if (data != null) {
+            if (myActivity != null)
+                backGroundJobListListner(visibilityFlag, data);
+        }else{
+            AppUtility.progressBarDissMiss();
+        }
     }
 
     /**
@@ -994,161 +1003,60 @@ public class JobList extends Fragment implements MyListItemSelected<Job>, Joblis
             startActivity(new Intent(getActivity(), JobEquRemarkRemarkActivity.class).putExtra("equipment", strEqu).putExtra("jobid",jobid));
         }
     }
-
-    private List<Job> filterList(List<Job> jobdata) {
-        int today_pos = -1;
-        int unschedule = -1;
-
-        for (int i = 0; i < jobdata.size(); i++) {
-            Job item = jobdata.get(i);
-            if (!TextUtils.isEmpty(item.getSchdlStart())) {
-                Long datelong = Long.parseLong(item.getSchdlStart()) * 1000;
-                if (AppUtility.isToday(new Date(datelong))) {
-                    {
-                        today_pos = i;
-                    }
-                }
-            } else if (unschedule == -1) {
-                unschedule = i;
-                break;
-            }
-        }
-        if (unschedule > 0) {
-            List<Job> jobs = jobdata.subList(unschedule, jobdata.size());
-            List<Job> jobs1 = jobdata.subList(0, unschedule);
-            if (today_pos > -1) {
-                unScheduleHeaderPos = today_pos + 1;
-                jobs1.addAll(today_pos + 1, jobs);
-            } else {
-                unScheduleHeaderPos = 0;
-                jobs1.addAll(0, jobs);
-            }
-            return jobs1;
-        } else return jobdata;
-    }
-
     @SafeVarargs
     private final void backGroundJobListListner(final int visibilityFlag, final List<Job>... lists) {
-        ExecutorService service = Executors.newSingleThreadExecutor();
-        service.execute(() -> {
-            final List<Job> dataList = new ArrayList<>();
-            myActivity.runOnUiThread(() -> {
-                inprogress_pos = -1;
-                today_pos = -1;
-                nearToday_pos = -1;
-                searchStopNear = false;
-            });
-
-
-            if (lists != null) {
-                unScheduleHeaderPos = -1;
-                final List<Job> data = filterList(lists[0]);
-                for (int i = 0; i < data.size(); i++) {
-                    Job item = data.get(i);
-                    try {
-                        if (item != null && item.getStatus() != null && !AppUtility.getJobStatusList().contains(item.getStatus())) {
-                            AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().deleteJobById(item.getJobId());
-                        } else {
-                            if (!item.getTempId().equals(item.getJobId())) {
-
-                                if (item.getIsdelete() != null && item.getIsdelete().equals("0")
-                                        || item.getStatus().equals(AppConstant.Cancel)
-                                        || item.getStatus().equals(AppConstant.Closed)
-                                        || item.getStatus().equals(AppConstant.Reject)) {
-                                    ChatController.getInstance().removeListnerByJobID(item.getJobId());
-                                } else {
-
-                                    if (item.getStatus().equals(AppConstant.In_Progress)) {
-                                        inprogress_pos = i;
-                                    }
-
-                                    try {
-                                        if (!TextUtils.isEmpty(item.getSchdlStart()) && today_pos == -1) {
-                                            Long datelong = Long.parseLong(item.getSchdlStart()) * 1000;
-                                            if (AppUtility.isToday(new Date(datelong))) {
-                                                {
-                                                    today_pos = i;
-                                                    nearToday_pos = -1;
-                                                }
-                                            } else if (today_pos == -1) {
-
-
-                                                Date date1 = new Date(System.currentTimeMillis());
-                                                Date date2 = new Date(datelong);
-                                                if (AppUtility.isAfterDay(date2, date1))
-                                                    nearToday_pos = i;
-
-                                            }
-                                        }
-                                    } catch (Exception ex) {
-                                        ex.printStackTrace();
-                                    }
-
-                                    /* **
-                                     *
-                                     * CREATE Job Chat watch count & Listner's**/
-                                    ChatController.getInstance().registerChatListner(item);
-                                }
+        final List<Job> dataList = new ArrayList<>();
+        data = lists[0];
+        this.visibilityFlag = visibilityFlag;
+        dataList.addAll(lists[0]);
+        JobPositionGetWorker.setListData(data);
+        WorkManager workManager = WorkManager.getInstance(getContext());
+        OneTimeWorkRequest request = new OneTimeWorkRequest.Builder(JobPositionGetWorker.class)
+                .build();
+        workManager.enqueue(request);
+        workManager.getWorkInfoByIdLiveData(request.getId())
+                .observe(getActivity(), new Observer<WorkInfo>() {
+                    @Override
+                    public void onChanged(WorkInfo workInfo) {
+                        if (workInfo.getState().isFinished()) {
+                            jobList_Chat = dataList;
+                            setUpViewVisibility(visibilityFlag);
+                            swiperefresh.setRefreshing(false);
+                            if (today_pos == -1) ll_today_task.setVisibility(View.GONE);
+                            if (inprogress_pos == -1) ll_in_progress.setVisibility(View.GONE);
+                            if(adapter != null) {
+                                adapter.setUnScheduleHeaderPos(unScheduleHeaderPos);
                             }
+                                hideShowBottomOptions(0);
+                                if (nearToday_pos > -1)
+                                    autoScrollToTodayTask(nearToday_pos);
+                                else
+                                    autoScrollToTodayTask(today_pos);
+                                nojobs_linear.setVisibility(View.GONE);
                         }
-                    } catch (Exception exception) {
-                        exception.printStackTrace();
                     }
-                }
-
-                if (nearToday_pos > 0) {
-                    nearToday_pos = findNearFutureHeaderJOb(data, nearToday_pos);
-                }
-                /* ***added by ***/
-                dataList.addAll(data);
-            }
-
-
-            myActivity.runOnUiThread(() -> {
-
+                });
                 ChatController.getInstance().refreshAdapter();
-                jobList_Chat = dataList;
-                setUpViewVisibility(visibilityFlag);
-                swiperefresh.setRefreshing(false);
-                if (today_pos == -1) ll_today_task.setVisibility(View.GONE);
-                if (inprogress_pos == -1) ll_in_progress.setVisibility(View.GONE);
-
-
-                adapter.setUnScheduleHeaderPos(unScheduleHeaderPos);
                 adapter.updateRecords(dataList);
-                if (adapter.getItemCount() <= 0) {
-                    nojobs_linear.setVisibility(View.VISIBLE);
-
-                } else {
-                    hideShowBottomOptions(0);
-                    if (nearToday_pos > -1)
-                        autoScrollToTodayTask(nearToday_pos);
-                    else
-                        autoScrollToTodayTask(today_pos);
-                    nojobs_linear.setVisibility(View.GONE);
-
-                    try {
-                        if (myActivity instanceof MainActivity) {
-                            String notificationDataId = ((MainActivity) myActivity).getNotificationDataId();
-                            ((MainActivity) myActivity).setNotificationDataId(null);
-                            if (!TextUtils.isEmpty(notificationDataId)) {
-                                Job jobsById = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance())
-                                        .jobModel().getJobsById(notificationDataId);
-                                if (jobsById != null) {
-                                    Intent intentJobDeatis = new Intent(myActivity, JobDetailActivity.class);
-                                    intentJobDeatis.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-                                    String strjob = new Gson().toJson(jobsById);
-                                    intentJobDeatis.putExtra("JOBS", strjob);
-                                    myActivity.startActivityForResult(intentJobDeatis, UPDATE);
-                                }
-                            }
-                        }
-                    } catch (Exception exception) {
-                        exception.printStackTrace();
+        try {
+            if (myActivity instanceof MainActivity) {
+                String notificationDataId = ((MainActivity) myActivity).getNotificationDataId();
+                ((MainActivity) myActivity).setNotificationDataId(null);
+                if (!TextUtils.isEmpty(notificationDataId)) {
+                    Job jobsById = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance())
+                            .jobModel().getJobsById(notificationDataId);
+                    if (jobsById != null) {
+                        Intent intentJobDeatis = new Intent(myActivity, JobDetailActivity.class);
+                        intentJobDeatis.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                        String strjob = new Gson().toJson(jobsById);
+                        intentJobDeatis.putExtra("JOBS", strjob);
+                        myActivity.startActivityForResult(intentJobDeatis, UPDATE);
                     }
                 }
-            });
-        });
+            }
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
         AppUtility.progressBarDissMiss();
     }
 
@@ -1160,5 +1068,14 @@ public class JobList extends Fragment implements MyListItemSelected<Job>, Joblis
             jobListPi = new JobList_pc(this,isFromScan,getActivity().getApplicationContext());
             jobListPi.getJobList();
         }
+    }
+
+    @Override
+    public void setJobPosition(int todayPos, int inProgressPos, int unScheduleHeaderPos, int nearByTodayPos) {
+        Log.e("JobPositionGetWorker", "setJobPosition");
+        this.today_pos = todayPos;
+        this.inprogress_pos = inProgressPos;
+        this.unScheduleHeaderPos = unScheduleHeaderPos;
+        this.nearToday_pos = nearByTodayPos;
     }
 }

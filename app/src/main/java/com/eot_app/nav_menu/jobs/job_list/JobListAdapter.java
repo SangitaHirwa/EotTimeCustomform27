@@ -173,17 +173,19 @@ public class JobListAdapter extends RecyclerView.Adapter<JobListAdapter.MyViewHo
                     }
                 }
         } else {
-            holder.date_layout.setVisibility(View.GONE);
-            holder.txt_date.setText("");
-            holder.job_time.setText("");
-            holder.job_am_pm.setText("");
-        }
-
-        if (unScheduleHeaderPos == position) {
-            holder.date_layout.setVisibility(View.VISIBLE);
-            holder.txt_date.setText(
-                    LanguageController.getInstance().getMobileMsgByKey(AppConstant.unschedule_job)
-            );
+              if(unScheduleHeaderPos == -1 || unScheduleHeaderPos == position ){
+            if (jobdata.get(position).getSchdlStart() != null && jobdata.get(position).getSchdlStart().equals("")) {
+                holder.date_layout.setVisibility(View.VISIBLE);
+                holder.txt_date.setText(
+                        LanguageController.getInstance().getMobileMsgByKey(AppConstant.unschedule_job)
+                );
+            }
+            }else {
+                  holder.date_layout.setVisibility(View.GONE);
+                  holder.txt_date.setText("");
+                  holder.job_time.setText("");
+                  holder.job_am_pm.setText("");
+              }
         }
         String label = jobdata.get(position).getLabel();
         String Nm = jobdata.get(position).getNm();
