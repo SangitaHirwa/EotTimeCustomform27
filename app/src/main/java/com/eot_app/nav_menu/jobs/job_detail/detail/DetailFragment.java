@@ -1441,9 +1441,11 @@ public class DetailFragment extends Fragment
         if(AppUtility.isInternetConnected()) {
             mParam2 = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(mParam2.getJobId());
             if(mParam2 != null && mParam2.getComplNote() != null && mParam2.getComplNote().isEmpty() && mParam2.getCompliAnsArray() != null && mParam2.getCompliAnsArray().isEmpty()){
-                txt_notesHeader.setVisibility(View.GONE);
-                complation_notes.setVisibility(View.GONE);
-                btnComplationView.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add));
+                if (complation_notes != null && txt_notesHeader != null && btnComplationView != null) {
+                    txt_notesHeader.setVisibility(View.GONE);
+                    complation_notes.setVisibility(View.GONE);
+                    btnComplationView.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add));
+                }
             }else if(mParam2 != null && mParam2.getComplNote() != null && mParam2.getComplNote().isEmpty() &&  mParam2.getCompliAnsArray() != null && !mParam2.getCompliAnsArray().isEmpty()){
                 if (complation_notes != null && txt_notesHeader != null && btnComplationView != null) {
                     txt_notesHeader.setVisibility(View.GONE);
@@ -1451,16 +1453,20 @@ public class DetailFragment extends Fragment
                     btnComplationView.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit));
                 }
             }else if(mParam2 != null && mParam2.getComplNote() != null && mParam2.getComplNote().isEmpty()){
-                txt_notesHeader.setVisibility(View.GONE);
-                complation_notes.setVisibility(View.GONE);
-                btnComplationView.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add));
+                if (complation_notes != null && txt_notesHeader != null && btnComplationView != null) {
+                    txt_notesHeader.setVisibility(View.GONE);
+                    complation_notes.setVisibility(View.GONE);
+                    btnComplationView.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add));
+                }
             }else {
-                String tempstring=mParam2.getComplNote().replace("null", "");
-                tempstring.replace("<br>","");
-                complation_notes.setText(tempstring);
-                btnComplationView.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit));
-                txt_notesHeader.setVisibility(View.VISIBLE);
-                complation_notes.setVisibility(View.VISIBLE);
+                if(mParam2 != null && mParam2.getComplNote() != null && complation_notes != null && txt_notesHeader != null && btnComplationView != null) {
+                    String tempstring = mParam2.getComplNote().replace("null", "");
+                    tempstring.replace("<br>", "");
+                    complation_notes.setText(tempstring);
+                    btnComplationView.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit));
+                    txt_notesHeader.setVisibility(View.VISIBLE);
+                    complation_notes.setVisibility(View.VISIBLE);
+                }
             }
             if(mParam2 != null && mParam2.getIsMarkDoneWithJtId() !=null && mParam2.getIsMarkDoneWithJtId().size()>0) {
                 cl_serviceMarkAsDone.setVisibility(View.VISIBLE);
