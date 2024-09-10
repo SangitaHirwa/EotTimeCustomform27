@@ -133,7 +133,7 @@ public class JobList_pc implements JobList_pi {
      */
     @Override
     synchronized public void loadFromServer() {
-        AppUtility.progressBarShow(context);
+        AppUtility.progressBarShow(EotApp.getCurrentActivity());
         if (AppUtility.isInternetConnected()) {
             LogModel logModel = ActivityLogController
                     .getObj(ActivityLogController.JOB_MODULE, ActivityLogController.JOB_LIST, ActivityLogController.JOB_MODULE);
@@ -167,6 +167,7 @@ public class JobList_pc implements JobList_pi {
                                 addRecordsToDB(data);
                             } else if (jsonObject.get("statusCode") != null && jsonObject.get("statusCode").getAsString().equals(AppConstant.SESSION_EXPIRE)) {
                                 joblist_view.onSessionExpired(LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
+                                AppUtility.progressBarDissMiss();
                             }
                         }
 
@@ -174,6 +175,7 @@ public class JobList_pc implements JobList_pi {
                         @Override
                         public void onError(Throwable e) {
                             Log.e("TAG", e.getMessage());
+                            AppUtility.progressBarDissMiss();
                         }
 
                         @Override
@@ -218,6 +220,7 @@ public class JobList_pc implements JobList_pi {
             if (sortedBy.equals(START_DATE_FIELD)) {
                 AppUtility.progressBarDissMiss();
                 data = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJoblistByScheduleStart();
+                AppUtility.progressBarDissMiss();
             } else {
                 Calendar current = Calendar.getInstance();
                 current.set(current.get(Calendar.YEAR),current.get(Calendar.MONTH),current.get(Calendar.DATE),0,0,0);

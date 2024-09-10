@@ -656,12 +656,8 @@ public class JobList extends Fragment implements MyListItemSelected<Job>, Joblis
 
     @Override
     public void setdata(List<Job> data, int visibilityFlag) {
-        if (data != null) {
             if (myActivity != null)
                 backGroundJobListListner(visibilityFlag, data);
-        }else{
-            AppUtility.progressBarDissMiss();
-        }
     }
 
     /**
@@ -1006,7 +1002,8 @@ public class JobList extends Fragment implements MyListItemSelected<Job>, Joblis
     @SafeVarargs
     private final void backGroundJobListListner(final int visibilityFlag, final List<Job>... lists) {
         final List<Job> dataList = new ArrayList<>();
-        data = lists[0];
+        if (lists != null && lists[0] != null){
+            data = lists[0];
         this.visibilityFlag = visibilityFlag;
         dataList.addAll(lists[0]);
         JobPositionGetWorker.setListData(data);
@@ -1024,20 +1021,24 @@ public class JobList extends Fragment implements MyListItemSelected<Job>, Joblis
                             swiperefresh.setRefreshing(false);
                             if (today_pos == -1) ll_today_task.setVisibility(View.GONE);
                             if (inprogress_pos == -1) ll_in_progress.setVisibility(View.GONE);
-                            if(adapter != null) {
+                            if (adapter != null) {
                                 adapter.setUnScheduleHeaderPos(unScheduleHeaderPos);
                             }
-                                hideShowBottomOptions(0);
-                                if (nearToday_pos > -1)
-                                    autoScrollToTodayTask(nearToday_pos);
-                                else
-                                    autoScrollToTodayTask(today_pos);
-                                nojobs_linear.setVisibility(View.GONE);
+                            hideShowBottomOptions(0);
+                            if (nearToday_pos > -1)
+                                autoScrollToTodayTask(nearToday_pos);
+                            else
+                                autoScrollToTodayTask(today_pos);
+                            nojobs_linear.setVisibility(View.GONE);
                         }
                     }
                 });
-                ChatController.getInstance().refreshAdapter();
-                adapter.updateRecords(dataList);
+        ChatController.getInstance().refreshAdapter();
+        adapter.updateRecords(dataList);
+        }else{
+            AppUtility.progressBarDissMiss();
+            nojobs_linear.setVisibility(View.VISIBLE);
+        }
         try {
             if (myActivity instanceof MainActivity) {
                 String notificationDataId = ((MainActivity) myActivity).getNotificationDataId();

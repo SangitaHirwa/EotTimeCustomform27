@@ -175,6 +175,7 @@ public class JobListAdapter extends RecyclerView.Adapter<JobListAdapter.MyViewHo
         } else {
               if(unScheduleHeaderPos == -1 || unScheduleHeaderPos == position ){
             if (jobdata.get(position).getSchdlStart() != null && jobdata.get(position).getSchdlStart().equals("")) {
+                unScheduleHeaderPos = position;
                 holder.date_layout.setVisibility(View.VISIBLE);
                 holder.txt_date.setText(
                         LanguageController.getInstance().getMobileMsgByKey(AppConstant.unschedule_job)
