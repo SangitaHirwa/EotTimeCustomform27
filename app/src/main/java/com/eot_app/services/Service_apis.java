@@ -362,6 +362,7 @@ public interface Service_apis {
                                @Part("usrId") RequestBody userId,
                                @Part("des") RequestBody des,
                                @Part("type") RequestBody type,
+                               @Part("docNm") RequestBody docNm,
                                @Part MultipartBody.Part file);
 
     @Multipart

@@ -77,11 +77,12 @@ public class Doc_Attch_Pc implements Doc_Attch_Pi {
             }
             RequestBody jobId = RequestBody.create(appId,MultipartBody.FORM );
             RequestBody descBody = RequestBody.create(des,MultipartBody.FORM );
+            RequestBody docNm = RequestBody.create(finalFname,MultipartBody.FORM );
             RequestBody userId = RequestBody.create( App_preference.getSharedprefInstance().getLoginRes().getUsrId(),MultipartBody.FORM);
             RequestBody type = RequestBody.create( "2",MultipartBody.FORM);
 
             //     AppUtility.progressBarShow(((Fragment) doc_attch_view).getActivity());
-            ApiClient.getservices().uploadAppointmentDocements(AppUtility.getApiHeaders(), jobId, userId, descBody, type, body)
+            ApiClient.getservices().uploadAppointmentDocements(AppUtility.getApiHeaders(), jobId, userId, descBody, type,docNm, body)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
 
