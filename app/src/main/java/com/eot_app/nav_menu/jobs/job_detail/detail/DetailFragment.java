@@ -1876,10 +1876,15 @@ public void setCompletionDetail(){
         String status = model.getStatus_no();
         // for setting the selected status name on view
         textViewJobStatus.setText(model.getStatus_name());
-        /**After discuss with Ayush sir and jit sir we add a new permission for Completion notes add/ Edit**/
+        /**After discuss with Ayush sir and jit sir we add a new permission for Completion notes Edit**/
         if(status.equalsIgnoreCase(AppConstant.Completed)) {
             if (App_preference.getSharedprefInstance().getLoginRes().getIsComplNoteBeforeComplete() != null && App_preference.getSharedprefInstance().getLoginRes().getIsComplNoteBeforeComplete().equals("0")) {
-                btnComplationView.setVisibility(View.GONE);
+                if(btnComplationView.getText().toString().equals(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit))){
+                    btnComplationView.setVisibility(View.GONE);
+                }else{
+                    btnComplationView.setVisibility(View.VISIBLE);
+                }
+
             } else {
                 btnComplationView.setVisibility(View.VISIBLE);
             }
