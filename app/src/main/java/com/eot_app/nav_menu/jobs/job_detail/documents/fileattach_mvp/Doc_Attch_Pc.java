@@ -507,11 +507,12 @@ public class Doc_Attch_Pc implements Doc_Attch_Pi {
             }
             final RequestBody _quotId = RequestBody.create(quotId, MultipartBody.FORM);
             RequestBody descBody = RequestBody.create(des, MultipartBody.FORM);
+            RequestBody docNm = RequestBody.create(fileName, MultipartBody.FORM);
             RequestBody userId = RequestBody.create(App_preference.getSharedprefInstance().getLoginRes().getUsrId(), MultipartBody.FORM);
             RequestBody typeId = RequestBody.create(type, MultipartBody.FORM);
             //     AppUtility.progressBarShow(((Fragment) doc_attch_view).getActivity());
             ApiClient.getservices().uploadQuoteDocuments(AppUtility.getApiHeaders(),
-                            _quotId,userId,descBody,typeId,body)
+                            _quotId,userId,descBody,typeId,docNm,body)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Observer<JsonObject>() {
