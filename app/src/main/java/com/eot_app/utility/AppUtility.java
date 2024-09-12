@@ -2368,24 +2368,25 @@ public static void askPerMissionForLocation(Context context) {
         return null;
     }
     public static String dateByFormeteNew(String date){
-        String dateByFormatsync=null;
-        try{
-            SimpleDateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",Locale.ENGLISH);
-            Date date1 = dateFormat.parse(date);
-            SimpleDateFormat dateFormat1=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",Locale.ENGLISH);
-            if (App_preference.getSharedprefInstance().getLoginRes().getIsAutoTimeZone().equals("1")) {
-                dateFormat1.setTimeZone(TimeZone.getTimeZone(App_preference.getSharedprefInstance().getLoginRes().getLoginUsrTz()));
-            } else {
-                dateFormat1.setTimeZone(TimeZone.getDefault());
-            }
+        String dateByFormatsync = null;
+        if(date != null && !date.isEmpty()) {
+            try {
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
+                Date date1 = dateFormat.parse(date);
+                SimpleDateFormat dateFormat1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
+                if (App_preference.getSharedprefInstance().getLoginRes().getIsAutoTimeZone().equals("1")) {
+                    dateFormat1.setTimeZone(TimeZone.getTimeZone(App_preference.getSharedprefInstance().getLoginRes().getLoginUsrTz()));
+                } else {
+                    dateFormat1.setTimeZone(TimeZone.getDefault());
+                }
 
-            dateByFormatsync = dateFormat1.format(date1);
+                dateByFormatsync = dateFormat1.format(date1);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return dateByFormatsync;
         }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-        return dateByFormatsync;
+        return "";
     }
     public static String get24HoursTimeFormate(String timeS){
         String time=null;

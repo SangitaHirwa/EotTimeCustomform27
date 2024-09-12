@@ -190,6 +190,13 @@ public interface JobDao {
     @Query("select itemRequested from Job WHERE jobId = :jobId")
     String getItemRequested(String jobId);
 
+    @Query("SELECT * FROM job ORDER BY CASE " +
+            "WHEN schdlStart > :schdl_start_date THEN 1 " +
+            "WHEN schdlStart = :schdl_start_date THEN 2 " +
+            "WHEN schdlStart = '' THEN 3 " +
+            "ELSE 4 END, schdlStart DESC")
+    List<Job> getFiltterData(Long schdl_start_date);
+
 ////  @Query("SELECT * FROM user WHERE birthday = :targetDate")
 //    @Query("delete from Job where status != '1' or status != '2' or status != '3' or status != '4' or status != '5' or status != '6' " +
 //            "or status != '7' or status != '8' or status != '9' or status != '10' or status != '11' or status != '12'")

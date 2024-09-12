@@ -197,7 +197,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
     String interval = "", generateOption = "", scanCode = "",equDefaultType;
     QR_Bar_Pi qrBarPi;
     EquArrayModel equipmentRes, equipment;
-    ;
+    String warrantyType="";
 
     /**
      * select date from picker & concanate current time
@@ -777,8 +777,66 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
             }
             job = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(jobId);
         }
+        edt_day.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
+            }
 
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if(s != null && !s.toString().equals("")) {
+                    getWarrantyLastDate(Integer.parseInt(s.toString()));
+                }else{
+                    sWarLastDate = "";
+                }
+            }
+        });
+        edt_month.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if(s != null && !s.toString().equals("")) {
+                    getWarrantyLastDate(Integer.parseInt(s.toString()));
+                }else{
+                    sWarLastDate = "";
+                }
+            }
+        });
+        edt_year.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if(s != null && !s.toString().equals("")) {
+                    getWarrantyLastDate(Integer.parseInt(s.toString()));
+                }else{
+                    sWarLastDate = "";
+                }
+            }
+        });
         // To set the current date as warranty start date
         setWarrntyStartViews(AppUtility.getCurrentDateByFormat(AppConstant.DATE_FORMAT));
 
@@ -802,7 +860,15 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
 
         setTextViews();
     }
-
+    private void getWarrantyLastDate(int intervalTime){
+            if (sWarLastDate != null && !sWarLastDate.isEmpty()) {
+                sWarLastDate = AppUtility.addDaysInDate(sWarLastDate, intervalTime, servIntvalType, AppConstant.DATE_FORMAT);
+            } else {
+                String curruntDate = AppUtility.getCurrentDateByFormat(AppConstant.DATE_FORMAT);
+                sWarLastDate = AppUtility.addDaysInDate(curruntDate, intervalTime, servIntvalType, AppConstant.DATE_FORMAT);
+            }
+            warnty_date_lable.setText(sWarLastDate);
+    }
     private void apicalling() {
         addJobEqu_pi = new AddJobEqu_Pc(this);
         addJobEqu_pi.getCountryList();
@@ -1014,6 +1080,25 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
                 quote_notes_layout.setHintEnabled(true);
                 if(updateItemDataModel.getBrandNm() != null && !updateItemDataModel.getBrandNm().isEmpty()){
                     brandId = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).brandDao().getBrandIdByName(updateItemDataModel.getBrandNm());
+                }
+                if(updateItemDataModel.getWarrantyType() != null && updateItemDataModel.getWarrantyValue() != null && !updateItemDataModel.getWarrantyValue().isEmpty() && !updateItemDataModel.getWarrantyType().isEmpty()){
+                    servIntvalType = updateItemDataModel.getWarrantyType();
+                    if(servIntvalType.equals("0")){
+                        rdBtn_day.setChecked(true);
+                        edt_day.setText(updateItemDataModel.getWarrantyValue());
+                    }else if(servIntvalType.equals("1")){
+                        rdBtn_month.setChecked(true);
+                        edt_month.setText(updateItemDataModel.getWarrantyValue());
+                    }else if(servIntvalType.equals("2")){
+                        rdBtn_year.setChecked(true);
+                        edt_year.setText(updateItemDataModel.getWarrantyValue());
+                    }
+                }
+                if(updateItemDataModel.getWarrantyValue() != null && !updateItemDataModel.getWarrantyValue().isEmpty() && !servIntvalType.isEmpty()){
+                    String curruntDate = AppUtility.getCurrentDateByFormat(AppConstant.DATE_FORMAT);
+                    sWarLastDate = AppUtility.addDaysInDate(curruntDate, Integer.parseInt(updateItemDataModel.getWarrantyValue()), servIntvalType, AppConstant.DATE_FORMAT);
+                warnty_date_lable.setText(sWarLastDate);
+
                 }
                 if (jobId != null) {
                     job = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(jobId);
@@ -1562,6 +1647,8 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
                 edt_year.setVisibility(View.GONE);
                 rediogrp_interval.clearCheck();
                 clear_btn.setVisibility(View.GONE);
+                warnty_date_lable.setText("");
+                sWarLastDate = "";
                 break;
         }
     }
