@@ -287,7 +287,6 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
         warnty_date_lable.setText(AppUtility.getDateByLang(sWarLastDate,false));
         txt_date_warnty.setLayoutParams(params);
         txt_date_warnty.setVisibility(View.VISIBLE);
-        txt_date_warnty.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.warranty_expiry_date));
         binding.warntyDateCancel.setVisibility(View.VISIBLE);
     }
 
@@ -490,6 +489,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
 
         txt_date = findViewById(R.id.txt_date);
         txt_date_warnty = findViewById(R.id.txt_date_warnty);
+        txt_date_warnty.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.warranty_expiry_date));
         txt_date_warnty_start = findViewById(R.id.txt_date_warnty_start);
 
 
@@ -868,6 +868,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
                 sWarLastDate = AppUtility.addDaysInDate(curruntDate, intervalTime, servIntvalType, AppConstant.DATE_FORMAT);
             }
             warnty_date_lable.setText(sWarLastDate);
+            txt_date_warnty.setVisibility(View.VISIBLE);
     }
     private void apicalling() {
         addJobEqu_pi = new AddJobEqu_Pc(this);
@@ -1649,6 +1650,7 @@ public class AddJobEquipMentActivity extends UploadDocumentActivity implements T
                 clear_btn.setVisibility(View.GONE);
                 warnty_date_lable.setText("");
                 sWarLastDate = "";
+                txt_date_warnty.setVisibility(View.GONE);
                 break;
         }
     }
