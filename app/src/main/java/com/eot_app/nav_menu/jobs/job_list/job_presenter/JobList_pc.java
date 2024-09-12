@@ -31,6 +31,8 @@ import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -131,6 +133,7 @@ public class JobList_pc implements JobList_pi {
      */
     @Override
     synchronized public void loadFromServer() {
+        AppUtility.progressBarShow(EotApp.getCurrentActivity());
         if (AppUtility.isInternetConnected()) {
             LogModel logModel = ActivityLogController
                     .getObj(ActivityLogController.JOB_MODULE, ActivityLogController.JOB_LIST, ActivityLogController.JOB_MODULE);
@@ -164,6 +167,7 @@ public class JobList_pc implements JobList_pi {
                                 addRecordsToDB(data);
                             } else if (jsonObject.get("statusCode") != null && jsonObject.get("statusCode").getAsString().equals(AppConstant.SESSION_EXPIRE)) {
                                 joblist_view.onSessionExpired(LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
+                                AppUtility.progressBarDissMiss();
                             }
                         }
 
@@ -171,6 +175,7 @@ public class JobList_pc implements JobList_pi {
                         @Override
                         public void onError(Throwable e) {
                             Log.e("TAG", e.getMessage());
+                            AppUtility.progressBarDissMiss();
                         }
 
                         @Override
@@ -213,12 +218,19 @@ public class JobList_pc implements JobList_pi {
         List<Job> data;
         if (jobFilterModel.getSearch().equals("") && jobFilterModel.getJobPriotiesList() != null && jobFilterModel.getJobPriotiesList().size() == 0 && jobFilterModel.getTagDataList().size() == 0 && jobFilterModel.getStatusModelsList().size() == 0) {
             if (sortedBy.equals(START_DATE_FIELD)) {
+                AppUtility.progressBarDissMiss();
                 data = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJoblistByScheduleStart();
+                AppUtility.progressBarDissMiss();
             } else {
-                data = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJoblist();
+                Calendar current = Calendar.getInstance();
+                current.set(current.get(Calendar.YEAR),current.get(Calendar.MONTH),current.get(Calendar.DATE),0,0,0);
+                Date startDate = current.getTime();
+                long startDateTime= startDate.getTime();
+                data = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getFiltterData(startDateTime);
             }
             joblist_view.setdata(data, visibilityFlag);
         } else {
+            AppUtility.progressBarDissMiss();
             getJobListByFilter(jobFilterModel);
         }
     }

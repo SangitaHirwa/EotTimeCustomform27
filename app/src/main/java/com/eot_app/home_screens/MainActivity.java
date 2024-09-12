@@ -841,14 +841,13 @@ public class MainActivity extends UploadDocumentActivity implements MainActivity
             parent_quotes.setVisibility(View.GONE);
         }
         /*visible/gone audit according to permission**/
+        /**After discussion with Ayush sir and Jit sir, Removed Audit permission from scanner menu date 06-Sep-2024**/
         if (App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsAuditVisible() != 0) {
             audit_menu_layout.setVisibility(View.GONE);
-            parent_scan.setVisibility(View.GONE);
-        } else {
+        }
             if (App_preference.getSharedprefInstance().getLoginRes().getIsEquipmentEnable().equals("1"))
                 parent_scan.setVisibility(View.VISIBLE);
             else parent_scan.setVisibility(View.GONE);
-        }
 
 
         /*visible/gone Expense according to permission**/

@@ -374,6 +374,14 @@ public class CompletionFormAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                         } catch (ParseException e) {
                             e.printStackTrace();
                         }
+                        try {
+                            SimpleDateFormat dateF1 = new SimpleDateFormat("dd-MM-yyyy ", Locale.ENGLISH);
+                            Date dateP = dateF1.parse(date);
+                            SimpleDateFormat dateF2 = new SimpleDateFormat("dd-MMM-yyyy " , Locale.ENGLISH);
+                            date = dateF2.format(dateP);
+                        }catch (ParseException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             };
@@ -1388,7 +1396,7 @@ public class CompletionFormAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                                                         "dd-MMM-yyyy HH:mm"),Locale.ENGLISH).format(
                                                 new SimpleDateFormat(
                                                         AppUtility.dateTimeByAmPmFormate(
-                                                                "dd-MM-yyyy hh:mm a", "dd-MM-yyyy HH:mm"),Locale.ENGLISH).parse(newdateTime));
+                                                                "dd-MMM-yyyy hh:mm a", "dd-MMM-yyyy HH:mm"),Locale.ENGLISH).parse(newdateTime));
                                         textView.setText(AppUtility.getDateByLang(sTimeDate,true));
                                     } catch (ParseException e) {
                                         e.printStackTrace();

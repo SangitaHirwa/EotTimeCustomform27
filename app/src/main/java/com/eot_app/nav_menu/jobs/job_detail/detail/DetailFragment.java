@@ -1441,24 +1441,32 @@ public class DetailFragment extends Fragment
         if(AppUtility.isInternetConnected()) {
             mParam2 = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(mParam2.getJobId());
             if(mParam2 != null && mParam2.getComplNote() != null && mParam2.getComplNote().isEmpty() && mParam2.getCompliAnsArray() != null && mParam2.getCompliAnsArray().isEmpty()){
-                txt_notesHeader.setVisibility(View.GONE);
-                complation_notes.setVisibility(View.GONE);
-                btnComplationView.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add));
+                if (complation_notes != null && txt_notesHeader != null && btnComplationView != null) {
+                    txt_notesHeader.setVisibility(View.GONE);
+                    complation_notes.setVisibility(View.GONE);
+                    btnComplationView.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add));
+                }
             }else if(mParam2 != null && mParam2.getComplNote() != null && mParam2.getComplNote().isEmpty() &&  mParam2.getCompliAnsArray() != null && !mParam2.getCompliAnsArray().isEmpty()){
-                txt_notesHeader.setVisibility(View.GONE);
-                complation_notes.setVisibility(View.GONE);
-                btnComplationView.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit));
+                if (complation_notes != null && txt_notesHeader != null && btnComplationView != null) {
+                    txt_notesHeader.setVisibility(View.GONE);
+                    complation_notes.setVisibility(View.GONE);
+                    btnComplationView.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit));
+                }
             }else if(mParam2 != null && mParam2.getComplNote() != null && mParam2.getComplNote().isEmpty()){
-                txt_notesHeader.setVisibility(View.GONE);
-                complation_notes.setVisibility(View.GONE);
-                btnComplationView.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add));
+                if (complation_notes != null && txt_notesHeader != null && btnComplationView != null) {
+                    txt_notesHeader.setVisibility(View.GONE);
+                    complation_notes.setVisibility(View.GONE);
+                    btnComplationView.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add));
+                }
             }else {
-                String tempstring=mParam2.getComplNote().replace("null", "");
-                tempstring.replace("<br>","");
-                complation_notes.setText(tempstring);
-                btnComplationView.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit));
-                txt_notesHeader.setVisibility(View.VISIBLE);
-                complation_notes.setVisibility(View.VISIBLE);
+                if(mParam2 != null && mParam2.getComplNote() != null && complation_notes != null && txt_notesHeader != null && btnComplationView != null) {
+                    String tempstring = mParam2.getComplNote().replace("null", "");
+                    tempstring.replace("<br>", "");
+                    complation_notes.setText(tempstring);
+                    btnComplationView.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit));
+                    txt_notesHeader.setVisibility(View.VISIBLE);
+                    complation_notes.setVisibility(View.VISIBLE);
+                }
             }
             if(mParam2 != null && mParam2.getIsMarkDoneWithJtId() !=null && mParam2.getIsMarkDoneWithJtId().size()>0) {
                 cl_serviceMarkAsDone.setVisibility(View.VISIBLE);
@@ -1868,10 +1876,15 @@ public void setCompletionDetail(){
         String status = model.getStatus_no();
         // for setting the selected status name on view
         textViewJobStatus.setText(model.getStatus_name());
-        /**After discuss with Ayush sir and jit sir we add a new permission for Completion notes add/ Edit**/
+        /**After discuss with Ayush sir and jit sir we add a new permission for Completion notes Edit**/
         if(status.equalsIgnoreCase(AppConstant.Completed)) {
             if (App_preference.getSharedprefInstance().getLoginRes().getIsComplNoteBeforeComplete() != null && App_preference.getSharedprefInstance().getLoginRes().getIsComplNoteBeforeComplete().equals("0")) {
-                btnComplationView.setVisibility(View.GONE);
+                if(btnComplationView.getText().toString().equals(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit))){
+                    btnComplationView.setVisibility(View.GONE);
+                }else{
+                    btnComplationView.setVisibility(View.VISIBLE);
+                }
+
             } else {
                 btnComplationView.setVisibility(View.VISIBLE);
             }
@@ -2193,8 +2206,10 @@ public void setCompletionDetail(){
     //Reset current job status
     @Override
     public void resetstatus(String status_no) {
-        jobstatus.setStatus_name("");
-        jobstatus.setStatus_no(status_no);
+        if(jobstatus != null) {
+            jobstatus.setStatus_name("");
+            jobstatus.setStatus_no(status_no);
+        }
     }
 
     @SuppressLint("SetTextI18n")
@@ -2662,7 +2677,9 @@ public void setCompletionDetail(){
                 stopRecurpattern(recurData);
                 break;
             case R.id.btn_add_signature:
+                if(jobstatus != null && jobstatus.getStatus_no() != null){
                 ((JobDetailActivity) requireActivity()).openCustomSignatureDialog(jobstatus.getStatus_no());
+                }
                 break;
             case R.id.customfiled_btn:
                 Intent intent1 = new Intent(getActivity(), CustomFiledListActivity.class);
