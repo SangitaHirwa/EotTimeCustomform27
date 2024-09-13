@@ -320,6 +320,7 @@ public class Job_Detail_Activity_pc implements Job_Detail_Activity_pi {
                         public void onError(Throwable e) {
                             HyperLog.i("", e.getMessage());
                             EotApp.getAppinstance().showToastmsg(e.getMessage());
+                            AppUtility.progressBarDissMiss();
                         }
 
                         @Override
