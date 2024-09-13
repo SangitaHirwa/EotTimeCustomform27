@@ -111,7 +111,7 @@ public class FirstSyncActivity extends AppCompatActivity implements FirstSyncVie
 
     @Override
     public void goHomePage() {
-        if (!App_preference.getSharedprefInstance().getLoginRes().getExpireStatus().equals("0")) {
+        if (App_preference.getSharedprefInstance().getLoginRes().getExpireStatus() != null &&!App_preference.getSharedprefInstance().getLoginRes().getExpireStatus().equals("0")) {
             startActivity(new Intent(this, MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
             finish();
         } else {
