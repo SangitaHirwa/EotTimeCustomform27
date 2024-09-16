@@ -549,7 +549,12 @@ public class DetailFragment extends Fragment
             }
             /**After discuss with Ayush sir and jit sir we add a new permission for Completion notes add/ Edit**/
             if(App_preference.getSharedprefInstance().getLoginRes().getIsComplNoteBeforeComplete() != null && App_preference.getSharedprefInstance().getLoginRes().getIsComplNoteBeforeComplete().equals("0")){
-                btnComplationView.setVisibility(View.GONE);
+                if(btnComplationView.getText().toString().equals(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit))){
+                    btnComplationView.setVisibility(View.GONE);
+                }else{
+                    btnComplationView.setVisibility(View.VISIBLE);
+                }
+
             }else{
                 btnComplationView.setVisibility(View.VISIBLE);
             }
@@ -2023,7 +2028,12 @@ public void setCompletionDetail(){
                 // TODO changed from hiding the full view to buttons
                 /**After discuss with Ayush sir and jit sir we add a new permission for Completion notes add/ Edit**/
                 if(App_preference.getSharedprefInstance().getLoginRes().getIsComplNoteBeforeComplete() != null && App_preference.getSharedprefInstance().getLoginRes().getIsComplNoteBeforeComplete().equals("0")){
-                    btnComplationView.setVisibility(View.GONE);
+                    if(btnComplationView.getText().toString().equals(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit))){
+                        btnComplationView.setVisibility(View.GONE);
+                    }else{
+                        btnComplationView.setVisibility(View.VISIBLE);
+                    }
+
                 }else{
                     btnComplationView.setVisibility(View.VISIBLE);
                 }
