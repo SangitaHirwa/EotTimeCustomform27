@@ -54,17 +54,21 @@ public class MyAndroidFirebaseMsgService extends FirebaseMessagingService {
 //            HyperLog.i(TAG, "MyAndroidFirebaseMsgService--" + new Gson().fromJson(data.get("otherdata").toString(), Noty_otherdata.class));
 
 
-            Gson gson = new Gson();
-            Noty_otherdata otherdata = gson.fromJson(data.get("otherdata").toString(), Noty_otherdata.class);
-
+            /**
+             * Change otherdata value, because firebase have changed payload of its (16/09/2024)*/
+//            Gson gson = new Gson();
+//            Noty_otherdata otherdata = gson.fromJson(data.get("otherdata").toString(), Noty_otherdata.class);
+            Noty_otherdata otherdata = new Noty_otherdata();
+            otherdata.setAction(data.get("action").toString());
+            otherdata.setId(data.get("id").toString());
             //     Log.e("Toast", gson.toJson(otherdata));
 
-            if (otherdata.getAction().equals("AppointmentRemoveFW")) {
+            if (otherdata != null && otherdata.getAction().equals("AppointmentRemoveFW")) {
                 AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).appointmentModel().deleteAppointmentById(otherdata.getId());
                 createNotification(data.get("title").toString(), data.get("body").toString(), "APPOINTMENT", null);
                 LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent("appointment_refresh"));
                 // EotApp.getAppinstance().notifyObserver(otherdata.getAction(), otherdata.getId(), data.get("body").toString());
-            } else if (otherdata.getAction().equals("removeFW")||otherdata.getAction().equals("archiveJob")||otherdata.getAction().equals("deleteJob")) {
+            } else if (otherdata != null && otherdata.getAction().equals("removeFW")||otherdata.getAction().equals("archiveJob")||otherdata.getAction().equals("deleteJob")) {
                 AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().deleteJobById(otherdata.getId());
 //                for remove the job listener from listener list.
                 if (ChatController.getInstance() != null) {
@@ -95,55 +99,55 @@ public class MyAndroidFirebaseMsgService extends FirebaseMessagingService {
                 LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent("job_refresh"));
                 createNotification(data.get("title").toString(), msg, "JOB", otherdata.getId());
                 LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent("appointment_refresh"));
-            } */else if (otherdata.getAction().equals("updateJob")) {
+            } */else if (otherdata != null && otherdata.getAction().equals("updateJob")) {
                 LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent("job_refresh"));
                 createNotification(data.get("title").toString(), data.get("body").toString(), "JOB", otherdata.getId());
                 LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent("appointment_refresh"));
-            } else if (otherdata.getAction().equals("updateAppointment")) {
+            } else if (otherdata != null && otherdata.getAction().equals("updateAppointment")) {
                 if (App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsAppointmentVisible()==0) {
                     createNotification(data.get("title").toString(), data.get("body").toString(), "APPOINTMENT", otherdata.getId());
                     LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent("appointment_refresh"));
                 }
-            } else if (otherdata.getAction().equals("chat")) {
+            } else if (otherdata != null && otherdata.getAction().equals("chat")) {
                 ChatController.getInstance().createNotificationforChat(
                         new Gson().fromJson(data.get("body").toString(), Chat_Send_Msg_Model.class));
-            } else if (otherdata.getAction().equals("newJob")||otherdata.getAction().equals("unarchiveJob")) {
+            } else if (otherdata != null && otherdata.getAction().equals("newJob")||otherdata.getAction().equals("unarchiveJob")) {
                 LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent("job_refresh"));
                 createNotification(data.get("title").toString(), data.get("body").toString(), "JOB", otherdata.getId());
                 LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent("appointment_refresh"));
-            } else if (otherdata.getAction().equals("newAppointment")) {
+            } else if (otherdata != null && otherdata.getAction().equals("newAppointment")) {
                 if (App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsAppointmentVisible()==0) {
                     createNotification(data.get("title").toString(), data.get("body").toString(), "APPOINTMENT", otherdata.getId());
                     LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent("appointment_refresh"));
                 }
-            } else if (otherdata.getAction().equals("newAudit")) {
+            } else if (otherdata != null && otherdata.getAction().equals("newAudit")) {
                 if (App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsAuditVisible()==0) {
                     createNotification(data.get("title").toString(), data.get("body").toString(), "AUDIT", otherdata.getId());
                     LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent("appointment_refresh"));
                 }
-            } else if (otherdata.getAction().equals("updateAudit")) {
+            } else if (otherdata != null && otherdata.getAction().equals("updateAudit")) {
                 if (App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsAuditVisible()==0) {
                     createNotification(data.get("title").toString(), data.get("body").toString(), "AUDIT", otherdata.getId());
                     LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent("appointment_refresh"));
                 }
-            } else if (otherdata.getAction().equals("one2one")) {
+            } else if (otherdata != null && otherdata.getAction().equals("one2one")) {
                 NotModel mo = new Gson().fromJson(data.get("body").toString(), NotModel.class);
                 UserToUserChatController.getInstance().
                         createofflineChatNotifications(mo);
-            } else if (otherdata.getAction().equals("removeAuditFw")) {
+            } else if (otherdata != null && otherdata.getAction().equals("removeAuditFw")) {
                 AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).auditDao().deletAuditById(otherdata.getId());
                 createNotification(data.get("title").toString(), data.get("body").toString(), "AUDIT", null);
                 // EotApp.getAppinstance().notifyObserver(otherdata.getAction(), otherdata.getId(), data.get("body").toString());
                 LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent("appointment_refresh"));
-            } else if (otherdata.getAction().equals("clientChat")) {
+            } else if (otherdata != null && otherdata.getAction().equals("clientChat")) {
                 ChatController.getInstance().createClientChatNotificationforChat(
                         new Gson().fromJson(data.get("body").toString(), ClientChatReqModel.class));
-            } else if (otherdata.getAction().equals("updateLeave")) {
+            } else if (otherdata != null && otherdata.getAction().equals("updateLeave")) {
                 createNotification(data.get("title").toString(), data.get("body").toString(), "updateLeave", otherdata.getId());
                 LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent("appointment_refresh"));
-            }else if (otherdata.getAction().equals("someJobArchivedOrUnarchived")||otherdata.getAction().equals("someJobDeleted")) {
+            }else if (otherdata != null && otherdata.getAction().equals("someJobArchivedOrUnarchived")||otherdata.getAction().equals("someJobDeleted")) {
                 LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent("job_refresh"));
-                if (otherdata.getAction().equals("someJobDeleted")){
+                if (otherdata != null && otherdata.getAction().equals("someJobDeleted")){
                     createNotification("Deleted Jobs", data.get("body").toString(), "JOB",
                             null);
                 }else {
@@ -152,16 +156,17 @@ public class MyAndroidFirebaseMsgService extends FirebaseMessagingService {
                 }
                 EotApp.getAppinstance().notifyObserver(otherdata.getAction(), otherdata.getId(), data.get("body").toString());
                 LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent("Archived_jobs"));
-            }else if (otherdata.getAction().equals("someJobUpdated")) {
-                    LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent("job_refresh"));
+            }else if (otherdata != null && otherdata.getAction().equals("someJobUpdated")) {
+                LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent("job_refresh"));
                 createNotification(data.get("title").toString(), data.get("body").toString(), "MULTI_JOB", otherdata.getId());
                 LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent("appointment_refresh"));
-            }else if (otherdata.getAction().equals("updateQuote")) {
+            }else if (otherdata != null && otherdata.getAction().equals("updateQuote")) {
                 if (App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsQuoteVisible()==0) {
                     createNotification(data.get("title").toString(), data.get("body").toString(), "quote_update", otherdata.getId());
 //                    LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent("appointment_refresh"));
                 }
             }
+
 
             if (/* Check if data needs to be processed by long running job */ true) {
                 // For long-running tasks (10 seconds or more) use Firebase Job Dispatcher.
