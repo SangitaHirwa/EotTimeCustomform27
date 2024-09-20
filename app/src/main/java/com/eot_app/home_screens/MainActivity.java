@@ -423,9 +423,12 @@ public class MainActivity extends UploadDocumentActivity implements MainActivity
                         fab.setOnClickListener(view -> {
                             EotApp.getAppinstance().setApiObserver(MainActivity.this);
                             if (toolbar.getTitle().equals(LanguageController.getInstance().getMobileMsgByKey(AppConstant.jobs))) {
+                                if(joblistfragment != null){
+                                    joblistfragment.refreshJobList(true);
+                                }
                                 Intent intent = new Intent(MainActivity.this, Add_job_activity.class);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-                                startActivityForResult(intent, ADDJOB);
+                                startActivity(intent);
                             } else if (toolbar.getTitle().equals(LanguageController.getInstance().getMobileMsgByKey(AppConstant.clients))) {
                                 Intent intent = new Intent(MainActivity.this, AddClient.class);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
@@ -1383,7 +1386,7 @@ public class MainActivity extends UploadDocumentActivity implements MainActivity
                     break;
                 case ADDJOB:
                     if (joblistfragment != null) {
-                        joblistfragment.refreshJobList();
+                        joblistfragment.refreshJobList(false);
                     }
                     break;
                 case BAR_CODE_REQUEST:

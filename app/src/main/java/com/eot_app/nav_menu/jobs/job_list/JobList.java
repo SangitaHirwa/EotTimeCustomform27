@@ -29,6 +29,7 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.Observer;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -139,6 +140,7 @@ public class JobList extends Fragment implements MyListItemSelected<Job>, Joblis
     List<JobStatusModelNew> jobStatusDynamicList=new ArrayList<>();
     List<Job> data;
     int visibilityFlag;
+    boolean isRefreshOffline = false;
 
 
     private final BroadcastReceiver myJobListfrefreshForNotif = new BroadcastReceiver() {
@@ -216,9 +218,10 @@ public class JobList extends Fragment implements MyListItemSelected<Job>, Joblis
     public void  setNotifyForCompletion(JobList jobList){
         EotApp.getAppinstance().setNotifyForcompletionInJob(jobList);
     }
-    public void refreshJobList() {
+    public void refreshJobList(boolean isRefreshOffline) {
+        this.isRefreshOffline = isRefreshOffline;
         if (jobListPi != null) {
-            jobListPi.getJobList();
+            jobListPi.getJobList(isRefreshOffline);
         }
     }
 
@@ -695,7 +698,12 @@ public class JobList extends Fragment implements MyListItemSelected<Job>, Joblis
     @Override
     public void updateFromApiObserver() {
         if (jobListPi != null) {
-            jobListPi.getFilterJobList(jobFilterModel, 0);
+            if(isRefreshOffline){
+                jobListPi.getJobList(isRefreshOffline);
+                isRefreshOffline = false;
+            }else {
+                jobListPi.getFilterJobList(jobFilterModel, 0);
+            }
         }
     }
 
@@ -1012,7 +1020,7 @@ public class JobList extends Fragment implements MyListItemSelected<Job>, Joblis
                 .build();
         workManager.enqueue(request);
         workManager.getWorkInfoByIdLiveData(request.getId())
-                .observe(getActivity(), new Observer<WorkInfo>() {
+                .observe((LifecycleOwner) EotApp.getCurrentActivity(), new Observer<WorkInfo>() {
                     @Override
                     public void onChanged(WorkInfo workInfo) {
                         if (workInfo.getState().isFinished()) {
@@ -1064,10 +1072,10 @@ public class JobList extends Fragment implements MyListItemSelected<Job>, Joblis
     @Override
     public void upateForCompletion(String apiName, String jobId) {
         if(jobListPi != null){
-        refreshJobList();
+        refreshJobList(false);
         }else {
             jobListPi = new JobList_pc(this,isFromScan,getActivity().getApplicationContext());
-            jobListPi.getJobList();
+            jobListPi.getJobList(false);
         }
     }
 
