@@ -2837,7 +2837,7 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
                             case "5":
                                 if (!TextUtils.isEmpty(questionList.get(i).getAns().get(0).getValue())) {
                                     long l = Long.parseLong(questionList.get(i).getAns().get(0).getValue());
-                                    if(l > 0) {
+                                    if(l != 0) {
                                     ans = AppUtility.getDates(l, AppConstant.DATE_FORMAT);
                                         ans = AppUtility.sendDateByFormate(ans, false);
                                     }else {
@@ -2848,7 +2848,7 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
                             case "6":
                                 if (!TextUtils.isEmpty(questionList.get(i).getAns().get(0).getValue())) {
                                     long l = Long.parseLong(questionList.get(i).getAns().get(0).getValue());
-                                    if(l > 0) {
+                                    if(l != 0) {
                                         ans = AppUtility.getDates(l, "HH:mm:ss");
                                     }else {
                                         ans = "";
@@ -2858,7 +2858,7 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
                             case "7":
                                 if (!TextUtils.isEmpty(questionList.get(i).getAns().get(0).getValue())) {
                                     long l = Long.parseLong(questionList.get(i).getAns().get(0).getValue());
-                                    if(l > 0) {
+                                    if(l != 0) {
                                     ans = AppUtility.getDates(l,AppUtility.dateTimeByAmPmFormate(AppConstant.DATE_TIME_FORMAT_new,AppConstant.DATE_24_TIME_FORMAT_new));
                                         ans = AppUtility.sendDateByFormate(ans, true);
                                     }else {
