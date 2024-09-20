@@ -1836,7 +1836,7 @@ public class AddAuditActivity extends UploadDocumentActivity implements Add_Adui
                             case "5":
                                 if (!TextUtils.isEmpty(questionList.get(i).getAns().get(0).getValue())) {
                                     long l = Long.parseLong(questionList.get(i).getAns().get(0).getValue());
-                                    if(l > 0) {
+                                    if(l != 0) {
                                         String date = AppUtility.getDates(l,AppUtility.dateTimeByAmPmFormate(AppConstant.DATE_FORMAT+" hh:mm a", AppConstant.DATE_FORMAT+" HH:mm"));
                                         ans = AppUtility.sendDateByFormate(date, true);
                                     }else {
@@ -1847,7 +1847,7 @@ public class AddAuditActivity extends UploadDocumentActivity implements Add_Adui
                             case "6":
                                 if (!TextUtils.isEmpty(questionList.get(i).getAns().get(0).getValue())) {
                                     long l = Long.parseLong(questionList.get(i).getAns().get(0).getValue());
-                                    if(l > 0) {
+                                    if(l != 0) {
                                         ans = AppUtility.getDates(l, "HH:mm:ss");
                                     }else {
                                         ans = "";
@@ -1857,7 +1857,7 @@ public class AddAuditActivity extends UploadDocumentActivity implements Add_Adui
                             case "7":
                                 if (!TextUtils.isEmpty(questionList.get(i).getAns().get(0).getValue())) {
                                     long l = Long.parseLong(questionList.get(i).getAns().get(0).getValue());
-                                    if(l>0) {
+                                    if(l != 0) {
                                         String formate = AppUtility.dateTimeByAmPmFormate(AppConstant.DATE_FORMAT + " hh:mm a", AppConstant.DATE_FORMAT + " HH:mm");
                                         String date = AppUtility.getDates(l, formate);
                                         ans = AppUtility.sendDateByFormate(date, true);

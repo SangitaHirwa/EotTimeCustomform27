@@ -356,20 +356,32 @@ public class RemarkCustomFormFragment extends Fragment implements View.OnClickLi
                         if (question_List.get(i).getType().equals("5")) {
                             if (!TextUtils.isEmpty(question_List.get(i).getAns().get(0).getValue())) {
                                 long l = Long.parseLong(question_List.get(i).getAns().get(0).getValue());
-                                String date = AppUtility.getDate(l, "dd-MMM-yyyy");
-                                ans = AppUtility.sendDateByFormate(date,false);
+                                if(l != 0) {
+                                    String date = AppUtility.getDate(l, "dd-MMM-yyyy");
+                                    ans = AppUtility.sendDateByFormate(date, false);
+                                }else{
+                                    ans = "";
+                                }
                             }
                         } else if (question_List.get(i).getType().equals("6")) {
                             if (!TextUtils.isEmpty(question_List.get(i).getAns().get(0).getValue())) {
                                 long l = Long.parseLong(question_List.get(i).getAns().get(0).getValue());
-                                String date = AppUtility.getDate(l, "hh:mm a");
+                                if(l != 0) {
+                                    String date = AppUtility.getDate(l, "hh:mm a");
                                 ans = date;
+                                }else{
+                                    ans = "";
+                                }
                             }
                         } else if (question_List.get(i).getType().equals("7")) {
                             if (!TextUtils.isEmpty(question_List.get(i).getAns().get(0).getValue())) {
                                 long l = Long.parseLong(question_List.get(i).getAns().get(0).getValue());
-                                String date = AppUtility.getDate(l, AppUtility.dateTimeByAmPmFormate(AppConstant.DATE_FORMAT+" hh:mm a", AppConstant.DATE_FORMAT+" HH:mm"));
-                                ans = AppUtility.sendDateByFormate(date,true);
+                                if(l != 0) {
+                                    String date = AppUtility.getDate(l, AppUtility.dateTimeByAmPmFormate(AppConstant.DATE_FORMAT + " hh:mm a", AppConstant.DATE_FORMAT + " HH:mm"));
+                                    ans = AppUtility.sendDateByFormate(date, true);
+                                }else{
+                                    ans = "";
+                                }
                             }
                         } else
                             ans = question_List.get(i).getAns().get(0).getValue();
