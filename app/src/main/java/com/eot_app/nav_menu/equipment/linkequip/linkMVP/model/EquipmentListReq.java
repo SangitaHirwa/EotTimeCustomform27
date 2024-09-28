@@ -12,6 +12,7 @@ public class EquipmentListReq {
     String audId;
     String isParent = "0";
     String contrId;
+    String dateTime;
 
     public void setContrId(String contrId) {
         this.contrId = contrId;
@@ -21,18 +22,19 @@ public class EquipmentListReq {
         return contrId;
     }
 
-    public EquipmentListReq(int index, int limit, String type, String cltId ) {
+    public EquipmentListReq(int index, int limit, String type, String cltId, String dateTime ) {
         this.index = index;
         this.limit = limit;
         this.type = type;
         this.cltId = cltId;
+        this.dateTime = dateTime;
     }
 
-    public EquipmentListReq(int index, int limit, String type, String cltId,String isParent ) {
-        this.index = index;
-        this.limit = limit;
-        this.type = type;
-        this.cltId = cltId;
-        this.isParent = isParent;
-    }
+//    public EquipmentListReq(int index, int limit, String type, String cltId,String isParent ) {
+//        this.index = index;
+//        this.limit = limit;
+//        this.type = type;
+//        this.cltId = cltId;
+//        this.isParent = isParent;
+//    }
 }

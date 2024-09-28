@@ -59,7 +59,9 @@ public interface Service_apis {
     // new api for eq components
      //    after discussion with jit sir we replace this api at 19 jan 2024
 //         String getUserJobList = "JobController/getUserJobListNew";
-     String getUserJobList = "JobController/getUserJobListForMobile";
+//     String getUserJobList = "JobController/getUserJobListForMobile";
+     //   Change flow of equipment for offline mode after discussion with Ayush sir and  Jit sir we replace this api at 09 sep 2024
+     String getUserJobList = "JobController/getUserJobList";
     String getTagList = "JobController/getTagList";
     String getLoginReport = "UserController/generateCheckInOutPDF";
     String getClientSink = "CompanyController/getClientSink";

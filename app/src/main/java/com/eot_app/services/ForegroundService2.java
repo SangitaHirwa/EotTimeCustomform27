@@ -229,38 +229,40 @@ public class ForegroundService2 extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         try {
-            if (Objects.equals(intent.getAction(), STARTFOREGROUND_ACTION)) {
+            if (intent.getAction() != null){
+                if (Objects.equals(intent.getAction(), STARTFOREGROUND_ACTION)) {
 
-                /*    set Initial Values   **********/
-                initializeDistanceParameter();
-                Notification notification = generateNotification(this, "");
-                //            for start in back ground
+                    /*    set Initial Values   **********/
+                    initializeDistanceParameter();
+                    Notification notification = generateNotification(this, "");
+                    //            for start in back ground
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-                    startForeground(FOREGROUND_SERVICE,
-                            notification,FOREGROUND_SERVICE_TYPE_LOCATION);
-                }else {
-                    startForeground(FOREGROUND_SERVICE,
-                            notification);
-                }
-                // ******for location tracking :- ******
-                fucedLocationEnableFunction();
-                getLocation();
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                        startForeground(FOREGROUND_SERVICE,
+                                notification, FOREGROUND_SERVICE_TYPE_LOCATION);
+                    } else {
+                        startForeground(FOREGROUND_SERVICE,
+                                notification);
+                    }
+                    // ******for location tracking :- ******
+                    fucedLocationEnableFunction();
+                    getLocation();
 
-            } else if (intent.getAction().equals(STOPFOREGROUND_ACTION)) {
-                if (mFusedLocationClient != null) {
-                    mFusedLocationClient.removeLocationUpdates(locationCallback);
+                } else if (intent.getAction().equals(STOPFOREGROUND_ACTION)) {
+                    if (mFusedLocationClient != null) {
+                        mFusedLocationClient.removeLocationUpdates(locationCallback);
+                    }
+                    stopForeground(true);
+                    stopSelf();
+                } else if (intent.getAction().equals(STOPFOREGROUND_ADMINDENIED_ACTION)) {
+                    isAdminDenied = true;
+                    if (mFusedLocationClient != null) {
+                        mFusedLocationClient.removeLocationUpdates(locationCallback);
+                    }
+                    stopForeground(true);
+                    stopSelf();
                 }
-                stopForeground(true);
-                stopSelf();
-            } else if (intent.getAction().equals(STOPFOREGROUND_ADMINDENIED_ACTION)) {
-                isAdminDenied = true;
-                if (mFusedLocationClient != null) {
-                    mFusedLocationClient.removeLocationUpdates(locationCallback);
-                }
-                stopForeground(true);
-                stopSelf();
-            }
+        }
         } catch (Exception e) {
             e.printStackTrace();
         }

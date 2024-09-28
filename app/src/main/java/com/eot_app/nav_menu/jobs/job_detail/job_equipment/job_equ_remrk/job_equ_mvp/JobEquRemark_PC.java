@@ -1,6 +1,7 @@
 package com.eot_app.nav_menu.jobs.job_detail.job_equipment.job_equ_remrk.job_equ_mvp;
 
 import android.content.Context;
+import android.os.Looper;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
@@ -48,6 +49,9 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Handler;
+import java.util.zip.Adler32;
+
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -427,8 +431,10 @@ public class JobEquRemark_PC implements JobEquRemark_PI {
                     if (equipment.getEquId().equals(remarkRequest.getEquId())) {
                         equipment.setStatus(remarkRequest.getStatus());
                         equipment.setRemark(remarkRequest.getRemark());
-                        equipment.setEquStatus(remarkRequest.getEquStatus());
                         AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().updateJob(job);
+                        Equipment updatedEquipment = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).equipmentDao().getEquipmentById(equipment.getEquId());
+                        updatedEquipment.setStatus(remarkRequest.getEquStatus());
+                        AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).equipmentDao().insertSingleEquipmentList(updatedEquipment);
                         // for notifying job overview page
                         EotApp.getAppinstance().getJobFlagOverView();
                         // TODO don't have to show remark on main page
@@ -731,7 +737,8 @@ public class JobEquRemark_PC implements JobEquRemark_PI {
                                 Type listType = new TypeToken<List<UpdateEquStatusResModel>>() {
                                 }.getType();
                                 List<UpdateEquStatusResModel> data = new Gson().fromJson(convert, listType);
-                              jobEquimView.setEquStatus(data);
+                                getEquipmentList();
+                                jobEquimView.setEquStatus(data);
                             } else {
                                 jobEquimView.setEquStatus(new ArrayList<UpdateEquStatusResModel>());
                             }
@@ -818,6 +825,7 @@ public class JobEquRemark_PC implements JobEquRemark_PI {
                                 }
                                 updateindexCustomForm = 0;
                                 count = 0;
+                                jobEquimView.reFreshScreen();
                             }
                         }
                     });
