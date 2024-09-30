@@ -281,7 +281,12 @@ public class AddEdit_QRCode_BarCode_Dialog  extends DialogFragment implements Vi
                        txt_or.setVisibility(View.GONE);
                        edt_barcode_qr.setVisibility(View.GONE);
                        scan_button.setVisibility(View.GONE);
+                       if(AppUtility.isInternetConnected()){
                        progressBar_auto_gen_bar_qr.setVisibility(View.VISIBLE);
+                       }else{
+                           EotApp.getAppinstance().
+                                   showToastmsg(LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_check_network));
+                       }
                        radio_barcode_qr_generate.setChecked(true);
                        radio_barcode_qr_insert.setChecked(false);
                        if(barCode != null ){

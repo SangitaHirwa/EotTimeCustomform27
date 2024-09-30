@@ -4,6 +4,7 @@ import static com.eot_app.nav_menu.report.ReportFragment.REPORT_TIMESHEET;
 import static com.eot_app.nav_menu.usr_time_sheet_pkg.TimeSheetFragment.TIMESHEET;
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -11,6 +12,7 @@ import android.content.IntentFilter;
 import android.content.IntentSender;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
@@ -138,6 +140,13 @@ import java.util.Objects;
 import java.util.TimeZone;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
+import androidx.core.content.ContextCompat;
+import android.app.Activity;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 
 
 public class MainActivity extends UploadDocumentActivity implements MainActivityView,
@@ -223,6 +232,8 @@ public class MainActivity extends UploadDocumentActivity implements MainActivity
     LinearLayout parent_calender;
     LinearLayout parent_timeSheet;
     LinearLayout parent_report;
+    private static final String CHANNEL_ID = "network_status_channel";
+    private static final int NOTIFICATION_Net_ID = 1001;
     /**
      * internet off/on event to update user status
      */
@@ -244,8 +255,10 @@ public class MainActivity extends UploadDocumentActivity implements MainActivity
                     isNetworkDisconnected = false;
                     retryCall();
                 }
+                showStickyNotification(EotApp.getCurrentActivity(), true);
             } else {
                 isNetworkDisconnected = true;
+                showStickyNotification(EotApp.getCurrentActivity(), false);
             }
         }
     };
@@ -2504,5 +2517,33 @@ public class MainActivity extends UploadDocumentActivity implements MainActivity
         Toast.makeText(this,msg,Toast.LENGTH_LONG).show();
         EotApp.getAppinstance().sessionExpired();
     }
+    public void showStickyNotification(Context context, boolean isOnline) {
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
+        // Create notification channel for Android 8.0 and above
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(
+                    CHANNEL_ID,
+                    "Network Status Notification",
+                    NotificationManager.IMPORTANCE_DEFAULT
+            );
+            channel.setDescription("Shows online or offline status");
+            notificationManager.createNotificationChannel(channel);
+        }
+        if (isOnline) {
+            notificationManager.cancel(NOTIFICATION_Net_ID);
+        } else {
+            // Build and show the notification
+            String statusText = "You're offline";
+            Notification notification = new NotificationCompat.Builder(context, CHANNEL_ID)
+                    .setContentText(statusText)
+                    .setSmallIcon(R.drawable.ic_alert)  // Use your transparent icon here
+                    .setOngoing(true)  // Makes the notification sticky
+                    .setPriority(NotificationCompat.PRIORITY_HIGH)  // Low priority to avoid interruptions
+                    .setAutoCancel(false)  // Prevents dismissal by the user
+                    .build();
+
+            notificationManager.notify(NOTIFICATION_Net_ID, notification);
+        }
+    }
 }
