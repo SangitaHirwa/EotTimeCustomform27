@@ -581,7 +581,13 @@ public class JobDetail_pc implements JobDetail_pi {
                         }
                     });
         }else {
-            view.setOfflineData();
+            EotApp.getCurrentActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    view.setOfflineData();
+                }
+            });
+
         }
     }
 
@@ -880,7 +886,12 @@ public class JobDetail_pc implements JobDetail_pi {
                         }
                     });
         }else {
-            view.setOfflineData();
+            EotApp.getCurrentActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    view.setOfflineData();
+                }
+            });
         }
     }
     public void addRecordsToDB(List<Job> data, String jobId) {
@@ -897,7 +908,12 @@ public class JobDetail_pc implements JobDetail_pi {
             }
         }
         getEquipmentList(jobId);
-        view.setOfflineData();
+        EotApp.getCurrentActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                view.setOfflineData();
+            }
+        });
     }
 
     @Override
