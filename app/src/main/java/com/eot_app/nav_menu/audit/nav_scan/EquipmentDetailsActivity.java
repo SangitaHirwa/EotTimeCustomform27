@@ -1443,7 +1443,8 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
     public void uploadAttchView(String path) {
         this.path = path;
         REFRESH = true;
-        invalidateOptionsMenu();
+//        invalidateOptionsMenu();
+        onResume();
 
     }
 
