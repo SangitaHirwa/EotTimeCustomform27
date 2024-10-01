@@ -301,9 +301,9 @@ public class FirstSyncActivity extends AppCompatActivity implements FirstSyncVie
             localVersionNumber = App_preference.getSharedprefInstance().getLocalMigrationVersion();
             currentVersionNumber = info.versionName;
             if (localVersionNumber != null && currentVersionNumber != null) {
+                isMigration = true;
                 Log.e("Version Name", "Call migration");
                 if (localVersionNumber.equals("") || (Float.parseFloat(currentVersionNumber) > Float.parseFloat(localVersionNumber))) {
-                    isMigration = true;
                     App_preference.getSharedprefInstance().setLocalMigrationVersion(currentVersionNumber);
                     if (currentVersionNumber.equals(AppUtility.getMigrationNumber())) {
                         if (AppUtility.isInternetConnected()) {
