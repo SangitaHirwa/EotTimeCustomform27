@@ -468,9 +468,19 @@ public class JobEquipmentActivity extends AppCompatActivity implements Job_equim
             onBackPressed();
             return true;
         } else if (item.getItemId() == R.id.ic_qr_code) {
-            Intent intent = new Intent(JobEquipmentActivity.this, BarcodeScanActivity.class);
-            intent.putExtra("comeFrom", "jobEquList");
-            startActivityForResult(intent, SCANNER_DETAIL_CODE);
+            if(AppUtility.isInternetConnected()) {
+                Intent intent = new Intent(JobEquipmentActivity.this, BarcodeScanActivity.class);
+                intent.putExtra("comeFrom", "jobEquList");
+                startActivityForResult(intent, SCANNER_DETAIL_CODE);
+            }else {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        showDialog1(LanguageController.getInstance().getMobileMsgByKey(AppConstant.network_error));
+                    }
+                });
+
+            }
         }
         return true;
     }
@@ -487,13 +497,17 @@ public class JobEquipmentActivity extends AppCompatActivity implements Job_equim
     }
 
     private void showDialog(String message) {
-        AppUtility.alertDialog(this, LanguageController.getInstance().getMobileMsgByKey(AppConstant.dialog_error_title), message, LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), "", new Callable<Boolean>() {
+        AppUtility.alertDialog(EotApp.getCurrentActivity(), LanguageController.getInstance().getMobileMsgByKey(AppConstant.dialog_error_title), message, LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), "", new Callable<Boolean>() {
             @Override
             public Boolean call() {
                 EotApp.getAppinstance().sessionExpired();
                 return null;
             }
         });
+    }
+    /** It will removed when scanner worked in offline*/
+    private void showDialog1(String message) {
+        AppUtility.alertDialog(EotApp.getCurrentActivity(), LanguageController.getInstance().getMobileMsgByKey(AppConstant.dialog_error_title), message, LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), "", null);
     }
 
 
