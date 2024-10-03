@@ -141,29 +141,19 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
                 setJobEquipment(equipment);
                 equpId = equipment.getEquId();
                 jobId = getIntent().getStringExtra("jobId");
-//                equ_details_pc.getEquipmentAduitHistory(equipment.getEquId());
-//                equ_details_pc.getEquipmentJobHistory(equipment.getEquId());
-//                equ_details_pc.getEqItemFromServer(equipment.getEquId(),jobId);
-//                equ_details_pc.getEqPartsFromServer(equipment.getEquId());
 
             } else if (getIntent().hasExtra("audit_equip")) {
                 String str = getIntent().getExtras().getString("audit_equip_str");
                 Equipment_Res equipment = new Gson().fromJson(str, Equipment_Res.class);
                 setAuditEquipment(equipment);
                 equpId = equipment.getEquId();
-//                equ_details_pc.getEquipmentAduitHistory(equipment.getEquId());
-//                equ_details_pc.getEquipmentJobHistory(equipment.getEquId());
-//                equ_details_pc.getEqItemFromServer(equipment.getEquId(),jobId);
-//                equ_details_pc.getEqPartsFromServer(equipment.getEquId());
+
 
             } else if (getIntent().hasExtra("equipment_id")) {
                 Equipment equipment = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).equipmentDao().getEquipmentById(getIntent().getStringExtra("equipment_id"));
                 setEquipmentDetails(equipment);
                 equpId = equipment.getEquId();
-//                equ_details_pc.getEquipmentAduitHistory(equipment.getEquId());
-//                equ_details_pc.getEquipmentJobHistory(equipment.getEquId());
-//                equ_details_pc.getEqItemFromServer(equipment.getEquId(),jobId);
-//                equ_details_pc.getEqPartsFromServer(equipment.getEquId());
+
 
             } else if (getIntent().hasExtra("job_equip_scan")) {
                 String str = getIntent().getExtras().getString("job_equip_str");
@@ -181,10 +171,7 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
                 jobId = getIntent().getStringExtra("jobId");
                 isLinked = getIntent().getBooleanExtra("isLinked", false);
                 isComeFromJobScan = true;
-//                equ_details_pc.getEquipmentAduitHistory(equipment.getEquId());
-//                equ_details_pc.getEquipmentJobHistory(equipment.getEquId());
-//                equ_details_pc.getEqItemFromServer(equipment.getEquId(),jobId);
-//                equ_details_pc.getEqPartsFromServer(equipment.getEquId());
+
 
             }
             if (!getIntent().hasExtra("job_equip_scan")) {
@@ -204,8 +191,8 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
             if (path != null && !path.equals("")) {
                 try {
                     File file1 = new File(path);
-                    String setTextInItemmenu = LanguageController.getInstance().getMobileMsgByKey(AppConstant.view_user_mannual) + " (" + file1.getName() + ")";
-                    txt_addUserManual.setText(setTextInItemmenu);
+//                    String setTextInItemmenu = LanguageController.getInstance().getMobileMsgByKey(AppConstant.view_user_mannual) + " (" + file1.getName() + ")";
+                    txt_addUserManual.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.view_mannual));
                     txt_addUserManual.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
 
                 } catch (Exception ex) {
@@ -245,6 +232,9 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
             setData();
         }
 
+        if(REFRESH){
+            setData();
+        }
         if (getIntent().hasExtra("job_equip_scan")) {
             setViewEquFound();
         }
@@ -562,6 +552,26 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
 
     private void setData() {
         String jobData = "";
+        if (!isComeFromJobScan) {
+            clUserManual.setVisibility(View.VISIBLE);
+            if (path != null && !path.equals("")) {
+                try {
+                    File file1 = new File(path);
+//                    String setTextInItemmenu = LanguageController.getInstance().getMobileMsgByKey(AppConstant.view_user_mannual) + " (" + file1.getName() + ")";
+                    txt_addUserManual.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.view_mannual));
+                    txt_addUserManual.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
+
+                } catch (Exception ex) {
+                    txt_addUserManual.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.plus), null, null, null);
+                    txt_addUserManual.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_user_mannual));
+                }
+            } else {
+                txt_addUserManual.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.plus), null, null, null);
+                txt_addUserManual.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_user_mannual));
+            }
+        }else {
+            clUserManual.setVisibility(View.GONE);
+        }
         if (getIntent().hasExtra("JOBDATA")) {
             try {
                 jobData = (getIntent().getExtras().getString("JOBDATA"));//new Gson().toJson
@@ -605,10 +615,6 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
                     if (equipment.getSno() != null && equipment.getSno().equals(codeText) || equipment.getBarcode() != null && equipment.getBarcode().equals(codeText) || equipment.getQrcode() != null && equipment.getQrcode().equals(codeText)) {
                         setAuditEquipment(equipment);
                         equpId = equipment.getEquId();
-//                        equ_details_pc.getEquipmentAduitHistory(equipment.getEquId());
-//                        equ_details_pc.getEquipmentJobHistory(equipment.getEquId());
-//                        equ_details_pc.getEqItemFromServer(equipment.getEquId(), null);
-//                        equ_details_pc.getEqPartsFromServer(equipment.getEquId());
                         break;
                     }
                 }
@@ -627,10 +633,6 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
                             equipment.setEquipment_group(equipmentRes.getGroupName());
                         }
                         setJobEquipment(equipment);
-//                        equ_details_pc.getEquipmentAduitHistory(equipment.getEquId());
-//                        equ_details_pc.getEquipmentJobHistory(equipment.getEquId());
-//                        equ_details_pc.getEqItemFromServer(equipment.getEquId(), joblist.get(0).getJobId());
-//                        equ_details_pc.getEqPartsFromServer(equipment.getEquId());
                         break;
                     }else {
                         if(equipment.getEquComponent() != null && equipment.getEquComponent().size()>0) {
@@ -771,8 +773,8 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
             if (path != null && !path.equals("")) {
                 try {
                     File file1 = new File(path);
-                    String setTextInItemmenu = LanguageController.getInstance().getMobileMsgByKey(AppConstant.view_user_mannual) + " (" + file1.getName() + ")";
-                    txt_addUserManual.setText(setTextInItemmenu);
+//                    String setTextInItemmenu = LanguageController.getInstance().getMobileMsgByKey(AppConstant.view_user_mannual) + " (" + file1.getName() + ")";
+                    txt_addUserManual.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.view_mannual));
                     txt_addUserManual.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
 
                 } catch (Exception ex) {
@@ -930,8 +932,8 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
             if (path != null && !path.equals("")) {
                 try {
                     File file1 = new File(path);
-                    String setTextInItemmenu = LanguageController.getInstance().getMobileMsgByKey(AppConstant.view_user_mannual) + " (" + file1.getName() + ")";
-                    txt_addUserManual.setText(setTextInItemmenu);
+//                    String setTextInItemmenu = LanguageController.getInstance().getMobileMsgByKey(AppConstant.view_user_mannual) + " (" + file1.getName() + ")";
+                    txt_addUserManual.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.view_mannual));
                     txt_addUserManual.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
 
                 } catch (Exception ex) {
@@ -1079,8 +1081,8 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
                 if (path != null && !path.equals("")) {
                     try {
                         File file1 = new File(path);
-                        String setTextInItemmenu = LanguageController.getInstance().getMobileMsgByKey(AppConstant.view_user_mannual) + " (" + file1.getName() + ")";
-                        txt_addUserManual.setText(setTextInItemmenu);
+//                        String setTextInItemmenu = LanguageController.getInstance().getMobileMsgByKey(AppConstant.view_user_mannual) + " (" + file1.getName() + ")";
+                        txt_addUserManual.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.view_mannual));
                         txt_addUserManual.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
 
                     } catch (Exception ex) {
@@ -1422,7 +1424,7 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
 
                     if (txt_addUserManual.getText().equals(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_user_mannual))) {
                         getDocumentsFromGalleryNotImage();
-                    } else if (txt_addUserManual.getText().equals(LanguageController.getInstance().getMobileMsgByKey(AppConstant.view_user_mannual))) {
+                    } else if (txt_addUserManual.getText().equals(LanguageController.getInstance().getMobileMsgByKey(AppConstant.view_mannual))) {
                         openAttchmentOnBrowser();
                     }
                 }else {
