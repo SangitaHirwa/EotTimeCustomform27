@@ -440,7 +440,6 @@ public class AppConstant {
     public static final String error_msg_job_not_synced = "error_msg_job_not_synced";
     public static final String offline_content = "offline_content";
     public static final String view_mannual = "view_mannual";
-    public static final String migration_update_msg = "migration_update_msg";
 
     /**
      * **** new keys for language support
