@@ -22,8 +22,8 @@ public interface EquipmentDao {
     @Query("select * from Equipment where equId=:equId")
     Equipment getEquipmentById(String equId);
 
-    @Query("select * from Equipment where equId=:equId and parentId = '0'")
-    Equipment getParentEquipmentById(String equId);
+    @Query("select * from Equipment where equId=:equId and parentId = '0' and type = :type")
+    Equipment getParentEquipmentById(String equId, String type);
 
     @Query("select * from Equipment")
     List<Equipment> getAllEquipment();

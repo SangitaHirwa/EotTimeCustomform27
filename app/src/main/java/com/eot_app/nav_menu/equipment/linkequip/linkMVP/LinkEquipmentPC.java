@@ -549,7 +549,7 @@ public class LinkEquipmentPC implements LinkEquipmentPI {
                 List<String> contractEquipDataList = new AppUtility().getContrctEquipment(contrId);
                 for (String equipId: contractEquipDataList
                      ) {
-                    Equipment equipment = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).equipmentDao().getParentEquipmentById(equipId);
+                    Equipment equipment = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).equipmentDao().getParentEquipmentById(equipId, type);
                     if(equipment != null) {
                         equipmentList.add(equipment);
                     }
@@ -582,7 +582,7 @@ public class LinkEquipmentPC implements LinkEquipmentPI {
                     List<String> contractEquipDataList = new AppUtility().getContrctEquipment(contrId);
                     for (String equipId: contractEquipDataList
                     ) {
-                        Equipment equipment = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).equipmentDao().getParentEquipmentById(equipId);
+                        Equipment equipment = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).equipmentDao().getParentEquipmentById(equipId, type);
                         if(equipment != null) {
                             equipmentList.add(equipment);
                         }

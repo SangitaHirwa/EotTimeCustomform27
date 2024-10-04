@@ -26,4 +26,7 @@ public interface ContractDao {
     @Query("Select equArray from ContractRes where contrId=:contrId")
     String getContractEquipListById(String contrId);
 
+    @Query("Select equType from ContractRes where contrId=:contrId")
+    String getContractTypeById(String contrId);
+
 }

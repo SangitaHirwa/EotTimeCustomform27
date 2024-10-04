@@ -54,10 +54,14 @@ import com.eot_app.utility.CustomFilterButton;
 import com.eot_app.utility.EotApp;
 import com.eot_app.utility.db.AppDataBase;
 import com.eot_app.utility.language_support.LanguageController;
+import com.eot_app.utility.settings.contractdb.ContractDao;
+import com.eot_app.utility.settings.contractdb.ContractRes;
 import com.eot_app.utility.settings.equipmentdb.Equipment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+
+import org.jetbrains.annotations.Contract;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -378,6 +382,16 @@ public class JobEquipmentActivity extends AppCompatActivity implements Job_equim
             if (list.size() == 0) {
                 ISCLIENT = false;
                 ISOWN = false;
+                if (!TextUtils.isEmpty(contrId)) {
+                    String contractType  = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).contractDao().getContractTypeById(contrId);
+                    if(contractType.equals("1")){
+                        ISOWN = true;
+                        ISCLIENT = false;
+                    }else if(contractType.equals("2")){
+                        ISOWN = false;
+                        ISCLIENT = true;
+                    }
+                }
                 nolist_linear.setVisibility(View.VISIBLE);
             } else {
                 nolist_linear.setVisibility(View.GONE);
@@ -649,6 +663,20 @@ public class JobEquipmentActivity extends AppCompatActivity implements Job_equim
                 linearFabclient.setAlpha(1f);
                 linearFabclient.setClickable(true);
                 linearFabown.setClickable(true);
+                if (!TextUtils.isEmpty(contrId)) {
+                    String contractType  = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).contractDao().getContractTypeById(contrId);
+                    if(contractType.equals("1")){
+                        linearFabown.setAlpha(1f);
+                        linearFabclient.setAlpha(0.5f);
+                        linearFabclient.setClickable(false);
+                        linearFabown.setClickable(true);
+                    }else if(contractType.equals("2")){
+                        linearFabown.setAlpha(0.5f);
+                        linearFabclient.setAlpha(1f);
+                        linearFabclient.setClickable(true);
+                        linearFabown.setClickable(false);
+                    }
+                }
             } else if (ISOWN) {
                 linearFabown.setAlpha(1f);
                 linearFabclient.setAlpha(0.5f);
@@ -817,7 +845,16 @@ public class JobEquipmentActivity extends AppCompatActivity implements Job_equim
             // isOwn = adapter.getList().get(0).getType().equals("1");
             ISOWN = adapter.getList().get(0).getType().equals("1");
             ISCLIENT = adapter.getList().get(0).getType().equals("2");
-            // if (!TextUtils.isEmpty(contrId)) isOwn = false;
+             if (!TextUtils.isEmpty(contrId)) {
+                 String contractType  = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).contractDao().getContractTypeById(contrId);
+                 if(contractType.equals("1")){
+                     ISOWN = true;
+                     ISCLIENT = false;
+                 }else if(contractType.equals("2")){
+                     ISOWN = false;
+                     ISCLIENT = true;
+                 }
+             }
         }
     }
 
