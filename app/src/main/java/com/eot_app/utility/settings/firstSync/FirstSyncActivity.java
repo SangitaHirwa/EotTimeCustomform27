@@ -329,12 +329,12 @@ public class FirstSyncActivity extends AppCompatActivity implements FirstSyncVie
                             isMigration = true;
                         } else {
                             App_preference.getSharedprefInstance().setLocalMigrationVersion(localVersionNumber);
-                            ResLoginData resLoginData1 = App_preference.getSharedprefInstance().getLoginRes();
-                            resLoginData1.setExpireStatus("0");
-                            String saveLoginData = new Gson().toJson(resLoginData1);
-                            App_preference.getSharedprefInstance().setLoginResponse(saveLoginData);
-                            Toast.makeText(EotApp.getCurrentActivity(), LanguageController.getInstance().getMobileMsgByKey(AppConstant.migration_update_msg), Toast.LENGTH_LONG).show();
-                            goHomePage();
+//                            ResLoginData resLoginData1 = App_preference.getSharedprefInstance().getLoginRes();
+//                            resLoginData1.setExpireStatus("0");
+//                            String saveLoginData = new Gson().toJson(resLoginData1);
+//                            App_preference.getSharedprefInstance().setLoginResponse(saveLoginData);
+                            Toast.makeText(EotApp.getCurrentActivity(), LanguageController.getInstance().getServerMsgByKey(AppConstant.session_expired), Toast.LENGTH_LONG).show();
+                            EotApp.getAppinstance().sessionExpired();;
                             isMigration = false;
                         }
 

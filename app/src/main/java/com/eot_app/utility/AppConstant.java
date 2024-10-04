@@ -304,6 +304,7 @@ public class AppConstant {
     public static final String limit_mid = "limit_mid";
     public static final String limit_high = "limit_high";
     public static final String session_expire = "session_expire";
+    public static final String session_expired = "session_expired";
     public static final String status_new = "status_new";//we can't give name new keyword
     public static final String accepted = "accepted";
     public static final String travelling = "travelling";
