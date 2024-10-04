@@ -3751,7 +3751,15 @@ public void setCompletionDetail(){
             String list = new Gson().toJson(equipList);
             List<EquArrayModel> list1 = new Gson().fromJson(list,new TypeToken<List<EquArrayModel>>(){}.getType());
             Log.e("Size","withoutpart===="+list1.size());
-            adapter.setList(new Gson().fromJson(list,new TypeToken<List<EquArrayModel>>(){}.getType()));
+            Collections.sort(list1, (o1, o2) -> o1.getEqunm().compareTo(o2.getEqunm()));
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    adapter.setList(list1);
+                    recyclerView_job_eq.setAdapter(adapter);
+                }
+            });
+
 
         }
     }
