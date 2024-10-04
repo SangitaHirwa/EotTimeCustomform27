@@ -4,8 +4,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -19,8 +17,6 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
@@ -47,8 +43,6 @@ public class FirstSyncActivity extends AppCompatActivity implements FirstSyncVie
     ImageView sync_iv;
     ProgressBar syn_progress;
     TextView tv_sync_msg;
-    String localVersionNumber;
-    String currentVersionNumber;
 
 
     BroadcastReceiver networkSwitchStateReceiver = new BroadcastReceiver() {
@@ -232,6 +226,14 @@ public class FirstSyncActivity extends AppCompatActivity implements FirstSyncVie
             public void onPossitiveCall() {
 
 
+                EotApp.getAppinstance().clearCache();
+                //added by shivani
+                //In contact and site added a new param is active to manage the enable and disable contact functionality ,
+                // can be removed after two or three release , current version is 2.72
+               // to update is active param as 1 by default in contact site when update occurs
+                App_preference.getSharedprefInstance().setContactSyncTime("");
+                App_preference.getSharedprefInstance().setSiteSyncTime("");
+
 
                 Intent intent = new Intent(FirstSyncActivity.this, Login2Activity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -291,59 +293,4 @@ public class FirstSyncActivity extends AppCompatActivity implements FirstSyncVie
         finish();
     }
 
-    /** For migrate all api call  */
-    @Override
-    public boolean checkMigration() {
-        boolean isMigration = false;
-        try {
-
-            PackageInfo info = EotApp.getAppinstance().getPackageManager().getPackageInfo(EotApp.getAppinstance().getPackageName(), 0);
-            localVersionNumber = App_preference.getSharedprefInstance().getLocalMigrationVersion();
-            currentVersionNumber = info.versionName;
-            if (localVersionNumber != null && currentVersionNumber != null) {
-                Log.e("Version Name", "Call migration");
-                if (localVersionNumber.equals("") || (Float.parseFloat(currentVersionNumber) > Float.parseFloat(localVersionNumber))) {
-                    isMigration = true;
-                    App_preference.getSharedprefInstance().setLocalMigrationVersion(currentVersionNumber);
-                    if (currentVersionNumber.equals(AppUtility.getMigrationNumber())) {
-                        if (AppUtility.isInternetConnected()) {
-                            Log.e("Version Name", "Run Migration ");
-                            EotApp.getAppinstance().clearCache();
-                            App_preference.getSharedprefInstance().setJobSyncTime("");
-                            App_preference.getSharedprefInstance().setJobStartSyncTime("");
-                            App_preference.getSharedprefInstance().setAttachmentStartSyncTime("");
-                            App_preference.getSharedprefInstance().setAppointmentSyncTime("");
-                            App_preference.getSharedprefInstance().setClientSyncTime("");
-                            App_preference.getSharedprefInstance().setContactSyncTime("");
-                            App_preference.getSharedprefInstance().setSiteSyncTime("");
-                            App_preference.getSharedprefInstance().setUsersSyncTime("");
-                            App_preference.getSharedprefInstance().setInventryItemSyncTime("");
-                            App_preference.getSharedprefInstance().setInventryTaxesSyncTime("");
-                            App_preference.getSharedprefInstance().setAuditSyncTime("");
-                            App_preference.getSharedprefInstance().setStockSyncTime("");
-                            App_preference.getSharedprefInstance().setContractSyncTime("");
-                            App_preference.getSharedprefInstance().setAllEquipmentSyncTime("");
-                            App_preference.getSharedprefInstance().setEquipmentSyncTime("");
-                            App_preference.getSharedprefInstance().setTaxLocationSyncTime("");
-                            App_preference.getSharedprefInstance().setShiftTimeSyncTime("");
-                            isMigration = true;
-                        } else {
-                            App_preference.getSharedprefInstance().setLocalMigrationVersion(localVersionNumber);
-                            ResLoginData resLoginData1 = App_preference.getSharedprefInstance().getLoginRes();
-                            resLoginData1.setExpireStatus("0");
-                            String saveLoginData = new Gson().toJson(resLoginData1);
-                            App_preference.getSharedprefInstance().setLoginResponse(saveLoginData);
-                            Toast.makeText(EotApp.getCurrentActivity(), LanguageController.getInstance().getMobileMsgByKey(AppConstant.migration_update_msg), Toast.LENGTH_LONG).show();
-                            goHomePage();
-                            isMigration = false;
-                        }
-
-                    }
-                }
-            }
-        }catch (Exception e){
-            Log.e("Error", "Check Migration in First Sync Activity"+e.getMessage());
-        }
-        return isMigration;
-    }
 }

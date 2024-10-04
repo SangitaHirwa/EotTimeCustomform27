@@ -23,5 +23,4 @@ public interface FirstSyncView {
 
 
     void sessionExpiredFinishActivity();
-    boolean checkMigration();
 }

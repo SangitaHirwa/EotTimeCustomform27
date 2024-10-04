@@ -256,8 +256,7 @@ public class FirstSyncPC implements FirstSyncPi {
 
                                 Log.e("TAG:", "TAG");
 
-                                /** check for migration*/
-                                firstSyncView.checkMigration();
+
                                 /* **** check for language control ******/
                                 checkForLanguageSettings();
 
@@ -273,8 +272,6 @@ public class FirstSyncPC implements FirstSyncPi {
                         @Override
                         public void onError(Throwable e) {
                             AppCenterLogs.addLogToAppCenterOnAPIFail("Api","getMobileDefaultSettings","Error Block in getMobileDefaultSetting","FirstSyncPc","");
-                            /** check for migration*/
-                            firstSyncView.checkMigration();
                             getJobStatusList();
                         }
 
@@ -285,16 +282,13 @@ public class FirstSyncPC implements FirstSyncPi {
                     });
         }
         else {
-            /** check for migration*/
-            if(firstSyncView.checkMigration()) {
-                AppUtility.alertDialog(((Context) firstSyncView),
-                        LanguageController.getInstance().getMobileMsgByKey(AppConstant.dialog_alert),
-                        LanguageController.getInstance().getMobileMsgByKey(AppConstant.no_internet_area),
-                        LanguageController.getInstance().getMobileMsgByKey(AppConstant.continue_), "", () -> {
-                            firstSyncView.goHomePage();
-                            return null;
-                        });
-            }
+            AppUtility.alertDialog(((Context) firstSyncView),
+                    LanguageController.getInstance().getMobileMsgByKey(AppConstant.dialog_alert),
+                    LanguageController.getInstance().getMobileMsgByKey(AppConstant.no_internet_area),
+                    LanguageController.getInstance().getMobileMsgByKey(AppConstant.continue_), "", () -> {
+                        firstSyncView.goHomePage();
+                        return null;
+                    });
         }
     }
 

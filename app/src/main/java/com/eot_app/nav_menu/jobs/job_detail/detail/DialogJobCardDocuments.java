@@ -52,7 +52,7 @@ import com.eot_app.utility.settings.setting_db.FieldWorker;
 import com.eot_app.utility.util_interfaces.MySpinnerAdapter;
 import com.google.gson.Gson;
 import com.gun0912.tedpermission.PermissionListener;
-import com.gun0912.tedpermission.TedPermission;
+import com.gun0912.tedpermission.rx3.TedPermission;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -597,7 +597,23 @@ public class DialogJobCardDocuments extends DialogFragment
             permissionMsg = "<b>Need Storage Permission</b><br><br>If you reject permission,you can not use this service<br><br>Please turn on permissions at [SettingActivity] > [Permission]";
 
         }
-        TedPermission.with(EotApp.getAppinstance())
+        TedPermission.create()
+                .setPermissionListener(new PermissionListener() {
+                    @Override
+                    public void onPermissionGranted() {
+                        if (type == 2)
+                            takeimageFromGalary();
+                    }
+
+                    @Override
+                    public void onPermissionDenied(List<String> deniedPermissions) {
+
+                    }
+                })
+                .setDeniedMessage(Html.fromHtml(permissionMsg))
+                .setPermissions(permissions);
+
+        /*TedPermission.with(EotApp.getAppinstance())
                 .setPermissionListener(new PermissionListener() {
                     @Override
                     public void onPermissionGranted() {
@@ -612,7 +628,7 @@ public class DialogJobCardDocuments extends DialogFragment
                 })
                 .setDeniedMessage(Html.fromHtml(permissionMsg))
                 .setPermissions(permissions)
-                .check();
+                .check();*/
     }
 
     @Override

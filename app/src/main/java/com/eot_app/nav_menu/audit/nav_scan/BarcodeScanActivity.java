@@ -22,8 +22,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
 
-import com.budiyev.android.codescanner.CodeScanner;
-import com.budiyev.android.codescanner.CodeScannerView;
+//import com.budiyev.android.codescanner.CodeScanner;
+//import com.budiyev.android.codescanner.CodeScannerView;
 import com.eot_app.R;
 import com.eot_app.home_screens.MainActivity;
 import com.eot_app.nav_menu.audit.audit_list.audit_mvp.model.AuditList_Res;
@@ -48,9 +48,9 @@ import com.google.mlkit.vision.barcode.common.Barcode;
 import com.google.mlkit.vision.codescanner.GmsBarcodeScanner;
 import com.google.mlkit.vision.codescanner.GmsBarcodeScannerOptions;
 import com.google.mlkit.vision.codescanner.GmsBarcodeScanning;
-import com.google.zxing.BarcodeFormat;
+//import com.google.zxing.BarcodeFormat;
 import com.gun0912.tedpermission.PermissionListener;
-import com.gun0912.tedpermission.TedPermission;
+import com.gun0912.tedpermission.rx3.TedPermission;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -62,7 +62,7 @@ import java.util.concurrent.Callable;
  */
 public class BarcodeScanActivity extends AppCompatActivity implements ScanBarcode_View {
 
-    private CodeScanner mCodeScanner;
+//    private CodeScanner mCodeScanner;
     private ScanBarcode_PC scanBarcode_pc;
     AppCompatImageView img_search;
     private EditText edit_barcode;
@@ -118,7 +118,7 @@ public class BarcodeScanActivity extends AppCompatActivity implements ScanBarcod
 
         hideActionBar(true);
 
-        CodeScannerView scannerView = findViewById(R.id.scanner_view);
+//        CodeScannerView scannerView = findViewById(R.id.scanner_view);
 
         img_search = findViewById(R.id.img_search);
         edit_barcode = findViewById(R.id.edit_barcode);
@@ -219,7 +219,7 @@ public class BarcodeScanActivity extends AppCompatActivity implements ScanBarcod
 
     private void startScanner() {
         if (AppUtility.askCameraTakePicture(this)) {
-            mCodeScanner.startPreview();
+//            mCodeScanner.startPreview();
         } else {
             // Sdk version 33
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -235,7 +235,22 @@ public class BarcodeScanActivity extends AppCompatActivity implements ScanBarcod
         if (type == 0) {
             permissionMsg = "<b>Need Camera and Storage Permission</b><br><br>If you reject permission,you can not use this service<br><br>Please turn on permissions at [SettingActivity] > [Permission]";
         }
-        TedPermission.with(EotApp.getAppinstance()).setPermissionListener(new PermissionListener() {
+        TedPermission.create()
+                .setPermissionListener(new PermissionListener() {
+                    @Override
+                    public void onPermissionGranted() {
+//                        if (type == 0)
+//                            mCodeScanner.startPreview();
+                    }
+
+                    @Override
+                    public void onPermissionDenied(List<String> deniedPermissions) {
+
+                    }
+                })
+                .setDeniedMessage(Html.fromHtml(permissionMsg))
+                .setPermissions(permissions);
+       /* TedPermission.with(EotApp.getAppinstance()).setPermissionListener(new PermissionListener() {
             @Override
             public void onPermissionGranted() {
                 if (type == 0) mCodeScanner.startPreview();
@@ -245,7 +260,7 @@ public class BarcodeScanActivity extends AppCompatActivity implements ScanBarcod
             public void onPermissionDenied(ArrayList<String> deniedPermissions) {
                 startActivity(new Intent(BarcodeScanActivity.this, MainActivity.class));
             }
-        }).setDeniedMessage(Html.fromHtml(permissionMsg)).setPermissions(permissions).check();
+        }).setDeniedMessage(Html.fromHtml(permissionMsg)).setPermissions(permissions).check();*/
     }
 
     /*hide show actionbar*/

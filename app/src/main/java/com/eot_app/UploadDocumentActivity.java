@@ -25,8 +25,8 @@ import com.eot_app.utility.EotApp;
 import com.eot_app.utility.language_support.LanguageController;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.gun0912.tedpermission.PermissionListener;
-import com.gun0912.tedpermission.TedPermission;
-import com.hypertrack.hyperlog.HyperLog;
+import com.gun0912.tedpermission.rx3.TedPermission;
+import com.hypertrack.hyperlog.HyperLog;;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -152,7 +152,26 @@ public class UploadDocumentActivity extends AppCompatActivity implements ImageCr
             permissionMsg = "<b>Need Storage Permission</b><br><br>If you reject permission,you can not use this service<br><br>Please turn on permissions at [SettingActivity] > [Permission]";
 
         }
-        TedPermission.with(EotApp.getAppinstance())
+        TedPermission.create()
+                .setPermissionListener(new PermissionListener() {
+                    @Override
+                    public void onPermissionGranted() {
+                        if (type == 0)
+                            getPictureFromCamera();
+                        else if (type == 1)
+                            getImageFromGallery();
+                        else if (type == 2)
+                            getDocumentsFromGallery();
+                    }
+
+                    @Override
+                    public void onPermissionDenied(List<String> deniedPermissions) {
+
+                    }
+                })
+                .setDeniedMessage(Html.fromHtml(permissionMsg))
+                .setPermissions(permissions);
+     /*   TedPermission.with(EotApp.getAppinstance())
                 .setPermissionListener(new PermissionListener() {
                     @Override
                     public void onPermissionGranted() {
@@ -171,7 +190,7 @@ public class UploadDocumentActivity extends AppCompatActivity implements ImageCr
                 })
                 .setDeniedMessage(Html.fromHtml(permissionMsg))
                 .setPermissions(permissions)
-                .check();
+                .check();*/
     }
 
 

@@ -22,14 +22,12 @@ import com.bumptech.glide.Glide;
 import com.eot_app.R;
 import com.eot_app.nav_menu.audit.audit_list.documents.doc_model.GetFileList_Res;
 import com.eot_app.nav_menu.audit.audit_list.equipment.AuditAttchmentAdpter;
-import com.eot_app.nav_menu.audit.audit_list.equipment.equipment_room_db.entity.EquipmentStatus;
+import com.eot_app.nav_menu.audit.audit_list.equipment.model.EquipmentStatus;
 import com.eot_app.nav_menu.audit.audit_list.equipment.model.Equipment_Res;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.job_equ_remrk.JobEquRemarkRemarkActivity;
 import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.App_preference;
 import com.eot_app.utility.CustomLinearLayoutManager;
-import com.eot_app.utility.EotApp;
-import com.eot_app.utility.db.AppDataBase;
 import com.eot_app.utility.language_support.LanguageController;
 import com.google.gson.Gson;
 import com.hypertrack.hyperlog.HyperLog;
@@ -51,7 +49,7 @@ public class AuditEquipmentAdapter extends RecyclerView.Adapter<AuditEquipmentAd
     public AuditEquipmentAdapter(Context mContext, OnEquipmentSelectionForDetails selectionForDetails
             , SelectedpositionForAttchment selectedpositionForAttchment) {
         this.mContext = mContext;
-        equipmentStatus = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).equipmentStatusDao().getEquipmentCondition();
+        equipmentStatus = App_preference.getSharedprefInstance().getLoginRes().getEquipmentStatus();
         this.selectionForDetails = selectionForDetails;
         this.selectedpositionForAttchment = selectedpositionForAttchment;
     }

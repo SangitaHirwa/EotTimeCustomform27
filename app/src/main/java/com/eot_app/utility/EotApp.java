@@ -18,7 +18,6 @@ import android.widget.Toast;
 import com.eot_app.R;
 import com.eot_app.login_next.Login2Activity;
 import com.eot_app.nav_menu.appointment.AppointmentItem_Observer;
-import com.eot_app.nav_menu.equipment.linkequip.linkMVP.NotifyForLinkUnlinkEquipment;
 import com.eot_app.nav_menu.jobs.job_complation.compla_model.NotifyForcompletion;
 import com.eot_app.nav_menu.jobs.job_complation.compla_model.NotifyForcompletionInDetail;
 import com.eot_app.nav_menu.jobs.job_complation.compla_model.NotifyForcompletionInJob;
@@ -85,7 +84,6 @@ public class EotApp extends Application implements Application.ActivityLifecycle
     private NotifyForcompletionInDetail notifyForcompletionInDetail;
     private NotifyForMultiDocAddForAttach notifyForMultiDocAddForAttach;
     private NotifyForRequestedItemList notifyForRequestedItemList;
-    private NotifyForLinkUnlinkEquipment notifyForLinkUnlinkEquipment;
     private EquipItemObserver equipItemObserver;
     private static Activity currentActivity = null;
 
@@ -332,16 +330,6 @@ public class EotApp extends Application implements Application.ActivityLifecycle
             notifyForRequestedItemList.updateReqItemList(api_name,message,requestedModel);
         }
     }
-    public void setNotifyForLinkUnlinkEquipment(NotifyForLinkUnlinkEquipment notifyForLinkUnlinkEquipment) {
-        this.notifyForLinkUnlinkEquipment = notifyForLinkUnlinkEquipment;
-    }
-    public void getNotifyForLinkUnlinkEquipment(String api_name, String message) {
-        if(notifyForLinkUnlinkEquipment != null){
-            notifyForLinkUnlinkEquipment.updateReqEquipmentList(api_name,message);
-        }
-    }
-
-
 
     public void getNotifyForInvoiceGenr() {
         if (notifyForInvoiceGenr!=null)

@@ -91,8 +91,9 @@ public class CompressImageInBack {
 try {
     Log.e("Img", "Single img compress");
     CompressImg1 compressImg1 = new CompressImg1();
-    String path = compressImg1.compressImage(new File(PathUtils.getRealPath(EotApp.getCurrentActivity(),imagePath)), 1280, 720, 200);
+    String path = compressImg1.compressImage(new File(PathUtils.getRealPath(context,imagePath)), 1280, 720, 200);
     bitmap = AppUtility.getBitmapFromPath(path);
+    savedImagePath = path;
 }catch (Exception e){
     Log.e("error", e.getMessage());
 }

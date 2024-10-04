@@ -80,15 +80,7 @@ public class EquArrayModel implements Parcelable {
     private String barcodeImg;
     private String qrcode;
     private String qrcodeImg;
-    private  String equRemarkCondition = "";
 
-    public String getEquRemarkCondition() {
-        return equRemarkCondition;
-    }
-
-    public void setEquRemarkCondition(String equRemarkCondition) {
-        this.equRemarkCondition = equRemarkCondition;
-    }
 
     public String getSupId() {
         return supId;

@@ -231,9 +231,4 @@ public class JobEquLinkItemActivity extends AppCompatActivity implements JobEquR
     public void setEquStatus(List<UpdateEquStatusResModel> resModel) {
 
     }
-
-    @Override
-    public void reFreshScreen() {
-
-    }
 }

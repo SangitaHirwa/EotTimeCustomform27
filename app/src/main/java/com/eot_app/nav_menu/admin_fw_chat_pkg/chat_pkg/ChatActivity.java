@@ -60,7 +60,9 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.gson.Gson;
 import com.gun0912.tedpermission.PermissionListener;
-import com.gun0912.tedpermission.TedPermission;
+//import com.gun0912.tedpermission.TedPermission;
+import com.gun0912.tedpermission.rx3.TedPermission;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -395,7 +397,24 @@ public class ChatActivity extends AppCompatActivity implements
             permissionMsg = "<b>Need Storage Permission</b><br><br>If you reject permission,you can not use this service<br><br>Please turn on permissions at [SettingActivity] > [Permission]";
 
         }
-        TedPermission.with(EotApp.getAppinstance())
+        TedPermission.create()
+                .setPermissionListener(new PermissionListener() {
+                    @Override
+                    public void onPermissionGranted() {
+                        if (type == 0)
+                            takePictureFromCamera();
+                        else if (type == 1)
+                            takeimageFromGalary();
+                    }
+
+                    @Override
+                    public void onPermissionDenied(List<String> deniedPermissions) {
+
+                    }
+                })
+                .setDeniedMessage(Html.fromHtml(permissionMsg))
+                .setPermissions(permissions);
+        /*TedPermission.with(EotApp.getAppinstance())
                 .setPermissionListener(new PermissionListener() {
                     @Override
                     public void onPermissionGranted() {
@@ -412,7 +431,7 @@ public class ChatActivity extends AppCompatActivity implements
                 })
                 .setDeniedMessage(Html.fromHtml(permissionMsg))
                 .setPermissions(permissions)
-                .check();
+                .check();*/
     }
     private void takeimageFromGalary() {
         Intent galleryintent = new Intent(Intent.ACTION_GET_CONTENT, null);

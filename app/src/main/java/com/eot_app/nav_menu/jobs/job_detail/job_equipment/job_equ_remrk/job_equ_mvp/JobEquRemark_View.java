@@ -31,6 +31,6 @@ public interface JobEquRemark_View {
     void notDtateFoundInRequestedItemList(String msg);
     void deletedRequestData(String msg, AddUpdateRequestedModel requestedModel);
     void setEquStatus(List<UpdateEquStatusResModel> resModel);
-    void  reFreshScreen();
+
 
 }

@@ -1,6 +1,8 @@
 package com.eot_app.nav_menu.jobs.job_detail.job_equipment.job_equ_mvp;
 
+import com.eot_app.nav_menu.audit.audit_list.equipment.model.EquipmentStatus;
 import com.eot_app.nav_menu.jobs.job_db.EquArrayModel;
+import com.eot_app.nav_menu.jobs.job_detail.job_equipment.model.EquipmentSaveClientRes;
 
 import java.util.List;
 

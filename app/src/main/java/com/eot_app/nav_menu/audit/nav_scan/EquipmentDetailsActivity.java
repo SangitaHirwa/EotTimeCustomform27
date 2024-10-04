@@ -106,6 +106,7 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
     ImageView img_barcode, img_Qrcode, last_service_show_hide,upcoming_service_show_hide,part_list_show_hide,item_list_show_hide,audit_list_show_hide;
     private boolean REFRESH = false;
     private String cltId;
+    private Job_equim_PI jobEquimPi;
     public AddEdit_QRCode_BarCode_Dialog addEditQrCodeBarCodeDialog;
     boolean clicked_service_history = false;
     boolean clicked_upcoming_service = false;
@@ -213,6 +214,8 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
     }
 
     private void init() {
+        jobEquimPi = new Job_equim_PC(this);
+        jobEquimPi.getEquipmentStatus();
         AppUtility.progressBarDissMiss();
         if (getIntent().hasExtra("equipment")) {
             if (equpId != null && !equpId.isEmpty()) {

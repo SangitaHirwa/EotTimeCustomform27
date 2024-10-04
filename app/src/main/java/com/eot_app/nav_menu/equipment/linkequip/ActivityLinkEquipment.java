@@ -1,13 +1,11 @@
 package com.eot_app.nav_menu.equipment.linkequip;
-/** After Discuss with Jit Sit (20/9/24)
- * Only site equipment show in client equipment on site basis and only contract equipment show in client equipment on contract basis.
- * All equipment show in own equipment on site basis and only contract equipment show in own equipment on contract basis.
- */
+
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -38,19 +36,17 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.eot_app.R;
-import com.eot_app.nav_menu.audit.audit_list.equipment.equipment_room_db.entity.EquipmentStatus;
+import com.eot_app.nav_menu.audit.audit_list.equipment.model.EquipmentStatus;
 import com.eot_app.nav_menu.equipment.link_own_client_equ_barc.JobEquipmentScanActivity;
 import com.eot_app.nav_menu.equipment.linkequip.linkMVP.LinkEquipmentPC;
 import com.eot_app.nav_menu.equipment.linkequip.linkMVP.LinkEquipmentPI;
 import com.eot_app.nav_menu.equipment.linkequip.linkMVP.LinkEquipmentView;
-import com.eot_app.nav_menu.equipment.linkequip.linkMVP.NotifyForLinkUnlinkEquipment;
 import com.eot_app.nav_menu.equipment.linkequip.linkMVP.model.ContractEquipmentReq;
 import com.eot_app.nav_menu.jobs.job_db.EquArrayModel;
-import com.eot_app.services.Service_apis;
+import com.eot_app.nav_menu.jobs.job_detail.job_equipment.JobEquipmentActivity;
 import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.AppUtility;
 import com.eot_app.utility.EotApp;
-import com.eot_app.utility.db.AppDataBase;
 import com.eot_app.utility.language_support.LanguageController;
 import com.eot_app.utility.util_interfaces.MySpinnerAdapter;
 import com.google.gson.Gson;
@@ -60,7 +56,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class ActivityLinkEquipment extends AppCompatActivity implements View.OnClickListener,
-        LinkEquipmentView, EquipmentLinkAdapter.OnEquipmentSelection, NotifyForLinkUnlinkEquipment {
+        LinkEquipmentView, EquipmentLinkAdapter.OnEquipmentSelection {
     static public boolean SCANBY = false;
     LinkEquipmentPI linkEquipmentPI;
     RecyclerView recyclerView;//, found_equipment_list;
@@ -83,12 +79,12 @@ public class ActivityLinkEquipment extends AppCompatActivity implements View.OnC
     Button save_btn;
     List<String> linkedEquipments=new ArrayList<>();
 
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_link_equipment);
 
-        EotApp.getAppinstance().setNotifyForLinkUnlinkEquipment(this);
         getSupportActionBar().setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.link_equipment));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -146,7 +142,6 @@ public class ActivityLinkEquipment extends AppCompatActivity implements View.OnC
 
         linkEquipmentPI = new LinkEquipmentPC(this);
 
-
         /*****Android***/
         //  setContractMsg(contractMsg);
 
@@ -176,13 +171,11 @@ public class ActivityLinkEquipment extends AppCompatActivity implements View.OnC
             }
         });
         tv_filter_name.setOnClickListener(v -> spinner_filter.performClick());
-        setEquStatusList();
         SCANBY = false;
     }
 
     private void setContractMsg(boolean isContractMsg) {
         String msg = "";
-        this.contractMsg = isContractMsg;
         if (isContractMsg)
             msg = LanguageController.getInstance().getMobileMsgByKey(AppConstant.contract_link_msg);
         else
@@ -382,13 +375,11 @@ public class ActivityLinkEquipment extends AppCompatActivity implements View.OnC
 
     @Override
     public void refreshEquipmentList(boolean isReturn,boolean equiAdd) {
-//        if (TextUtils.isEmpty(contrId))
-        if(linkEquipmentPI != null) {
-            linkEquipmentPI.getEquipmentList(type, contrId, id);
-//        else linkEquipmentPI.getContractList(new ContractEquipmentReq(type, id, contrId));
-            if (equiAdd) {
-                linkEquipmentPI.getAttachedEquipmentList(type, id, contrId, isReturn);
-            }
+        if (TextUtils.isEmpty(contrId))
+            linkEquipmentPI.getEquipmentList(type, cltId, id);
+        else linkEquipmentPI.getContractList(new ContractEquipmentReq(type, id, contrId));
+        if(equiAdd){
+            linkEquipmentPI.getAttachedEquipmentList(id,contrId,isReturn);
         }
     }
 
@@ -400,18 +391,18 @@ public class ActivityLinkEquipment extends AppCompatActivity implements View.OnC
         });
     }
 
-
-    public void setEquStatusList() {
-        statusList = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).equipmentStatusDao().getEquipmentStatus();
+    @Override
+    public void setEquStatusList(List<EquipmentStatus> list) {
+        statusList = list;
         if (adapter != null)
-            adapter.setEquipmentStatus(statusList);
+            adapter.setEquipmentStatus(list);
         if (!TextUtils.isEmpty(type)) {
             if (TextUtils.isEmpty(contrId)) {
                 tv_contract_msg.setVisibility(View.GONE);
-                linkEquipmentPI.getEquipmentList(type, "", id);
+                linkEquipmentPI.getEquipmentList(type, cltId, id);
             } else {
                 tv_contract_msg.setVisibility(View.VISIBLE);
-                linkEquipmentPI.getEquipmentList(type, contrId, id);
+                linkEquipmentPI.getContractList(new ContractEquipmentReq(type, id, contrId));
             }
         }
 
@@ -453,15 +444,5 @@ public class ActivityLinkEquipment extends AppCompatActivity implements View.OnC
                linkEquipmentPI.addAuditEquipment(linkedEquipments, id, "");
            }
        }
-    }
-
-    @Override
-    public void updateReqEquipmentList(String api_name, String message) {
-        switch (api_name) {
-            case Service_apis.addAuditEquipment:
-                refreshEquipmentList(true,true);
-                break;
-        }
-
     }
 }

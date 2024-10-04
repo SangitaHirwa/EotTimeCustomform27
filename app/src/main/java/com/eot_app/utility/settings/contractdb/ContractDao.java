@@ -22,8 +22,4 @@ public interface ContractDao {
 
     @Query("delete from ContractRes")
     void delete();
-
-    @Query("Select equArray from ContractRes where contrId=:contrId")
-    String getContractEquipListById(String contrId);
-
 }

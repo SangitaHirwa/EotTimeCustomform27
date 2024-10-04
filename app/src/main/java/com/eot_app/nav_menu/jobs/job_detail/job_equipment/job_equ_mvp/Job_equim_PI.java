@@ -5,6 +5,10 @@ package com.eot_app.nav_menu.jobs.job_detail.job_equipment.job_equ_mvp;
  */
 public interface Job_equim_PI {
     void getEquipmentList(String jobId);
+    void getEquipmentStatus();
 
+    void getEquipmentJobList(String auditID, String jobId);
+
+    void getEquipmentBySiteName(String jobId, String siteNAme);
     void loadFromServer(String jobId);
 }

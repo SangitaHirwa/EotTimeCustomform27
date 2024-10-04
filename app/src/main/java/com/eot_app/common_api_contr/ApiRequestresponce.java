@@ -8,7 +8,6 @@ import com.eot_app.utility.language_support.LanguageController;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.hypertrack.hyperlog.HyperLog;
-
 import org.jetbrains.annotations.NotNull;
 
 import io.reactivex.Observer;

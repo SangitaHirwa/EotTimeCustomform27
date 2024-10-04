@@ -19,8 +19,6 @@ import com.eot_app.nav_menu.appointment.dbappointment.AppointmentStatusDao;
 import com.eot_app.nav_menu.audit.audit_db.AuditDao;
 import com.eot_app.nav_menu.audit.audit_db.AuditStatusDao;
 import com.eot_app.nav_menu.audit.audit_list.audit_mvp.model.AuditList_Res;
-import com.eot_app.nav_menu.audit.audit_list.equipment.equipment_room_db.dao.EquipmentStatusDao;
-import com.eot_app.nav_menu.audit.audit_list.equipment.equipment_room_db.entity.EquipmentStatus;
 import com.eot_app.nav_menu.audit.audit_list.equipment.model.EquCategoryConvrtr;
 import com.eot_app.nav_menu.audit.audit_list.equipment.model.EquipmentTypeConverter;
 import com.eot_app.nav_menu.audit.audit_model.AuditStatusModel;
@@ -71,7 +69,6 @@ import com.eot_app.nav_menu.jobs.joboffline_db.JobOfflineDataDao;
 import com.eot_app.nav_menu.jobs.joboffline_db.JobOfflineDataModel;
 import com.eot_app.time_shift_pkg.ShiftTimeDao;
 import com.eot_app.time_shift_pkg.ShiftTimeReSModel;
-import com.eot_app.utility.AppUtility;
 import com.eot_app.utility.settings.client_refrence_db.ClientRefrenceDao;
 import com.eot_app.utility.settings.client_refrence_db.ClientRefrenceModel;
 import com.eot_app.utility.settings.clientaccount_db.ClientAccountDao;
@@ -109,9 +106,9 @@ import com.eot_app.utility.settings.setting_db.TagData;
         , AuditList_Res.class, ContractRes.class, Equipment.class, JobStatusModelNew.class,
         TaxesLocation.class, ClientRefrenceModel.class, ShiftTimeReSModel.class, CustomForm.class, CustomFormQue.class,
         CustomFormSubmited.class, CustomFormListOffline.class, AuditStatusModel.class, AppointmentStatusModel.class, OfflieCompleQueAns.class,
-        Attachments.class, BrandData.class, StockData.class, EquipmentStatus.class},
+        Attachments.class, BrandData.class, StockData.class},
 
-        version = 53, exportSchema = false)
+        version = 52, exportSchema = false)
 @TypeConverters({TaxDataConverter.class, TagDataConverter.class, InvoiceItemDataModelConverter.class, TaxConverter.class
         , EquipmentTypeConverter.class, EquArrayConvrtr.class, EquCategoryConvrtr.class
         , SiteCustomFieldConverter.class, JobRecurTypeConvert.class, SelecetedDaysConverter.class
@@ -789,28 +786,6 @@ public abstract class AppDataBase extends RoomDatabase {
             database.execSQL("ALTER TABLE Job ADD COLUMN customerName TEXT");
         }
     };
-    /**
-    * Add new column in Equipment for offline mode 10/09/2024*/
-    static final Migration MIGRATION_52_53 = new Migration(52, 53) {
-        @Override
-        public void migrate(@NonNull SupportSQLiteDatabase database) {
-            database.execSQL("ALTER TABLE Equipment ADD COLUMN statusUpdateDate TEXT");
-            database.execSQL("ALTER TABLE Equipment ADD COLUMN equRemarkCondition TEXT");
-            database.execSQL("ALTER TABLE Equipment ADD COLUMN siteId TEXT");
-            /**
-             * Add new column in Attachment for offline mode 12//09/2024*/
-            database.execSQL("ALTER TABLE Attachments ADD COLUMN equId TEXT");
-
-            /***CREATE Table for equipment Status offline 20/09/24**/
-            database.execSQL("CREATE TABLE IF NOT EXISTS `EquipmentStatus` (`esId` TEXT NOT NULL UNIQUE,'statusText' TEXT," +
-                    "'updatedate' TEXT,'isDefault' TEXT,'isCondition' TEXT,"
-                    + " PRIMARY KEY(`esId`)) ");
-            /**
-             * Add new column in Contract for offline mode 23//09/2024*/
-            database.execSQL("ALTER TABLE ContractRes ADD COLUMN equType TEXT");
-            database.execSQL("ALTER TABLE ContractRes ADD COLUMN equArray TEXT");
-        }
-    };
 
     private static final String DB_NAME = "eot_db";
 
@@ -877,11 +852,8 @@ public abstract class AppDataBase extends RoomDatabase {
                     .addMigrations(MIGRATION_49_50)
                     .addMigrations(MIGRATION_50_51)
                     .addMigrations(MIGRATION_51_52)
-                    .addMigrations(MIGRATION_52_53)
                     .fallbackToDestructiveMigration()
                     .build();
-
-                    /** VVVIMP Whenever update migrate, Please also update version name in AppUtility.getMigrationNumber() function (28-sep-2024)*/
         }
         return INSTANCE;
     }
@@ -946,5 +918,4 @@ public abstract class AppDataBase extends RoomDatabase {
     public abstract Attachments_Dao attachments_dao();
     public abstract BrandDao brandDao();
     public abstract StockDataDao stockDataDao();
-    public abstract EquipmentStatusDao equipmentStatusDao();
 }

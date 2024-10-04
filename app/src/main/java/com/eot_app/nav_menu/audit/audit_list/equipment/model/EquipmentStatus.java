@@ -1,24 +1,12 @@
-package com.eot_app.nav_menu.audit.audit_list.equipment.equipment_room_db.entity;
+package com.eot_app.nav_menu.audit.audit_list.equipment.model;
 
-import androidx.annotation.NonNull;
-import androidx.room.ColumnInfo;
-import androidx.room.Entity;
-import androidx.room.PrimaryKey;
+import java.io.Serializable;
 
-@Entity(tableName = "EquipmentStatus")
-public class EquipmentStatus  {
-    @PrimaryKey
-    @NonNull
-    @ColumnInfo(name = "esId")
+public class EquipmentStatus implements Serializable {
     private String esId;
-    @ColumnInfo(name = "statusText")
     private String statusText;
-    @ColumnInfo(name = "updatedate")
     private String updatedate;
-    @ColumnInfo(name = "isDefault")
     private String isDefault;
-    @ColumnInfo(name = "isCondition")
-    private String isCondition; // 1 = Status , 0 = Condition;
 
     public String getEsId() {
         return esId;
@@ -52,11 +40,5 @@ public class EquipmentStatus  {
         this.isDefault = isDefault;
     }
 
-    public String getIsCondition() {
-        return isCondition;
-    }
 
-    public void setIsCondition(String isCondition) {
-        this.isCondition = isCondition;
-    }
 }

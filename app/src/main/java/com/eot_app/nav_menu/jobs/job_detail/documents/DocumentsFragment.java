@@ -20,6 +20,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -27,6 +28,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
@@ -64,7 +66,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.gun0912.tedpermission.PermissionListener;
-import com.gun0912.tedpermission.TedPermission;
+import com.gun0912.tedpermission.rx3.TedPermission;
 import com.hypertrack.hyperlog.HyperLog;
 
 import org.checkerframework.checker.units.qual.A;
@@ -440,7 +442,26 @@ public class DocumentsFragment extends Fragment implements Doc_Attch_View, Docum
             permissionMsg = "<b>Need Storage Permission</b><br><br>If you reject permission,you can not use this service<br><br>Please turn on permissions at [SettingActivity] > [Permission]";
 
         }
-        TedPermission.with(EotApp.getAppinstance())
+        TedPermission.create()
+                .setPermissionListener(new PermissionListener() {
+                    @Override
+                    public void onPermissionGranted() {
+                        if (type == 0)
+                            takePictureFromCamera();
+                        else if (type == 1)
+                            getImageFromGallray();
+                        else if (type == 2)
+                            takeimageFromGalary();
+                    }
+
+                    @Override
+                    public void onPermissionDenied(List<String> deniedPermissions) {
+
+                    }
+                })
+                .setDeniedMessage(Html.fromHtml(permissionMsg))
+                .setPermissions(permissions);
+      /*  TedPermission.with(EotApp.getAppinstance())
                 .setPermissionListener(new PermissionListener() {
                     @Override
                     public void onPermissionGranted() {
@@ -459,7 +480,7 @@ public class DocumentsFragment extends Fragment implements Doc_Attch_View, Docum
                 })
                 .setDeniedMessage(Html.fromHtml(permissionMsg))
                 .setPermissions(permissions)
-                .check();
+                .check();*/
     }
     private void getImageFromGallray() {
 //        Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -785,10 +806,6 @@ public class DocumentsFragment extends Fragment implements Doc_Attch_View, Docum
 
     }
 
-    @Override
-    public void onRemoveViewListener(int numberOfAddedViews) {
-
-    }
 
     @Override
     public void onRemoveViewListener(ViewType viewType, int numberOfAddedViews) {
@@ -928,4 +945,8 @@ public class DocumentsFragment extends Fragment implements Doc_Attch_View, Docum
                 "",LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), null);
     }
 
+    @Override
+    public void onTouchSourceImage(@NonNull MotionEvent motionEvent) {
+
+    }
 }

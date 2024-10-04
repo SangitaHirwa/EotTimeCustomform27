@@ -2,6 +2,11 @@ pluginManagement {
     repositories {
         google()
         mavenCentral()
+        maven { url 'https://jitpack.io' }
+        maven {
+            name 'hypertrack'
+            url 'https://s3-us-west-2.amazonaws.com/m2.hypertrack.com/'
+        }
         gradlePluginPortal()
     }
 }
@@ -10,8 +15,13 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
-        jcenter()
+        maven { url 'https://jitpack.io' }
+        maven {
+            name 'hypertrack'
+            url 'https://s3-us-west-2.amazonaws.com/m2.hypertrack.com/'
+        }
     }
 }
 rootProject.name = "EyeOnTask"
 include ':app'
+include ':hyperlog'

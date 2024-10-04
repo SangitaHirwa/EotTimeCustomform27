@@ -69,8 +69,6 @@ public class Attachments implements Parcelable {
     private String isdelete;
     @SerializedName("tempId")
     private String tempId;
-    @SerializedName("equId")
-    private String equId;
     @Ignore
     private String complNote;
 
@@ -390,13 +388,6 @@ public class Attachments implements Parcelable {
         this.tempId = tempId;
     }
 
-    public String getEquId() {
-        return equId;
-    }
-
-    public void setEquId(String equId) {
-        this.equId = equId;
-    }
 
     @Override
     public int describeContents() {

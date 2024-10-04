@@ -69,7 +69,8 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.gun0912.tedpermission.PermissionListener;
-import com.gun0912.tedpermission.TedPermission;
+//import com.gun0912.tedpermission.TedPermission;
+import com.gun0912.tedpermission.rx3.TedPermission;
 import com.hypertrack.hyperlog.HyperLog;
 
 
@@ -428,8 +429,22 @@ public class JobCardViewActivity extends AppCompatActivity  implements
         if(type == 2){
             permissionMsg = "<b>Need Storage Permission</b><br><br>If you reject permission,you can not use this service<br><br>Please turn on permissions at [SettingActivity] > [Permission]";
         }
+        TedPermission.create()
+                .setPermissionListener(new PermissionListener() {
+                    @Override
+                    public void onPermissionGranted() {
+                        if (type == 2)
+                            takeimageFromGalary();
+                    }
 
-        TedPermission.with(EotApp.getAppinstance())
+                    @Override
+                    public void onPermissionDenied(List<String> deniedPermissions) {
+
+                    }
+                })
+                .setDeniedMessage(Html.fromHtml(permissionMsg))
+                .setPermissions(permissions);
+        /*TedPermission.with(EotApp.getAppinstance())
                 .setPermissionListener(new PermissionListener() {
                     @Override
                     public void onPermissionGranted() {
@@ -444,7 +459,7 @@ public class JobCardViewActivity extends AppCompatActivity  implements
                 })
                 .setDeniedMessage(Html.fromHtml(permissionMsg))
                 .setPermissions(permissions)
-                .check();
+                .check();*/
     }
     private void takeimageFromGalary() {
         //allow upload file extension

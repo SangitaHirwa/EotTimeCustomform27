@@ -25,7 +25,8 @@ import com.eot_app.utility.EotApp;
 import com.eot_app.utility.language_support.LanguageController;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.gun0912.tedpermission.PermissionListener;
-import com.gun0912.tedpermission.TedPermission;
+import com.gun0912.tedpermission.rx3.TedPermission;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -121,7 +122,31 @@ public class UploadDocumentFragment extends Fragment implements ImageCropFragmen
             permissionMsg = "<b>Need Storage Permission</b><br><br>If you reject permission,you can not use this service<br><br>Please turn on permissions at [SettingActivity] > [Permission]";
 
         }
-        TedPermission.with(EotApp.getAppinstance())
+        TedPermission.create()
+                .setPermissionListener(new PermissionListener() {
+                    @Override
+                    public void onPermissionGranted() {
+                        switch (type) {
+                            case 0:
+                                getPictureFromCamera();
+                                break;
+                            case 1:
+                                getImageFromGallery();
+                                break;
+                            case 2:
+                                getDocumentsFromGallery();
+                                break;
+                        }
+                    }
+
+                    @Override
+                    public void onPermissionDenied(List<String> deniedPermissions) {
+
+                    }
+                })
+                .setDeniedMessage(Html.fromHtml(permissionMsg))
+                .setPermissions(permissions);
+      /*  TedPermission.with(EotApp.getAppinstance())
                 .setPermissionListener(new PermissionListener() {
                     @Override
                     public void onPermissionGranted() {
@@ -145,7 +170,7 @@ public class UploadDocumentFragment extends Fragment implements ImageCropFragmen
                 })
                 .setDeniedMessage(Html.fromHtml(permissionMsg))
                 .setPermissions(permissions)
-                .check();
+                .check();*/
     }
 
     public void getPictureFromCamera() {

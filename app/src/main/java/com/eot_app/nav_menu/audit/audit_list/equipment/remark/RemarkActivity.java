@@ -13,6 +13,8 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Looper;
 import android.provider.MediaStore;
 import android.text.Html;
 import android.text.TextUtils;
@@ -48,13 +50,15 @@ import com.eot_app.lat_lng_sync_pck.LatLngSycn_Controller;
 import com.eot_app.locations.LocationTracker;
 import com.eot_app.locations.OnLocationUpdate;
 import com.eot_app.nav_menu.audit.audit_list.audit_mvp.model.AuditList_Res;
+import com.eot_app.nav_menu.audit.audit_list.documents.ActivityEditImageDialog;
 import com.eot_app.nav_menu.audit.audit_list.documents.DocumentListAdapter;
 import com.eot_app.nav_menu.audit.audit_list.documents.doc_model.GetFileList_Res;
-import com.eot_app.nav_menu.audit.audit_list.equipment.equipment_room_db.entity.EquipmentStatus;
+import com.eot_app.nav_menu.audit.audit_list.equipment.model.EquipmentStatus;
 import com.eot_app.nav_menu.audit.audit_list.equipment.model.Equipment_Res;
 import com.eot_app.nav_menu.audit.audit_list.equipment.remark.remark_mvp.RemarkRequest;
 import com.eot_app.nav_menu.audit.audit_list.equipment.remark.remark_mvp.Remark_PC;
 import com.eot_app.nav_menu.audit.audit_list.equipment.remark.remark_mvp.Remark_View;
+import com.eot_app.nav_menu.jobs.job_detail.chat.img_crop_pkg.ImageCropFragment;
 import com.eot_app.nav_menu.jobs.job_detail.customform.MyAttachment;
 import com.eot_app.nav_menu.jobs.job_detail.customform.cstm_form_model.CustomFormList_Res;
 import com.eot_app.nav_menu.jobs.job_detail.documents.PathUtils;
@@ -72,6 +76,7 @@ import com.eot_app.nav_menu.jobs.job_detail.job_audit_remark_attchment_pkg.model
 import com.eot_app.nav_menu.jobs.job_detail.job_audit_remark_attchment_pkg.mvp.JobAudit_PI;
 import com.eot_app.nav_menu.jobs.job_detail.job_audit_remark_attchment_pkg.mvp.JobAudit_Pc;
 import com.eot_app.nav_menu.jobs.job_detail.job_audit_remark_attchment_pkg.mvp.JobAudit_View;
+import com.eot_app.nav_menu.jobs.job_detail.job_equipment.job_equ_remrk.job_equ_mvp.JobEquRemark_PI;
 import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.AppUtility;
 import com.eot_app.utility.App_preference;
@@ -83,7 +88,8 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.gun0912.tedpermission.PermissionListener;
-import com.gun0912.tedpermission.TedPermission;
+import com.gun0912.tedpermission.rx3.TedPermission;
+import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -331,7 +337,7 @@ public class RemarkActivity extends UploadDocumentActivity implements JobAudit_V
         upload_lable = findViewById(R.id.upload_lable);
         AppUtility.spinnerPopUpWindow(status_spinner);
         status_spinner.setSelected(false);
-        equipmentStatusList = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).equipmentStatusDao().getEquipmentCondition();
+        equipmentStatusList = App_preference.getSharedprefInstance().getLoginRes().getEquipmentStatus();
         if (equipmentStatusList != null) {
             String[] statusList = new String[equipmentStatusList.size()];
             int i = 0;
@@ -1005,7 +1011,26 @@ public class RemarkActivity extends UploadDocumentActivity implements JobAudit_V
             permissionMsg = "<b>Need Storage Permission</b><br><br>If you reject permission,you can not use this service<br><br>Please turn on permissions at [SettingActivity] > [Permission]";
 
         }
-        TedPermission.with(EotApp.getAppinstance())
+        TedPermission.create()
+                .setPermissionListener(new PermissionListener() {
+                    @Override
+                    public void onPermissionGranted() {
+                        if (type == 0)
+                            takePictureFromCamera();
+                        else if (type == 1)
+                            getImageFromGallray();
+                        else if (type == 2)
+                            takeimageFromGalary();
+                    }
+
+                    @Override
+                    public void onPermissionDenied(List<String> deniedPermissions) {
+
+                    }
+                })
+                .setDeniedMessage(Html.fromHtml(permissionMsg))
+                .setPermissions(permissions);
+       /* TedPermission.with(EotApp.getAppinstance())
                 .setPermissionListener(new PermissionListener() {
                     @Override
                     public void onPermissionGranted() {
@@ -1024,7 +1049,7 @@ public class RemarkActivity extends UploadDocumentActivity implements JobAudit_V
                 })
                 .setDeniedMessage(Html.fromHtml(permissionMsg))
                 .setPermissions(permissions)
-                .check();
+                .check();*/
     }
     private void getImageFromGallray() {
         Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);

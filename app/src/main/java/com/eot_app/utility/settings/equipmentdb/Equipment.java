@@ -5,11 +5,6 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
-import com.eot_app.nav_menu.jobs.job_db.EquArrayModel;
-import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.Attachments;
-
-import java.util.ArrayList;
-
 @Entity(tableName = "Equipment")
 public class Equipment {
     @PrimaryKey
@@ -62,17 +57,6 @@ public class Equipment {
     private String servIntvalType;
     private String servIntvalValue;
     private String isPart;
-    public  String statusUpdateDate = "";
-    public  String equRemarkCondition = "";
-    public  String siteId = "";
-    @Ignore
-    public  String equStatus = "";
-    @Ignore
-    public String remark = "";
-    @Ignore
-    private ArrayList<EquArrayModel> equComponent = new ArrayList<>();
-    @Ignore
-    private ArrayList<Attachments> attachments = new ArrayList<>();
 
     public String getIsPart() {
         return isPart;
@@ -466,53 +450,4 @@ public class Equipment {
     public void setQrcodeImg(String qrcodeImg) {
         this.qrcodeImg = qrcodeImg;
     }
-
-    public String getRemark() {
-        return remark;
-    }
-
-    public void setRemark(String remark) {
-        this.remark = remark;
-    }
-
-    public ArrayList<EquArrayModel> getEquComponent() {
-        return equComponent;
-    }
-
-    public void setEquComponent(ArrayList<EquArrayModel> equComponent) {
-        this.equComponent = equComponent;
-    }
-
-    public ArrayList<Attachments> getAttachments() {
-        return attachments;
-    }
-
-    public void setAttachments(ArrayList<Attachments> attachments) {
-        this.attachments = attachments;
-    }
-
-    public String getStatusUpdateDate() {
-        return statusUpdateDate;
-    }
-
-    public void setStatusUpdateDate(String statusUpdateDate) {
-        this.statusUpdateDate = statusUpdateDate;
-    }
-
-    public String getEquRemarkCondition() {
-        return equRemarkCondition;
-    }
-
-    public void setEquRemarkCondition(String equRemarkCondition) {
-        this.equRemarkCondition = equRemarkCondition;
-    }
-
-    public String getSiteId() {
-        return siteId;
-    }
-
-    public void setSiteId(String siteId) {
-        this.siteId = siteId;
-    }
 }
-//{"equId":"21896","parentId":"0","cltId":"25560","siteId":"25905","equnm":"0 aaa","mno":"","sno":"","brand":"","rate":"0.0000","supId":"0","supplier":"","notes":"","expiryDate":"","manufactureDate":"1718920766","purchaseDate":"1718920766","barcode":"500-122343-500","isusable":"1","barcodeImg":"uploads\/comp500\/equBarcode\/20240704120135_810.png","adr":"Indore","city":"","state":"21","ctry":"101","zip":"","status":"2446","type":"1","ecId":"106","egId":"0","ebId":"0","isdelete":"1","groupName":"","snm":"self","isPart":"0","extraField1":"","extraField2":"","usrManualDoc":"","installedDate":"1718920766","warrantyStartDate":"1718994599","servIntvalType":"0","servIntvalValue":"0","archive":"0","equCondition":"2442","equExpiryDate":"","parentNm":"","nm":"TestclientTest","isDisable":"0","subPartCount":"2","qrcode":"21896-361959-500","qrcodeImg":"uploads\/comp500\/equBarcode\/20240716122027_774.png","image":"assets\/img\/equipment_default.png","lastAssignUsr":[],"lastAuditLabel":"","lastAuditDate":"","equStatusOnAudit":"","lastAudit_id":"","serviceDuedate":"","lastJobLabel":"abc-282","lastJobDate":"1722859872","equStatusOnJob":"2442","lastJob_id":"37199"}

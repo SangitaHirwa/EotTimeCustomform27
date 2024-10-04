@@ -71,13 +71,9 @@ public class JobList_pc implements JobList_pi {
     }
 
     @Override
-    public void getJobList(boolean isRefreshOffline) {
-        if(isRefreshOffline){
-            updateDataToView(new JobFilterModel());
-        }else{
-            // get Records from databas
-            loadFromServer();
-        }
+    public void getJobList() {
+// get Records from database
+        loadFromServer();
 
 //        List<Job> data = new ArrayList<>();
 //        if (sortedBy.equals(START_DATE_FIELD)) {
@@ -137,8 +133,8 @@ public class JobList_pc implements JobList_pi {
      */
     @Override
     synchronized public void loadFromServer() {
+        AppUtility.progressBarShow(EotApp.getCurrentActivity());
         if (AppUtility.isInternetConnected()) {
-                AppUtility.progressBarShow(EotApp.getCurrentActivity());
             LogModel logModel = ActivityLogController
                     .getObj(ActivityLogController.JOB_MODULE, ActivityLogController.JOB_LIST, ActivityLogController.JOB_MODULE);
             ActivityLogController.saveOfflineTable(logModel);

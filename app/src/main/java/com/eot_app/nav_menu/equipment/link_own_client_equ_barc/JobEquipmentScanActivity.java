@@ -19,32 +19,43 @@ import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.widget.ContentLoadingProgressBar;
 
-import com.budiyev.android.codescanner.CodeScanner;
-import com.budiyev.android.codescanner.CodeScannerView;
+/*import com.budiyev.android.codescanner.CodeScanner;
+import com.budiyev.android.codescanner.CodeScannerView;*/
 
 import com.eot_app.R;
-import com.eot_app.nav_menu.audit.audit_list.equipment.equipment_room_db.entity.EquipmentStatus;
+import com.eot_app.home_screens.MainActivity;
+import com.eot_app.nav_menu.audit.audit_list.equipment.model.EquipmentStatus;
 import com.eot_app.nav_menu.audit.audit_list.scanbarcode.model.ScanBarcodeRequest;
+import com.eot_app.nav_menu.audit.nav_scan.BarcodeScanActivity;
 import com.eot_app.nav_menu.equipment.link_own_client_equ_barc.mvp_scanbar.ScanEquPc;
 import com.eot_app.nav_menu.equipment.link_own_client_equ_barc.mvp_scanbar.ScanEquView;
+import com.eot_app.nav_menu.equipment.linkequip.ActivityLinkEquipment;
 import com.eot_app.nav_menu.equipment.linkequip.linkMVP.LinkEquipmentPC;
 import com.eot_app.nav_menu.equipment.linkequip.linkMVP.LinkEquipmentPI;
 import com.eot_app.nav_menu.equipment.linkequip.linkMVP.LinkEquipmentView;
+import com.eot_app.nav_menu.equipment.linkequip.linkMVP.model.ContractEquipmentReq;
 import com.eot_app.nav_menu.jobs.job_db.EquArrayModel;
+import com.eot_app.nav_menu.jobs.job_detail.JobDetailActivity;
+import com.eot_app.nav_menu.jobs.job_detail.job_equipment.JobEquipmentActivity;
 import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.AppUtility;
 import com.eot_app.utility.EotApp;
+import com.eot_app.utility.db.AppDataBase;
 import com.eot_app.utility.language_support.LanguageController;
+import com.eot_app.utility.settings.equipmentdb.Equipment;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.google.mlkit.vision.barcode.common.Barcode;
 import com.google.mlkit.vision.codescanner.GmsBarcodeScanner;
 import com.google.mlkit.vision.codescanner.GmsBarcodeScannerOptions;
 import com.google.mlkit.vision.codescanner.GmsBarcodeScanning;
-import com.google.zxing.BarcodeFormat;
+//import com.google.zxing.BarcodeFormat;
 import com.gun0912.tedpermission.PermissionListener;
-import com.gun0912.tedpermission.TedPermission;
+//import com.gun0912.tedpermission.TedPermission;
+import com.gun0912.tedpermission.rx3.TedPermission;
 
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -54,7 +65,7 @@ public class JobEquipmentScanActivity extends AppCompatActivity implements ScanE
     //   public static boolean SUCCESS = false;
     List<EquArrayModel> myEquList = new ArrayList<>();
     String myEqu = "";
-    private CodeScanner mCodeScanner;
+//    private CodeScanner mCodeScanner;
     private ScanEquPc scanBarcode_pc;
     AppCompatImageView img_search;
     private EditText edit_barcode;
@@ -64,7 +75,7 @@ public class JobEquipmentScanActivity extends AppCompatActivity implements ScanE
     String type = "", cltId = "", contrId = "";
     LinkEquipmentPI linkEquipmentPI;
     ContentLoadingProgressBar content_loading_progress;
-    CodeScannerView scannerView = null;
+//    CodeScannerView scannerView = null;
     GmsBarcodeScannerOptions options;
     GmsBarcodeScanner scanner;
     TextView txt_status;
@@ -125,7 +136,22 @@ public class JobEquipmentScanActivity extends AppCompatActivity implements ScanE
         if(type == 0){
             permissionMsg = "<b>Need Camera and Storage Permission</b><br><br>If you reject permission,you can not use this service<br><br>Please turn on permissions at [SettingActivity] > [Permission]";
         }
-        TedPermission.with(EotApp.getAppinstance())
+        TedPermission.create()
+                .setPermissionListener(new PermissionListener() {
+                    @Override
+                    public void onPermissionGranted() {
+//                        if (type == 0)
+//                            mCodeScanner.startPreview();
+                    }
+
+                    @Override
+                    public void onPermissionDenied(List<String> deniedPermissions) {
+
+                    }
+                })
+                .setDeniedMessage(Html.fromHtml(permissionMsg))
+                .setPermissions(permissions);
+       /* TedPermission.with(EotApp.getAppinstance())
                 .setPermissionListener(new PermissionListener() {
                     @Override
                     public void onPermissionGranted() {
@@ -140,7 +166,7 @@ public class JobEquipmentScanActivity extends AppCompatActivity implements ScanE
                 })
                 .setDeniedMessage(Html.fromHtml(permissionMsg))
                 .setPermissions(permissions)
-                .check();
+                .check();*/
     }
     public String getJobId() {
         return jobId;
@@ -162,33 +188,33 @@ public class JobEquipmentScanActivity extends AppCompatActivity implements ScanE
 
     @Override
     public void onPause() {
-        mCodeScanner.releaseResources();
+//        mCodeScanner.releaseResources();
         super.onPause();
     }
 
     private void initializeViews() {
 
         content_loading_progress = findViewById(R.id.content_loading_progress);
-        scannerView = findViewById(R.id.scanner_view);
-        txt_status = findViewById(R.id.txt_status);
-        mCodeScanner = new CodeScanner(this, scannerView);
-        List<BarcodeFormat> list = new ArrayList<>();
-        list.add(BarcodeFormat.CODE_128);
-        list.add(BarcodeFormat.UPC_A);
-        list.add(BarcodeFormat.UPC_E);
-        list.add(BarcodeFormat.EAN_13);
-        list.add(BarcodeFormat.CODE_39);
-        list.add(BarcodeFormat.CODABAR);
-        mCodeScanner.setFormats(list);
-        mCodeScanner.setAutoFocusEnabled(true);
+//        scannerView = findViewById(R.id.scanner_view);
+//        txt_status = findViewById(R.id.txt_status);
+//        mCodeScanner = new CodeScanner(this, scannerView);
+//        List<BarcodeFormat> list = new ArrayList<>();
+//        list.add(BarcodeFormat.CODE_128);
+//        list.add(BarcodeFormat.UPC_A);
+//        list.add(BarcodeFormat.UPC_E);
+//        list.add(BarcodeFormat.EAN_13);
+//        list.add(BarcodeFormat.CODE_39);
+//        list.add(BarcodeFormat.CODABAR);
+//        mCodeScanner.setFormats(list);
+//        mCodeScanner.setAutoFocusEnabled(true);
         img_search = findViewById(R.id.img_search);
         edit_barcode = findViewById(R.id.edit_barcode);
         tv_scan_label = findViewById(R.id.tv_scan_label);
 
         tv_scan_label.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.scan_barcode_manually));
 
-        mCodeScanner.setDecodeCallback(result -> JobEquipmentScanActivity.this.runOnUiThread(() -> searchEquipment(result.getText())));
-        scannerView.setOnClickListener(view -> startScanner());
+//        mCodeScanner.setDecodeCallback(result -> JobEquipmentScanActivity.this.runOnUiThread(() -> searchEquipment(result.getText())));
+//        scannerView.setOnClickListener(view -> startScanner());
 
 
         img_search.setOnClickListener(v -> {
@@ -199,7 +225,7 @@ public class JobEquipmentScanActivity extends AppCompatActivity implements ScanE
 
         });
 
-        scannerView.setVisibility(View.GONE);
+//        scannerView.setVisibility(View.GONE);
 
     }
 
@@ -226,7 +252,7 @@ public class JobEquipmentScanActivity extends AppCompatActivity implements ScanE
 //        }
 
         if (AppUtility.askCameraTakePicture(this)) {
-            mCodeScanner.startPreview();
+//            mCodeScanner.startPreview();
         }
         else {
             // Sdk version 33
@@ -274,7 +300,7 @@ public class JobEquipmentScanActivity extends AppCompatActivity implements ScanE
             content_loading_progress.setVisibility(View.VISIBLE);
         } else {
             content_loading_progress.setVisibility(View.GONE);
-            scannerView.setVisibility(View.VISIBLE);
+//            scannerView.setVisibility(View.VISIBLE);
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
         }
     }
@@ -289,6 +315,10 @@ public class JobEquipmentScanActivity extends AppCompatActivity implements ScanE
         showDialog(msg);
     }
 
+    @Override
+    public void setEquStatusList(List<EquipmentStatus> list) {
+
+    }
 
     @Override
     public void updateLinkUnlinkEqu() {

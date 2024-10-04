@@ -40,8 +40,6 @@ public class ContractRes implements DropdownListBean, Parcelable {
     private String ccId;
     private String catgy;
     private String isdelete;
-    private String equType;
-    private String equArray;
 
     public ContractRes() {
     }
@@ -197,21 +195,6 @@ public class ContractRes implements DropdownListBean, Parcelable {
         this.isdelete = isdelete;
     }
 
-    public String getEquType() {
-        return equType;
-    }
-
-    public void setEquType(String equType) {
-        this.equType = equType;
-    }
-
-    public String getEquArray() {
-        return equArray;
-    }
-
-    public void setEquArray(String equArray) {
-        this.equArray = equArray;
-    }
 
     @Override
     public int describeContents() {

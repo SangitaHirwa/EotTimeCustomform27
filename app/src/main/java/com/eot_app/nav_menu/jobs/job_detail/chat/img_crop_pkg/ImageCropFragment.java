@@ -13,22 +13,28 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresExtension;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.DialogFragment;
 
+import com.canhub.cropper.CropImageView;
 import com.eot_app.R;
 import com.eot_app.nav_menu.addlead.AddLeadFragment;
 import com.eot_app.nav_menu.admin_fw_chat_pkg.sonam_user_user_chat_pkg.UserToUserChatActivity;
 import com.eot_app.nav_menu.client_chat_pkg.ClientChatFragment;
 import com.eot_app.nav_menu.jobs.job_detail.chat.ChatFragment;
 import com.eot_app.nav_menu.jobs.job_detail.customform.CustomFormFragment;
-import com.theartofdev.edmodo.cropper.CropImageView;
+//import com.theartofdev.edmodo.cropper.CropImageView;
+
 
 import java.io.ByteArrayOutputStream;
 
 
 public class ImageCropFragment extends DialogFragment implements View.OnClickListener,
-        CropImageView.OnGetCroppedImageCompleteListener, CropImageView.OnSetImageUriCompleteListener {
+        CropImageView.OnCropImageCompleteListener, CropImageView.OnSetImageUriCompleteListener
+       /* CropImageView.OnGetCroppedImageCompleteListener, CropImageView.OnSetImageUriCompleteListener*/ {
     public static final String FIXED_ASPECT_RATIO = "extra_fixed_aspect_ratio";
     public static final String EXTRA_ASPECT_RATIO_X = "extra_aspect_ratio_x";
     public static final String EXTRA_ASPECT_RATIO_Y = "extra_aspect_ratio_y";
@@ -124,7 +130,10 @@ public class ImageCropFragment extends DialogFragment implements View.OnClickLis
                 cropiExit();
                 break;
             case R.id.crop_img_txt:
-                cropImageView.getCroppedImageAsync(cropImageView.getCropShape(), 0, 0);
+//                cropImageView.getCroppedImageAsync(cropImageView.getCropShape(), 0, 0);
+                Bitmap croppedImage = cropImageView.getCroppedImage(0, 0, CropImageView.RequestSizeOptions.RESIZE_INSIDE);
+                getBitmapToUri(croppedImage);
+                getViewsAfterCroping(croppedImage);
                 break;
             case R.id.sendImageView:
                 if (getTag().equals("ClientChatFragment")) {
@@ -183,7 +192,7 @@ public class ImageCropFragment extends DialogFragment implements View.OnClickLis
         cropImageViewLayout.setVisibility(View.VISIBLE);
     }
 
-    /***after call this image croping complete**/
+ /*   *//***after call this image croping complete**//*
     @Override
     public void onGetCroppedImageComplete(CropImageView view, Bitmap bitmap, Exception error) {
         if (error == null) {
@@ -192,7 +201,7 @@ public class ImageCropFragment extends DialogFragment implements View.OnClickLis
         } else {
             cropiExit();
         }
-    }
+    }*/
 
 
     private void getBitmapToUri(Bitmap bitmap) {
@@ -214,14 +223,16 @@ public class ImageCropFragment extends DialogFragment implements View.OnClickLis
     public void onStart() {
         super.onStart();
         cropImageView.setOnSetImageUriCompleteListener(this);
-        cropImageView.setOnGetCroppedImageCompleteListener(this);
+        cropImageView.setOnCropImageCompleteListener(this);
+//        cropImageView.setOnGetCroppedImageCompleteListener(this);
     }
 
     @Override
     public void onStop() {
         super.onStop();
         cropImageView.setOnSetImageUriCompleteListener(null);
-        cropImageView.setOnGetCroppedImageCompleteListener(null);
+        cropImageView.setOnCropImageCompleteListener(null);
+//        cropImageView.setOnGetCroppedImageCompleteListener(null);
     }
 
     @Override
@@ -229,7 +240,7 @@ public class ImageCropFragment extends DialogFragment implements View.OnClickLis
         super.onPause();
         Log.e("", "");
     }
-
+/*
     @Override
     public void onSetImageUriComplete(CropImageView view, Uri uri, Exception error) {
         if (error == null) {
@@ -237,7 +248,7 @@ public class ImageCropFragment extends DialogFragment implements View.OnClickLis
         } else {
             Toast.makeText(cropImageView.getContext(), "Unable to load image", Toast.LENGTH_LONG).show();
         }
-    }
+    }*/
 
     public void setInstance(UserToUserChatActivity runnable) {
         this.callbackListener = runnable;
@@ -249,6 +260,24 @@ public class ImageCropFragment extends DialogFragment implements View.OnClickLis
         this.callbackListener = callbackListener;
     }
 
+    @Override
+    public void onCropImageComplete(@NonNull CropImageView cropImageView, @NonNull CropImageView.CropResult cropResult) {
+        if (cropResult.getError() == null) {
+            getBitmapToUri(cropResult.getBitmap());
+            getViewsAfterCroping(cropResult.getBitmap());
+        } else {
+            cropiExit();
+        }
+    }
+
+    @Override
+    public void onSetImageUriComplete(@NonNull CropImageView cropImageView, @NonNull Uri uri, @Nullable Exception error) {
+        if (error == null) {
+            imageUri = uri;
+        } else {
+            Toast.makeText(cropImageView.getContext(), "Unable to load image", Toast.LENGTH_LONG).show();
+        }
+    }
     public interface MyDialogInterface {
         void onClickContinuarEvent(Uri permisoRequerido);
     }

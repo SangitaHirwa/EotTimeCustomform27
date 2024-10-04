@@ -32,6 +32,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.DialogFragment;
 
+import com.canhub.cropper.CropImageView;
 import com.eot_app.R;
 import com.eot_app.nav_menu.audit.audit_list.documents.ActivityEditImageDialog;
 import com.eot_app.utility.AppConstant;
@@ -40,7 +41,7 @@ import com.eot_app.utility.CompressImageInBack;
 import com.eot_app.utility.EotApp;
 import com.eot_app.utility.language_support.LanguageController;
 import com.eot_app.utility.util_interfaces.OnImageCompressed;
-import com.theartofdev.edmodo.cropper.CropImageView;
+//import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -53,7 +54,7 @@ import ja.burhanrashid52.photoeditor.PhotoEditorView;
 import ja.burhanrashid52.photoeditor.SaveSettings;
 
 
-public class EditImageDialog extends DialogFragment implements View.OnClickListener, CropImageView.OnSetImageUriCompleteListener, CropImageView.OnGetCroppedImageCompleteListener {
+public class EditImageDialog extends DialogFragment implements View.OnClickListener, CropImageView.OnSetImageUriCompleteListener, CropImageView.OnCropImageCompleteListener {
     public static final String FIXED_ASPECT_RATIO = "extra_fixed_aspect_ratio";
     public static final String EXTRA_ASPECT_RATIO_X = "extra_aspect_ratio_x";
     public static final String EXTRA_ASPECT_RATIO_Y = "extra_aspect_ratio_y";
@@ -221,14 +222,16 @@ public class EditImageDialog extends DialogFragment implements View.OnClickListe
     public void onStart() {
         super.onStart();
         cropImageView.setOnSetImageUriCompleteListener(this);
-        cropImageView.setOnGetCroppedImageCompleteListener(this);
+        cropImageView.setOnCropImageCompleteListener(this);
+//        cropImageView.setOnGetCroppedImageCompleteListener(this);
     }
 
     @Override
     public void onStop() {
         super.onStop();
         cropImageView.setOnSetImageUriCompleteListener(null);
-        cropImageView.setOnGetCroppedImageCompleteListener(null);
+        cropImageView.setOnCropImageCompleteListener(null);
+//        cropImageView.setOnGetCroppedImageCompleteListener(null);
     }
 
     private void findViews(View view) {
@@ -351,7 +354,10 @@ public class EditImageDialog extends DialogFragment implements View.OnClickListe
                 imagerotateview();
                 break;
             case R.id.crop_txt:
-                cropImageView.getCroppedImageAsync(cropImageView.getCropShape(), 0, 0);
+//                cropImageView.getCroppedImageAsync(cropImageView.getCropShape(), 0, 0);
+                Bitmap croppedImage = cropImageView.getCroppedImage(1024, 1024, CropImageView.RequestSizeOptions.RESIZE_EXACT);
+                photo_editor_view.getSource().setImageBitmap(croppedImage);
+                getVisibleViews();
                 break;
         }
     }
@@ -450,7 +456,7 @@ public class EditImageDialog extends DialogFragment implements View.OnClickListe
     /**
      * after image croping
      **/
-    @Override
+   /* @Override
     public void onGetCroppedImageComplete(CropImageView view, final Bitmap bitmap, Exception error) {
         if (error == null) {
 //            imageBitmap = bitmap;
@@ -472,7 +478,7 @@ public class EditImageDialog extends DialogFragment implements View.OnClickListe
 
                 }
             });
-           /* try {
+           *//* try {
              //   String path = saveToInternalStorage(getActivity(), bitmap);
                 getVisibleViews();
                 //getBitmapToUri(bitmap);
@@ -480,12 +486,12 @@ public class EditImageDialog extends DialogFragment implements View.OnClickListe
             } catch (IOException e) {
                 e.printStackTrace();
                 cropiExit();
-            }*/
+            }*//*
         } else {
             cropiExit();
         }
     }
-
+*/
     private void getBitmapToUri(Bitmap bitmap) {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
@@ -546,6 +552,37 @@ public class EditImageDialog extends DialogFragment implements View.OnClickListe
             fos.close();
         }
         return directory.getAbsolutePath();
+    }
+
+    @Override
+    public void onCropImageComplete(@NonNull CropImageView cropImageView, @NonNull CropImageView.CropResult cropResult) {
+        if (cropResult.getError() == null) {
+//            imageBitmap = bitmap;
+//            getVisibleViews();
+            //getBitmapToUri(bitmap);
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+//                    photo_editor_view.getSource().setImageBitmap(bitmap);
+
+                    new CompressImageInBack(EotApp.getCurrentActivity(), new OnImageCompressed() {
+                        @Override
+                        public void onImageCompressed(Bitmap bitmap) {
+                            imageBitmap = bitmap;
+                            photo_editor_view.getSource().setImageBitmap(imageBitmap);
+                            getVisibleViews();
+                        }
+                    },AppUtility.getBitmapToUri(cropResult.getBitmap())).compressImageInBckg();//.execute(uri).compressImageInBckg();
+
+                }
+            });
+            //   String path = saveToInternalStorage(getActivity(), bitmap);
+            getVisibleViews();
+            //getBitmapToUri(bitmap);
+            photo_editor_view.getSource().setImageBitmap(cropResult.getBitmap());
+        } else {
+        cropiExit();
+    }
     }
 
 

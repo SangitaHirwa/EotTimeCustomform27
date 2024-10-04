@@ -27,6 +27,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 
+import com.canhub.cropper.CropImageView;
 import com.eot_app.R;
 import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.AppUtility;
@@ -34,7 +35,7 @@ import com.eot_app.utility.CompressImageInBack;
 import com.eot_app.utility.EotApp;
 import com.eot_app.utility.language_support.LanguageController;
 import com.eot_app.utility.util_interfaces.OnImageCompressed;
-import com.theartofdev.edmodo.cropper.CropImageView;
+//import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -46,8 +47,12 @@ import ja.burhanrashid52.photoeditor.PhotoEditor;
 import ja.burhanrashid52.photoeditor.PhotoEditorView;
 import ja.burhanrashid52.photoeditor.SaveSettings;
 
+//import ja.burhanrashid52.photoeditor.PhotoEditor;
+//import ja.burhanrashid52.photoeditor.PhotoEditorView;
+//import ja.burhanrashid52.photoeditor.SaveSettings;
 
-public class ActivityEditImageDialog extends AppCompatActivity implements View.OnClickListener, CropImageView.OnSetImageUriCompleteListener, CropImageView.OnGetCroppedImageCompleteListener {
+
+public class ActivityEditImageDialog extends AppCompatActivity implements View.OnClickListener, CropImageView.OnSetImageUriCompleteListener, CropImageView.OnCropImageCompleteListener {
     public static final String FIXED_ASPECT_RATIO = "extra_fixed_aspect_ratio";
     public static final String EXTRA_ASPECT_RATIO_X = "extra_aspect_ratio_x";
     public static final String EXTRA_ASPECT_RATIO_Y = "extra_aspect_ratio_y";
@@ -138,14 +143,16 @@ public class ActivityEditImageDialog extends AppCompatActivity implements View.O
     public void onStart() {
         super.onStart();
         cropImageView.setOnSetImageUriCompleteListener(this);
-        cropImageView.setOnGetCroppedImageCompleteListener(this);
+        cropImageView.setOnCropImageCompleteListener(this);
+//        cropImageView.setOnGetCroppedImageCompleteListener(this);
     }
 
     @Override
     public void onStop() {
         super.onStop();
         cropImageView.setOnSetImageUriCompleteListener(null);
-        cropImageView.setOnGetCroppedImageCompleteListener(null);
+        cropImageView.setOnCropImageCompleteListener(null);
+//        cropImageView.setOnGetCroppedImageCompleteListener(null);
     }
 
     private void findViews() {
@@ -180,7 +187,9 @@ public class ActivityEditImageDialog extends AppCompatActivity implements View.O
         edt_file_name = findViewById(R.id.edt_file_name);
         edt_file_name.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.enter_file_name));
         photo_editor_view = findViewById(R.id.photo_editor_view);
-        photo_editor_view.getSource().setImageBitmap(imageBitmap);
+        if(imageBitmap != null) {
+            photo_editor_view.getSource().setImageBitmap(imageBitmap);
+        }
 
         if (allowInOffline)
             edt_file_name.setVisibility(View.INVISIBLE);
@@ -275,7 +284,10 @@ public class ActivityEditImageDialog extends AppCompatActivity implements View.O
                 imagerotateview();
                 break;
             case R.id.crop_txt:
-                cropImageView.getCroppedImageAsync(cropImageView.getCropShape(), 0, 0);
+//                cropImageView.getCroppedImageAsync(cropImageView.getCropShape(), 0, 0);
+                Bitmap croppedImage = cropImageView.getCroppedImage(1024, 1024, CropImageView.RequestSizeOptions.RESIZE_EXACT);
+                photo_editor_view.getSource().setImageBitmap(croppedImage);
+                getVisibleViews();
                 break;
         }
     }
@@ -426,7 +438,7 @@ public class ActivityEditImageDialog extends AppCompatActivity implements View.O
     /**
      * after image croping
      **/
-    @Override
+  /*  @Override
     public void onGetCroppedImageComplete(CropImageView view, Bitmap bitmap, Exception error) {
         if (error == null) {
 //            imageBitmap = bitmap;
@@ -447,7 +459,7 @@ public class ActivityEditImageDialog extends AppCompatActivity implements View.O
             cropiExit();
         }
     }
-
+*/
     private void getVisibleViews() {
         cropImageView.setVisibility(View.GONE);
         cropImageViewLayout.setVisibility(View.GONE);
@@ -469,4 +481,25 @@ public class ActivityEditImageDialog extends AppCompatActivity implements View.O
     }
 
 
+    @Override
+    public void onCropImageComplete(@NonNull CropImageView cropImageView, @NonNull CropImageView.CropResult cropResult) {
+        if (cropResult.getError() == null) {
+//            imageBitmap = bitmap;
+//            getVisibleViews();
+//            //getBitmapToUri(bitmap);
+//            photo_editor_view.getSource().setImageBitmap(bitmap);
+
+            new CompressImageInBack(ActivityEditImageDialog.this, new OnImageCompressed() {
+                @Override
+                public void onImageCompressed(Bitmap bitmap) {
+                    imageBitmap = bitmap;
+                    photo_editor_view.getSource().setImageBitmap(imageBitmap);
+                    getVisibleViews();
+                }
+            },AppUtility.getBitmapToUri(cropResult.getBitmap())).compressImageInBckg();//.execute(uri).compressImageInBckg();
+
+        } else {
+            cropiExit();
+        }
+    }
 }

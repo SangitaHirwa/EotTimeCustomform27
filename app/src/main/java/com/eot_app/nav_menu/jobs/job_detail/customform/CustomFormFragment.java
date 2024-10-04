@@ -48,7 +48,8 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.gun0912.tedpermission.PermissionListener;
-import com.gun0912.tedpermission.TedPermission;
+//import com.gun0912.tedpermission.TedPermission;
+import com.gun0912.tedpermission.rx3.TedPermission;
 
 import java.io.File;
 import java.io.IOException;
@@ -639,7 +640,26 @@ public class CustomFormFragment extends androidx.fragment.app.Fragment
             permissionMsg = "<b>Need Storage Permission</b><br><br>If you reject permission,you can not use this service<br><br>Please turn on permissions at [SettingActivity] > [Permission]";
 
         }
-        TedPermission.with(EotApp.getAppinstance())
+        TedPermission.create()
+                .setPermissionListener(new PermissionListener() {
+                    @Override
+                    public void onPermissionGranted() {
+                        if (type == 0)
+                            takePictureFromCamera();
+                        else if (type == 1)
+                            getImageFromGallray();
+                        else if (type == 2)
+                            takeimageFromGalary();
+                    }
+
+                    @Override
+                    public void onPermissionDenied(List<String> deniedPermissions) {
+
+                    }
+                })
+                .setDeniedMessage(Html.fromHtml(permissionMsg))
+                .setPermissions(permissions);
+       /* TedPermission.with(EotApp.getAppinstance())
                 .setPermissionListener(new PermissionListener() {
                     @Override
                     public void onPermissionGranted() {
@@ -658,7 +678,7 @@ public class CustomFormFragment extends androidx.fragment.app.Fragment
                 })
                 .setDeniedMessage(Html.fromHtml(permissionMsg))
                 .setPermissions(permissions)
-                .check();
+                .check();*/
     }
     private void imageCroping(final Uri uri) {
         ImageCropFragment myfragment = ImageCropFragment.newInstance("Uri", uri.toString());

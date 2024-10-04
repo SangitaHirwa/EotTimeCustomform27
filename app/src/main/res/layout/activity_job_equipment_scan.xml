@@ -30,7 +30,7 @@
             android:layout_centerInParent="true"
             android:elevation="10dp"
             android:visibility="gone" />
-    <com.budiyev.android.codescanner.CodeScannerView
+ <!--   <com.budiyev.android.codescanner.CodeScannerView
         android:id="@+id/scanner_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -47,7 +47,7 @@
         app:frameThickness="2dp"
         app:maskColor="#77000000"
         android:visibility="gone"
-        />
+        />-->
 
     <include
         layout="@layout/item_search_barcode"

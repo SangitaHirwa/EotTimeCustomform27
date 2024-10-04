@@ -16,9 +16,9 @@ import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.fragment.app.Fragment;
 
-import com.budiyev.android.codescanner.CodeScanner;
+/*import com.budiyev.android.codescanner.CodeScanner;
 import com.budiyev.android.codescanner.CodeScannerView;
-import com.budiyev.android.codescanner.DecodeCallback;
+import com.budiyev.android.codescanner.DecodeCallback;*/
 import com.eot_app.R;
 import com.eot_app.nav_menu.audit.audit_list.audit_mvp.model.AuditList_Res;
 import com.eot_app.nav_menu.audit.audit_list.equipment.model.Equipment_Res;
@@ -33,10 +33,10 @@ import com.eot_app.utility.EotApp;
 import com.eot_app.utility.language_support.LanguageController;
 import com.eot_app.utility.settings.equipmentdb.Equipment;
 import com.google.gson.Gson;
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.Result;
+/*import com.google.zxing.BarcodeFormat;
+import com.google.zxing.Result;*/
 import com.gun0912.tedpermission.PermissionListener;
-import com.gun0912.tedpermission.TedPermission;
+import com.gun0912.tedpermission.rx3.TedPermission;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +46,7 @@ import java.util.concurrent.Callable;
  * Created by Mahendra Dabi on 7/11/19.
  */
 public class AuditScanbarcodeFragment extends Fragment implements ScanBarcode_View {
-    private CodeScanner mCodeScanner;
+//    private CodeScanner mCodeScanner;
     private ScanBarcode_PC scanBarcode_pc;
     private String auditId;
     AppCompatImageView img_search;
@@ -74,41 +74,41 @@ public class AuditScanbarcodeFragment extends Fragment implements ScanBarcode_Vi
             auditId = bundle.getString("auditId");
         }
 
-        final CodeScannerView scannerView = view.findViewById(R.id.scanner_view);
-        mCodeScanner = new CodeScanner(getActivity(), scannerView);
-        List<BarcodeFormat> list = new ArrayList<>();
-        list.add(BarcodeFormat.CODE_128);
-        list.add(BarcodeFormat.UPC_A);
-        list.add(BarcodeFormat.UPC_E);
-        list.add(BarcodeFormat.EAN_13);
-        list.add(BarcodeFormat.CODE_39);
-        list.add(BarcodeFormat.CODABAR);
-        mCodeScanner.setFormats(list);
-        mCodeScanner.setAutoFocusEnabled(true);
+//        final CodeScannerView scannerView = view.findViewById(R.id.scanner_view);
+//        mCodeScanner = new CodeScanner(getActivity(), scannerView);
+//        List<BarcodeFormat> list = new ArrayList<>();
+//        list.add(BarcodeFormat.CODE_128);
+//        list.add(BarcodeFormat.UPC_A);
+//        list.add(BarcodeFormat.UPC_E);
+//        list.add(BarcodeFormat.EAN_13);
+//        list.add(BarcodeFormat.CODE_39);
+//        list.add(BarcodeFormat.CODABAR);
+//        mCodeScanner.setFormats(list);
+//        mCodeScanner.setAutoFocusEnabled(true);
         img_search = view.findViewById(R.id.img_search);
         edit_barcode = view.findViewById(R.id.edit_barcode);
         tv_scan_label = view.findViewById(R.id.tv_scan_label);
 
         tv_scan_label.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.scan_barcode_manually));
 
-        mCodeScanner.setDecodeCallback(new DecodeCallback() {
-            @Override
-            public void onDecoded(@NonNull final Result result) {
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        searchEquipment(result.getText());
-
-                    }
-                });
-            }
-        });
-        scannerView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startScanner();
-            }
-        });
+//        mCodeScanner.setDecodeCallback(new DecodeCallback() {
+//            @Override
+//            public void onDecoded(@NonNull final Result result) {
+//                getActivity().runOnUiThread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        searchEquipment(result.getText());
+//
+//                    }
+//                });
+//            }
+//        });
+//        scannerView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                startScanner();
+//            }
+//        });
 
 
         img_search.setOnClickListener(new View.OnClickListener() {
@@ -133,30 +133,45 @@ public class AuditScanbarcodeFragment extends Fragment implements ScanBarcode_Vi
 
     }
 
-    @Override
+   /* @Override
     public void onPause() {
         mCodeScanner.releaseResources();
         super.onPause();
-    }
+    }*/
 
     private void startScanner() {
-        if (AppUtility.askCameraTakePicture(getActivity())) {
+       /* if (AppUtility.askCameraTakePicture(getActivity())) {
             mCodeScanner.startPreview();
-        }else {
+        }else {*/
             // Sdk version 33
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU ) {
                 askTedPermission(0, AppConstant.cameraPermissions33);
             }else {
                 askTedPermission(0, AppConstant.cameraPermissions);
             }
-        }
+//        }
     }
     private void askTedPermission(int type,String[] permissions) {
         String permissionMsg ="";
         if(type == 0){
             permissionMsg = "<b>Need Camera and Storage Permission</b><br><br>If you reject permission,you can not use this service<br><br>Please turn on permissions at [SettingActivity] > [Permission]";
         }
-        TedPermission.with(EotApp.getAppinstance())
+        TedPermission.create()
+                .setPermissionListener(new PermissionListener() {
+                    @Override
+                    public void onPermissionGranted() {
+                     /*   if (type == 0)
+                            mCodeScanner.startPreview();*/
+                    }
+
+                    @Override
+                    public void onPermissionDenied(List<String> deniedPermissions) {
+
+                    }
+                })
+                .setDeniedMessage(Html.fromHtml(permissionMsg))
+                .setPermissions(permissions);
+ /*       TedPermission.with(EotApp.getAppinstance())
                 .setPermissionListener(new PermissionListener() {
                     @Override
                     public void onPermissionGranted() {
@@ -172,7 +187,7 @@ public class AuditScanbarcodeFragment extends Fragment implements ScanBarcode_Vi
                 })
                 .setDeniedMessage(Html.fromHtml(permissionMsg))
                 .setPermissions(permissions)
-                .check();
+                .check();*/
     }
     @Override
     public void onEquipmentFound(Equipment_Res equipmentRes) {

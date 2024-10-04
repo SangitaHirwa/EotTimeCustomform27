@@ -14,13 +14,11 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.eot_app.R;
-import com.eot_app.nav_menu.audit.audit_list.equipment.equipment_room_db.entity.EquipmentStatus;
+import com.eot_app.nav_menu.audit.audit_list.equipment.model.EquipmentStatus;
 import com.eot_app.nav_menu.jobs.job_db.EquArrayModel;
 import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.AppUtility;
 import com.eot_app.utility.App_preference;
-import com.eot_app.utility.EotApp;
-import com.eot_app.utility.db.AppDataBase;
 import com.eot_app.utility.language_support.LanguageController;
 import com.google.gson.Gson;
 
@@ -57,14 +55,14 @@ public class EquipmentPartRemarkAdapter extends RecyclerView.Adapter<EquipmentPa
         this.mContext = mContext;
         this.llDetailHide = true;
         this.list = list;
-        equipmentStatus = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).equipmentStatusDao().getEquipmentCondition();
+        equipmentStatus = App_preference.getSharedprefInstance().getLoginRes().getEquipmentStatus();
         this.suggestions = new ArrayList<>();
     }
 
     public EquipmentPartRemarkAdapter(Context mContext, List<EquArrayModel> list, OnEquipmentSelectionForDetails selectionForDetails) {
         this.mContext = mContext;
         this.list = list;
-        equipmentStatus = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).equipmentStatusDao().getEquipmentCondition();
+        equipmentStatus = App_preference.getSharedprefInstance().getLoginRes().getEquipmentStatus();
         this.suggestions = new ArrayList<>();
         this.selectionForDetails = selectionForDetails;
     }
@@ -117,7 +115,7 @@ public class EquipmentPartRemarkAdapter extends RecyclerView.Adapter<EquipmentPa
         Log.e("List", "" + new Gson().toJson(list));
         holder.tv_item_name.setText(equArrayModel.getEqunm());
 
-        if (!TextUtils.isEmpty(equArrayModel.getEquRemarkCondition()) || equArrayModel.getAttachments() != null && equArrayModel.getAttachments().size() > 0) {
+        if (!TextUtils.isEmpty(equArrayModel.getStatus()) || equArrayModel.getAttachments() != null && equArrayModel.getAttachments().size() > 0) {
             holder.img_show_remark.setVisibility(View.VISIBLE);
         } else {
             holder.img_show_remark.setVisibility(View.GONE);
@@ -129,7 +127,7 @@ public class EquipmentPartRemarkAdapter extends RecyclerView.Adapter<EquipmentPa
         } else {
             holder.ll_views.setVisibility(View.VISIBLE);
         }
-        if (!TextUtils.isEmpty(equArrayModel.getEquRemarkCondition()) || equArrayModel.getAttachments() != null && equArrayModel.getAttachments().size() > 0) {
+        if (!TextUtils.isEmpty(equArrayModel.getStatus()) || equArrayModel.getAttachments() != null && equArrayModel.getAttachments().size() > 0) {
             holder.add_action.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.action));
         } else {
             holder.add_action.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.action));
@@ -173,14 +171,14 @@ public class EquipmentPartRemarkAdapter extends RecyclerView.Adapter<EquipmentPa
 
 
         try {
-            if (equArrayModel.getStatus() != null) {
-                if (equArrayModel.getStatus().equals("")) {
+            if (equArrayModel.getEquStatus() != null) {
+                if (equArrayModel.getEquStatus().equals("")) {
                     holder.ll_status.setVisibility(View.GONE);
-                } else if (equArrayModel.getStatus().equals("0")) {
+                } else if (equArrayModel.getEquStatus().equals("0")) {
                     holder.ll_status.setVisibility(View.GONE);
                 } else {
                     holder.ll_status.setVisibility(View.VISIBLE);
-                    holder.tv_status.setText(getCurrentStatusNameById(equArrayModel.getStatus()));
+                    holder.tv_status.setText(getCurrentStatusNameById(equArrayModel.getEquStatus()));
 
                     if (equArrayModel.getStatusUpdateDate() != null && !equArrayModel.getStatusUpdateDate().isEmpty()) {
                         holder.tv_date.setText(AppUtility.getDate(Long.parseLong(equArrayModel.getStatusUpdateDate()), AppConstant.DATE_FORMAT));
@@ -188,7 +186,7 @@ public class EquipmentPartRemarkAdapter extends RecyclerView.Adapter<EquipmentPa
                     } else
                         holder.tv_date.setVisibility(View.GONE);
 
-                    if (getCurrentStatusNameById(equArrayModel.getStatus()).trim().equalsIgnoreCase("Discarded")) {
+                    if (getCurrentStatusNameById(equArrayModel.getEquStatus()).trim().equalsIgnoreCase("Discarded")) {
                         holder.ll_status.setBackgroundColor(ContextCompat.getColor(mContext, R.color.light_red));
                     } else {
                         holder.ll_status.setBackgroundColor(ContextCompat.getColor(mContext, R.color.dark_yellow));

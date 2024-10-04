@@ -13,9 +13,9 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
-
-import com.budiyev.android.codescanner.CodeScanner;
-import com.budiyev.android.codescanner.CodeScannerView;
+//
+//import com.budiyev.android.codescanner.CodeScanner;
+//import com.budiyev.android.codescanner.CodeScannerView;
 import com.eot_app.R;
 import com.eot_app.nav_menu.audit.audit_list.scanbarcode.scan_mvp.ScanBarcode_PC;
 import com.eot_app.utility.AppConstant;
@@ -27,9 +27,9 @@ import com.google.mlkit.vision.barcode.common.Barcode;
 import com.google.mlkit.vision.codescanner.GmsBarcodeScanner;
 import com.google.mlkit.vision.codescanner.GmsBarcodeScannerOptions;
 import com.google.mlkit.vision.codescanner.GmsBarcodeScanning;
-import com.google.zxing.BarcodeFormat;
+//import com.google.zxing.BarcodeFormat;
 import com.gun0912.tedpermission.PermissionListener;
-import com.gun0912.tedpermission.TedPermission;
+import com.gun0912.tedpermission.rx3.TedPermission;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +39,7 @@ import java.util.concurrent.Callable;
  * Created by Mahendra Dabi on 8/11/19.
  */
 public class UploadBarcodeActivity extends AppCompatActivity {
-    private CodeScanner mCodeScanner;
+//    private CodeScanner mCodeScanner;
 
     EditText edit_barcode;
     private String codeText;
@@ -62,7 +62,7 @@ public class UploadBarcodeActivity extends AppCompatActivity {
             equipmentId = getIntent().getStringExtra("equipmentId");
         }
 
-        CodeScannerView scannerView = findViewById(R.id.scanner_view);
+//        CodeScannerView scannerView = findViewById(R.id.scanner_view);
         if(Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
             options = new GmsBarcodeScannerOptions.Builder()
                     .setBarcodeFormats(
@@ -80,25 +80,25 @@ public class UploadBarcodeActivity extends AppCompatActivity {
         scanner = GmsBarcodeScanning.getClient(this, options);
 //        edit_barcode = findViewById(R.id.edit_barcode);
 
-        mCodeScanner = new CodeScanner(this, scannerView);
-        List<BarcodeFormat> list = new ArrayList<>();
-        list.add(BarcodeFormat.CODE_128);
-        list.add(BarcodeFormat.UPC_A);
-        list.add(BarcodeFormat.UPC_E);
-        list.add(BarcodeFormat.EAN_13);
-        list.add(BarcodeFormat.CODE_39);
-        list.add(BarcodeFormat.CODABAR);
-        mCodeScanner.setFormats(list);
-        mCodeScanner.setAutoFocusEnabled(true);
-        mCodeScanner.setDecodeCallback(result -> runOnUiThread(() -> {
-            codeText = result.getText();
-            showDialog(codeText);
-            // searchEquipment(result.getText());
-
-        }));
-
-
-        scannerView.setOnClickListener(view -> startScanner());
+//        mCodeScanner = new CodeScanner(this, scannerView);
+//        List<BarcodeFormat> list = new ArrayList<>();
+//        list.add(BarcodeFormat.CODE_128);
+//        list.add(BarcodeFormat.UPC_A);
+//        list.add(BarcodeFormat.UPC_E);
+//        list.add(BarcodeFormat.EAN_13);
+//        list.add(BarcodeFormat.CODE_39);
+//        list.add(BarcodeFormat.CODABAR);
+//        mCodeScanner.setFormats(list);
+//        mCodeScanner.setAutoFocusEnabled(true);
+//        mCodeScanner.setDecodeCallback(result -> runOnUiThread(() -> {
+//            codeText = result.getText();
+//            showDialog(codeText);
+//            // searchEquipment(result.getText());
+//
+//        }));
+//
+//
+//        scannerView.setOnClickListener(view -> startScanner());
 
         uploadBarcodeViewModel.getIsUploadingBarcode().observe(this, aBoolean -> {
             if (aBoolean)
@@ -195,31 +195,46 @@ public class UploadBarcodeActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    public void onPause() {
-        mCodeScanner.releaseResources();
-        super.onPause();
-    }
+//    @Override
+//    public void onPause() {
+//        mCodeScanner.releaseResources();
+//        super.onPause();
+//    }
 
     private void startScanner() {
-        if (AppUtility.askCameraTakePicture(this)) {
-            mCodeScanner.startPreview();
-        }
-        else {
+//        if (AppUtility.askCameraTakePicture(this)) {
+//            mCodeScanner.startPreview();
+//        }
+//        else {
             // Sdk version 33
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU ) {
                 askTedPermission(0, AppConstant.cameraPermissions33);
             }else {
                 askTedPermission(0, AppConstant.cameraPermissions);
             }
-        }
+//        }
     }
     private void askTedPermission(int type,String[] permissions) {
         String permissionMsg ="";
         if(type == 0){
             permissionMsg = "<b>Need Camera and Storage Permission</b><br><br>If you reject permission,you can not use this service<br><br>Please turn on permissions at [SettingActivity] > [Permission]";
         }
-        TedPermission.with(EotApp.getAppinstance())
+        TedPermission.create()
+                .setPermissionListener(new PermissionListener() {
+                    @Override
+                    public void onPermissionGranted() {
+//                        if (type == 0)
+//                            mCodeScanner.startPreview();
+                    }
+
+                    @Override
+                    public void onPermissionDenied(List<String> deniedPermissions) {
+
+                    }
+                })
+                .setDeniedMessage(Html.fromHtml(permissionMsg))
+                .setPermissions(permissions);
+      /*  TedPermission.with(EotApp.getAppinstance())
                 .setPermissionListener(new PermissionListener() {
                     @Override
                     public void onPermissionGranted() {
@@ -235,7 +250,7 @@ public class UploadBarcodeActivity extends AppCompatActivity {
                 })
                 .setDeniedMessage(Html.fromHtml(permissionMsg))
                 .setPermissions(permissions)
-                .check();
+                .check();*/
     }
     /*hide show actionbar*/
     private void hideActionBar(boolean hide) {

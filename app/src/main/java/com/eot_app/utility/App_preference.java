@@ -4,9 +4,10 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import com.eot_app.login_next.login_next_model.Login_Responce_Model;
 import com.eot_app.login_next.login_next_model.ResLoginData;
-import com.eot_app.nav_menu.audit.audit_list.equipment.equipment_room_db.entity.EquipmentStatus;
+import com.eot_app.nav_menu.audit.audit_list.equipment.model.EquipmentStatus;
 import com.eot_app.nav_menu.custom_fileds.custom_model.CustOmFiledResModel;
 import com.eot_app.nav_menu.custom_fileds.custom_model.CustOmFormQuestionsRes;
+import com.eot_app.nav_menu.jobs.job_complation.complation_form.model.CompletionFormQuestionModel;
 import com.eot_app.nav_menu.jobs.job_detail.form_form.get_qus_list.qus_model.QuesRspncModel;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.add_job_equip.model_pkg.BrandData;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.add_job_equip.model_pkg.GetCatgData;
@@ -86,7 +87,6 @@ public class App_preference implements Sp_model {
     private final String CategryList="categry_list";
     private final String CAPTURE_IMG_PATH="captureImgPath";
     private final String IS_LAUNCH="is_launch";
-    private final String IS_MIGRATION="is_migration";
 //    private final String APP_KILL_TIME = "app_kill_time";
     private String REQUEST_IGNORE_BATTERY_OPTIMIZATIONS;
 
@@ -478,7 +478,16 @@ public class App_preference implements Sp_model {
         editor.putString(AUDITLIST_TIME, dateTime);
         editor.commit();
     }
+    @Override
+    public String getBrandSyncTime() {
+        return sp.getString(BRANDLIST_TIME, "");
+    }
 
+    @Override
+    public void setBrandSyncTime(String dateTime) {
+        editor.putString(BRANDLIST_TIME, dateTime);
+        editor.commit();
+    }
     @Override
     public String getStockSyncTime() {
         return sp.getString(STOCKLIST_TIME, "");
@@ -747,16 +756,5 @@ public class App_preference implements Sp_model {
     @Override
     public boolean isLaunchFirst() {
         return sp.getBoolean(IS_LAUNCH,true);
-    }
-
-    @Override
-    public void setLocalMigrationVersion(String versionNumber) {
-        editor.putString(IS_MIGRATION, versionNumber);
-        editor.commit();
-    }
-
-    @Override
-    public String getLocalMigrationVersion() {
-        return sp.getString(IS_MIGRATION,"");
     }
 }
