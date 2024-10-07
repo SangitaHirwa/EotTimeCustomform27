@@ -22,7 +22,7 @@ import com.bumptech.glide.Glide;
 import com.eot_app.R;
 import com.eot_app.nav_menu.audit.audit_list.documents.doc_model.GetFileList_Res;
 import com.eot_app.nav_menu.audit.audit_list.equipment.AuditAttchmentAdpter;
-import com.eot_app.nav_menu.audit.audit_list.equipment.model.EquipmentStatus;
+import com.eot_app.nav_menu.audit.audit_list.equipment.equipment_room_db.entity.EquipmentStatus;
 import com.eot_app.nav_menu.audit.audit_list.equipment.model.Equipment_Res;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.job_equ_remrk.JobEquRemarkRemarkActivity;
 import com.eot_app.utility.AppConstant;

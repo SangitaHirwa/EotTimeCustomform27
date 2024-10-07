@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import com.eot_app.login_next.login_next_model.Login_Responce_Model;
 import com.eot_app.login_next.login_next_model.ResLoginData;
-import com.eot_app.nav_menu.audit.audit_list.equipment.model.EquipmentStatus;
+import com.eot_app.nav_menu.audit.audit_list.equipment.equipment_room_db.entity.EquipmentStatus;
 import com.eot_app.nav_menu.custom_fileds.custom_model.CustOmFiledResModel;
 import com.eot_app.nav_menu.custom_fileds.custom_model.CustOmFormQuestionsRes;
 import com.eot_app.nav_menu.jobs.job_complation.complation_form.model.CompletionFormQuestionModel;

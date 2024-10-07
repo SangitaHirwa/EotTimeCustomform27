@@ -20,7 +20,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.eot_app.R;
-import com.eot_app.nav_menu.audit.audit_list.equipment.model.EquipmentStatus;
+import com.eot_app.nav_menu.audit.audit_list.equipment.equipment_room_db.entity.EquipmentStatus;
 import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.model.AddInvoiceItemReqModel;
 import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.mvp.AddEditInvoiceItem_PC;
 import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.mvp.AddEditInvoiceItem_PI;

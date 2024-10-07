@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.eot_app.R;
-import com.eot_app.nav_menu.audit.audit_list.equipment.model.EquipmentStatus;
+import com.eot_app.nav_menu.audit.audit_list.equipment.equipment_room_db.entity.EquipmentStatus;
 import com.eot_app.nav_menu.jobs.job_db.EquArrayModel;
 import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.AppUtility;

@@ -8,7 +8,7 @@ import android.util.Log;
 
 import com.eot_app.activitylog.ActivityLogController;
 import com.eot_app.activitylog.LogModel;
-import com.eot_app.nav_menu.audit.audit_list.equipment.model.EquipmentStatus;
+import com.eot_app.nav_menu.audit.audit_list.equipment.equipment_room_db.entity.EquipmentStatus;
 import com.eot_app.nav_menu.client.clientlist.client_detail.site.sitelist.editsite.editsitedb.SpinnerCountrySite;
 import com.eot_app.nav_menu.jobs.job_controller.ChatController;
 import com.eot_app.nav_menu.jobs.job_db.EquArrayModel;

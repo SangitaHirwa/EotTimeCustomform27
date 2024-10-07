@@ -53,7 +53,7 @@ import com.eot_app.nav_menu.audit.audit_list.audit_mvp.model.AuditList_Res;
 import com.eot_app.nav_menu.audit.audit_list.documents.ActivityEditImageDialog;
 import com.eot_app.nav_menu.audit.audit_list.documents.DocumentListAdapter;
 import com.eot_app.nav_menu.audit.audit_list.documents.doc_model.GetFileList_Res;
-import com.eot_app.nav_menu.audit.audit_list.equipment.model.EquipmentStatus;
+import com.eot_app.nav_menu.audit.audit_list.equipment.equipment_room_db.entity.EquipmentStatus;
 import com.eot_app.nav_menu.audit.audit_list.equipment.model.Equipment_Res;
 import com.eot_app.nav_menu.audit.audit_list.equipment.remark.remark_mvp.RemarkRequest;
 import com.eot_app.nav_menu.audit.audit_list.equipment.remark.remark_mvp.Remark_PC;

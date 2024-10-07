@@ -49,7 +49,7 @@ import com.eot_app.R;
 import com.eot_app.UploadDocumentActivity;
 import com.eot_app.databinding.ActivityAddJobEquipMentBinding;
 import com.eot_app.nav_menu.audit.audit_list.audit_mvp.model.AuditList_Res;
-import com.eot_app.nav_menu.audit.audit_list.equipment.model.EquipmentStatus;
+import com.eot_app.nav_menu.audit.audit_list.equipment.equipment_room_db.entity.EquipmentStatus;
 import com.eot_app.nav_menu.audit.nav_scan.BarcodeScanActivity;
 import com.eot_app.nav_menu.audit.nav_scan.UploadBarcodeViewModel;
 import com.eot_app.nav_menu.client.clientlist.client_detail.site.sitelist.Site_model;

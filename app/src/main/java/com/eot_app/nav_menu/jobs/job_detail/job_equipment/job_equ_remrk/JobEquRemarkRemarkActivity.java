@@ -46,7 +46,7 @@ import com.eot_app.UploadDocumentActivity;
 import com.eot_app.lat_lng_sync_pck.LatLngSycn_Controller;
 import com.eot_app.locations.LocationTracker;
 import com.eot_app.login_next.FooterMenu;
-import com.eot_app.nav_menu.audit.audit_list.equipment.model.EquipmentStatus;
+import com.eot_app.nav_menu.audit.audit_list.equipment.equipment_room_db.entity.EquipmentStatus;
 import com.eot_app.nav_menu.audit.audit_list.equipment.remark.RemarkCustomFormFragment;
 import com.eot_app.nav_menu.audit.audit_list.equipment.remark.RemarkQuestionListAdpter;
 import com.eot_app.nav_menu.audit.audit_list.equipment.remark.remark_mvp.RemarkRequest;

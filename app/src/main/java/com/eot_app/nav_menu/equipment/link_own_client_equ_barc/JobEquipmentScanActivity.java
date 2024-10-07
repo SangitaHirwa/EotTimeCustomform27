@@ -24,7 +24,7 @@ import com.budiyev.android.codescanner.CodeScannerView;*/
 
 import com.eot_app.R;
 import com.eot_app.home_screens.MainActivity;
-import com.eot_app.nav_menu.audit.audit_list.equipment.model.EquipmentStatus;
+import com.eot_app.nav_menu.audit.audit_list.equipment.equipment_room_db.entity.EquipmentStatus;
 import com.eot_app.nav_menu.audit.audit_list.scanbarcode.model.ScanBarcodeRequest;
 import com.eot_app.nav_menu.audit.nav_scan.BarcodeScanActivity;
 import com.eot_app.nav_menu.equipment.link_own_client_equ_barc.mvp_scanbar.ScanEquPc;

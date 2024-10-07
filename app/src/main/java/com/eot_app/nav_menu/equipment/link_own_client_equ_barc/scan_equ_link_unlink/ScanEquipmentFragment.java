@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.eot_app.R;
-import com.eot_app.nav_menu.audit.audit_list.equipment.model.EquipmentStatus;
+import com.eot_app.nav_menu.audit.audit_list.equipment.equipment_room_db.entity.EquipmentStatus;
 import com.eot_app.nav_menu.equipment.link_own_client_equ_barc.JobEquipmentScanActivity;
 import com.eot_app.nav_menu.equipment.linkequip.EquipmentLinkAdapter;
 import com.eot_app.nav_menu.jobs.job_db.EquArrayModel;
