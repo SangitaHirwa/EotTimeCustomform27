@@ -51,4 +51,6 @@ public interface EquipmentDao {
 
     @Query("select equId, equnm, mno, sno, status, type, statusUpdateDate, image, isPart from Equipment where parentId=:parentEquId ")
     List<Equipment> getEquipmentsByParentEquipId(String parentEquId);
+    @Query("Update  Equipment Set usrManualDoc = :usrManualDoc where equId=:equId ")
+    void setUsrManualDoc(String equId, String usrManualDoc);
 }

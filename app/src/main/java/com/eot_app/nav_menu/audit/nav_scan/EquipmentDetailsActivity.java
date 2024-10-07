@@ -1446,6 +1446,9 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
         this.path = path;
         REFRESH = true;
 //        invalidateOptionsMenu();
+        if(path != null && !path.isEmpty()){
+            AppDataBase.getInMemoryDatabase(EotApp.getCurrentActivity()).equipmentDao().setUsrManualDoc(equipmentID, path);
+        }
         onResume();
 
     }
