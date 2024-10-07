@@ -14,9 +14,6 @@ public interface LinkEquipmentView {
     void refreshEquipmentList(boolean isReturn, boolean equiAdd);
 
     void onSessionExpired(String msg);
-
-    void setEquStatusList(List<EquipmentStatus> list);
-
     void updateLinkUnlinkEqu();
     void refreshEquList(boolean isReturn);
 }

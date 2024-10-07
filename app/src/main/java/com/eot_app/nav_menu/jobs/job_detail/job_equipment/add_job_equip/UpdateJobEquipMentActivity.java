@@ -42,7 +42,6 @@ import com.eot_app.UploadDocumentActivity;
 import com.eot_app.databinding.ActivityAddJobEquipMentBinding;
 import com.eot_app.nav_menu.audit.audit_list.audit_mvp.model.AuditList_Res;
 import com.eot_app.nav_menu.audit.audit_list.equipment.equipment_room_db.entity.EquipmentStatus;
-import com.eot_app.nav_menu.audit.nav_scan.BarcodeScanActivity;
 import com.eot_app.nav_menu.client.clientlist.client_detail.site.sitelist.Site_model;
 import com.eot_app.nav_menu.client.clientlist.client_detail.site.sitelist.editsite.editsitedb.SpinnerCountrySite;
 import com.eot_app.nav_menu.jobs.add_job.adapters.FilterAdapterSites;

@@ -5,7 +5,6 @@ import com.eot_app.login_next.login_next_model.ResLoginData;
 import com.eot_app.nav_menu.audit.audit_list.equipment.equipment_room_db.entity.EquipmentStatus;
 import com.eot_app.nav_menu.custom_fileds.custom_model.CustOmFiledResModel;
 import com.eot_app.nav_menu.custom_fileds.custom_model.CustOmFormQuestionsRes;
-import com.eot_app.nav_menu.jobs.job_complation.complation_form.model.CompletionFormQuestionModel;
 import com.eot_app.nav_menu.jobs.job_detail.form_form.get_qus_list.qus_model.QuesRspncModel;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.add_job_equip.model_pkg.BrandData;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.add_job_equip.model_pkg.GetCatgData;
@@ -123,8 +122,6 @@ public interface Sp_model {
     String getAuditSyncTime();
 
     void setAuditSyncTime(String dateTime);
-    void setBrandSyncTime(String dateTime);
-    String getBrandSyncTime();
     void setStockSyncTime(String dateTime);
     String getStockSyncTime();
 
@@ -228,5 +225,7 @@ public interface Sp_model {
     String getCapturePath();
     void setLaunchFirst();
     boolean isLaunchFirst();
+    void setLocalMigrationVersion(String versionNumber);
+    String getLocalMigrationVersion();
 
 }

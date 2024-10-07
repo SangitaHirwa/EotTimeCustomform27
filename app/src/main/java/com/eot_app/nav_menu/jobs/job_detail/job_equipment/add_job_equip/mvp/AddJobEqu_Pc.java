@@ -1,8 +1,6 @@
 package com.eot_app.nav_menu.jobs.job_detail.job_equipment.add_job_equip.mvp;
 
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
 

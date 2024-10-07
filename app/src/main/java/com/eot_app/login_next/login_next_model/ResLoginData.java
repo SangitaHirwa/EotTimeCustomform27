@@ -462,6 +462,10 @@ public class ResLoginData {
         this.isCompInfoFill = isCompInfoFill;
     }
 
+    public void setExpireStatus(String expireStatus) {
+        this.expireStatus = expireStatus;
+    }
+
     public String getExpireStatus() {
         return expireStatus;
     }

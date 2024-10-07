@@ -3,7 +3,6 @@ package com.eot_app.nav_menu.jobs.job_detail.job_equipment.add_job_equip.mvp;
 import com.eot_app.nav_menu.audit.audit_list.equipment.equipment_room_db.entity.EquipmentStatus;
 import com.eot_app.nav_menu.client.clientlist.client_detail.site.sitelist.Site_model;
 import com.eot_app.nav_menu.jobs.job_db.EquArrayModel;
-import com.eot_app.nav_menu.jobs.job_detail.job_equipment.add_job_equip.clientEqu.ClientEquReq;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.add_job_equip.clientEqu.ClientEquRes;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.add_job_equip.model_pkg.BrandData;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.add_job_equip.model_pkg.GetCatgData;
