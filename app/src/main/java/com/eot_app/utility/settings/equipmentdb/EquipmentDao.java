@@ -16,11 +16,23 @@ public interface EquipmentDao {
     @Insert(onConflict = REPLACE)
     void insertEquipmentList(List<Equipment> equipmentList);
 
+    @Insert(onConflict = REPLACE)
+    void insertSingleEquipmentList(Equipment equipmentList);
 
     @Query("select * from Equipment where equId=:equId")
     Equipment getEquipmentById(String equId);
+
+    @Query("select * from Equipment where equId=:equId and parentId = '0' and type = :type")
+    Equipment getParentEquipmentById(String equId, String type);
+
     @Query("select * from Equipment")
     List<Equipment> getAllEquipment();
+
+    @Query("select * from Equipment where type=:type and parentId ='0'")
+    List<Equipment> getAllTypeBaseEquipment(String type);
+
+    @Query("select * from Equipment where type='2' and cltId = :cltId and parentId = '0'")
+    List<Equipment> getAllClientEquipment( String cltId);
 
     @Query("select * from Equipment where barcode=:barcode or sno =:serialno")
     Equipment getEquipmentByBarcodeOrSerialNo(String barcode, String serialno);
@@ -28,10 +40,15 @@ public interface EquipmentDao {
     @Update
     void updateEquipment(Equipment model);
 
-
     @Query("delete from Equipment where isdelete = 0 ")
     void deleteEquipmentByIsDelete();
 
     @Query("delete from Equipment")
     void delete();
+
+    @Query("select equId, equnm, mno, sno, status, type, statusUpdateDate, image, isPart from Equipment where equId=:equId and parentId ='0'")
+    Equipment getEquipmentByEquipId(String equId);
+
+    @Query("select equId, equnm, mno, sno, status, type, statusUpdateDate, image, isPart from Equipment where parentId=:parentEquId ")
+    List<Equipment> getEquipmentsByParentEquipId(String parentEquId);
 }

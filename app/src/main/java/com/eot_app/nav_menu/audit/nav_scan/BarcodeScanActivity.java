@@ -361,7 +361,7 @@ public class BarcodeScanActivity extends AppCompatActivity implements ScanBarcod
                         }
                         startActivity(intent);
                     }else {
-                        String equip = new Gson().toJson(jobList.get(0));
+                        String equip = new Gson().toJson(equipment);
                         findEquipment(equip,codeText);
                     }
                 } else {
