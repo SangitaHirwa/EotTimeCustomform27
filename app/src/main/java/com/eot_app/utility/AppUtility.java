@@ -43,6 +43,7 @@ import com.eot_app.BuildConfig;
 import com.eot_app.R;
 import com.eot_app.nav_menu.admin_fw_chat_pkg.sonam_user_user_chat_pkg.user_chat_controller.UserToUserChatController;
 import com.eot_app.nav_menu.jobs.add_job.Add_job_activity;
+import com.eot_app.nav_menu.jobs.job_db.EquArrayModel;
 import com.eot_app.nav_menu.jobs.job_detail.detail.jobdetial_model.JobStatusModelNew;
 import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.MultiDocUpdateRequest;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_detail_pkg.inv_detail_model.Tax;
@@ -52,6 +53,7 @@ import com.eot_app.utility.util_interfaces.Callback_AlertDialog;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.reflect.TypeToken;
 import com.hypertrack.hyperlog.HyperLog;
 
 import org.jsoup.Jsoup;
@@ -61,12 +63,14 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.lang.reflect.Type;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -2532,6 +2536,20 @@ public static void askPerMissionForLocation(Context context) {
         return matcher.matches();
     }
 
-
+    public List<String> getContrctEquipment (String contId){
+        List<String> list = new ArrayList<>();
+        if(contId != null){
+            String contractEquipment = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).contractDao().getContractEquipListById(contId);
+            if(contractEquipment != null){
+                List<String> split = Arrays.asList(contractEquipment.split(","));
+                list = split;
+            }
+        }
+        return list;
+    }
+    /** For migrate all api, Its do hardcode, because we want to migrate all api at once on specific version release*/
+    public static String getMigrationNumber(){
+        return "3.12";
+    }
 }
 

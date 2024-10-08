@@ -6,15 +6,15 @@ import java.util.List;
 
 public interface LinkEquipmentPI {
 
-    void getEquipmentList(String type, String cltId, String jobId);
+    void getEquipmentList(String type, String contrId, String jobId);
 
-    void getAttachedEquipmentList(String jobId, String contrId,boolean isReturn);
+    void getAttachedEquipmentList(String type, String jobId, String contrId,boolean isReturn);
 
     void addAuditEquipment(List<String> equId, String jobId, String contrId);
 
     void linkUnlinkEquipment(List<String> equId, String audId, String contrId);
 
-    void getContractList(ContractEquipmentReq req);
+//    void getContractList(ContractEquipmentReq req);
 
     void getEquipmentStatus();
 

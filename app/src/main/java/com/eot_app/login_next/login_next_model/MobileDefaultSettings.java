@@ -1,7 +1,7 @@
 package com.eot_app.login_next.login_next_model;
 
 import com.eot_app.login_next.FooterMenu;
-import com.eot_app.nav_menu.audit.audit_list.equipment.model.EquipmentStatus;
+import com.eot_app.nav_menu.audit.audit_list.equipment.equipment_room_db.entity.EquipmentStatus;
 import com.eot_app.utility.language_support.Language_Model;
 import com.eot_app.utility.language_support.Language_Settings;
 

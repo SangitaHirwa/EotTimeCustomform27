@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,13 +12,14 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.eot_app.R;
-import com.eot_app.nav_menu.audit.audit_list.equipment.model.EquipmentStatus;
+import com.eot_app.nav_menu.audit.audit_list.equipment.equipment_room_db.entity.EquipmentStatus;
 import com.eot_app.nav_menu.jobs.job_db.EquArrayModel;
 import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.AppUtility;
 import com.eot_app.utility.App_preference;
+import com.eot_app.utility.EotApp;
+import com.eot_app.utility.db.AppDataBase;
 import com.eot_app.utility.language_support.LanguageController;
-import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +47,7 @@ public class JobDetailEquipmentAdapter extends RecyclerView.Adapter<JobDetailEqu
     public JobDetailEquipmentAdapter(Context mContext, OnEquipmentClicked onEquipmentClicked) {
         this.onEquipmentClicked = onEquipmentClicked;
         this.mContext = mContext;
-        equipmentStatus = App_preference.getSharedprefInstance().getLoginRes().getEquipmentStatus();
+        equipmentStatus = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).equipmentStatusDao().getEquipmentCondition();
         this.suggestions = new ArrayList<>();
     }
 
@@ -96,7 +96,6 @@ public class JobDetailEquipmentAdapter extends RecyclerView.Adapter<JobDetailEqu
     @Override
     public void onBindViewHolder(@NonNull JobDetailEquipmentAdapter.MyViewHolder holder, final int position) {
         EquArrayModel equArrayModel = list.get(position);
-        Log.e("List", "" + new Gson().toJson(list));
         holder.tv_item_name.setText(equArrayModel.getEqunm());
 
 
@@ -121,14 +120,14 @@ public class JobDetailEquipmentAdapter extends RecyclerView.Adapter<JobDetailEqu
         }
 
         try {
-            if (equArrayModel.getEquStatus() != null) {
-                if (equArrayModel.getEquStatus().equals("")) {
+            if (equArrayModel.getStatus() != null) {
+                if (equArrayModel.getStatus().equals("")) {
                     holder.ll_status.setVisibility(View.GONE);
-                } else if (equArrayModel.getEquStatus().equals("0")) {
+                } else if (equArrayModel.getStatus().equals("0")) {
                     holder.ll_status.setVisibility(View.GONE);
                 } else {
                     holder.ll_status.setVisibility(View.VISIBLE);
-                    holder.tv_status.setText(getCurrentStatusNameById(equArrayModel.getEquStatus()));
+                    holder.tv_status.setText(getCurrentStatusNameById(equArrayModel.getStatus()));
 
                     if(equArrayModel.getStatusUpdateDate() != null&&!equArrayModel.getStatusUpdateDate().isEmpty()){
                         holder.tv_date.setText(AppUtility.getDate(Long.parseLong(equArrayModel.getStatusUpdateDate()), AppConstant.DATE_FORMAT));
@@ -137,7 +136,7 @@ public class JobDetailEquipmentAdapter extends RecyclerView.Adapter<JobDetailEqu
                     else
                         holder.tv_date.setVisibility(View.GONE);
 
-                    if (getCurrentStatusNameById(equArrayModel.getEquStatus()).trim().equalsIgnoreCase("Discarded")) {
+                    if (getCurrentStatusNameById(equArrayModel.getStatus()).trim().equalsIgnoreCase("Discarded")) {
                         holder.ll_status.setBackgroundColor(ContextCompat.getColor(mContext, R.color.light_red));
                     } else {
                         holder.ll_status.setBackgroundColor(ContextCompat.getColor(mContext, R.color.dark_yellow));

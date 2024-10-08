@@ -61,6 +61,7 @@ import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.AppUtility;
 import com.eot_app.utility.App_preference;
 import com.eot_app.utility.EotApp;
+import com.eot_app.utility.Language;
 import com.eot_app.utility.RoundedImageView;
 import com.eot_app.utility.db.AppDataBase;
 import com.eot_app.utility.language_support.LanguageController;
@@ -102,11 +103,10 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
     AppCompatTextView tv_network_error, tv_label_part, tv_label_item;
     private LinearLayout ll_audit_job;
     private LinearLayout job_ll, audit_ll, job_upcoming_ll, equipment_location_detail;
-    TextView custom_filed_1, custom_filed_2, custom_filed_txt_1, custom_filed_txt_2, supplier_txt, supplier, txt_addBarcode, txt_addQrcode, servic_histry_not_found, upcoming_servic_not_found, parts_not_found, items_not_found, audit_not_found;
+    TextView custom_filed_1, custom_filed_2, custom_filed_txt_1, custom_filed_txt_2, supplier_txt, supplier, txt_addBarcode, txt_addQrcode,txt_Barcode, txt_Qrcode, servic_histry_not_found, upcoming_servic_not_found, parts_not_found, items_not_found, audit_not_found, txt_addUserManual;
     ImageView img_barcode, img_Qrcode, last_service_show_hide,upcoming_service_show_hide,part_list_show_hide,item_list_show_hide,audit_list_show_hide;
     private boolean REFRESH = false;
     private String cltId;
-    private Job_equim_PI jobEquimPi;
     public AddEdit_QRCode_BarCode_Dialog addEditQrCodeBarCodeDialog;
     boolean clicked_service_history = false;
     boolean clicked_upcoming_service = false;
@@ -116,7 +116,7 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
     public String barCode = "", qrcode = "", equpId = "", jobId = "";
     public boolean isComeFromJobScan = false, isLinked = false;
     EquArrayModel equipment;
-    ConstraintLayout cl_loader1,cl_loader2,cl_loader3,cl_loader4,cl_loader5;
+    ConstraintLayout cl_loader1,cl_loader2,cl_loader3,cl_loader4,cl_loader5, clUserManual;
     boolean isFind = false;
 
     @Override
@@ -141,29 +141,19 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
                 setJobEquipment(equipment);
                 equpId = equipment.getEquId();
                 jobId = getIntent().getStringExtra("jobId");
-//                equ_details_pc.getEquipmentAduitHistory(equipment.getEquId());
-//                equ_details_pc.getEquipmentJobHistory(equipment.getEquId());
-//                equ_details_pc.getEqItemFromServer(equipment.getEquId(),jobId);
-//                equ_details_pc.getEqPartsFromServer(equipment.getEquId());
 
             } else if (getIntent().hasExtra("audit_equip")) {
                 String str = getIntent().getExtras().getString("audit_equip_str");
                 Equipment_Res equipment = new Gson().fromJson(str, Equipment_Res.class);
                 setAuditEquipment(equipment);
                 equpId = equipment.getEquId();
-//                equ_details_pc.getEquipmentAduitHistory(equipment.getEquId());
-//                equ_details_pc.getEquipmentJobHistory(equipment.getEquId());
-//                equ_details_pc.getEqItemFromServer(equipment.getEquId(),jobId);
-//                equ_details_pc.getEqPartsFromServer(equipment.getEquId());
+
 
             } else if (getIntent().hasExtra("equipment_id")) {
                 Equipment equipment = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).equipmentDao().getEquipmentById(getIntent().getStringExtra("equipment_id"));
                 setEquipmentDetails(equipment);
                 equpId = equipment.getEquId();
-//                equ_details_pc.getEquipmentAduitHistory(equipment.getEquId());
-//                equ_details_pc.getEquipmentJobHistory(equipment.getEquId());
-//                equ_details_pc.getEqItemFromServer(equipment.getEquId(),jobId);
-//                equ_details_pc.getEqPartsFromServer(equipment.getEquId());
+
 
             } else if (getIntent().hasExtra("job_equip_scan")) {
                 String str = getIntent().getExtras().getString("job_equip_str");
@@ -181,10 +171,7 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
                 jobId = getIntent().getStringExtra("jobId");
                 isLinked = getIntent().getBooleanExtra("isLinked", false);
                 isComeFromJobScan = true;
-//                equ_details_pc.getEquipmentAduitHistory(equipment.getEquId());
-//                equ_details_pc.getEquipmentJobHistory(equipment.getEquId());
-//                equ_details_pc.getEqItemFromServer(equipment.getEquId(),jobId);
-//                equ_details_pc.getEqPartsFromServer(equipment.getEquId());
+
 
             }
             if (!getIntent().hasExtra("job_equip_scan")) {
@@ -199,7 +186,26 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
         } else {
             setData();
         }
+        if (!isComeFromJobScan) {
+            clUserManual.setVisibility(View.VISIBLE);
+            if (path != null && !path.equals("")) {
+                try {
+                    File file1 = new File(path);
+//                    String setTextInItemmenu = LanguageController.getInstance().getMobileMsgByKey(AppConstant.view_user_mannual) + " (" + file1.getName() + ")";
+                    txt_addUserManual.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.view_mannual));
+                    txt_addUserManual.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
 
+                } catch (Exception ex) {
+                    txt_addUserManual.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.plus), null, null, null);
+                    txt_addUserManual.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_user_mannual));
+                }
+            } else {
+                txt_addUserManual.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.plus), null, null, null);
+                txt_addUserManual.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_user_mannual));
+            }
+        }else {
+            clUserManual.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -214,8 +220,6 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
     }
 
     private void init() {
-        jobEquimPi = new Job_equim_PC(this);
-        jobEquimPi.getEquipmentStatus();
         AppUtility.progressBarDissMiss();
         if (getIntent().hasExtra("equipment")) {
             if (equpId != null && !equpId.isEmpty()) {
@@ -228,6 +232,9 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
             setData();
         }
 
+        if(REFRESH){
+            setData();
+        }
         if (getIntent().hasExtra("job_equip_scan")) {
             setViewEquFound();
         }
@@ -403,9 +410,14 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
 //        equipment_location_detail = findViewById(R.id.equipment_location_detail);
         txt_addBarcode = findViewById(R.id.txt_addBarcode);
         txt_addQrcode = findViewById(R.id.txt_addQrcode);
+        txt_Barcode = findViewById(R.id.txt_Barcode);
+        txt_Qrcode = findViewById(R.id.txt_Qrcode);
         img_Qrcode = findViewById(R.id.img_Qrcode);
         img_barcode = findViewById(R.id.img_barcode);
+        txt_addUserManual = findViewById(R.id.txt_addUserManual);
+        clUserManual = findViewById(R.id.clUserManual);
         equipment_location.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.equipment) + " " + LanguageController.getInstance().getMobileMsgByKey(AppConstant.location)+": ");
+        txt_addUserManual.setOnClickListener(this);
         txt_addBarcode.setOnClickListener(this);
         txt_addQrcode.setOnClickListener(this);
 
@@ -496,21 +508,21 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
     public boolean onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
 
-        if (!isComeFromJobScan) {
-            if (path != null && !path.equals("")) {
-                menu.findItem(R.id.menu_add_user_manual).setVisible(false);
-                try {
-                    File file1 = new File(path);
-                    String setTextInItemmenu = LanguageController.getInstance().getMobileMsgByKey(AppConstant.view_user_mannual) + " (" + file1.getName() + ")";
-                    menu.findItem(R.id.menu_view_user_manual).setTitle(setTextInItemmenu);
-                } catch (Exception ex) {
-                    menu.findItem(R.id.menu_view_user_manual).setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.view_user_mannual));
-                }
-            } else {
-                menu.findItem(R.id.menu_add_user_manual).setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_user_mannual));
-                menu.findItem(R.id.menu_view_user_manual).setVisible(false);
-            }
-        }
+//        if (!isComeFromJobScan) {
+//            if (path != null && !path.equals("")) {
+//                menu.findItem(R.id.menu_add_user_manual).setVisible(false);
+//                try {
+//                    File file1 = new File(path);
+//                    String setTextInItemmenu = LanguageController.getInstance().getMobileMsgByKey(AppConstant.view_user_mannual) + " (" + file1.getName() + ")";
+//                    menu.findItem(R.id.menu_view_user_manual).setTitle(setTextInItemmenu);
+//                } catch (Exception ex) {
+//                    menu.findItem(R.id.menu_view_user_manual).setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.view_user_mannual));
+//                }
+//            } else {
+//                menu.findItem(R.id.menu_add_user_manual).setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_user_mannual));
+//                menu.findItem(R.id.menu_view_user_manual).setVisible(false);
+//            }
+//        }
         return true;
 
     }
@@ -520,25 +532,46 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
         if (item.getItemId() == android.R.id.home) {
             onBackPressed();
             return true;
-        } else if (item.getItemId() == R.id.menu_add_user_manual) {
-            getDocumentsFromGalleryNotImage();
-        } else if (item.getItemId() == R.id.menu_view_user_manual) {
-            openAttchmentOnBrowser();
         }
+//        else if (item.getItemId() == R.id.menu_add_user_manual) {
+//            getDocumentsFromGalleryNotImage();
+//        } else if (item.getItemId() == R.id.menu_view_user_manual) {
+//            openAttchmentOnBrowser();
+//        }
         return true;
     }
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (!isComeFromJobScan) {
-            getMenuInflater().inflate(R.menu.equi_details_menu, menu);
-        }
+//        if (!isComeFromJobScan) {
+//            getMenuInflater().inflate(R.menu.equi_details_menu, menu);
+//        }
         return true;
     }
 
     private void setData() {
         String jobData = "";
+        if (!isComeFromJobScan) {
+            clUserManual.setVisibility(View.VISIBLE);
+            if (path != null && !path.equals("")) {
+                try {
+                    File file1 = new File(path);
+//                    String setTextInItemmenu = LanguageController.getInstance().getMobileMsgByKey(AppConstant.view_user_mannual) + " (" + file1.getName() + ")";
+                    txt_addUserManual.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.view_mannual));
+                    txt_addUserManual.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
+
+                } catch (Exception ex) {
+                    txt_addUserManual.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.plus), null, null, null);
+                    txt_addUserManual.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_user_mannual));
+                }
+            } else {
+                txt_addUserManual.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.plus), null, null, null);
+                txt_addUserManual.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_user_mannual));
+            }
+        }else {
+            clUserManual.setVisibility(View.GONE);
+        }
         if (getIntent().hasExtra("JOBDATA")) {
             try {
                 jobData = (getIntent().getExtras().getString("JOBDATA"));//new Gson().toJson
@@ -582,10 +615,6 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
                     if (equipment.getSno() != null && equipment.getSno().equals(codeText) || equipment.getBarcode() != null && equipment.getBarcode().equals(codeText) || equipment.getQrcode() != null && equipment.getQrcode().equals(codeText)) {
                         setAuditEquipment(equipment);
                         equpId = equipment.getEquId();
-//                        equ_details_pc.getEquipmentAduitHistory(equipment.getEquId());
-//                        equ_details_pc.getEquipmentJobHistory(equipment.getEquId());
-//                        equ_details_pc.getEqItemFromServer(equipment.getEquId(), null);
-//                        equ_details_pc.getEqPartsFromServer(equipment.getEquId());
                         break;
                     }
                 }
@@ -604,10 +633,6 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
                             equipment.setEquipment_group(equipmentRes.getGroupName());
                         }
                         setJobEquipment(equipment);
-//                        equ_details_pc.getEquipmentAduitHistory(equipment.getEquId());
-//                        equ_details_pc.getEquipmentJobHistory(equipment.getEquId());
-//                        equ_details_pc.getEqItemFromServer(equipment.getEquId(), joblist.get(0).getJobId());
-//                        equ_details_pc.getEqPartsFromServer(equipment.getEquId());
                         break;
                     }else {
                         if(equipment.getEquComponent() != null && equipment.getEquComponent().size()>0) {
@@ -743,13 +768,39 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
         if (!TextUtils.isEmpty(equipment.getUsrManualDoc())) {
             path = equipment.getUsrManualDoc();
         }
+        if (!isComeFromJobScan) {
+            clUserManual.setVisibility(View.VISIBLE);
+            if (path != null && !path.equals("")) {
+                try {
+                    File file1 = new File(path);
+//                    String setTextInItemmenu = LanguageController.getInstance().getMobileMsgByKey(AppConstant.view_user_mannual) + " (" + file1.getName() + ")";
+                    txt_addUserManual.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.view_mannual));
+                    txt_addUserManual.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
 
+                } catch (Exception ex) {
+                    txt_addUserManual.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.plus), null, null, null);
+                    txt_addUserManual.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_user_mannual));
+                }
+            } else {
+                txt_addUserManual.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.plus), null, null, null);
+                txt_addUserManual.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_user_mannual));
+            }
+        }else {
+            clUserManual.setVisibility(View.GONE);
+        }
         try {
             if (equipment != null && equipment.getBarcode() != null && !equipment.getBarcode().isBlank() && equipment.getBarcodeImg() != null && !equipment.getBarcodeImg().isBlank()) {
                 txt_addBarcode.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit_Barcode));
                 txt_addBarcode.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.edit), null, null, null);
-                img_barcode.setVisibility(View.VISIBLE);
-                Picasso.get().load(App_preference.getSharedprefInstance().getBaseURL() + equipment.getBarcodeImg()).placeholder(R.drawable.ic_profile).error(R.drawable.ic_profile).into(img_barcode);
+                if(AppUtility.isInternetConnected()) {
+                    img_barcode.setVisibility(View.VISIBLE);
+                    txt_Barcode.setVisibility(View.GONE);
+                    Picasso.get().load(App_preference.getSharedprefInstance().getBaseURL() + equipment.getBarcodeImg()).placeholder(R.drawable.ic_profile).error(R.drawable.ic_profile).into(img_barcode);
+                }else {
+                    img_barcode.setVisibility(View.GONE);
+                    txt_Barcode.setVisibility(View.VISIBLE);
+                    txt_Barcode.setText(equipment.getBarcode());
+                }
                 /*    equ_bar_code_num_txt.setText(equipment.getBarcode());*/
                 barCode = equipment.getBarcode();
             } else {
@@ -761,8 +812,15 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
             if (equipment != null && equipment.getQrcode() != null && !equipment.getQrcode().isBlank() && !equipment.getQrcode().isBlank() && equipment.getQrcodeImg() != null && !equipment.getQrcodeImg().isBlank()) {
                 txt_addQrcode.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit_QR_Code));
                 txt_addQrcode.setCompoundDrawablesWithIntrinsicBounds(getDrawable(R.drawable.edit), null, null, null);
-                img_Qrcode.setVisibility(View.VISIBLE);
-                Picasso.get().load(App_preference.getSharedprefInstance().getBaseURL() + equipment.getQrcodeImg()).placeholder(R.drawable.ic_profile).error(R.drawable.ic_profile).into(img_Qrcode);
+                if(AppUtility.isInternetConnected()) {
+                    img_Qrcode.setVisibility(View.VISIBLE);
+                    txt_Qrcode.setVisibility(View.GONE);
+                    Picasso.get().load(App_preference.getSharedprefInstance().getBaseURL() + equipment.getQrcodeImg()).placeholder(R.drawable.ic_profile).error(R.drawable.ic_profile).into(img_Qrcode);
+                }else {
+                    img_Qrcode.setVisibility(View.GONE);
+                    txt_Qrcode.setVisibility(View.VISIBLE);
+                    txt_Qrcode.setText(equipment.getQrcode());
+                }
 //                equ_bar_code_num_txt.setText(equipment.getQrcode());
                 qrcode = equipment.getQrcode();
             } else {
@@ -869,13 +927,40 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
             exception.printStackTrace();
         }
 
+        if (!isComeFromJobScan) {
+            clUserManual.setVisibility(View.VISIBLE);
+            if (path != null && !path.equals("")) {
+                try {
+                    File file1 = new File(path);
+//                    String setTextInItemmenu = LanguageController.getInstance().getMobileMsgByKey(AppConstant.view_user_mannual) + " (" + file1.getName() + ")";
+                    txt_addUserManual.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.view_mannual));
+                    txt_addUserManual.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
+
+                } catch (Exception ex) {
+                    txt_addUserManual.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.plus), null, null, null);
+                    txt_addUserManual.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_user_mannual));
+                }
+            } else {
+                txt_addUserManual.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.plus), null, null, null);
+                txt_addUserManual.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_user_mannual));
+            }
+        }else {
+            clUserManual.setVisibility(View.GONE);
+        }
         try {
-            if (equipment != null && equipment.getBarcode() != null && !equipment.getBarcode().isBlank() && !equipment.getBarcode().isBlank() && equipment.getBarcodeImg() != null && !equipment.getBarcodeImg().isBlank()) {
+            if (equipment != null && equipment.getBarcode() != null && !equipment.getBarcode().isBlank() && equipment.getBarcodeImg() != null && !equipment.getBarcodeImg().isBlank()) {
                 txt_addBarcode.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit_Barcode));
                 txt_addBarcode.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.edit), null, null, null);
-                img_barcode.setVisibility(View.VISIBLE);
-                Picasso.get().load(App_preference.getSharedprefInstance().getBaseURL() + equipment.getBarcodeImg()).placeholder(R.drawable.ic_profile).error(R.drawable.ic_profile).into(img_barcode);
-//                equ_bar_code_num_txt.setText(equipment.getBarcode());
+                if(AppUtility.isInternetConnected()) {
+                    img_barcode.setVisibility(View.VISIBLE);
+                    txt_Barcode.setVisibility(View.GONE);
+                    Picasso.get().load(App_preference.getSharedprefInstance().getBaseURL() + equipment.getBarcodeImg()).placeholder(R.drawable.ic_profile).error(R.drawable.ic_profile).into(img_barcode);
+                }else {
+                    img_barcode.setVisibility(View.GONE);
+                    txt_Barcode.setVisibility(View.VISIBLE);
+                    txt_Barcode.setText(equipment.getBarcode());
+                }
+                /*    equ_bar_code_num_txt.setText(equipment.getBarcode());*/
                 barCode = equipment.getBarcode();
             } else {
                 txt_addBarcode.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_barcode));
@@ -886,8 +971,15 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
             if (equipment != null && equipment.getQrcode() != null && !equipment.getQrcode().isBlank() && !equipment.getQrcode().isBlank() && equipment.getQrcodeImg() != null && !equipment.getQrcodeImg().isBlank()) {
                 txt_addQrcode.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit_QR_Code));
                 txt_addQrcode.setCompoundDrawablesWithIntrinsicBounds(getDrawable(R.drawable.edit), null, null, null);
-                img_Qrcode.setVisibility(View.VISIBLE);
-                Picasso.get().load(App_preference.getSharedprefInstance().getBaseURL() + equipment.getQrcodeImg()).placeholder(R.drawable.ic_profile).error(R.drawable.ic_profile).into(img_Qrcode);
+                if(AppUtility.isInternetConnected()) {
+                    img_Qrcode.setVisibility(View.VISIBLE);
+                    txt_Qrcode.setVisibility(View.GONE);
+                    Picasso.get().load(App_preference.getSharedprefInstance().getBaseURL() + equipment.getQrcodeImg()).placeholder(R.drawable.ic_profile).error(R.drawable.ic_profile).into(img_Qrcode);
+                }else {
+                    img_Qrcode.setVisibility(View.GONE);
+                    txt_Qrcode.setVisibility(View.VISIBLE);
+                    txt_Qrcode.setText(equipment.getQrcode());
+                }
 //                equ_bar_code_num_txt.setText(equipment.getQrcode());
                 qrcode = equipment.getQrcode();
             } else {
@@ -984,34 +1076,67 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
                     go_to_addjob.setVisibility(View.VISIBLE);
                 }
             }
+            if (!isComeFromJobScan) {
+                clUserManual.setVisibility(View.VISIBLE);
+                if (path != null && !path.equals("")) {
+                    try {
+                        File file1 = new File(path);
+//                        String setTextInItemmenu = LanguageController.getInstance().getMobileMsgByKey(AppConstant.view_user_mannual) + " (" + file1.getName() + ")";
+                        txt_addUserManual.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.view_mannual));
+                        txt_addUserManual.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
+
+                    } catch (Exception ex) {
+                        txt_addUserManual.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.plus), null, null, null);
+                        txt_addUserManual.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_user_mannual));
+                    }
+                } else {
+                    txt_addUserManual.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.plus), null, null, null);
+                    txt_addUserManual.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_user_mannual));
+                }
+            }else {
+                clUserManual.setVisibility(View.GONE);
+            }
             try {
-                if (equipment != null && equipment.getBarcode() != null && !equipment.getBarcode().isBlank() && !equipment.getBarcode().isBlank() && equipment.getBarcodeImg() != null && !equipment.getBarcodeImg().isBlank()) {
+                if (equipment != null && equipment.getBarcode() != null && !equipment.getBarcode().isBlank() && equipment.getBarcodeImg() != null && !equipment.getBarcodeImg().isBlank()) {
                     txt_addBarcode.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit_Barcode));
-                    txt_addBarcode.setCompoundDrawablesWithIntrinsicBounds(getDrawable(R.drawable.edit), null, null, null);
-                    img_barcode.setVisibility(View.VISIBLE);
-                    Picasso.get().load(App_preference.getSharedprefInstance().getBaseURL() + equipment.getBarcodeImg()).placeholder(R.drawable.ic_profile).error(R.drawable.ic_profile).into(img_barcode);
-//                    equ_bar_code_num_txt.setText(equipment.getBarcode());
+                    txt_addBarcode.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.edit), null, null, null);
+                    if(AppUtility.isInternetConnected()) {
+                        img_barcode.setVisibility(View.VISIBLE);
+                        txt_Barcode.setVisibility(View.GONE);
+                        Picasso.get().load(App_preference.getSharedprefInstance().getBaseURL() + equipment.getBarcodeImg()).placeholder(R.drawable.ic_profile).error(R.drawable.ic_profile).into(img_barcode);
+                    }else {
+                        img_barcode.setVisibility(View.GONE);
+                        txt_Barcode.setVisibility(View.VISIBLE);
+                        txt_Barcode.setText(equipment.getBarcode());
+                    }
+                    /*    equ_bar_code_num_txt.setText(equipment.getBarcode());*/
                     barCode = equipment.getBarcode();
                 } else {
                     txt_addBarcode.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_barcode));
                     txt_addBarcode.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.plus), null, null, null);
                     img_barcode.setVisibility(View.GONE);
-//                    equ_bar_code_num_txt.setText(equipment.getBarcode());
+//                equ_bar_code_num_txt.setText(equipment.getBarcode());
                 }
                 if (equipment != null && equipment.getQrcode() != null && !equipment.getQrcode().isBlank() && !equipment.getQrcode().isBlank() && equipment.getQrcodeImg() != null && !equipment.getQrcodeImg().isBlank()) {
                     txt_addQrcode.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit_QR_Code));
                     txt_addQrcode.setCompoundDrawablesWithIntrinsicBounds(getDrawable(R.drawable.edit), null, null, null);
-                    img_Qrcode.setVisibility(View.VISIBLE);
-                    Picasso.get().load(App_preference.getSharedprefInstance().getBaseURL() + equipment.getQrcodeImg()).placeholder(R.drawable.ic_profile).error(R.drawable.ic_profile).into(img_Qrcode);
-//                    equ_bar_code_num_txt.setText(equipment.getQrcode());
+                    if(AppUtility.isInternetConnected()) {
+                        img_Qrcode.setVisibility(View.VISIBLE);
+                        txt_Qrcode.setVisibility(View.GONE);
+                        Picasso.get().load(App_preference.getSharedprefInstance().getBaseURL() + equipment.getQrcodeImg()).placeholder(R.drawable.ic_profile).error(R.drawable.ic_profile).into(img_Qrcode);
+                    }else {
+                        img_Qrcode.setVisibility(View.GONE);
+                        txt_Qrcode.setVisibility(View.VISIBLE);
+                        txt_Qrcode.setText(equipment.getQrcode());
+                    }
+//                equ_bar_code_num_txt.setText(equipment.getQrcode());
                     qrcode = equipment.getQrcode();
                 } else {
                     txt_addQrcode.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_QR_Code));
                     txt_addQrcode.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.plus), null, null, null);
                     img_Qrcode.setVisibility(View.GONE);
-//                    equ_bar_code_num_txt.setText(equipment.getQrcode());
+//                equ_bar_code_num_txt.setText(equipment.getQrcode());
                 }
-
             } catch (Exception exception) {
                 exception.printStackTrace();
             }
@@ -1158,114 +1283,155 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
                 EotApp.getAppinstance().showToastmsg("Copied");
                 break;
             case R.id.txt_addBarcode:
-                if (barCode != null && !barCode.isBlank()) {
-                    addEditQrCodeBarCodeDialog = new AddEdit_QRCode_BarCode_Dialog(this);
-                    Bundle bundle = new Bundle();
-                    bundle.putString("barCode", barCode);
-                    bundle.putString("equipmentId", equipmentID);
-                    bundle.putBoolean("isComeFromDetail", true);
-                    addEditQrCodeBarCodeDialog.setArguments(bundle);
-                    addEditQrCodeBarCodeDialog.show(getSupportFragmentManager(), "1");
-                } else {
-                    addEditQrCodeBarCodeDialog = new AddEdit_QRCode_BarCode_Dialog(this);
-                    Bundle bundle = new Bundle();
-                    bundle.putString("barCode", barCode);
-                    bundle.putString("equipmentId", equipmentID);
-                    bundle.putBoolean("isComeFromDetail", true);
-                    addEditQrCodeBarCodeDialog.setArguments(bundle);
-                    addEditQrCodeBarCodeDialog.show(getSupportFragmentManager(), "2");
+                if(AppUtility.isInternetConnected()) {
+                    if (barCode != null && !barCode.isBlank()) {
+                        addEditQrCodeBarCodeDialog = new AddEdit_QRCode_BarCode_Dialog(this);
+                        Bundle bundle = new Bundle();
+                        bundle.putString("barCode", barCode);
+                        bundle.putString("equipmentId", equipmentID);
+                        bundle.putBoolean("isComeFromDetail", true);
+                        addEditQrCodeBarCodeDialog.setArguments(bundle);
+                        addEditQrCodeBarCodeDialog.show(getSupportFragmentManager(), "1");
+                    } else {
+                        addEditQrCodeBarCodeDialog = new AddEdit_QRCode_BarCode_Dialog(this);
+                        Bundle bundle = new Bundle();
+                        bundle.putString("barCode", barCode);
+                        bundle.putString("equipmentId", equipmentID);
+                        bundle.putBoolean("isComeFromDetail", true);
+                        addEditQrCodeBarCodeDialog.setArguments(bundle);
+                        addEditQrCodeBarCodeDialog.show(getSupportFragmentManager(), "2");
+                    }
+                }else {
+                    showDilaog(LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_check_network));
                 }
                 break;
             case R.id.txt_addQrcode:
-                if (barCode != null && !barCode.isBlank()) {
-                    addEditQrCodeBarCodeDialog = new AddEdit_QRCode_BarCode_Dialog(this);
-                    Bundle bundle = new Bundle();
-                    bundle.putString("qrcode", qrcode);
-                    bundle.putString("equipmentId", equipmentID);
-                    bundle.putBoolean("isComeFromDetail", true);
-                    addEditQrCodeBarCodeDialog.setArguments(bundle);
-                    addEditQrCodeBarCodeDialog.show(getSupportFragmentManager(), "1");
-                } else {
-                    addEditQrCodeBarCodeDialog = new AddEdit_QRCode_BarCode_Dialog(this);
-                    Bundle bundle = new Bundle();
-                    bundle.putString("qrcode", qrcode);
-                    bundle.putString("equipmentId", equipmentID);
-                    bundle.putBoolean("isComeFromDetail", true);
-                    addEditQrCodeBarCodeDialog.setArguments(bundle);
-                    addEditQrCodeBarCodeDialog.show(getSupportFragmentManager(), "2");
+                if(AppUtility.isInternetConnected()) {
+                    if (barCode != null && !barCode.isBlank()) {
+                        addEditQrCodeBarCodeDialog = new AddEdit_QRCode_BarCode_Dialog(this);
+                        Bundle bundle = new Bundle();
+                        bundle.putString("qrcode", qrcode);
+                        bundle.putString("equipmentId", equipmentID);
+                        bundle.putBoolean("isComeFromDetail", true);
+                        addEditQrCodeBarCodeDialog.setArguments(bundle);
+                        addEditQrCodeBarCodeDialog.show(getSupportFragmentManager(), "1");
+                    } else {
+                        addEditQrCodeBarCodeDialog = new AddEdit_QRCode_BarCode_Dialog(this);
+                        Bundle bundle = new Bundle();
+                        bundle.putString("qrcode", qrcode);
+                        bundle.putString("equipmentId", equipmentID);
+                        bundle.putBoolean("isComeFromDetail", true);
+                        addEditQrCodeBarCodeDialog.setArguments(bundle);
+                        addEditQrCodeBarCodeDialog.show(getSupportFragmentManager(), "2");
+                    }
+                }else {
+                    showDilaog(LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_check_network));
                 }
                 break;
             case R.id.last_service_show_hide:
             case R.id.last_service_show_hide_ll:
-                if (!clicked_service_history) {
-                    clicked_service_history = true;
-                    cl_loader1.setVisibility(View.VISIBLE);
-                    equ_details_pc.getEquipmentJobHistory(equpId,"4");
-                    last_service_show_hide.setImageDrawable(getDrawable(R.drawable.ic_baseline_arrow_drop_up_24));
-                } else {
-                    clicked_service_history = false;
-                    jobList.setVisibility(View.GONE);
-                    servic_histry_not_found.setVisibility(View.GONE);
-                    last_service_show_hide.setImageDrawable(getDrawable(R.drawable.ic_arrow_drop_down_black_24dp));
+                if(AppUtility.isInternetConnected()) {
+                    if (!clicked_service_history) {
+                        clicked_service_history = true;
+                        cl_loader1.setVisibility(View.VISIBLE);
+                        equ_details_pc.getEquipmentJobHistory(equpId, "4");
+                        last_service_show_hide.setImageDrawable(getDrawable(R.drawable.ic_baseline_arrow_drop_up_24));
+                    } else {
+                        clicked_service_history = false;
+                        jobList.setVisibility(View.GONE);
+                        servic_histry_not_found.setVisibility(View.GONE);
+                        last_service_show_hide.setImageDrawable(getDrawable(R.drawable.ic_arrow_drop_down_black_24dp));
+                    }
+                }else {
+                        showDilaog(LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_check_network));
                 }
                 break;
             case R.id.upcoming_service_show_hide:
             case R.id.upcoming_service_show_hide_cl:
-                if (!clicked_upcoming_service) {
-                    clicked_upcoming_service = true;
-                    cl_loader2.setVisibility(View.VISIBLE);
-                    equ_details_pc.getEquipmentUpcomingJobHistory(equpId,"2");
-                    job_upcoming_service_list.setVisibility(View.VISIBLE);
-                    upcoming_service_show_hide.setImageDrawable(getDrawable(R.drawable.ic_baseline_arrow_drop_up_24));
-                } else {
-                    clicked_upcoming_service = false;
-                    job_upcoming_service_list.setVisibility(View.GONE);
-                    upcoming_servic_not_found.setVisibility(View.GONE);
-                    upcoming_service_show_hide.setImageDrawable(getDrawable(R.drawable.ic_arrow_drop_down_black_24dp));
+                if(AppUtility.isInternetConnected()) {
+                    if (!clicked_upcoming_service) {
+                        clicked_upcoming_service = true;
+                        cl_loader2.setVisibility(View.VISIBLE);
+                        equ_details_pc.getEquipmentUpcomingJobHistory(equpId, "2");
+                        job_upcoming_service_list.setVisibility(View.VISIBLE);
+                        upcoming_service_show_hide.setImageDrawable(getDrawable(R.drawable.ic_baseline_arrow_drop_up_24));
+                    } else {
+                        clicked_upcoming_service = false;
+                        job_upcoming_service_list.setVisibility(View.GONE);
+                        upcoming_servic_not_found.setVisibility(View.GONE);
+                        upcoming_service_show_hide.setImageDrawable(getDrawable(R.drawable.ic_arrow_drop_down_black_24dp));
+                    }
+                }else {
+                    showDilaog(LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_check_network));
                 }
                 break;
             case R.id.part_list_show_hide:
             case R.id.part_list_show_hide_cl:
-                if (!click_part) {
-                    cl_loader3.setVisibility(View.VISIBLE);
-                    equ_details_pc.getEqPartsFromServer(equpId);
-                    part_list_show_hide.setImageDrawable(getDrawable(R.drawable.ic_baseline_arrow_drop_up_24));
-                    click_part = true;
-                } else {
-                    recyclerView_part.setVisibility(View.GONE);
-                    parts_not_found.setVisibility(View.GONE);
-                    part_list_show_hide.setImageDrawable(getDrawable(R.drawable.ic_arrow_drop_down_black_24dp));
-                    click_part = false;
+                if(AppUtility.isInternetConnected()) {
+                    if (!click_part) {
+                        cl_loader3.setVisibility(View.VISIBLE);
+                        equ_details_pc.getEqPartsFromServer(equpId);
+                        part_list_show_hide.setImageDrawable(getDrawable(R.drawable.ic_baseline_arrow_drop_up_24));
+                        click_part = true;
+                    } else {
+                        recyclerView_part.setVisibility(View.GONE);
+                        parts_not_found.setVisibility(View.GONE);
+                        part_list_show_hide.setImageDrawable(getDrawable(R.drawable.ic_arrow_drop_down_black_24dp));
+                        click_part = false;
+                    }
+                }else {
+                    showDilaog(LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_check_network));
                 }
                 break;
             case R.id.item_list_show_hide:
             case R.id.item_list_show_hide_cl:
-                if (!click_item) {
-                    cl_loader4.setVisibility(View.VISIBLE);
-                    equ_details_pc.getEqItemFromServer(equpId, jobId);
-                    item_list_show_hide.setImageDrawable(getDrawable(R.drawable.ic_baseline_arrow_drop_up_24));
-                    click_item = true;
-                } else {
-                    recyclerView_item.setVisibility(View.GONE);
-                    items_not_found.setVisibility(View.GONE);
-                    item_list_show_hide.setImageDrawable(getDrawable(R.drawable.ic_arrow_drop_down_black_24dp));
-                    click_item = false;
+                if(AppUtility.isInternetConnected()) {
+                    if (!click_item) {
+                        cl_loader4.setVisibility(View.VISIBLE);
+                        equ_details_pc.getEqItemFromServer(equpId, jobId);
+                        item_list_show_hide.setImageDrawable(getDrawable(R.drawable.ic_baseline_arrow_drop_up_24));
+                        click_item = true;
+                    } else {
+                        recyclerView_item.setVisibility(View.GONE);
+                        items_not_found.setVisibility(View.GONE);
+                        item_list_show_hide.setImageDrawable(getDrawable(R.drawable.ic_arrow_drop_down_black_24dp));
+                        click_item = false;
+                    }
+                }else {
+                    showDilaog(LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_check_network));
                 }
                 break;
             case R.id.audit_list_show_hide:
             case R.id.audit_list_show_hide_cl:
-                if (!click_audit) {
-                    cl_loader5.setVisibility(View.VISIBLE);
-                    equ_details_pc.getEquipmentAduitHistory(equpId);
-                    audit_list_show_hide.setImageDrawable(getDrawable(R.drawable.ic_baseline_arrow_drop_up_24));
-                    click_audit = true;
-                } else {
-                    auditList.setVisibility(View.GONE);
-                    audit_not_found.setVisibility(View.GONE);
-                    audit_list_show_hide.setImageDrawable(getDrawable(R.drawable.ic_arrow_drop_down_black_24dp));
-                    click_audit = false;
+                if(AppUtility.isInternetConnected()) {
+                    if (!click_audit) {
+                        cl_loader5.setVisibility(View.VISIBLE);
+                        equ_details_pc.getEquipmentAduitHistory(equpId);
+                        audit_list_show_hide.setImageDrawable(getDrawable(R.drawable.ic_baseline_arrow_drop_up_24));
+                        click_audit = true;
+                    } else {
+                        auditList.setVisibility(View.GONE);
+                        audit_not_found.setVisibility(View.GONE);
+                        audit_list_show_hide.setImageDrawable(getDrawable(R.drawable.ic_arrow_drop_down_black_24dp));
+                        click_audit = false;
+                    }
+                }else {
+                    showDilaog(LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_check_network));
                 }
                 break;
+            case R.id.txt_addUserManual:
+                if(AppUtility.isInternetConnected()) {
+
+                    if (txt_addUserManual.getText().equals(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_user_mannual))) {
+                        getDocumentsFromGalleryNotImage();
+                    } else if (txt_addUserManual.getText().equals(LanguageController.getInstance().getMobileMsgByKey(AppConstant.view_mannual))) {
+                        openAttchmentOnBrowser();
+                    }
+                }else {
+                    showDilaog(LanguageController.getInstance().getMobileMsgByKey(AppConstant.err_check_network));
+                }
+                break;
+
 
         }
     }
@@ -1279,7 +1445,11 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
     public void uploadAttchView(String path) {
         this.path = path;
         REFRESH = true;
-        invalidateOptionsMenu();
+//        invalidateOptionsMenu();
+        if(path != null && !path.isEmpty()){
+            AppDataBase.getInMemoryDatabase(EotApp.getCurrentActivity()).equipmentDao().setUsrManualDoc(equipmentID, path);
+        }
+        onResume();
 
     }
 

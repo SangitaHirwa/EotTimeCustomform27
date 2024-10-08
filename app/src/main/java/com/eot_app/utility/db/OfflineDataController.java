@@ -328,7 +328,9 @@ public class OfflineDataController {
             case Service_apis.updateItemRequest:
                 updateRequestedItem(data, obj);
                 break;
-
+            case Service_apis.addAuditEquipment:
+                EotApp.getAppinstance().getNotifyForLinkUnlinkEquipment(data.getService_name(), obj.get("message").getAsString());
+                break;
         }
         int check = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).offlinemodel().deleteFromId(data.getId());
         if (check == 1) {

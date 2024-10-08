@@ -24,6 +24,8 @@ public interface  Attachments_Dao {
     List<Attachments> getAttachmentsById(String jobId, String queId, String jtId);
     @Query("select * from Attachments where jobId = :jobId and type = '6'")
     List<Attachments> getAttachmentsByJobId(String jobId);
+    @Query("select * from Attachments where jobId = :jobId and equId = :equId and type = '5'")
+    List<Attachments> getEquAttachmentsByJobId(String jobId, String equId);
     @Query("select * from Attachments where jobId = :jobId")
     List<Attachments> getAllAttachmentsOfJob(String jobId);
     @Query("select * from Attachments where jobId = :jobId and queId = :queId")

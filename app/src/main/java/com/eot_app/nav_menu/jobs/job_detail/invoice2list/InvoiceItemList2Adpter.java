@@ -108,7 +108,13 @@ public class InvoiceItemList2Adpter extends RecyclerView.Adapter<InvoiceItemList
     public void updateitemlist(List<InvoiceItemDataModel> invoiceItemList) {
         this.is_pos_checked = new boolean[invoiceItemList.size()];
         this.invoiceItemList = invoiceItemList;
-        notifyDataSetChanged();
+        EotApp.getCurrentActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                notifyDataSetChanged();
+            }
+        });
+
     }
 
 

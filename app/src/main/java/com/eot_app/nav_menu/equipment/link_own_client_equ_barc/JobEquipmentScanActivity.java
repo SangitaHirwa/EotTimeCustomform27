@@ -23,28 +23,19 @@ import com.budiyev.android.codescanner.CodeScanner;
 import com.budiyev.android.codescanner.CodeScannerView;
 
 import com.eot_app.R;
-import com.eot_app.home_screens.MainActivity;
-import com.eot_app.nav_menu.audit.audit_list.equipment.model.EquipmentStatus;
+import com.eot_app.nav_menu.audit.audit_list.equipment.equipment_room_db.entity.EquipmentStatus;
 import com.eot_app.nav_menu.audit.audit_list.scanbarcode.model.ScanBarcodeRequest;
-import com.eot_app.nav_menu.audit.nav_scan.BarcodeScanActivity;
 import com.eot_app.nav_menu.equipment.link_own_client_equ_barc.mvp_scanbar.ScanEquPc;
 import com.eot_app.nav_menu.equipment.link_own_client_equ_barc.mvp_scanbar.ScanEquView;
-import com.eot_app.nav_menu.equipment.linkequip.ActivityLinkEquipment;
 import com.eot_app.nav_menu.equipment.linkequip.linkMVP.LinkEquipmentPC;
 import com.eot_app.nav_menu.equipment.linkequip.linkMVP.LinkEquipmentPI;
 import com.eot_app.nav_menu.equipment.linkequip.linkMVP.LinkEquipmentView;
-import com.eot_app.nav_menu.equipment.linkequip.linkMVP.model.ContractEquipmentReq;
 import com.eot_app.nav_menu.jobs.job_db.EquArrayModel;
-import com.eot_app.nav_menu.jobs.job_detail.JobDetailActivity;
-import com.eot_app.nav_menu.jobs.job_detail.job_equipment.JobEquipmentActivity;
 import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.AppUtility;
 import com.eot_app.utility.EotApp;
-import com.eot_app.utility.db.AppDataBase;
 import com.eot_app.utility.language_support.LanguageController;
-import com.eot_app.utility.settings.equipmentdb.Equipment;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.google.mlkit.vision.barcode.common.Barcode;
 import com.google.mlkit.vision.codescanner.GmsBarcodeScanner;
 import com.google.mlkit.vision.codescanner.GmsBarcodeScannerOptions;
@@ -54,7 +45,6 @@ import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
 
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -299,10 +289,6 @@ public class JobEquipmentScanActivity extends AppCompatActivity implements ScanE
         showDialog(msg);
     }
 
-    @Override
-    public void setEquStatusList(List<EquipmentStatus> list) {
-
-    }
 
     @Override
     public void updateLinkUnlinkEqu() {

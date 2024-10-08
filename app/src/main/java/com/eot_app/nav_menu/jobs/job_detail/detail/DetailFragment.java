@@ -60,6 +60,7 @@ import com.eot_app.lat_lng_sync_pck.LatLngSycn_Controller;
 import com.eot_app.locations.LocationTracker;
 import com.eot_app.login_next.FooterMenu;
 import com.eot_app.login_next.login_next_model.CompPermission;
+import com.eot_app.nav_menu.audit.audit_list.equipment.equipment_room_db.entity.EquipmentStatus;
 import com.eot_app.nav_menu.client.clientlist.client_detail.site.sitelist.editsite.editsitedb.SpinnerCountrySite;
 import com.eot_app.nav_menu.custom_fileds.CustomFiledListActivity;
 import com.eot_app.nav_menu.custom_fileds.custom_model.CustOmFormQuestionsRes;
@@ -109,6 +110,7 @@ import com.eot_app.utility.CustomLinearLayoutManager;
 import com.eot_app.utility.EotApp;
 import com.eot_app.utility.db.AppDataBase;
 import com.eot_app.utility.language_support.LanguageController;
+import com.eot_app.utility.settings.equipmentdb.Equipment;
 import com.eot_app.utility.settings.setting_db.FieldWorker;
 import com.eot_app.utility.settings.setting_db.Offlinetable;
 import com.eot_app.utility.settings.setting_db.TagData;
@@ -123,6 +125,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.chip.ChipGroup;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.hypertrack.hyperlog.HyperLog;
 import com.squareup.picasso.Picasso;
 import org.jetbrains.annotations.NotNull;
@@ -143,6 +146,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class DetailFragment extends Fragment
         implements Html.ImageGetter,
@@ -287,6 +292,7 @@ public class DetailFragment extends Fragment
             mParam1 = getArguments().getString(ARG_PARAM1);
             param3 = getArguments().getString(ARG_PARAM2);
         }
+        jobDetail_pi = new JobDetail_pc(this);
     }
 
 
@@ -422,8 +428,6 @@ public class DetailFragment extends Fragment
                         break;
                 }
         }
-
-
         mMapView = layout.findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
 
@@ -436,6 +440,12 @@ public class DetailFragment extends Fragment
         } catch (Exception e) {
             e.printStackTrace();
         }
+ExecutorService executorService = Executors.newSingleThreadExecutor();
+        executorService.execute(new Runnable() {
+            @Override
+            public void run() {
+
+
 
 //        getData from
         mParam2 = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(param3);
@@ -462,13 +472,17 @@ public class DetailFragment extends Fragment
             Log.e("Error", e.getMessage());
         }
         initializelables();
-        new Handler().postDelayed(new Runnable() {
+        requireActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                mMapView.getMapAsync(instanse);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mMapView.getMapAsync(instanse);
+                    }
+                },3000);
             }
-        },3000);
-
+        });
         // adapter for job status dropdown
         mySpinnerAdapter = new Job_Status_Adpter(getActivity(), statusArray,arraystatus, statusKey -> {
 
@@ -515,7 +529,10 @@ public class DetailFragment extends Fragment
         });
 
         new_status_spinner.setAdapter(mySpinnerAdapter);
-        getViewIds();
+                getViewIds();
+            }
+        });
+
 
         return layout;
     }
@@ -888,7 +905,6 @@ public class DetailFragment extends Fragment
 //        EotApp.getAppinstance().setAddJobObserver(this);
         EotApp.getAppinstance().setNotifyForItemCount(this);
         EotApp.getAppinstance().setNotifyForEquipmentCount(this);
-        EotApp.getAppinstance().setNotifyForEquipmentStatusList(this);
         EotApp.getAppinstance().setNotifyForcompletionInDetail(this);
         EotApp.getAppinstance().setNotifyForRequestedItemList(this);
 
@@ -1147,7 +1163,7 @@ public class DetailFragment extends Fragment
         customfiled_btn.setOnClickListener(this);
         quotes_details_card.setOnClickListener(this);
 
-        jobDetail_pi = new JobDetail_pc(this);
+
 
         try {
             if (mParam2 == null) {
@@ -1175,7 +1191,6 @@ public class DetailFragment extends Fragment
         }
 
         addComplationButtonTxt();
-        setDataToView();
 
 
         //permission for showing completion details edit actual and travel time
@@ -1204,23 +1219,30 @@ public class DetailFragment extends Fragment
             setEuqipmentList(mParam2.getEquArray());
         }*/
         AppUtility.spinnerPopUpWindow(new_status_spinner);
-        //get data from other db's
-        if (mParam2 != null) {
-            setJobDetail();
+        requireActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                setDataToView();
+                //get data from other db's
+                if (mParam2 != null) {
+                    setJobDetail();
 
-            jobstatus = new JobStatusModelNew(mParam2.getStatus(), jobDetail_pi.getStatusName(mParam2.getStatus()), jobDetail_pi.getImg());
-            setButtonsUI(jobstatus); //changes
+                    jobstatus = new JobStatusModelNew(mParam2.getStatus(), jobDetail_pi.getStatusName(mParam2.getStatus()), jobDetail_pi.getImg());
+                    setButtonsUI(jobstatus); //changes
 //          this check is use for show/hide contact detail.
-            if (jobDetail_pi.checkContactHideOrNot()) {
-                contact_card.setVisibility(View.GONE);
-            }else {
-                // this check is use for show/hide contatct detail on dispatch status IsHideContactOnDispatch == 0- enable/show , 1 -disable /hide
-                if(App_preference.getSharedprefInstance().getLoginRes().getIsHideContactOnDispatch().equals("1")
-                        && mParam2.getStatus().equals(AppConstant.Not_Started)){
-                    contact_card.setVisibility(View.GONE);
+                    if (jobDetail_pi.checkContactHideOrNot()) {
+                        contact_card.setVisibility(View.GONE);
+                    }else {
+                        // this check is use for show/hide contatct detail on dispatch status IsHideContactOnDispatch == 0- enable/show , 1 -disable /hide
+                        if(App_preference.getSharedprefInstance().getLoginRes().getIsHideContactOnDispatch().equals("1")
+                                && mParam2.getStatus().equals(AppConstant.Not_Started)){
+                            contact_card.setVisibility(View.GONE);
+                        }
+                    }
                 }
             }
-        }
+        });
+
 
         new_status_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -1238,20 +1260,20 @@ public class DetailFragment extends Fragment
             showRecurmsg();
         else recur_parent_view.setVisibility(View.GONE);*/
         // for equipment
-        if (jobDetail_pi != null)
-            jobDetail_pi.getEquipmentStatus();
-        setEuqipmentList(mParam2.getEquArray());
-        if (jobDetail_pi != null)
-            jobDetail_pi.loadFromServer(mParam2.getJobId());
-        // for completion details
-        if (jobDetail_pi != null)
-            jobDetail_pi.getJobCompletionDetails(mParam2.getJobId());
-        // for completion details
-        // for get attachment
-        if (jobDetail_pi != null) {
-            jobDetail_pi.getAttachFileList(mParam2.getJobId(), App_preference.getSharedprefInstance().getLoginRes().getUsrId()
-                    , "");
-        }
+//        if (jobDetail_pi != null)
+//            jobDetail_pi.getEquipmentStatus();
+//        setEuqipmentList(mParam2.getEquArray());
+//        if (jobDetail_pi != null)
+//            jobDetail_pi.loadFromServer(mParam2.getJobId());
+//        // for completion details
+//        if (jobDetail_pi != null)
+//            jobDetail_pi.getJobCompletionDetails(mParam2.getJobId());
+//        // for completion details
+//        // for get attachment
+//        if (jobDetail_pi != null) {
+//            jobDetail_pi.getAttachFileList(mParam2.getJobId(), App_preference.getSharedprefInstance().getLoginRes().getUsrId()
+//                    , "");
+//        }
     }
 
 
@@ -1903,8 +1925,14 @@ public void setCompletionDetail(){
         }
 
         String status = model.getStatus_no();
-        // for setting the selected status name on view
-        textViewJobStatus.setText(model.getStatus_name());
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                // for setting the selected status name on view
+                textViewJobStatus.setText(model.getStatus_name());
+            }
+        });
+
         /**After discuss with Ayush sir and jit sir we add a new permission for Completion notes Edit**/
         if(status.equalsIgnoreCase(AppConstant.Completed)) {
             if (App_preference.getSharedprefInstance().getLoginRes().getIsComplNoteBeforeComplete() != null && App_preference.getSharedprefInstance().getLoginRes().getIsComplNoteBeforeComplete().equals("0")) {
@@ -2664,6 +2692,21 @@ public void setCompletionDetail(){
     public void onResume() {
         super.onResume();
         Log.e("OnResume", "onResumeCalled");
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        // for equipment // for completion details // for get attachment
+        executorService.execute(new Runnable() {
+            @Override
+            public void run() {
+
+                if (jobDetail_pi != null && mParam2 != null) {
+                    jobDetail_pi.loadFromServer(mParam2.getJobId());
+                    jobDetail_pi.getJobCompletionDetails(mParam2.getJobId());
+                    jobDetail_pi.getAttachFileList(mParam2.getJobId(), App_preference.getSharedprefInstance().getLoginRes().getUsrId()
+                            , "");
+                }
+            }
+        });
+
         check = System.currentTimeMillis();
         mMapView.onResume();
         // for updating item count
@@ -2677,10 +2720,12 @@ public void setCompletionDetail(){
 //                requested_itemList_show_hide_rl.setVisibility(View.VISIBLE);
                 requested_item_txt.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.down), null, null, null);
             }else {
-                requested_item_txt.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
-                requested_item_flag.setVisibility(View.GONE);
-                requested_item_txt.setClickable(false);
-                recyclerView_requested_item.setVisibility(View.GONE);
+                if(requested_item_txt != null && requested_item_flag != null && recyclerView_requested_item != null) {
+                    requested_item_txt.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
+                    requested_item_flag.setVisibility(View.GONE);
+                    requested_item_txt.setClickable(false);
+                    recyclerView_requested_item.setVisibility(View.GONE);
+                }
             }
         }
     }
@@ -3692,10 +3737,30 @@ public void setCompletionDetail(){
 
     @Override
     public void setEuqipmentList(List<EquArrayModel> equArray) {
-        Collections.sort(equArray, (o1, o2) -> o1.getEqunm().compareTo(o2.getEqunm()));
+//        Collections.sort(equArray, (o1, o2) -> o1.getEqunm().compareTo(o2.getEqunm()));
+        Log.e("Size","with part===="+equArray.size());
+        List<Equipment> equipList = new ArrayList<>();
         if (equArray != null) {
-            adapter.setList(equArray);
-            adapter.setEquipmentCurrentStatus(App_preference.getSharedprefInstance().getEquipmentStatusList());
+            adapter.setEquipmentCurrentStatus(AppDataBase.getInMemoryDatabase(EotApp.getCurrentActivity()).equipmentStatusDao().getEquipmentStatus());
+            for (EquArrayModel item : equArray) {
+
+                if (AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).equipmentDao().getEquipmentByEquipId(item.getEquId()) != null) {
+                    equipList.add(AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).equipmentDao().getEquipmentByEquipId(item.getEquId()));
+                }
+            }
+            String list = new Gson().toJson(equipList);
+            List<EquArrayModel> list1 = new Gson().fromJson(list,new TypeToken<List<EquArrayModel>>(){}.getType());
+            Log.e("Size","withoutpart===="+list1.size());
+            Collections.sort(list1, (o1, o2) -> o1.getEqunm().compareTo(o2.getEqunm()));
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    adapter.setList(list1);
+                    recyclerView_job_eq.setAdapter(adapter);
+                }
+            });
+
+
         }
     }
 
@@ -3745,7 +3810,6 @@ public void setCompletionDetail(){
                     if (mParam2.getEquArray() != null && mParam2.getEquArray().size() > 0) {
                         // for updating data
                         setEuqipmentList(mParam2.getEquArray());
-                        Log.e("mParam2::", new Gson().toJson(mParam2.getEquArray()));
                     }
                 }
             }
@@ -3757,7 +3821,12 @@ public void setCompletionDetail(){
     @Override
     public void updateStatusEquipment() {
         if (adapter == null) {
-            adapter.setEquipmentCurrentStatus(App_preference.getSharedprefInstance().getEquipmentStatusList());
+            // to set the list of status
+            List<EquipmentStatus> statusList = new ArrayList<>();
+            statusList = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).equipmentStatusDao().getEquipmentStatus();
+            if (statusList != null && !statusList.isEmpty()) {
+                adapter.setEquipmentCurrentStatus(statusList);
+            }
         }
     }
 
