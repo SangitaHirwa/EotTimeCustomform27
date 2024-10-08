@@ -68,6 +68,7 @@ public class JobListAdapter extends RecyclerView.Adapter<JobListAdapter.MyViewHo
     public void updateRecords(List<Job> jobdataa) {
         jobdata.clear();
         jobdata.addAll(jobdataa);
+        unScheduleHeaderPos = -1;
         notifyDataSetChanged();
     }
 

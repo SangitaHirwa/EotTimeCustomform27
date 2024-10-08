@@ -14,7 +14,7 @@ import java.util.Set;
  */
 
 public interface JobList_pi {
-    void getJobList();
+    void getJobList(boolean isRefreshOffline);
 
     //    void loadFromDb();
     void loadFromServer();
