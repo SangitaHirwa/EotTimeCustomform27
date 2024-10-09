@@ -1,6 +1,5 @@
 package com.eot_app.nav_menu.jobs.job_detail.detail.job_detail_presenter;
 
-import android.app.Service;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Handler;
@@ -9,6 +8,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+
 import com.eot_app.activitylog.ActivityLogController;
 import com.eot_app.activitylog.LogModel;
 import com.eot_app.nav_menu.custom_fileds.custom_model.CustOmFiledReqModel;
@@ -19,7 +19,6 @@ import com.eot_app.nav_menu.jobs.add_job.add_job_recr.DeleteReCur;
 import com.eot_app.nav_menu.jobs.add_job.add_job_recr.RecurReqResModel;
 import com.eot_app.nav_menu.jobs.job_controller.ChatController;
 import com.eot_app.nav_menu.jobs.job_db.Attachments_Dao;
-import com.eot_app.nav_menu.jobs.job_db.EquArrayModel;
 import com.eot_app.nav_menu.jobs.job_db.Job;
 import com.eot_app.nav_menu.jobs.job_db.JobListRequestModel;
 import com.eot_app.nav_menu.jobs.job_detail.JobDetailActivity;
@@ -31,9 +30,7 @@ import com.eot_app.nav_menu.jobs.job_detail.detail.jobdetial_model.CompletionDet
 import com.eot_app.nav_menu.jobs.job_detail.detail.jobdetial_model.JobStatusModelNew;
 import com.eot_app.nav_menu.jobs.job_detail.detail.jobdetial_model.Jobdetail_status_res;
 import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.Attachments;
-import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.GetFileList_req_Model;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_db.model_pkg.ItembyJobModel;
-import com.eot_app.nav_menu.jobs.job_detail.job_equipment.model.EquipmentStatusReq;
 import com.eot_app.nav_menu.jobs.job_detail.job_status_pkg.JobStatus_Controller;
 import com.eot_app.nav_menu.jobs.job_detail.requested_item.requested_itemModel.AddUpdateRequestedModel;
 import com.eot_app.nav_menu.jobs.job_detail.requested_item.requested_itemModel.RequestedItemModel;
@@ -55,12 +52,12 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.hypertrack.hyperlog.HyperLog;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -80,11 +77,12 @@ import io.reactivex.schedulers.Schedulers;
 public class JobDetail_pc implements JobDetail_pi {
     private final int updatelimit;
     JobDetail_view view;
+    JobStatusModelNew jobstatus;
+    String jobId;
+    ArrayList<CompletionDetails> data = new ArrayList<>();
     private int count;
     private int updateindex;
     private int updateindexAtttachment;
-    JobStatusModelNew jobstatus;
-    String jobId;
     private String img = "";
     private String startAttachmetSyncTime;
 
@@ -99,14 +97,13 @@ public class JobDetail_pc implements JobDetail_pi {
         this.updatelimit = AppConstant.LIMIT_MID;
     }
 
-
     @Override
     public void getAttachFileList(final String jobId, final String usrId, final String type) {
         try {
 //            GetFileList_req_Model getFileList_model = new GetFileList_req_Model(updateindexAtttachment, updatelimit, jobId, usrId, type);
 //            JsonObject jsonObject = AppUtility.getJsonObject(new Gson().toJson(getFileList_model));
 
-            startAttachmetSyncTime=AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT);
+            startAttachmetSyncTime = AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT);
             App_preference.getSharedprefInstance().setAttachmentStartSyncTime(startAttachmetSyncTime);
             JobListRequestModel jobListRequestModel = new JobListRequestModel(Integer.parseInt(usrId), updatelimit, updateindex, App_preference.getSharedprefInstance().getAttachmentStartSyncTime(), jobId);
             JsonObject jsonObject = AppUtility.getJsonObject(new Gson().toJson(jobListRequestModel));
@@ -126,7 +123,7 @@ public class JobDetail_pc implements JobDetail_pi {
 
                             @Override
                             public void onNext(@NotNull JsonObject jsonObject) {
-                                Log.e("FileList", "" + jsonObject.toString());
+                                Log.e("FileList", String.valueOf(jsonObject));
                                 if (jsonObject.get("success").getAsBoolean()) {
                                     if (jsonObject.get("data").getAsJsonArray().size() > 0) {
                                         try {
@@ -135,12 +132,12 @@ public class JobDetail_pc implements JobDetail_pi {
                                             Type listType = new TypeToken<List<Attachments>>() {
                                             }.getType();
                                             ArrayList<Attachments> getFileList_res = new Gson().fromJson(convert, listType);
-                                            addAttachmentToDb(getFileList_res,jobId);
+                                            addAttachmentToDb(getFileList_res, jobId);
                                         } catch (Exception exception) {
                                             exception.printStackTrace();
                                         }
                                     } else {
-                                        addAttachmentToDb(new ArrayList<>(),jobId);
+                                        addAttachmentToDb(new ArrayList<>(), jobId);
                                     }
                                 } else if (jsonObject.get("statusCode") != null && jsonObject.get("statusCode").getAsString().equals(AppConstant.SESSION_EXPIRE)) {
                                     //  view.onSessionExpire(LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
@@ -155,26 +152,24 @@ public class JobDetail_pc implements JobDetail_pi {
                             @Override
                             public void onComplete() {
                                 Log.e("onComplete", "onComplete");
-                                Log.e("onComplete", "updateindexAtttachment:"+updateindexAtttachment);
-                                Log.e("onComplete", "count:"+count);
-                                Log.e("onComplete", "updatelimit:"+updatelimit);
+                                Log.e("onComplete", "updateindexAtttachment:" + updateindexAtttachment);
+                                Log.e("onComplete", "count:" + count);
+                                Log.e("onComplete", "updatelimit:" + updatelimit);
                                 if ((updateindexAtttachment + updatelimit) <= count) {
                                     Log.e("onComplete", "second time call");
-                                    updateindexAtttachment +=updatelimit;
+                                    updateindexAtttachment += updatelimit;
                                     getAttachFileList(jobId, usrId, type);
                                 } else {
                                     if (count != 0) {
-                                        if(App_preference.getSharedprefInstance().getAttachmentStartSyncTime().isEmpty()
-                                                &&startAttachmetSyncTime!=null && !startAttachmetSyncTime.isEmpty()){
+                                        if (App_preference.getSharedprefInstance().getAttachmentStartSyncTime().isEmpty()
+                                                && startAttachmetSyncTime != null && !startAttachmetSyncTime.isEmpty()) {
                                             App_preference.getSharedprefInstance().setAttachmentStartSyncTime(startAttachmetSyncTime);
-                                            Log.v("MainSync","startJobSyncTime JobList"+" --" +App_preference.getSharedprefInstance().getJobSyncTime());
-                                        }
-                                        else if(App_preference.getSharedprefInstance().getAttachmentStartSyncTime().isEmpty()){
+                                            Log.v("MainSync", "startJobSyncTime JobList" + " --" + App_preference.getSharedprefInstance().getJobSyncTime());
+                                        } else if (App_preference.getSharedprefInstance().getAttachmentStartSyncTime().isEmpty()) {
 
                                             App_preference.getSharedprefInstance().setAttachmentStartSyncTime(startAttachmetSyncTime);
-                                            Log.v("MainSync","startJobSyncTime JobList"+" --" +App_preference.getSharedprefInstance().getJobSyncTime());
-                                        }
-                                        else {
+                                            Log.v("MainSync", "startJobSyncTime JobList" + " --" + App_preference.getSharedprefInstance().getJobSyncTime());
+                                        } else {
                                             App_preference.getSharedprefInstance().setAttachmentStartSyncTime(App_preference.getSharedprefInstance().getAttachmentStartSyncTime());
                                         }
 
@@ -183,8 +178,8 @@ public class JobDetail_pc implements JobDetail_pi {
                                 }
                             }
                         });
-            }else {
-                addAttachmentToDb(new ArrayList<>(),jobId);
+            } else {
+                addAttachmentToDb(new ArrayList<>(), jobId);
             }
         } catch (Exception exception) {
             exception.printStackTrace();
@@ -230,11 +225,13 @@ public class JobDetail_pc implements JobDetail_pi {
                     });
         }
     }
+
     private void addgetItemFromJobToDB(List<InvoiceItemDataModel> data, String jobId) {
         if (data != null && data.size() > 0) {
             AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().updateJobitems(jobId, data);
         }
     }
+
     @Override
     public void getItemListByJobFromDB(String jobId) {
         Job job = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(jobId);
@@ -253,13 +250,14 @@ public class JobDetail_pc implements JobDetail_pi {
     public void stopRecurpattern(String jobId) {
 
         ApiClient.getservices().eotServiceCall(Service_apis.deleteRecur, AppUtility.getApiHeaders(),
-                AppUtility.getJsonObject(new Gson().toJson(new DeleteReCur(jobId))))
+                        AppUtility.getJsonObject(new Gson().toJson(new DeleteReCur(jobId))))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<JsonObject>() {
                     @Override
                     public void onSubscribe(@NotNull Disposable d) {
                     }
+
                     @Override
                     public void onNext(@NotNull JsonObject jsonObject) {
                         Log.e("", "");
@@ -293,7 +291,7 @@ public class JobDetail_pc implements JobDetail_pi {
 
     @Override
     synchronized public void changeJobStatusAlertInvisible(String jobid, String type, JobStatusModelNew jobStatus, String lat, String lng
-            , String isMailSentToClt, String isLeaderChgKprsStatus, String jobLable ,String jobType
+            , String isMailSentToClt, String isLeaderChgKprsStatus, String jobLable, String jobType
     ) {
         HyperLog.i("JobDetail_pc", "changeJobStatusAlertInvisible(M) start");
 
@@ -302,29 +300,27 @@ public class JobDetail_pc implements JobDetail_pi {
 
 
         // to remove double calling of api for same status in case of double tap
-        try{
+        try {
             // to check the current status of job
-            String currentJobStatus =AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobStatusByJobId(jobid);
-            Log.e("CurrentStatus::",currentJobStatus);
-            HyperLog.e("TAG","CurrentStatusJob:: jobId :: "+jobId +"Status :: "+currentJobStatus);
+            String currentJobStatus = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobStatusByJobId(jobid);
+            Log.e("CurrentStatus::", currentJobStatus);
+            HyperLog.e("TAG", "CurrentStatusJob:: jobId :: " + jobId + "Status :: " + currentJobStatus);
 
-            if(jobstatus!=null
-                    &&jobstatus.getKey()!=null
-                    &&jobstatus.getKey().equalsIgnoreCase(currentJobStatus)) {
+            if (jobstatus != null
+                    && jobstatus.getKey() != null
+                    && jobstatus.getKey().equalsIgnoreCase(currentJobStatus)) {
                 return;
             }
             //TODO
             // 7 is for in progress and 2 is for accepted
             // for resolving the issue , job  getting accepted after in progress
-            if(jobstatus!=null
-                    &&jobstatus.getKey()!=null &&currentJobStatus!=null
-                    &&currentJobStatus.equalsIgnoreCase("7")
-                    &&jobstatus.getKey().equalsIgnoreCase("2")) {
+            if (jobstatus != null
+                    && jobstatus.getKey() != null && currentJobStatus != null
+                    && currentJobStatus.equalsIgnoreCase("7")
+                    && jobstatus.getKey().equalsIgnoreCase("2")) {
                 return;
             }
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -333,7 +329,7 @@ public class JobDetail_pc implements JobDetail_pi {
         Gson gson = new Gson();
         Jobdetail_status_res request = new Jobdetail_status_res(jobId,
                 App_preference.getSharedprefInstance().getLoginRes().getUsrId(), type, jobstatus.getStatus_no(),
-                dateTime, lat, lng, isMailSentToClt, isLeaderChgKprsStatus,jobLable,jobType);
+                dateTime, lat, lng, isMailSentToClt, isLeaderChgKprsStatus, jobLable, jobType);
         String data = gson.toJson(request);
         Job jobData = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(jobid);
         /* **JOB status change Before JOB sync**/
@@ -363,19 +359,18 @@ public class JobDetail_pc implements JobDetail_pi {
         HyperLog.i("JobDetail_pc", "callback completion of local DB update the view on list");
 
         //data and UI reflect after offline save
-        if (jobStatus.getStatus_no().equals(AppConstant.Cancel) || jobStatus.getStatus_no().equals(AppConstant.Reject)||jobstatus.getStatus_no().equals("10")) {
+        if (jobStatus.getStatus_no().equals(AppConstant.Cancel) || jobStatus.getStatus_no().equals(AppConstant.Reject) || jobstatus.getStatus_no().equals("10")) {
             AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().deleteJobById(jobId);
             ChatController.getInstance().removeListnerByJobID(jobid);
             ((JobDetailActivity) ((Fragment) view).getActivity()).finishActivityWithSetResult();
             HyperLog.i("JobDetail_pc", "delete job with status cancel or reject");
 
-        }
-        else {
+        } else {
             HyperLog.i("JobDetail_pc", "Local DB updated with selected job status");
             view.setButtonsUI(jobstatus);
         }
-       if(jobStatus.getStatus_no().equals(AppConstant.Completed)){
-           getJobCompletionDetails(jobId);
+        if (jobStatus.getStatus_no().equals(AppConstant.Completed)) {
+            getJobCompletionDetails(jobId);
         }
         LogModel logModel = ActivityLogController
                 .getObj(ActivityLogController.JOB_MODULE, ActivityLogController.JOB_STATUS, ActivityLogController.JOB_MODULE);
@@ -384,7 +379,6 @@ public class JobDetail_pc implements JobDetail_pi {
         HyperLog.i("JobDetail_pc", "changeJobStatusAlertInvisible(M) Completed");
 
     }
-
 
     @Override
     public String getStatusName(String status) {
@@ -413,8 +407,6 @@ public class JobDetail_pc implements JobDetail_pi {
             view.setEuqipmentList(job.getEquArray());
         }
     }
-
-
 
     @Override
     public JobStatusModelNew getJobStatusObject(String statusId) {
@@ -453,12 +445,11 @@ public class JobDetail_pc implements JobDetail_pi {
         return false;
     }
 
-
     @Override
     public void getCustomFieldQues(final String jobId) {
         if (AppUtility.isInternetConnected()) {
             ApiClient.getservices().eotServiceCall(Service_apis.getFormDetail, AppUtility.getApiHeaders(),
-                    AppUtility.getJsonObject(new Gson().toJson(new CustOmFiledReqModel("1"))))
+                            AppUtility.getJsonObject(new Gson().toJson(new CustOmFiledReqModel("1"))))
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Observer<JsonObject>() {
@@ -498,7 +489,7 @@ public class JobDetail_pc implements JobDetail_pi {
         CustOmFormQuestionsReq model = new CustOmFormQuestionsReq(formId, jobId);
         if (AppUtility.isInternetConnected()) {
             ApiClient.getservices().eotServiceCall(Service_apis.getQuestionsByParentId, AppUtility.getApiHeaders(),
-                    AppUtility.getJsonObject(new Gson().toJson(model)))
+                            AppUtility.getJsonObject(new Gson().toJson(model)))
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Observer<JsonObject>() {
@@ -532,7 +523,7 @@ public class JobDetail_pc implements JobDetail_pi {
                     });
         }
     }
-    ArrayList<CompletionDetails> data = new ArrayList<>();
+
     @Override
     public void getJobCompletionDetails(String jobId) {
         if (AppUtility.isInternetConnected()) {
@@ -542,7 +533,7 @@ public class JobDetail_pc implements JobDetail_pi {
             hashMap.put("type", "1");
 
             ApiClient.getservices().eotServiceCall(Service_apis.getJobCompletionNOte, AppUtility.getApiHeaders(),
-                    AppUtility.getJsonObject(new Gson().toJson(hashMap)))
+                            AppUtility.getJsonObject(new Gson().toJson(hashMap)))
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Observer<JsonObject>() {
@@ -580,7 +571,7 @@ public class JobDetail_pc implements JobDetail_pi {
                             AppUtility.progressBarDissMiss();
                         }
                     });
-        }else {
+        } else {
             EotApp.getCurrentActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -593,19 +584,19 @@ public class JobDetail_pc implements JobDetail_pi {
 
 
     @Override
-    public void addJobCompletionDetails(String jobId,CompletionDetailsPost.CompletionDetail obj,int logType) {
+    public void addJobCompletionDetails(String jobId, CompletionDetailsPost.CompletionDetail obj, int logType) {
         if (AppUtility.isInternetConnected()) {
 
-            List< CompletionDetailsPost.CompletionDetail> list = new ArrayList<>();
+            List<CompletionDetailsPost.CompletionDetail> list = new ArrayList<>();
             list.add(obj);
 
             CompletionDetailsPost completionDetailsPost = new CompletionDetailsPost(logType,
-                    App_preference.getSharedprefInstance().getLoginRes().getUsrId(),list,jobId);
+                    App_preference.getSharedprefInstance().getLoginRes().getUsrId(), list, jobId);
 
-             AppUtility.progressBarShow((((Fragment) view).getActivity()));
+            AppUtility.progressBarShow((((Fragment) view).getActivity()));
 
-            ApiClient.getservices().addCompletionDetails( AppUtility.getApiHeaders(),
-                    completionDetailsPost)
+            ApiClient.getservices().addCompletionDetails(AppUtility.getApiHeaders(),
+                            completionDetailsPost)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Observer<JsonObject>() {
@@ -640,8 +631,7 @@ public class JobDetail_pc implements JobDetail_pi {
 
                         }
                     });
-        }
-        else
+        } else
             networkDialog();
     }
 
@@ -693,8 +683,7 @@ public class JobDetail_pc implements JobDetail_pi {
                             AppUtility.progressBarDissMiss();
                         }
                     });
-        }
-        else
+        } else
             networkDialog();
     }
 
@@ -703,8 +692,8 @@ public class JobDetail_pc implements JobDetail_pi {
         if (AppUtility.isInternetConnected()) {
             HashMap<String, String> hashMap = new HashMap<>();
             hashMap.put("jobId", jobId);
-            hashMap.put("limit",updatelimit+"");
-            hashMap.put("index",updateindex+"");
+            hashMap.put("limit", updatelimit + "");
+            hashMap.put("index", updateindex + "");
             ApiClient.getservices().eotServiceCall(Service_apis.getListItemRequest, AppUtility.getApiHeaders(),
                             AppUtility.getJsonObject(new Gson().toJson(hashMap)))
                     .subscribeOn(Schedulers.io())
@@ -724,10 +713,10 @@ public class JobDetail_pc implements JobDetail_pi {
                                     Type listType = new TypeToken<List<RequestedItemModel>>() {
                                     }.getType();
                                     List<RequestedItemModel> data = new Gson().fromJson(convert, listType);
-                                    if(data != null && data.isEmpty()){
-                                        AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().updateRequestedItem("0",jobId);
+                                    if (data != null && data.isEmpty()) {
+                                        AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().updateRequestedItem("0", jobId);
                                     }
-                                        view.setRequestItemData(data);
+                                    view.setRequestItemData(data);
 
                                 } catch (Exception e) {
                                     e.printStackTrace();
@@ -750,8 +739,7 @@ public class JobDetail_pc implements JobDetail_pi {
                             AppUtility.progressBarDissMiss();
                         }
                     });
-        }
-        else
+        } else
             networkDialog();
     }
 
@@ -759,7 +747,7 @@ public class JobDetail_pc implements JobDetail_pi {
     public void deleteRequestedItem(String irId, String jobId, AddUpdateRequestedModel requestedModel) {
         if (AppUtility.isInternetConnected()) {
             HashMap<String, String> hashMap = new HashMap<>();
-            hashMap.put("irIds",irId);
+            hashMap.put("irIds", irId);
             hashMap.put("jobId", jobId);
 
             ApiClient.getservices().eotServiceCall(Service_apis.deleteItemRequest, AppUtility.getApiHeaders(),
@@ -777,7 +765,7 @@ public class JobDetail_pc implements JobDetail_pi {
                             AppUtility.progressBarDissMiss();
                             if (jsonObject.get("success").getAsBoolean()) {
                                 try {
-                                    view.deletedRequestData(jsonObject.get("message").getAsString(),requestedModel);
+                                    view.deletedRequestData(jsonObject.get("message").getAsString(), requestedModel);
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
@@ -799,8 +787,7 @@ public class JobDetail_pc implements JobDetail_pi {
                             AppUtility.progressBarDissMiss();
                         }
                     });
-        }
-        else
+        } else
             networkDialog();
     }
 
@@ -863,18 +850,16 @@ public class JobDetail_pc implements JobDetail_pi {
                                 loadFromServer(jobId);
                             } else {
                                 if (count != 0) {
-                                    if(App_preference.getSharedprefInstance().getJobStartSyncTime().isEmpty()
-                                            &&startJobSyncTime!=null && !startJobSyncTime.isEmpty()){
+                                    if (App_preference.getSharedprefInstance().getJobStartSyncTime().isEmpty()
+                                            && startJobSyncTime != null && !startJobSyncTime.isEmpty()) {
 //                                        App_preference.getSharedprefInstance().setJobSyncTime(AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT));
                                         App_preference.getSharedprefInstance().setJobSyncTime(startJobSyncTime);
-                                        Log.v("MainSync","startJobSyncTime JobList"+" --" +App_preference.getSharedprefInstance().getJobSyncTime());
-                                    }
-                                    else if(App_preference.getSharedprefInstance().getJobStartSyncTime().isEmpty()){
+                                        Log.v("MainSync", "startJobSyncTime JobList" + " --" + App_preference.getSharedprefInstance().getJobSyncTime());
+                                    } else if (App_preference.getSharedprefInstance().getJobStartSyncTime().isEmpty()) {
 //                                        App_preference.getSharedprefInstance().setJobSyncTime(AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT));
                                         App_preference.getSharedprefInstance().setJobSyncTime(startJobSyncTime);
-                                        Log.v("MainSync","startJobSyncTime JobList"+" --" +App_preference.getSharedprefInstance().getJobSyncTime());
-                                    }
-                                    else {
+                                        Log.v("MainSync", "startJobSyncTime JobList" + " --" + App_preference.getSharedprefInstance().getJobSyncTime());
+                                    } else {
                                         App_preference.getSharedprefInstance().setJobSyncTime(App_preference.getSharedprefInstance().getJobStartSyncTime());
                                     }
 //                                    App_preference.getSharedprefInstance().setJobSyncTime(AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT));
@@ -885,7 +870,7 @@ public class JobDetail_pc implements JobDetail_pi {
                             }
                         }
                     });
-        }else {
+        } else {
             EotApp.getCurrentActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -894,6 +879,7 @@ public class JobDetail_pc implements JobDetail_pi {
             });
         }
     }
+
     public void addRecordsToDB(List<Job> data, String jobId) {
         AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().inserJob(data);
 //        for add/remove listener.
@@ -949,81 +935,83 @@ public class JobDetail_pc implements JobDetail_pi {
             networkDialog();
         }
     }
-    public void addAttachmentToDb(List<Attachments> data, String jobId){
+
+    public void addAttachmentToDb(List<Attachments> data, String jobId) {
         ExecutorService service = Executors.newSingleThreadExecutor();
         service.execute(new Runnable() {
             @Override
             public void run() {
-        if(data.size()>0) {
-            Attachments_Dao attachments_dao = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).attachments_dao();
-            for (Attachments item : data
-            ) {
-                if(item.getAttachmentId() != null && item.getIsdelete().equalsIgnoreCase("1") && !item.getAttachmentId().contains("Attachment-")){
-                    Attachments tempAttach = attachments_dao.getAttachmetById(item.getAttachmentId());
-                    if (attachments_dao.isAttachment(item.getAttachmentId())) {
-                        if (tempAttach.getBitmap() != null && !tempAttach.getBitmap().isEmpty())
-                            item.setBitmap(tempAttach.getBitmap());
-                    }
-                } else if(item.getTempId() != null && item.getIsdelete().equalsIgnoreCase("1")) {
-                    Attachments tempAttach = attachments_dao.getAttachmetByTempId(item.getTempId());
-                    if (attachments_dao.isAttachment(item.getAttachmentId())) {
-                        if (tempAttach.getBitmap() != null && !tempAttach.getBitmap().isEmpty())
-                            item.setBitmap(tempAttach.getBitmap());
-                    }
-                }
-            }
-            attachments_dao.insertAttachments(data);
-            attachments_dao.deleteAttachments();
-            new Handler(Looper.getMainLooper()).post(new Runnable() {
-                @Override
-                public void run() {
-                    view.setList((ArrayList<Attachments>) attachments_dao.getAttachmentsByJobId(jobId), "");
-                }
-            });
-
-                    for (Attachments item :
-              AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).attachments_dao().getAttachmentsByJobId(jobId)) {
-                            String ImageName = "";
-                        if (item.getBitmap() != null && item.getBitmap().isEmpty()) {
-                            ImageName = item.getAttachFileActualName();
-                            DowloadFile(item.getAttachThumnailFileName(),ImageName, item.getAttachmentId());
-                        } else if ( item.getBitmap() != null && !new File(item.getBitmap()).exists()) {
-                            String[] splitName = item.getBitmap().split("/");
-                            ImageName = splitName[splitName.length-1];
-                            DowloadFile(item.getAttachThumnailFileName(),ImageName, item.getAttachmentId());
+                if (data.size() > 0) {
+                    Attachments_Dao attachments_dao = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).attachments_dao();
+                    for (Attachments item : data
+                    ) {
+                        if (item.getAttachmentId() != null && item.getIsdelete().equalsIgnoreCase("1") && !item.getAttachmentId().contains("Attachment-")) {
+                            Attachments tempAttach = attachments_dao.getAttachmetById(item.getAttachmentId());
+                            if (attachments_dao.isAttachment(item.getAttachmentId())) {
+                                if (tempAttach.getBitmap() != null && !tempAttach.getBitmap().isEmpty())
+                                    item.setBitmap(tempAttach.getBitmap());
+                            }
+                        } else if (item.getTempId() != null && item.getIsdelete().equalsIgnoreCase("1")) {
+                            Attachments tempAttach = attachments_dao.getAttachmetByTempId(item.getTempId());
+                            if (attachments_dao.isAttachment(item.getAttachmentId())) {
+                                if (tempAttach.getBitmap() != null && !tempAttach.getBitmap().isEmpty())
+                                    item.setBitmap(tempAttach.getBitmap());
+                            }
                         }
                     }
-        }else {
-            new Handler(Looper.getMainLooper()).post(new Runnable() {
-                @Override
-                public void run() {
-                    view.setList((ArrayList<Attachments>) AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).attachments_dao().getAttachmentsByJobId(jobId), "");
+                    attachments_dao.insertAttachments(data);
+                    attachments_dao.deleteAttachments();
+                    new Handler(Looper.getMainLooper()).post(new Runnable() {
+                        @Override
+                        public void run() {
+                            view.setList((ArrayList<Attachments>) attachments_dao.getAttachmentsByJobId(jobId), "");
+                        }
+                    });
+
+                    for (Attachments item :
+                            AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).attachments_dao().getAttachmentsByJobId(jobId)) {
+                        String ImageName = "";
+                        if (item.getBitmap() != null && item.getBitmap().isEmpty()) {
+                            ImageName = item.getAttachFileActualName();
+                            DowloadFile(item.getAttachThumnailFileName(), ImageName, item.getAttachmentId());
+                        } else if (item.getBitmap() != null && !new File(item.getBitmap()).exists()) {
+                            String[] splitName = item.getBitmap().split("/");
+                            ImageName = splitName[splitName.length - 1];
+                            DowloadFile(item.getAttachThumnailFileName(), ImageName, item.getAttachmentId());
+                        }
+                    }
+                } else {
+                    new Handler(Looper.getMainLooper()).post(new Runnable() {
+                        @Override
+                        public void run() {
+                            view.setList((ArrayList<Attachments>) AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).attachments_dao().getAttachmentsByJobId(jobId), "");
+                        }
+                    });
+                    for (Attachments item :
+                            AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).attachments_dao().getAttachmentsByJobId(jobId)) {
+                        String ImageName = "";
+                        if (item.getBitmap() != null && item.getBitmap().isEmpty()) {
+                            ImageName = item.getAttachFileActualName();
+                            DowloadFile(item.getAttachThumnailFileName(), ImageName, item.getAttachmentId());
+                        } else if (item.getBitmap() != null && !new File(item.getBitmap()).exists()) {
+                            String[] splitName = item.getBitmap().split("/");
+                            ImageName = splitName[splitName.length - 1];
+                            DowloadFile(item.getAttachThumnailFileName(), ImageName, item.getAttachmentId());
+                        }
+                    }
                 }
-            });
-            for (Attachments item :
-                    AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).attachments_dao().getAttachmentsByJobId(jobId)) {
-                String ImageName = "";
-                if (item.getBitmap() != null && item.getBitmap().isEmpty()) {
-                    ImageName = item.getAttachFileActualName();
-                    DowloadFile(item.getAttachThumnailFileName(),ImageName, item.getAttachmentId());
-                } else if ( item.getBitmap() != null && !new File(item.getBitmap()).exists()) {
-                    String[] splitName = item.getBitmap().split("/");
-                    ImageName = splitName[splitName.length-1];
-                    DowloadFile(item.getAttachThumnailFileName(),ImageName, item.getAttachmentId());
-                }
-            }
-        }
             }
         });
     }
-    public void  DowloadFile(String endPoint, String imageName, String attachmentId){
+
+    public void DowloadFile(String endPoint, String imageName, String attachmentId) {
         try {
-            URL url =  new URL(App_preference.getSharedprefInstance().getBaseURL() + endPoint);
+            URL url = new URL(App_preference.getSharedprefInstance().getBaseURL() + endPoint);
             Bitmap image = BitmapFactory.decodeStream(url.openConnection().getInputStream());
             String imagePath = AppUtility.downloadFile(imageName, image).getAbsolutePath();
             AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).attachments_dao().updateAttachment(imagePath, attachmentId);
         } catch (IOException e) {
-            Log.e("Error","Error catch of JobDetail_pc 948 == "+ e.getMessage());
+            Log.e("Error", "Error catch of JobDetail_pc 948 == " + e.getMessage());
 
         }
     }
@@ -1033,28 +1021,29 @@ public class JobDetail_pc implements JobDetail_pi {
         String recStatus = "";
         String recType = "";
         String _jobId = "";
-        if(recurStatus.equalsIgnoreCase("0") || recurStatus.equalsIgnoreCase("3")){
+        if (recurStatus.equalsIgnoreCase("0") || recurStatus.equalsIgnoreCase("3")) {
             recStatus = "2";
-        }else if(recurStatus.equalsIgnoreCase("2")){
+        } else if (recurStatus.equalsIgnoreCase("2")) {
             recStatus = "3";
         }
         /** If child job then send parent Id and if its parent job then we will send job id for pause and resume recurring job*/
-        if(job.getParentId()!= null && job.getParentId().equalsIgnoreCase("0")){
+        if (job.getParentId() != null && job.getParentId().equalsIgnoreCase("0")) {
             _jobId = job.getJobId();
             recType = job.getRecurType();
-        }else {
+        } else {
             _jobId = job.getParentId();
             recType = job.getParentRecurType();
         }
 
         ApiClient.getservices().eotServiceCall(Service_apis.pauseResumeRecur, AppUtility.getApiHeaders(),
-                        AppUtility.getJsonObject(new Gson().toJson(new DeleteReCur(_jobId,recStatus,recType))))
+                        AppUtility.getJsonObject(new Gson().toJson(new DeleteReCur(_jobId, recStatus, recType))))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<JsonObject>() {
                     @Override
                     public void onSubscribe(@NotNull Disposable d) {
                     }
+
                     @Override
                     public void onNext(@NotNull JsonObject jsonObject) {
                         Log.e("", "");
