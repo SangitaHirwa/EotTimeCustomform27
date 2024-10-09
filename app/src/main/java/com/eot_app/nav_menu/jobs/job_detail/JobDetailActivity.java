@@ -1130,7 +1130,13 @@ public class JobDetailActivity extends AppCompatActivity implements
 
     @Override
     public void progressBarDissmissForThread() {
-          AppUtility.progressBarDissMiss();
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                AppUtility.progressBarDissMiss();
+            }
+        });
+
     }
 
     @Override

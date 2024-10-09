@@ -268,6 +268,7 @@ public class DetailFragment extends Fragment
     String brandName = "";
     RecurReqResModel recurData;
     boolean isClickedReqItem = false;
+    String jobId = "";
 
     public DetailFragment() {
         // Required empty public constructor
@@ -392,10 +393,8 @@ public class DetailFragment extends Fragment
         layout = inflater.inflate(R.layout.fragment_detail2, container, false);
 
 
-        ll_completion_detail = layout.findViewById(R.id.ll_completion_detail);
-        ll_item = layout.findViewById(R.id.ll_item);
-        ll_equipment = layout.findViewById(R.id.ll_equipment);
-        ll_requested_item = layout.findViewById(R.id.ll_requested_item);
+
+        initializelables();
 
 
         // permission checks for showing equipment and items
@@ -471,7 +470,7 @@ ExecutorService executorService = Executors.newSingleThreadExecutor();
         }catch (Exception e){
             Log.e("Error", e.getMessage());
         }
-        initializelables();
+
         requireActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -481,55 +480,57 @@ ExecutorService executorService = Executors.newSingleThreadExecutor();
                         mMapView.getMapAsync(instanse);
                     }
                 },3000);
-            }
-        });
-        // adapter for job status dropdown
-        mySpinnerAdapter = new Job_Status_Adpter(getActivity(), statusArray,arraystatus, statusKey -> {
+                // adapter for job status dropdown
+                mySpinnerAdapter = new Job_Status_Adpter(getActivity(), statusArray,arraystatus, statusKey -> {
 
-            Log.e("", "");
-            if (statusKey.equalsIgnoreCase(AppConstant.Reschedule)) {
-                if (mParam2.getJobId().equals(mParam2.getTempId())) {
-                    showErrorDialog(LanguageController.getInstance().getMobileMsgByKey(AppConstant.job_not_sync));
-                } else if (jobstatus != null && jobstatus.getStatus_no().equals(AppConstant.Completed) ||
-                        Objects.requireNonNull(jobstatus).getStatus_no().equals(AppConstant.Closed)) {
-                    showErrorDialog(LanguageController.getInstance().getMobileMsgByKey(AppConstant.close_completed_job_msg));
-                } else {
-                    Intent open_reschedule = new Intent(getActivity(), RescheduleActivity.class);
-                    open_reschedule.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-                    String str = new Gson().toJson(mParam2);
-                    startActivityForResult(open_reschedule.putExtra("job", str), REQUEST_RESCHEDULE);
-                }
-            } else if (statusKey.equals(AppConstant.Revisit)) {
-                if (mParam2.getJobId().equals(mParam2.getTempId())) {
-                    showErrorDialog(LanguageController.getInstance().getMobileMsgByKey(AppConstant.job_not_sync));
-                } else if (mParam2.getParentId() != null && mParam2.getParentId().equals("0")) {
-                    Intent open_revisit = new Intent(getActivity(), RevisitActivity.class);
-                    open_revisit.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-                    String str = new Gson().toJson(mParam2);
-                    startActivity(open_revisit.putExtra("job", str));
-                } else
-                    showErrorDialog(LanguageController.getInstance().getMobileMsgByKey(AppConstant.cannot_raise_revisit_request_for_job_which_is_already_marked_as_recurring));
-            } else {
-                //After discussion with Ayush sir, Add new condition for check signature of customer (27/Sep/2023)
-                if(App_preference.getSharedprefInstance().getLoginRes().getIsJobCompCustSignEnable().equals("1")) {
-                    if (statusKey.equalsIgnoreCase(AppConstant.Completed)) {
-                        if (mParam2.getSignature() == null || mParam2.getSignature().equals("")) {
-                            showErrorDialog(LanguageController.getInstance().getMobileMsgByKey(AppConstant.signature_alert));
-                        }else {
+                    Log.e("", "");
+                    if (statusKey.equalsIgnoreCase(AppConstant.Reschedule)) {
+                        if (mParam2.getJobId().equals(mParam2.getTempId())) {
+                            showErrorDialog(LanguageController.getInstance().getMobileMsgByKey(AppConstant.job_not_sync));
+                        } else if (jobstatus != null && jobstatus.getStatus_no().equals(AppConstant.Completed) ||
+                                Objects.requireNonNull(jobstatus).getStatus_no().equals(AppConstant.Closed)) {
+                            showErrorDialog(LanguageController.getInstance().getMobileMsgByKey(AppConstant.close_completed_job_msg));
+                        } else {
+                            Intent open_reschedule = new Intent(getActivity(), RescheduleActivity.class);
+                            open_reschedule.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                            String str = new Gson().toJson(mParam2);
+                            startActivityForResult(open_reschedule.putExtra("job", str), REQUEST_RESCHEDULE);
+                        }
+                    } else if (statusKey.equals(AppConstant.Revisit)) {
+                        if (mParam2.getJobId().equals(mParam2.getTempId())) {
+                            showErrorDialog(LanguageController.getInstance().getMobileMsgByKey(AppConstant.job_not_sync));
+                        } else if (mParam2.getParentId() != null && mParam2.getParentId().equals("0")) {
+                            Intent open_revisit = new Intent(getActivity(), RevisitActivity.class);
+                            open_revisit.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                            String str = new Gson().toJson(mParam2);
+                            startActivity(open_revisit.putExtra("job", str));
+                        } else
+                            showErrorDialog(LanguageController.getInstance().getMobileMsgByKey(AppConstant.cannot_raise_revisit_request_for_job_which_is_already_marked_as_recurring));
+                    } else {
+                        //After discussion with Ayush sir, Add new condition for check signature of customer (27/Sep/2023)
+                        if(App_preference.getSharedprefInstance().getLoginRes().getIsJobCompCustSignEnable().equals("1")) {
+                            if (statusKey.equalsIgnoreCase(AppConstant.Completed)) {
+                                if (mParam2.getSignature() == null || mParam2.getSignature().equals("")) {
+                                    showErrorDialog(LanguageController.getInstance().getMobileMsgByKey(AppConstant.signature_alert));
+                                }else {
+                                    checkForIsLeader(statusKey);
+                                }
+                            }else {
+                                checkForIsLeader(statusKey);
+                            }
+                        }
+                        else{
                             checkForIsLeader(statusKey);
                         }
-                    }else {
-                        checkForIsLeader(statusKey);
                     }
-                }
-                else{
-                    checkForIsLeader(statusKey);
-                }
+                });
+
+                new_status_spinner.setAdapter(mySpinnerAdapter);
+                getViewIds();
             }
         });
 
-        new_status_spinner.setAdapter(mySpinnerAdapter);
-                getViewIds();
+
             }
         });
 
@@ -622,55 +623,33 @@ ExecutorService executorService = Executors.newSingleThreadExecutor();
 
         tv_label_ac_job_time = layout.findViewById(R.id.tv_label_ac_job_time);
         tv_label_ac_job_time.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.actual_job_time));
-
         ll_actual_date_time = layout.findViewById(R.id.ll_actual_date_time);
         ll_travel_date_time = layout.findViewById(R.id.ll_travel_date_time);
         rl_Collapse1 = layout.findViewById(R.id.rl_Collapse1);
-
         rl_Collapse1.setOnClickListener(this);
-
         rl_Collapse2 = layout.findViewById(R.id.rl_Collapse2);
-
         rl_Collapse2.setOnClickListener(this);
         tvTravelJobTime = layout.findViewById(R.id.tvTravelJobTime);
         tvActualJobTime = layout.findViewById(R.id.tvActualJobTime);
-
-
         date_ac_start = layout.findViewById(R.id.date_ac_start);
         date_ac_start.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.actual_start_date_time));
-//        date_ac_start.setOnClickListener(this);
-
-
         date_ac_end = layout.findViewById(R.id.date_ac_end);
         date_ac_end.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.actual_end_date_time));
-//        date_ac_end.setOnClickListener(this);
-
-
         btnActualEdit = layout.findViewById(R.id.btnActualEdit);
         btnActualEdit.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit));
         btnActualEdit.setOnClickListener(this);
         ivEditAc = layout.findViewById(R.id.ivEditAc);
         ivEditAc.setOnClickListener(this);
-
-
         btnTravelEdit = layout.findViewById(R.id.btnTravelEdit);
         btnTravelEdit.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit));
         btnTravelEdit.setOnClickListener(this);
-
         tv_label_job_travel_time = layout.findViewById(R.id.tv_label_job_travel_time);
         tv_label_job_travel_time.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.travel_job_time));
         progressBar_timing = layout.findViewById(R.id.progressBar_timing);
-
         date_tr_start = layout.findViewById(R.id.date_tr_start);
         date_tr_start.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.travel_start_date_time));
-//        date_tr_start.setOnClickListener(this);
-
-
         date_tr_end = layout.findViewById(R.id.date_tr_end);
         date_tr_end.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.travel_end_date_time));
-//        date_tr_end.setOnClickListener(this);
-
-
         frameView = layout.findViewById(R.id.frameView);
         person_name = layout.findViewById(R.id.person_name);
         textViewJobCode = layout.findViewById(R.id.textViewJobCode);
@@ -680,57 +659,37 @@ ExecutorService executorService = Executors.newSingleThreadExecutor();
         textViewAddress = layout.findViewById(R.id.textViewAddress);
         textViewPONumber = layout.findViewById(R.id.textViewPONumber);
         textViewAddress.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.no_location));
-
         textViewDescription = layout.findViewById(R.id.textViewDescription);
         textViewDescription.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.no_desc));
-
         textViewTags = layout.findViewById(R.id.textViewTags);
         textViewTags.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.no_tag));
-
         accept_reject_linear = layout.findViewById(R.id.accept_reject_linear);
-
         textViewContactperson = layout.findViewById(R.id.textViewContactperson);
         textViewContactperson.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.no_contact_available));
         textViewTitle = layout.findViewById(R.id.textViewTitle);
-
         textViewInstruction = layout.findViewById(R.id.textViewInstruction);
         textViewInstruction.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.no_instr));
-
         txtViewHeader = layout.findViewById(R.id.txtViewHeader);
         buttonAccept = layout.findViewById(R.id.buttonAccept);
         buttonDecline = layout.findViewById(R.id.buttonDecline);
         buttonView = layout.findViewById(R.id.buttonView);
         buttonView.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.view));
-
-
         imageViewChat = layout.findViewById(R.id.imageViewChat);
         imageViewCall = layout.findViewById(R.id.imageViewCall);
         imageViewEmail = layout.findViewById(R.id.imageViewEmail);
-
-     /*   txt_fw_nm_list = layout.findViewById(R.id.txt_fw_nm_list);
-        txt_fw_nm_list.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.no_fw_available));*/
-
         rv_fw_list  =layout.findViewById(R.id.rv_fw_list);
         LinearLayoutManager layoutManager=new LinearLayoutManager(getActivity());
         layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         rv_fw_list.setLayoutManager(layoutManager);
-
         contact_card = layout.findViewById(R.id.contact_card);
-
-
         tv_description = layout.findViewById(R.id.textView8);
         tv_description.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.description));
-
         tv_instruction = layout.findViewById(R.id.textView9);
         tv_instruction.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.instr));
-
-
         fw_Nm_List = layout.findViewById(R.id.fw_Nm_List);
         fw_Nm_List.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.fieldworkers));
-
         tv_tag = layout.findViewById(R.id.textView11);
         tv_tag.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.job_tags));
-
         complation_txt = layout.findViewById(R.id.complation_txt);
         complation_notes = layout.findViewById(R.id.complation_notes);
         txt_notesHeader = layout.findViewById(R.id.txt_notesHeader);
@@ -741,55 +700,35 @@ ExecutorService executorService = Executors.newSingleThreadExecutor();
         rv_mark_done = layout.findViewById(R.id.rv_mark_done);
         txt_serviceHeader = layout.findViewById(R.id.txt_serviceHeader);
         cl_serviceMarkAsDone = layout.findViewById(R.id.cl_serviceMarkAsDone);
-
-
         item_txt = layout.findViewById(R.id.item_txt);
         item_txt.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.item));
         btn_add_item = layout.findViewById(R.id.btn_add_item);
         btn_add_item.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add));
-
         requested_item_txt = layout.findViewById(R.id.requested_item_txt);
         requested_item_txt.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.item_requested));
         requested_item_txt.setOnClickListener(this);
-
         progressBar_itemRequest =layout.findViewById(R.id.progressBar_itemRequest);
         txt_no_item_found =layout.findViewById(R.id.txt_no_item_found);
         txt_no_item_found.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.no_item_requested_found));
-
         requested_item_cardView = layout.findViewById(R.id.requested_item_cardView);
-       /* show_requested_list = layout.findViewById(R.id.show_requested_list);
-        hide_requested_list = layout.findViewById(R.id.hide_requested_list);*/
         requested_item_flag = layout.findViewById(R.id.requested_item_flag);
-      /*  requested_itemList_show_hide_rl = layout.findViewById(R.id.requested_itemList_show_hide_rl);
-        show_requested_list.setOnClickListener(this);
-        hide_requested_list.setOnClickListener(this);*/
         btn_add_requested_item = layout.findViewById(R.id.btn_add_requested_item);
         btn_add_requested_item.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add));
         btn_add_requested_item.setOnClickListener(this);
-        if (App_preference.getSharedprefInstance().getLoginRes().getCompPermission().get(0).getIsItemEnable().equals("1")) {
-            btn_add_item.setVisibility(View.GONE);
-        }
-
         eq_txt = layout.findViewById(R.id.eq_txt);
         eq_txt.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.equipment));
         btn_add_eq = layout.findViewById(R.id.btn_add_eq);
         btn_add_eq.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add));
-
         customField_view = layout.findViewById(R.id.customField_view);
         ll_custom_views = layout.findViewById(R.id.ll_custom_views);
         ll_po_number = layout.findViewById(R.id.ll_po_number);
-
         custom_filed_txt = layout.findViewById(R.id.custom_filed_txt);
         custom_filed_txt.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.title_cutom_field));
         custom_filed_txt.setOnClickListener(this);
-
-
         customfiled_btn = layout.findViewById(R.id.customfiled_btn);
-
         attachmemt_flag = layout.findViewById(R.id.attachmemt_flag);
         item_flag = layout.findViewById(R.id.item_flag);
         equi_flag = layout.findViewById(R.id.equi_flag);
-
         recur_parent_view = layout.findViewById(R.id.recur_parent_view);
         recurMsgShow = layout.findViewById(R.id.liner_layout_for_recurmsg_show);
         recurMsgHide = layout.findViewById(R.id.liner_layout_for_recurmsg_hide);
@@ -806,107 +745,94 @@ ExecutorService executorService = Executors.newSingleThreadExecutor();
         btnStopRecurView.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.stop_recur));
         recur_txt.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.job_recur));
         btn_add_signature.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.menu_upload_sign));
-
         contact_name_lable = layout.findViewById(R.id.contact_name_lable);
         contact_name_lable.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.contact_details));
         schdule_details_txt = layout.findViewById(R.id.schdule_details_txt);
         schdule_details_txt.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.schedule_details));
-
         job_status_lable = layout.findViewById(R.id.job_status_lable);
         job_status_lable.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.status_detail) + " : ");
-
         arrow_dp_icon = layout.findViewById(R.id.arrow_dp_icon);
-      //  arrow_dp_icon.setOnClickListener(this);
-
         arraw_layout=layout.findViewById(R.id.linear_arraw_layout);
         arraw_layout.setOnClickListener(this);
-
         new_status_spinner = layout.findViewById(R.id.new_status_spinner);
-
         cardView_signature_pad = layout.findViewById(R.id.cardView_signature_pad);
         signature_img = layout.findViewById(R.id.signature_img);
         customer_name = layout.findViewById(R.id.customer_name);
         chipGroup = layout.findViewById(R.id.chipGroup);
-
         recyclerView = layout.findViewById(R.id.recyclerView);
         recyclerView_job_item = layout.findViewById(R.id.recyclerView_job_item);
         recyclerView_requested_item = layout.findViewById(R.id.recyclerView_requested_item);
         recyclerView_job_eq = layout.findViewById(R.id.recyclerView_job_eq);
         signature_pad = layout.findViewById(R.id.signature_pad);
         signature_pad.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.customer_signature));
-
-
         map_layout = layout.findViewById(R.id.map_layout);
         map_loc_txt = layout.findViewById(R.id.map_loc_txt);
-
         try {
             image_txt = layout.findViewById(R.id.image_txt);
         } catch (Exception e) {
             e.printStackTrace();
 
         }
-
         site_name = layout.findViewById(R.id.site_name);
-//        text_misc = layout.findViewById(R.id.text_misc);
         tagcardView = layout.findViewById(R.id.tagcardView);
-
-
         quotes_details_card = layout.findViewById(R.id.quotes_details_card);
         quotes_details_txt = layout.findViewById(R.id.quotes_details_txt);
         quotes_details_number_txt = layout.findViewById(R.id.quotes_details_number_txt);
         quotes_details_number = layout.findViewById(R.id.quotes_details_number);
-
         quotes_details_txt.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.quotes_details));
         quotes_details_number_txt.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.quotes_num));
-//        text_misc.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.misc));
-
-//        customLayoutManager = new CustomLinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL
-//                , false);
         gridLayoutManager = new GridLayoutManager(getActivity(),3);
-        recyclerView.setLayoutManager(gridLayoutManager);
-        jobCompletionAdpter = new CompletionAdpterJobDteails1(new ArrayList<>()
-                , () -> /*((JobDetailActivity) requireActivity()).getAttchmentFragment()*/showComplationViewDialog(true));
-        recyclerView.setAdapter(jobCompletionAdpter);
+        ll_completion_detail = layout.findViewById(R.id.ll_completion_detail);
+        ll_item = layout.findViewById(R.id.ll_item);
+        ll_equipment = layout.findViewById(R.id.ll_equipment);
+        ll_requested_item = layout.findViewById(R.id.ll_requested_item);
 
-
-        // set item data
-        recyclerView_job_item.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL
-                , false));
-        String jobId = "";
         if(mParam2 != null && mParam2.getJobId() != null) {
             jobId = mParam2.getJobId();
-        }
-        invoice_list_adpter = new InvoiceItemList2Adpter(getActivity(), new ArrayList<>(), true, jobId, getDisCalculationType, getTaxCalculationType);//, this, this
-        recyclerView_job_item.setAdapter(invoice_list_adpter);
-        recyclerView_job_item.setNestedScrollingEnabled(false);
-        //set service data
-        rv_mark_done.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL
-                , false));
-        serviceMarkDoneAdapter = new ServiceMarkDoneAdapter(new ArrayList<>(),getContext());
-        rv_mark_done.setAdapter(serviceMarkDoneAdapter);
-
-
-        if (mParam2 != null && mParam2.getItemData() != null && invoice_list_adpter != null && !mParam2.getItemData().isEmpty()) {
-            invoice_list_adpter.updateitemlist(mParam2.getItemData());
-        }
-        // set equipment data
-
-        recyclerView_job_eq.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL
-                , false));
-        if (adapter == null) {
-            adapter = new JobDetailEquipmentAdapter(getActivity(), this);
-            adapter.setEquipmentCurrentStatus(App_preference.getSharedprefInstance().getEquipmentStatusList());
-            recyclerView_job_eq.setAdapter(adapter);
-            recyclerView_job_eq.setNestedScrollingEnabled(false);
         }
 
         EotApp.getAppinstance().setJobFlagObserver(this);
         EotApp.getAppinstance().setNotifyForAttchCount(this);
-//        EotApp.getAppinstance().setAddJobObserver(this);
         EotApp.getAppinstance().setNotifyForItemCount(this);
         EotApp.getAppinstance().setNotifyForEquipmentCount(this);
         EotApp.getAppinstance().setNotifyForcompletionInDetail(this);
         EotApp.getAppinstance().setNotifyForRequestedItemList(this);
+
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                recyclerView.setLayoutManager(gridLayoutManager);
+                jobCompletionAdpter = new CompletionAdpterJobDteails1(new ArrayList<>()
+                        , () -> showComplationViewDialog(true));
+                recyclerView.setAdapter(jobCompletionAdpter);
+                // set item data
+                recyclerView_job_item.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL
+                        , false));
+                invoice_list_adpter = new InvoiceItemList2Adpter(getActivity(), new ArrayList<>(), true, jobId, getDisCalculationType, getTaxCalculationType);//, this, this
+                recyclerView_job_item.setAdapter(invoice_list_adpter);
+                recyclerView_job_item.setNestedScrollingEnabled(false);
+                //set service data
+                rv_mark_done.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL
+                        , false));
+                serviceMarkDoneAdapter = new ServiceMarkDoneAdapter(new ArrayList<>(),getContext());
+                rv_mark_done.setAdapter(serviceMarkDoneAdapter);
+                if (mParam2 != null && mParam2.getItemData() != null && invoice_list_adpter != null && !mParam2.getItemData().isEmpty()) {
+                    invoice_list_adpter.updateitemlist(mParam2.getItemData());
+                }
+                // set equipment data
+                recyclerView_job_eq.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL
+                        , false));
+                if (adapter == null) {
+                    adapter = new JobDetailEquipmentAdapter(getActivity(), getInstance());
+                    adapter.setEquipmentCurrentStatus(App_preference.getSharedprefInstance().getEquipmentStatusList());
+                    recyclerView_job_eq.setAdapter(adapter);
+                    recyclerView_job_eq.setNestedScrollingEnabled(false);
+                }
+
+
+        if (App_preference.getSharedprefInstance().getLoginRes().getCompPermission().get(0).getIsItemEnable().equals("1")) {
+            btn_add_item.setVisibility(View.GONE);
+        }
 
         if (mParam2!= null && mParam2.getRecurType() != null && App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsRecur().equals("0") && !mParam2.getRecurType().equalsIgnoreCase("0")
         ||mParam2!= null&&mParam2.getParentRecurType() != null && App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsRecur().equals("0") && !mParam2.getParentRecurType().equalsIgnoreCase("0")){
@@ -921,7 +847,7 @@ ExecutorService executorService = Executors.newSingleThreadExecutor();
         //set Requested item recyclerview in adapter
         recyclerView_requested_item.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL
                 , false));
-        requestedItemListAdapter = new RequestedItemListAdapter(requestedItemList,getContext(),this,this);//, this, this
+        requestedItemListAdapter = new RequestedItemListAdapter(requestedItemList,getContext(),getInstance(),getInstance());//, this, this
         recyclerView_requested_item.setAdapter(requestedItemListAdapter);
         recyclerView_requested_item.setNestedScrollingEnabled(false);
 
@@ -943,6 +869,8 @@ ExecutorService executorService = Executors.newSingleThreadExecutor();
         }else{
             ll_requested_item.setVisibility(View.GONE);
         }
+            }
+        });
     }
 
     private void addJobServicesInChips(JtId jtildModel) {
@@ -1580,18 +1508,20 @@ ExecutorService executorService = Executors.newSingleThreadExecutor();
                     }
                 }
                 if (mParam2 != null && mParam2.getIsMarkDoneWithJtId() != null && mParam2.getIsMarkDoneWithJtId().size() > 0) {
-                    cl_serviceMarkAsDone.setVisibility(View.VISIBLE);
-                    isMarkDoneWithJtidsList.addAll(mParam2.getIsMarkDoneWithJtId());
-                    serviceMarkDoneAdapter.updatList(mParam2.getIsMarkDoneWithJtId());
+                    if(cl_serviceMarkAsDone != null && isMarkDoneWithJtidsList != null && serviceMarkDoneAdapter != null) {
+                        cl_serviceMarkAsDone.setVisibility(View.VISIBLE);
+                        isMarkDoneWithJtidsList.addAll(mParam2.getIsMarkDoneWithJtId());
+                        serviceMarkDoneAdapter.updatList(mParam2.getIsMarkDoneWithJtId());
+                    }
                 } else {
-                    cl_serviceMarkAsDone.setVisibility(View.GONE);
+                    if(cl_serviceMarkAsDone != null) {
+                        cl_serviceMarkAsDone.setVisibility(View.GONE);
+                    }
                 }
             }
         }
         cl_pbCompletion.setVisibility(View.GONE);
         setCompletionDetail();
-//        (jobCompletionAdpter).updateFileList((ArrayList<Attachments>) AppDataBase.getInMemoryDatabase(requireActivity()).attachments_dao().getAttachmentsByJobId(mParam2.getJobId()));
-//        addComplationButtonTxt();
         if(App_preference.getSharedprefInstance().getLoginRes().getIsCompleShowMarkDone().equals("1")) {
             if (App_preference.getSharedprefInstance().getLoginRes().getIsJobCompCustSignEnable().equals("0")) {
                 if(mParam2 != null && mParam2.getStatus() != null && !mParam2.getStatus().equalsIgnoreCase("9")) {
@@ -1640,7 +1570,13 @@ ExecutorService executorService = Executors.newSingleThreadExecutor();
             }
             complation_notes.setText(tempstring);
         }
-       setCompletionDetail();
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                setCompletionDetail();
+            }
+        });
+
         HyperLog.i(TAG, "addComplationButtonTxt(M) Stop");
     }
     int doneMark =0;
@@ -1701,14 +1637,14 @@ public void setCompletionDetail(){
     }
     //show attachment of completion of job
     ArrayList <Attachments> attachmentsArrayList = new ArrayList<>((ArrayList<Attachments>) AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).attachments_dao().getAttachmentsByJobId(mParam2.getJobId()));
-    if(attachmentsArrayList.size() == 0){
+    if(recyclerView != null && attachmentsArrayList.size() == 0){
         recyclerView.setVisibility(View.GONE);
     }else {
-        recyclerView.setVisibility(View.VISIBLE);
-        (jobCompletionAdpter).updateFileList(attachmentsArrayList);
+        if(recyclerView != null) {
+            recyclerView.setVisibility(View.VISIBLE);
+            (jobCompletionAdpter).updateFileList(attachmentsArrayList);
+        }
     }
-//        jobDetail_pi.getAttachFileList(mParam2.getJobId(), App_preference.getSharedprefInstance().getLoginRes().getUsrId()
-//                , "6");
 }
     /***update form list after Ans Submit***/
     public void getUpdateForm() {
@@ -1820,38 +1756,13 @@ public void setCompletionDetail(){
      * Reschedule and Revisit works on permission basis from admin
      **/
     private void showHideRescheduleRevisit(String status) {
-        //    List<JobStatusModelNew> jobStatusList = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobStatusModelNew().getFwStatusList();
 
-        // Important
-        // setting 0 for reschedule as the status are starting from 1
-        // setting 1 in key for revisit as we are not including not started into the dropdown list so we can use this id for revisit
+
+        /** Important
+         setting 0 for reschedule as the status are starting from 1
+         setting 1 in key for revisit as we are not including not started into the dropdown list so we can use this id for revisit*/
         if (status != null) {
-           /* if (status.equals(AppConstant.Not_Started)) {
-                if (App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsJobRescheduleOrNot() != 1) {
-                    if (!arraystatus.containsKey("0")) {
-                        arraystatusvalue.put("0", LanguageController.getInstance().getMobileMsgByKey(AppConstant.reschedule));
-                        arraystatus.put("0", LanguageController.getInstance().getMobileMsgByKey(AppConstant.reschedule));
-                    }
-                } else {
-                    if (arraystatus.containsKey("0")) {
-                        arraystatusvalue.remove(0);
-                        arraystatus.remove(0);
-                    }
-                }
-                if (arraystatus.containsKey("1")) {
-                    arraystatus.remove(1);
-                    arraystatusvalue.remove(1);
-                }
 
-                // for adding custom status in drop down list
-                for (JobStatusModelNew jobStatus : jobStatusList) {
-                    if (jobStatus.getIsDefault().equalsIgnoreCase("0")) {
-                        arraystatusvalue.put(jobStatus.getKey(), jobStatus.getKey());
-                        arraystatus.put(jobStatus.getKey(), jobStatus.getStatus_name());
-                    }
-                }
-                notifiMyAdpterForStatusDp();
-            } else {*/
             if (App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsJobRescheduleOrNot() != 1) {
                 if (!arraystatus.containsKey("0")) {
                     arraystatus.put("0", LanguageController.getInstance().getMobileMsgByKey(AppConstant.reschedule));
@@ -1974,12 +1885,6 @@ public void setCompletionDetail(){
             case AppConstant.Not_Started:
                 buttonAccept.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.accept));
                 buttonDecline.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.reject));
-               /* if (App_preference.getSharedprefInstance().getLoginRes().getIsShowRejectStatus() != null
-                        && App_preference.getSharedprefInstance().getLoginRes().getIsShowRejectStatus().equals("0")) {
-                    buttonDecline.setVisibility(View.VISIBLE);
-                } else {
-                    buttonDecline.setVisibility(View.GONE);
-                }*/
                 if (!reject)
                 {
                     buttonDecline.setVisibility(View.GONE);
@@ -2068,14 +1973,6 @@ public void setCompletionDetail(){
                 break;
             case AppConstant.Completed:
                 //TODO For checking the travelling time
-              /*  jobstatus.setStatus_no(AppConstant.Accepted);
-                if (App_preference.getSharedprefInstance().getLoginRes() != null &&
-                        App_preference.getSharedprefInstance().getLoginRes().getIsHideTravelBtn().equals("1")) {
-                    buttonAccept.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.job_start));
-                } else {
-                    buttonAccept.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.travel_start));
-                }
-                buttonDecline.setVisibility(View.GONE);*/
 
                 // TODO changed from hiding the full view to buttons
                 /**After discuss with Ayush sir and jit sir we add a new permission for Completion notes add/ Edit**/
@@ -2113,40 +2010,6 @@ public void setCompletionDetail(){
         arraystatus is for saving the status number and status name in key value pair
 */
         /* ****Remove Rejected status when permission not allow for rejected status******/
-        /*if (!status.equals(AppConstant.Completed)) {
-            for (JobStatusModelNew jobStatus : jobStatusList) {
-                switch (jobStatus.getStatus_no()) {
-                    case "3":
-                        if (App_preference.getSharedprefInstance().getLoginRes().getIsShowRejectStatus() != null
-                                && App_preference.getSharedprefInstance().getLoginRes().getIsShowRejectStatus().equals("0")) {
-                            arraystatusvalue.put(jobStatus.getKey(), jobStatus.getKey());
-                            arraystatus.put(jobStatus.getKey(), jobStatus.getStatus_name());
-                        }
-                        break;
-                    case "4":
-                    case "7":
-                    case "8":
-                    case "9":
-                    case "12":
-                        arraystatusvalue.put(jobStatus.getKey(), jobStatus.getKey());
-                        arraystatus.put(jobStatus.getKey(), jobStatus.getStatus_name());
-                        break;
-                }
-                // when user selected custom status
-                if (status.equalsIgnoreCase(AppConstant.CUSTOM)
-                ) {
-                    if ("2".equals(jobStatus.getStatus_no())) {
-                        arraystatusvalue.put(jobStatus.getKey(), jobStatus.getKey());
-                        arraystatus.put(jobStatus.getKey(), jobStatus.getStatus_name());
-                    }
-                }
-
-                if (jobStatus.getIsDefault().equalsIgnoreCase("0")) {
-                    arraystatusvalue.put(jobStatus.getKey(), jobStatus.getKey());
-                    arraystatus.put(jobStatus.getKey(), jobStatus.getStatus_name());
-                }
-            }
-        } else {*/
         for (JobStatusModelNew jobStatus : jobStatusList) {
             switch (jobStatus.getStatus_no())
             {
@@ -2318,16 +2181,7 @@ public void setCompletionDetail(){
                 sb.append("#" + item.getTnm());
             }
             textViewTags.setText(sb.toString());
-            /* ***removed by shivani as per discussion it should be visible****/
 
-            /*try {
-                if (textViewTags != null && textViewTags.getText().toString().equals(""))
-                    tagcardView.setVisibility(View.GONE);
-                else tagcardView.setVisibility(View.VISIBLE);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-*/
             SpannableStringBuilder builder = new SpannableStringBuilder();
             SpannableString str1 = new SpannableString(
                     LanguageController.getInstance().getMobileMsgByKey(AppConstant.job_code) + " : ");
@@ -2500,31 +2354,20 @@ public void setCompletionDetail(){
     private void setFwList() {
         try {
             List<FieldWorker> list =  new ArrayList<>();
-          //  StringBuffer stringBuffer = new StringBuffer();
             String kpr = mParam2.getKpr();
             String[] kprList = kpr.split(",");
-            /*list.addAll(Arrays.asList(kprList));
-            Filedworker_List_Adapter filedworkerListAdapter = new Filedworker_List_Adapter(mParam2,list,getActivity().getApplicationContext());
-            rv_fw_list.setAdapter(filedworkerListAdapter);*/
 
             for (String id : kprList) {
                 FieldWorker fieldWorker = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).fieldWorkerModel().getFieldWorkerByID(id);
                 if (fieldWorker != null) {
                     list.add(fieldWorker);
 
-                   /* stringBuffer.append(fieldWorker.getName())
-                            .append(fieldWorker.getLnm())
-                            .append(", ");*/
                 }
             }
             Filedworker_List_Adapter filedworkerListAdapter = new Filedworker_List_Adapter(mParam2,list,getActivity().getApplicationContext());
             rv_fw_list.setAdapter(filedworkerListAdapter);
-           /* stringBuffer.deleteCharAt(stringBuffer.length() - 2);
-            String paramIds = stringBuffer.toString();
-            txt_fw_nm_list.setText(paramIds);*/
         } catch (Exception e) {
             e.printStackTrace();
-          /*  txt_fw_nm_list.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.not_available));*/
         }
     }
 
@@ -2717,7 +2560,6 @@ public void setCompletionDetail(){
                 requested_item_flag.setVisibility(View.VISIBLE);
                 requested_item_txt.setClickable(true);
                 recyclerView_requested_item.setVisibility(View.GONE);
-//                requested_itemList_show_hide_rl.setVisibility(View.VISIBLE);
                 requested_item_txt.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.down), null, null, null);
             }else {
                 if(requested_item_txt != null && requested_item_flag != null && recyclerView_requested_item != null) {
@@ -3132,26 +2974,8 @@ public void setCompletionDetail(){
                     txt_no_item_found.setVisibility(View.GONE);
                     requested_item_txt.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.down), null, null, null);
                 }
-               /* if(AppUtility.isInternetConnected()){
-                    progressBar_itemRequest.setVisibility(View.VISIBLE);
-//                    show_requested_list.setVisibility(View.GONE);
-//                    hide_requested_list.setVisibility(View.VISIBLE);
-                    if (jobDetail_pi != null) {
-                        jobDetail_pi.getRequestedItemDataList(mParam2.getJobId());
-                        recyclerView_requested_item.setVisibility(View.VISIBLE);
-                    }
-                }else {
-                    showErrorDialog(LanguageController.getInstance().getMobileMsgByKey(AppConstant.offline_feature_alert));
-                }*/
-
 
                 break;
-          /*  case R.id.hide_requested_list:
-//                show_requested_list.setVisibility(View.VISIBLE);
-//                recyclerView_requested_item.setVisibility(View.GONE);
-//                hide_requested_list.setVisibility(View.GONE);
-                txt_no_item_found.setVisibility(View.GONE);
-                break;*/
         }
     }
 
@@ -3535,18 +3359,9 @@ public void setCompletionDetail(){
                     String tempstring=data.getStringExtra("note").replace("null", "");
                     tempstring.replace("<br>","");
                     complation_notes.setText(tempstring);
-//                    btnComplationView.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit));
+
                 }
-//                if(!mParam2.getComplNote().isEmpty()){
-//                    btnComplationView.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit));
-//                }else {
-//                    btnComplationView.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add));
-//                }
-//                if(AppUtility.isInternetConnected()) {
-//                    jobDetail_pi.loadFromServer();
-//                }else {
-//                    setOfflineData();
-//                }
+
                 addComplationButtonTxt();
                 /**After discuss with Ayush sir and jit sir we add a new permission for Completion notes add/ Edit**/
                 if(App_preference.getSharedprefInstance().getLoginRes().getIsComplNoteBeforeComplete() != null && App_preference.getSharedprefInstance().getLoginRes().getIsComplNoteBeforeComplete().equals("0")){
@@ -3834,8 +3649,6 @@ public void setCompletionDetail(){
     public void upateForCompletion(String apiName, String jobId) {
         this.jobDetail_pi = new JobDetail_pc(this);
 
-//            jobDetail_pi.getAttachFileList(jobId, App_preference.getSharedprefInstance().getLoginRes().getUsrId()
-//                    , "6");
             jobDetail_pi.loadFromServer(jobId);
     }
 
@@ -3846,7 +3659,6 @@ public void setCompletionDetail(){
                 showAppInstallDialog(LanguageController.getInstance().getServerMsgByKey(message.trim()));
                 requested_item_flag.setVisibility(View.VISIBLE);
                 requested_item_txt.setClickable(true);
-//                requested_itemList_show_hide_rl.setVisibility(View.VISIBLE);
                 requested_item_txt.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.down), null, null, null);
                 if(requestedModel != null) {
                     String msg =
@@ -3896,10 +3708,8 @@ public void setCompletionDetail(){
 
     @Override
     public void itemSelected(RequestedItemModel updateRequestedItemModel) {
-//        show_requested_list.setVisibility(View.VISIBLE);
         requested_item_txt.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.down), null, null, null);
         recyclerView_requested_item.setVisibility(View.VISIBLE);
-//        hide_requested_list.setVisibility(View.GONE);
         Intent intent = new Intent(getActivity(),AddUpdateRquestedItemActivity.class);
         intent.putExtra("updateSelectedReqItem",updateRequestedItemModel);
         intent.putExtra("UpdateReqItem",true);
@@ -3943,12 +3753,7 @@ public void setCompletionDetail(){
         }
     }
 
-//    public void setCompAttachmentList(List<Attachments> list){
-//        attachmentsList =list;
-//    }
-//    public List<Attachments> getCompAttachmentList(){
-//        return attachmentsList;
-//    }
+
     public void setServiceMarkDoneList(Set<IsMarkDoneWithJtid> list){
         mParam2.setIsMarkDoneWithJtId(new ArrayList<>(list));
         ArrayList<IsMarkDoneWithJtid> convertList = new ArrayList<>();
@@ -3956,9 +3761,7 @@ public void setCompletionDetail(){
 
         AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().updateServiceMarkDoneList(mParam2.getIsMarkDoneWithJtId(),mParam2.getJobId());
     }
-//    public Set<IsMarkDoneWithJtid> getServicMarkDoneList(){
-//        return isMarkDoneWithJtidsList;
-//    }
+
     public boolean checkInList (String jtid){
         boolean isIn = false;
         for (IsMarkDoneWithJtid item: isMarkDoneWithJtidsList
@@ -3985,15 +3788,6 @@ public void setCompletionDetail(){
     public void checkMarkServices(){
         if(isAllServicesDone()){
             int i =0;
-//            for (String s: statusArray
-//                 ) {
-//                if(s.equalsIgnoreCase(arraystatus.get("9"))){
-////                if(s.equalsIgnoreCase(LanguageController.getInstance().getMobileMsgByKey(AppConstant.completed))){
-//                    break;
-//                }
-//                i++;
-//            }
-//
             for(Map.Entry item:arraystatus.entrySet()){
                 if(item.getKey().equals(AppConstant.Completed)){
                     checkForIsLeader(item.getKey().toString());
