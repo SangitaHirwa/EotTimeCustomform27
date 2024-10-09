@@ -137,7 +137,7 @@ public class JobList extends Fragment implements MyListItemSelected<Job>, Joblis
     private EditText edtSearch;
     private JobFilterModel jobFilterModel;
     List<JobStatusModelNew> jobStatusDynamicList=new ArrayList<>();
-    List<Job> data;
+    List<Job> data, filterList;
     int visibilityFlag;
 
 
@@ -165,10 +165,12 @@ public class JobList extends Fragment implements MyListItemSelected<Job>, Joblis
         public void afterTextChanged(Editable s) {
             //Set Changed Text for search filter
             jobListPi.setSearchOnTextChange(s.toString());
-            if (s.toString().isEmpty()) {
-                jobFilterModel = new JobFilterModel();
-                jobListPi.getFilterJobList(jobFilterModel, 1);
-            }
+//            if (s.toString().isEmpty()) {
+//                jobFilterModel = new JobFilterModel();
+//                jobListPi.getFilterJobList(jobFilterModel, 1);
+//            } else  {
+                filter(s.toString());
+//            }
         }
     };
     private Activity myActivity;
@@ -484,6 +486,7 @@ public class JobList extends Fragment implements MyListItemSelected<Job>, Joblis
         List<Job> jobsdata = new ArrayList<>();
         swiperefresh.setOnRefreshListener(() -> {
             isAutoScrolled = false;
+            edtSearch.setText("");
             swiperefresh.setRefreshing(true);
             jobListPi.loadFromServer();
         });
@@ -705,9 +708,9 @@ public class JobList extends Fragment implements MyListItemSelected<Job>, Joblis
         switch (view.getId()) {
             case R.id.search_btn://serach by name or job id with status & tag & prioty
                 AppUtility.hideSoftKeyboard(getActivity());
-                jobFilterModel.setSearch(edtSearch.getText().toString());
+//                jobFilterModel.setSearch(edtSearch.getText().toString());
                 // jobListPi.getJobByName(jobFilterModel);
-                jobListPi.getFilterJobList(jobFilterModel, 1);
+//                jobListPi.getFilterJobList(jobFilterModel, 1);
                 break;
             case R.id.newtask:
 
@@ -941,9 +944,9 @@ public class JobList extends Fragment implements MyListItemSelected<Job>, Joblis
         if (b) {
             edtSearch.addTextChangedListener(textWatcher);
             removeFilters();
-            jobListPi.getFilterJobList(jobFilterModel, 1);
+//            jobListPi.getFilterJobList(jobFilterModel, 1);
         } else {
-            jobListPi.getFilterJobList(jobFilterModel, 2);
+//            jobListPi.getFilterJobList(jobFilterModel, 2);
             edtSearch.removeTextChangedListener(textWatcher);
             edtSearch.setText("");
         }
@@ -1078,5 +1081,29 @@ public class JobList extends Fragment implements MyListItemSelected<Job>, Joblis
         this.inprogress_pos = inProgressPos;
         this.unScheduleHeaderPos = unScheduleHeaderPos;
         this.nearToday_pos = nearByTodayPos;
+    }
+    void filter(String text){
+        List<Job> filterList = new ArrayList();
+        if(text != null && !text.isEmpty()) {
+            for(Job filterItem: data){
+                //or use .equal(text) with you want equal match
+                //use .toLowerCase() for better matches
+
+                if (filterItem.getLabel().toLowerCase().contains(text)) {
+                    filterList.add(filterItem);
+                } else if (filterItem.getCnm().toLowerCase().contains(text)) {
+                    filterList.add(filterItem);
+                } else if (filterItem.getAdr().toLowerCase().contains(text)) {
+                    filterList.add(filterItem);
+                }
+            }
+        }
+        else {
+            filterList.addAll(data);
+        }
+        if(filterList.size() > 0) {
+            //update recyclerview
+            adapter.updateRecords(filterList);
+        }
     }
 }

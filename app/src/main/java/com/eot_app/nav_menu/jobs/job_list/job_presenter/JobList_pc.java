@@ -216,7 +216,7 @@ public class JobList_pc implements JobList_pi {
 
     private void updateDataToView(JobFilterModel jobFilterModel) {
         List<Job> data;
-        if (jobFilterModel.getSearch().equals("") && jobFilterModel.getJobPriotiesList() != null && jobFilterModel.getJobPriotiesList().size() == 0 && jobFilterModel.getTagDataList().size() == 0 && jobFilterModel.getStatusModelsList().size() == 0) {
+        if (/*jobFilterModel.getSearch().equals("") && */jobFilterModel.getJobPriotiesList() != null && jobFilterModel.getJobPriotiesList().size() == 0 && jobFilterModel.getTagDataList().size() == 0 && jobFilterModel.getStatusModelsList().size() == 0) {
             if (sortedBy.equals(START_DATE_FIELD)) {
                 AppUtility.progressBarDissMiss();
                 data = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJoblistByScheduleStart();
