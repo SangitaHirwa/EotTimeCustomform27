@@ -45,22 +45,5 @@
         android:textStyle="bold"
         android:textAllCaps="false"/>
 
-
-    <TextView
-        android:id="@+id/registeration_btn"
-        style="@style/style_sec"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:layout_marginEnd="10dp"
-        android:clickable="false"
-        android:text="@string/registerr"
-        android:textColor="@color/colorPrimary"
-        android:textSize="@dimen/medium_text"
-        android:textStyle="normal"
-        android:visibility="gone"
-        android:padding="@dimen/left_margin"
-        android:focusable="false"
-        tools:ignore="SpUsage" />
 </LinearLayout>
 </layout>
