@@ -41,6 +41,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatCheckBox;
@@ -295,6 +296,36 @@ public class DetailFragment extends Fragment
             param3 = getArguments().getString(ARG_PARAM2);
         }
         jobDetail_pi = new JobDetail_pc(this);
+
+        if(param3 != null) {
+            mParam2 = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(param3);
+
+            try {
+                if (mParam2 != null) {
+                    if (mParam2.getJobId() != null && !mParam2.getJobId().isEmpty()) {
+                        /**After discussion with Rani change validation of canInvoiceCreated by isJobInvoiced 12/04/2024**/
+                        if (mParam2.getIsJobInvoiced() != null && mParam2.getIsJobInvoiced().equals("1")) {
+                            getDisCalculationType = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().disCalculationType(mParam2.getJobId());
+                            getTaxCalculationType = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().taxCalculationType(mParam2.getJobId());
+                        } else {
+                            getDisCalculationType = App_preference.getSharedprefInstance().getLoginRes().getDisCalculationType();
+                            getTaxCalculationType = App_preference.getSharedprefInstance().getLoginRes().getTaxCalculationType();
+                        }
+                    } else {
+                        getDisCalculationType = App_preference.getSharedprefInstance().getLoginRes().getDisCalculationType();
+                        getTaxCalculationType = App_preference.getSharedprefInstance().getLoginRes().getTaxCalculationType();
+                    }
+                } else {
+                    getDisCalculationType = App_preference.getSharedprefInstance().getLoginRes().getDisCalculationType();
+                    getTaxCalculationType = App_preference.getSharedprefInstance().getLoginRes().getTaxCalculationType();
+                }
+            } catch (Exception e) {
+                Log.e("Error", e.getMessage());
+            }
+        }else {
+            Toast.makeText(getActivity(), LanguageController.getInstance().getMobileMsgByKey(AppConstant.something_wrong), Toast.LENGTH_SHORT ).show();
+            return;
+        }
     }
 
     @Override
@@ -392,7 +423,6 @@ public class DetailFragment extends Fragment
         instanse = this;
         layout = inflater.inflate(R.layout.fragment_detail2, container, false);
 
-
         initializelables();
 
 
@@ -445,30 +475,6 @@ public class DetailFragment extends Fragment
 
 
 //        getData from
-                mParam2 = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(param3);
-                try {
-                    if (mParam2 != null) {
-                        if (mParam2.getJobId() != null && !mParam2.getJobId().isEmpty()) {
-                            /**After discussion with Rani change validation of canInvoiceCreated by isJobInvoiced 12/04/2024**/
-                            if (mParam2.getIsJobInvoiced() != null && mParam2.getIsJobInvoiced().equals("1")) {
-                                getDisCalculationType = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().disCalculationType(mParam2.getJobId());
-                                getTaxCalculationType = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().taxCalculationType(mParam2.getJobId());
-                            } else {
-                                getDisCalculationType = App_preference.getSharedprefInstance().getLoginRes().getDisCalculationType();
-                                getTaxCalculationType = App_preference.getSharedprefInstance().getLoginRes().getTaxCalculationType();
-                            }
-                        } else {
-                            getDisCalculationType = App_preference.getSharedprefInstance().getLoginRes().getDisCalculationType();
-                            getTaxCalculationType = App_preference.getSharedprefInstance().getLoginRes().getTaxCalculationType();
-                        }
-                    } else {
-                        getDisCalculationType = App_preference.getSharedprefInstance().getLoginRes().getDisCalculationType();
-                        getTaxCalculationType = App_preference.getSharedprefInstance().getLoginRes().getTaxCalculationType();
-                    }
-                } catch (Exception e) {
-                    Log.e("Error", e.getMessage());
-                }
-
                 requireActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -798,9 +804,6 @@ public class DetailFragment extends Fragment
         EotApp.getAppinstance().setNotifyForcompletionInDetail(this);
         EotApp.getAppinstance().setNotifyForRequestedItemList(this);
 
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
                 recyclerView.setLayoutManager(gridLayoutManager);
                 jobCompletionAdpter = new CompletionAdpterJobDteails1(new ArrayList<>()
                         , () -> showComplationViewDialog(true));
@@ -853,24 +856,9 @@ public class DetailFragment extends Fragment
 
                 if (App_preference.getSharedprefInstance().getLoginRes().getCompPermission().get(0).getIsItemRequested() == 0) {
                     ll_requested_item.setVisibility(View.VISIBLE);
-                    if (mParam2 != null && mParam2.getItemRequested() != null && mParam2.getItemRequested().equals("1")) {
-                        requested_item_flag.setVisibility(View.VISIBLE);
-//                requested_itemList_show_hide_rl.setVisibility(View.VISIBLE);
-                        requested_item_txt.setClickable(true);
-                        requested_item_txt.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.down), null, null, null);
-
-                    } else {
-                        requested_item_txt.setClickable(false);
-                        requested_item_flag.setVisibility(View.GONE);
-//                requested_itemList_show_hide_rl.setVisibility(View.GONE);
-                        requested_item_txt.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
-
-                    }
                 } else {
                     ll_requested_item.setVisibility(View.GONE);
                 }
-            }
-        });
     }
 
     private void addJobServicesInChips(JtId jtildModel) {
