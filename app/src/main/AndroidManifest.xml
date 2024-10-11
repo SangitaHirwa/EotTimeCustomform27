@@ -144,13 +144,6 @@
             />
 
         <activity
-            android:name=".nav_menu.jobs.job_detail.addinvoiveitem2pkg.ReplaceItemEquipmentActivity"
-            android:parentActivityName=".nav_menu.jobs.job_detail.invoice2list.JoBInvoiceItemList2Activity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden|adjustResize"
-            android:exported="false"
-            />
-        <activity
             android:name=".nav_menu.jobs.job_detail.invoice2list.JoBInvoiceItemList2Activity"
             android:parentActivityName=".nav_menu.jobs.job_detail.JobDetailActivity"
             android:screenOrientation="portrait"
