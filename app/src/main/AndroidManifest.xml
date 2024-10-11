@@ -32,7 +32,7 @@
         <activity
             android:name=".nav_menu.jobs.job_detail.job_audit_remark_attchment_pkg.SelectedImageActivity"
             android:exported="false"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
         <activity android:name=".nav_menu.equipment.link_own_client_equ_barc.JobEquipmentScanActivity"
             android:exported="false"
             />
