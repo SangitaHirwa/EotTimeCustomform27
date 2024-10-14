@@ -307,7 +307,8 @@ public class PathUtils {
         Cursor cursor = null;
         try {
             String[] proj = {MediaStore.Images.Media.DATA};
-            cursor = context.getContentResolver().query(uri, proj, null, null, null, null);
+            /**We were not able to select the image from the attachment so we had to change the parameters**/
+            cursor = context.getContentResolver().query(uri, proj, selection, selectionArgs, null, null);
             column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
             cursor.moveToFirst();
             return cursor.getString(column_index);
