@@ -131,7 +131,19 @@ public class AppointmentListFragment extends
     }
     private void setUILables() {
         requireActivity().setTitle("");
-        binding.nolistTxt.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.appointment_not_found));
+        if(App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsAuditVisible() == 0 &&
+                App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsAppointmentVisible() == 0){
+            binding.nolistTxt.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.appointment_not_found));
+        }else  if(App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsAuditVisible() == 1 &&
+                App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsAppointmentVisible() == 0){
+            binding.nolistTxt.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.appoi_job_not_found_on_cale));
+        }else  if(App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsAuditVisible() == 0 &&
+                App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsAppointmentVisible() == 1){
+            binding.nolistTxt.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.job_audit_not_found_on_cale));
+        }else if(App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsAuditVisible() == 1 &&
+                App_preference.getSharedprefInstance().getLoginRes().getRights().get(0).getIsAppointmentVisible() == 1){
+            binding.nolistTxt.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.job_not_found_on_cale));
+        }
         binding.tvFabAddAppoint.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_appointment));
         binding.tvFabJob.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.title_add_job));
         binding.tvFabAudit.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.title_add_audit));

@@ -1104,6 +1104,9 @@ public class AppConstant {
     public static String go_to_equ = "go_to_equ";
     public static String signatory = "signatory";
     public static String add_signatory = "add_signatory";
+    public static String job_audit_not_found_on_cale = "job/audit_not_found_on_cale";
+    public static String appoi_job_not_found_on_cale = "appoi/job_not_found_on_cale";
+    public static String job_not_found_on_cale = "job_not_found_on_cale";
     public static String server(String location) {
         switch (location) {
             case "America":
