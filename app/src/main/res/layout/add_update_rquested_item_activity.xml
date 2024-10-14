@@ -6,13 +6,38 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/status_bar_offline_gray"
+            android:paddingLeft="20dp"
+            android:visibility="visible"
+            android:id="@+id/offlineStatusBar"
+
+            >
+            <TextView
+                android:id="@+id/offlineStatusBar_txt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/text_style"
+                android:text="Offline - Showing limited content "
+                android:drawableLeft="@drawable/vector"
+                android:textColor="@color/white"
+                app:layout_constraintTop_toTopOf="parent"
+                android:drawablePadding="10dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
 
         <RelativeLayout
             android:id="@+id/req_add_item_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="5dp"
-            android:fitsSystemWindows="false">
+            android:fitsSystemWindows="false"
+            android:layout_below="@+id/offlineStatusBar">
 
                 <LinearLayout
                     android:layout_width="match_parent"

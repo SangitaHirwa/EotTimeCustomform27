@@ -117,11 +117,12 @@ public class JoBInvoiceItemList2Activity extends AppCompatActivity implements Vi
 /**
  * After discussion with Rani change validation of canInvoiceCreated by isJobInvoiced 12/04/2024
  *After discussion with Rani add validation of quotation 03/06/2024
- *  **/
-                    if(job.getIsJobInvoiced().equals("1") || job.getQuotId()!= null && !job.getQuotId().isEmpty() && !job.getQuotId().equalsIgnoreCase("0")) {
+ *  **/              if(job != null) {
+                    if (job != null && job.getIsJobInvoiced() != null && job.getIsJobInvoiced().equals("1") || job.getQuotId() != null && job.getQuotId() != null && !job.getQuotId().isEmpty() && !job.getQuotId().equalsIgnoreCase("0")) {
                         getDisCalculationType = AppDataBase.getInMemoryDatabase(this).jobModel().disCalculationType(jobId);
                         getTaxCalculationType = AppDataBase.getInMemoryDatabase(this).jobModel().taxCalculationType(jobId);
-                    }else {
+                    }
+                }else {
                         getDisCalculationType= App_preference.getSharedprefInstance().getLoginRes().getDisCalculationType();
                         getTaxCalculationType= App_preference.getSharedprefInstance().getLoginRes().getTaxCalculationType();
                     }
