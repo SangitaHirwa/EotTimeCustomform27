@@ -27,7 +27,6 @@ import com.eot_app.login_next.login_next_mvp.Login_Next_Pc;
 import com.eot_app.login_next.login_next_mvp.Login_Next_Pi;
 import com.eot_app.login_next.login_next_mvp.Login_Next_View;
 import com.eot_app.registration_form.Almost_done_Activity;
-import com.eot_app.registration_form.Create_Account_Activity;
 import com.eot_app.services.GetKillEvent_ToDestryNotication;
 import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.AppUtility;
@@ -44,7 +43,7 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import java.util.HashMap;
 import java.util.Objects;
 
-
+/** Remove all code of registration from code after discussion with jit sir 11/oct/2024 3.13*/
 public class Login2Activity extends AppCompatActivity implements View.OnClickListener, Login_Next_View, Frgt_View {
     Button next_btn, submit_button;
     LinearLayout email_lay, pass_lay, login_layout;
@@ -62,7 +61,7 @@ public class Login2Activity extends AppCompatActivity implements View.OnClickLis
     String email_frgt;
     EditText frgt_ed_email, frgt_key_edt;
     TextInputLayout textInputLayout, textInputLayout2;
-    TextView registeration_btn, tv_privacy_policy;
+    TextView  tv_privacy_policy;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -98,7 +97,6 @@ public class Login2Activity extends AppCompatActivity implements View.OnClickLis
     }
 
     private void initializelables() {
-        registeration_btn = findViewById(R.id.registeration_btn);
         next_btn = findViewById(R.id.next_btn);
         email_lay = findViewById(R.id.email_lay);
         pass_lay = findViewById(R.id.pass_lay);
@@ -123,7 +121,6 @@ public class Login2Activity extends AppCompatActivity implements View.OnClickLis
 
 
     private void inializeviews() {
-        registeration_btn.setOnClickListener(this);
         tv_privacy_policy.setOnClickListener(this);
         next_btn.setOnClickListener(this);
         use_anot_account.setOnClickListener(this);
@@ -205,11 +202,6 @@ public class Login2Activity extends AppCompatActivity implements View.OnClickLis
                     alredy_key_txt.setText(AppConstant.fr_alr_key);
                     onClick(sbmit_btn);
                 }
-                break;
-            case R.id.registeration_btn:
-                Intent intent = new Intent(Login2Activity.this, Create_Account_Activity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-                startActivity(intent);
                 break;
 
             case R.id.tv_privacy_policy:
