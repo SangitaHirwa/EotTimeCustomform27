@@ -480,7 +480,7 @@ public class DetailFragment extends Fragment
                         }, 3000);
                         // adapter for job status dropdown
                         mySpinnerAdapter = new Job_Status_Adpter(getActivity(), statusArray, arraystatus, statusKey -> {
-
+                             mParam2.setStatus(statusKey);
                             Log.e("", "");
                             if (statusKey.equalsIgnoreCase(AppConstant.Reschedule)) {
                                 if (mParam2.getJobId().equals(mParam2.getTempId())) {
@@ -3354,7 +3354,7 @@ public class DetailFragment extends Fragment
 
                 addComplationButtonTxt();
                 /**After discuss with Ayush sir and jit sir we add a new permission for Completion notes add/ Edit**/
-                if (App_preference.getSharedprefInstance().getLoginRes().getIsComplNoteBeforeComplete() != null && App_preference.getSharedprefInstance().getLoginRes().getIsComplNoteBeforeComplete().equals("0")) {
+                if (App_preference.getSharedprefInstance().getLoginRes().getIsComplNoteBeforeComplete() != null && App_preference.getSharedprefInstance().getLoginRes().getIsComplNoteBeforeComplete().equals("0") && mParam2 != null && mParam2.getStatus().equals(AppConstant.Completed)) {
                     if (btnComplationView != null && btnComplationView.getText().toString().equals(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit))) {
                         btnComplationView.setVisibility(View.GONE);
                     } else {
