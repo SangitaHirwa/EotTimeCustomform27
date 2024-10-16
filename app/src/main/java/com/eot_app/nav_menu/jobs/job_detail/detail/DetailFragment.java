@@ -1955,7 +1955,7 @@ public class DetailFragment extends Fragment
                 //TODO For checking the travelling time
 
                 // TODO changed from hiding the full view to buttons
-                /**After discuss with Ayush sir and jit sir we add a new permission for Completion notes add/ Edit**/
+               /* *//**After discuss with Ayush sir and jit sir we add a new permission for Completion notes add/ Edit**//*
                 if (App_preference.getSharedprefInstance().getLoginRes().getIsComplNoteBeforeComplete() != null && App_preference.getSharedprefInstance().getLoginRes().getIsComplNoteBeforeComplete().equals("0")) {
                     if (btnComplationView != null && btnComplationView.getText().toString().equals(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit))) {
                         btnComplationView.setVisibility(View.GONE);
@@ -1965,7 +1965,7 @@ public class DetailFragment extends Fragment
 
                 } else {
                     btnComplationView.setVisibility(View.VISIBLE);
-                }
+                }*/
                 buttonAccept.setVisibility(View.GONE);
                 buttonDecline.setVisibility(View.GONE);
                 arraystatus.clear();
@@ -2101,6 +2101,9 @@ public class DetailFragment extends Fragment
 
     @Override
     public void setResultForChangeInJob(String update, String jobid) {
+        if(jobid != null && !jobid.isEmpty()) {
+            mParam2 = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(jobid);
+        }
         Intent intent = new Intent();
         intent.putExtra("JobID", jobid);
         getActivity().setResult(JobList.UPDATE, intent);
@@ -3342,7 +3345,7 @@ public class DetailFragment extends Fragment
 
                 addComplationButtonTxt();
                 /**After discuss with Ayush sir and jit sir we add a new permission for Completion notes add/ Edit**/
-                if (App_preference.getSharedprefInstance().getLoginRes().getIsComplNoteBeforeComplete() != null && App_preference.getSharedprefInstance().getLoginRes().getIsComplNoteBeforeComplete().equals("0")) {
+                if (App_preference.getSharedprefInstance().getLoginRes().getIsComplNoteBeforeComplete() != null && App_preference.getSharedprefInstance().getLoginRes().getIsComplNoteBeforeComplete().equals("0") && mParam2 != null && mParam2.getStatus().equals(AppConstant.completed)) {
                     if (btnComplationView != null && btnComplationView.getText().toString().equals(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit))) {
                         btnComplationView.setVisibility(View.GONE);
                     } else {
