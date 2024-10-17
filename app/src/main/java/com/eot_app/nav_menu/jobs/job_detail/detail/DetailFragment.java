@@ -270,6 +270,7 @@ public class DetailFragment extends Fragment
     private final String isKprChgStatusTrue = "1";
     private final String multipleKpr = "2";
     private final String singelKpr = "";
+    LinearLayout travel_time_hide_show_ll;
 
     public DetailFragment() {
         // Required empty public constructor
@@ -650,6 +651,7 @@ public class DetailFragment extends Fragment
         btnTravelEdit.setOnClickListener(this);
         tv_label_job_travel_time = layout.findViewById(R.id.tv_label_job_travel_time);
         tv_label_job_travel_time.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.travel_job_time));
+        travel_time_hide_show_ll = layout.findViewById(R.id.travel_time_hide_show_ll);
         progressBar_timing = layout.findViewById(R.id.progressBar_timing);
         date_tr_start = layout.findViewById(R.id.date_tr_start);
         date_tr_start.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.travel_start_date_time));
@@ -858,6 +860,12 @@ public class DetailFragment extends Fragment
                 } else {
                     ll_requested_item.setVisibility(View.GONE);
                 }
+        if(App_preference.getSharedprefInstance().getLoginRes() != null &&
+                App_preference.getSharedprefInstance().getLoginRes().getIsHideTravelBtn().equals("1")){
+            travel_time_hide_show_ll.setVisibility(View.GONE);
+        }else{
+            travel_time_hide_show_ll.setVisibility(View.VISIBLE);
+        }
     }
 
     private void addJobServicesInChips(JtId jtildModel) {
