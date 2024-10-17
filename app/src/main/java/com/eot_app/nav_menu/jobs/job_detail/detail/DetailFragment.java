@@ -224,7 +224,7 @@ public class DetailFragment extends Fragment
     DialogActualTravelDateTime dialogActualTravelDateTime;
     CompletionDetails completionDetails;
     boolean isClickedActual = false;
-    LinearLayout accept_reject_linear;
+    LinearLayout accept_reject_linear, travel_time_hide_show_ll;
     RelativeLayout arraw_layout;
     boolean accept = true, reject = true, travel = true, onhold = true, brack = true, isRefreshReqItem = false;
     String getDisCalculationType, getTaxCalculationType;
@@ -792,6 +792,7 @@ public class DetailFragment extends Fragment
         ll_item = layout.findViewById(R.id.ll_item);
         ll_equipment = layout.findViewById(R.id.ll_equipment);
         ll_requested_item = layout.findViewById(R.id.ll_requested_item);
+        travel_time_hide_show_ll = layout.findViewById(R.id.travel_time_hide_show_ll);
 
         if (mParam2 != null && mParam2.getJobId() != null) {
             jobId = mParam2.getJobId();
@@ -859,6 +860,12 @@ public class DetailFragment extends Fragment
                 } else {
                     ll_requested_item.setVisibility(View.GONE);
                 }
+        if(App_preference.getSharedprefInstance().getLoginRes() != null &&
+                App_preference.getSharedprefInstance().getLoginRes().getIsHideTravelBtn().equals("1")){
+            travel_time_hide_show_ll.setVisibility(View.GONE);
+        }else{
+            travel_time_hide_show_ll.setVisibility(View.VISIBLE);
+        }
     }
 
     private void addJobServicesInChips(JtId jtildModel) {
