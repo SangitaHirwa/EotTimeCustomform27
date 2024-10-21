@@ -16,6 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -23,6 +24,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.eot_app.R;
 import com.eot_app.UploadDocumentActivity;
+import com.eot_app.home_screens.NetworkUtill;
 import com.eot_app.nav_menu.jobs.job_detail.chat.img_crop_pkg.ImageCropFragment;
 import com.eot_app.nav_menu.jobs.job_detail.customform.AdapterCustomFormList;
 import com.eot_app.nav_menu.jobs.job_detail.customform.CustomFormFragment;
@@ -100,7 +102,7 @@ public class FormQueAns_Activity extends UploadDocumentActivity implements View.
     private List<Answer> answerfinal;
 
     private boolean customSaveForm = false;
-
+    View offline_Hide_show_cl;
 
     @Override
     public void onSessionExpire(String msg) {
@@ -140,7 +142,11 @@ public class FormQueAns_Activity extends UploadDocumentActivity implements View.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_form_que_ans);
-        getSupportActionBar().hide();
+        Toolbar toolbar = findViewById(R.id.toolbar_status_offline);
+        setSupportActionBar(toolbar);
+        offline_Hide_show_cl = findViewById(R.id.offlineStatusBar);
+        NetworkUtill.registerNetworkReceiver(EotApp.getCurrentActivity(),offline_Hide_show_cl);
+//        getSupportActionBar().hide();
         customFormList = getIntent().getParcelableExtra("formId");
         jobId = getIntent().getStringExtra("jobId");
         isLeader = getIntent().getStringExtra("isLeader");

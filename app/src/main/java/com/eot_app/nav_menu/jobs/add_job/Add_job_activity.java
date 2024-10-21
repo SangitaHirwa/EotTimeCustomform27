@@ -44,6 +44,7 @@ import android.widget.TimePicker;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatTextView;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -52,6 +53,7 @@ import com.eot_app.UploadDocumentActivity;
 import com.eot_app.custom_dropDown.CustomDPController;
 import com.eot_app.eoteditor.CustomEditor;
 import com.eot_app.home_screens.MainActivity;
+import com.eot_app.home_screens.NetworkUtill;
 import com.eot_app.nav_menu.appointment.dbappointment.Appointment;
 import com.eot_app.nav_menu.client.client_db.Client;
 import com.eot_app.nav_menu.client.clientlist.client_detail.contact.client_dao.ContactData;
@@ -234,18 +236,24 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
     final Calendar cTEnd = Calendar.getInstance();
     final Calendar cJobRecur = Calendar.getInstance();
     private boolean isTime24Format= false;
-
+    View offline_Hide_show_cl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_job);
+        Toolbar toolbar = findViewById(R.id.toolbar_status_offline);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.title_add_job));
+        offline_Hide_show_cl = findViewById(R.id.offlineStatusBar);
+        NetworkUtill.registerNetworkReceiver(EotApp.getCurrentActivity(),offline_Hide_show_cl);
         AppUtility.progressBarShow(Add_job_activity.this);
         executorService = Executors.newSingleThreadExecutor();
         executorService.execute(new Runnable() {
             @Override
             public void run() {
-                setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.title_add_job));
+//                setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.title_add_job));
 
                 if(getIntent()!=null&&getIntent().getStringExtra("CalenderDate")!=null)
                 {

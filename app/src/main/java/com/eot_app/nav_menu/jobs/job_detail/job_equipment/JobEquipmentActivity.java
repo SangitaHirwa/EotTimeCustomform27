@@ -23,6 +23,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -30,6 +31,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.eot_app.R;
+import com.eot_app.home_screens.NetworkUtill;
 import com.eot_app.nav_menu.audit.audit_list.equipment.equipment_room_db.entity.EquipmentStatus;
 import com.eot_app.nav_menu.audit.nav_scan.BarcodeScanActivity;
 import com.eot_app.nav_menu.audit.nav_scan.EquipmentDetailsActivity;
@@ -107,12 +109,16 @@ public class JobEquipmentActivity extends AppCompatActivity implements Job_equim
     MenuItem menuItem;
     boolean isScanResult = false;
     String generateOption = "";
-
+    View offline_Hide_show_cl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_job_equipment);
+        Toolbar toolbar = findViewById(R.id.toolbar_status_offline);
+        setSupportActionBar(toolbar);
+        offline_Hide_show_cl = findViewById(R.id.offlineStatusBar);
+        NetworkUtill.registerNetworkReceiver(EotApp.getCurrentActivity(),offline_Hide_show_cl);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.detail_equipment));
         getintentData();

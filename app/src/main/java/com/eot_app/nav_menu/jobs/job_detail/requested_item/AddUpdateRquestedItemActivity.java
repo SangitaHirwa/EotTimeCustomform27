@@ -1,6 +1,7 @@
 package com.eot_app.nav_menu.jobs.job_detail.requested_item;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -20,6 +21,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.eot_app.R;
+import com.eot_app.home_screens.NetworkUtill;
 import com.eot_app.nav_menu.audit.audit_list.equipment.equipment_room_db.entity.EquipmentStatus;
 import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.model.AddInvoiceItemReqModel;
 import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.mvp.AddEditInvoiceItem_PC;
@@ -71,14 +73,18 @@ public class AddUpdateRquestedItemActivity extends AppCompatActivity implements 
     RequestedItemModel updateRequestedItemModel;
     boolean addItem = false;
     boolean updateItem = false;
-
+    View offline_Hide_show_cl;
     private List<Inventry_ReS_Model> itemsList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_update_rquested_item_activity);
+        Toolbar toolbar = findViewById(R.id.toolbar_status_offline);
+        setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+        offline_Hide_show_cl = findViewById(R.id.offlineStatusBar);
+        NetworkUtill.registerNetworkReceiver(EotApp.getCurrentActivity(),offline_Hide_show_cl);
         initializelables();
         reqItemPi = new AddUpdateReqItem_PC(this);
         reqItemPi.getInventryItemList();
@@ -88,7 +94,8 @@ public class AddUpdateRquestedItemActivity extends AppCompatActivity implements 
             jobId = getIntent().getStringExtra("jobId");
             jobLabel = getIntent().getStringExtra("jobLabel");
             equId = getIntent().getStringExtra("equId");
-            Objects.requireNonNull(getSupportActionBar()).setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_request_Item));
+//            Objects.requireNonNull(getSupportActionBar()).setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_request_Item));
+           setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_request_Item));
         }else if(getIntent().getBooleanExtra("UpdateReqItem",false) || getIntent().getBooleanExtra("updateSelectedReqItemInEqu",false)){
             updateItem = true;
             jobId = getIntent().getStringExtra("jobId");
@@ -96,7 +103,8 @@ public class AddUpdateRquestedItemActivity extends AppCompatActivity implements 
             equId = getIntent().getStringExtra("equId");
             updateRequestedItemModel = (RequestedItemModel) getIntent().getSerializableExtra("updateSelectedReqItem");
             setItemDataValue();
-            Objects.requireNonNull(getSupportActionBar()).setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.update_request_Item));
+//            Objects.requireNonNull(getSupportActionBar()).setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.update_request_Item));
+           setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.update_request_Item));
         }
       initiatView();
 

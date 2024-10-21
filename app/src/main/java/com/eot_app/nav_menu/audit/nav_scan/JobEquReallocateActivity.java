@@ -21,12 +21,14 @@ import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.eot_app.R;
+import com.eot_app.home_screens.NetworkUtill;
 import com.eot_app.nav_menu.client.clientlist.client_detail.site.sitelist.Site_model;
 import com.eot_app.nav_menu.client.clientlist.client_detail.site.sitelist.editsite.editsitedb.SpinnerCountrySite;
 import com.eot_app.nav_menu.jobs.add_job.adapters.FilterAdapterSites;
@@ -89,11 +91,16 @@ public class JobEquReallocateActivity extends AppCompatActivity implements View.
     String statenameById = "";
     String city = "";
     String zip = "";
+    View offline_Hide_show_cl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_job_equ_reallocate);
+        Toolbar toolbar = findViewById(R.id.toolbar_status_offline);
+        setSupportActionBar(toolbar);
+        offline_Hide_show_cl = findViewById(R.id.offlineStatusBar);
+        NetworkUtill.registerNetworkReceiver(EotApp.getCurrentActivity(),offline_Hide_show_cl);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.reallocate));
         if (getIntent().hasExtra("old_location")) {

@@ -9,9 +9,11 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.eot_app.R;
+import com.eot_app.home_screens.NetworkUtill;
 import com.eot_app.nav_menu.jobs.job_db.EquArrayModel;
 import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.AddEditInvoiceItemActivity2;
 import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.model.InvoiceItemDataModel;
@@ -33,6 +35,7 @@ import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class JobEquLinkItemActivity extends AppCompatActivity implements JobEquRemark_View {
 
@@ -44,6 +47,7 @@ public class JobEquLinkItemActivity extends AppCompatActivity implements JobEquR
     boolean isAddItem = false, isPartAdd = false;
     InvoiceItemDataModel updateItemDataModel;
     EquArrayModel equipment;
+    View offline_Hide_show_cl;
     public  static  JobEquLinkItemActivity jobEquLinkItemActivity;
     public JobEquLinkItemActivity getInstance(){
         return jobEquLinkItemActivity;
@@ -53,7 +57,11 @@ public class JobEquLinkItemActivity extends AppCompatActivity implements JobEquR
         super.onCreate(savedInstanceState);
         jobEquLinkItemActivity = this;
         setContentView(R.layout.activity_equ_link_item);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Toolbar toolbar = findViewById(R.id.toolbar_status_offline);
+        setSupportActionBar(toolbar);
+        offline_Hide_show_cl = findViewById(R.id.offlineStatusBar);
+        NetworkUtill.registerNetworkReceiver(EotApp.getCurrentActivity(),offline_Hide_show_cl);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.link_items));
         jobEquRemarkPc = new JobEquRemark_PC(this);
         Bundle bundle = getIntent().getExtras();

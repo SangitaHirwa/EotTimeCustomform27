@@ -34,6 +34,7 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -41,6 +42,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Ignore;
 
 import com.eot_app.R;
+import com.eot_app.home_screens.NetworkUtill;
 import com.eot_app.login_next.FooterMenu;
 import com.eot_app.login_next.login_next_model.CompPermission;
 import com.eot_app.nav_menu.appointment.appointment_ItemData.AppointmentItemAdded_pi;
@@ -216,6 +218,7 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
     String lastUpdateQty ="";
     String brand_name ="";
     boolean isSerialNoMandatory = false;
+    View offline_Hide_show_cl;
 
     public AddEditInvoiceItemActivity2 getInstance() {
 
@@ -228,6 +231,8 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
         EotApp.getAppinstance().setEquipItemObserver(null);
         addEditInvoiceItemActivity2 = this;
         setContentView(R.layout.activity_edit__invoice);
+        offline_Hide_show_cl = findViewById(R.id.offlineStatusBar);
+        NetworkUtill.registerNetworkReceiver(EotApp.getCurrentActivity(),offline_Hide_show_cl);
 //        initializelables();
         appointmentItemData_pi = new AppointmentItemData_pc();
         bundle = getIntent().getExtras();
@@ -893,23 +898,29 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
     }
 
     private void set_Title() {
+        Toolbar toolbar = findViewById(R.id.toolbar_status_offline);
+        setSupportActionBar(toolbar);
         if (bundle.getBoolean("UpdateItemRequirmentGethering")) {
             if (App_preference.getSharedprefInstance().getLoginRes().getIsItemEditEnable().equals("1")) {
-                Objects.requireNonNull(getSupportActionBar()).setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.update_item));
+//                Objects.requireNonNull(getSupportActionBar()).setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.update_item));
+               setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.update_item));
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                 add_edit_item_Btn.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.update_btn));
                 DP_OPEN = false;
             } else {
                 EnableDisbleFields();
-                Objects.requireNonNull(getSupportActionBar()).setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.view_details));
+//                Objects.requireNonNull(getSupportActionBar()).setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.view_details));
+              setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.view_details));
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                 add_edit_item_Btn.setVisibility(View.GONE);
             }
         } else if (updateItemDataModel == null) {
             if (comeFrom != null && comeFrom.equalsIgnoreCase("AddRemark") || comeFrom != null && comeFrom.equalsIgnoreCase("JobListScan") || comeFrom != null && comeFrom.equalsIgnoreCase("AddRemarkReplace"))
-                Objects.requireNonNull(getSupportActionBar()).setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.step_1) + " (" + LanguageController.getInstance().getMobileMsgByKey(AppConstant.title_add_equipment) + ")");
+//                Objects.requireNonNull(getSupportActionBar()).setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.step_1) + " (" + LanguageController.getInstance().getMobileMsgByKey(AppConstant.title_add_equipment) + ")");
+                setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.step_1) + " (" + LanguageController.getInstance().getMobileMsgByKey(AppConstant.title_add_equipment) + ")");
             else
-                Objects.requireNonNull(getSupportActionBar()).setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.addItem_screen_title));
+//                Objects.requireNonNull(getSupportActionBar()).setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.addItem_screen_title));
+                setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.addItem_screen_title));
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             if (comeFrom != null && comeFrom.equalsIgnoreCase("AddRemark") || comeFrom != null && comeFrom.equalsIgnoreCase("JobListScan") || comeFrom != null && comeFrom.equalsIgnoreCase("AddRemarkReplace")) {
 
@@ -935,16 +946,19 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
             /*this permission for Edit item***/
             if (App_preference.getSharedprefInstance().getLoginRes().getIsItemEditEnable().equals("1")) {
                 if (updateItemDataModel.getDataType() != null && updateItemDataModel.getDataType().equalsIgnoreCase("3")) {
-                    Objects.requireNonNull(getSupportActionBar()).setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.update_service));
+//                    Objects.requireNonNull(getSupportActionBar()).setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.update_service));
+                   setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.update_service));
                 } else {
-                    Objects.requireNonNull(getSupportActionBar()).setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.update_item));
+//                    Objects.requireNonNull(getSupportActionBar()).setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.update_item));
+                    setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.update_item));
                 }
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                 add_edit_item_Btn.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.update_btn));
                 DP_OPEN = false;
             } else {
                 EnableDisbleFields();
-                Objects.requireNonNull(getSupportActionBar()).setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.view_details));
+//                Objects.requireNonNull(getSupportActionBar()).setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.view_details));
+               setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.view_details));
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                 add_edit_item_Btn.setVisibility(View.GONE);
             }
@@ -952,7 +966,8 @@ public class AddEditInvoiceItemActivity2 extends AppCompatActivity implements Ad
 
             if (updateItemDataModel != null && updateItemDataModel.getDataType() != null && updateItemDataModel.getDataType().equals("6")) {
                 EnableDisbleFields();
-                getSupportActionBar().setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.view_details));
+//                getSupportActionBar().setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.view_details));
+                 setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.view_details));
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                 add_edit_item_Btn.setVisibility(View.GONE);
             }

@@ -8,14 +8,15 @@
         android:id="@+id/relative_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="5dp"
         >
-
+       <include layout="@layout/offline_status_bar"
+           />
     <ScrollView
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/submit_btn"
+        android:layout_below="@+id/appbar_status_offline"
         android:isScrollContainer="false">
 
         <LinearLayout

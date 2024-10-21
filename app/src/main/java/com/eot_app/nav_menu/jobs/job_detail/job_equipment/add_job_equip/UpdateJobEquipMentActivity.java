@@ -36,10 +36,12 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatImageView;
+import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
 import com.eot_app.R;
 import com.eot_app.UploadDocumentActivity;
 import com.eot_app.databinding.ActivityAddJobEquipMentBinding;
+import com.eot_app.home_screens.NetworkUtill;
 import com.eot_app.nav_menu.audit.audit_list.audit_mvp.model.AuditList_Res;
 import com.eot_app.nav_menu.audit.audit_list.equipment.equipment_room_db.entity.EquipmentStatus;
 import com.eot_app.nav_menu.client.clientlist.client_detail.site.sitelist.Site_model;
@@ -165,6 +167,7 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
     EditText edt_day, edt_month, edt_year;
     RadioButton rdBtn_day, rdBtn_month, rdBtn_year;
     String interval = "";
+    View offline_Hide_show_cl;
     /**
      * select date from picker & concanate current time
      */
@@ -279,6 +282,11 @@ public class UpdateJobEquipMentActivity extends UploadDocumentActivity implement
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_add_job_equip_ment);
+        Toolbar toolbar = findViewById(R.id.toolbar_status_offline);
+        setSupportActionBar(toolbar);
+        offline_Hide_show_cl = findViewById(R.id.offlineStatusBar);
+        NetworkUtill.registerNetworkReceiver(EotApp.getCurrentActivity(),offline_Hide_show_cl);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.step_2)+" ("+
                 LanguageController.getInstance().getMobileMsgByKey(AppConstant.title_add_equipment)+")");
         initializeViewS();

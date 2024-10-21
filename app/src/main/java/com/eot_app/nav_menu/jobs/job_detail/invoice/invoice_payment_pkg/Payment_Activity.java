@@ -26,6 +26,7 @@ import android.widget.TextView;
 import com.eot_app.R;
 import com.eot_app.UploadDocumentActivity;
 import com.eot_app.databinding.ActivityPaymentBinding;
+import com.eot_app.home_screens.NetworkUtill;
 import com.eot_app.nav_menu.client.clientlist.client_detail.site.sitelist.editsite.editsitedb.SpinnerCountrySite;
 import com.eot_app.nav_menu.jobs.job_detail.documents.DocumentListAdapter;
 import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.Attachments;
@@ -50,6 +51,7 @@ import java.util.Objects;
 import java.util.concurrent.Callable;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatTextView;
+import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -91,11 +93,16 @@ public class Payment_Activity extends UploadDocumentActivity implements  Documen
     RecyclerView recyclerView_attachment;
     String imagePath;
     double totalDueAmount=0;
-
+    View offline_Hide_show_cl;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding= DataBindingUtil.setContentView(this,R.layout.activity_payment);
+        Toolbar toolbar = findViewById(R.id.toolbar_status_offline);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        offline_Hide_show_cl = findViewById(R.id.offlineStatusBar);
+        NetworkUtill.registerNetworkReceiver(EotApp.getCurrentActivity(),offline_Hide_show_cl);
         setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.title_payment));
 
         Bundle bundle = getIntent().getExtras();

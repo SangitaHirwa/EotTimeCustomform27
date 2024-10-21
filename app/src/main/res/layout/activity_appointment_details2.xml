@@ -5,10 +5,17 @@
     android:id="@+id/parent_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
-    <FrameLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
+    <include layout="@layout/offline_status_bar"
+        app:layout_constraintTop_toTopOf="parent"/>
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/appbar_status_offline">
 
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
@@ -412,6 +419,6 @@
             android:visibility="gone" />
     </FrameLayout>
 
-
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

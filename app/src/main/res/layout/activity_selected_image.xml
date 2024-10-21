@@ -11,7 +11,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
+        <include layout="@layout/offline_status_bar" />
         <!--start nested scrolling view-->
 
         <androidx.core.widget.NestedScrollView
@@ -19,6 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_above="@id/button_submit"
+            android:layout_below="@+id/appbar_status_offline"
             android:fillViewport="true">
 
             <!--Strat Linear layout 1-->

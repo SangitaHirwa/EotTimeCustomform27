@@ -33,11 +33,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatTextView;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.widget.ContentLoadingProgressBar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.eot_app.R;
+import com.eot_app.home_screens.NetworkUtill;
 import com.eot_app.nav_menu.audit.audit_list.equipment.equipment_room_db.entity.EquipmentStatus;
 import com.eot_app.nav_menu.equipment.link_own_client_equ_barc.JobEquipmentScanActivity;
 import com.eot_app.nav_menu.equipment.linkequip.linkMVP.LinkEquipmentPC;
@@ -58,6 +60,7 @@ import com.google.gson.JsonSyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 public class ActivityLinkEquipment extends AppCompatActivity implements View.OnClickListener,
         LinkEquipmentView, EquipmentLinkAdapter.OnEquipmentSelection, NotifyForLinkUnlinkEquipment {
@@ -82,15 +85,21 @@ public class ActivityLinkEquipment extends AppCompatActivity implements View.OnC
     private boolean contractMsg = true;
     Button save_btn;
     List<String> linkedEquipments=new ArrayList<>();
-
+    View offline_Hide_show_cl;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_link_equipment);
 
         EotApp.getAppinstance().setNotifyForLinkUnlinkEquipment(this);
-        getSupportActionBar().setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.link_equipment));
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Toolbar toolbar = findViewById(R.id.toolbar_status_offline);
+        setSupportActionBar(toolbar);
+        offline_Hide_show_cl = findViewById(R.id.offlineStatusBar);
+        NetworkUtill.registerNetworkReceiver(EotApp.getCurrentActivity(),offline_Hide_show_cl);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+        setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.link_equipment));
+        /*getSupportActionBar().setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.link_equipment));
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);*/
 
 
         type = getIntent().getStringExtra("type");

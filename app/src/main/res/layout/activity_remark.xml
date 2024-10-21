@@ -11,12 +11,13 @@
         android:id="@+id/rlay"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
+        <include layout="@layout/offline_status_bar"/>
         <androidx.core.widget.NestedScrollView
             android:id="@+id/rl_top"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_above="@id/button_submit"
+            android:layout_below="@+id/appbar_status_offline"
             android:fillViewport="true">
 
             <LinearLayout

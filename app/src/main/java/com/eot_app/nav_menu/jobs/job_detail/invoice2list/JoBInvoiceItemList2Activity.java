@@ -18,11 +18,13 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.eot_app.R;
+import com.eot_app.home_screens.NetworkUtill;
 import com.eot_app.nav_menu.item.ItemDatum;
 import com.eot_app.nav_menu.item.QtyReqModel;
 import com.eot_app.nav_menu.jobs.job_db.Job;
@@ -90,6 +92,7 @@ public class JoBInvoiceItemList2Activity extends AppCompatActivity implements Vi
     private Job job;
     String getDisCalculationType, getTaxCalculationType;
     String SingleTaxId="0";
+    View offline_Hide_show_cl;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,9 +101,13 @@ public class JoBInvoiceItemList2Activity extends AppCompatActivity implements Vi
 
         //        set observer for callback
         EotApp.getAppinstance().setApiItemAddEdit_Observer(this);
-
+        Toolbar toolbar = findViewById(R.id.toolbar_status_offline);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.items_screen_title));
-        Objects.requireNonNull(getSupportActionBar()).setElevation(0);  //remove actionbar/title shadow
+        offline_Hide_show_cl = findViewById(R.id.offlineStatusBar);
+        NetworkUtill.registerNetworkReceiver(EotApp.getCurrentActivity(),offline_Hide_show_cl);
+//        Objects.requireNonNull(getSupportActionBar()).setElevation(0);  //remove actionbar/title shadow
         Bundle bundle = getIntent().getExtras();
         if (getIntent().hasExtra("JobId")) {
             jobId = bundle.getString("JobId");

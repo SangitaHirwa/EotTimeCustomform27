@@ -16,9 +16,11 @@ import android.widget.TextView;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.eot_app.R;
 import com.eot_app.home_screens.MainActivity;
+import com.eot_app.home_screens.NetworkUtill;
 import com.eot_app.nav_menu.jobs.job_filter.FilterListAdapter;
 import com.eot_app.nav_menu.quote.filter_quotes_pkg.quote_filter_model.QuoteFilter_State_Model;
 import com.eot_app.nav_menu.quote.filter_quotes_pkg.quote_mvp.QuoteFilter_Pc;
@@ -28,6 +30,7 @@ import com.eot_app.nav_menu.quote.quotes_list_pkg.QuotesFilter;
 import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.AppUtility;
 import com.eot_app.utility.DropdownListBean;
+import com.eot_app.utility.EotApp;
 import com.eot_app.utility.language_support.LanguageController;
 import com.eot_app.utility.util_interfaces.MySpinnerAdapter;
 import com.google.gson.Gson;
@@ -40,6 +43,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Set;
 
 public class QuotesFilter_Activity extends AppCompatActivity implements View.OnClickListener, QuoteFilter_View {
@@ -64,6 +68,7 @@ public class QuotesFilter_Activity extends AppCompatActivity implements View.OnC
     private final List<String> statusIdList = new ArrayList<>();
     private final String[] dateArray = {"Today", "Yesterday", "Last 7 Days", "Last 30 Days", "This Month", "Last Month", "Custom Range"};
     private String dateFliterNm;
+    View offline_Hide_show_cl;
 
     private final DatePickerDialog.OnDateSetListener datePickerListener = new DatePickerDialog.OnDateSetListener() {
         @Override
@@ -94,6 +99,11 @@ public class QuotesFilter_Activity extends AppCompatActivity implements View.OnC
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_filter);
+        Toolbar toolbar = findViewById(R.id.toolbar_status_offline);
+        setSupportActionBar(toolbar);
+        offline_Hide_show_cl = findViewById(R.id.offlineStatusBar);
+        NetworkUtill.registerNetworkReceiver(EotApp.getCurrentActivity(),offline_Hide_show_cl);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.filter));
 
         initializelables();

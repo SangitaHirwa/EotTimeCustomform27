@@ -4,12 +4,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.eot_app.R;
+import com.eot_app.home_screens.NetworkUtill;
 import com.eot_app.nav_menu.audit.audit_list.audit_mvp.model.AuditList_Res;
 import com.eot_app.nav_menu.audit.audit_list.details.AuditDetailsFragment;
 import com.eot_app.nav_menu.audit.audit_list.details.MyFragmentPagerAdapter;
@@ -51,6 +54,7 @@ public class AuditDetails extends AppCompatActivity implements BottomNavigationV
     private CustomViewPagerState viewPager;
     MyFragmentPagerAdapter pagerAdapter;
     private int position = -1;
+    View offline_Hide_show_cl;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -59,8 +63,11 @@ public class AuditDetails extends AppCompatActivity implements BottomNavigationV
 
         navigation = findViewById(R.id.navigation);
         viewPager = findViewById(R.id.jobdetail_pager);
-
-
+        Toolbar toolbar = findViewById(R.id.toolbar_status_offline);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        offline_Hide_show_cl = findViewById(R.id.offlineStatusBar);
+        NetworkUtill.registerNetworkReceiver(EotApp.getCurrentActivity(),offline_Hide_show_cl);
         setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.detail_audit));
         setBottomMenus();
 

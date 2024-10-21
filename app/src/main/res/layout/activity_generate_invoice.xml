@@ -9,10 +9,18 @@
         android:layout_height="match_parent"
         android:background="@color/window_background"
         >
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <include layout="@layout/offline_status_bar"
+                app:layout_constraintTop_toTopOf="parent"/>
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:id="@+id/relative_main1"
+        app:layout_constraintTop_toBottomOf="@+id/appbar_status_offline">
 
         <Button
             android:id="@+id/addInvoiceItem_btn"
@@ -538,6 +546,8 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="18dp"
         android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         android:visibility="gone">
 
         <TextView
@@ -593,6 +603,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         android:layout_margin="18dp"
         android:orientation="horizontal"
         android:visibility="gone">
@@ -620,6 +632,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         android:orientation="vertical">
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -631,5 +645,6 @@
             app:srcCompat="@drawable/ic_generate_invoice"
             tools:ignore="ContentDescription" />
     </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

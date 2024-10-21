@@ -17,8 +17,10 @@ import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import com.eot_app.R;
+import com.eot_app.home_screens.NetworkUtill;
 import com.eot_app.nav_menu.client.clientlist.client_detail.contact.Client_Contact_List;
 import com.eot_app.nav_menu.client.clientlist.client_detail.contact.SiteListAdpter;
 import com.eot_app.nav_menu.client.clientlist.client_detail.contact.client_dao.ContactData;
@@ -62,6 +64,7 @@ public class Edit_Add_Contact_Activity extends AppCompatActivity implements View
     TextView status_lable;
     LinearLayout status_layout;
     int listSize=0;
+    View offline_Hide_show_cl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,16 +90,22 @@ public class Edit_Add_Contact_Activity extends AppCompatActivity implements View
             listSize = bundle.getInt("listSize",0);
         }
 
-
+        Toolbar toolbar = findViewById(R.id.toolbar_status_offline);
+        setSupportActionBar(toolbar);
+        offline_Hide_show_cl = findViewById(R.id.offlineStatusBar);
+        NetworkUtill.registerNetworkReceiver(EotApp.getCurrentActivity(),offline_Hide_show_cl);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         if (contactData == null) {
-            Objects.requireNonNull(getSupportActionBar()).setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_contacts_screen_title));
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+          setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_contacts_screen_title));
+//            Objects.requireNonNull(getSupportActionBar()).setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_contacts_screen_title));
+//            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             update_bt.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.create_contact));
             editContact_pi.getSiteFromdb(key);
             status_layout.setVisibility(View.GONE);
         } else {
-            Objects.requireNonNull(getSupportActionBar()).setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit_contact));
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+           setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit_contact));
+//            Objects.requireNonNull(getSupportActionBar()).setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit_contact));
+//            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             update_bt.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.update_btn));
             key = contactData.getCltId();
             editContact_pi.getSiteFromdb(key);

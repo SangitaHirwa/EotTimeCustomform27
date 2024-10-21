@@ -1512,6 +1512,7 @@ public class DetailFragment extends Fragment
             }
         }
         cl_pbCompletion.setVisibility(View.GONE);
+        progressBar_timing.setVisibility(View.GONE);
         setCompletionDetail();
         if (App_preference.getSharedprefInstance().getLoginRes().getIsCompleShowMarkDone().equals("1")) {
             if (App_preference.getSharedprefInstance().getLoginRes().getIsJobCompCustSignEnable().equals("0")) {

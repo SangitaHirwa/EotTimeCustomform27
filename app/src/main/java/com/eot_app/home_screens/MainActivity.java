@@ -43,6 +43,7 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -223,6 +224,7 @@ public class MainActivity extends UploadDocumentActivity implements MainActivity
     LinearLayout parent_calender;
     LinearLayout parent_timeSheet;
     LinearLayout parent_report;
+    View offline_status_cl;
     /**
      * internet off/on event to update user status
      */
@@ -306,6 +308,8 @@ public class MainActivity extends UploadDocumentActivity implements MainActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        offline_status_cl = findViewById(R.id.offlineStatusBar);
+        NetworkUtill.registerNetworkReceiver(EotApp.getCurrentActivity(),offline_status_cl);
 //        AppUtility.progressBarShow(MainActivity.this);
         executorService = Executors.newSingleThreadExecutor();
         executorService.execute(new Runnable() {

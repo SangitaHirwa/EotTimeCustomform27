@@ -30,6 +30,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatCheckBox;
+import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -39,6 +40,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.eot_app.R;
 import com.eot_app.eoteditor.PicassoImageGetter;
+import com.eot_app.home_screens.NetworkUtill;
 import com.eot_app.nav_menu.client.clientlist.client_detail.site.sitelist.editsite.editsitedb.SpinnerCountrySite;
 import com.eot_app.nav_menu.custom_fileds.custom_model.CustOmFormQuestionsRes;
 import com.eot_app.nav_menu.equipment.View.Job_Equipment_MVP.Job_EquipmentPC;
@@ -71,6 +73,7 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.Callable;
 
 public class JobdetailsEquActivity extends AppCompatActivity implements
@@ -95,12 +98,16 @@ public class JobdetailsEquActivity extends AppCompatActivity implements
     private RecyclerView recyclerView_job_item;
     private CardView cv_attachment_list;
     private RecyclerView recyclerView_job_attachment;
-
+    View offline_Hide_show_cl;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_jobdetails);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Toolbar toolbar = findViewById(R.id.toolbar_status_offline);
+        setSupportActionBar(toolbar);
+        offline_Hide_show_cl = findViewById(R.id.offlineStatusBar);
+        NetworkUtill.registerNetworkReceiver(EotApp.getCurrentActivity(),offline_Hide_show_cl);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.job_details));
 
         jobDetail_pi = new Job_EquipmentPC(this);

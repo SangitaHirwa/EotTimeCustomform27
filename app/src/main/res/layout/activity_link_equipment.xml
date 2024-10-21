@@ -6,12 +6,14 @@
         android:layout_width="match_parent"
         android:background="@color/recyclerview"
         android:layout_height="match_parent">
+        <include layout="@layout/offline_status_bar"/>
     <LinearLayout
         android:layout_above="@+id/btn_save"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        tools:ignore="UselessParent">
+        android:layout_below="@+id/appbar_status_offline"
+        android:visibility="visible"
+        android:orientation="vertical">
 
 
         <androidx.appcompat.widget.AppCompatTextView

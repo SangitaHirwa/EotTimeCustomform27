@@ -15,13 +15,17 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+
 import com.eot_app.R;
 import com.eot_app.frgt_pass.AsteriskPasswordTransformationMethod;
 import com.eot_app.frgt_pass.frgt_mvp.Frgt_View;
 import com.eot_app.frgt_pass.frgt_mvp.Frgt_pc;
 import com.eot_app.frgt_pass.frgt_pass_model.FrgtEmail;
+import com.eot_app.home_screens.NetworkUtill;
 import com.eot_app.login_next.login_next_model.Login_Next_Request_MOdel;
 import com.eot_app.login_next.login_next_mvp.Login_Next_Pc;
 import com.eot_app.login_next.login_next_mvp.Login_Next_Pi;
@@ -31,6 +35,7 @@ import com.eot_app.services.GetKillEvent_ToDestryNotication;
 import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.AppUtility;
 import com.eot_app.utility.App_preference;
+import com.eot_app.utility.EotApp;
 import com.eot_app.utility.language_support.LanguageController;
 import com.eot_app.utility.settings.firstSync.FirstSyncActivity;
 import com.eot_app.utility.util_interfaces.Callback_AlertDialog;
@@ -62,13 +67,16 @@ public class Login2Activity extends AppCompatActivity implements View.OnClickLis
     EditText frgt_ed_email, frgt_key_edt;
     TextInputLayout textInputLayout, textInputLayout2;
     TextView  tv_privacy_policy;
+    View offline_status_cl;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login2);
+        offline_status_cl = findViewById(R.id.offlineStatusBar);
         AppUtility.askAllPerMission1(this);
+        NetworkUtill.registerNetworkReceiver(EotApp.getCurrentActivity(),offline_status_cl);
         if (!isTaskRoot()) {//current activity not finish it's open/lunch root(Top/Current) Activity
             final Intent intent = getIntent();
             final String intentAction = intent.getAction();

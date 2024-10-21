@@ -8,17 +8,19 @@
         android:id="@+id/layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginStart="@dimen/left_margin"
-    android:layout_marginTop="5dp"
-    android:layout_marginEnd="@dimen/right_margin"
     android:orientation="vertical"
     >
+        <include layout="@layout/offline_status_bar"/>
 
     <ScrollView
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/submit_btn"
+        android:layout_below="@+id/appbar_status_offline"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="@dimen/right_margin"
+        android:layout_marginStart="@dimen/left_margin"
         android:isScrollContainer="false">
 
         <LinearLayout
@@ -447,6 +449,9 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/button_field_height"
         android:layout_alignParentBottom="true"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="@dimen/right_margin"
+        android:layout_marginStart="@dimen/left_margin"
         android:layout_margin="5dp"
         android:background="@drawable/submit_btn"
         android:text="@string/add_expense"

@@ -31,6 +31,7 @@ import android.widget.TextView;
 import com.eot_app.R;
 import com.eot_app.UploadDocumentActivity;
 import com.eot_app.home_screens.MainActivity;
+import com.eot_app.home_screens.NetworkUtill;
 import com.eot_app.nav_menu.client.client_db.Client;
 import com.eot_app.nav_menu.expense.add_expense.add_expense_model.AddExpenseReq;
 import com.eot_app.nav_menu.expense.add_expense.add_expense_model.UpdateExpenseReq;
@@ -70,6 +71,8 @@ import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 
 import static com.eot_app.nav_menu.expense.expense_detail.ExpenseDetailsActivity.UPDATEEXPANSE;
+
+import androidx.appcompat.widget.Toolbar;
 
 /**
  * Created by Sonam-11 on 2020-05-06.
@@ -129,6 +132,7 @@ public class AddExpenseActivity extends UploadDocumentActivity implements TextWa
     private Spinner spinn_category;
     private boolean rmvImg, JOBCHECK, CLIENTCHECK;
     private boolean updateExp = false;
+    View offline_Hide_show_cl;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -136,6 +140,11 @@ public class AddExpenseActivity extends UploadDocumentActivity implements TextWa
 
 
         initializeViews();
+        Toolbar toolbar = findViewById(R.id.toolbar_status_offline);
+        setSupportActionBar(toolbar);
+        offline_Hide_show_cl = findViewById(R.id.offlineStatusBar);
+        NetworkUtill.registerNetworkReceiver(EotApp.getCurrentActivity(),offline_Hide_show_cl);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         emptyGroupCheck();
 
         Bundle bundle = getIntent().getExtras();

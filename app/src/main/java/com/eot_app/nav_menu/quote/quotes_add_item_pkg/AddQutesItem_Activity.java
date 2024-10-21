@@ -28,9 +28,11 @@ import android.widget.TextView;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 
 import com.eot_app.R;
+import com.eot_app.home_screens.NetworkUtill;
 import com.eot_app.login_next.login_next_model.CompPermission;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.Auto_Inventry_Adpter;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.add_edit_invoice_pkg.dropdown_item_pkg.Auto_Fieldworker_Adpter;
@@ -61,6 +63,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
@@ -101,12 +104,18 @@ public class AddQutesItem_Activity extends AppCompatActivity implements TextWatc
     private ImageButton tax_cancel;
     private String getTaxMethodType="", getSingleTaxId="0", getTaxCalculationType, getDisCalculationType,getSingleTaxRate = "0";
     boolean isTaxUpdated = false;
+    View offline_Hide_show_cl;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit__invoice);
+        Toolbar toolbar = findViewById(R.id.toolbar_status_offline);
+        setSupportActionBar(toolbar);
+        offline_Hide_show_cl = findViewById(R.id.offlineStatusBar);
+        NetworkUtill.registerNetworkReceiver(EotApp.getCurrentActivity(),offline_Hide_show_cl);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 //        initializelables();
 //        intializeViews();
 
@@ -551,22 +560,25 @@ public class AddQutesItem_Activity extends AppCompatActivity implements TextWatc
 
     private void set_Title() {
         if (ItemData_Add_Edit == null) {
-            getSupportActionBar().setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.addItem_screen_title));
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+           setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.addItem_screen_title));
+//            getSupportActionBar().setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.addItem_screen_title));
+//            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             add_edit_item_Btn.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.save_btn));
         } else {
             /** set update title  */
             //  if (App_preference.getSharedprefInstance().getLoginRes().getCompPermission().get(0).getIsItemEnable().equals("0")) {
             if (App_preference.getSharedprefInstance().getLoginRes().getIsItemEditEnable().equals("1")) {
-                getSupportActionBar().setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.update_item));
-                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.update_item));
+//                getSupportActionBar().setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.update_item));
+//                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                 add_edit_item_Btn.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.update_btn));
                 /** Not to edit name like job item (18/Sep/23)*/
                 DP_OPEN = false;
             } else {
                 EnableDisbleFields();
-                getSupportActionBar().setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.view_details));
-                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+               setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.view_details));
+//                getSupportActionBar().setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.view_details));
+//                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                 add_edit_item_Btn.setVisibility(View.GONE);
             }
         }

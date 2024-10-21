@@ -9,11 +9,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         >
+        <include layout="@layout/offline_status_bar"
+            android:layout_alignParentTop="true"/>
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/update_bt"
-        android:layout_alignParentTop="true"
+        android:layout_below="@+id/appbar_status_offline"
         android:isScrollContainer="false">
 
         <LinearLayout

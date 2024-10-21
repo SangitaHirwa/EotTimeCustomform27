@@ -28,12 +28,14 @@ import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import com.eot_app.R;
 import com.eot_app.UploadDocumentActivity;
 import com.eot_app.custom_dropDown.CustomDPController;
 import com.eot_app.eoteditor.CustomEditor;
 import com.eot_app.eoteditor.PicassoImageGetter;
+import com.eot_app.home_screens.NetworkUtill;
 import com.eot_app.lat_lng_sync_pck.LatLngSycn_Controller;
 import com.eot_app.locations.LocationTracker;
 import com.eot_app.nav_menu.appointment.dbappointment.Appointment;
@@ -181,11 +183,17 @@ public class AddQuotes_Activity extends UploadDocumentActivity implements View.O
     private ImageView site_dp_img, contact_dp_img;
     Term_Condtion_Adapter termCondtionAdapter ;
     List<Quote_Term_Conditon_Model> termsConditionsList = new ArrayList<>();
+    View offline_Hide_show_cl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_quotes);
+        Toolbar toolbar = findViewById(R.id.toolbar_status_offline);
+        setSupportActionBar(toolbar);
+        offline_Hide_show_cl = findViewById(R.id.offlineStatusBar);
+        NetworkUtill.registerNetworkReceiver(EotApp.getCurrentActivity(),offline_Hide_show_cl);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_quote));
 
         initializelables();

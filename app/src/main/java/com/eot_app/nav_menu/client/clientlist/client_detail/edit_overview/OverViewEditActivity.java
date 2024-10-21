@@ -16,8 +16,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.eot_app.R;
+import com.eot_app.home_screens.NetworkUtill;
 import com.eot_app.nav_menu.client.add_client.clientadpter.ClientIndustryAdpter;
 import com.eot_app.nav_menu.client.add_client.clientadpter.ClientRefrenceAdpter;
 import com.eot_app.nav_menu.client.client_db.Client;
@@ -39,6 +41,7 @@ import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.Callable;
 
 public class OverViewEditActivity extends AppCompatActivity implements Edit_client_view, View.OnClickListener, TextWatcher, Spinner.OnItemSelectedListener {
@@ -58,7 +61,7 @@ public class OverViewEditActivity extends AppCompatActivity implements Edit_clie
     String acctype, indusId;
     int reference = 0;
     TextView status_lable;
-
+    View offline_Hide_show_cl;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,10 +71,15 @@ public class OverViewEditActivity extends AppCompatActivity implements Edit_clie
         initializeViews();
         initializeTextInputLayout();
 //        get client id from intent.
+        Toolbar toolbar = findViewById(R.id.toolbar_status_offline);
+        setSupportActionBar(toolbar);
+        offline_Hide_show_cl = findViewById(R.id.offlineStatusBar);
+        NetworkUtill.registerNetworkReceiver(EotApp.getCurrentActivity(),offline_Hide_show_cl);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         if (getIntent().hasExtra("Overview")) {
             presenter.setClientValues((Client) getIntent().getParcelableExtra("Overview"));
-            getSupportActionBar().setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit_client));
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+          setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit_client));
+//            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
         setIndustry();
         setRefrences();

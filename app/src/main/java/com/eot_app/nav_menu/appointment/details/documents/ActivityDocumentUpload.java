@@ -19,11 +19,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.eot_app.R;
+import com.eot_app.home_screens.NetworkUtill;
 import com.eot_app.nav_menu.appointment.details.AppointmentAttachment;
 import com.eot_app.nav_menu.appointment.details.documents.fileattach_mvp.Doc_Attch_Pc;
 import com.eot_app.nav_menu.appointment.details.documents.fileattach_mvp.Doc_Attch_Pi;
@@ -39,6 +41,7 @@ import com.eot_app.utility.language_support.LanguageController;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Objects;
 
 
 public class ActivityDocumentUpload extends AppCompatActivity implements View.OnClickListener,
@@ -65,13 +68,18 @@ public class ActivityDocumentUpload extends AppCompatActivity implements View.On
     private String appId;
     NestedScrollView rl_top;
     RelativeLayout relative_parent;
+    View offline_Hide_show_cl;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_document_save_upload);
-
+        Toolbar toolbar = findViewById(R.id.toolbar_status_offline);
+        setSupportActionBar(toolbar);
+        offline_Hide_show_cl = findViewById(R.id.offlineStatusBar);
+        NetworkUtill.registerNetworkReceiver(EotApp.getCurrentActivity(),offline_Hide_show_cl);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.document));
 
 

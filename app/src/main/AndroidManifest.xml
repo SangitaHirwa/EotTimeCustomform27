@@ -340,6 +340,7 @@
             android:parentActivityName=".home_screens.MainActivity"
             android:screenOrientation="portrait"
             android:exported="false"
+            android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
             android:name=".nav_menu.client.clientlist.client_detail.ClientDetail"

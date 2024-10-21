@@ -23,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.FileProvider;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -32,6 +33,7 @@ import com.eot_app.R;
 import com.eot_app.databinding.ActivityJobCardViewBinding;
 import com.eot_app.eoteditor.EotEditor;
 import com.eot_app.eoteditor.Utils;
+import com.eot_app.home_screens.NetworkUtill;
 import com.eot_app.nav_menu.appointment.Keepar;
 import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.model.InvoiceItemDataModel;
 import com.eot_app.nav_menu.jobs.job_detail.detail.adapter.JobCardAttachmentAdapter;
@@ -121,13 +123,17 @@ public class JobCardViewActivity extends AppCompatActivity  implements
     private Get_Email_ReS_Model email_reS_model;
     private Object stripLink;
     private boolean chatApiFirstcalling = false;
-
+    View offline_Hide_show_cl;
     ArrayList<String> quoteAttachmentArray=new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_job_card_view);
+        Toolbar toolbar = findViewById(R.id.toolbar_status_offline);
+        setSupportActionBar(toolbar);
+        offline_Hide_show_cl = findViewById(R.id.offlineStatusBar);
+        NetworkUtill.registerNetworkReceiver(EotApp.getCurrentActivity(),offline_Hide_show_cl);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         invoice_email_pi = new Invoice_Email_pc(this, JobCardViewActivity.this);
         jobCardAttachmentAdapter = new JobCardAttachmentAdapter(this);

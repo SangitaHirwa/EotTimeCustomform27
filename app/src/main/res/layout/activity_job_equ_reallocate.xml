@@ -7,7 +7,8 @@
     android:layout_height="match_parent"
     android:background="@color/reallocate_screen"
     tools:context=".nav_menu.audit.nav_scan.JobEquReallocateActivity">
-
+      <include layout="@layout/offline_status_bar"
+          app:layout_constraintTop_toTopOf="parent"/>
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/old_location_cl"
         android:layout_width="match_parent"
@@ -15,7 +16,7 @@
         android:background="@color/white"
         android:padding="12dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/appbar_status_offline">
 
         <TextView
             android:id="@+id/txt_old_location"

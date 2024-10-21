@@ -23,10 +23,12 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
+import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.eot_app.BuildConfig;
 import com.eot_app.R;
+import com.eot_app.home_screens.NetworkUtill;
 import com.eot_app.login_next.login_next_model.Right;
 import com.eot_app.nav_menu.setting.setting_presenter.Setting_pc;
 import com.eot_app.nav_menu.setting.setting_presenter.Setting_view;
@@ -54,6 +56,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 
 import io.reactivex.Observer;
@@ -80,14 +83,21 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
     Button btn_change_pass;
     boolean isChangePassView = false;
     Setting_pc settingPc;
+    View offline_Hide_show_cl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
         mContext = getApplicationContext();
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.settings));
+        Toolbar toolbar = findViewById(R.id.toolbar_status_offline);
+        setSupportActionBar(toolbar);
+        offline_Hide_show_cl = findViewById(R.id.offlineStatusBar);
+        NetworkUtill.registerNetworkReceiver(EotApp.getCurrentActivity(),offline_Hide_show_cl);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+        setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.settings));
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//        getSupportActionBar().setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.settings));
 
         settingPc = new Setting_pc(this);
         initializelables();

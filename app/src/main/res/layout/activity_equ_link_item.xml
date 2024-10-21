@@ -4,7 +4,8 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
-
+        <include layout="@layout/offline_status_bar"
+            app:layout_constraintTop_toTopOf="parent"/>
 
         <TextView
             android:id="@+id/txt_lbl"
@@ -20,7 +21,7 @@ Choose an item from the inventory Choose an item from the inventory yy"
             android:paddingVertical="10dp"
             android:paddingHorizontal="13dp"
             android:backgroundTint="@color/bg_job"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/appbar_status_offline"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
              />

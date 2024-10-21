@@ -24,9 +24,11 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.eot_app.R;
 import com.eot_app.custom_dropDown.CustomDPController;
+import com.eot_app.home_screens.NetworkUtill;
 import com.eot_app.nav_menu.client.client_db.Client;
 import com.eot_app.nav_menu.client.clientlist.client_detail.contact.client_dao.ContactData;
 import com.eot_app.nav_menu.client.clientlist.client_detail.site.sitelist.Site_model;
@@ -67,6 +69,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
@@ -109,13 +112,19 @@ public class RevisitActivity extends AppCompatActivity implements View.OnClickLi
     private String cltId = "", siteId = "", conId = "", new_cnm = "", new_site_nm = "", new_con_nm = "", ctry_id = "", state_id = "";
     private int member_type;
     private String kpr;
-
+    View offline_Hide_show_cl;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_revisit);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.revisit));
+        Toolbar toolbar = findViewById(R.id.toolbar_status_offline);
+        setSupportActionBar(toolbar);
+        offline_Hide_show_cl = findViewById(R.id.offlineStatusBar);
+        NetworkUtill.registerNetworkReceiver(EotApp.getCurrentActivity(),offline_Hide_show_cl);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+        setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.revisit));
+     /*   getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.revisit));*/
         initViews();
         textInputLayoutHint();
         jobPrioritySet();

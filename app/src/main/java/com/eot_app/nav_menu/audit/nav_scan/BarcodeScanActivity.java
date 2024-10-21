@@ -267,10 +267,10 @@ public class BarcodeScanActivity extends AppCompatActivity implements ScanBarcod
     private void hideActionBar(boolean hide) {
         Window window = getWindow();
         if (hide) {
-            getSupportActionBar().hide();
+//            getSupportActionBar().hide();
             window.setStatusBarColor(Color.BLACK);
         } else {
-            getSupportActionBar().show();
+//            getSupportActionBar().show();
             window.setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
         }
     }

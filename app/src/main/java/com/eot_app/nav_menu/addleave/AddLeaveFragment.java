@@ -14,15 +14,18 @@ import android.widget.AdapterView;
 import android.widget.DatePicker;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.eot_app.R;
 import com.eot_app.databinding.FragmentAddLeaveBinding;
+import com.eot_app.home_screens.NetworkUtill;
 import com.eot_app.nav_menu.quote.add_quotes_pkg.AddQuotes_Activity;
 import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.AppUtility;
 import com.eot_app.utility.App_preference;
+import com.eot_app.utility.EotApp;
 import com.eot_app.utility.language_support.LanguageController;
 import com.eot_app.utility.util_interfaces.MySpinnerAdapter;
 
@@ -46,6 +49,7 @@ public class AddLeaveFragment extends AppCompatActivity implements View.OnClickL
     final Calendar mEndTime = Calendar.getInstance();
     String toDate ="";
     String fromDate ="";
+    View offline_Hide_show_cl;
 
     private String STARTSELCTEDATE = "", STARTSELCTETIME = " 12:00 AM", ENDSELCTETIME = " 11:59 PM", ENDSELCTEDATE = "";
     private final DatePickerDialog.OnDateSetListener datePickerListener = new DatePickerDialog.OnDateSetListener() {
@@ -110,6 +114,11 @@ public class AddLeaveFragment extends AppCompatActivity implements View.OnClickL
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Toolbar toolbar = findViewById(R.id.toolbar_status_offline);
+        setSupportActionBar(toolbar);
+        offline_Hide_show_cl = findViewById(R.id.offlineStatusBar);
+        NetworkUtill.registerNetworkReceiver(EotApp.getCurrentActivity(),offline_Hide_show_cl);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_leave));
 
         addLeaveViewModel = new ViewModelProvider(this).get(AddLeaveViewModel.class);

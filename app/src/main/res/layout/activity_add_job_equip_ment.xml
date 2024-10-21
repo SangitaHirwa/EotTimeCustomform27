@@ -6,7 +6,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-
+     <include layout="@layout/offline_status_bar" />
         <TextView
             android:id="@+id/tvLabelStep2"
             style="@style/style_thrid"
@@ -19,6 +19,7 @@
             android:textSize="16dp"
             android:textStyle="bold"
             android:visibility="gone"
+            android:layout_below="@+id/appbar_status_offline"
             tools:ignore="HardcodedText,SpUsage" />
 
 

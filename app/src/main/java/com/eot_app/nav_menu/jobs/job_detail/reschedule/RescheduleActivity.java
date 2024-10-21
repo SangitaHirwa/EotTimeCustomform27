@@ -16,8 +16,10 @@ import android.widget.TimePicker;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.eot_app.R;
+import com.eot_app.home_screens.NetworkUtill;
 import com.eot_app.nav_menu.appointment.addupdate.AddAppointmentActivity;
 import com.eot_app.nav_menu.jobs.add_job.Add_job_activity;
 import com.eot_app.nav_menu.jobs.job_db.Job;
@@ -39,6 +41,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.concurrent.Callable;
 
 /**
@@ -56,12 +59,19 @@ public class RescheduleActivity extends AppCompatActivity implements View.OnClic
     final Calendar cTStart = Calendar.getInstance();
     final Calendar cTEnd = Calendar.getInstance();
    boolean isTime24Format = false;
+    View offline_Hide_show_cl;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_job_reschedule);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.reschedule));
+        Toolbar toolbar = findViewById(R.id.toolbar_status_offline);
+        setSupportActionBar(toolbar);
+        offline_Hide_show_cl = findViewById(R.id.offlineStatusBar);
+        NetworkUtill.registerNetworkReceiver(EotApp.getCurrentActivity(),offline_Hide_show_cl);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+        setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.reschedule));
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//        getSupportActionBar().setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.reschedule));
         initViews();
 
     }

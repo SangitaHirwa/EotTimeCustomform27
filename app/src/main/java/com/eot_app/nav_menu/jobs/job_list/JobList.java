@@ -29,6 +29,7 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.Observer;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -1015,7 +1016,7 @@ public class JobList extends Fragment implements MyListItemSelected<Job>, Joblis
                 .build();
         workManager.enqueue(request);
         workManager.getWorkInfoByIdLiveData(request.getId())
-                .observe(getActivity(), new Observer<WorkInfo>() {
+                .observe((LifecycleOwner) EotApp.getCurrentActivity(), new Observer<WorkInfo>() {
                     @Override
                     public void onChanged(WorkInfo workInfo) {
                         if (workInfo.getState().isFinished()) {

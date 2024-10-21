@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.eot_app.R;
+import com.eot_app.home_screens.NetworkUtill;
 import com.eot_app.nav_menu.custom_fileds.custom_filed_adpter.CustomFiledQueAdpter;
 import com.eot_app.nav_menu.custom_fileds.custom_model.CustOmFormQuestionsRes;
 import com.eot_app.nav_menu.custom_fileds.customfield_mvp.CustomFieldList_PC;
@@ -46,12 +47,15 @@ public class CustomFiledListActivity extends AppCompatActivity implements Custom
     ImageView backme;
     private Button sbmt_btn;
     private Boolean SAVEANS = false;
+    View offline_Hide_show_cl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_custom_filed_list);
-        getSupportActionBar().hide();
+        offline_Hide_show_cl = findViewById(R.id.offlineStatusBar);
+        NetworkUtill.registerNetworkReceiver(EotApp.getCurrentActivity(),offline_Hide_show_cl);
+//        getSupportActionBar().hide();
         getintentData();
         intializeViews();
     }

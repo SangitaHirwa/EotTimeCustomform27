@@ -11,8 +11,11 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
 import com.eot_app.R;
 import com.eot_app.home_screens.MainActivity;
+import com.eot_app.home_screens.NetworkUtill;
 import com.eot_app.nav_menu.jobs.job_detail.detail.jobdetial_model.JobStatusModelNew;
 import com.eot_app.nav_menu.jobs.job_filter.filter_model.JobPrioty;
 import com.eot_app.nav_menu.jobs.job_filter.filter_mvp.Job_Filter_PC;
@@ -21,11 +24,13 @@ import com.eot_app.nav_menu.jobs.job_filter.filter_mvp.Job_Filter_View;
 import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.AppUtility;
 import com.eot_app.utility.DropdownListBean;
+import com.eot_app.utility.EotApp;
 import com.eot_app.utility.language_support.LanguageController;
 import com.eot_app.utility.settings.setting_db.TagData;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
@@ -44,12 +49,18 @@ public class JobFilter_Activity extends AppCompatActivity implements View.OnClic
     ArrayList<DropdownListBean> tag_SElectes_list = new ArrayList<>();
 
     List<TagData> tagList = new ArrayList<>();
+    View offline_Hide_show_cl;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_job_filter_second);//activity_job_filter
+        Toolbar toolbar = findViewById(R.id.toolbar_status_offline);
+        setSupportActionBar(toolbar);
+        offline_Hide_show_cl = findViewById(R.id.offlineStatusBar);
+        NetworkUtill.registerNetworkReceiver(EotApp.getCurrentActivity(),offline_Hide_show_cl);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.filter));
         initializelables();
         intializeViews();

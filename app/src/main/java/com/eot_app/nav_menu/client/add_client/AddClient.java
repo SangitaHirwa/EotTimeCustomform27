@@ -26,10 +26,12 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import com.eot_app.R;
 import com.eot_app.home_screens.MainActivity;
+import com.eot_app.home_screens.NetworkUtill;
 import com.eot_app.nav_menu.client.add_client.addclient_model_pkg.AddClientModel;
 import com.eot_app.nav_menu.client.add_client.addclient_mvp.AddClient_Pc;
 import com.eot_app.nav_menu.client.add_client.addclient_mvp.AddClient_Pi;
@@ -91,7 +93,7 @@ public class AddClient extends AppCompatActivity implements AddClient_View, View
     View lng_view, lat_view;
     View lat_lng_view_lay;
     TextView lat_lng_txt_lable;
-
+    View offline_Hide_show_cl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,7 +101,11 @@ public class AddClient extends AppCompatActivity implements AddClient_View, View
         setContentView(R.layout.activity_add_client);
         relative_main = findViewById(R.id.relative_main);
         AppUtility.setupUI(relative_main, AddClient.this);
-
+        Toolbar toolbar = findViewById(R.id.toolbar_status_offline);
+        setSupportActionBar(toolbar);
+        offline_Hide_show_cl = findViewById(R.id.offlineStatusBar);
+        NetworkUtill.registerNetworkReceiver(EotApp.getCurrentActivity(),offline_Hide_show_cl);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_client));
         initializelables();
         intializeTextInputLayout();

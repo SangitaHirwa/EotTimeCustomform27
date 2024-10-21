@@ -31,12 +31,14 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.eot_app.R;
 import com.eot_app.UploadDocumentActivity;
 import com.eot_app.eoteditor.CustomEditor;
 import com.eot_app.home_screens.MainActivity;
+import com.eot_app.home_screens.NetworkUtill;
 import com.eot_app.nav_menu.appointment.dbappointment.Appointment;
 import com.eot_app.nav_menu.audit.addAudit.add_aduit_model_pkg.AddAudit_Req;
 import com.eot_app.nav_menu.audit.addAudit.add_audit_mvp.AddAduit_pi;
@@ -150,11 +152,17 @@ public class AddAuditActivity extends UploadDocumentActivity implements Add_Adui
     final Calendar cTEnd = Calendar.getInstance();
     private String oldDate_str, oldTime_str, oldDate_en, oldTime_en;
     private boolean isTime24Format= false;
-
+    View offline_Hide_show_cl;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_audit);
+        Toolbar toolbar = findViewById(R.id.toolbar_status_offline);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.title_add_audit));
+        offline_Hide_show_cl = findViewById(R.id.offlineStatusBar);
+        NetworkUtill.registerNetworkReceiver(EotApp.getCurrentActivity(),offline_Hide_show_cl);
         if(getIntent()!=null&&getIntent().getStringExtra("CalenderDate")!=null)
         {
             calenderDate=getIntent().getStringExtra("CalenderDate");
@@ -174,8 +182,8 @@ public class AddAuditActivity extends UploadDocumentActivity implements Add_Adui
         }else{
             isTime24Format = true;
         }
-        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-        setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.title_add_audit));
+//        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+//        setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.title_add_audit));
         customDPController = new CustomAduitController();
         initializelables();
         initializeView();

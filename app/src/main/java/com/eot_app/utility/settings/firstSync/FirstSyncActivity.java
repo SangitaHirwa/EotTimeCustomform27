@@ -22,6 +22,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
 import com.eot_app.R;
@@ -49,6 +51,7 @@ public class FirstSyncActivity extends AppCompatActivity implements FirstSyncVie
     TextView tv_sync_msg;
     String localVersionNumber;
     String currentVersionNumber;
+    ConstraintLayout offline_status_cl;
 
 
     BroadcastReceiver networkSwitchStateReceiver = new BroadcastReceiver() {
@@ -57,12 +60,22 @@ public class FirstSyncActivity extends AppCompatActivity implements FirstSyncVie
             ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo ni = manager.getActiveNetworkInfo();
             if (ni != null && ni.isConnected()) {
+                setOfflineTextHideShow(true);
                 Log.d("MainActivity", " setOnDisconnectFirebase");
             } else {
+                setOfflineTextHideShow(false);
                 showRetryDialog("NetworkError");
             }
         }
     };
+
+    private void setOfflineTextHideShow(boolean b) {
+        if(b){
+            offline_status_cl.setVisibility(View.GONE);
+        }else{
+            offline_status_cl.setVisibility(View.VISIBLE);
+        }
+    }
 
 
     @Override
@@ -75,7 +88,16 @@ public class FirstSyncActivity extends AppCompatActivity implements FirstSyncVie
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_first_sync);
-
+        Toolbar toolbar = findViewById(R.id.toolbar_status_offline);
+        offline_status_cl = findViewById(R.id.offlineStatusBar);
+        setSupportActionBar(toolbar);
+        toolbar.setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.settings));
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if(AppUtility.isInternetConnected()){
+            offline_status_cl.setVisibility(View.GONE);
+        }else{
+            offline_status_cl.setVisibility(View.VISIBLE);
+        }
         tv_sync_msg = findViewById(R.id.textView);
         tv_sync_msg.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.sync_msg));
 

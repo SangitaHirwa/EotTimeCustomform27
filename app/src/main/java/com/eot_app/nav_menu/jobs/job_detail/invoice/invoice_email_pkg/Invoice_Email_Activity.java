@@ -17,9 +17,11 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.eot_app.R;
 import com.eot_app.eoteditor.EotEditor;
+import com.eot_app.home_screens.NetworkUtill;
 import com.eot_app.nav_menu.jobs.job_detail.detail.jobdetial_model.JobCardAttachmentModel;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_email_pkg.get_email_temp_model.Get_Email_Message_Res_Model;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_email_pkg.get_email_temp_model.Get_Email_ReS_Model;
@@ -28,6 +30,7 @@ import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_email_pkg.send_email
 import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.AppUtility;
 import com.eot_app.utility.App_preference;
+import com.eot_app.utility.EotApp;
 import com.eot_app.utility.language_support.LanguageController;
 import com.google.android.material.textfield.TextInputLayout;
 import com.hypertrack.hyperlog.HyperLog;
@@ -56,12 +59,17 @@ public class Invoice_Email_Activity extends AppCompatActivity implements View.On
     private Object stripLink;
     List<JobCardAttachmentModel> reqAttachmentList;
     ArrayList<String> quoteAttachmentArray = new ArrayList<>();
-
+    View offline_Hide_show_cl;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_invoice_email);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Toolbar toolbar = findViewById(R.id.toolbar_status_offline);
+        setSupportActionBar(toolbar);
+        offline_Hide_show_cl = findViewById(R.id.offlineStatusBar);
+        NetworkUtill.registerNetworkReceiver(EotApp.getCurrentActivity(),offline_Hide_show_cl);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.email_invoice));
         invoice_email_pi = new Invoice_Email_pc(this, this);
         findViews();

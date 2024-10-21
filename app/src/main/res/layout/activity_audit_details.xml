@@ -11,7 +11,7 @@
         android:background="@color/card_view_color"
         >
 
-
+    <include layout="@layout/offline_status_bar"/>
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/navigation"
         android:layout_width="0dp"
@@ -31,7 +31,7 @@
         app:layout_constraintBottom_toTopOf="@+id/navigation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/appbar_status_offline" />
 
     <FrameLayout
         android:visibility="gone"
@@ -40,7 +40,7 @@
         app:layout_constraintBottom_toTopOf="@+id/navigation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/appbar_status_offline"
         tools:ignore="UselessLeaf" />
 </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

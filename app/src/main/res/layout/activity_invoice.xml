@@ -11,12 +11,14 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+        <include layout="@layout/offline_status_bar"/>
 
         <RelativeLayout
             android:id="@+id/rl"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
+            android:layout_below="@+id/appbar_status_offline"
             android:padding="5dp">
 
             <LinearLayout

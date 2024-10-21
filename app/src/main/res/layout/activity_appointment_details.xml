@@ -35,6 +35,7 @@
                     android:layout_height="match_parent"
                     android:orientation="vertical"
                   >
+                    <include layout="@layout/offline_status_bar"/>
                 <LinearLayout
                     android:id="@+id/Layout"
                     android:layout_width="match_parent"

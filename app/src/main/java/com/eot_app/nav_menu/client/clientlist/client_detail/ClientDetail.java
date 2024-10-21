@@ -6,16 +6,19 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.eot_app.R;
+import com.eot_app.home_screens.NetworkUtill;
 import com.eot_app.login_next.login_next_model.CompPermission;
 import com.eot_app.nav_menu.client.client_db.Client;
 import com.eot_app.nav_menu.client.clientlist.client_detail.client_overview.Client_Overview;
@@ -33,6 +36,8 @@ import com.eot_app.utility.language_support.LanguageController;
 import com.eot_app.utility.util_interfaces.ApiContactSiteObserver;
 import com.eot_app.utility.util_interfaces.OnFragmentInteractionListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import java.util.Objects;
 
 public class ClientDetail extends AppCompatActivity implements OnFragmentInteractionListener, ViewPager.OnPageChangeListener, ApiContactSiteObserver {
     public static final int ClientEDIT = 12;
@@ -67,7 +72,7 @@ public class ClientDetail extends AppCompatActivity implements OnFragmentInterac
     private Client data;
     private Menu menu;
     private MypagerAdapter mypagerAdapter;
-
+    View offline_Hide_show_cl;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,7 +89,11 @@ public class ClientDetail extends AppCompatActivity implements OnFragmentInterac
         setUpViewPager();
         navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-
+        Toolbar toolbar = findViewById(R.id.toolbar_status_offline);
+        setSupportActionBar(toolbar);
+        offline_Hide_show_cl = findViewById(R.id.offlineStatusBar);
+        NetworkUtill.registerNetworkReceiver(EotApp.getCurrentActivity(),offline_Hide_show_cl);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         setTitle(mypagerAdapter.getPageTitle(0));
         navigation.getMenu().getItem(0).setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.client_details));
         navigation.getMenu().getItem(1).setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.contacts_screen_title));

@@ -7,15 +7,15 @@
         android:id="@+id/relative_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="5dp"
         android:descendantFocusability="beforeDescendants"
         android:focusableInTouchMode="true"
         >
+        <include layout="@layout/offline_status_bar"/>
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_above="@id/submit_btn"
-        android:layout_alignParentTop="true"
+        android:layout_below="@+id/appbar_status_offline"
         android:layout_marginHorizontal="@dimen/left_margin"
         android:orientation="vertical">
 

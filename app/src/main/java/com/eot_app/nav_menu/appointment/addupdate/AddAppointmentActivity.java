@@ -27,11 +27,13 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
 import com.eot_app.R;
 import com.eot_app.UploadDocumentActivity;
 import com.eot_app.databinding.ActivityAddAppointmentBinding;
+import com.eot_app.home_screens.NetworkUtill;
 import com.eot_app.nav_menu.appointment.Keepar;
 import com.eot_app.nav_menu.appointment.addupdate.model.AppointmentAddReq;
 import com.eot_app.nav_menu.appointment.addupdate.model.AppointmentUpdateReq;
@@ -115,6 +117,7 @@ public class AddAppointmentActivity extends UploadDocumentActivity implements Te
     final Calendar cEnd = Calendar.getInstance();
     final Calendar cTStart = Calendar.getInstance();
     final Calendar cTEnd = Calendar.getInstance();
+    View offline_Hide_show_cl;
 
     private boolean isTime24Format= false;
     @Override
@@ -137,15 +140,23 @@ public class AddAppointmentActivity extends UploadDocumentActivity implements Te
                 .get(AppointmentViewModel.class);
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_add_appointment);
+        Toolbar toolbar = findViewById(R.id.toolbar_status_offline);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_appointment));
+        offline_Hide_show_cl = findViewById(R.id.offlineStatusBar);
+        NetworkUtill.registerNetworkReceiver(EotApp.getCurrentActivity(),offline_Hide_show_cl);
         binding.setLifecycleOwner(this);
         binding.setAppointment(appointmentViewModel);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_appointment));
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//        getSupportActionBar().setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_appointment));
 
 
         if (getIntent() != null && getIntent().hasExtra(ISINEDITMODE)) {
             isInEditMode = true;
-            getSupportActionBar().setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.appointment_edit));
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.appointment_edit));
+//            getSupportActionBar().setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.appointment_edit));
             appointment =  getIntent().getParcelableExtra("appointment");
         }
         if (App_preference.getSharedprefInstance().getLoginRes().getIs24hrFormatEnable() != null

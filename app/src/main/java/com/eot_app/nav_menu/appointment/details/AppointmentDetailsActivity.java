@@ -36,6 +36,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
@@ -47,6 +48,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.eot_app.R;
 import com.eot_app.UploadDocumentActivity;
 import com.eot_app.databinding.ActivityAppointmentDetailsBinding;
+import com.eot_app.home_screens.NetworkUtill;
 import com.eot_app.nav_menu.appointment.AppointmentItem_Observer;
 import com.eot_app.nav_menu.appointment.Keepar;
 import com.eot_app.nav_menu.appointment.addupdate.AddAppointmentActivity;
@@ -149,14 +151,20 @@ public class AppointmentDetailsActivity extends UploadDocumentActivity
     boolean isFBMenuOpened;
     //custom dialog for instruction and details
     private Dialog enterFieldDialog;
-
+    View offline_Hide_show_cl;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         detailsViewModel = new ViewModelProvider(this).get(AppointmentDetailsViewModel.class);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_appointment_details);
-        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.appointment_details));
+        Toolbar toolbar = findViewById(R.id.toolbar_status_offline);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.appointment_details));
+        offline_Hide_show_cl = findViewById(R.id.offlineStatusBar);
+        NetworkUtill.registerNetworkReceiver(EotApp.getCurrentActivity(),offline_Hide_show_cl);
+//        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+//        getSupportActionBar().setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.appointment_details));
 
         binding.tvLabelDes.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.description));
         binding.tvAddNew.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.appointment_add_new_attach));

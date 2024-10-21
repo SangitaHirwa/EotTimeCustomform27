@@ -30,6 +30,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatTextView;
+import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
@@ -41,6 +42,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.eot_app.R;
 import com.eot_app.UploadDocumentActivity;
+import com.eot_app.home_screens.NetworkUtill;
 import com.eot_app.lat_lng_sync_pck.LatLngSycn_Controller;
 import com.eot_app.locations.LocationTracker;
 import com.eot_app.login_next.FooterMenu;
@@ -198,6 +200,7 @@ public class JobEquPartRemarkRemarkActivity extends UploadDocumentActivity imple
     boolean isAction = false, isEdit = false;
     String[] statusList;
     boolean isClickedReqItem = false;
+    View offline_Hide_show_cl;
     public static JobEquPartRemarkRemarkActivity jobEquPartRemarkRemarkActivity;
 
     public JobEquPartRemarkRemarkActivity getInstance() {
@@ -209,7 +212,10 @@ public class JobEquPartRemarkRemarkActivity extends UploadDocumentActivity imple
         super.onCreate(savedInstanceState);
         jobEquPartRemarkRemarkActivity = this;
         setContentView(R.layout.activity_job_equ_remark);
-
+        Toolbar toolbar = findViewById(R.id.toolbar_status_offline);
+        setSupportActionBar(toolbar);
+        offline_Hide_show_cl = findViewById(R.id.offlineStatusBar);
+        NetworkUtill.registerNetworkReceiver(EotApp.getCurrentActivity(),offline_Hide_show_cl);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
         initViews();

@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.widget.AppCompatTextView;
+import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.widget.NestedScrollView;
@@ -29,6 +30,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.eot_app.R;
 import com.eot_app.UploadDocumentActivity;
+import com.eot_app.home_screens.NetworkUtill;
 import com.eot_app.login_next.FooterMenu;
 import com.eot_app.login_next.login_next_model.CompPermission;
 import com.eot_app.nav_menu.audit.audit_list.audit_mvp.model.AuditList_Res;
@@ -118,12 +120,15 @@ public class EquipmentDetailsActivity extends UploadDocumentActivity implements 
     EquArrayModel equipment;
     ConstraintLayout cl_loader1,cl_loader2,cl_loader3,cl_loader4,cl_loader5, clUserManual;
     boolean isFind = false;
-
+    View offline_Hide_show_cl;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_equipment_details);
-
+        Toolbar toolbar = findViewById(R.id.toolbar_status_offline);
+        setSupportActionBar(toolbar);
+        offline_Hide_show_cl = findViewById(R.id.offlineStatusBar);
+        NetworkUtill.registerNetworkReceiver(EotApp.getCurrentActivity(),offline_Hide_show_cl);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.title_equ_details));
         initializelables();

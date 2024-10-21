@@ -5,11 +5,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white">
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
+    <include layout="@layout/offline_status_bar"
+        app:layout_constraintTop_toTopOf="parent"/>
     <FrameLayout
         android:id="@+id/frameView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/appbar_status_offline"
         tools:context="com.eot_app.nav_menu.jobs.job_detail.detail.DetailFragment">
 
         <ScrollView
@@ -743,5 +750,5 @@
 
     </FrameLayout>
 
-
+</androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

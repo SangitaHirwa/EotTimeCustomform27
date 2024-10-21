@@ -8,7 +8,8 @@
         android:layout_height="match_parent"
         android:background="@color/recyclerview"
         >
-
+        <include layout="@layout/offline_status_bar"
+            app:layout_constraintTop_toTopOf="parent"/>
     <TextView
         android:id="@+id/textView"
         style="@style/style_thrid_thrd"
@@ -18,7 +19,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/appbar_status_offline" />
 
     <ImageView
         android:id="@+id/sync_iv"

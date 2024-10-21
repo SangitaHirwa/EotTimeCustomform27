@@ -3,26 +3,38 @@ package com.eot_app.nav_menu.jobs.add_job.add_job_recr;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager.widget.ViewPager;
 
 import com.eot_app.R;
+import com.eot_app.home_screens.NetworkUtill;
 import com.eot_app.nav_menu.jobs.add_job.add_job_recr.daily_recr_pkg.DailyRecrFragment;
 import com.eot_app.nav_menu.jobs.add_job.add_job_recr.montly_recr_pkg.MontlyRecrFragment;
 import com.eot_app.nav_menu.jobs.add_job.add_job_recr.weekly_recr_pkg.WeeklyRecrFragment;
 import com.eot_app.utility.AppConstant;
+import com.eot_app.utility.EotApp;
 import com.eot_app.utility.language_support.LanguageController;
 import com.google.android.material.tabs.TabLayout;
 
+import java.util.Objects;
+
 public class AddJobRecrHomeActivity extends AppCompatActivity {
     private String addJobScdlStartTime = "";
+    View offline_Hide_show_cl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_job_recr_home);
+        Toolbar toolbar = findViewById(R.id.toolbar_status_offline);
+        setSupportActionBar(toolbar);
+        offline_Hide_show_cl = findViewById(R.id.offlineStatusBar);
+        NetworkUtill.registerNetworkReceiver(EotApp.getCurrentActivity(),offline_Hide_show_cl);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.recuring_job));//recuring_job
 
 

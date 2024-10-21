@@ -31,6 +31,7 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
@@ -40,6 +41,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.eot_app.R;
+import com.eot_app.home_screens.NetworkUtill;
 import com.eot_app.login_next.FooterMenu;
 import com.eot_app.nav_menu.jobs.job_card_view.JobCardViewActivity;
 import com.eot_app.nav_menu.jobs.job_db.Job;
@@ -142,7 +144,7 @@ public class Generate_Invoice_Activity extends AppCompatActivity implements MyLi
     Job mjob;
     String selectedDeuDate = "";
     final Calendar myCalendar = Calendar.getInstance();
-
+    View offline_Hide_show_cl;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -151,9 +153,12 @@ public class Generate_Invoice_Activity extends AppCompatActivity implements MyLi
 
         //        set observer for callback
         EotApp.getAppinstance().setInvoiceItemObserver(this);
-
+        Toolbar toolbar = findViewById(R.id.toolbar_status_offline);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.title_invoice));
-
+        offline_Hide_show_cl = findViewById(R.id.offlineStatusBar);
+        NetworkUtill.registerNetworkReceiver(EotApp.getCurrentActivity(),offline_Hide_show_cl);
         actionBar = getSupportActionBar();
 
         getSupportActionBar().setElevation(0);  //remove shadow

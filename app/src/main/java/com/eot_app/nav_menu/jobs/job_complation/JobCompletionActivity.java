@@ -38,6 +38,7 @@ import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkInfo;
 import androidx.work.WorkManager;
 import com.eot_app.R;
+import com.eot_app.home_screens.NetworkUtill;
 import com.eot_app.nav_menu.jobs.job_complation.compla_model.NotifyForcompletion;
 import com.eot_app.nav_menu.jobs.job_complation.complat_mvp.Compl_PC;
 import com.eot_app.nav_menu.jobs.job_complation.complat_mvp.Compl_PI;
@@ -167,13 +168,15 @@ public class JobCompletionActivity extends AppCompatActivity implements View.OnC
     int competionNotesPostion = -1;
     String complNotes ="";
     String tempId="";
-
+    View offline_Hide_show_cl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_job_completion);
-        getSupportActionBar().hide();
+        offline_Hide_show_cl = findViewById(R.id.offlineStatusBar);
+        NetworkUtill.registerNetworkReceiver(EotApp.getCurrentActivity(),offline_Hide_show_cl);
+//        getSupportActionBar().hide();
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             if (getIntent().hasExtra("Complation")) {

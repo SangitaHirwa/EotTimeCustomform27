@@ -15,10 +15,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.eot_app.R;
+import com.eot_app.home_screens.NetworkUtill;
 import com.eot_app.nav_menu.expense.ExpenseStatus_Controller;
 import com.eot_app.nav_menu.expense.add_expense.AddExpenseActivity;
 import com.eot_app.nav_menu.expense.expense_detail.expense_detail_model.ExpenseRes;
@@ -35,6 +37,7 @@ import com.eot_app.utility.language_support.LanguageController;
 import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 
 public class ExpenseDetailsActivity extends AppCompatActivity implements ExpenseDetails_View {
@@ -48,7 +51,7 @@ public class ExpenseDetailsActivity extends AppCompatActivity implements Expense
     TextView textView8, textView6, history;
     private ExpenseRes expenseDetails;
     private ImageView img_status;
-
+    View offline_Hide_show_cl;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,6 +62,11 @@ public class ExpenseDetailsActivity extends AppCompatActivity implements Expense
         }
 
         initializeViews();
+        Toolbar toolbar = findViewById(R.id.toolbar_status_offline);
+        setSupportActionBar(toolbar);
+        offline_Hide_show_cl = findViewById(R.id.offlineStatusBar);
+        NetworkUtill.registerNetworkReceiver(EotApp.getCurrentActivity(),offline_Hide_show_cl);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.expense_details));
     }
 
