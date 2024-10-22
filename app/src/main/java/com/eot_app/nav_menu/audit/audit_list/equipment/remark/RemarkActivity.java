@@ -257,7 +257,7 @@ public class RemarkActivity extends UploadDocumentActivity implements JobAudit_V
             //  isFullLoad = false;
             String queList = new Gson().toJson(quesRspncModelList);
             ft = getSupportFragmentManager().beginTransaction();
-            myfragment = RemarkCustomFormFragment.newInstance("RemarkActivity", queList);
+            myfragment = RemarkCustomFormFragment.newInstance("", queList,optionid,"RemarkActivity");
             ft.add(R.id.framlayout, myfragment, "Fragment add successFully.....").addToBackStack(null);
             ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
             ft.addToBackStack("close");

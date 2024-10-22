@@ -21,6 +21,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -36,6 +37,8 @@ import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -60,6 +63,7 @@ import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.model.InvoiceItem
 import com.eot_app.nav_menu.jobs.job_detail.chat.fire_Base_Model.Chat_Send_Msg_Model;
 import com.eot_app.nav_menu.jobs.job_detail.chat.img_crop_pkg.ImageCropFragment;
 import com.eot_app.nav_menu.jobs.job_detail.customform.MyAttachment;
+import com.eot_app.nav_menu.jobs.job_detail.customform.cstm_form_model.CustomFormListOffline;
 import com.eot_app.nav_menu.jobs.job_detail.customform.cstm_form_model.CustomFormList_Res;
 import com.eot_app.nav_menu.jobs.job_detail.detail.CompletionAdpterJobDteails;
 import com.eot_app.nav_menu.jobs.job_detail.detail.NotifyForEquipmentCount;
@@ -69,6 +73,7 @@ import com.eot_app.nav_menu.jobs.job_detail.detail.NotifyForRequestedItemList;
 import com.eot_app.nav_menu.jobs.job_detail.documents.DocumentListAdapter;
 import com.eot_app.nav_menu.jobs.job_detail.documents.PathUtils;
 import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.Attachments;
+import com.eot_app.nav_menu.jobs.job_detail.form_form.get_qus_list.Fromdb.CustomForm;
 import com.eot_app.nav_menu.jobs.job_detail.form_form.get_qus_list.MyFormInterFace;
 import com.eot_app.nav_menu.jobs.job_detail.form_form.get_qus_list.ans_model.Ans_Req;
 import com.eot_app.nav_menu.jobs.job_detail.form_form.get_qus_list.ans_model.Answer;
@@ -88,6 +93,7 @@ import com.eot_app.nav_menu.jobs.job_detail.job_equipment.EquipmentAttchmentList
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.job_equ_remrk.job_equ_mvp.JobEquRemark_PC;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.job_equ_remrk.job_equ_mvp.JobEquRemark_PI;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.job_equ_remrk.job_equ_mvp.JobEquRemark_View;
+import com.eot_app.nav_menu.jobs.job_detail.job_equipment.job_equ_remrk.job_equ_mvp.NotifyforAddUpdateRemarkEquipment;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.model.UpdateEquStatusReqModel;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.model.UpdateEquStatusResModel;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.model.UpdateSiteLocationReqModel;
@@ -119,6 +125,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.Callable;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -128,7 +135,7 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
         EquipmentPartRemarkAdapter.OnEquipmentSelection, JobAudit_View,
         NotifyForItemCount, NotifyForEquipmentCountRemark, NotifyForEquipmentCount,
         View.OnClickListener, JobEquRemark_View, ImageCropFragment.MyDialogInterface, DocumentListAdapter.FileDesc_Item_Selected
-        , Que_View, MyFormInterFace, MyAttachment, RadioGroup.OnCheckedChangeListener, RequestedItemListAdapter.DeleteItem, RequestedItemListAdapter.SelectedItemListener, NotifyForRequestedItemList{
+        , Que_View, MyFormInterFace, MyAttachment, RadioGroup.OnCheckedChangeListener, RequestedItemListAdapter.DeleteItem, RequestedItemListAdapter.SelectedItemListener, NotifyForRequestedItemList, NotifyforAddUpdateRemarkEquipment {
     public static final int SINGLEATTCHMENT = 365;
     public static final int ADDPART = 333;
     public final static int ADD_ITEM_DATA = 1;
@@ -136,10 +143,13 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
     private final int EQUIPMENT_UPDATE_CODE = 141,
             DETAILSUPDATEFORUSERMANUAL = 142;
     private final ArrayList<Answer> answerArrayList = new ArrayList<>();
+    private final ArrayList<Answer> childAnswerArrayList = new ArrayList<>();
     private final List<MultipartBody.Part> docAns = new ArrayList<>();
     private final List<MultipartBody.Part> signAns = new ArrayList<>();
     private final ArrayList<String> signQueIdArray = new ArrayList<>();
     private final ArrayList<String> docQueIdArray = new ArrayList<>();
+    private List<String> dosanspath=new ArrayList<>();
+    private List<String> signanspath=new ArrayList<>();
     LocationTracker locationTracker;
     String path = "", jobId = "", cltId = "", equId = "";
     FragmentTransaction ft;
@@ -205,6 +215,16 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
      * Flag for notifying move to Action Screen by part adapter action button
      */
     public static boolean isGoFromPartAdapter = false;
+    public boolean isSubForm = false;
+    FrameLayout frameLayoutSubForm;
+    private boolean customSaveForm = false;
+    private boolean isAlertForm = false;
+    private boolean isSubmit = false;
+    boolean isfilled = false;
+    private List<Answer> answerfinal;
+    String formId;
+    private List<Answer> answer;
+    int  title_count =0;
 
     public JobEquRemarkRemarkActivity getInstance() {
         if (!isGoFromPartAdapter) {
@@ -219,6 +239,8 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         jobEquRemarkRemarkActivity = this;
+        EotApp.getAppinstance().setNotifyforAddUpdateRemarkEquipment(this);
+        queAns_pi = new Qus_pc(this);
         setContentView(R.layout.activity_job_equ_remark);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         initViews();
@@ -226,7 +248,7 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
         statusListeners();
         setLanguage();
         setData();
-        getCustomFormSLists();
+//        getCustomFormSLists();
     }
 
 
@@ -264,18 +286,48 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
     }
 
     private void getCustomFormSLists() {
-        Job auditmodel = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(equipment.getAudId());
-        if (auditmodel != null) {
-            ArrayList<String> jTitleId = null;
-            try {
-                jTitleId = new ArrayList<>();
-                if (auditmodel.getEquArray() != null) {
-                    jTitleId.add(equipment.getEcId());
+        if(AppUtility.isInternetConnected()) {
+            Job auditmodel = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(equipment.getAudId());
+            if (auditmodel != null) {
+                ArrayList<String> jTitleId = null;
+                try {
+                    jTitleId = new ArrayList<>();
+                    if (auditmodel.getEquArray() != null) {
+                        jTitleId.add(equipment.getEcId());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
+                jobEquimPi.getCustomFormList(auditmodel, jTitleId);
             }
-            jobEquimPi.getCustomFormList(auditmodel, jTitleId);
+        }else {
+            List<CustomFormListOffline> list = AppDataBase.getInMemoryDatabase(this).customFormListOfflineDao().getCustomFormList(equipment.getEcId());
+            String convert = new Gson().toJson(list);
+            Type listType1 = new TypeToken<List<CustomFormList_Res>>() {
+            }.getType();
+            this.customFormLists = new Gson().fromJson(convert, listType1);
+            if (customFormLists != null && customFormLists.size() > 0) {
+                formId = customFormLists.get(0).getFrmId();
+                Log.e("Form ID", "======" + customFormLists.get(0).getFrmId());
+                String getfrombyids = AppDataBase.getInMemoryDatabase(this).customFormQueDao().getfrombyids(customFormLists.get(0).getFrmId(), "-1");
+                Log.e("Form ID", "======" + quesRspncModelList);
+                if (getfrombyids != null && !getfrombyids.isEmpty()) {
+                    formLayout.setVisibility(View.VISIBLE);
+                    Type listType = new TypeToken<List<QuesRspncModel>>() {
+                    }.getType();
+                    List<QuesRspncModel> respnc = new Gson().fromJson(getfrombyids, listType);
+                    for (int i = 0; i < respnc.size(); i++) {
+                        if (respnc.get(i).getAns() != null) {
+                            respnc.get(i).setAns(new ArrayList<>());
+                        }
+                    }
+                    questionlist(respnc);// update list by initial encounter id
+
+                } else {
+                    formLayout.setVisibility(View.GONE);
+                    showOfflineAlert(LanguageController.getInstance().getMobileMsgByKey(AppConstant.offline_feature_alert));
+                }
+            }
         }
     }
 
@@ -284,8 +336,25 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
         Log.e("", "");
         this.quesRspncModelList = quesRspncModelList;
         if (quesRspncModelList.size() > 0) {
+
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
             recyclerView_customForm.setLayoutManager(linearLayoutManager);
+
+            String getfrombyid = AppDataBase.getInMemoryDatabase(this).customFormDao().getfrombyid(customFormLists.get(0).getFrmId(),jobId,"-1");
+            Type listType = new TypeToken<List<Answer>>() {
+            }.getType();
+            answer = new Gson().fromJson(getfrombyid, listType);
+
+
+            if (answer!=null) {
+                for (int i = 0; i < quesRspncModelList.size(); i++) {
+                    for (int j = 0; j < answer.size(); j++) {
+                        if (quesRspncModelList.get(i).getQueId().equals(answer.get(j).getQueId())) {
+                            quesRspncModelList.get(i).setAns(answer.get(j).getAns());
+                        }
+                    }
+                }
+            }
             questionListAdapter = new RemarkQuestionListAdpter(
                     (ArrayList<QuesRspncModel>) quesRspncModelList, this,
                     this, this, true);
@@ -303,7 +372,7 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
                 if (ans != null && ans.size() > 0) {
                     AnswerModel model = ans.get(0);
                     if (model != null && !TextUtils.isEmpty(model.getValue())) {
-                        //  isfilled = true;
+                          isfilled = true;
                     }
                 }
             }
@@ -324,25 +393,31 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
     public void addfragmentDynamically(List<QuesRspncModel> quesRspncModelList, String optionid) {
         Log.e("", "");
         if (!quesRspncModelList.isEmpty()) {
-            String queList = new Gson().toJson(quesRspncModelList);
-            ft = getSupportFragmentManager().beginTransaction();
-            myfragment = RemarkCustomFormFragment.newInstance("JobEquRemarkRemarkActivity", queList);
-            ft.add(R.id.framlayout, myfragment, "Fragment add successFully.....").addToBackStack(null);
-            ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-            ft.addToBackStack("close");
-            ft.commit();
-            setTitlesForRemarkForm(true);
+//            /** Hide because IOS not working multi form*/
+//            frameLayoutSubForm.setVisibility(View.VISIBLE);
+//            String queList = new Gson().toJson(quesRspncModelList);
+//            ft = getSupportFragmentManager().beginTransaction();
+//            myfragment = RemarkCustomFormFragment.newInstance(jobId, queList, optionid, "JobEquRemarkRemarkActivity");
+//            ft.add(R.id.framlayout, myfragment, "Fragment add successFully.....").addToBackStack("close");
+//            ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+//            ft.commit();
+//            setTitlesForRemarkForm(true);
+//            isSubForm = true;
         }
     }
 
 
     public void setTitlesForRemarkForm(boolean actionBar) {
-        if (actionBar) {
-            if (customFormLists != null && customFormLists.size() > 0)
-                setTitle(customFormLists.get(0).getFrmnm());
-        } else {
-            setTitles();
-        }
+            if (actionBar) {
+                title_count += 1;
+            } else {
+                title_count -= 1;
+            }
+            if(title_count > 0) {
+                setTitle(title_count + " " + customFormLists.get(0).getFrmnm());
+            }else {
+                setTitles();
+            }
     }
 
     @Override
@@ -391,8 +466,18 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
     }
 
     private void createEquipmentForJobAudit(RemarkRequest remarkRequest) {
+        if(!AppUtility.isInternetConnected()){
+            String kpr = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getKpr(remarkRequest.getAudId());
+            if(kpr != null && !kpr.isEmpty()) {
+                String[] kprList = kpr.split(",");
+                if(kprList.length > 1) {
+                    remarkRequest.setIsUsrOffLine(App_preference.getSharedprefInstance().getLoginRes().getFnm() + " " + App_preference.getSharedprefInstance().getLoginRes().getLnm());
+                }
+            }
+        }
+        isSubmit = true;
         jobEquimPi.addNewRemark(remarkRequest, path,
-                docAns, docQueIdArray, signAns, signQueIdArray, isAutoUpdatedRemark, equStatusId);
+                docAns, docQueIdArray, signAns, signQueIdArray, isAutoUpdatedRemark, equStatusId,dosanspath, signanspath,formId);
     }
 
     private void processImageAndUpload(RemarkRequest remarkRequest) {
@@ -639,6 +724,7 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
         ll_repair = findViewById(R.id.ll_repair);
         ll_discard = findViewById(R.id.ll_discard);
         ll_reallocate = findViewById(R.id.ll_reallocate);
+        frameLayoutSubForm = findViewById(R.id.framlayout);
 
         tv_text_for_repair.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.repair_action_msg));
         tv_repair.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.repair));
@@ -816,7 +902,6 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
         this.customFormLists = customFormLists;
         formLayout.setVisibility(View.VISIBLE);
         if (customFormLists.size() > 0) {
-            queAns_pi = new Qus_pc(this);
             QuesGetModel quesGetModel = new QuesGetModel("-1", customFormLists.get(0).getFrmId(),
                     "", equipment.getAudId(), equipment.getEquId());
 
@@ -901,8 +986,8 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
                 selectedCondition = position;
                 String selectedValue = equipmentStatusList.get(position).getStatusText();
                 status_label.setText(selectedValue);
-                if(edit_remarks.getText().toString().isEmpty()){
-                    edit_remarks.setText("@"+selectedValue);
+                if (edit_remarks.getText().toString().isEmpty()) {
+                    edit_remarks.setText("@" + selectedValue);
                 }
             }
 
@@ -945,17 +1030,32 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home)
-            if (isAction) {
-                if (isEdit) {
-                    hideRemarkSection();
-                    isEdit = false;
-                    setTitles();
-                } else {
-                    onBackPressed();
-                }
-            } else {
-                onBackPressed();
-            }
+            onBackPressed();
+//            if (isAction) {
+//                if (isEdit) {
+//                    if (isSubForm) {
+//                        frameLayoutSubForm.setVisibility(View.GONE);
+//                        isSubForm = false;
+//                        setTitles();
+//                    } else {
+//                        int fragments = this.getSupportFragmentManager().getBackStackEntryCount();
+//                        if (fragments > 0) {
+//                            setSubFormAns();
+//                        } else {
+//                            setSubFormAns();
+//                        }
+//
+//                    }
+//                    /** For set update data*/
+//                    if (isRemarkUpdated) {
+//                        setData();
+//                    }
+//                } else {
+//                    onBackPressed();
+//                }
+//            } else {
+//                onBackPressed();
+//            }
 
 
         return true;
@@ -1006,7 +1106,7 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
                             "", () -> null);
                 } else {
 
-
+                    if(quesRspncModelList.size() > 0) {
                     ansAnsQuesRspncModel();
 
                     /* *    if question is mandatory but not fill   ***/
@@ -1016,16 +1116,63 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
                                 LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), "", () -> null);
                         return;
                     }
-                    String fomrId = "";
+
+//                        if (!isfilled) {
+//                            if (!emptyCheckFormValidation()) {
+//                                emptyAnsFieldError();
+//                                return;
+//                            }
+//                        }
                     if (customFormLists.size() > 0) {
-                        fomrId = customFormLists.get(0).getFrmId();
+                        this.formId = customFormLists.get(0).getFrmId();
+                    }
+                    List<String> getfinalarray = AppDataBase.getInMemoryDatabase(this).customFormDao().getfinalarray(jobId, formId);
+                    if (getfinalarray!=null && getfinalarray.size() > 0) {
+                        for (int i = 0; i < getfinalarray.size(); i++) {
+                            Type listType = new TypeToken<List<Answer>>() {
+                            }.getType();
+                            answerfinal = new Gson().fromJson(getfinalarray.get(i), listType);
+                            if (answerfinal != null && !answerfinal.isEmpty()) {
+                                answerArrayList.addAll(answerfinal);
+                            }
+                        }
                     }
                     if (answerArrayList.size() > 0) {
                         Ans_Req ans_req = new Ans_Req(App_preference.getSharedprefInstance().getLoginRes().getUsrId(),
-                                answerArrayList, fomrId, equipment.getAudId());
+                                answerArrayList, formId, equipment.getAudId());
+                        if (!AppUtility.isInternetConnected())
+                        {
+                            List<Fragment> fragments = getSupportFragmentManager().getFragments();
+                            if (fragments.isEmpty()||(fragments.size()<=1||(fragments.get(0)instanceof RemarkCustomFormFragment)))
+                            {
+                                setFormDraft("-1",answerArrayList);
+                            }else{
+                                for (int i=0;i<fragments.size();i++) {
+                                    if (fragments.get(i) instanceof RemarkCustomFormFragment) {
+                                        String pid = ((RemarkCustomFormFragment) fragments.get(i)).optionId;
+                                        ((RemarkCustomFormFragment) fragments.get(i)).getAnsListSaveBtn();
+                                        ArrayList<Answer> childanswerArrayList = ((RemarkCustomFormFragment) fragments.get(i)).answerArrayList;
+                                        setFormDraft(pid, childanswerArrayList);
+                                    }else{
+                                        continue;
+                                    }
+                                }
+                            }
+                        }
                         createNewRemarkRequest(ans_req);
                     } else {
                         createNewRemarkRequest(new Ans_Req());
+                    }
+                    }else {
+                        createNewRemarkRequest(new Ans_Req());
+                    }
+
+                    if (AppUtility.isInternetConnected()) {
+                        if(customFormLists != null && customFormLists.size()>0) {
+                            AppDataBase.getInMemoryDatabase(this).customFormDao().deleterecode(customFormLists.get(0).getFrmId(), jobId);
+                        }
+                        if (answer != null)
+                            answer.clear();
                     }
                 }
 
@@ -1073,9 +1220,36 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
                 txt_no_item_found.setVisibility(View.GONE);
                 break;*/
             case R.id.btn_edit:
-                showRemarkSection();
-                isEdit = true;
-                setTitles();
+                if(AppUtility.isInternetConnected()) {
+                    showRemarkSection();
+                    isEdit = true;
+                    setTitles();
+                }else {
+                    getCustomFormSLists();
+                    if(btn_edit.getText().equals(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit)) && customFormLists != null && customFormLists.size() > 0){
+                        AppUtility.alertDialog2(this,
+                                LanguageController.getInstance().getMobileMsgByKey(AppConstant.alert_message),
+                                LanguageController.getInstance().getMobileMsgByKey(AppConstant.Form_is_already_submitted),
+                                LanguageController.getInstance().getMobileMsgByKey(AppConstant.yes),
+                                LanguageController.getInstance().getMobileMsgByKey(AppConstant.no), new Callback_AlertDialog() {
+                                    @Override
+                                    public void onPossitiveCall() {
+                                        showRemarkSection();
+                                        isEdit = true;
+                                        setTitles();
+                                    }
+
+                                    @Override
+                                    public void onNegativeCall() {
+
+                                    }
+                                });
+                    }else {
+                        showRemarkSection();
+                        isEdit = true;
+                        setTitles();
+                    }
+                }
                 break;
             case R.id.tv_reallocate:
                 Intent intent = new Intent(this, JobEquReallocateActivity.class);
@@ -1261,7 +1435,6 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
         }
 
         String strEqu = new Gson().toJson(equipment);
-//        Intent intent = new Intent(this, ReplaceItemEquipmentActivity.class);
         Intent intent = new Intent(this, AddEditInvoiceItemActivity2.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         intent.putExtra("jobId", jobId);
@@ -1342,6 +1515,7 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
                             // MultipartBody.Part is used to send also the actual file name
                             body = MultipartBody.Part.createFormData("docAns[]", file.getName()
                                     , requestFile);//ans.substring(ans.lastIndexOf(".")
+                            dosanspath.add(ans);
                             docAns.add(body);
                             docQueIdArray.add(quesRspncModelList.get(i).getQueId());
 
@@ -1352,12 +1526,12 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
                             answerArrayList.add(answer);
 
                         } else {
-                         /*   AnswerModel answerModels = new AnswerModel("0", "");
+                            AnswerModel answerModels = new AnswerModel("0", "");
                             ansArrayList.add(answerModels);
                             answer = new Answer(this.quesRspncModelList.get(i).getQueId(),
                                     this.quesRspncModelList.get(i).getType(), ansArrayList,
                                     this.quesRspncModelList.get(i).getFrmId());
-                            answerArrayList.add(answer);*/
+                            answerArrayList.add(answer);
                         }
 
                     } else if (quesRspncModelList.get(i).getAns().size() == 0)
@@ -1386,6 +1560,7 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
                             // MultipartBody.Part is used to send also the actual file name
                             body = MultipartBody.Part.createFormData("signAns[]", file.getName()
                                     , requestFile);//ans.substring(ans.lastIndexOf(".")
+                            signanspath.add(ans);
                             signAns.add(body);
                             signQueIdArray.add(quesRspncModelList.get(i).getQueId());
 
@@ -1395,12 +1570,12 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
                                     this.quesRspncModelList.get(i).getType(), ansArrayList, this.quesRspncModelList.get(i).getFrmId());
                             answerArrayList.add(answer);
                         } else {
-                          /*  AnswerModel answerModels = new AnswerModel("0", "");
+                            AnswerModel answerModels = new AnswerModel("0", "");
                             ansArrayList.add(answerModels);
                             answer = new Answer(this.quesRspncModelList.get(i).getQueId(),
                                     this.quesRspncModelList.get(i).getType(), ansArrayList,
                                     this.quesRspncModelList.get(i).getFrmId());
-                            answerArrayList.add(answer);*/
+                            answerArrayList.add(answer);
                         }
                     } else if (quesRspncModelList.get(i).getAns().size() == 0)
                         if (quesRspncModelList.get(i).getMandatory().equals("1"))
@@ -1431,33 +1606,48 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
                     if (quesRspncModelList.get(i).getAns() != null && quesRspncModelList.get(i).getAns().size() > 0) {
                         if (quesRspncModelList.get(i).getType().equals("5")) {
                             if (!TextUtils.isEmpty(quesRspncModelList.get(i).getAns().get(0).getValue())) {
-                                long l = Long.parseLong(quesRspncModelList.get(i).getAns().get(0).getValue());
-                                if(l != 0) {
-                                    String date = AppUtility.getDate(l, AppUtility.dateTimeByAmPmFormate(
-                                            "dd-MMM-yyyy", "dd-MMM-yyyy"));
-                                    ans = AppUtility.sendDateByFormate(date, false);
-                                }else{
-                                    ans = "";
+                                try {
+                                    long l = Long.parseLong(quesRspncModelList.get(i).getAns().get(0).getValue());
+                                    if (l != 0) {
+                                        String date = AppUtility.getDate(l, AppUtility.dateTimeByAmPmFormate(
+                                                "dd-MMM-yyyy", "dd-MMM-yyyy"));
+                                        ans = AppUtility.sendDateByFormate(date, false);
+                                    } else {
+                                        ans = "";
+                                    }
+                                }catch (NumberFormatException e){
+                                    Log.e("Remark","Remark Form Date"+e.getMessage());
+                                    ans = quesRspncModelList.get(i).getAns().get(0).getValue();
                                 }
                             }
                         } else if (quesRspncModelList.get(i).getType().equals("6")) {
                             if (!TextUtils.isEmpty(quesRspncModelList.get(i).getAns().get(0).getValue())) {
-                                long l = Long.parseLong(quesRspncModelList.get(i).getAns().get(0).getValue());
-                                if(l != 0) {
-                                ans = AppUtility.getDate(l, "HH:mm");
-                            }else{
-                                ans = "";
-                            }
+                                try {
+                                    long l = Long.parseLong(quesRspncModelList.get(i).getAns().get(0).getValue());
+                                    if (l != 0) {
+                                        ans = AppUtility.getDate(l, "HH:mm");
+                                    } else {
+                                        ans = "";
+                                    }
+                                }catch (NumberFormatException e){
+                                    Log.e("Remark","Remark Form Time"+e.getMessage());
+                                    ans = quesRspncModelList.get(i).getAns().get(0).getValue();
+                                }
                             }
                         } else if (quesRspncModelList.get(i).getType().equals("7")) {
                             if (!TextUtils.isEmpty(quesRspncModelList.get(i).getAns().get(0).getValue())) {
-                                long l = Long.parseLong(quesRspncModelList.get(i).getAns().get(0).getValue());
-                                if(l != 0) {
-                                String date = AppUtility.getDate(l, AppUtility.dateTimeByAmPmFormate(
-                                        "dd-MMM-yyyy hh:mm a", "dd-MMM-yyyy HH:mm"));
-                                ans = AppUtility.sendDateByFormate(date,true);
-                                }else{
-                                    ans = "";
+                                try {
+                                    long l = Long.parseLong(quesRspncModelList.get(i).getAns().get(0).getValue());
+                                    if (l != 0) {
+                                        String date = AppUtility.getDate(l, AppUtility.dateTimeByAmPmFormate(
+                                                "dd-MMM-yyyy hh:mm a", "dd-MMM-yyyy HH:mm"));
+                                        ans = AppUtility.sendDateByFormate(date, true);
+                                    } else {
+                                        ans = "";
+                                    }
+                                }catch (NumberFormatException e){
+                                    Log.e("Remark","Remark Form DateTime"+e.getMessage());
+                                    ans = quesRspncModelList.get(i).getAns().get(0).getValue();
                                 }
                             }
                         } else
@@ -1621,73 +1811,8 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
         try {
             if (getIntent().hasExtra("jobId")) {
                 jobId = intent.getExtras().getString("jobId");
-                setEquipmenData(jobId);
-               /* Job job = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(jobId);
-                if (job != null && job.getEquArray() != null) {
-                    Log.e("job Eq ::", new Gson().toJson(job.getEquArray()));
-                    for (EquArrayModel item :
-                            job.getEquArray()) {
-                        if (equipment.getEquId().equalsIgnoreCase(item.getEquId())) {
-                            if (AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).equipmentDao().getEquipmentByEquipId(item.getEquId()) != null) {
-                                Equipment equipmentData = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).equipmentDao().getEquipmentByEquipId(item.getEquId());
-                                List<Attachments> attachments = new ArrayList<>();
-                                attachments = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).attachments_dao().getEquAttachmentsByJobId(jobId, equipmentData.getEquId());
-                                if (attachments != null && attachments.size() > 0) {
-                                    equipmentData.setAttachments((ArrayList<Attachments>) attachments);
-                                }
-                                if (item.getStatus() != null && !item.getStatus().isEmpty()) {
-                                    equipmentData.setEquRemarkCondition(item.getStatus());
-                                }
-                                if (item.getRemark() != null && !item.getRemark().isEmpty()) {
-                                    equipmentData.setRemark(item.getRemark());
-                                }
-                                List<Equipment> partlist = new ArrayList<>();
-                                partlist = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).equipmentDao().getEquipmentsByParentEquipId(item.getEquId());
-                                if (partlist != null && partlist.size() > 0 && equipmentData != null) {
+//                setEquipmenData(jobId);
 
-                                    if (equipmentData.getEquId().equals(item.equId)) {
-                                        for (Equipment partItem : partlist
-                                        ) {
-                                            for (EquArrayModel jobEquItem : job.getEquArray()) {
-                                                if (jobEquItem.getIsPart().equals("1") && partItem.getEquId().equals(jobEquItem.getEquId())) {
-                                                    List<Attachments> attachments1 = new ArrayList<>();
-                                                    attachments1 = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).attachments_dao().getEquAttachmentsByJobId(jobId, partItem.getEquId());
-                                                    if (attachments1 != null && attachments1.size() > 0) {
-                                                        partItem.setAttachments((ArrayList<Attachments>) attachments1);
-                                                    }
-                                                    if (jobEquItem.getStatus() != null && !jobEquItem.getStatus().isEmpty()) {
-                                                        partItem.setEquRemarkCondition(item.getStatus());
-                                                    }
-                                                    if (jobEquItem.getRemark() != null && !jobEquItem.getRemark().isEmpty()) {
-                                                        partItem.setRemark(item.getRemark());
-                                                    }
-                                                }
-                                            }
-                                        }
-
-                                        String partlistString = new Gson().toJson(partlist);
-                                        ArrayList<EquArrayModel> list1 = new Gson().fromJson(partlistString, new TypeToken<List<EquArrayModel>>() {
-                                        }.getType());
-                                        Log.e("Size", "withoutpart====" + list1.size());
-                                        equipmentData.setEquComponent(list1);
-                                    }
-                                }
-                                String equipString = new Gson().toJson(equipmentData);
-                                EquArrayModel data = new Gson().fromJson(equipString, new TypeToken<EquArrayModel>() {
-                                }.getType());
-                                this.equipment =data;
-                                this.equipment.setAudId(jobId);
-                            }
-                        } else if (getIntent().hasExtra("jobid")) {
-                            if (intent.getExtras().getString("jobid") != null) {
-                                jobId = intent.getExtras().getString("jobid");
-                            }
-                        }
-                        if (getIntent().hasExtra("cltId")) {
-                            cltId = intent.getExtras().getString("cltId");
-                        }
-                    }
-                }*/
             }else if (getIntent().hasExtra("jobid")) {
                 if (intent.getExtras().getString("jobid") != null) {
                     jobId = intent.getExtras().getString("jobid");
@@ -1698,6 +1823,9 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
             }
                 } catch (Exception ex) {
             ex.printStackTrace();
+        }
+        if(jobId != null) {
+            setEquipmenData(jobId);
         }
 //        if (isRemarkUpdated) {
 //            Job job = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(mParam2.getJobId());
@@ -1880,14 +2008,16 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
         if (intent.hasExtra("isAction")) {
             isAction = intent.getBooleanExtra("isAction", false);
         }
+        setTitles();
             if (isAction) {
-                isEdit = false;
-                hideRemarkSection();
+                if(!isEdit){
+                    hideRemarkSection();
+                }
             } else {
                 isEdit = true;
                 showRemarkSection();
             }
-        setTitles();
+
         if (mParam2 != null) {
             if (mParam2.getItemRequested() != null && mParam2.getItemRequested().equals("1")) {
                 requested_item_flag.setVisibility(View.VISIBLE);
@@ -1930,10 +2060,10 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
 
 
     private void setTitles() {
-        if (equipment.getRemark().equals("") && equipment.getStatus().equals("") && equipment.getAttachments() != null && equipment.getAttachments().size() == 0) {
+        if (equipment.getRemark().equals("") && equipment.getEquRemarkCondition().equals("") && equipment.getStatus().equals("") && equipment.getAttachments() != null && equipment.getAttachments().size() == 0) {
             if (isAction) {
                 if (isEdit) {
-                    if (!TextUtils.isEmpty(equipment.getStatus()) || equipment.getAttachments() != null && equipment.getAttachments().size() > 0) {
+                    if (!TextUtils.isEmpty(equipment.getEquRemarkCondition()) || equipment.getAttachments() != null && equipment.getAttachments().size() > 0) {
                         setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.update_remark));
                     } else {
                         setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_remark));
@@ -1949,7 +2079,7 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
             if (equipment != null && equipment.getEqunm() != null) {
                 if (isAction) {
                     if (isEdit) {
-                        if (!TextUtils.isEmpty(equipment.getStatus()) || equipment.getAttachments() != null && equipment.getAttachments().size() > 0) {
+                        if (!TextUtils.isEmpty(equipment.getEquRemarkCondition()) || equipment.getAttachments() != null && equipment.getAttachments().size() > 0) {
                             setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.update_remark));
                         } else {
                             setTitle(LanguageController.getInstance().getMobileMsgByKey(AppConstant.add_remark));
@@ -2088,26 +2218,26 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
         if (convert != null && !convert.isEmpty()) {
             ArrayList<Attachments> equipmentList = new ArrayList<>();
             jobEquimPi.getEquipmentList(equipment.getType(), cltId, jobId, equipment.getEquId());
-            Job job  = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(jobId);
+            Job job = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(jobId);
 
             try {
-                if(job.getEquArray() != null && job.getEquArray().size() >0){
+                if (job.getEquArray() != null && job.getEquArray().size() > 0) {
                     for (EquArrayModel item : job.getEquArray()
                     ) {
                         boolean equipFind = false;
-                        if(item.getEquId().equals(equipment.getEquId())){
+                        if (item.getEquId().equals(equipment.getEquId())) {
                             equipment = item;
                             break;
-                        }else if(item.getEquComponent() != null && item.getEquComponent().size() > 0){
+                        } else if (item.getEquComponent() != null && item.getEquComponent().size() > 0) {
                             for (EquArrayModel item2 : item.getEquComponent()
                             ) {
-                                if(item2.getEquId().equals(equipment.getEquId())){
+                                if (item2.getEquId().equals(equipment.getEquId())) {
                                     equipment = item2;
                                     equipFind = true;
                                     break;
                                 }
                             }
-                            if(equipFind){
+                            if (equipFind) {
                                 equipFind = false;
                                 break;
                             }
@@ -2179,6 +2309,7 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
     (ArrayList<Answer> answerArray, List<MultipartBody.Part> signAns,
      List<MultipartBody.Part> docAns, ArrayList<String> signQueIdArray, ArrayList<String> docQueIdArray) {
         Log.e("Size--->>", ">>>>>" + answerArray.size());
+        customSaveForm = true;
         if (customFormLists != null && customFormLists.size() > 0)
             for (Answer ans : answerArray) {
                 ans.setFrmId(customFormLists.get(0).getFrmId());
@@ -2187,6 +2318,7 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
         this.docQueIdArray.addAll(docQueIdArray);
         this.signAns.addAll(signAns);
         this.docAns.addAll(docAns);
+        childAnswerArrayList.addAll(answerArray);
         answerArrayList.addAll(answerArray);
     }
 
@@ -2241,6 +2373,7 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
             setEquipmenData(jobId);
             setEquipmentList(equipment.getEquComponent());
         }
+        setData();
     }
 
     @Override
@@ -2346,6 +2479,9 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
         ll_requested_item.setVisibility(View.GONE);
         attachment_card.setVisibility(View.VISIBLE);
         cv_editRemark.setVisibility(View.VISIBLE);
+        answerArrayList.clear();
+        getCustomFormSLists();
+
     }
 
     public void hideRemarkSection() {
@@ -2415,21 +2551,111 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
     public void onBackPressed() {
         if (isAction) {
             if (isEdit) {
-                hideRemarkSection();
-                isEdit = false;
-                setTitles();
-                /** For set update data*/
-                if (isRemarkUpdated) {
-                    setData();
+                if(!isSubmit) {
+                    if (isSubForm) {
+                        int fragments = this.getSupportFragmentManager().getBackStackEntryCount();
+                        if (fragments > 1) {
+                            getSupportFragmentManager().popBackStack();
+                        }else {
+                            getSupportFragmentManager().popBackStack();
+                            frameLayoutSubForm.setVisibility(View.GONE);
+                            isSubForm = false;
+                            setTitles();
+                            /** For set update data*/
+                            if (isRemarkUpdated) {
+                                setData();
+                            }
+                        }
+                    } else {
+                        int fragments = this.getSupportFragmentManager().getBackStackEntryCount();
+                        if (fragments > 0) {
+                            setSubFormAns();
+                        } else {
+                            setSubFormAns();
+                        }
+                        /** For set update data*/
+                        if (isRemarkUpdated) {
+                            setData();
+                        }
+                    }
+
+                }else {
+                    isSubmit = false;
+                    isEdit = false;
+                    hideRemarkSection();
+                    setTitles();
                 }
             } else {
                 super.onBackPressed();
+                finish();
             }
         } else {
             super.onBackPressed();
+            finish();
         }
 
     }
+
+    public void setSubFormAns() {
+        ansAnsQuesRspncModel();
+        List<Fragment> fragments = getSupportFragmentManager().getFragments();
+        if (fragments.isEmpty() || (fragments.size() == 1 && !(fragments.get(0) instanceof RemarkCustomFormFragment) && fragments.get(0).getClass().getName().trim().equals("com.bumptech.glide.manager.SupportRequestManagerFragment") && answerArrayList != null && answerArrayList.size() > 0 && !isAlertForm || (fragments.size() == 2 && (fragments.get(1) instanceof RemarkCustomFormFragment) && answerArrayList != null && answerArrayList.size() > 0))) {
+            AppUtility.alertDialog2(this,
+                    "",
+                    LanguageController.getInstance().getMobileMsgByKey(AppConstant.save_to_draft),
+                    LanguageController.getInstance().getMobileMsgByKey(AppConstant.yes),
+                    LanguageController.getInstance().getMobileMsgByKey(AppConstant.no), new Callback_AlertDialog() {
+                        @Override
+                        public void onPossitiveCall() {
+                            isAlertForm = true;
+                            getSupportFragmentManager().popBackStackImmediate();
+                            setFormDraft("-1", answerArrayList);
+                            answerArrayList.clear();
+                            onBackPressed();
+
+                        }
+
+                        @Override
+                        public void onNegativeCall() {
+                            isAlertForm = true;
+                            answerArrayList.clear();
+                            getSupportFragmentManager().popBackStackImmediate();
+                            onBackPressed();
+                        }
+                    });
+        } else {
+            if (fragments != null && fragments.size() < 2) {
+                if (customSaveForm) {
+                    for (int i = 0; i < fragments.size(); i++) {
+                        if (fragments.get(i) instanceof RemarkCustomFormFragment) {
+                            String pid = ((RemarkCustomFormFragment) fragments.get(i)).optionId;
+                            ((RemarkCustomFormFragment) fragments.get(i)).getAnsListSaveBtn();
+                            ArrayList<Answer> childanswerArrayList = ((RemarkCustomFormFragment) fragments.get(i)).answerArrayList;
+                            setFormDraft(pid, childanswerArrayList);
+                        } else {
+                            continue;
+                        }
+                    }
+                    customSaveForm = false;
+                    onBackPressed();
+
+                } else {
+                    isAlertForm = false;
+                    if (isEdit) {
+                        isEdit = false;
+                        hideRemarkSection();
+                        setTitles();
+                    } else {
+                        onBackPressed();
+                    }
+                }
+            } else {
+                getSupportFragmentManager().popBackStackImmediate();
+            }
+        }
+    }
+
+
     public void hideAddItemButton(){
         if(App_preference.getSharedprefInstance().getLoginRes().getCompPermission().get(0).getIsItemEnable().equals("1")){
                          add_item_layout.setVisibility(View.GONE);
@@ -2437,7 +2663,7 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
                                 add_item_layout.setVisibility(View.VISIBLE);
                             }
     }
-    public void setEquipmenData(String jobId){
+    public void setEquipmenData(String jobId) {
         Job job = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(jobId);
         if (job != null && job.getEquArray() != null) {
             Log.e("job Eq ::", new Gson().toJson(job.getEquArray()));
@@ -2491,11 +2717,47 @@ public class JobEquRemarkRemarkActivity extends UploadDocumentActivity implement
                         String equipString = new Gson().toJson(equipmentData);
                         EquArrayModel data = new Gson().fromJson(equipString, new TypeToken<EquArrayModel>() {
                         }.getType());
-                        this.equipment =data;
+                        this.equipment = data;
                         this.equipment.setAudId(jobId);
                     }
                 }
             }
         }
+    }
+        public void setFormDraft (String optionid, ArrayList < Answer > answerArrayLists){
+            String answers = new Gson().toJson(answerArrayLists);
+            AppDataBase.getInMemoryDatabase(this).customFormDao().deletesinglerecord(customFormLists.get(0).getFrmId(), jobId, optionid);
+            AppDataBase.getInMemoryDatabase(this).customFormDao().insert(new CustomForm(customFormLists.get(0).getFrmId(), answers, jobId, optionid));
+        }
+        private boolean emptyCheckFormValidation () {
+            boolean isChangeDetected = false;
+            if (questionListAdapter != null && questionListAdapter.getTypeList() != null) {
+                ArrayList<QuesRspncModel> checkList = questionListAdapter.getTypeList();
+                for (QuesRspncModel qm : checkList) {
+                    List<AnswerModel> ans = qm.getAns();
+                    if (ans != null && ans.size() > 0) {
+                        AnswerModel model = ans.get(0);
+                        if (model != null && !TextUtils.isEmpty(model.getValue()))
+                            isChangeDetected = true;
+                    }
+                }
+            }
+            return isChangeDetected;
+        }
+        private void emptyAnsFieldError () {
+            AppUtility.alertDialog(this, "", LanguageController.getInstance().getMobileMsgByKey(AppConstant.enter_ans), LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok), "", new Callable<Boolean>() {
+                @Override
+                public Boolean call() {
+                    return null;
+                }
+            });
+        }
+
+    @Override
+    public void refreshRemarkData() {
+        if(jobEquimPi!=null){
+            jobEquimPi.getAllEquipments();
+        }
+
     }
 }

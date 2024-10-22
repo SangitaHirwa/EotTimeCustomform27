@@ -224,7 +224,7 @@ public class CustomFormListFragment extends Fragment implements MyListItemSelect
             {
 
                 AppUtility.alertDialog2(getActivity(),
-                        "Alert Message",
+                        LanguageController.getInstance().getMobileMsgByKey(AppConstant.alert_message),
                         LanguageController.getInstance().getMobileMsgByKey(AppConstant.Form_is_already_submitted),
                         LanguageController.getInstance().getMobileMsgByKey(AppConstant.yes),
                         LanguageController.getInstance().getMobileMsgByKey(AppConstant.no), new Callback_AlertDialog() {

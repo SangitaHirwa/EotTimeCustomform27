@@ -36,6 +36,7 @@ import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.NotifyForMultiDo
 import com.eot_app.nav_menu.jobs.job_detail.documents.doc_model.NotifyForMultiDocAddForAttach;
 import com.eot_app.nav_menu.jobs.job_detail.generate_invoice.InvoiceItemObserver;
 import com.eot_app.nav_menu.jobs.job_detail.generate_invoice.invoice_adpter_pkg.EquipItemObserver;
+import com.eot_app.nav_menu.jobs.job_detail.job_equipment.job_equ_remrk.job_equ_mvp.NotifyforAddUpdateRemarkEquipment;
 import com.eot_app.nav_menu.jobs.job_detail.requested_item.requested_itemModel.AddUpdateRequestedModel;
 import com.eot_app.nav_menu.jobs.joboffline_db.JobItem_Observer;
 import com.eot_app.nav_menu.jobs.joboffline_db.JobOverViewNotify;
@@ -86,6 +87,7 @@ public class EotApp extends Application implements Application.ActivityLifecycle
     private NotifyForMultiDocAddForAttach notifyForMultiDocAddForAttach;
     private NotifyForRequestedItemList notifyForRequestedItemList;
     private NotifyForLinkUnlinkEquipment notifyForLinkUnlinkEquipment;
+    private NotifyforAddUpdateRemarkEquipment notifyforAddUpdateRemarkEquipment;
     private EquipItemObserver equipItemObserver;
     private static Activity currentActivity = null;
 
@@ -338,6 +340,14 @@ public class EotApp extends Application implements Application.ActivityLifecycle
     public void getNotifyForLinkUnlinkEquipment(String api_name, String message) {
         if(notifyForLinkUnlinkEquipment != null){
             notifyForLinkUnlinkEquipment.updateReqEquipmentList(api_name,message);
+        }
+    }
+ public void setNotifyforAddUpdateRemarkEquipment(NotifyforAddUpdateRemarkEquipment notifyforAddUpdateRemarkEquipment) {
+        this.notifyforAddUpdateRemarkEquipment = notifyforAddUpdateRemarkEquipment;
+    }
+    public void getNotifyforAddUpdateRemarkEquipment(String api_name, String message) {
+        if(notifyforAddUpdateRemarkEquipment != null){
+            notifyforAddUpdateRemarkEquipment.refreshRemarkData();
         }
     }
 

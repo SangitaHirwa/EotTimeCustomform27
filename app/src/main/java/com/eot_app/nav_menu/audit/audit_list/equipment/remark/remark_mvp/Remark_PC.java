@@ -149,6 +149,7 @@ public class Remark_PC implements Remark_PI {
             RequestBody lat = RequestBody.create( remarkRequest.getLat(),MultipartBody.FORM);
             RequestBody lng = RequestBody.create( remarkRequest.getLng(),MultipartBody.FORM);
             RequestBody isJob = RequestBody.create( remarkRequest.getIsJob(),MultipartBody.FORM);
+            RequestBody isUsrOffLine = RequestBody.create( "",MultipartBody.FORM);
             String str = new Gson().toJson(remarkRequest.getAnswerArray().getAnswer());
             RequestBody answerArray = RequestBody.create( str,MultipartBody.FORM);
 
@@ -179,7 +180,7 @@ public class Remark_PC implements Remark_PI {
                     docQueIdArray,
                     answerArray,
                     signAns,
-                    signQueIdArray,null)
+                    signQueIdArray,null,isUsrOffLine)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Observer<JsonObject>() {

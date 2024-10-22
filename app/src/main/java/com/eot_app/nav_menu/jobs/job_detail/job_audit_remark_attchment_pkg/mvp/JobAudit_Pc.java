@@ -45,9 +45,8 @@ public class JobAudit_Pc implements JobAudit_PI {
     @Override
     public void uploadAttchmentOnserverForJobAudit(JobAuditSingleAttchReqModel model,String imageName) {
         if (AppUtility.isInternetConnected()) {
-            HyperLog.i("", "JobEquRemark_PC: " + "addNewRemark:::: Start");
             String request = new Gson().toJson(model);
-            Log.e("","Request Param equip attachment"+ request + "image Name "+ imageName);
+            Log.e("Request Param","AssetsController/uploadAuditEquipmentAttachments ==== "+ request + "image Name "+ imageName);
             String mimeType = "";
             MultipartBody.Part body = null;
             if (!TextUtils.isEmpty(model.getPath())) {
@@ -89,9 +88,7 @@ public class JobAudit_Pc implements JobAudit_PI {
                         @Override
                         public void onNext(JsonObject jsonObject) {
                             try {
-                                HyperLog.i("", "JobEquRemark_PC: " + "JsonObject:::: " + jsonObject.toString());
 
-                                Log.d("mahi", jsonObject.toString());
                                 if (jsonObject.get("success").getAsBoolean()) {
 
                                     String convert = new Gson().toJson(jsonObject.get("data").getAsJsonArray());
@@ -127,7 +124,6 @@ public class JobAudit_Pc implements JobAudit_PI {
 
                         @Override
                         public void onComplete() {
-                            Log.d("mahi", "Completed");
                             AppUtility.progressBarDissMiss();
                         }
                     });

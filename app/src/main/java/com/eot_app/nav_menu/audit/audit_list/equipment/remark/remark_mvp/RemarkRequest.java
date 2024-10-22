@@ -2,6 +2,9 @@ package com.eot_app.nav_menu.audit.audit_list.equipment.remark.remark_mvp;
 
 import com.eot_app.nav_menu.jobs.job_detail.form_form.get_qus_list.ans_model.Ans_Req;
 
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+
 /**
  * Created by Mahendra Dabi on 12/11/19.
  */
@@ -14,6 +17,7 @@ public class RemarkRequest {
     String lng;
     String usrId;
     String isJob = "";
+    String isUsrOffLine  = "";
     private String equStatus;
     Ans_Req answerArray = new Ans_Req();
 
@@ -99,5 +103,13 @@ public class RemarkRequest {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getIsUsrOffLine() {
+        return isUsrOffLine;
+    }
+
+    public void setIsUsrOffLine(String isUsrOffLine) {
+        this.isUsrOffLine = isUsrOffLine;
     }
 }

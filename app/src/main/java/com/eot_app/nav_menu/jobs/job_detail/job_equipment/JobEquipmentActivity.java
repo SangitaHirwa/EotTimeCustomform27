@@ -384,12 +384,14 @@ public class JobEquipmentActivity extends AppCompatActivity implements Job_equim
                 ISOWN = false;
                 if (!TextUtils.isEmpty(contrId)) {
                     String contractType  = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).contractDao().getContractTypeById(contrId);
-                    if(contractType.equals("1")){
-                        ISOWN = true;
-                        ISCLIENT = false;
-                    }else if(contractType.equals("2")){
-                        ISOWN = false;
-                        ISCLIENT = true;
+                    if(contractType != null) {
+                        if (contractType.equals("1")) {
+                            ISOWN = true;
+                            ISCLIENT = false;
+                        } else if (contractType.equals("2")) {
+                            ISOWN = false;
+                            ISCLIENT = true;
+                        }
                     }
                 }
                 nolist_linear.setVisibility(View.VISIBLE);
@@ -454,6 +456,7 @@ public class JobEquipmentActivity extends AppCompatActivity implements Job_equim
                 this.myList = list1;
                 Collections.sort(list1, (o1, o2) -> o1.getEqunm().compareTo(o2.getEqunm()));
                 adapter.setList(list1);
+                recyclerView.setAdapter(adapter);
 
             }
             checkLinkedEquipmentType();
@@ -665,16 +668,18 @@ public class JobEquipmentActivity extends AppCompatActivity implements Job_equim
                 linearFabown.setClickable(true);
                 if (!TextUtils.isEmpty(contrId)) {
                     String contractType  = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).contractDao().getContractTypeById(contrId);
-                    if(contractType.equals("1")){
-                        linearFabown.setAlpha(1f);
-                        linearFabclient.setAlpha(0.5f);
-                        linearFabclient.setClickable(false);
-                        linearFabown.setClickable(true);
-                    }else if(contractType.equals("2")){
-                        linearFabown.setAlpha(0.5f);
-                        linearFabclient.setAlpha(1f);
-                        linearFabclient.setClickable(true);
-                        linearFabown.setClickable(false);
+                    if(contractType != null) {
+                        if (contractType.equals("1")) {
+                            linearFabown.setAlpha(1f);
+                            linearFabclient.setAlpha(0.5f);
+                            linearFabclient.setClickable(false);
+                            linearFabown.setClickable(true);
+                        } else if (contractType.equals("2")) {
+                            linearFabown.setAlpha(0.5f);
+                            linearFabclient.setAlpha(1f);
+                            linearFabclient.setClickable(true);
+                            linearFabown.setClickable(false);
+                        }
                     }
                 }
             } else if (ISOWN) {
@@ -847,12 +852,14 @@ public class JobEquipmentActivity extends AppCompatActivity implements Job_equim
             ISCLIENT = adapter.getList().get(0).getType().equals("2");
              if (!TextUtils.isEmpty(contrId)) {
                  String contractType  = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).contractDao().getContractTypeById(contrId);
-                 if(contractType.equals("1")){
-                     ISOWN = true;
-                     ISCLIENT = false;
-                 }else if(contractType.equals("2")){
-                     ISOWN = false;
-                     ISCLIENT = true;
+                 if(contractType != null) {
+                     if (contractType.equals("1")) {
+                         ISOWN = true;
+                         ISCLIENT = false;
+                     } else if (contractType.equals("2")) {
+                         ISOWN = false;
+                         ISCLIENT = true;
+                     }
                  }
              }
         }
@@ -883,6 +890,7 @@ public class JobEquipmentActivity extends AppCompatActivity implements Job_equim
 
     @Override
     public void updateStatusEquipment() {
+        job = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().getJobsById(jobId);
         setEuqipmentList(job.getEquArray());
     }
 

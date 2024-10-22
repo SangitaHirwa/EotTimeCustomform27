@@ -1,5 +1,6 @@
 package com.eot_app.utility.db;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Environment;
@@ -40,6 +41,8 @@ import com.eot_app.nav_menu.jobs.job_detail.form_form.get_qus_list.ans_model.Ans
 import com.eot_app.nav_menu.jobs.job_detail.form_form.get_qus_list.ans_model.Ans_Req;
 
 import com.eot_app.nav_menu.jobs.job_detail.form_form.get_qus_list.ans_model.Answer;
+import com.eot_app.nav_menu.jobs.job_detail.job_equipment.model.RemarkModel_Offline;
+import com.eot_app.nav_menu.jobs.job_detail.job_equipment.model.RemarkUpdateRequest;
 import com.eot_app.nav_menu.jobs.job_detail.requested_item.requested_itemModel.AddUpdateRequestedModel;
 import com.eot_app.nav_menu.jobs.joboffline_db.JobOfflineDataModel;
 import com.eot_app.services.ApiClient;
@@ -330,6 +333,9 @@ public class OfflineDataController {
                 break;
             case Service_apis.addAuditEquipment:
                 EotApp.getAppinstance().getNotifyForLinkUnlinkEquipment(data.getService_name(), obj.get("message").getAsString());
+                break;
+            case Service_apis.addNewRemark:
+                EotApp.getAppinstance().getNotifyforAddUpdateRemarkEquipment(data.getService_name(), obj.get("message").getAsString());
                 break;
         }
         int check = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).offlinemodel().deleteFromId(data.getId());
@@ -953,6 +959,10 @@ public class OfflineDataController {
             callPendingUpdateReqItemInJobRequest(table);
             return;
         }
+        else if (table.getService_name().equals(Service_apis.addNewRemark)) {
+            callPendingEqupmentRemarkRequest(table);
+            return;
+        }
         // Done by shivani vani
       /* In case of offline mode if we create a job and set its completion notes in
        offline mode then job temp id will get saved as job id in completion notes
@@ -1188,7 +1198,169 @@ public class OfflineDataController {
 
 
     }
+    private synchronized void callPendingEqupmentRemarkRequest(final Offlinetable table){
+        final RemarkModel_Offline remarkModel_offline = new Gson().fromJson(table.getParams(), RemarkModel_Offline.class);
+        HyperLog.i("Param","Request of Remark :"+new Gson().toJson(remarkModel_offline));
+        HyperLog.i("", "JobEquRemark_PC: " + "addNewRemark:::: Start");
+        Log.e("Request Param", table.getService_name() +" === " + new Gson().toJson(remarkModel_offline));
+        List<String> docanspath = remarkModel_offline.getDosanspath();
+        List<String> signanspath = remarkModel_offline.getSignanspath();
+        List<MultipartBody.Part> docAns = new ArrayList<>();
+        List<MultipartBody.Part> signAns = new ArrayList<>();
 
+        String mimeType = "";
+        MultipartBody.Part body = null;
+        List<MultipartBody.Part> filesList = new ArrayList<>();
+        if (!TextUtils.isEmpty(remarkModel_offline.getFile())) {
+            File file1 = new File(remarkModel_offline.getFile());
+            if (file1 != null) {
+                mimeType = URLConnection.guessContentTypeFromName(file1.getName());
+                if (mimeType == null) {
+                    mimeType = file1.getName();
+                }
+                RequestBody requestFile = RequestBody.create(file1, MediaType.parse(mimeType));
+                // MultipartBody.Part is used to send also the actual file name
+                body = MultipartBody.Part.createFormData("ja[]", file1.getName()
+                        //  + file.substring(file.lastIndexOf("."))
+                        , requestFile);
+                filesList.add(body);
+            }
+        }
+
+        for (String ans : docanspath
+             ) {
+            File file = new File(ans);
+
+            if (file != null && file.exists()) {
+                mimeType = URLConnection.guessContentTypeFromName(file.getName());
+                if (mimeType == null) {
+                    mimeType = file.getName();
+                }
+                RequestBody requestFile = RequestBody.create(file, MediaType.parse(mimeType));
+                // MultipartBody.Part is used to send also the actual file name
+                body = MultipartBody.Part.createFormData("docAns[]", file.getName()
+                        , requestFile);//ans.substring(ans.lastIndexOf(".")
+                docAns.add(body);
+        } }
+            for (String ans : signanspath
+             ) {
+
+                File file = new File(ans);
+
+                if (file != null && file.exists()) {
+                    mimeType = URLConnection.guessContentTypeFromName(file.getName());
+                    if (mimeType == null) {
+                        mimeType = file.getName();
+                    }
+                    RequestBody requestFile = RequestBody.create(file, MediaType.parse(mimeType));
+                    // MultipartBody.Part is used to send also the actual file name
+                    body = MultipartBody.Part.createFormData("signAns[]", file.getName()
+                            , requestFile);//ans.substring(ans.lastIndexOf(".")
+                    signAns.add(body);
+        }}
+        RequestBody audId = RequestBody.create(remarkModel_offline.getRemarkRequest().getAudId(), MultipartBody.FORM);
+        RequestBody equId = RequestBody.create(remarkModel_offline.getRemarkRequest().getEquId(), MultipartBody.FORM);
+        RequestBody userId = RequestBody.create(App_preference.getSharedprefInstance().getLoginRes().getUsrId(), MultipartBody.FORM);
+        RequestBody remark = RequestBody.create(remarkModel_offline.getRemarkRequest().getRemark(), MultipartBody.FORM);
+        RequestBody status = RequestBody.create(remarkModel_offline.getRemarkRequest().getStatus(), MultipartBody.FORM);
+        RequestBody lat = RequestBody.create(remarkModel_offline.getRemarkRequest().getLat(), MultipartBody.FORM);
+        RequestBody lng = RequestBody.create(remarkModel_offline.getRemarkRequest().getLng(), MultipartBody.FORM);
+        RequestBody isJob = RequestBody.create(remarkModel_offline.getRemarkRequest().getIsJob(), MultipartBody.FORM);
+        RequestBody isUsrOffLine = RequestBody.create(remarkModel_offline.getRemarkRequest().getIsUsrOffLine(), MultipartBody.FORM);
+        RequestBody equStatusBody = RequestBody.create(remarkModel_offline.getRemarkRequest().getEquStatus(), MultipartBody.FORM);
+        String str = new Gson().toJson(remarkModel_offline.getRemarkRequest().getAnswerArray().getAnswer());
+        RequestBody answerArray = RequestBody.create(str, MultipartBody.FORM);
+
+        String signIdArrayStr = new Gson().toJson(remarkModel_offline.getSignQueIdArray());
+        RequestBody signQueIdArray = RequestBody.create(signIdArrayStr, MultipartBody.FORM);
+
+        String docIdArrayStr = new Gson().toJson(remarkModel_offline.getDocQueIdArray());
+        RequestBody docQueIdArray = RequestBody.create(docIdArrayStr, MultipartBody.FORM);
+
+
+        ActivityLogController
+                .saveActivity(ActivityLogController
+                                .AUDIT_MODULE,
+                        ActivityLogController.AUDIT_EQUIP,
+                        ActivityLogController.AUDIT_REMARK);
+
+        // when replace equipment in clicked
+//        if(!isAutoUpdatedRemark)
+//            AppUtility.progressBarShow((Context) jobEquimView);
+
+
+        ApiClient.getservices().uploadAuditRemarkWithDocument(AppUtility.getApiHeaders(),
+                        audId,
+                        equId,
+                        userId,
+                        remark,
+                        status,
+                        lat,
+                        lng,
+                        isJob,
+                        filesList,
+                        docAns,
+                        docQueIdArray,
+                        answerArray,
+                        signAns,
+                        signQueIdArray,equStatusBody,isUsrOffLine)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<JsonObject>() {
+                    @Override
+                    public void onSubscribe(@NotNull Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(@NotNull JsonObject jsonObject) {
+
+                            if (jsonObject.get("success").getAsBoolean()) {
+                                String message = LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString());
+                                callBack.getResponse(table, jsonObject);
+                            } else if (jsonObject.get("statusCode") != null && jsonObject.get("statusCode").getAsString().equals(AppConstant.SESSION_EXPIRE)) {
+//                            when session expires
+                                EotApp.getAppinstance().sessionExpired();
+                                isSync = false;
+                            } else if (jsonObject.get("statusCode") != null && jsonObject.get("statusCode").getAsString().equals(AppConstant.ALREADY_SYNC)) {
+//                            when record already exist.
+                                AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).offlinemodel().deleteFromId(table.getId());
+                            } else {
+
+                                sendForErrorLog(table, LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
+                                if (callBackFirstSync != null) { // for first time call from sync
+                                    callBackFirstSync.getCallBackOfComplete(0, "Error Occur");
+                                    callBackFirstSync = null;
+                                }
+                                isSync = false;
+                                if(table.getCount() > 2){
+                                    AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).customFormDao().deleterecode(remarkModel_offline.getFrmId(),remarkModel_offline.getAudId());
+                                }
+                            }
+                    }
+
+                    @Override
+                    public void onError(@NotNull Throwable e) {
+                        Log.d("mahi", e.toString());
+                        HyperLog.i("", "JobEquRemark_PC: " + "onError:::: " + e.getMessage());
+                        sendForErrorLog(table, e.getMessage());
+                        isSync = false;
+                        if (callBackFirstSync != null) { // for first time call from sync
+                            callBackFirstSync.getCallBackOfComplete(0, "Error Occur");
+                            callBackFirstSync = null;
+                        }
+                        if(table.getCount() > 2){
+                            AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).customFormDao().deleterecode(remarkModel_offline.getFrmId(),remarkModel_offline.getAudId());
+                        }
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Log.d("mahi", "Completed");
+                        AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).customFormDao().deleterecode(remarkModel_offline.getFrmId(),remarkModel_offline.getAudId());
+                    }
+                });
+    }
     private synchronized void callPendingMultiDocumentRequest(final Offlinetable table){
         final MultiDocUpdateRequest multiDocUpdateRequest = new Gson().fromJson(table.getParams(), MultiDocUpdateRequest.class);
         String job_Id = multiDocUpdateRequest.getJob_Id();

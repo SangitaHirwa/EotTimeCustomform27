@@ -400,7 +400,8 @@ public interface Service_apis {
                                   @Part("answerArray") RequestBody answerArray,
                                   @Part List<MultipartBody.Part> signAns,
                                   @Part("signQueIdArray") RequestBody signQueIdArray,
-                                  @Part("equStatus") RequestBody equStatus
+                                  @Part("equStatus") RequestBody equStatus,
+                                  @Part("isUsrOffLine") RequestBody isUsrOffLine
     );
 
 

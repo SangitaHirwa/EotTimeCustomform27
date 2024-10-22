@@ -1998,6 +1998,7 @@
     "add_signatory": "Add signatory",
     "signatory": "Signatory",
     "offline_content": "Offline - Showing limited content",
-    "view_mannual": "View user manual"
+    "view_mannual": "View user manual",
+    "alert_message":"Alert Message"
   }
 }

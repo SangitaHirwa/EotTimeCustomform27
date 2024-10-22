@@ -21,5 +21,9 @@ public interface CustomFormListOfflineDao {
     @Query("Select * from customformlistoffline where jtId='-1'")
     List<CustomFormListOffline> getcommonForm();
 
+    @Query("Select frmId from customformlistoffline where jtId=:jtid AND tab ='0'")
+    String getFormIdByJtid(String jtid);
 
+    @Query("Select * from customformlistoffline where jtId=:jtid AND tab ='0'")
+    List<CustomFormListOffline> getCustomFormList(String jtid);
 }

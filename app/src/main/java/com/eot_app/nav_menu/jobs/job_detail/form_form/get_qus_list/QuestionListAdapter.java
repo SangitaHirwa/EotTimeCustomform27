@@ -359,34 +359,37 @@ public class QuestionListAdapter extends RecyclerView.Adapter<QuestionListAdapte
                 if (typeList.get(position).getAns().isEmpty()) {
                     holder.tvDate.setText("");
                     sDate = "";
-                }else if (typeList.get(position).getAns().size() > 0) {
+                } else if (typeList.get(position).getAns().size() > 0) {
                     try {
                         if (!(typeList.get(position).getAns().get(0).getValue()).equals("")) {
-                            String[] dateConvert = AppUtility.getFormatedTime(typeList.get(position).
-                                    getAns().get(0).getValue());
-                            if (dateConvert!=null) {
-                                String s = dateConvert[0];
-                                String[] date = s.split(",");
-                                sDate = date[1].trim().replace(" ", "-");
-                                holder.tvDate.setText(AppUtility.getDateByLang(sDate,false));
-                            }else {
-                                SimpleDateFormat dt = new SimpleDateFormat("yyyy-MMM-dd hh:mm a",Locale.ENGLISH);
-                                Date date = dt.parse(typeList.get(position).getAns().get(0).getValue());
-                                SimpleDateFormat dt1 = new SimpleDateFormat("dd-MMM-yyyy",Locale.ENGLISH);
-                                if (App_preference.getSharedprefInstance().getLoginRes().getIsAutoTimeZone().equals("1")) {
-                                    dt1.setTimeZone(TimeZone.getTimeZone(App_preference.getSharedprefInstance().getLoginRes().getLoginUsrTz()));
-                                } else {
-                                    dt1.setTimeZone(TimeZone.getDefault());
-                                }
-                                String format = dt1.format(date);
-                                sDate = format;
-                                holder.tvDate.setText(AppUtility.getDateByLang(sDate,false));
-                            }
-
+                            Long dateLong = Long.parseLong(typeList.get(position).getAns().get(0).getValue());
+                            String dateConvert = AppUtility.getDate(dateLong, AppConstant.DATE_FORMAT);
+                            sDate = dateConvert;
+                            holder.tvDate.setText(AppUtility.getDateByLang(sDate,false));
                         }
-                    } catch (Exception ex) {
-                        AppCenterLogs.addLogToAppCenterOnAPIFail("CustomForm","","onBindViewHolder(Q.5) "+ex.getMessage(),"QuestionListAdapter","");
-                        ex.printStackTrace();
+                    }catch (NumberFormatException e){
+                        Log.e("Error","QuestionListAdapter = case 5 = "+e.getMessage());
+                        try {
+                            SimpleDateFormat dt = new SimpleDateFormat("yyyy-MM-dd",Locale.ENGLISH);
+                            Date date = null;
+
+                            date = dt.parse(typeList.get(position).getAns().get(0).getValue());
+
+                            SimpleDateFormat dt1 = new SimpleDateFormat("dd-MMM-yyyy",Locale.ENGLISH);
+                            if (App_preference.getSharedprefInstance().getLoginRes().getIsAutoTimeZone().equals("1")) {
+                                dt1.setTimeZone(TimeZone.getTimeZone(App_preference.getSharedprefInstance().getLoginRes().getLoginUsrTz()));
+                            } else {
+                                dt1.setTimeZone(TimeZone.getDefault());
+                            }
+                            String format = dt1.format(date);
+                            sDate = format;
+                            holder.tvDate.setText(AppUtility.getDateByLang(sDate,false));
+                        } catch (ParseException ex) {
+                            Log.e("Error","QuestionListAdapter = case 5 = "+ex.getMessage());
+                        }
+                    }
+                    catch (Exception ex) {
+                        Log.e("Error","QuestionListAdapter = case 5 = "+ex.getMessage());
                     }
                 }
                 break;
@@ -412,22 +415,38 @@ public class QuestionListAdapter extends RecyclerView.Adapter<QuestionListAdapte
                 if (typeList.get(position).getAns().isEmpty())
                     holder.tvTime.setText("");
                 else if (typeList.get(position).getAns().size() > 0) {
+                    String time;
                     try {
-                        if (!(typeList.get(position).getAns().get(0).getValue().equals(""))) {
-                            String time = AppUtility.getDateWithFormate2((Long.parseLong(typeList.get(position).
-                                            getAns().get(0).
-                                            getValue()) * 1000),
-                                    AppUtility.dateTimeByAmPmFormate(
-                                            "hh:mm a", "HH:mm"));
+                        if (!(typeList.get(position).getAns().get(0).
+                                getValue().equals(""))) {
+                            Long dateLong = Long.parseLong(typeList.get(position).getAns().get(0).getValue());
+                            time = AppUtility.getDateWithFormate2((dateLong * 1000),
+                                    AppUtility.dateTimeByAmPmFormate("hh:mm a", "HH:mm"));
                             holder.tvTime.setText(time);
-
                         }
-                    }catch (NumberFormatException nm){
-                        AppCenterLogs.addLogToAppCenterOnAPIFail("CustomForm","","onBindViewHolder(Q.6) "+nm.getMessage(),"QuestionListAdapter","");
-                        holder.tvTime.setText(typeList.get(position).getAns().get(0).getValue());
-                    }
-                    catch (Exception ex) {
-                        ex.printStackTrace();
+                    } catch (NumberFormatException e){
+                        Log.e("Error","QuestionListAdapter = case 6 = "+e.getMessage());
+                        try {
+                            e.printStackTrace();
+                            SimpleDateFormat dt = new SimpleDateFormat("HH:mm",Locale.ENGLISH);
+                            Date date = null;
+
+                            date = dt.parse(typeList.get(position).getAns().get(0).getValue());
+
+                            SimpleDateFormat dt1 = new SimpleDateFormat( AppUtility.dateTimeByAmPmFormate("hh:mm a", "HH:mm"),Locale.ENGLISH);
+                            if (App_preference.getSharedprefInstance().getLoginRes().getIsAutoTimeZone().equals("1")) {
+                                dt1.setTimeZone(TimeZone.getTimeZone(App_preference.getSharedprefInstance().getLoginRes().getLoginUsrTz()));
+                            } else {
+                                dt1.setTimeZone(TimeZone.getDefault());
+                            }
+                            String format = dt1.format(date);
+                            time = format;
+                            holder.tvTime.setText(time);
+                        } catch (ParseException ex) {
+                            Log.e("Error","QuestionListAdapter = case 6 = "+ex.getMessage());
+                        }
+                    }catch (Exception ex) {
+                        Log.e("Error","QuestionListAdapter = case 6 = "+ex.getMessage());
                     }
                 }
                 break;
@@ -458,17 +477,34 @@ public class QuestionListAdapter extends RecyclerView.Adapter<QuestionListAdapte
                         if (!typeList.get(position).getAns().get(0).getValue().equals("")) {
                             Long dateLong = Long.parseLong(typeList.get(position).getAns().get(0).getValue());
                             String dateConvert = AppUtility.getDate(dateLong,
-                                    AppUtility.dateTimeByAmPmFormate("dd-MMM-yyyy hh:mm a", "dd-MMM-yyyy HH:mm"));
+                                    AppUtility.dateTimeByAmPmFormate(AppConstant.DATE_FORMAT+" hh:mm a", AppConstant.DATE_FORMAT+" HH:mm"));
                             sTimeDate = dateConvert;
                             holder.tvTimeDate.setText(AppUtility.getDateByLang(sTimeDate,true));
                         }
                     } catch (NumberFormatException e) {
-                        AppCenterLogs.addLogToAppCenterOnAPIFail("CustomForm","","onBindViewHolder(Q.7) "+e.getMessage(),"QuestionListAdapter","");
-                        holder.tvTimeDate.setText(typeList.get(position).getAns().get(0).getValue());
+                        Log.e("Error","RemarkQuestionListAdapter = case 7 = "+e.getMessage());
+                        try {
+                            SimpleDateFormat dt = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.ENGLISH);
+                            Date date = null;
+
+                            date = dt.parse(typeList.get(position).getAns().get(0).getValue());
+
+                            SimpleDateFormat dt1 = new SimpleDateFormat( AppUtility.dateTimeByAmPmFormate(AppConstant.DATE_FORMAT+" hh:mm a", AppConstant.DATE_FORMAT+" HH:mm"), Locale.ENGLISH);
+                            if (App_preference.getSharedprefInstance().getLoginRes().getIsAutoTimeZone().equals("1")) {
+                                dt1.setTimeZone(TimeZone.getTimeZone(App_preference.getSharedprefInstance().getLoginRes().getLoginUsrTz()));
+                            } else {
+                                dt1.setTimeZone(TimeZone.getDefault());
+                            }
+                            String format = dt1.format(date);
+                            sTimeDate = format;
+                            holder.tvTimeDate.setText(sTimeDate);
+                        }catch (Exception ex){
+                            Log.e("Error","RemarkQuestionListAdapter = case 7 = "+ex.getMessage());
+                        }
                     }catch (Exception e)
                     {
-                        AppCenterLogs.addLogToAppCenterOnAPIFail("CustomForm","","onBindViewHolder(Q.7) "+e.getMessage(),"QuestionListAdapter","");
-                        e.printStackTrace();
+                        AppCenterLogs.addLogToAppCenterOnAPIFail("RemarkCustomForm","","onBindViewHolder(Q.7) "+e.getMessage(),"RemarkQuestionListAdapter","");
+                        Log.e("Error","RemarkQuestionListAdapter = case 7 = "+e.getMessage());
                     }
                 }
                 break;

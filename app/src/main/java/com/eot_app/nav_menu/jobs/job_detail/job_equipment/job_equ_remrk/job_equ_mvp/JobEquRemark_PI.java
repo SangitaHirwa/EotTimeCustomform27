@@ -19,7 +19,7 @@ public interface JobEquRemark_PI {
 
     void addNewRemark(RemarkRequest remarkRequest, String file, List<MultipartBody.Part> docAns, ArrayList<String> docQueIdArrays,
                       List<MultipartBody.Part> signAns, ArrayList<String> signQueIdArrays,
-                      boolean isAutoUpdatedRemark,String equStatusId);
+                      boolean isAutoUpdatedRemark,String equStatusId,List<String> dosanspath,List<String> signanspath,String formId);
 
     void getEquipmentList(String type, String cltId, String audId,String isParent);
 
@@ -31,5 +31,6 @@ public interface JobEquRemark_PI {
     void getLinkItemList(String jobId);
     void linkedItemAddToEqu(String jobId, String equId, String ijmmId);
     void updateEquStatus(UpdateEquStatusReqModel reqModel);
+    void getAllEquipments();
 
 }

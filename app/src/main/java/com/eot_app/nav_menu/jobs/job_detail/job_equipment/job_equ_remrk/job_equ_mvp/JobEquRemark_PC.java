@@ -1,6 +1,7 @@
 package com.eot_app.nav_menu.jobs.job_detail.job_equipment.job_equ_remrk.job_equ_mvp;
 
 import android.content.Context;
+import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
 import android.util.Log;
@@ -17,7 +18,9 @@ import com.eot_app.nav_menu.jobs.job_detail.addinvoiveitem2pkg.model.InvoiceItem
 import com.eot_app.nav_menu.jobs.job_detail.chat.fire_Base_Model.Chat_Send_Msg_Model;
 import com.eot_app.nav_menu.jobs.job_detail.customform.cstm_form_model.CustomFormList_Res;
 import com.eot_app.nav_menu.jobs.job_detail.customform.cstm_form_model.FormList_Model_Req;
+import com.eot_app.nav_menu.jobs.job_detail.form_form.get_qus_list.ans_model.AnsModel_Offline;
 import com.eot_app.nav_menu.jobs.job_detail.invoice.invoice_db.model_pkg.ItembyJobModel;
+import com.eot_app.nav_menu.jobs.job_detail.job_equipment.model.RemarkModel_Offline;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.model.UpdateEquStatusReqModel;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.model.UpdateEquStatusResModel;
 import com.eot_app.nav_menu.jobs.job_detail.requested_item.requested_itemModel.AddUpdateRequestedModel;
@@ -29,6 +32,7 @@ import com.eot_app.utility.AppUtility;
 import com.eot_app.utility.App_preference;
 import com.eot_app.utility.EotApp;
 import com.eot_app.utility.db.AppDataBase;
+import com.eot_app.utility.db.OfflineDataController;
 import com.eot_app.utility.language_support.LanguageController;
 import com.eot_app.utility.settings.equipmentdb.Equipment;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -49,7 +53,6 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Handler;
 import java.util.zip.Adler32;
 
 import io.reactivex.Observer;
@@ -302,124 +305,22 @@ public class JobEquRemark_PC implements JobEquRemark_PI {
     @Override
     public void addNewRemark(final RemarkRequest remarkRequest, String file, List<MultipartBody.Part> docAns, ArrayList<String> docQueIdArrays,
                              List<MultipartBody.Part> signAns,
-                             ArrayList<String> signQueIdArrays,boolean isAutoUpdatedRemark,String equStatusId) {
-        if (AppUtility.isInternetConnected()) {
-            HyperLog.i("Param","Request of Remark :"+new Gson().toJson(remarkRequest)+" file path = "+ file+" Equipment status Id = "+equStatusId);
-            HyperLog.i("", "JobEquRemark_PC: " + "addNewRemark:::: Start");
-
-            String mimeType = "";
-            MultipartBody.Part body = null;
-            List<MultipartBody.Part> filesList = new ArrayList<>();
-            if (!TextUtils.isEmpty(file)) {
-                File file1 = new File(file);
-                if (file1 != null) {
-                    mimeType = URLConnection.guessContentTypeFromName(file1.getName());
-                    if (mimeType == null) {
-                        mimeType = file1.getName();
+                             ArrayList<String> signQueIdArrays,boolean isAutoUpdatedRemark,String equStatusId,List<String> dosanspath,List<String> signanspath,String formId) {
+            remarkRequest.setEquStatus(equStatusId);
+            RemarkModel_Offline ansModel_offline=new RemarkModel_Offline(remarkRequest,dosanspath,signanspath,signQueIdArrays,docQueIdArrays,file);
+            String request = new Gson().toJson(ansModel_offline);
+            OfflineDataController.getInstance().addInOfflineDB(Service_apis.addNewRemark,request,AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT));
+            new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    updateEquipmentStates(remarkRequest);
+                    jobEquimView.onRemarkUpdate("message",new InvoiceItemDataModel());
+                    if(!AppUtility.isInternetConnected()) {
+                        jobEquimView.reFreshScreen();
                     }
-                    RequestBody requestFile = RequestBody.create(file1, MediaType.parse(mimeType));
-                    // MultipartBody.Part is used to send also the actual file name
-                    body = MultipartBody.Part.createFormData("ja[]", file1.getName()
-                            //  + file.substring(file.lastIndexOf("."))
-                            , requestFile);
-                    filesList.add(body);
                 }
             }
-            remarkRequest.setEquStatus(equStatusId);
-            RequestBody audId = RequestBody.create(remarkRequest.getAudId(), MultipartBody.FORM);
-            RequestBody equId = RequestBody.create(remarkRequest.getEquId(), MultipartBody.FORM);
-            RequestBody userId = RequestBody.create(App_preference.getSharedprefInstance().getLoginRes().getUsrId(), MultipartBody.FORM);
-            RequestBody remark = RequestBody.create(remarkRequest.getRemark(), MultipartBody.FORM);
-            RequestBody status = RequestBody.create(remarkRequest.getStatus(), MultipartBody.FORM);
-            RequestBody lat = RequestBody.create(remarkRequest.getLat(), MultipartBody.FORM);
-            RequestBody lng = RequestBody.create(remarkRequest.getLng(), MultipartBody.FORM);
-            RequestBody isJob = RequestBody.create(remarkRequest.getIsJob(), MultipartBody.FORM);
-            RequestBody equStatusBody = RequestBody.create(equStatusId, MultipartBody.FORM);
-            String str = new Gson().toJson(remarkRequest.getAnswerArray().getAnswer());
-            RequestBody answerArray = RequestBody.create(str, MultipartBody.FORM);
-
-            String signIdArrayStr = new Gson().toJson(signQueIdArrays);
-            RequestBody signQueIdArray = RequestBody.create(signIdArrayStr, MultipartBody.FORM);
-
-            String docIdArrayStr = new Gson().toJson(docQueIdArrays);
-            RequestBody docQueIdArray = RequestBody.create(docIdArrayStr, MultipartBody.FORM);
-
-
-            ActivityLogController
-                    .saveActivity(ActivityLogController
-                                    .AUDIT_MODULE,
-                            ActivityLogController.AUDIT_EQUIP,
-                            ActivityLogController.AUDIT_REMARK);
-
-            // when replace equipment in clicked
-            if(!isAutoUpdatedRemark)
-            AppUtility.progressBarShow((Context) jobEquimView);
-
-
-            ApiClient.getservices().uploadAuditRemarkWithDocument(AppUtility.getApiHeaders(),
-                    audId,
-                    equId,
-                    userId,
-                    remark,
-                    status,
-                    lat,
-                    lng,
-                    isJob,
-                    filesList,
-                    docAns,
-                    docQueIdArray,
-                    answerArray,
-                    signAns,
-                    signQueIdArray,equStatusBody)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Observer<JsonObject>() {
-                        @Override
-                        public void onSubscribe(@NotNull Disposable d) {
-
-                        }
-
-                        @Override
-                        public void onNext(@NotNull JsonObject jsonObject) {
-                            try {
-                                HyperLog.i("", "JobEquRemark_PC: " + "JsonObject:::: " + jsonObject.toString());
-
-                                Log.d("mahi", jsonObject.toString());
-                                if (jsonObject.get("success").getAsBoolean()) {
-                                    String message = LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString());
-                                    updateEquipmentStates(remarkRequest);
-                                    jobEquimView.onRemarkUpdate(message, new InvoiceItemDataModel());
-                                } else if (jsonObject.get("statusCode") != null && jsonObject.get("statusCode").getAsString().equals(AppConstant.SESSION_EXPIRE)) {
-                                    jobEquimView.onSessionExpire(LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString()));
-                                } else {
-                                    String message = LanguageController.getInstance().getServerMsgByKey(jsonObject.get("message").getAsString());
-                                    jobEquimView.onErrorMsg(message);
-                                }
-                            } catch (Exception e) {
-                                HyperLog.i("", "JobEquRemark_PC: " + "Exception:::: " + e.getMessage());
-                                e.printStackTrace();
-                            }
-                        }
-
-                        @Override
-                        public void onError(@NotNull Throwable e) {
-                            Log.d("mahi", e.toString());
-                            //  remark_view.onSessionExpire("");
-                            HyperLog.i("", "JobEquRemark_PC: " + "onError:::: " + e.getMessage());
-
-                            AppUtility.progressBarDissMiss();
-                        }
-
-                        @Override
-                        public void onComplete() {
-                            Log.d("mahi", "Completed");
-                            getEquipmentList();
-                            AppUtility.progressBarDissMiss();
-                        }
-                    });
-        } else {
-            networkError();
-        }
+          ,500);
 
     }
 
@@ -429,9 +330,10 @@ public class JobEquRemark_PC implements JobEquRemark_PI {
             try {
                 for (EquArrayModel equipment : job.getEquArray()) {
                     if (equipment.getEquId().equals(remarkRequest.getEquId())) {
+                        equipment.setEquRemarkCondition(remarkRequest.getStatus());
                         equipment.setStatus(remarkRequest.getStatus());
                         equipment.setRemark(remarkRequest.getRemark());
-                        AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().updateJob(job);
+                        AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).jobModel().inserSingleJob(job);
                         Equipment updatedEquipment = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).equipmentDao().getEquipmentById(equipment.getEquId());
                         updatedEquipment.setStatus(remarkRequest.getEquStatus());
                         AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).equipmentDao().insertSingleEquipmentList(updatedEquipment);
@@ -440,7 +342,8 @@ public class JobEquRemark_PC implements JobEquRemark_PI {
                         // TODO don't have to show remark on main page
 //                        EotApp.getAppinstance().getNotifyForEquipmentCount();
                         break;
-                    } else {
+                    }
+                  /*  else {
                         // for updating equipment component
                         for (EquArrayModel equipmentPart : equipment.getEquComponent())
                             if (equipmentPart.getEquId().equals(remarkRequest.getEquId())) {
@@ -454,7 +357,7 @@ public class JobEquRemark_PC implements JobEquRemark_PI {
 //                        EotApp.getAppinstance().getNotifyForEquipmentCount();
                                 break;
                             }
-                    }
+                    }*/
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -737,7 +640,7 @@ public class JobEquRemark_PC implements JobEquRemark_PI {
                                 Type listType = new TypeToken<List<UpdateEquStatusResModel>>() {
                                 }.getType();
                                 List<UpdateEquStatusResModel> data = new Gson().fromJson(convert, listType);
-                                getEquipmentList();
+                                getAllEquipments();
                                 jobEquimView.setEquStatus(data);
                             } else {
                                 jobEquimView.setEquStatus(new ArrayList<UpdateEquStatusResModel>());
@@ -767,7 +670,8 @@ public class JobEquRemark_PC implements JobEquRemark_PI {
                         (AppConstant.err_check_network), LanguageController.getInstance().getMobileMsgByKey(AppConstant.ok),
                 "", () -> null);
     }
-    public void getEquipmentList() {
+    @Override
+    public void getAllEquipments() {
 
         if (AppUtility.isInternetConnected()) {
 
@@ -782,6 +686,7 @@ public class JobEquRemark_PC implements JobEquRemark_PI {
 
 
             String data = new Gson().toJson(auditListRequestModel);
+            Log.e("Request Param", Service_apis.getAllEquipments +" === " +data);
             ApiClient.getservices().eotServiceCall(Service_apis.getAllEquipments, AppUtility.getApiHeaders(), AppUtility.getJsonObject(data))
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -818,7 +723,7 @@ public class JobEquRemark_PC implements JobEquRemark_PI {
                         public void onComplete() {
                             if ((updateindexCustomForm + updatelimit) <= count) {
                                 updateindexCustomForm += updatelimit;
-                                getEquipmentList();
+                                getAllEquipments();
                             } else {
                                 if (count != 0) {
                                     App_preference.getSharedprefInstance().setAllEquipmentSyncTime(AppUtility.getDateByFormat(AppConstant.DATE_TIME_FORMAT));
@@ -829,6 +734,8 @@ public class JobEquRemark_PC implements JobEquRemark_PI {
                             }
                         }
                     });
+        }else {
+            jobEquimView.reFreshScreen();
         }
     }
 }

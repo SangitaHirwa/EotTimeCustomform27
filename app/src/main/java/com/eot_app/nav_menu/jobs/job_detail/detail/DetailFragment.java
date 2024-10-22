@@ -3555,13 +3555,15 @@ public class DetailFragment extends Fragment
             }.getType());
             Log.e("Size", "withoutpart====" + list1.size());
             Collections.sort(list1, (o1, o2) -> o1.getEqunm().compareTo(o2.getEqunm()));
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    adapter.setList(list1);
-                    recyclerView_job_eq.setAdapter(adapter);
-                }
-            });
+            if(EotApp.getCurrentActivity() != null) {
+                EotApp.getCurrentActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        adapter.setList(list1);
+                        recyclerView_job_eq.setAdapter(adapter);
+                    }
+                });
+            }
 
 
         }

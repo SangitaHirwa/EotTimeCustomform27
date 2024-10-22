@@ -33,14 +33,17 @@ import com.eot_app.eoteditor.Utils;
 import com.eot_app.nav_menu.jobs.job_detail.chat.img_crop_pkg.ImageCropFragment;
 import com.eot_app.nav_menu.jobs.job_detail.customform.MyAttachment;
 import com.eot_app.nav_menu.jobs.job_detail.documents.PathUtils;
+import com.eot_app.nav_menu.jobs.job_detail.form_form.get_qus_list.FormQueAns_Activity;
 import com.eot_app.nav_menu.jobs.job_detail.form_form.get_qus_list.MyFormInterFace;
 import com.eot_app.nav_menu.jobs.job_detail.form_form.get_qus_list.ans_model.Answer;
 import com.eot_app.nav_menu.jobs.job_detail.form_form.get_qus_list.qus_model.AnswerModel;
 import com.eot_app.nav_menu.jobs.job_detail.form_form.get_qus_list.qus_model.QuesRspncModel;
+import com.eot_app.nav_menu.jobs.job_detail.job_equipment.job_equ_remrk.JobEquPartRemarkRemarkActivity;
 import com.eot_app.nav_menu.jobs.job_detail.job_equipment.job_equ_remrk.JobEquRemarkRemarkActivity;
 import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.AppUtility;
 import com.eot_app.utility.EotApp;
+import com.eot_app.utility.db.AppDataBase;
 import com.eot_app.utility.language_support.LanguageController;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.gson.Gson;
@@ -81,7 +84,7 @@ public class RemarkCustomFormFragment extends Fragment implements View.OnClickLi
     private final ArrayList<String> docQueIdArray = new ArrayList<>();
     RecyclerView recyclerView;
     ArrayList<QuesRspncModel> question_List;
-    ArrayList<Answer> answerArrayList = new ArrayList<>();
+    public ArrayList<Answer> answerArrayList = new ArrayList<>();
     // TODO: Rename and change types of parameters
     Button saveBtn;
     boolean isfilled;
@@ -95,6 +98,10 @@ public class RemarkCustomFormFragment extends Fragment implements View.OnClickLi
     //  private QuestionListAdapter qla;
     private RemarkQuestionListAdpter qla;
     private String captureImagePath;
+    public String optionId;
+    public String comeFrom;
+    private List<Answer> answer;
+
 
     /**
      * Use this factory method to create a new instance of
@@ -105,11 +112,13 @@ public class RemarkCustomFormFragment extends Fragment implements View.OnClickLi
      * @return A new instance of fragment CustomFormFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static RemarkCustomFormFragment newInstance(String jobId, String queList) {
+    public static RemarkCustomFormFragment newInstance(String jobId, String queList,String optionid,String comeFrom) {
         RemarkCustomFormFragment fragment = new RemarkCustomFormFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, jobId);
         args.putString(ARG_PARAM2, queList);
+        args.putString("optionid",optionid);
+        args.putString("comeFrom",comeFrom);
         fragment.setArguments(args);
         return fragment;
     }
@@ -120,6 +129,8 @@ public class RemarkCustomFormFragment extends Fragment implements View.OnClickLi
         if (getArguments() != null) {
             jobId = getArguments().getString(ARG_PARAM1);
             queList = getArguments().getString(ARG_PARAM2);
+            optionId=getArguments().getString("optionid");
+            comeFrom=getArguments().getString("comeFrom");
         }
     }
 
@@ -140,7 +151,20 @@ public class RemarkCustomFormFragment extends Fragment implements View.OnClickLi
         recyclerView = view.findViewById(R.id.recycleView);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(linearLayoutManager);
+        String getfrombyid = AppDataBase.getInMemoryDatabase(getContext()).customFormDao().getfrombyid(question_List.get(0).getFrmId(), jobId, optionId);
+        Type childlist = new TypeToken<List<Answer>>() {
+        }.getType();
+        answer = new Gson().fromJson(getfrombyid, childlist);
 
+        if (answer!=null) {
+            for (int i = 0; i < question_List.size(); i++) {
+                for (int j = 0; j < answer.size(); j++) {
+                    if (question_List.get(i).getQueId().equals(answer.get(j).getQueId())) {
+                        question_List.get(i).setAns(answer.get(j).getAns());
+                    }
+                }
+            }
+        }
         qla = new RemarkQuestionListAdpter(question_List, getActivity(), (MyFormInterFace) getActivity(), this);
         recyclerView.setAdapter(qla);
         isFormPreFilled();
@@ -167,9 +191,9 @@ public class RemarkCustomFormFragment extends Fragment implements View.OnClickLi
 
     @Override
     public void onDestroy() {
-        if (jobId.equals("RemarkActivity")) {
+        if (comeFrom.equals("RemarkActivity")) {
             ((RemarkActivity) getActivity()).setTitlesForRemarkForm(false);
-        } else if (jobId.equals("JobEquRemarkRemarkActivity")) {
+        } else if (comeFrom.equals("JobEquRemarkRemarkActivity")) {
             ((JobEquRemarkRemarkActivity) getActivity()).setTitlesForRemarkForm(false);
         }
         super.onDestroy();
@@ -193,10 +217,12 @@ public class RemarkCustomFormFragment extends Fragment implements View.OnClickLi
 
             }
 
-            if (jobId.equals("RemarkActivity")) {
+            if (comeFrom.equals("RemarkActivity")) {
                 ((RemarkActivity) getActivity()).getAnsList(answerArrayList);
-            } else if (jobId.equals("JobEquRemarkRemarkActivity")) {
+            } else if (comeFrom.equals("JobEquRemarkRemarkActivity")) {
                 ((JobEquRemarkRemarkActivity) getActivity()).getAnsList(answerArrayList, signAns, docAns, signQueIdArray, docQueIdArray);
+            }else if (comeFrom.equals("JobEquPartRemarkRemarkActivity")) {
+                ((JobEquPartRemarkRemarkActivity) getActivity()).getAnsList(answerArrayList, signAns, docAns, signQueIdArray, docQueIdArray);
             }
             getActivity().onBackPressed();
         }
@@ -277,12 +303,12 @@ public class RemarkCustomFormFragment extends Fragment implements View.OnClickLi
                             answerArrayList.add(answer);
 
                         } else {
-                         /*   AnswerModel answerModels = new AnswerModel("0", "");
+                            AnswerModel answerModels = new AnswerModel("0", "");
                             ansArrayList.add(answerModels);
-                            answer = new Answer(this.quesRspncModelList.get(i).getQueId(),
-                                    this.quesRspncModelList.get(i).getType(), ansArrayList,
-                                    this.quesRspncModelList.get(i).getFrmId());
-                            answerArrayList.add(answer);*/
+                            answer = new Answer(this.question_List.get(i).getQueId(),
+                                    this.question_List.get(i).getType(), ansArrayList,
+                                    this.question_List.get(i).getFrmId());
+                            answerArrayList.add(answer);
                         }
 
                     } else if (question_List.get(i).getAns().size() == 0)
@@ -320,12 +346,12 @@ public class RemarkCustomFormFragment extends Fragment implements View.OnClickLi
                                     this.question_List.get(i).getType(), ansArrayList, this.question_List.get(i).getFrmId());
                             answerArrayList.add(answer);
                         } else {
-                          /*  AnswerModel answerModels = new AnswerModel("0", "");
+                            AnswerModel answerModels = new AnswerModel("0", "");
                             ansArrayList.add(answerModels);
-                            answer = new Answer(this.quesRspncModelList.get(i).getQueId(),
-                                    this.quesRspncModelList.get(i).getType(), ansArrayList,
-                                    this.quesRspncModelList.get(i).getFrmId());
-                            answerArrayList.add(answer);*/
+                            answer = new Answer(this.question_List.get(i).getQueId(),
+                                    this.question_List.get(i).getType(), ansArrayList,
+                                    this.question_List.get(i).getFrmId());
+                            answerArrayList.add(answer);
                         }
                     } else if (question_List.get(i).getAns().size() == 0)
                         if (question_List.get(i).getMandatory().equals("1"))
@@ -355,32 +381,47 @@ public class RemarkCustomFormFragment extends Fragment implements View.OnClickLi
                     if (question_List.get(i).getAns() != null && question_List.get(i).getAns().size() > 0) {
                         if (question_List.get(i).getType().equals("5")) {
                             if (!TextUtils.isEmpty(question_List.get(i).getAns().get(0).getValue())) {
-                                long l = Long.parseLong(question_List.get(i).getAns().get(0).getValue());
-                                if(l != 0) {
-                                    String date = AppUtility.getDate(l, "dd-MMM-yyyy");
-                                    ans = AppUtility.sendDateByFormate(date, false);
-                                }else{
-                                    ans = "";
+                                try {
+                                    long l = Long.parseLong(question_List.get(i).getAns().get(0).getValue());
+                                    if (l != 0) {
+                                        String date = AppUtility.getDate(l, "dd-MMM-yyyy");
+                                        ans = AppUtility.sendDateByFormate(date, false);
+                                    } else {
+                                        ans = "";
+                                    }
+                                }catch (NumberFormatException e){
+                                    Log.e("Remark","Remark sub Form Date"+e.getMessage());
+                                    ans = question_List.get(i).getAns().get(0).getValue();
                                 }
                             }
                         } else if (question_List.get(i).getType().equals("6")) {
                             if (!TextUtils.isEmpty(question_List.get(i).getAns().get(0).getValue())) {
-                                long l = Long.parseLong(question_List.get(i).getAns().get(0).getValue());
-                                if(l != 0) {
-                                    String date = AppUtility.getDate(l, "hh:mm a");
-                                ans = date;
-                                }else{
-                                    ans = "";
+                                try {
+                                    long l = Long.parseLong(question_List.get(i).getAns().get(0).getValue());
+                                    if (l != 0) {
+                                        String date = AppUtility.getDate(l, "HH:mm");
+                                        ans = date;
+                                    } else {
+                                        ans = "";
+                                    }
+                                }catch (NumberFormatException e){
+                                    Log.e("Remark","Remark sub Form Time"+e.getMessage());
+                                    ans = question_List.get(i).getAns().get(0).getValue();
                                 }
                             }
                         } else if (question_List.get(i).getType().equals("7")) {
                             if (!TextUtils.isEmpty(question_List.get(i).getAns().get(0).getValue())) {
-                                long l = Long.parseLong(question_List.get(i).getAns().get(0).getValue());
-                                if(l != 0) {
-                                    String date = AppUtility.getDate(l, AppUtility.dateTimeByAmPmFormate(AppConstant.DATE_FORMAT + " hh:mm a", AppConstant.DATE_FORMAT + " HH:mm"));
-                                    ans = AppUtility.sendDateByFormate(date, true);
-                                }else{
-                                    ans = "";
+                                try {
+                                    long l = Long.parseLong(question_List.get(i).getAns().get(0).getValue());
+                                    if (l != 0) {
+                                        String date = AppUtility.getDate(l, AppUtility.dateTimeByAmPmFormate(AppConstant.DATE_FORMAT + " hh:mm a", AppConstant.DATE_FORMAT + " HH:mm"));
+                                        ans = AppUtility.sendDateByFormate(date, true);
+                                    } else {
+                                        ans = "";
+                                    }
+                                }catch (NumberFormatException e){
+                                    Log.e("Remark","Remark sub Form DateTime"+e.getMessage());
+                                    ans = question_List.get(i).getAns().get(0).getValue();
                                 }
                             }
                         } else

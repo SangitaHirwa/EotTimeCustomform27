@@ -391,34 +391,49 @@ public class CustomFormFragment extends androidx.fragment.app.Fragment
                     if (question_List.get(i).getAns() != null && question_List.get(i).getAns().size() > 0) {
                         if (question_List.get(i).getType().equals("5")) {
                             if (!TextUtils.isEmpty(question_List.get(i).getAns().get(0).getValue())) {
-                                long l = Long.parseLong(question_List.get(i).getAns().get(0).getValue());
-                                if(l != 0) {
-                                    String date = AppUtility.getDate(l, AppUtility.dateTimeByAmPmFormate(
-                                            "dd-MMM-yyyy hh:mm a", "dd-MMM-yyyy HH:mm"));
-                                    ans = AppUtility.sendDateByFormate(date, true);
-                                }else{
-                                    ans = "";
+                                try {
+                                    long l = Long.parseLong(question_List.get(i).getAns().get(0).getValue());
+                                    if (l != 0) {
+                                        String date = AppUtility.getDate(l, AppUtility.dateTimeByAmPmFormate(
+                                                "dd-MMM-yyyy hh:mm a", "dd-MMM-yyyy HH:mm"));
+                                        ans = AppUtility.sendDateByFormate(date, true);
+                                    } else {
+                                        ans = "";
+                                    }
+                                }catch (NumberFormatException e){
+                                    Log.e("Custom Form","Date"+e.getMessage());
+                                    ans = question_List.get(i).getAns().get(0).getValue();
                                 }
                             }
                         } else if (question_List.get(i).getType().equals("6")) {
                             if (!TextUtils.isEmpty(question_List.get(i).getAns().get(0).getValue())) {
-                                long l = Long.parseLong(question_List.get(i).getAns().get(0).getValue());
-                                if(l != 0) {
-                                String date = AppUtility.getDate(l,"HH:mm:ss");
-                                ans = date;
-                            }else{
-                                ans = "";
-                            }
+                                try {
+                                    long l = Long.parseLong(question_List.get(i).getAns().get(0).getValue());
+                                    if (l != 0) {
+                                        String date = AppUtility.getDate(l, "HH:mm:ss");
+                                        ans = date;
+                                    } else {
+                                        ans = "";
+                                    }
+                                }catch (NumberFormatException e){
+                                    Log.e("Custom Form","Time"+e.getMessage());
+                                    ans = question_List.get(i).getAns().get(0).getValue();
+                                }
                             }
                         } else if (question_List.get(i).getType().equals("7")) {
                             if (!TextUtils.isEmpty(question_List.get(i).getAns().get(0).getValue())) {
-                                long l = Long.parseLong(question_List.get(i).getAns().get(0).getValue());
-                                if(l != 0) {
-                                String date = AppUtility.getDate(l, AppUtility.dateTimeByAmPmFormate(
-                                        "dd-MMM-yyyy hh:mm a","dd-MMM-yyyy HH:mm"));
-                                ans = AppUtility.sendDateByFormate(date,true);
-                                }else{
-                                    ans = "";
+                                try {
+                                    long l = Long.parseLong(question_List.get(i).getAns().get(0).getValue());
+                                    if (l != 0) {
+                                        String date = AppUtility.getDate(l, AppUtility.dateTimeByAmPmFormate(
+                                                "dd-MMM-yyyy hh:mm a", "dd-MMM-yyyy HH:mm"));
+                                        ans = AppUtility.sendDateByFormate(date, true);
+                                    } else {
+                                        ans = "";
+                                    }
+                                }catch (NumberFormatException e){
+                                    Log.e("Custom Form","DateTime"+e.getMessage());
+                                    ans = question_List.get(i).getAns().get(0).getValue();
                                 }
                             }
                         } else

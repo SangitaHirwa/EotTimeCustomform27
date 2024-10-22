@@ -22,6 +22,7 @@ import com.eot_app.nav_menu.jobs.job_detail.documents.PathUtils;
 import com.eot_app.utility.AppConstant;
 import com.eot_app.utility.AppUtility;
 import com.eot_app.utility.EotApp;
+import com.eot_app.utility.ImageUtils;
 import com.eot_app.utility.language_support.LanguageController;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.gun0912.tedpermission.PermissionListener;
@@ -339,6 +340,8 @@ public class UploadDocumentActivity extends AppCompatActivity implements ImageCr
                     assert data != null;
                     Uri galreyImguriUri = data.getData();
 
+                    double imageSizeInMB = ImageUtils.getImageSizeInMB(this, galreyImguriUri);
+                    Log.e("IMG","Size======================="+imageSizeInMB);
 //                    Log.v("Name:::;",name);
                     String gallery_image_Path = PathUtils.getRealPath(UploadDocumentActivity.this, galreyImguriUri);
                     Log.v("gallery_image_Path:::;", gallery_image_Path);
@@ -360,6 +363,10 @@ public class UploadDocumentActivity extends AppCompatActivity implements ImageCr
                 if (data != null && data.hasExtra("path")) {
                     String path = data.getStringExtra("path");
                     String name = data.getStringExtra("name");
+                    Uri uri1 = Uri.fromFile(new File(path));
+                    // Get the image size in MB
+                    double imageSizeInMB1 = ImageUtils.getImageSizeInMB(this, uri1);
+                    Log.e("IMG","Size After Compress======================="+imageSizeInMB1);
                     onDocumentSelected(path, name, true);
                 }
                 break;

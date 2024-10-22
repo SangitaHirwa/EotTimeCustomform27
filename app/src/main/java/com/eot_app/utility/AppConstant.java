@@ -956,6 +956,7 @@ public class AppConstant {
     public static final String total_amount = "total_amount";
     public static final String rename = "rename";
     public static final String tax_change_msg = "Additional_Discount_Message";
+    public static final String alert_message = "alert_message";
 
 
     /**
