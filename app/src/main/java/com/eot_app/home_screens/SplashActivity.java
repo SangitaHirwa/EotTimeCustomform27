@@ -65,8 +65,8 @@ public class SplashActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.splashscreen);
+
+
 
         /* * some settings update in firestore because firebase store timestamp **/
 
@@ -80,7 +80,13 @@ public class SplashActivity extends AppCompatActivity {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-
+        if(App_preference.getSharedprefInstance().isLaunchFirst()) {
+            Intent intent = new Intent(SplashActivity.this, ProminentScreen.class);
+            startActivity(intent);
+            finish();
+        }
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.splashscreen);
         /* *Launch root/top activity**/
         if (!isTaskRoot()) {
             final Intent intent = getIntent();
@@ -90,6 +96,7 @@ public class SplashActivity extends AppCompatActivity {
                 return;
             }
         }
+
         initializelables();
     }
 

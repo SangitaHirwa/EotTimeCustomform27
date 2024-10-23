@@ -224,7 +224,7 @@ public class DetailFragment extends Fragment
     DialogActualTravelDateTime dialogActualTravelDateTime;
     CompletionDetails completionDetails;
     boolean isClickedActual = false;
-    LinearLayout accept_reject_linear;
+    LinearLayout accept_reject_linear, travel_time_hide_show_ll;
     RelativeLayout arraw_layout;
     boolean accept = true, reject = true, travel = true, onhold = true, brack = true, isRefreshReqItem = false;
     String getDisCalculationType, getTaxCalculationType;
@@ -270,7 +270,6 @@ public class DetailFragment extends Fragment
     private final String isKprChgStatusTrue = "1";
     private final String multipleKpr = "2";
     private final String singelKpr = "";
-    LinearLayout travel_time_hide_show_ll;
 
     public DetailFragment() {
         // Required empty public constructor
@@ -487,6 +486,7 @@ public class DetailFragment extends Fragment
                         }, 3000);
                         // adapter for job status dropdown
                         mySpinnerAdapter = new Job_Status_Adpter(getActivity(), statusArray, arraystatus, statusKey -> {
+
                             Log.e("", "");
                             if (statusKey.equalsIgnoreCase(AppConstant.Reschedule)) {
                                 if (mParam2.getJobId().equals(mParam2.getTempId())) {
@@ -651,7 +651,6 @@ public class DetailFragment extends Fragment
         btnTravelEdit.setOnClickListener(this);
         tv_label_job_travel_time = layout.findViewById(R.id.tv_label_job_travel_time);
         tv_label_job_travel_time.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.travel_job_time));
-        travel_time_hide_show_ll = layout.findViewById(R.id.travel_time_hide_show_ll);
         progressBar_timing = layout.findViewById(R.id.progressBar_timing);
         date_tr_start = layout.findViewById(R.id.date_tr_start);
         date_tr_start.setHint(LanguageController.getInstance().getMobileMsgByKey(AppConstant.travel_start_date_time));
@@ -793,6 +792,7 @@ public class DetailFragment extends Fragment
         ll_item = layout.findViewById(R.id.ll_item);
         ll_equipment = layout.findViewById(R.id.ll_equipment);
         ll_requested_item = layout.findViewById(R.id.ll_requested_item);
+        travel_time_hide_show_ll = layout.findViewById(R.id.travel_time_hide_show_ll);
 
         if (mParam2 != null && mParam2.getJobId() != null) {
             jobId = mParam2.getJobId();
@@ -1512,7 +1512,6 @@ public class DetailFragment extends Fragment
             }
         }
         cl_pbCompletion.setVisibility(View.GONE);
-        progressBar_timing.setVisibility(View.GONE);
         setCompletionDetail();
         if (App_preference.getSharedprefInstance().getLoginRes().getIsCompleShowMarkDone().equals("1")) {
             if (App_preference.getSharedprefInstance().getLoginRes().getIsJobCompCustSignEnable().equals("0")) {
@@ -1963,6 +1962,17 @@ public class DetailFragment extends Fragment
                 //TODO For checking the travelling time
 
                 // TODO changed from hiding the full view to buttons
+               /* *//**After discuss with Ayush sir and jit sir we add a new permission for Completion notes add/ Edit**//*
+                if (App_preference.getSharedprefInstance().getLoginRes().getIsComplNoteBeforeComplete() != null && App_preference.getSharedprefInstance().getLoginRes().getIsComplNoteBeforeComplete().equals("0")) {
+                    if (btnComplationView != null && btnComplationView.getText().toString().equals(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit))) {
+                        btnComplationView.setVisibility(View.GONE);
+                    } else {
+                        btnComplationView.setVisibility(View.VISIBLE);
+                    }
+
+                } else {
+                    btnComplationView.setVisibility(View.VISIBLE);
+                }*/
                 buttonAccept.setVisibility(View.GONE);
                 buttonDecline.setVisibility(View.GONE);
                 arraystatus.clear();
@@ -3342,7 +3352,7 @@ public class DetailFragment extends Fragment
 
                 addComplationButtonTxt();
                 /**After discuss with Ayush sir and jit sir we add a new permission for Completion notes add/ Edit**/
-                if (App_preference.getSharedprefInstance().getLoginRes().getIsComplNoteBeforeComplete() != null && App_preference.getSharedprefInstance().getLoginRes().getIsComplNoteBeforeComplete().equals("0") && mParam2 != null && mParam2.getStatus().equals(AppConstant.Completed)) {
+                if (App_preference.getSharedprefInstance().getLoginRes().getIsComplNoteBeforeComplete() != null && App_preference.getSharedprefInstance().getLoginRes().getIsComplNoteBeforeComplete().equals("0") && mParam2 != null && mParam2.getStatus().equals(AppConstant.completed)) {
                     if (btnComplationView != null && btnComplationView.getText().toString().equals(LanguageController.getInstance().getMobileMsgByKey(AppConstant.edit))) {
                         btnComplationView.setVisibility(View.GONE);
                     } else {

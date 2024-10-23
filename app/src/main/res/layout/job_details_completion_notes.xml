@@ -252,7 +252,7 @@
 
                 </RelativeLayout>
 
-               <LinearLayout
+            <LinearLayout
                 android:id="@+id/travel_time_hide_show_ll"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -345,7 +345,7 @@
 
 
                 </RelativeLayout>
-</LinearLayout>
+            </LinearLayout>
             </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
