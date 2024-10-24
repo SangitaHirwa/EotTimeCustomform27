@@ -113,6 +113,7 @@ import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
@@ -234,7 +235,7 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
     final Calendar cTEnd = Calendar.getInstance();
     final Calendar cJobRecur = Calendar.getInstance();
     private boolean isTime24Format= false;
-
+    String equipmentId ="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -266,8 +267,10 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
                 }else if (getIntent().hasExtra("addJobByEquipment")) {
                     cltId = getIntent().getStringExtra("addJobByEquipment");
                     if(getIntent().getStringExtra("equId") != null){
+                        equipmentId = getIntent().getStringExtra("equId");
                         Equipment equipment = AppDataBase.getInMemoryDatabase(EotApp.getAppinstance()).equipmentDao().getEquipmentById(getIntent().getStringExtra("equId"));
                         if(equipment.getIsPart() != null && equipment.getIsPart().equalsIgnoreCase("1") && equipment.getParentId()!= null && !equipment.getParentId().isEmpty()){
+                            equipmentId = equipment.getParentId();
                             equId.add(equipment.getParentId());
                         }else {
                             equId.add(getIntent().getStringExtra("equId"));
@@ -1441,16 +1444,20 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
         } else if (contractlist.isEmpty()) {
             contract_parent_view.setVisibility(View.GONE);
             contract_view.setVisibility(View.GONE);
+            setEquIdArray("");
         }
     }
 
 
     /****set contractor value's in View****/
     private void setContractViews(ContractRes contractRes) {
-        contarct_lable.setText(contractRes.getLabel());
-        contract_hint_lable.setVisibility(View.VISIBLE);
-        contract_cross_img.setVisibility(View.VISIBLE);
-        contrId = contractRes.getContrId();
+        if(contractRes != null) {
+            contarct_lable.setText(contractRes.getLabel());
+            contract_hint_lable.setVisibility(View.VISIBLE);
+            contract_cross_img.setVisibility(View.VISIBLE);
+            contrId = contractRes.getContrId();
+            setEquIdArray(contractRes.getEquArray());
+        }
     }
 
     @Override
@@ -2548,6 +2555,7 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
         contarct_lable.setText(LanguageController.getInstance().getMobileMsgByKey(AppConstant.contract));
         contract_cross_img.setVisibility(View.GONE);
         contrId = "";
+        setEquIdArray("");
     }
 
 
@@ -3312,5 +3320,23 @@ public class Add_job_activity extends UploadDocumentActivity implements AddjobVi
     }
     public interface DateTimeCallback {
         void setDateTime(String dateTime);
+    }
+    private void setEquIdArray(String contractEquAry ) {
+        equId.clear();
+        if (!contractEquAry.isEmpty() && !contractEquAry.equals("")) {
+            String[] split = contractEquAry.split(",");
+            if (!equipmentId.equals("")) {
+                if (!contractEquAry.contains(equipmentId)) {
+                    equId.add(equipmentId);
+                }
+                equId.addAll(Arrays.asList(split));
+            } else {
+                equId.addAll(Arrays.asList(split));
+            }
+        } else{
+            if (!equipmentId.equals("")) {
+                equId.add(equipmentId);
+            }
+        }
     }
 }
